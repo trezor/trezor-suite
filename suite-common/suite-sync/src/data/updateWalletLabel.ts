@@ -17,7 +17,7 @@ export const createUpdateWalletLabel =
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        storageResult.value.walletLabels.update({ walletDescriptor, label });
+        storageResult.value.wallets.update({ walletDescriptor, label });
 
         return ok();
     };

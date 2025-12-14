@@ -7,22 +7,22 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AddressLabel, AddressLabelsTable } from '@suite-common/suite-sync-storage';
+import { AddressLabel, AddressTable } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { normalizeLabel } from './normalizeLabel';
 import { UnwrapQuery } from '../evoluUtils';
 
-export const AddressLabelId = id('AddressLabelId');
-export type AddressLabelId = typeof AddressLabelId.Type;
+export const AddressEvoluId = id('AddressEvoluId');
+export type AddressEvoluId = typeof AddressEvoluId.Type;
 
-export const createAddressLabelId = (address: string) =>
-    AddressLabelId.from(createIdFromString(address));
+export const createAddressEvoluId = (address: string) =>
+    AddressEvoluId.from(createIdFromString(address));
 
 export const AddressLabelSchema = {
-    addressLabel: {
-        id: AddressLabelId,
+    address: {
+        id: AddressEvoluId,
         label: nullOr(NonEmptyString1000),
         address: NonEmptyString1000,
         accountDescriptor: NonEmptyString1000,
@@ -30,19 +30,19 @@ export const AddressLabelSchema = {
     },
 };
 
-export class AddressLabels implements AddressLabelsTable {
+export class AddressEvoluTable implements AddressTable {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
     update = ({ address, label, accountDescriptor, networkSymbol }: AddressLabel) => {
-        const idResult = createAddressLabelId(address);
+        const idResult = createAddressEvoluId(address);
 
         if (!idResult.ok) {
-            console.error('AddressLabels:id error:', idResult.error);
+            console.error('AddressEvoluTable:id error:', idResult.error);
 
             return;
         }
 
-        const result = this.evolu.upsert('addressLabel', {
+        const result = this.evolu.upsert('address', {
             id: idResult.value,
             address,
             label: normalizeLabel(label),
@@ -51,14 +51,13 @@ export class AddressLabels implements AddressLabelsTable {
         });
 
         if (!result.ok) {
-            console.error('AddressLabels:update error:', result.error);
+            console.error('AddressEvoluTable:update error:', result.error);
 
             return;
         }
     };
 
-    private getQuery = () =>
-        this.evolu.createQuery(db => db.selectFrom('addressLabel').selectAll());
+    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('address').selectAll());
 
     subscribe = (onChange: (payload: AddressLabel) => void) => {
         const query = this.getQuery();

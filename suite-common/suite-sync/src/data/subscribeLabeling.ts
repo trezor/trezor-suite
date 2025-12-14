@@ -26,7 +26,7 @@ export const createSubscribeLabeling =
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        const unsubscribeWalletLabels = storage.walletLabels.subscribe(payload => {
+        const unsubscribeWalletLabels = storage.wallets.subscribe(payload => {
             if (walletDescriptor !== payload.walletDescriptor) {
                 console.error(
                     `Evolu: walletDescriptor mismatch exists ${walletDescriptor} !== ${payload.walletDescriptor}`,
@@ -37,13 +37,13 @@ export const createSubscribeLabeling =
 
             deps.dispatch(labelingActions.setWalletLabel({ ...payload, walletDescriptor }));
         });
-        const unsubscribeAccountLabels = storage.accountLabels.subscribe(payload => {
+        const unsubscribeAccountLabels = storage.accounts.subscribe(payload => {
             deps.dispatch(labelingActions.setAccountLabel({ ...payload, walletDescriptor }));
         });
-        const unsubscribeAddressLabels = storage.addressLabels.subscribe(payload => {
+        const unsubscribeAddressLabels = storage.addresses.subscribe(payload => {
             deps.dispatch(labelingActions.setAddressLabel({ ...payload, walletDescriptor }));
         });
-        const unsubscribeOutputLabels = storage.outputLabels.subscribe(payload => {
+        const unsubscribeOutputLabels = storage.outputs.subscribe(payload => {
             deps.dispatch(labelingActions.setOutputLabel({ ...payload, walletDescriptor }));
         });
 

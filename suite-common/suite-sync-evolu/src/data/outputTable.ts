@@ -8,22 +8,22 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { OutputLabel, OutputLabelsStore } from '@suite-common/suite-sync-storage';
+import { OutputLabel, OutputTable } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
-export const OutputLabelId = id('OutputLabelId');
-export type OutputLabelId = typeof OutputLabelId.Type;
+export const OutputEvoluId = id('OutputLabelId');
+export type OutputEvoluId = typeof OutputEvoluId.Type;
 
-export const createOutputLabelId = (txId: string, outputIndex: number) =>
-    OutputLabelId.from(createIdFromString(`${txId}-${outputIndex}`));
+export const createOutputEvoluId = (txId: string, outputIndex: number) =>
+    OutputEvoluId.from(createIdFromString(`${txId}-${outputIndex}`));
 
 export const OutputLabelSchema = {
-    outputLabel: {
-        id: OutputLabelId,
+    output: {
+        id: OutputEvoluId,
         label: nullOr(NonEmptyString1000),
         txId: NonEmptyString1000,
         outputIndex: NonNegativeNumber,
@@ -32,19 +32,19 @@ export const OutputLabelSchema = {
     },
 };
 
-export class OutputLabels implements OutputLabelsStore {
+export class OutputEvoluTable implements OutputTable {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
     update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: OutputLabel) => {
-        const idResult = createOutputLabelId(txId, outputIndex);
+        const idResult = createOutputEvoluId(txId, outputIndex);
 
         if (!idResult.ok) {
-            console.error('OutputLabels:id error:', idResult.error);
+            console.error('OutputEvoluTable:id error:', idResult.error);
 
             return;
         }
 
-        const result = this.evolu.upsert('outputLabel', {
+        const result = this.evolu.upsert('output', {
             id: idResult.value,
             txId,
             outputIndex,
@@ -54,13 +54,13 @@ export class OutputLabels implements OutputLabelsStore {
         });
 
         if (!result.ok) {
-            console.error('OutputLabels:update error:', result.error);
+            console.error('OutputEvoluTable:update error:', result.error);
 
             return;
         }
     };
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('outputLabel').selectAll());
+    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('output').selectAll());
 
     subscribe = (onChange: (payload: OutputLabel) => void) => {
         const query = this.getQuery();

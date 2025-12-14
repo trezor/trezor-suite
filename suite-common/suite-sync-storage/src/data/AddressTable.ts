@@ -9,4 +9,4 @@ export type AddressLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export type AddressLabelsTable = SuiteSyncTable<AddressLabel>;
+export type AddressTable = SuiteSyncTable<AddressLabel>;

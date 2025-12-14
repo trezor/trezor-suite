@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { WalletLabel, WalletLabelsTable } from '@suite-common/suite-sync-storage';
+import { WalletLabel, WalletTable } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
@@ -20,7 +20,7 @@ export const createWalletLabelId = (walletDescriptor: WalletDescriptor) =>
     WalletLabelId.from(createIdFromString(walletDescriptor));
 
 export const WalletLabelSchema = {
-    walletLabel: {
+    wallet: {
         // This table will have only 1 record. As every wallet has its own secret, and therefore
         // its own Evolu instance. So the Wallets label will always be just single.
         id: WalletLabelId,
@@ -29,28 +29,28 @@ export const WalletLabelSchema = {
     },
 };
 
-export class WalletLabels implements WalletLabelsTable {
+export class EvoluWalletTable implements WalletTable {
     constructor(private evolu: Evolu<typeof WalletLabelSchema>) {}
 
-    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('walletLabel').selectAll());
+    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('wallet').selectAll());
 
     update = ({ walletDescriptor, label }: WalletLabel) => {
         const idResult = createWalletLabelId(walletDescriptor);
 
         if (!idResult.ok) {
-            console.error('WalletLabels:id error:', idResult.error);
+            console.error('EvoluWalletTable:id error:', idResult.error);
 
             return;
         }
 
-        const result = this.evolu.upsert('walletLabel', {
+        const result = this.evolu.upsert('wallet', {
             id: idResult.value,
             walletDescriptor,
             label: normalizeLabel(label),
         });
 
         if (!result.ok) {
-            console.error('WalletLabels:update error:', result.error);
+            console.error('EvoluWalletTable:update error:', result.error);
 
             return;
         }

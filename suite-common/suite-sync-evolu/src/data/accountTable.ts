@@ -8,43 +8,43 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AccountLabel, AccountLabelsTable } from '@suite-common/suite-sync-storage';
+import { Account, AccountTable } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
-export const AccountLabelId = id('AccountLabelId');
-export type AccountLabelId = typeof AccountLabelId.Type;
+export const AccountEvoluId = id('AccountEvoluId');
+export type AccountEvoluId = typeof AccountEvoluId.Type;
 
-export const createAccountLabelId = (
+export const createAccountEvoluId = (
     accountDescriptor: AccountDescriptor,
     networkSymbol: NetworkSymbol,
-) => AccountLabelId.from(createIdFromString(`${accountDescriptor}-${networkSymbol}`));
+) => AccountEvoluId.from(createIdFromString(`${accountDescriptor}-${networkSymbol}`));
 
-export const AccountLabelSchema = {
-    accountLabel: {
-        id: AccountLabelId,
+export const AccountSchema = {
+    account: {
+        id: AccountEvoluId,
         accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
         networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
         label: nullOr(NonEmptyString1000),
     },
 };
 
-export class AccountLabels implements AccountLabelsTable {
-    constructor(private evolu: Evolu<typeof AccountLabelSchema>) {}
+export class EvoluAccountTable implements AccountTable {
+    constructor(private evolu: Evolu<typeof AccountSchema>) {}
 
-    update = ({ networkSymbol, accountDescriptor, label }: AccountLabel) => {
-        const idResult = createAccountLabelId(accountDescriptor, networkSymbol);
+    update = ({ networkSymbol, accountDescriptor, label }: Account) => {
+        const idResult = createAccountEvoluId(accountDescriptor, networkSymbol);
 
         if (!idResult.ok) {
-            console.error('AccountLabels:id error:', idResult.error);
+            console.error('EvoluAccountTable:id error:', idResult.error);
 
             return;
         }
 
-        const result = this.evolu.upsert('accountLabel', {
+        const result = this.evolu.upsert('account', {
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
@@ -52,16 +52,15 @@ export class AccountLabels implements AccountLabelsTable {
         });
 
         if (!result.ok) {
-            console.error('AccountLabels:update error:', result.error);
+            console.error('EvoluAccountTable:update error:', result.error);
 
             return;
         }
     };
 
-    private getQuery = () =>
-        this.evolu.createQuery(db => db.selectFrom('accountLabel').selectAll());
+    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('account').selectAll());
 
-    subscribe = (onChange: (payload: AccountLabel) => void) => {
+    subscribe = (onChange: (payload: Account) => void) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

@@ -7,8 +7,12 @@ export type {
 export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
 
-// Labeling
-export type { AddressLabelsTable, AddressLabel } from './labeling/AddressLabelsTable';
-export type { OutputLabelsTable, OutputLabel } from './labeling/OutputLabelsTable';
-export type { WalletLabelsTable, WalletLabel } from './labeling/WalletLabelsTable';
-export type { AccountLabelsTable, AccountLabel } from './labeling/AccountLabelsTable';
+/**
+ * This below describes the Domain specific data structure.
+ * This is the place where SuiteSync declares what Entities (tables)
+ * stores.
+ */
+export type { AddressTable, AddressLabel } from './data/AddressTable';
+export type { OutputTable, OutputLabel } from './data/OutputTable';
+export type { WalletTable, WalletLabel } from './data/WalletTable';
+export type { AccountTable, Account } from './data/AccountTable';

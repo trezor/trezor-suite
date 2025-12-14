@@ -1,5 +1,5 @@
 import {
-    AccountLabel,
+    Account,
     AddressLabel,
     OutputLabel,
     SuiteSyncStorage,
@@ -17,14 +17,14 @@ import { createSubscribeLabeling } from '../subscribeLabeling';
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 type StorageSubscriptions = {
-    accountLabels: ((payload: AccountLabel) => void)[];
+    accountLabels: ((payload: Account) => void)[];
     addressLabels: ((payload: AddressLabel) => void)[];
     outputLabels: ((payload: OutputLabel) => void)[];
     walletLabels: ((payload: WalletLabel) => void)[];
 };
 
 const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): SuiteSyncStorage => ({
-    accountLabels: {
+    accounts: {
         subscribe: jest.fn(onChange => {
             subscriptions?.accountLabels.push(onChange);
 
@@ -32,7 +32,7 @@ const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): Suite
         }),
         update: mockNotExpected('update'),
     },
-    addressLabels: {
+    addresses: {
         subscribe: jest.fn(onChange => {
             subscriptions?.addressLabels.push(onChange);
 
@@ -40,7 +40,7 @@ const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): Suite
         }),
         update: mockNotExpected('update'),
     },
-    outputLabels: {
+    outputs: {
         subscribe: jest.fn(onChange => {
             subscriptions?.outputLabels.push(onChange);
 
@@ -48,7 +48,7 @@ const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): Suite
         }),
         update: mockNotExpected('update'),
     },
-    walletLabels: {
+    wallets: {
         subscribe: jest.fn(onChange => {
             subscriptions?.walletLabels.push(onChange);
 
@@ -85,10 +85,10 @@ describe(createSubscribeLabeling.name, () => {
 
         expect(result.ok).toBe(true);
 
-        expect(storage.walletLabels.subscribe).toHaveBeenCalledTimes(1);
-        expect(storage.accountLabels.subscribe).toHaveBeenCalledTimes(1);
-        expect(storage.addressLabels.subscribe).toHaveBeenCalledTimes(1);
-        expect(storage.outputLabels.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.wallets.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.accounts.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.addresses.subscribe).toHaveBeenCalledTimes(1);
+        expect(storage.outputs.subscribe).toHaveBeenCalledTimes(1);
     });
 
     it('subscription emit actions', async () => {

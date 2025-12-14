@@ -7,4 +7,4 @@ export type WalletLabel = {
     label: string | null;
 };
 
-export type WalletLabelsTable = SuiteSyncTable<WalletLabel>;
+export type WalletTable = SuiteSyncTable<WalletLabel>;

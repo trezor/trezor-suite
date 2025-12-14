@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { AccountLabel, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { Account, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { labelingActions } from './labelingActions';
@@ -8,7 +8,7 @@ import { findAccountLabel, findAddressLabel, findOutputLabel } from './selectorU
 
 export type WalletLabelState = {
     walletLabel: string | null;
-    accountLabels: AccountLabel[];
+    accountLabels: Account[];
     addressLabels: AddressLabel[];
     outputLabels: OutputLabel[];
 };
@@ -30,7 +30,7 @@ const getOrCreateWalletsLabelsState = (
     if (walletLabelState === undefined) {
         state.walletsLabels[walletDescriptor] = {
             walletLabel: null,
-            accountLabels: [] as AccountLabel[],
+            accountLabels: [] as Account[],
             addressLabels: [] as AddressLabel[],
             outputLabels: [] as OutputLabel[],
         };

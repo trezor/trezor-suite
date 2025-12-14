@@ -10,4 +10,4 @@ export type OutputLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export type OutputLabelsTable = SuiteSyncTable<OutputLabel>;
+export type OutputTable = SuiteSyncTable<OutputLabel>;

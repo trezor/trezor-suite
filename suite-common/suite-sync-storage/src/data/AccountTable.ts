@@ -3,10 +3,10 @@ import { AccountDescriptor } from '@suite-common/wallet-types';
 
 import { SuiteSyncTable } from '../SuiteSyncTable';
 
-export type AccountLabel = {
+export type Account = {
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
     label: string | null;
 };
 
-export type AccountLabelsTable = SuiteSyncTable<AccountLabel>;
+export type AccountTable = SuiteSyncTable<Account>;
