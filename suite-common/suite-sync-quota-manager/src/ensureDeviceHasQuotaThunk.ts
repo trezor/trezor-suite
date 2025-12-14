@@ -13,27 +13,28 @@ import { quotaManagerDeviceFetched, quotaManagerFetchError } from './quotaManage
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByPublicKey } from './storage/checkStorage';
 import { registerStorageThunk } from './storage/registerStorageThunk';
+import { prepareBufferEvoluSignRegistrationRequest } from './util/prepareBufferEvoluSignRegistrationRequest';
 
 const EVOLU_SIGN_REGISTRATION_REQUEST_HEADER = 'EvoluSignRegistrationRequest';
 
-type RegisterStorageIfNeededThunkParams = {
+type EnsureDeviceHasQuotaParams = {
     device: TrezorDeviceWithState;
     delegatedKey: DelegatedIdentityKey;
 };
 
 export const ensureDeviceHasQuotaThunk =
-    ({ device, delegatedKey }: RegisterStorageIfNeededThunkParams) =>
+    ({ device, delegatedKey }: EnsureDeviceHasQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
-        if (device === undefined) return;
-
         const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
 
         if (!isQuotaManagerEnabled) return;
 
+        const delegatedKeyPublic = getPublicIdentityKeyFromDelegatedKey(delegatedKey);
+
         const hasPublicKeyStorage = await checkStorageByPublicKey({
             baseUrl: quotaManagerBaseUrl,
-            publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
+            publicKey: delegatedKeyPublic,
         });
 
         // already registered, don't need to register again
@@ -41,7 +42,7 @@ export const ensureDeviceHasQuotaThunk =
             dispatch(
                 quotaManagerDeviceFetched({
                     deviceId: device.id,
-                    publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
+                    publicKey: delegatedKeyPublic,
                     totalStorageSize: hasPublicKeyStorage.payload.totalSpace,
                     unspentStorageSize: hasPublicKeyStorage.payload.unspentSpace,
                 }),
@@ -76,37 +77,37 @@ export const ensureDeviceHasQuotaThunk =
             return;
         }
 
-        if (sessionChallenge) {
-            const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
-                delegatedKey,
-                header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
+        const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
+            delegatedKey,
+            header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
+            buffer: prepareBufferEvoluSignRegistrationRequest({
                 challenge: sessionChallenge.payload.challenge,
                 size: DEFAULT_WALLET_SIZE_QUOTA,
-            });
+            }),
+        });
 
-            if (!proofOfDelegatedIdentity.success) return;
+        if (!proofOfDelegatedIdentity.success) return;
 
-            const registrationRequestResult = await TrezorConnect.evoluSignRegistrationRequest({
-                challenge_from_server: sessionChallenge.payload.challenge,
-                size_to_acquire: DEFAULT_WALLET_SIZE_QUOTA,
-                proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
-            });
+        const registrationRequestResult = await TrezorConnect.evoluSignRegistrationRequest({
+            challenge_from_server: sessionChallenge.payload.challenge,
+            size_to_acquire: DEFAULT_WALLET_SIZE_QUOTA,
+            proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
+        });
 
-            if (registrationRequestResult.success) {
-                dispatch(
-                    registerStorageThunk({
-                        size: DEFAULT_WALLET_SIZE_QUOTA,
-                        certificateChain: {
-                            deviceCert: registrationRequestResult.payload.certificate_chain[0],
-                            caCert: registrationRequestResult.payload.certificate_chain[1],
-                        },
-                        challenge: sessionChallenge.payload.challenge,
-                        proof: registrationRequestResult.payload.signature,
-                        sessionId: sessionChallenge.payload.sessionId,
-                        deviceModel: device.features.internal_model,
-                        publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
-                    }),
-                );
-            }
+        if (registrationRequestResult.success) {
+            dispatch(
+                registerStorageThunk({
+                    size: DEFAULT_WALLET_SIZE_QUOTA,
+                    certificateChain: {
+                        deviceCert: registrationRequestResult.payload.certificate_chain[0],
+                        caCert: registrationRequestResult.payload.certificate_chain[1],
+                    },
+                    challenge: sessionChallenge.payload.challenge,
+                    proof: registrationRequestResult.payload.signature,
+                    sessionId: sessionChallenge.payload.sessionId,
+                    deviceModel: device.features.internal_model,
+                    publicKey: delegatedKeyPublic,
+                }),
+            );
         }
     };

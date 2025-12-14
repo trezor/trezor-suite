@@ -14,8 +14,7 @@ export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFai
 export type GetProofOfDelegatedIdentityParams = {
     delegatedKey: DelegatedIdentityKey;
     header: string;
-    challenge?: string;
-    size?: number;
+    buffer?: Buffer;
 };
 
 type GetProofOfDelegatedIdentityResult = Result<
@@ -26,22 +25,12 @@ type GetProofOfDelegatedIdentityResult = Result<
 export const getProofOfDelegatedIdentity = ({
     delegatedKey,
     header,
-    size,
-    challenge,
+    buffer,
 }: GetProofOfDelegatedIdentityParams): GetProofOfDelegatedIdentityResult => {
     const prefixedMessageInBuffer = Buffer.concat([
         bufferUtils.getChunkSize(header.length),
         Buffer.from(header),
-
-        challenge
-            ? bufferUtils.getChunkSize(Buffer.from(challenge, 'hex').byteLength)
-            : Buffer.from([]),
-        challenge ? Buffer.from(challenge, 'hex') : Buffer.from([]),
-
-        size
-            ? bufferUtils.getChunkSize(Buffer.allocUnsafe(4).writeUInt32BE(size, 0))
-            : Buffer.from([]),
-        size ? Buffer.from(Uint32Array.of(size).buffer) : Buffer.from([]),
+        buffer ?? Buffer.from([]),
     ]);
 
     try {
