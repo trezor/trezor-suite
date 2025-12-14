@@ -165,7 +165,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'bitcoin' as CryptoId,
             contractAddress: undefined,
-            descriptor: 'bbb',
+            descriptor: asAccountDescriptor('bbb'),
         },
         result: {
             address: '',
@@ -177,7 +177,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'ethereum' as CryptoId,
             contractAddress: undefined,
-            descriptor: 'eee',
+            descriptor: asAccountDescriptor('eee'),
         },
         result: {
             address: '',
@@ -189,7 +189,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'ethereum--0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' as CryptoId,
             contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-            descriptor: 'aaa',
+            descriptor: asAccountDescriptor('aaa'),
         },
         result: {
             address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -201,7 +201,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'solana' as CryptoId,
             contractAddress: undefined,
-            descriptor: 'sss',
+            descriptor: asAccountDescriptor('sss'),
         },
         result: {
             address: 'sss',
@@ -213,7 +213,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'solana' as CryptoId,
             contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-            descriptor: 'ddd',
+            descriptor: asAccountDescriptor('ddd'),
         },
         result: {
             address: '',
@@ -225,7 +225,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
             ...accountOptionPlaceholder,
             value: 'cardano' as CryptoId,
             contractAddress: undefined,
-            descriptor: 'ccc',
+            descriptor: asAccountDescriptor('ccc'),
         },
         result: {
             address: '',

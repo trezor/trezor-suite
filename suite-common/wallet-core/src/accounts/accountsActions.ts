@@ -4,6 +4,7 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     Account,
     AccountBackendSpecific,
+    AccountBase,
     AccountFailureSpecific,
     SelectedAccountStatus,
     asAccountDescriptor,
@@ -155,13 +156,23 @@ const updateAccountRefreshTimestamp = createAction(
     }),
 );
 
-const renameAccount = createAction(
-    `${ACCOUNTS_MODULE_PREFIX}/renameAccount`,
-    (accountKey: string, accountLabel: string) => ({
-        payload: {
-            accountKey,
-            accountLabel,
-        },
+const updatePartialAccount = createAction(
+    `${ACCOUNTS_MODULE_PREFIX}/updatePartialAccount`,
+    (accountKey: string, account: Partial<AccountBase>) => ({
+        payload: { accountKey, account },
+    }),
+);
+
+type UpdateAddressLabelActionParams = {
+    accountKey: string;
+    address: string;
+    label: string | null;
+};
+
+const updateAddressLabel = createAction(
+    `${ACCOUNTS_MODULE_PREFIX}/updateAddressLabel`,
+    ({ accountKey, address, label }: UpdateAddressLabelActionParams) => ({
+        payload: { accountKey, address, label },
     }),
 );
 
@@ -204,7 +215,8 @@ export const accountsActions = {
     createAccountFromAccountInfo,
     updateAccount,
     updateAccountRefreshTimestamp,
-    renameAccount,
+    updatePartialAccount,
+    updateAddressLabel,
     updateSelectedAccount,
     changeAccountVisibility,
     startCoinjoinAccountSync,

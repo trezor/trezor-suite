@@ -3,10 +3,8 @@ import { useEffect, useMemo, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
@@ -37,20 +35,11 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
-    const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
-
-    const suiteSyncAccountLabel = useSelector(state =>
-        selectAccountLabel({
-            state,
-            walletDescriptor,
-            accountKey: selectedAccount.key,
-        }),
-    );
 
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =
         selectedAccount;
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
-    const label = suiteSyncAccountLabel ?? selectedAccountLabels.accountLabel;
+    const label = selectedAccount.accountLabel ?? selectedAccountLabels.accountLabel;
     const defaultLabel = getDefaultAccountLabel({
         accountType,
         symbol,

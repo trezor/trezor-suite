@@ -66,11 +66,32 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 const { account } = payload;
                 delete state.transactions[account.key];
             })
+            .addCase(transactionsActions.setOutputLabel, (state, { payload }) => {
+                const { txid, outputIndex, accountKey, label } = payload;
+
+                const accountTxs = initializeAccount(state, accountKey);
+                const txIndex = accountTxs.findIndex(t => t && t.txid === txid);
+
+                if (accountTxs[txIndex]) {
+                    const targetIndex = accountTxs[txIndex].targets.findIndex(
+                        target => target.n === outputIndex,
+                    );
+                    if (accountTxs[txIndex].targets[targetIndex]) {
+                        accountTxs[txIndex].targets[targetIndex].label = label ?? undefined;
+                    }
+                }
+            })
             .addCase(transactionsActions.replaceTransaction, (state, { payload }) => {
-                const { key, txid, tx } = payload;
+                const {
+                    key,
+                    txid, // Original transactionId to be replaced
+                    tx, // Transaction that replaces the original one
+                } = payload;
+
                 const accountTxs = initializeAccount(state, key);
-                const index = accountTxs.findIndex(t => t && t.txid === txid);
-                if (accountTxs[index]) accountTxs[index] = tx;
+                const originalTxIndex = accountTxs.findIndex(t => t && t.txid === txid);
+
+                if (accountTxs[originalTxIndex]) accountTxs[originalTxIndex] = tx;
             })
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
@@ -122,7 +143,10 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                             (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                            accountTxs[existingTxIndex] = { ...transaction };
+                            accountTxs[existingTxIndex] = {
+                                ...transaction,
+                                targets: existingTx.targets, // Targets shall NEVER change, and we want to keep Metadata (labels)
+                            };
                         }
                     }
                 });

@@ -11,11 +11,7 @@ import {
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    CombinedLabelingState,
-    selectAccountLabel,
-    selectIsLabelingEnabled,
-} from '@suite-native/labeling';
+import { selectIsLabelingEnabled } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
 
 type AccountRenameFormProps = {
@@ -33,11 +29,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const inputRef = useRef<InputType>(null);
 
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
-
-    const form = useAccountLabelForm(accountLabel ?? undefined);
+    const form = useAccountLabelForm(account?.accountLabel ?? undefined);
     const {
         handleSubmit,
         formState: { isValid },
@@ -58,14 +50,22 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     if (!account) return null;
 
     const handleRenameAccount = handleSubmit((formValues: AccountFormValues) => {
-        dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
-        if (isLabelingEnabled && account.deviceState) {
-            suiteSync.labeling.updateAccountLabel({
-                deviceStaticSessionId: account.deviceState,
-                accountKey,
-                label: formValues.accountLabel,
-            });
+        if (isLabelingEnabled) {
+            if (account.deviceState) {
+                suiteSync.labeling.updateAccountLabel({
+                    deviceStaticSessionId: account.deviceState,
+                    accountKey,
+                    label: formValues.accountLabel,
+                });
+            }
+        } else {
+            dispatch(
+                accountsActions.updatePartialAccount(accountKey, {
+                    accountLabel: formValues.accountLabel,
+                }),
+            );
         }
+
         onSubmit();
     });
 

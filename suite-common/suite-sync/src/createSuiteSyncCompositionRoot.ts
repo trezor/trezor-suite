@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { SuiteSync, SuiteSyncListenerDep } from '@suite-common/suite-sync-types';
 import {
     selectAllDeviceStaticIds,
     selectDeviceByStaticSessionId,
@@ -14,12 +14,12 @@ import { StaticSessionId } from '@trezor/connect';
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { createUpdateAccountLabel } from './data/createUpdateAccountLabel';
+import { createUpdateAddressLabel } from './data/createUpdateAddressLabel';
+import { createUpdateOutputLabel } from './data/createUpdateOutputLabel';
+import { createUpdateWalletLabel } from './data/createUpdateWalletLabel';
+import { createSubscribeSuiteSyncData } from './data/subscribeSuiteSyncData';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
-import { createUpdateAccountLabel } from './labeling/createUpdateAccountLabel';
-import { createUpdateAddressLabel } from './labeling/createUpdateAddressLabel';
-import { createUpdateOutputLabel } from './labeling/createUpdateOutputLabel';
-import { createUpdateWalletLabel } from './labeling/createUpdateWalletLabel';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
@@ -43,7 +43,8 @@ type CreateSuiteSyncCompositionRootDeps = {
 } & EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
-    PlatformEncryptionDep;
+    PlatformEncryptionDep &
+    SuiteSyncListenerDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -92,17 +93,17 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    const subscribeLabeling = createSubscribeLabeling({
+    const subscribeSuiteSyncData = createSubscribeSuiteSyncData({
         subscriptionStorage,
-        dispatch: deps.dispatch,
         ensureStorage,
+        suiteSyncListener: deps.suiteSyncListener,
     });
 
     const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeLabeling,
+        subscribeSuiteSyncData,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({

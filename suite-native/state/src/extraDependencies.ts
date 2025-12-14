@@ -6,6 +6,7 @@ import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-ide
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
@@ -53,6 +54,16 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         trezorConnect: TrezorConnect,
     });
 
+    const suiteSyncListener: SuiteSyncListener = {
+        onEntityChange: {
+            wallets: () => {},
+            accounts: () => {},
+            outputs: () => {},
+            addresses: () => {},
+        },
+        onUnsubscribe: () => {},
+    };
+
     return {
         suiteSync: createSuiteSyncNativeCompositionRoot({
             dispatch: deps.dispatch,
@@ -60,6 +71,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
             platformEncryption,
             trezorConnect: TrezorConnect,
             ensureDelegatedIdentityKey,
+            suiteSyncListener,
         }),
         platformEncryption,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),

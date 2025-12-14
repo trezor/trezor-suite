@@ -1,16 +1,12 @@
 import styled from 'styled-components';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { StaticSessionId } from '@trezor/connect';
 import { ArrayElement } from '@trezor/type-utils';
 
 import { AddressLabeling } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
-
-import { useSelector } from '../../../../hooks/suite';
 
 const TruncatedSpan = styled.span<{ $isBlurred?: boolean }>`
     overflow: hidden;
@@ -23,7 +19,6 @@ interface TargetAddressLabelProps {
     target: ArrayElement<WalletAccountTransaction['targets']>;
     type: WalletAccountTransaction['type'];
     accountMetadata?: AccountLabels;
-    deviceStaticSessionId: StaticSessionId;
 }
 
 export const TargetAddressLabel = ({
@@ -31,13 +26,8 @@ export const TargetAddressLabel = ({
     target,
     type,
     accountMetadata,
-    deviceStaticSessionId,
 }: TargetAddressLabelProps) => {
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
-
-    const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId }),
-    );
 
     if (isLocalTarget) {
         return (
@@ -50,9 +40,7 @@ export const TargetAddressLabel = ({
     return (
         <TruncatedSpan data-testid="@wallet/transaction/target-address">
             {target.addresses?.map((a, i) => {
-                const addressLabel =
-                    suiteSyncAddressLabels.find(it => it.address === a)?.label ??
-                    accountMetadata?.addressLabels[a];
+                const addressLabel = target.label ?? accountMetadata?.addressLabels[a];
 
                 // either it may be AddressLabeling - sent to another account associated with this device, e.g: "Bitcoin #2"
                 // or it may show address metadata label added from receive tab e.g "My address for illegal things"

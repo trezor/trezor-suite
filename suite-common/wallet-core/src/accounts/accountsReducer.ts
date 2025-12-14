@@ -86,10 +86,33 @@ export const prepareAccountsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.updateAccountRefreshTimestamp, (state, action) => {
                 update(state, action.payload);
             })
-            .addCase(accountsActions.renameAccount, (state, action) => {
-                const { accountKey, accountLabel } = action.payload;
-                const accountByAccountKey = state.find(account => account.key === accountKey);
-                if (accountByAccountKey) accountByAccountKey.accountLabel = accountLabel;
+            .addCase(accountsActions.updatePartialAccount, (state, action) => {
+                const { accountKey, account } = action.payload;
+                const index = state.findIndex(it => it.key === accountKey);
+
+                if (index !== -1) {
+                    state[index] = { ...state[index], ...account };
+                }
+            })
+            .addCase(accountsActions.updateAddressLabel, (state, action) => {
+                const { accountKey, address, label } = action.payload;
+                const index = state.findIndex(it => it.key === accountKey);
+
+                if (index !== -1) {
+                    if (state[index].addressExtra === undefined) {
+                        state[index].addressExtra = [];
+                    }
+
+                    const addressIndex = state[index].addressExtra.findIndex(
+                        it => it.address === address,
+                    );
+
+                    if (addressIndex !== -1) {
+                        state[index].addressExtra[addressIndex].label = label;
+                    } else {
+                        state[index].addressExtra.push({ address, label });
+                    }
+                }
             })
             .addCase(accountsActions.changeAccountVisibility, (state, action) => {
                 update(state, action.payload);

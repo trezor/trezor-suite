@@ -13,6 +13,7 @@ import {
     LocationPushState,
     To,
 } from '@suite-common/redux-utils';
+import { SuiteSyncListener } from '@suite-common/suite-sync-types';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -26,6 +27,9 @@ import {
     SendState,
     TransactionsState,
     WalletSettingsState,
+    accountsActions,
+    deviceActions,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
@@ -89,6 +93,60 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices =>
         trezorConnect: TrezorConnect,
     });
 
+    const suiteSyncListener: SuiteSyncListener = {
+        onEntityChange: {
+            wallets: (deviceStaticId, entity) => {
+                deps.dispatch(deviceActions.setLabel({ deviceStaticId, label: entity.label }));
+            },
+            accounts: (deviceStaticSessionId, entity) => {
+                const accountKey = getAccountKey(
+                    entity.accountDescriptor,
+                    entity.networkSymbol,
+                    deviceStaticSessionId,
+                );
+
+                deps.dispatch(
+                    accountsActions.updatePartialAccount(accountKey, {
+                        accountLabel: entity.label ?? undefined,
+                        isHidden: entity.isHidden,
+                    }),
+                );
+            },
+            addresses: (deviceStaticSessionId, entity) => {
+                const accountKey = getAccountKey(
+                    entity.accountDescriptor,
+                    entity.networkSymbol,
+                    deviceStaticSessionId,
+                );
+
+                deps.dispatch(
+                    accountsActions.updateAddressLabel({
+                        accountKey,
+                        address: entity.address,
+                        label: entity.label,
+                    }),
+                );
+            },
+            outputs: (deviceStaticSessionId, entity) => {
+                const accountKey = getAccountKey(
+                    entity.accountDescriptor,
+                    entity.networkSymbol,
+                    deviceStaticSessionId,
+                );
+
+                deps.dispatch(
+                    transactionsActions.setOutputLabel({
+                        accountKey,
+                        txid: entity.txId,
+                        outputIndex: entity.outputIndex,
+                        label: entity.label,
+                    }),
+                );
+            },
+        },
+        onUnsubscribe: () => {}, // Todo: !!!
+    };
+
     return {
         suiteSync: createSuiteSyncDesktopCompositionRoot({
             dispatch: deps.dispatch,
@@ -96,6 +154,7 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices =>
             platformEncryption,
             trezorConnect: TrezorConnect,
             ensureDelegatedIdentityKey,
+            suiteSyncListener,
         }),
         platformEncryption,
     };

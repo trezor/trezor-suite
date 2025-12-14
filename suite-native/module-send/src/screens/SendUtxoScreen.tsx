@@ -123,7 +123,6 @@ export const SendUtxoScreen = ({
 
                 {filteredUtxos.length > 0 ? (
                     <UtxoList
-                        deviceStaticSessionId={account.deviceState}
                         utxos={filteredUtxos}
                         selectedUtxos={tempSelectedUtxos}
                         onUtxoToggle={handleUtxoSelect}

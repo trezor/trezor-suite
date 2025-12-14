@@ -11,7 +11,6 @@ import {
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -65,9 +64,6 @@ export const AccountSettingsScreen = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, accountKey),
     );
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
 
     if (!account) return null;
 
@@ -75,7 +71,7 @@ export const AccountSettingsScreen = ({
         <Screen
             header={
                 <ScreenHeader
-                    title={accountLabel ?? ''}
+                    title={account.accountLabel ?? ''}
                     rightIcon={<AccountRenameButton accountKey={accountKey} />}
                 />
             }

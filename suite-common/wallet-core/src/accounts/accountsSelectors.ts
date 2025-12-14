@@ -318,3 +318,11 @@ export const selectAddressByNetworkAndPath = createMemoizedSelector(
         return undefined;
     },
 );
+
+export const selectAccountAddressLabel = createMemoizedSelector(
+    [
+        (state: AccountsRootState, accountKey: AccountKey) => selectAccountByKey(state, accountKey),
+        (_state: AccountsRootState, _accountKey: AccountKey, address: string) => address,
+    ],
+    (account, address) => account?.addressExtra?.find(it => it.address === address)?.label ?? null,
+);

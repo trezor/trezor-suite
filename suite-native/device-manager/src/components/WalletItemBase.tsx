@@ -102,6 +102,10 @@ export const WalletItemBase = ({
         />
     );
 
+    if (device?.state?.staticSessionId === undefined) {
+        return;
+    }
+
     return (
         <Pressable onPress={onPress}>
             <HStack style={applyStyle(walletItemBaseStyle, { isSelected, isSelectable })}>

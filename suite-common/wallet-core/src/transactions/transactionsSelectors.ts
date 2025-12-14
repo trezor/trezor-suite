@@ -42,6 +42,7 @@ export const selectAreAllTransactionsLoaded = (
 ) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.areAllTransactionsLoaded;
 
 const EMPTY_STABLE_TRANSACTIONS: WalletAccountTransaction[] = [];
+
 /**
  * The list is not sorted here because it may contain null values as placeholders
  * for transactions that have not been fetched yet. (This affects pagination.)

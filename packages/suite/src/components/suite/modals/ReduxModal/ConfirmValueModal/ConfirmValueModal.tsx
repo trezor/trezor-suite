@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -71,7 +70,7 @@ export const ConfirmValueModal = ({
     const isDeviceLocked = isLocked();
     const modalContext = useSelector(state => state.modal.context);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const { addressLabels: addressLabelsOld } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
@@ -84,12 +83,6 @@ export const ConfirmValueModal = ({
         isDeviceLocked &&
         !isSuiteSyncEnabled &&
         (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
-
-    const suiteSyncAddressLabels = useSelector(state =>
-        account
-            ? selectAddressLabels({ state, deviceStaticSessionId: account.deviceState })
-            : undefined,
-    );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);
 
@@ -122,7 +115,7 @@ export const ConfirmValueModal = ({
     }, [canConfirmOnDevice, dispatch, isConfirmed, modalContext, validateOnDevice]);
 
     const addressLabel =
-        suiteSyncAddressLabels?.find(it => it.address === value)?.label ?? addressLabels[value];
+        account?.addressExtra?.find(it => it.address === value)?.label ?? addressLabelsOld[value];
 
     return (
         <Modal.Backdrop onClick={onCancel}>

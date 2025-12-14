@@ -1,6 +1,5 @@
 import { MouseEventHandler, ReactNode } from 'react';
 
-import { selectAddressLabels, selectOutputLabels } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
@@ -77,12 +76,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     // selecting metadata from store rather than send form context which does not update on metadata change
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
-    const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
-    );
-    const suiteSyncOutputLabels = useSelector(state =>
-        selectOutputLabels(state, account.deviceState),
-    );
+
     const { translationString } = useTranslation();
 
     const dispatch = useDispatch();
@@ -118,12 +112,12 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     };
 
     const addressLabel =
-        suiteSyncAddressLabels.find(it => it.address === utxo.address)?.label ??
+        account.addressExtra?.find(it => it.address === utxo.address)?.label ??
         addressLabels[utxo.address];
 
     const outputLabel =
-        suiteSyncOutputLabels.find(it => it.txId === utxo.txid && it.outputIndex == utxo.vout)
-            ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
+        transaction?.targets.find(it => it.n === utxo.vout)?.label ??
+        outputLabels?.[utxo.txid]?.[utxo.vout];
 
     return (
         <GhostContainer

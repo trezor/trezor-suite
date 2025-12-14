@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { AccountDescriptor } from '@suite-common/wallet-types';
+import { getAccountKey } from '@suite-common/wallet-utils';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -26,13 +27,9 @@ export const AddressLabelEditable = ({
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const { suiteSync } = useNativeServices();
 
-    const label = useSelector((state: WithLabelingState) =>
-        selectAddressLabel({
-            state,
-            address,
-            deviceStaticSessionId,
-        }),
-    );
+    const accountKey = getAccountKey(accountDescriptor, networkSymbol, deviceStaticSessionId);
+
+    const label = useSelector((state: AccountsRootState) => selectAccountLabel(state, accountKey));
 
     const onSubmit = (newLabel: string) => {
         suiteSync.labeling.updateAddressLabel({

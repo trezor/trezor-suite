@@ -93,6 +93,8 @@ type UpdateRbfLabelsThunkParams = {
 const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
     ({ labelsToBeEdited, precomposedTransaction, txid }, { dispatch }) => {
+        // Todo: delete with Legacy Labeling, this logic shall be in the `replaceTransactionThunk`,
+        //       so it is share to Native as well. See: https://github.com/trezor/trezor-suite/issues/23997
         dispatch(
             moveLabelsForRbfThunk({
                 toBeMovedOrDeletedList: labelsToBeEdited,

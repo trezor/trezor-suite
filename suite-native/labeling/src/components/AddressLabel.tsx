@@ -1,27 +1,23 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
+import { AccountsRootState, selectAccountAddressLabel } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
-import type { StaticSessionId } from '@trezor/connect';
 
 import { selectIsLabelingEnabled } from '../selectors';
 
 type AddressLabelEProps = {
     address: string;
-    deviceStaticSessionId: StaticSessionId;
+    accountKey: AccountKey;
     fallback: ReactNode;
 };
 
-export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: AddressLabelEProps) => {
+export const AddressLabel = ({ address, accountKey, fallback }: AddressLabelEProps) => {
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
-    const label = useSelector((state: WithLabelingState) =>
-        selectAddressLabel({
-            state,
-            address,
-            deviceStaticSessionId,
-        }),
+    const label = useSelector((state: AccountsRootState) =>
+        selectAccountAddressLabel(state, accountKey, address),
     );
 
     if (!isLabelingEnabled || label === null) {

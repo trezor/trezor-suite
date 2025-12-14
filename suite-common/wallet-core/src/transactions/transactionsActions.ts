@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 import { AccountTransaction } from '@trezor/connect';
 
@@ -13,7 +13,11 @@ const resetTransaction = createAction(
 
 const replaceTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransaction`,
-    (payload: { key: string; txid: string; tx: WalletAccountTransaction }) => ({ payload }),
+    (payload: {
+        key: string;
+        txid: string; // Original transactionId to be replaced
+        tx: WalletAccountTransaction; // Transaction that replaces the original one
+    }) => ({ payload }),
 );
 
 const removeTransaction = createAction(
@@ -54,9 +58,24 @@ const addTransaction = createAction(
     }),
 );
 
+type SetOutputLabelActionParams = {
+    accountKey: AccountKey;
+    txid: string;
+    outputIndex: number;
+    label: string | null;
+};
+
+const setOutputLabel = createAction(
+    `${TRANSACTIONS_MODULE_PREFIX}/setOutputLabel`,
+    ({ accountKey, txid, outputIndex, label }: SetOutputLabelActionParams) => ({
+        payload: { accountKey, txid, outputIndex, label },
+    }),
+);
+
 export const transactionsActions = {
     addTransaction,
     replaceTransaction,
     removeTransaction,
     resetTransaction,
+    setOutputLabel,
 } as const;

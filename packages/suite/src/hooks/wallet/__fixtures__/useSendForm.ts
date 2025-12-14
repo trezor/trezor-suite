@@ -1,6 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { LabelingState, SuiteSyncState } from '@suite-common/suite-sync';
+import { SuiteSyncState } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
@@ -410,12 +410,6 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
         ),
         router: createReducer({}, () => ({})),
         modal: createReducer({}, () => ({})),
-        labeling: createReducer(
-            {
-                walletsLabels: {},
-            } satisfies LabelingState,
-            state => state,
-        ),
         suiteSync: createReducer(
             {
                 settings: {

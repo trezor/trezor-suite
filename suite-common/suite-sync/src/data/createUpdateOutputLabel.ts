@@ -1,27 +1,29 @@
-import { UpdateAddressLabel } from '@suite-common/suite-sync-types';
+import { UpdateOutputLabel } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
 import { EnsureStorageDep } from '../storage/createEnsureStorage';
 
-export type UpdateAddressLabelDeps = EnsureStorageDep;
+export type UpdateOutputLabelDeps = EnsureStorageDep;
 
-export const createUpdateAddressLabel =
-    (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>
+export const createUpdateOutputLabel =
+    (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>
     async ({
-        deviceStaticSessionId,
-        address,
+        outputIndex,
         label,
         accountDescriptor,
+        txId,
         networkSymbol,
-    }): ReturnType<UpdateAddressLabel> => {
+        deviceStaticSessionId,
+    }) => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
         if (!storageResult.ok) {
             return storageResult;
         }
 
-        storageResult.value.addressLabels.update({
-            address,
+        storageResult.value.data.outputs.update({
+            txId,
+            outputIndex,
             label,
             accountDescriptor,
             networkSymbol,

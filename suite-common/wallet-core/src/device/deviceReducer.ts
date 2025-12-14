@@ -710,6 +710,14 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     data.delegatedIdentityKey = delegatedKey;
                 },
             )
+            .addCase(deviceActions.setLabel, (state, { payload: { deviceStaticId, label } }) => {
+                const index = state.devices.findIndex(
+                    d => d.features && d.state && d.state.staticSessionId === deviceStaticId,
+                );
+
+                if (!state.devices[index]) return;
+                state.devices[index].walletLabel = label ?? undefined;
+            })
             .addCase(
                 deviceActions.setSuiteSyncOwner,
                 (state, { payload: { deviceStaticId, owner } }) => {

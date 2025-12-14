@@ -1,10 +1,8 @@
-import { findAccountLabel, selectAccountLabels } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
+import { accountSearchFn } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -38,7 +36,6 @@ type AccountsProps = {
     // NOTE: this is to disable completely default click behavior of the item
     forceOnlyItemClick?: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
-    deviceStaticSessionId: StaticSessionId;
 };
 
 const Accounts = ({
@@ -49,16 +46,11 @@ const Accounts = ({
     discoveryInProgress,
     type,
     onItemClick,
-    deviceStaticSessionId,
 }: AccountsProps) => {
     const accountLabels = useSelector(selectAccountLabelsOld);
 
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
     const params = useSelector(selectRouterParams) as RouteParams;
-
-    const suiteSyncAccountLabels = useSelector(state =>
-        selectAccountLabels({ state, deviceStaticSessionId }),
-    );
 
     return (
         <>
@@ -71,14 +63,7 @@ const Accounts = ({
 
                 const selected = !!isSelected(account);
 
-                const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
-
-                const label =
-                    findAccountLabel({
-                        accountLabels: suiteSyncAccountLabels,
-                        accountDescriptor,
-                        networkSymbol,
-                    })?.label ?? accountLabels[account.key];
+                const label = account.accountLabel ?? accountLabels[account.key];
 
                 return (
                     <AccountSection
@@ -111,12 +96,6 @@ export const AccountsList = ({
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
 
-    const suiteSyncAccountLabels = useSelector(state =>
-        device?.state?.staticSessionId !== undefined
-            ? selectAccountLabels({ state, deviceStaticSessionId: device?.state?.staticSessionId })
-            : [],
-    );
-
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { isSidebarCollapsed } = useResponsiveContext();
     const { coinFilter, searchString } = useAccountSearch();
@@ -135,14 +114,7 @@ export const AccountsList = ({
                       ? accountLabels[key]
                       : getDefaultAccountLabel({ accountType, symbol, index });
 
-                  const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
-
-                  const accountLabel =
-                      findAccountLabel({
-                          accountLabels: suiteSyncAccountLabels,
-                          accountDescriptor,
-                          networkSymbol,
-                      })?.label ?? accountLabelOld;
+                  const accountLabel = account.accountLabel ?? accountLabelOld;
 
                   return accountSearchFn(account, searchString, coinFilter, accountLabel);
               })
@@ -179,11 +151,6 @@ export const AccountsList = ({
             return;
         }
 
-        const deviceStaticSessionId = device.state?.staticSessionId;
-        if (deviceStaticSessionId === undefined) {
-            return;
-        }
-
         const accountProps: AccountsProps = {
             forceOnlyItemClick,
             accounts,
@@ -191,7 +158,6 @@ export const AccountsList = ({
             coinjoinIsPreloading,
             discoveryInProgress: false,
             type,
-            deviceStaticSessionId,
         };
 
         return (

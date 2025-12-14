@@ -142,6 +142,8 @@ export const selectSelectedProviderForPasswords = (state: { metadata: MetadataSt
 
 /**
  * Select metadata of type 'labels' for currently selected account
+ *
+ * @deprecated Legacy Labeling
  */
 export const selectLabelingDataForSelectedAccount = (state: {
     metadata: MetadataState;

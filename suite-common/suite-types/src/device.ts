@@ -87,15 +87,20 @@ export interface ExtendedDevice {
     ts: number;
     firstConnectedTimestamp: number;
     buttonRequests: ButtonRequest[];
-    metadata: DeviceMetadata;
-    suiteSyncOwner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
     walletNumber?: number; // number of passphrase wallet intended to be used in UI
-    passwords: DeviceMetadata;
     reconnectRequested?: boolean; // currently only after wipeDevice
 
     // note: store the state using the new object format, not the state string
     // this can be removed once the state string is removed from Connect
     state?: DeviceState;
+
+    suiteSyncOwner: EncryptedHex<SuiteSyncOwnerSerialized> | null;
+    walletLabel?: string;
+
+    /** @deprecated Legacy Labeling, use SuiteSync */
+    metadata: DeviceMetadata;
+    /** @deprecated Legacy Labeling, use SuiteSync */
+    passwords: DeviceMetadata;
 }
 
 export type AcquiredDevice = Omit<KnownDevice, 'state' | '_state'> & ExtendedDevice;

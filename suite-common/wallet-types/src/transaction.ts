@@ -1,6 +1,6 @@
 import { TranslationKey } from '@suite-common/intl-types';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { BaseCurrencyCode, Target } from '@trezor/blockchain-link-types';
 import {
     AccountAddress,
     AccountTransaction,
@@ -238,6 +238,12 @@ export interface WalletAccountTransaction extends AccountTransaction {
      * prepending txs have deadline (blockHeight) when they should be removed from UI
      */
     deadline?: number;
+
+    /**
+     * This extension of Blockchain-Link Target is ok as Transaction will NEVER
+     * change its targets (transaction with different targets is a NEW transaction).
+     */
+    targets: Array<Target & { label?: string }>;
 }
 
 export type WalletAccountTransactionWithRequiredRbfParams = RequiredKey<

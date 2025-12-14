@@ -1,6 +1,3 @@
-import { useSelector } from 'react-redux';
-
-import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import { AccountAddress } from '@suite-native/trading-atoms';
 import { ReceiveAccount } from '@suite-native/trading-types';
@@ -23,19 +20,13 @@ export const AccountListAddressItem = ({
     onPress,
 }: AccountListAddressItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const { address } = receiveAccount;
-
-    const addressLabel = useSelector((state: WithLabelingState) =>
-        selectAddressLabel({
-            state,
-            address: address?.address,
-            deviceStaticSessionId: receiveAccount.account.deviceState,
-        }),
-    );
+    const { address, account } = receiveAccount;
 
     if (!address) {
         return null;
     }
+
+    const addressLabel = account.addressExtra?.find(it => it.address === address?.address)?.label;
 
     return (
         <AccountListBaseItem

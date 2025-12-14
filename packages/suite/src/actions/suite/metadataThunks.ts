@@ -1,17 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    selectAccountLabel,
-    selectIsSuiteSyncEnabled,
-    suiteSyncToBip329,
-} from '@suite-common/suite-sync';
-import {
-    selectAddressLabelsByAccount,
-    selectOutputLabelsByAccount,
-} from '@suite-common/suite-sync/src/labeling/labelingSelectors';
+import { selectIsSuiteSyncEnabled, suiteSyncToBip329 } from '@suite-common/suite-sync';
+import { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { sanitizeFilename } from '@trezor/utils';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
@@ -170,32 +162,14 @@ export const exportMetadataToBip329File = createThunk<
                 return;
             }
 
-            const { walletDescriptor } = parseDeviceStaticSessionId(
-                selectedAccount.account.deviceState,
-            );
-
-            const suiteSyncAccountLabel = selectAccountLabel({
-                state,
-                walletDescriptor,
-                accountKey: selectedAccount.account.key,
-            });
+            const suiteSyncAccountLabel = selectedAccount.account.accountLabel;
             if (suiteSyncAccountLabel) {
                 finalAccountLabel = suiteSyncAccountLabel;
             }
 
-            const suiteSyncAddressLabels = selectAddressLabelsByAccount({
-                state,
-                deviceStaticSessionId: staticSessionId,
-                accountDescriptor: selectedAccount.account.descriptor,
-                networkSymbol: selectedAccount.account.symbol,
-            });
+            const suiteSyncAddressLabels: SuiteSyncAddress[] = []; // Todo: !!!!!
 
-            const suiteSyncOutputLabels = selectOutputLabelsByAccount({
-                state,
-                deviceStaticSessionId: staticSessionId,
-                accountDescriptor: selectedAccount.account.descriptor,
-                networkSymbol: selectedAccount.account.symbol,
-            });
+            const suiteSyncOutputLabels: SuiteSyncOutput[] = []; // Todo: !!!!!
 
             labelsToExport = suiteSyncToBip329({
                 outputLabels: suiteSyncOutputLabels,

@@ -121,7 +121,7 @@ export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceS
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>;
 export const asAccountDescriptor = (value: string) => value as AccountDescriptor;
 
-export type Account = {
+export type AccountBase = {
     deviceState: StaticSessionId;
     key: AccountKey;
     index: number;
@@ -138,17 +138,37 @@ export type Account = {
     availableBalance: string;
     formattedBalance: string;
     tokens: AccountInfo['tokens'];
+
+    /**
+     * This is Blockbook Data, they may change over time. They even can be removed in case
+     * of blockchain rollback. And they can move from unused to used.
+     *
+     * Thus, we cannot enhance this with metadata.
+     */
     addresses?: AccountInfo['addresses'];
+
+    /**
+     * (Meta)-data for address that are not Blockbook based (and may be synced over Suite-Sync).
+     */
+    addressExtra?: Array<{
+        address: string;
+        label: string | null;
+    }>;
+
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountEntityKeys;
     /**
-     * accountLabel was introduced by mobile app. In early stage of development, it was not possible to connect device and work with
-     * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
+     * This is used for both legacy Native (on device only) Labeling & SuiteSync
+     * We need migration for data here: https://github.com/trezor/trezor-suite/issues/20816
      */
     accountLabel?: string;
+    isHidden?: boolean;
     ts: number;
-} & AccountBackendSpecific &
+};
+
+export type Account = AccountBase &
+    AccountBackendSpecific &
     AccountNetworkSpecific &
     AccountFailureSpecific;
 

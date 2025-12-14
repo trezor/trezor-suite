@@ -1,7 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectOutputLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    TransactionsRootState,
+    selectTransactionByAccountKeyAndTxid,
+} from '@suite-common/wallet-core';
+import { AccountDescriptor, AccountKey } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -13,7 +17,7 @@ type TransactionOutputLabelEditableProps = {
     txId: string;
     outputIndex: number;
     deviceStaticSessionId: StaticSessionId;
-    accountDescriptor: string;
+    accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
 };
 
@@ -27,14 +31,13 @@ export const TransactionOutputLabelEditable = ({
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const { suiteSync } = useNativeServices();
 
-    const label = useSelector((state: WithLabelingState) =>
-        selectOutputLabel({
-            state,
-            txId,
-            outputIndex,
-            deviceStaticSessionId,
-        }),
+    const accountKey: AccountKey = `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
+
+    const transaction = useSelector((state: TransactionsRootState) =>
+        selectTransactionByAccountKeyAndTxid(state, accountKey, txId),
     );
+
+    const label = transaction?.targets.find(it => it.n === outputIndex)?.label ?? '';
 
     if (!isLabelingEnabled) {
         return null;

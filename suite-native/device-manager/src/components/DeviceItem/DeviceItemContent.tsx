@@ -139,10 +139,12 @@ export const DeviceItemContent = React.memo(
                             isConnected={device.isConnected}
                             header={deviceHeader}
                             subHeader={
-                                <WalletLabel
-                                    deviceStaticSessionId={deviceState?.staticSessionId}
-                                    fallbackLabel={fallbackLabel}
-                                />
+                                deviceState?.staticSessionId && (
+                                    <WalletLabel
+                                        deviceStaticSessionId={deviceState.staticSessionId}
+                                        fallbackLabel={fallbackLabel}
+                                    />
+                                )
                             }
                             isDeviceInBootloader={device.isDeviceInBootloaderMode}
                             isPortfolioTrackerDevice={isPortfolioTrackerDevice}

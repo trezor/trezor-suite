@@ -157,6 +157,13 @@ const setSuiteSyncOwner = createAction(
     }),
 );
 
+const setLabel = createAction(
+    `${DEVICE_MODULE_PREFIX}/setLabel`,
+    ({ deviceStaticId, label }: { deviceStaticId: StaticSessionId; label: string | null }) => ({
+        payload: { deviceStaticId, label },
+    }),
+);
+
 type SetDelegatedIdentityKeyParams = {
     deviceId: string;
     delegatedKey: EncryptedHex<DelegatedIdentityKey> | null;
@@ -212,6 +219,7 @@ export const deviceActions = {
     setThpCredentials,
     setDelegatedIdentityKey,
     setSuiteSyncOwner,
+    setLabel,
     setDiscovered,
     devicePushNotification,
     setDeviceAuthenticityResult,

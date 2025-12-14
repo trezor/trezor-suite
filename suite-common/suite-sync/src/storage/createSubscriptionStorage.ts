@@ -1,26 +1,21 @@
-import { StorageId, SubscriptionName, SubscriptionStorage } from '@suite-common/suite-sync-types';
-import { typedObjectValues } from '@trezor/utils';
+import { StorageId, SubscriptionStorage } from '@suite-common/suite-sync-types';
 
 export const createSubscriptionStorage = (): SubscriptionStorage => {
-    const storage: Record<StorageId, Partial<Record<SubscriptionName, () => void>>> = {};
+    const storage: Record<StorageId, () => void> = {};
 
     return {
-        add: ({ unsubscribe, storageId, name }) => {
-            if (storage[storageId] === undefined) {
-                storage[storageId] = {};
-            }
-
+        add: ({ unsubscribe, storageId }) => {
             // Defensive, if subscription already exists, we unsubscribe it
-            const existingUnsubscribe = storage[storageId]?.[name];
+            const existingUnsubscribe = storage[storageId];
 
-            if (existingUnsubscribe !== undefined && existingUnsubscribe !== null) {
+            if (existingUnsubscribe !== undefined) {
                 existingUnsubscribe();
             }
 
-            storage[storageId][name] = unsubscribe;
+            storage[storageId] = unsubscribe;
         },
         disposeAll: storageId => {
-            typedObjectValues(storage[storageId] ?? {}).forEach(callback => callback?.());
+            storage[storageId]?.();
             delete storage[storageId];
         },
     };

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { selectWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -78,11 +77,7 @@ export const WalletInstance = ({
         selectLabelingDataForWallet(state, instance.state),
     );
 
-    const suiteSyncWalletLabel = useSelector(state =>
-        selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
-    );
-
-    const walletLabel = suiteSyncWalletLabel ?? oldWalletLabel;
+    const walletLabel = instance?.walletLabel ?? oldWalletLabel;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 

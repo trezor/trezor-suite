@@ -39,7 +39,6 @@ import {
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { Utxo } from '@trezor/blockchain-link-types';
-import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const accountAddressFormatterStyle = prepareNativeStyle(() => ({
@@ -52,7 +51,6 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export type Props = {
     utxo: Utxo;
-    deviceStaticSessionId: StaticSessionId;
     onToggle: (utxo: Utxo) => void;
     accountKey: AccountKey;
     symbol: NetworkSymbol;
@@ -65,14 +63,7 @@ type TransactionDetailNavigation = StackToStackCompositeNavigationProps<
     TransactionDetailStackParamList
 >;
 
-export const UtxoCard = ({
-    utxo,
-    onToggle,
-    deviceStaticSessionId,
-    accountKey,
-    symbol,
-    isSelected = false,
-}: Props) => {
+export const UtxoCard = ({ utxo, onToggle, accountKey, symbol, isSelected = false }: Props) => {
     const { DateFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<TransactionDetailNavigation>();
@@ -146,7 +137,7 @@ export const UtxoCard = ({
                             <HStack>
                                 <AddressLabel
                                     address={utxo.address}
-                                    deviceStaticSessionId={deviceStaticSessionId}
+                                    accountKey={accountKey}
                                     fallback={
                                         <AccountAddressFormatter
                                             style={applyStyle(accountAddressFormatterStyle)}
@@ -159,7 +150,7 @@ export const UtxoCard = ({
                                 <TransactionOutputLabel
                                     txId={utxo.txid}
                                     outputIndex={utxo.vout}
-                                    deviceStaticSessionId={deviceStaticSessionId}
+                                    accountKey={accountKey}
                                 />
                             </HStack>
                         </VStack>

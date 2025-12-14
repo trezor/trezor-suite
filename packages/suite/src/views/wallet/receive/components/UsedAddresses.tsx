@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -105,10 +104,8 @@ export const UsedAddresses = ({
 }: UsedAddressesProps) => {
     const [limit, setLimit] = useState(DEFAULT_LIMIT);
     const dispatch = useDispatch();
-    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
-    const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
-    );
+    const { addressLabels: addressLabelsOld } = useSelector(selectLabelingDataForSelectedAccount);
+    const addressLabels = account.addressExtra ?? [];
 
     if (
         (account.networkType !== 'bitcoin' && account.networkType !== 'cardano') ||
@@ -171,9 +168,8 @@ export const UsedAddresses = ({
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
                                     value:
-                                        suiteSyncAddressLabels.find(
-                                            it => it.address === addr.address,
-                                        )?.label ?? addressLabels[addr.address],
+                                        addressLabels.find(it => it.address === addr.address)
+                                            ?.label ?? addressLabelsOld[addr.address],
                                 }}
                                 onClick={() => dispatch(showAddress(addr.path, addr.address))}
                             />
