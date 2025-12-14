@@ -6,22 +6,17 @@ type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;
 };
 
-export type RefreshSuiteKeysUnavailable = {
+export type RefreshSuiteKeysUnavailableType = {
     type: 'RefreshSuiteKeysUnavailable';
 };
-
-/**
- * Device is not connected or device is in a state/configuration, that does not
- * support Suite Sync.
- */
-export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailable => ({
-    type: 'RefreshSuiteKeysUnavailable',
-});
 
 export type RefreshSuiteSyncKeys = (
     params: RefreshSuiteSyncKeysParams,
 ) => Promise<
-    Result<SuiteSyncOwner, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>
+    Result<
+        SuiteSyncOwner,
+        RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType
+    >
 >;
 
 export type RefreshSuiteSyncKeysDep = {

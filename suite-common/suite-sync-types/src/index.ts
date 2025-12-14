@@ -8,7 +8,7 @@ export type {
 export type { RefreshSuiteSyncKeys, RefreshSuiteSyncKeysDep } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
-export { RefreshSuiteKeysUnavailable } from './refreshSuiteSyncKeys';
+export type { RefreshSuiteKeysUnavailableType } from './refreshSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
 export type {
     SubscriptionName,

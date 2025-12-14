@@ -4,12 +4,20 @@ import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-
 import { ensureDeviceHasQuotaThunk } from '@suite-common/suite-sync-quota-manager';
 import {
     EnsureSuiteSyncOwnerDep,
-    RefreshSuiteKeysUnavailable,
+    RefreshSuiteKeysUnavailableType,
     RefreshSuiteSyncKeys,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
+
+/**
+ * Device is not connected or device is in a state/configuration, that does not
+ * support Suite Sync.
+ */
+export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailableType => ({
+    type: 'RefreshSuiteKeysUnavailable',
+});
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
