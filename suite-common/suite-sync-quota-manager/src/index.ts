@@ -6,6 +6,7 @@ export { registerStorageThunk } from './storage/registerStorageThunk';
 export { transferStorageThunk } from './storage/transferStorageThunk';
 export { prepareChallengeSession } from './challenge/prepareChallengeSession';
 export { ensureDeviceHasQuotaThunk } from './ensureDeviceHasQuotaThunk';
+export { ensureOwnerHasAllocatedQuotaThunk } from './ensureOwnerHasAllocatedQuotaThunk';
 
 /**
  * Actions.
@@ -27,6 +28,8 @@ export {
     selectIsQuotaManagerEnabled,
     selectAssignedOwnerIds,
     selectRegisteredDevices,
+    selectIsDeviceRegistered,
+    selectHasOwnerAllowance,
 } from './quotaManagerSelectors';
 
 /**
@@ -41,4 +44,4 @@ export {
 /**
  * Constants.
  */
-export { DEFAULT_WALLET_SIZE_QUOTA } from './constants';
+export { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';

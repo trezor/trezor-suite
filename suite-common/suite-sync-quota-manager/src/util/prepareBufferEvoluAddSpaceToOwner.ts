@@ -12,7 +12,7 @@ export const prepareBufferEvoluAddSpaceToOwner = ({
     ownerId,
     challenge,
     size,
-}: PrepareBufferEvoluAddSpaceToOwnerParams) => {
+}: PrepareBufferEvoluAddSpaceToOwnerParams): Buffer => {
     const sizeBuffer = Buffer.alloc(4, 0, 'binary');
     sizeBuffer.writeUInt32BE(size, 0);
 

@@ -1,5 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { SuiteSyncOwnerIdHashed } from './types';
+
 export const QUOTA_MANAGER_PREFIX = '@suite/quota-manager';
 
 export const updateQuotaManagerBaseUrl = createAction(
@@ -33,10 +35,18 @@ export const quotaManagerDeviceFetched = createAction(
 
 export const eraseFetchedDataDebug = createAction(`${QUOTA_MANAGER_PREFIX}/eraseFetchedData`);
 
+export const quotaManagerOwnerFetched = createAction(
+    `${QUOTA_MANAGER_PREFIX}/ownerFetched`,
+    (payload: { ownerIdHash: SuiteSyncOwnerIdHashed; totalSpace: number }) => ({
+        payload,
+    }),
+);
+
 export const suiteSyncQuotaManagerActions = {
     updateQuotaManagerBaseUrl,
     quotaManagerFetchError,
     quotaManagerDeviceFetched,
+    quotaManagerOwnerFetched,
     quotaManagerEnabledUpdated,
     eraseFetchedDataDebug,
 };

@@ -10,7 +10,7 @@ export const prepareBufferEvoluSignRegistrationRequest = ({
     challenge,
 }: PrepareBufferForEvoluSignRegistrationRequestParams): Buffer => {
     const sizeBuffer = Buffer.alloc(4, 0, 'binary');
-    sizeBuffer.writeUInt32BE(size as number, 0);
+    sizeBuffer.writeUInt32BE(size, 0);
 
     return Buffer.concat([
         bufferUtils.getChunkSize(Buffer.from(challenge, 'hex').byteLength),

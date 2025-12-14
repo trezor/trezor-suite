@@ -1,7 +1,12 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { ensureDeviceHasQuotaThunk } from '@suite-common/suite-sync-quota-manager';
+import {
+    ensureDeviceHasQuotaThunk,
+    ensureOwnerHasAllocatedQuotaThunk,
+    selectHasOwnerAllowance,
+    selectIsDeviceRegistered,
+} from '@suite-common/suite-sync-quota-manager';
 import {
     EnsureSuiteSyncOwnerDep,
     RefreshSuiteKeysUnavailableType,
@@ -24,6 +29,7 @@ export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailableType =
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
+    getState: () => any;
 } & EnsureSuiteSyncOwnerDep &
     LoadSuiteSyncOwnerFromStateDep &
     EnsureDelegatedIdentityKeyDep &
@@ -40,7 +46,14 @@ export const createRefreshSuiteSync =
 
         const owner = await deps.loadSuiteSyncOwnerFromState({ deviceStaticId });
 
-        if (owner !== null) {
+        // If device has an owner, is registered in quota manager and the owner
+        // already has an allowance, there's nothing to refresh — return success.
+        if (
+            owner !== null &&
+            device.id &&
+            selectIsDeviceRegistered(deps.getState(), device.id) &&
+            selectHasOwnerAllowance(deps.getState(), owner.ownerId)
+        ) {
             return ok(owner);
         }
 
@@ -80,6 +93,13 @@ export const createRefreshSuiteSync =
             if (!ownerResult.success) {
                 return ownerResult;
             }
+
+            await deps.dispatch(
+                ensureOwnerHasAllocatedQuotaThunk({
+                    ownerId: ownerResult.payload.ownerId,
+                    delegatedKey: delegatedKeyResult.payload,
+                }),
+            );
 
             return ok(ownerResult.payload);
         };

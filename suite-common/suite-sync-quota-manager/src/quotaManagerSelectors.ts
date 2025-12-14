@@ -1,4 +1,7 @@
+import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+
 import { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
+import { hashSuiteSyncOwnerId } from './util/hasSuiteSyncOwnerId';
 
 type WithSuiteSyncQuotaManagerState = {
     suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
@@ -10,6 +13,19 @@ export const selectQuotaManagerBaseUrl = (state: WithSuiteSyncQuotaManagerState)
 export const selectIsDeviceRegistered = (state: WithSuiteSyncQuotaManagerState, deviceId: string) =>
     state.suiteSyncQuotaManager.registeredDevices.find(device => device.deviceId === deviceId) !==
     undefined;
+
+export const selectHasOwnerAllowance = (
+    state: WithSuiteSyncQuotaManagerState,
+    ownerId: SuiteSyncOwnerId,
+) => {
+    const ownerIdHash = hashSuiteSyncOwnerId(ownerId);
+
+    return (
+        state.suiteSyncQuotaManager.assignedOwnerIds.find(
+            owner => owner.ownerIdHash === ownerIdHash,
+        ) !== undefined
+    );
+};
 
 export const selectRegisteredDevices = (state: WithSuiteSyncQuotaManagerState) =>
     state.suiteSyncQuotaManager.registeredDevices;
