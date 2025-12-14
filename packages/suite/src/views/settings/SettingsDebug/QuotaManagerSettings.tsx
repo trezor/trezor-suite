@@ -112,8 +112,8 @@ export const QuotaManagerSettings = () => {
                             <div>No owner IDs assigned.</div>
                         ) : (
                             assignedOwnerIds.map(owner => (
-                                <div key={owner.ownerId} style={{ marginBottom: 8 }}>
-                                    <strong>Owner ID:</strong> {owner.ownerId}
+                                <div key={owner.ownerIdHash} style={{ marginBottom: 8 }}>
+                                    <strong>Owner ID:</strong> {owner.ownerIdHash}
                                     <br />
                                     <strong>Total Space:</strong> {owner.totalSpace}
                                 </div>

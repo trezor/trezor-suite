@@ -1,4 +1,9 @@
-import type { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { Branded } from '@trezor/type-utils';
+
+export type SuiteSyncOwnerIdHashed = string & Branded<'SuiteSyncOwnerIdHashed'>;
+
+export const asSuiteSyncOwnerIdHashed = (value: string): SuiteSyncOwnerIdHashed =>
+    value as SuiteSyncOwnerIdHashed;
 
 export type RegisteredDevice = {
     deviceId: string;
@@ -8,6 +13,6 @@ export type RegisteredDevice = {
 };
 
 export type AssignedOwnerId = {
-    ownerId: SuiteSyncOwnerId;
+    ownerIdHash: SuiteSyncOwnerIdHashed;
     totalSpace: number;
 };

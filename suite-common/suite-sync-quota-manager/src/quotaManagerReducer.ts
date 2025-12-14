@@ -4,9 +4,10 @@ import {
     eraseFetchedDataDebug,
     quotaManagerDeviceFetched,
     quotaManagerEnabledUpdated,
+    quotaManagerOwnerFetched,
     updateQuotaManagerBaseUrl,
 } from './quotaManagerActions';
-import type { AssignedOwnerId, RegisteredDevice } from './types';
+import { type AssignedOwnerId, type RegisteredDevice } from './types';
 
 export type SuiteSyncQuotaManagerState = {
     enabled: boolean; // user can enable/disable Quota Manager in settings and quota manager is disabled automatically when relay URL is not Trezor ones
@@ -51,6 +52,19 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                         publicKey: payload.publicKey,
                         totalStorageSize: payload.totalStorageSize,
                         unspentStorageSize: payload.unspentStorageSize,
+                    });
+                }
+            })
+            .addCase(quotaManagerOwnerFetched, (state, { payload }) => {
+                const existingOwner = state.assignedOwnerIds.find(
+                    owner => owner.ownerIdHash === payload.ownerIdHash,
+                );
+                if (existingOwner) {
+                    existingOwner.totalSpace = payload.totalSpace;
+                } else {
+                    state.assignedOwnerIds.push({
+                        ownerIdHash: payload.ownerIdHash,
+                        totalSpace: payload.totalSpace,
                     });
                 }
             }),
