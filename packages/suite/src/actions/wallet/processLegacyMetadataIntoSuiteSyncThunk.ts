@@ -1,6 +1,6 @@
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { RefreshSuiteKeysUnavailable } from '@suite-common/suite-sync-types';
+import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types/libDev/src';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -18,7 +18,7 @@ type ProcessMetadataMessageThunkParams = {
  * @deprecated This shall be removed, once we phase out the old Metadata code.
  */
 export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
-    Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>,
+    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>,
     ProcessMetadataMessageThunkParams,
     void
 >(

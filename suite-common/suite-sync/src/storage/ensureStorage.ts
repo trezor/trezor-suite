@@ -1,6 +1,6 @@
 import { CreateSuiteStorageDep, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
-    RefreshSuiteKeysUnavailable,
+    RefreshSuiteKeysUnavailableType,
     RefreshSuiteSyncKeysDep,
     SuiteSyncStorageRepositoryDep,
 } from '@suite-common/suite-sync-types';
@@ -10,6 +10,7 @@ import { Result, err, ok } from '@trezor/type-utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
+import { RefreshSuiteKeysUnavailable } from '../refreshSuiteSyncKeys';
 
 export type EnsureStorageDeps = {
     defaultRelayUrl: string;
@@ -26,7 +27,10 @@ export type EnsureStorageParams = {
 export type EnsureStorage = (
     params: EnsureStorageParams,
 ) => Promise<
-    Result<SuiteSyncStorage, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>
+    Result<
+        SuiteSyncStorage,
+        RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType
+    >
 >;
 
 export type EnsureStorageDep = {

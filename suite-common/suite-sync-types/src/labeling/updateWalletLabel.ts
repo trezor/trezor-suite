@@ -2,7 +2,7 @@ import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-ty
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { RefreshSuiteKeysUnavailable } from '../refreshSuiteSyncKeys';
+import { RefreshSuiteKeysUnavailableType } from '../refreshSuiteSyncKeys';
 
 export type UpdateWalletLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -11,6 +11,8 @@ export type UpdateWalletLabelParams = {
 
 export type UpdateWalletLabel = (
     params: UpdateWalletLabelParams,
-) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>>;
+) => Promise<
+    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>
+>;
 
 export type UpdateWalletLabelDep = { updateWalletLabel: UpdateWalletLabel };

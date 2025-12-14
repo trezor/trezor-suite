@@ -3,7 +3,7 @@ import { Account, DeviceCancelledErrType, DeviceErrorType } from '@suite-common/
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { RefreshSuiteKeysUnavailable } from '../refreshSuiteSyncKeys';
+import { RefreshSuiteKeysUnavailableType } from '../refreshSuiteSyncKeys';
 
 export type UpdateAddressLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -15,6 +15,8 @@ export type UpdateAddressLabelParams = {
 
 export type UpdateAddressLabel = (
     params: UpdateAddressLabelParams,
-) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>>;
+) => Promise<
+    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>
+>;
 
 export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
