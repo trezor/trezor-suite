@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { WalletLabel, WalletLabelsStore } from '@suite-common/suite-sync-storage';
+import { WalletLabel, WalletLabelsTable } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
@@ -29,7 +29,7 @@ export const WalletLabelSchema = {
     },
 };
 
-export class WalletLabels implements WalletLabelsStore {
+export class WalletLabels implements WalletLabelsTable {
     constructor(private evolu: Evolu<typeof WalletLabelSchema>) {}
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('walletLabel').selectAll());

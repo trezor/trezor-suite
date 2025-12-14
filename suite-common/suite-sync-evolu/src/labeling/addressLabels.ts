@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AddressLabel, AddressLabelsStore } from '@suite-common/suite-sync-storage';
+import { AddressLabel, AddressLabelsTable } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 
@@ -30,7 +30,7 @@ export const AddressLabelSchema = {
     },
 };
 
-export class AddressLabels implements AddressLabelsStore {
+export class AddressLabels implements AddressLabelsTable {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
     update = ({ address, label, accountDescriptor, networkSymbol }: AddressLabel) => {

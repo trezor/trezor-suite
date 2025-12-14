@@ -8,7 +8,7 @@ export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
 
 // Labeling
-export type { AddressLabelsStore, AddressLabel } from './labeling/AddressLabelsStore';
-export type { OutputLabelsStore, OutputLabel } from './labeling/OutputLabelsStore';
-export type { WalletLabelsStore, WalletLabel } from './labeling/WalletLabelsStore';
-export type { AccountLabelsStore, AccountLabel } from './labeling/AccountLabelsStore';
+export type { AddressLabelsTable, AddressLabel } from './labeling/AddressLabelsTable';
+export type { OutputLabelsTable, OutputLabel } from './labeling/OutputLabelsTable';
+export type { WalletLabelsTable, WalletLabel } from './labeling/WalletLabelsTable';
+export type { AccountLabelsTable, AccountLabel } from './labeling/AccountLabelsTable';

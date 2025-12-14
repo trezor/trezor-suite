@@ -1,13 +1,12 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 
+import { SuiteSyncTable } from '../SuiteSyncTable';
+
 export type AccountLabel = {
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
     label: string | null;
 };
 
-export type AccountLabelsStore = {
-    update({ networkSymbol, accountDescriptor, label }: AccountLabel): void;
-    subscribe(onChange: (payload: AccountLabel) => void): () => void;
-};
+export type AccountLabelsTable = SuiteSyncTable<AccountLabel>;

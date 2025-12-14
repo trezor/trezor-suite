@@ -1,5 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { SuiteSyncTable } from '../SuiteSyncTable';
+
 export type AddressLabel = {
     address: string;
     label: string | null;
@@ -7,7 +9,4 @@ export type AddressLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export type AddressLabelsStore = {
-    update({ address, label }: AddressLabel): void;
-    subscribe(onChange: (payload: AddressLabel) => void): () => void;
-};
+export type AddressLabelsTable = SuiteSyncTable<AddressLabel>;

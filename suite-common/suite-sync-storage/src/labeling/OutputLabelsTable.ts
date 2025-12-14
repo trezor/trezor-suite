@@ -1,5 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { SuiteSyncTable } from '../SuiteSyncTable';
+
 export type OutputLabel = {
     txId: string;
     outputIndex: number;
@@ -8,7 +10,4 @@ export type OutputLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export type OutputLabelsStore = {
-    update({ txId, outputIndex, label }: OutputLabel): void;
-    subscribe(onChange: (payload: OutputLabel) => void): () => void;
-};
+export type OutputLabelsTable = SuiteSyncTable<OutputLabel>;
