@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { isFulfilled } from '@reduxjs/toolkit';
 import styled from 'styled-components';
 
 import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
@@ -7,7 +8,7 @@ import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/compo
 import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
+import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
@@ -404,9 +405,24 @@ export const Labeling = ({
 
     const handleSubmit = async (value: string | undefined) => {
         if (isSuiteSyncEnabled) {
-            await dispatch(
+            const result = await dispatch(
                 processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
             );
+
+            if (isFulfilled(result) && !result.payload.ok) {
+                const { type } = result.payload.error;
+                switch (type) {
+                    case 'RefreshSuiteKeysUnavailable':
+                    case 'DeviceError':
+                    case 'DeviceCancelled':
+                        console.error(result.payload.error);
+
+                        return false;
+
+                    default:
+                        return exhaustive(type);
+                }
+            }
 
             return true;
         } else {
@@ -540,9 +556,24 @@ export const MetadataLabeling = ({
         setPending(true);
 
         if (isSuiteSyncEnabled) {
-            await dispatch(
+            const result = await dispatch(
                 processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
             );
+            if (isFulfilled(result) && !result.payload.ok) {
+                const { type } = result.payload.error;
+                switch (type) {
+                    case 'RefreshSuiteKeysUnavailable':
+                    case 'DeviceError':
+                    case 'DeviceCancelled':
+                        console.error(result.payload.error);
+                        setShowSuccess(false);
+
+                        return false;
+
+                    default:
+                        return exhaustive(type);
+                }
+            }
 
             setShowSuccess(true);
             // Intentional pattern how to use timers with useEffect

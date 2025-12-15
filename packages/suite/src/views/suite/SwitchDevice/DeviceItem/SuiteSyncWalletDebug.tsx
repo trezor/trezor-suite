@@ -61,14 +61,7 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
                     >
                         <Text typographyStyle="hint" variant="purple">
                             E:
-                            <Code>
-                                {
-                                    // Todo: delete this `typeof` check after while (back compatibility)
-                                    typeof device.suiteSyncOwner === 'string'
-                                        ? device.suiteSyncOwner.slice(-8)
-                                        : null
-                                }
-                            </Code>
+                            <Code>{device.suiteSyncOwner?.slice(-8)}</Code>
                         </Text>
                     </Tooltip>
                 </>
