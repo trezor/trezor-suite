@@ -1,11 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    BACKUP_APY,
-    BACKUP_CARDANO_APY,
-    BACKUP_ETH_APY,
-    BACKUP_SOL_APY,
-    CARDANO_APY_MIN_THRESHOLD,
-} from '@suite-common/wallet-constants';
+import { CARDANO_APY_MIN_THRESHOLD } from '@suite-common/wallet-constants';
 import { Account } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
@@ -33,18 +27,18 @@ export const selectPoolStatsApyData = (
     const symbol = symbolFromAccount ?? networkSymbol;
 
     if (!symbol || !data) {
-        return BACKUP_APY;
+        return null;
     }
 
     if (isSupportedSolStakingNetworkSymbol(symbol)) {
-        return data?.[symbol]?.stakingInfo?.data?.apy || BACKUP_SOL_APY;
+        return data?.[symbol]?.stakingInfo?.data?.apy || null;
     }
 
     if (isSupportedAdaStakingNetworkSymbol(symbol)) {
         const stakingInfo = data?.[symbol]?.stakingInfo?.data;
 
         if (!stakingInfo?.pools || stakingInfo.pools.length === 0) {
-            return BACKUP_CARDANO_APY;
+            return null;
         }
 
         const stakingPoolId = misc && 'staking' in misc ? misc.staking.poolId : undefined;
@@ -62,19 +56,19 @@ export const selectPoolStatsApyData = (
         const selectedPool = poolFromAccount ?? poolFromBest;
 
         if (!selectedPool) {
-            return BACKUP_CARDANO_APY;
+            return null;
         }
 
         const { apy } = selectedPool;
 
         if (!apy || apy < CARDANO_APY_MIN_THRESHOLD) {
-            return BACKUP_CARDANO_APY;
+            return null;
         }
 
         return apy;
     }
 
-    return data?.[symbol]?.poolStats?.data.ethApy || BACKUP_ETH_APY;
+    return data?.[symbol]?.poolStats?.data.ethApy || null;
 };
 
 export const selectCardanoPoolsInfo = (state: StakeRootState) =>

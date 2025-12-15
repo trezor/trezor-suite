@@ -12,6 +12,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 interface NewProviderCardProps {
     account: Account;
@@ -63,7 +64,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                                         ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE'
                                         : 'TR_STAKING_NEW_PROVIDER_TITLE'
                                 }
-                                values={{ apy }}
+                                values={{ apy: formatApyValue(apy) }}
                             />
                         </H3>
                         <Paragraph variant="tertiary" maxWidth={700}>
@@ -73,7 +74,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                                         ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
                                         : 'TR_STAKING_NEW_PROVIDER_TEXT'
                                 }
-                                values={{ apy, displaySymbol }}
+                                values={{ apy: formatApyValue(apy), displaySymbol }}
                             />
                         </Paragraph>
                     </Column>

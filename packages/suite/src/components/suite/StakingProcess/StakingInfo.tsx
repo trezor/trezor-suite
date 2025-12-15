@@ -18,6 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 import { useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { Account } from 'src/types/wallet';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { InfoRow } from './InfoRow';
 
@@ -145,7 +146,12 @@ export const StakingInfo = ({ isExpanded, flow }: StakingInfoProps) => {
             heading: infoRowsData?.rewardsEarningHeading,
             subheading: <Translation id="TR_STAKING_REWARDS_ARE_RESTAKED" />,
             content: {
-                text: <Translation id="TR_STAKE_APY_APPROX" values={{ apyPercent: apy }} />,
+                text: (
+                    <Translation
+                        id="TR_STAKE_APY_APPROX"
+                        values={{ apyPercent: formatApyValue(apy) }}
+                    />
+                ),
             },
         },
     ];

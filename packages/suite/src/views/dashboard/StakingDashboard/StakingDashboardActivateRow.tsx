@@ -6,6 +6,7 @@ import { Button, Paragraph, Table } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
 
@@ -40,7 +41,9 @@ export const StakingDashboardActivateRow = ({ symbol }: { symbol: NetworkSymbol 
                 <StakingDashboardAccountCell symbol={symbol} />
             </Table.Cell>
 
-            <Table.Cell>~{apy}%</Table.Cell>
+            <Table.Cell>
+                <ApyValue apy={apy} />
+            </Table.Cell>
 
             <Table.Cell colSpan={2}>
                 <Paragraph typographyStyle="body" variant="tertiary">
