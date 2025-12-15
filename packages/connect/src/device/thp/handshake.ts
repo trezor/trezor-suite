@@ -73,11 +73,6 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
     }
 
     const settings = DataManager.getSettings('thp');
-    // get staticKey from settings or create new random
-    const staticKey = settings?.staticKey
-        ? Buffer.from(settings.staticKey, 'hex')
-        : randomBytes(32);
-    const hostStaticKeys = protocolThp.getCurve25519KeyPair(staticKey);
     // sort credentials by autoconnect field
     const knownCredentials = (settings?.knownCredentials || []).sort(cre =>
         cre.autoconnect ? -1 : 1,
@@ -99,7 +94,6 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
     const handshakeCredentials = protocolThp.handleHandshakeInit({
         handshakeInitResponse: handshakeInit.message,
         thpState,
-        hostStaticKeys,
         hostEphemeralKeys,
         knownCredentials,
         tryToUnlock,
@@ -114,8 +108,8 @@ export const thpHandshake = async (device: Device, unlockPin = false) => {
         handshakeHash: handshakeCredentials.handshakeHash,
         trezorKey,
         hostKey,
-        staticKey,
-        hostStaticPublicKey: hostStaticKeys.publicKey,
+        staticKey: handshakeCredentials.staticKey,
+        hostStaticPublicKey: handshakeCredentials.hostStaticKeys.publicKey,
     });
 
     thpState.setPairingCredentials(handshakeCredentials.allCredentials);

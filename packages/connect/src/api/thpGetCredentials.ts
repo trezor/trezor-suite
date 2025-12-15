@@ -28,7 +28,6 @@ export default class ThpGetCredentials extends AbstractMethod<'thpGetCredentials
         // emit change event to host, store new credentials in DataManager
         this.device.emit(DEVICE.THP_CREDENTIALS_CHANGED, {
             credentials,
-            staticKey: thpState.handshakeCredentials.staticKey.toString('hex'),
         });
 
         return credentials;

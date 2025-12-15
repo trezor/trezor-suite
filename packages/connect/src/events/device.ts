@@ -61,7 +61,6 @@ export interface DeviceVersionChanged {
 
 export type DeviceThpCredentialsChangedPayload = {
     credentials: ThpCredentials;
-    staticKey: string;
 };
 
 export type DeviceThpPairingPayload = {

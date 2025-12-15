@@ -18,7 +18,6 @@ describe('THP pairing', () => {
             thp: {
                 appName: 'TrezorConnect',
                 hostName: 'tests:e2e',
-                staticKey: '0007070707070707070707070707070707070707070707070707070707070747',
                 knownCredentials: [],
                 pairingMethods: [],
                 ...settings,
@@ -98,6 +97,8 @@ describe('THP pairing', () => {
             pairingMethods: ['CodeEntry'],
             knownCredentials: [
                 {
+                    host_static_key:
+                        '0007070707070707070707070707070707070707070707070707070707070747',
                     trezor_static_public_key:
                         '566f6976fd42cafadf1b843ce4e6275c930d52efac878217df0ea2a23933b07d',
                     credential:
@@ -105,6 +106,8 @@ describe('THP pairing', () => {
                     autoconnect: false,
                 },
                 {
+                    host_static_key:
+                        '0007070707070707070707070707070707070707070707070707070707070747',
                     trezor_static_public_key:
                         'ca9a6e4682ac461c59d75a8625c05bf3a4af01e084abc5a7fe8ad126c2d6f772',
                     credential:

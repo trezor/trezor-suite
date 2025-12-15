@@ -27,20 +27,22 @@ describe('data/thpSettings', () => {
         });
         expect(result).toEqual({ appName, pairingMethods: [1, 3] });
 
-        // staticKey from settings.thp
-        result = parseThpSettings({
-            manifest,
-            thp: { staticKey: '00112233', pairingMethods },
-        });
-        expect(result).toEqual({ appName, staticKey: '00112233', pairingMethods });
-
         // knownCredentials from settings.thp
         result = parseThpSettings({
             manifest,
             thp: {
                 knownCredentials: [
-                    { credential: '0000', trezor_static_public_key: '1111', autoconnect: true },
-                    { credential: '0101', trezor_static_public_key: '0202' },
+                    {
+                        credential: '0000',
+                        host_static_key: '7777',
+                        trezor_static_public_key: '1111',
+                        autoconnect: true,
+                    },
+                    {
+                        credential: '0101',
+                        host_static_key: '7777',
+                        trezor_static_public_key: '0202',
+                    },
                 ],
                 pairingMethods,
             },
@@ -49,8 +51,17 @@ describe('data/thpSettings', () => {
             appName,
             pairingMethods,
             knownCredentials: [
-                { credential: '0000', trezor_static_public_key: '1111', autoconnect: true },
-                { credential: '0101', trezor_static_public_key: '0202' },
+                {
+                    credential: '0000',
+                    host_static_key: '7777',
+                    trezor_static_public_key: '1111',
+                    autoconnect: true,
+                },
+                {
+                    credential: '0101',
+                    host_static_key: '7777',
+                    trezor_static_public_key: '0202',
+                },
             ],
         });
 
@@ -69,10 +80,6 @@ describe('data/thpSettings', () => {
         // @ts-expect-error invalid hostName
         result = parseThpSettings({ thp: { hostName: {} } });
         expect(result).toEqual({ pairingMethods });
-
-        // @ts-expect-error invalid staticKey
-        result = parseThpSettings({ thp: { appName, staticKey: true } });
-        expect(result).toEqual({ appName, pairingMethods });
 
         // invalid knownCredentials
         result = parseThpSettings({

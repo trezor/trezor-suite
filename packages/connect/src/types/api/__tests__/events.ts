@@ -34,7 +34,7 @@ export const events = (api: TrezorConnect) => {
             const { payload } = event;
             payload.credentials.credential.toLowerCase();
             payload.credentials.trezor_static_public_key.toLowerCase();
-            payload.staticKey.toLowerCase();
+            payload.credentials.host_static_key.toLowerCase();
             if (payload.credentials.autoconnect === true) {
                 //
             }
