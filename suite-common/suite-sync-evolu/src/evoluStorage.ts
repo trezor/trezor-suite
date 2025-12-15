@@ -46,12 +46,14 @@ export const createEvoluStorageFactory =
         updateRelayUrl(relayUrl); // This updates the relay
 
         return {
-            accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountSchema>),
-            wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletLabelSchema>),
-            outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputLabelSchema>),
-            addresses: new AddressEvoluTable(
-                evolu as unknown as Evolu<typeof AddressLabelSchema>,
-            ),
+            data: {
+                accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountSchema>),
+                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletLabelSchema>),
+                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputLabelSchema>),
+                addresses: new AddressEvoluTable(
+                    evolu as unknown as Evolu<typeof AddressLabelSchema>,
+                ),
+            },
 
             updateRelayUrl,
             dispose: async () => {

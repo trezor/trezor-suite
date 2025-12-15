@@ -1,9 +1,11 @@
 import { SuiteSyncOwner } from '@suite-common/suite-types/';
 
-import { AccountTable } from './data/AccountTable';
-import { AddressTable } from './data/AddressTable';
-import { OutputTable } from './data/OutputTable';
-import { WalletTable } from './data/WalletTable';
+import { SuiteSyncTable } from './SuiteSyncTable';
+import { SuiteSyncSchema } from './data/SuiteSyncSchema';
+
+type SuiteSyncStorageData = {
+    [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;
+};
 
 /**
  * This is a **Stateful** service, that represents a Store for one Owner (for example Wallet).
@@ -11,10 +13,7 @@ import { WalletTable } from './data/WalletTable';
  * of data. For example the Evolu library.
  */
 export type SuiteSyncStorage = {
-    accounts: AccountTable;
-    wallets: WalletTable;
-    outputs: OutputTable;
-    addresses: AddressTable;
+    data: SuiteSyncStorageData;
 
     updateRelayUrl(url: string): Promise<void>;
     dispose(): Promise<void>;

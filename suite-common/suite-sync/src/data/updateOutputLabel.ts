@@ -21,7 +21,7 @@ export const createUpdateOutputLabel =
             return storageResult;
         }
 
-        storageResult.value.outputs.update({
+        storageResult.value.data.outputs.update({
             txId,
             outputIndex,
             label,

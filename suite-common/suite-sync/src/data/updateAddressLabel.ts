@@ -20,7 +20,7 @@ export const createUpdateAddressLabel =
             return storageResult;
         }
 
-        storageResult.value.addresses.update({
+        storageResult.value.data.addresses.update({
             address,
             label,
             accountDescriptor,

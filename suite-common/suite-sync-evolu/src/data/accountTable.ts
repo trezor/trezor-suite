@@ -9,7 +9,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AccountTable, SuiteSyncAccount } from '@suite-common/suite-sync-storage';
+import { AccountTable, EntityListener, SuiteSyncAccount } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
@@ -30,7 +30,7 @@ export const AccountSchema = {
         accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
         networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
         label: nullOr(NonEmptyString1000),
-        isHidden: SqliteBoolean,
+        isHidden: nullOr(SqliteBoolean),
     },
 };
 
@@ -46,7 +46,7 @@ export class EvoluAccountTable implements AccountTable {
             return;
         }
 
-        const result = this.evolu.update('account', {
+        const result = this.evolu.upsert('account', {
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
@@ -63,7 +63,7 @@ export class EvoluAccountTable implements AccountTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('account').selectAll());
 
-    subscribe = (onChange: (payload: SuiteSyncAccount) => void) => {
+    subscribe = ({ onChange }: EntityListener<SuiteSyncAccount>) => {
         const query = this.getQuery();
 
         const process = (accounts: QueryRows<UnwrapQuery<typeof query>>) => {

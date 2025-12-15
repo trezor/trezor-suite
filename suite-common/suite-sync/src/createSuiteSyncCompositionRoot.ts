@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { SuiteSync, SuiteSyncListenerDep } from '@suite-common/suite-sync-types';
 import {
     selectAllDeviceStaticIds,
     selectDeviceByStaticSessionId,
@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
-import { createSubscribeToRedux } from './data/subscribeLabeling';
+import { createSubscribeSuiteSyncData } from './data/subscribeSuiteSyncData';
 import { createUpdateAccountLabel } from './data/updateAccountLabel';
 import { createUpdateAddressLabel } from './data/updateAddressLabel';
 import { createUpdateOutputLabel } from './data/updateOutputLabel';
@@ -43,7 +43,8 @@ type CreateSuiteSyncCompositionRootDeps = {
 } & EnsureDelegatedIdentityKeyDep &
     CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
-    PlatformEncryptionDep;
+    PlatformEncryptionDep &
+    SuiteSyncListenerDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -89,17 +90,17 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    const subscribeLabeling = createSubscribeToRedux({
+    const subscribeSuiteSyncData = createSubscribeSuiteSyncData({
         subscriptionStorage,
-        dispatch: deps.dispatch,
         ensureStorage,
+        suiteSyncListener: deps.suiteSyncListener,
     });
 
     const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeData: subscribeLabeling,
+        subscribeSuiteSyncData,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({

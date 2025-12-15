@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AddressTable, SuiteSyncAddress } from '@suite-common/suite-sync-storage';
+import { AddressTable, EntityListener, SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 
@@ -59,7 +59,7 @@ export class AddressEvoluTable implements AddressTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('address').selectAll());
 
-    subscribe = (onChange: (payload: SuiteSyncAddress) => void) => {
+    subscribe = ({ onChange }: EntityListener<SuiteSyncAddress>) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

@@ -17,7 +17,7 @@ export const createUpdateAccountLabel =
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-        storageResult.value.accounts.update({ accountDescriptor, networkSymbol, label });
+        storageResult.value.data.accounts.update({ accountDescriptor, networkSymbol, label });
 
         return ok();
     };

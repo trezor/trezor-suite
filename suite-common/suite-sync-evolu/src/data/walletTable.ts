@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { SuiteSyncWallet, WalletTable } from '@suite-common/suite-sync-storage';
+import { EntityListener, SuiteSyncWallet, WalletTable } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
@@ -56,7 +56,7 @@ export class EvoluWalletTable implements WalletTable {
         }
     };
 
-    subscribe = (onChange: (payload: SuiteSyncWallet) => void) => {
+    subscribe = ({ onChange }: EntityListener<SuiteSyncWallet>) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

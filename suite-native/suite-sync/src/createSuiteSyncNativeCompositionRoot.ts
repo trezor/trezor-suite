@@ -9,7 +9,7 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { SuiteSync, SuiteSyncListenerDep } from '@suite-common/suite-sync-types';
 import { TrezorConnect } from '@trezor/connect';
 
 type SuiteSyncNativeCompositionRootDeps = {
@@ -17,7 +17,8 @@ type SuiteSyncNativeCompositionRootDeps = {
     dispatch: Dispatch;
     trezorConnect: TrezorConnect;
 } & PlatformEncryptionDep &
-    EnsureDelegatedIdentityKeyDep;
+    EnsureDelegatedIdentityKeyDep &
+    SuiteSyncListenerDep;
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
@@ -29,5 +30,6 @@ export const createSuiteSyncNativeCompositionRoot = (
         ...deps,
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        suiteSyncListener: deps.suiteSyncListener,
     });
 };

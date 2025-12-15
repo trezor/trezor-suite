@@ -147,6 +147,7 @@ export type Account = {
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
      */
     accountLabel?: string;
+    isHidden?: boolean;
     ts: number;
 } & AccountBackendSpecific &
     AccountNetworkSpecific &

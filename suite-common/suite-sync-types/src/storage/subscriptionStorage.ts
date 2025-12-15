@@ -1,15 +1,8 @@
 import { StorageId } from './suiteSyncStorageRepository';
 
-/**
- * SuiteSync can handle multiple domains.
- * Currently, we have "labeling" only.
- */
-export type TableName = 'labeling';
-
 export type SubscriptionStorageParams = {
     storageId: StorageId;
     unsubscribe: () => void;
-    name: TableName;
 };
 
 export type SubscriptionStorage = {
