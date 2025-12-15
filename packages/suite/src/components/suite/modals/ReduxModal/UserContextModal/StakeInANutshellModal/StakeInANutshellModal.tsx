@@ -26,6 +26,7 @@ import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 interface StakingDetails {
     id: number;
@@ -201,7 +202,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
                                 values={{
                                     networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
                                     count: unstakingPeriod,
-                                    apy,
+                                    apy: formatApyValue(apy),
                                     days: CARDANO_ACTIVATION_PERIOD_DAYS,
                                 }}
                             />
