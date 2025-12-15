@@ -1,3 +1,10 @@
+# 1.2.0
+
+- npm-prerelease: @trezor/device-utils 1.1.5-beta.2 (c8bf86b47e)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/device-utils 1.1.5-beta.1 (ca75efb7b4)
+- fix(suite): Fix types (24e4379636)
+
 # 1.1.4
 
 - npm-prerelease: @trezor/device-utils 1.1.4-beta.1 (abda519429)
