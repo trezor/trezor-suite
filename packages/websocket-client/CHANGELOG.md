@@ -1,3 +1,9 @@
+# 1.3.0
+
+- npm-prerelease: @trezor/websocket-client 1.2.5-beta.2 (5ec3213e06)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/websocket-client 1.2.5-beta.1 (4943bc22e6)
+
 # 1.2.4
 
 - npm-prerelease: @trezor/websocket-client 1.2.4-beta.1 (bdf6f0860f)
