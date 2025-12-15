@@ -45,6 +45,7 @@ test.describe('Passphrase reconnection', { tag: ['@group=passphrase'] }, () => {
 
         await test.step('Disconnect and reconnect the device', async () => {
             await trezorUserEnvLink.stopEmu();
+            await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
             await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
         });
 

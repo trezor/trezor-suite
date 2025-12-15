@@ -21,6 +21,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
         devicePrompt,
         trezorUserEnvLink,
         settingsPage,
+        walletPage,
     }) => {
         await test.step('Start backup', async () => {
             await dashboardPage.notificationNoBackupButton.click();
@@ -33,9 +34,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
 
         await test.step('Simulate disconnect', async () => {
             await trezorUserEnvLink.stopEmu();
-            await expect(
-                page.getByTestId('@menu/switch-device').getByTestId('@deviceStatus-disconnected'),
-            ).toBeVisible({ timeout: 30_000 });
+            await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
         });
 
         await test.step('Simulate reconnect and check errors', async () => {
