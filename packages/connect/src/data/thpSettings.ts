@@ -21,16 +21,13 @@ export const parseThpSettings = ({ manifest, thp }: Partial<ConnectSettings>): T
         settings.appName = manifest?.appName;
     }
 
-    if (typeof thp?.staticKey === 'string') {
-        settings.staticKey = thp.staticKey;
-    }
-
     if (Array.isArray(thp?.knownCredentials)) {
         settings.knownCredentials = thp.knownCredentials.flatMap(k => {
             if (
                 k &&
                 typeof k === 'object' &&
                 typeof k.credential === 'string' &&
+                typeof k.host_static_key === 'string' &&
                 typeof k.trezor_static_public_key === 'string'
             ) {
                 return k;
