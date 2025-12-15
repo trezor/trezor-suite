@@ -259,7 +259,7 @@ export const prepareRootReducers = async () => {
 
     const thpPersistedReducer = await preparePersistReducer({
         reducer: thpReducer,
-        persistedKeys: ['credentials', 'staticKey'],
+        persistedKeys: ['credentials'],
         key: 'thp',
         version: 1,
     });

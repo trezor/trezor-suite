@@ -244,7 +244,6 @@ const run = async () => {
         thp: {
             appName: 'TrezorConnect Cli',
             hostName: 'localhost',
-            staticKey: '0007070707070707070707070707070707070707070707070707070707070747',
             knownCredentials: getThpCredentials(),
             pairingMethods,
         },

@@ -11,6 +11,7 @@ export const createCredential = (
     partialCredential?: Partial<ThpSuiteCredentials>,
 ): ThpSuiteCredentials => ({
     credential: 'default-credential',
+    host_static_key: 'host_static_key',
     trezor_static_public_key: 'random-static-public-key',
     connectionCounter: 0,
     autoconnect: false,

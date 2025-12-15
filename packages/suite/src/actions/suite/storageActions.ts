@@ -129,8 +129,8 @@ export const saveThpCredentials = createThunk(
     `${STORAGE.MODULE_PREFIX}/saveThpCredentials`,
     async (_, { getState }) => {
         if (!db.isAccessible()) return;
-        const { credentials, staticKey } = selectThp(getState());
-        await db.addItem('thp', { credentials, staticKey }, 'value', true);
+        const { credentials } = selectThp(getState());
+        await db.addItem('thp', { credentials }, 'value', true);
     },
 );
 
