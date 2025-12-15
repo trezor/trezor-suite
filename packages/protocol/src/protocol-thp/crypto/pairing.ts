@@ -5,7 +5,7 @@ import { curve25519, elligator2, getCurve25519KeyPair } from './curve25519';
 import { bigEndianBytesToBigInt, getIvFromNonce, hashOfTwo, hkdf, sha256 } from './tools';
 import { ThpState } from '../ThpState';
 import {
-    ThpCredentialResponse,
+    ThpCredentials,
     ThpHandshakeCredentials,
     ThpHandshakeInitResponse,
     ThpPairingMethod,
@@ -20,7 +20,7 @@ export const getHandshakeHash = (deviceProperties: Buffer) =>
 
 // 10. Search credentials for a pairs (trezor_static_pubkey, credential) such that trezor_masked_static_pubkey == X25519(SHA-256(trezor_static_pubkey || trezor_ephemeral_pubkey), trezor_static_pubkey).
 export const findKnownPairingCredentials = (
-    knownCredentials: ThpCredentialResponse[],
+    knownCredentials: ThpCredentials[],
     trezorMaskedStaticPubkey: Buffer,
     trezorEphemeralPubkey: Buffer,
 ) =>
@@ -54,16 +54,14 @@ export const handleHandshakeInit = ({
     handshakeInitResponse,
     thpState,
     knownCredentials,
-    hostStaticKeys,
     hostEphemeralKeys,
     tryToUnlock,
     protobufEncoder,
 }: {
     handshakeInitResponse: ThpHandshakeInitResponse;
     thpState: ThpState;
-    knownCredentials: ThpCredentialResponse[];
+    knownCredentials: ThpCredentials[];
     hostEphemeralKeys: Curve25519KeyPair;
-    hostStaticKeys: Curve25519KeyPair;
     tryToUnlock: 0 | 1;
     protobufEncoder: (name: string, data: Record<string, unknown>) => { message: Buffer };
 }) => {
@@ -125,6 +123,10 @@ export const handleHandshakeInit = ({
     // NOTE: This logic is deprecated and zero keypair should never be used, source:
     // https://satoshilabs.slack.com/archives/C078GRAK58U/p1740132971826629?thread_ts=1739181741.870599&cid=C078GRAK58Us
 
+    const staticKey = credentials?.host_static_key
+        ? Buffer.from(credentials.host_static_key, 'hex')
+        : randomBytes(32);
+    const hostStaticKeys = getCurve25519KeyPair(staticKey);
     // 12. Set encrypted_host_static_pubkey = AES-GCM-ENCRYPT(key=k, IV=0^95 || 1, ad=h, plaintext=temp_host_static_pubkey).
     aes = aesgcm(k, iv1);
     aes.auth(h);
@@ -161,6 +163,8 @@ export const handleHandshakeInit = ({
         credentials,
         allCredentials,
         encryptedPayload,
+        staticKey,
+        hostStaticKeys,
     };
 };
 
