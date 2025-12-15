@@ -2303,7 +2303,7 @@
   "TR_TRADING_NO_METHODS_AVAILABLE": "No methods available",
   "TR_TRADING_NO_OFFER_BUY_OR_SELL": "No offers found, try different currency, assets, or amounts.",
   "TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR": "No offers found. Adjust the currency, assets, or amounts, or disable Tor to see more offers.",
-  "TR_TRADING_NO_OFFER_SWAP": "No offers found, try different assets or amounts.",
+  "TR_TRADING_NO_OFFER_SWAP": "No {offers} found. Try different rate, assets or amounts.",
   "TR_TRADING_NO_OFFER_SWAP_TOR": "No offers found. Adjust the assets or amounts, or disable Tor to see more offers.",
   "TR_TRADING_NO_RESPONSE": "No response from the server {error}",
   "TR_TRADING_OFFERS_EMPTY": "Select your from/to assets and amount to search for your best offer.",

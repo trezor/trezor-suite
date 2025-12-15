@@ -283,8 +283,16 @@ export default defineMessages({
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
     },
     TR_TRADING_NO_OFFER_SWAP: {
-        defaultMessage: 'No offers found, try different assets or amounts.',
+        defaultMessage: 'No {offers} found. Try different rate, assets or amounts.',
         id: 'TR_TRADING_NO_OFFER_SWAP',
+    },
+    TR_TRADING_SWAP_FIXED_RATE_OFFER: {
+        defaultMessage: 'fixed-rate offers',
+        id: 'TR_TRADING_SWAP_FIXED_RATE_OFFER',
+    },
+    TR_TRADING_SWAP_FLOATING_RATE_OFFER: {
+        defaultMessage: 'floating-rate offers',
+        id: 'TR_TRADING_SWAP_FLOATING_RATE_OFFER',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
         defaultMessage:
