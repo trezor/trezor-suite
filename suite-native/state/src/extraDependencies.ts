@@ -76,7 +76,6 @@ export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraD
             // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
             hostName: Platform.OS === 'ios' ? Device.modelName : Device.deviceName,
             pairingMethods: ['CodeEntry', 'NFC'],
-            staticKey: state.thp?.staticKey,
             knownCredentials: state.thp?.credentials,
         }),
         selectIsSuiteSyncEnabled,
