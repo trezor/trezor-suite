@@ -80,7 +80,10 @@ export type ThpHandshakeCredentials = {
     trezorCpacePublicKey: Buffer;
 };
 
-export type ThpCredentials = ThpCredentialResponse & { autoconnect?: boolean };
+export type ThpCredentials = ThpCredentialResponse & {
+    host_static_key: string;
+    autoconnect?: boolean;
+};
 
 export type ThpMessageSyncBit = 0 | 1;
 
