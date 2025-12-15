@@ -47,7 +47,6 @@ const tradingSlice = createSliceWithExtraDeps({
                 state.buy.amountLimits = undefined;
                 state.buy.quotes = [];
                 state.buy.quotesRequest = undefined;
-                state.buy.isLoading = false;
                 state.info.paymentMethods = [];
             })
             .addCase(exchangeThunks.handleRequestThunk.pending, state => {
