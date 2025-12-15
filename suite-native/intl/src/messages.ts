@@ -2437,6 +2437,13 @@ export const messages = {
             bankAccountSheetTitle: {
                 title: 'Select an account',
             },
+            providerStatus: {
+                confirming: 'Provider is confirming your sell',
+                waitingForAddress: 'Waiting for the provider’s receive address',
+                upTo30Seconds: 'This may take up to 30 seconds.',
+                startOver:
+                    'If you didn’t finish all steps on the provider’s site, go back and start a new sell. Your funds are safe.',
+            },
         },
         tradingExchangeApprovalScreen: {
             title: 'Set {symbol} spending',
