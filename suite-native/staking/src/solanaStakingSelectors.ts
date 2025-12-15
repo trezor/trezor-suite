@@ -82,9 +82,9 @@ export const selectExpectedRewardsForEpoch = (
     accountKey: string,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
-    const apy = selectSolanaAPYByAccountKey(state, accountKey).toString();
+    const apy = selectSolanaAPYByAccountKey(state, accountKey)?.toString();
 
-    if (!stakingInfo) {
+    if (!stakingInfo || !apy) {
         return '0';
     }
 
