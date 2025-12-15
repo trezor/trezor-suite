@@ -279,24 +279,25 @@ export default defineMessages({
         id: 'TR_TRADING_INVALID_RESPONSE',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL: {
-        defaultMessage: 'No offers found. Adjust the currency, assets, or amounts.',
+        defaultMessage: 'No offers found, try different currency, assets, or amounts.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
     },
     TR_TRADING_NO_OFFER_SWAP: {
-        defaultMessage: 'No offers found. Adjust the assets or amounts.',
+        defaultMessage: 'No offers found, try different assets or amounts.',
         id: 'TR_TRADING_NO_OFFER_SWAP',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
         defaultMessage:
-            'Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
+            'No offers found. Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR',
     },
     TR_TRADING_NO_OFFER_SWAP_TOR: {
-        defaultMessage: 'Adjust the assets or amounts, or disable Tor to see more offers.',
+        defaultMessage:
+            'No offers found. Adjust the assets or amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_SWAP_TOR',
     },
     TR_TRADING_DISABLE_TOR: {
-        defaultMessage: 'Disable Tor to see better offers.',
+        defaultMessage: 'You may see more offers with Tor disabled.',
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_CHECKED_BALANCES_ON: {
@@ -843,7 +844,7 @@ export default defineMessages({
         id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
     TR_SELL_HEADER_TITLE: {
-        defaultMessage: '売却',
+        defaultMessage: 'Your sell',
         id: 'TR_SELL_HEADER_TITLE',
     },
     TR_SELL_DETAIL_SENDING_TRANSACTION: {
@@ -875,7 +876,7 @@ export default defineMessages({
     },
     TR_TRADING_TERMS_1: {
         id: 'TR_TRADING_TERMS_1',
-        defaultMessage: "Invity doesn't provide this service. It's governed by",
+        defaultMessage: "Invity doesn't provide this service. It's governed by ",
     },
     TR_TRADING_TERMS_2: {
         id: 'TR_TRADING_TERMS_2',
@@ -2727,7 +2728,7 @@ export default defineMessages({
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be hidden from Trezor Suite until you reconnect your device.',
+            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be hidden in Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION: {
@@ -4580,7 +4581,7 @@ export default defineMessages({
     },
     MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
-        defaultMessage: 'Coinjoin account only available on the Trezor Suite desktop app.',
+        defaultMessage: 'Coinjoin account only available in the Trezor Suite desktop app.',
     },
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
@@ -10424,7 +10425,7 @@ export default defineMessages({
     TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT: {
         id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT',
         defaultMessage:
-            'Your system doesn’t support automatic pairing via Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
+            'Your system doesn’t support automatic pairing in Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
     },
     TR_DONE: {
         id: 'TR_DONE',
