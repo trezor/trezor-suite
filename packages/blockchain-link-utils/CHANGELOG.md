@@ -1,3 +1,19 @@
+# 1.5.0
+
+- chore(blockchain-link-utils): remove dependency to protobuf (2f3d880b50)
+- npm-prerelease: @trezor/blockchain-link-utils 1.5.0-beta.2 (57de3cac26)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- chore(blockchain-link-types): remove TokenInfo.type (11ae574860)
+- fix(blockchain-link-utils): properly type TokenInfo standard (35c52365fe)
+- npm-prerelease: @trezor/blockchain-link-utils 1.5.0-beta.1 (8a7a4dcad3)
+- chore: change fail in test names to error to find fails easier (2393763310)
+- feat(blockchain-link-utils): Add support for change trust operations in transaction processing (3ab9ae7e76)
+- feat(blockchain-link-utils): add asset code and address validation functions (64d2ebe5d5)
+- chore: bump xrpl (70df85521c)
+- npm-prerelease: @trezor/blockchain-link-utils 1.4.5-beta.1 (a5a25d31c4)
+- refactor(blockchain-link-utils): switch Stellar transaction builders to params objects (4344c8f4f1)
+- feat(blockchain-link): refactor base reserve handling and add trustline transaction builders (2b32cef13c)
+
 # 1.4.4
 
 - npm-prerelease: @trezor/blockchain-link-utils 1.4.4-beta.1 (4d1585e947)
