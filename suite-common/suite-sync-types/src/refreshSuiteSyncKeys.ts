@@ -1,4 +1,5 @@
 import { SuiteSyncOwner, TrezorDevice } from '@suite-common/suite-types';
+import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { Result } from '@trezor/type-utils';
 
 type RefreshSuiteSyncKeysParams = {
@@ -19,7 +20,9 @@ export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailable => ({
 
 export type RefreshSuiteSyncKeys = (
     params: RefreshSuiteSyncKeysParams,
-) => Promise<Result<SuiteSyncOwner, RefreshSuiteKeysUnavailable>>;
+) => Promise<
+    Result<SuiteSyncOwner, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>
+>;
 
 export type RefreshSuiteSyncKeysDep = {
     refreshSuiteSyncKeys: RefreshSuiteSyncKeys;

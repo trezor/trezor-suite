@@ -1,4 +1,4 @@
-import { DeviceErrorType } from '@suite-common/wallet-types';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
@@ -8,7 +8,7 @@ export type TurnOnSuiteSyncForWalletParams = { deviceStaticSessionId: StaticSess
 
 export type TurnOnSuiteSyncForWallet = (
     params: TurnOnSuiteSyncForWalletParams,
-) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType>>;
+) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>>;
 
 export type TurnOnSuiteSyncForWalletDep = {
     turnOnSuiteSyncForWallet: TurnOnSuiteSyncForWallet;

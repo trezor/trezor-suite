@@ -1,4 +1,4 @@
-import { DeviceErrorType } from '@suite-common/wallet-types';
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
@@ -10,4 +10,4 @@ type SubscribeLabelingParams = {
 
 export type SubscribeLabeling = (
     params: SubscribeLabelingParams,
-) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType>>;
+) => Promise<Result<void, RefreshSuiteKeysUnavailable | DeviceErrorType | DeviceCancelledErrType>>;

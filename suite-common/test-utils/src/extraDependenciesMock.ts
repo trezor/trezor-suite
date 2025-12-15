@@ -81,10 +81,10 @@ const suiteSyncMock: SuiteSync = {
     turnOnSuiteSync: () => Promise.resolve(),
     turnOffSuiteSync: () => Promise.resolve(),
     labeling: {
-        updateAccountLabel: () => {},
-        updateAddressLabel: () => {},
-        updateOutputLabel: () => {},
-        updateWalletLabel: () => {},
+        updateAccountLabel: () => Promise.resolve(ok()),
+        updateAddressLabel: () => Promise.resolve(ok()),
+        updateOutputLabel: () => Promise.resolve(ok()),
+        updateWalletLabel: () => Promise.resolve(ok()),
     },
 };
 

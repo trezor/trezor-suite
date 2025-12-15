@@ -18,7 +18,7 @@ export type RefreshSuiteSyncKeysDeps = {
 
 export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
-    async ({ device }) => {
+    async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
         if (
             device === undefined ||
             !device.connected || // disconnected device cannot resolve Evolu-Keys
@@ -62,9 +62,7 @@ export const createRefreshSuiteSync =
             switch (errType) {
                 case 'DeviceError':
                 case 'DeviceCancelled':
-                    deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
-
-                    return err(RefreshSuiteKeysUnavailable());
+                    return err(result.error);
 
                 // Those errors are most likely due to Bug in the code or data corruption
                 case 'CreateSuiteSyncOwnerError':

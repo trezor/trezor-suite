@@ -15,7 +15,7 @@ export type CreateSubscribeLabelingDeps = EnsureStorageDep &
 
 export const createSubscribeLabeling =
     (deps: CreateSubscribeLabelingDeps): SubscribeLabeling =>
-    async ({ deviceStaticSessionId }) => {
+    async ({ deviceStaticSessionId }): ReturnType<SubscribeLabeling> => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
         if (!storageResult.ok) {

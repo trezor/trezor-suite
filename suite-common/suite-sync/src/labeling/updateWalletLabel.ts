@@ -8,7 +8,7 @@ export type UpdateWalletLabelDeps = EnsureStorageDep;
 
 export const createUpdateWalletLabel =
     (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>
-    async ({ deviceStaticSessionId, label }) => {
+    async ({ deviceStaticSessionId, label }): ReturnType<UpdateWalletLabel> => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
         if (!storageResult.ok) {
