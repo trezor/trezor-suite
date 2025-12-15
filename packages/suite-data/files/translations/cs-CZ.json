@@ -2338,6 +2338,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Částka",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} směn} one {{totalSwaps} směna} few {{totalSwaps} směny} other {{totalSwaps} směn} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Bezpečnost je u Trezoru na prvním místě",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "nabídky s pevným kurzem",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "nabídky s pohyblivým kurzem",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Bezpečnost je u Trezoru na prvním místě",
   "TR_TRADING_SWAP_UNAVAILABLE": "Směna není k dispozici",
   "TR_TRADING_TERMS_1": "Invity tuto službu neposkytuje. Platí pro ni",

@@ -2339,6 +2339,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Valor do swap",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} trocas} one {{totalSwaps} troca} other {{totalSwaps} trocas} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "A Trezor prioriza sua segurança",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "ofertas de taxa fixa",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "ofertas de taxa flutuante",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "A Trezor prioriza sua segurança",
   "TR_TRADING_SWAP_UNAVAILABLE": "Troca indisponível",
   "TR_TRADING_TERMS_1": "A Invity não fornece este serviço. Ele é regulamentado por",

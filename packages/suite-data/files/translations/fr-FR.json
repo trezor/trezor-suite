@@ -2338,6 +2338,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Montant de l’échange",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} échanges} one {{totalSwaps} échange} other {{totalSwaps} échanges} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "La sécurité avant tout avec votre Trezor",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "Offres à taux fixe",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "Offres à taux variable",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "La sécurité avant tout avec votre Trezor",
   "TR_TRADING_SWAP_UNAVAILABLE": "Échange non disponible",
   "TR_TRADING_TERMS_1": "Invity ne fournis pas ce service. Celui-ci est régi par",
