@@ -28,6 +28,7 @@ export * from './components/OverviewValueSkeleton';
 export * from './components/ProviderLogo';
 export * from './components/SearchableSheetHeader';
 export * from './components/SheetHeaderTitle';
+export { WaitingCard, type WaitingCardProps } from './components/WaitingCard';
 
 export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useBottomSheetBackButtonSubscription';

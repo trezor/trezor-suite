@@ -7,9 +7,10 @@ import {
     selectTradingSellSelectedQuote,
     useTradingDetailData,
 } from '@suite-common/trading';
-import { AsyncButton } from '@suite-native/atoms';
+import { AsyncButton, InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { WaitingCard } from '@suite-native/trading-atoms';
 
 import { Footer } from '../components/general/Footer';
 import {
@@ -79,6 +80,23 @@ export const TradingSellPreviewScreen = () => {
 
     return (
         <Screen header={<SellPreviewScreenHeader />}>
+            <VStack spacing="sp16">
+                <WaitingCard
+                    title={
+                        <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.confirming" />
+                    }
+                    subtitle={
+                        <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.upTo30Seconds" />
+                    }
+                />
+                <InlineAlertBox
+                    title={
+                        <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.startOver" />
+                    }
+                    iconName="info"
+                    variant="info"
+                />
+            </VStack>
             <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
             {!isFinalized && (
                 <SellPreviewContinueButton
