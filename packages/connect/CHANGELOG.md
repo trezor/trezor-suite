@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.7.0-beta.2
+# 9.7.0
 
 We are deprecating `coreMode: 'iframe'` for connect-web, which is now limited due to [Local Network Access](https://developer.chrome.com/blog/local-network-access) permission. If you are using it explicitly, we recommend moving to `coreMode: 'auto'` for a better user experience.
 
@@ -19,6 +19,8 @@ We've updated `requestLogin` method to be up to date with the newer Connect impl
 However this change required removing the `callback` and `asyncChallenge` parameters, so please make sure to update your code accordingly by simply fetching the data first and passing it to the method.
 
 Monero support has been added to Connect APIs - `moneroGetAddress`, `moneroGetWatchKey`, `moneroKeyImageSync`, `moneroSignTransaction`.
+
+This release if used in nodejs environment it requires version 22 to work.
 
 This release also fixes import issues with CommonJS in Node environments.
 
