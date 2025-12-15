@@ -446,6 +446,7 @@ export const TradingFormOffer = () => {
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
                     size="large"
                     minWidth={160}
+                    width="100%"
                 >
                     <Translation id="TR_CONTINUE" />
                 </Button>
