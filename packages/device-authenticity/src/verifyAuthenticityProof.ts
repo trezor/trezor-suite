@@ -15,7 +15,7 @@ import { AlgorithmName, parseCertificate } from './x509certificate';
 // There is incomparability in results between nodejs and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
 // The only common format of publicKey is PEM.
-const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => {
+export const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => {
     const signer = crypto.createVerify('sha256');
     signer.update(Buffer.from(data));
 

@@ -1,4 +1,4 @@
-export { verifyAuthenticityProof } from './verifyAuthenticityProof';
+export { verifyAuthenticityProof, verifySignatureP256 } from './verifyAuthenticityProof';
 export { type AlgorithmName, parseName, parseCertificate } from './x509certificate';
 export { getRandomChallenge } from './utils';
 export type {
