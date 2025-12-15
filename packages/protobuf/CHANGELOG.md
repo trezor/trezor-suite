@@ -1,3 +1,18 @@
+# 1.5.0
+
+- npm-prerelease: @trezor/protobuf 1.5.0-beta.2 (107675da4a)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- fix(connect): PaymentRequest amount (c19c043570)
+- npm-prerelease: @trezor/protobuf 1.5.0-beta.1 (2a18d21102)
+- fix(protobuf): add patch for ThpDeviceProperties.pairing_methods (161406226b)
+- feat: update protobuf (4740d1637d)
+- feat(suite): add additional calls to connect for evolu (4e5f1fecbb)
+- fix(protobuf): update protobuf for monero (ca9dbb3525)
+- npm-prerelease: @trezor/protobuf 1.4.5-beta.1 (75adbf16e2)
+- feat(connect): monero support (7e4e42c9da)
+- chore(protobuf): update payment request amount (c9d8b3ee0b)
+- docs(packages): remove link to non-existing document (9291fe7872)
+
 # 1.4.4
 
 - npm-prerelease: @trezor/protobuf 1.4.4-beta.1 (2a3c8588b8)
