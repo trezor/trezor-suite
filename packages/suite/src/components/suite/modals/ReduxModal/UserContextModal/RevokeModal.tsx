@@ -154,7 +154,8 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
             }
             bottomContent={
                 <>
-                    {selectedQuote.status === 'CONFIRM' && (
+                    {(selectedQuote.status === 'CONFIRM' ||
+                        selectedQuote.status === 'APPROVAL_REQ') && (
                         <Modal.Button
                             size="medium"
                             isLoading={isFormLoading || isConfirmButtonLoading}
