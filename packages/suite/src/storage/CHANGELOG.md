@@ -3,6 +3,7 @@
 ## 26.1.0
 
 - remove TADA network
+- move THP `staticKey` to `credentials.host_static_key`
 
 ## 25.11.3
 
