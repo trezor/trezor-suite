@@ -5,12 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectThpStep } from '@suite-common/thp';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
-import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    StackNavigationProps,
-    useNavigateToInitialScreen,
-} from '@suite-native/navigation';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 import { useInitiateThpConnection } from '../hooks/useInitiateThpConnection';
 

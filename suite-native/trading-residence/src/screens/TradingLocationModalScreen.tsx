@@ -1,12 +1,7 @@
 import { CommonActions } from '@react-navigation/native';
 
-import {
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackProps } from '@suite-native/navigation';
+import { HomeStackRoutes, RootStackRoutes, Screen } from '@suite-native/navigation';
 
 import { OnboardingButtons } from '../components/OnboardingButtons';
 import { TradingLocationSettings } from '../components/TradingLocationSettings';

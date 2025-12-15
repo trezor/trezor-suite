@@ -1,4 +1,4 @@
-import { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
+import type { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';

@@ -2,9 +2,11 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../constants';
+import type { PROTO } from '../constants';
+import { ERRORS } from '../constants';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import type { MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { fixCoinInfoNetwork, getBitcoinNetwork, getUniqueNetworks } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import { type BitcoinNetworkInfo, Bundle } from '../types';

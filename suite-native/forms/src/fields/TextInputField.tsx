@@ -1,11 +1,12 @@
 import { forwardRef } from 'react';
 
-import { RequireOneOrNone } from 'type-fest';
+import type { RequireOneOrNone } from 'type-fest';
 
-import { Input, InputProps, InputType, InputWrapper, InputWrapperProps } from '@suite-native/atoms';
+import type { InputProps, InputType, InputWrapperProps } from '@suite-native/atoms';
+import { Input, InputWrapper } from '@suite-native/atoms';
 
 import { useField } from '../hooks/useField';
-import { FieldName } from '../types';
+import type { FieldName } from '../types';
 
 type AllowedTextInputFieldProps = Omit<
     Partial<InputProps>,

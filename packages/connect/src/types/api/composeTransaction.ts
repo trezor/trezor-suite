@@ -3,7 +3,7 @@ import type {
     AccountAddresses,
     Utxo as AccountUtxo,
 } from '@trezor/blockchain-link';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     ComposeInput as ComposeInputBase,
     ComposeOutput as ComposeOutputBase,

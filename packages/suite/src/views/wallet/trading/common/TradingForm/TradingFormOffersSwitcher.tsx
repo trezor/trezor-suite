@@ -4,7 +4,7 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FLOATING,
-    TradingType,
+    type TradingType,
     type TradingUtilsProvidersProps,
 } from '@suite-common/trading';
 import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
@@ -13,7 +13,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
+import type { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
 
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';

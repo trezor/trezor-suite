@@ -2,18 +2,19 @@
  * Use override for react-native (@suite-native/app/src/actions)
  */
 
-import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
-import { Route } from '@suite-common/suite-types';
-import { Branded } from '@trezor/type-utils';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
+import type { Route } from '@suite-common/suite-types';
+import type { Branded } from '@trezor/type-utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
-import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
+import type { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
+import type { RouteParams } from 'src/utils/suite/router';
 import {
-    RouteParams,
     findRoute,
     findRouteByName,
     getAppWithParams,

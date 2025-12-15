@@ -1,18 +1,14 @@
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
-import { Route } from '@suite-common/suite-types';
-import { Icon, IconName, IconSize, Paragraph, Tooltip, useElevation } from '@trezor/components';
+import type { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
+import type { Route } from '@suite-common/suite-types';
+import type { IconName, IconSize } from '@trezor/components';
+import { Icon, Paragraph, Tooltip, useElevation } from '@trezor/components';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import {
-    Elevation,
-    TypographyStyle,
-    borders,
-    mapElevationToBackground,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation, TypographyStyle } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';

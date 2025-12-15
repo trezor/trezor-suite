@@ -1,22 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { fireEvent, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts } from '@suite-native/trading-fixtures';
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
     tradingInitialState,
 } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { Address } from '@trezor/blockchain-link-types';
-import { StaticSessionId } from '@trezor/connect';
+import type { ReceiveAccount } from '@suite-native/trading-types';
+import type { Address } from '@trezor/blockchain-link-types';
+import type { StaticSessionId } from '@trezor/connect';
 
-import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
+import type { AccountsListProps } from '../AccountList';
+import { AccountList, keyExtractor } from '../AccountList';
 
 const defaultPreloadedState = {
     device: {

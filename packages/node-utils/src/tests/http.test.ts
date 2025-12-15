@@ -1,16 +1,10 @@
 import url from 'url';
 
-import { Log } from '@trezor/utils';
+import type { Log } from '@trezor/utils';
 
 import { getFreePort } from '../getFreePort';
-import {
-    HttpServer,
-    ParamsValidatorHandler,
-    RequestHandler,
-    allowReferers,
-    parseBodyJSON,
-    parseBodyText,
-} from '../http';
+import type { ParamsValidatorHandler, RequestHandler } from '../http';
+import { HttpServer, allowReferers, parseBodyJSON, parseBodyText } from '../http';
 
 type Events = {
     foo: (arg: string) => void;

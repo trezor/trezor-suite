@@ -4,18 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade, FormResponse } from 'invity-api';
 
+import type { TradingSendRejectedProps } from '@suite-common/trading';
 import {
-    TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';

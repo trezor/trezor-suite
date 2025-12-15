@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { SelectBar as SelectBarComponent, SelectBarProps } from './SelectBar';
+import type { SelectBarProps } from './SelectBar';
+import { SelectBar as SelectBarComponent } from './SelectBar';
 import { selectBarOrientations, selectBarSizes } from './types';
 
 const options = [

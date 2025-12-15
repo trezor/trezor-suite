@@ -1,9 +1,9 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { fetchCountryCodeThunk } from '@suite-common/geolocation';
 
 import { ROUTER } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { shouldFetchCountryCode } from 'src/utils/suite/geolocation';
 
 const router = (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {

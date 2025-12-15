@@ -3,7 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { DeviceReducerState } from '@suite-common/wallet-core';
+import type { DeviceReducerState } from '@suite-common/wallet-core';
 
 import fixtures from '../__fixtures__/publicKeyActions';
 

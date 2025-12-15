@@ -1,13 +1,13 @@
-import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
-import { TradingType } from '@suite-common/trading';
+import type { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
+import type { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { DeviceMode, VersionArray } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceMode, VersionArray } from '@trezor/connect';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 
-import { EventType } from './constants';
-import {
+import type { EventType } from './constants';
+import type {
     AnalyticsSendFlowStep,
     DemoAccountQuestionnaireLinkKey,
     DemoAccountQuestionnaireQuestion,

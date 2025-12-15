@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import {
-    AdvancedTokenStructure,
-    SimpleTokenStructure,
+    type AdvancedTokenStructure,
+    type SimpleTokenStructure,
     TokenStructureType,
 } from '../../src/tokenDefinitionsTypes';
 import { NFTS_PER_PAGE, NFT_LIST_URL } from '../constants';
-import { NftData } from '../types';
+import type { NftData } from '../types';
 
 const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftData[]> => {
     const params = new URLSearchParams({

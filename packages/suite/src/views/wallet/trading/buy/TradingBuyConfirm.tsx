@@ -3,7 +3,7 @@ import { FormProvider } from 'react-hook-form';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuyForm } from 'src/hooks/wallet/trading/form/useTradingBuyForm';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { UseTradingProps } from 'src/types/trading/trading';
+import type { UseTradingProps } from 'src/types/trading/trading';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';

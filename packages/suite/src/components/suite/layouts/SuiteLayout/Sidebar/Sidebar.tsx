@@ -7,8 +7,8 @@ import { selectDevicesCount, selectSelectedDevice } from '@suite-common/wallet-c
 import { Box, ElevationUp, Icon, ResizableBox, useElevation } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorLogo } from '@trezor/product-components';
+import type { Elevation } from '@trezor/theme';
 import {
-    Elevation,
     mapElevationToBackground,
     mapElevationToBorder,
     spacingsPx,

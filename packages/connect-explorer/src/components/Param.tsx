@@ -5,7 +5,8 @@ import styled from 'styled-components';
 
 import { Badge, useElevation } from '@trezor/components';
 import { useMDXComponents } from '@trezor/connect-explorer-theme';
-import { Elevation, mapElevationToBackground } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBackground } from '@trezor/theme';
 
 interface ParamProps {
     id?: string;

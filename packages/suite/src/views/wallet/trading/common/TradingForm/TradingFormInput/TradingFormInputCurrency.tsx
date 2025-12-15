@@ -1,16 +1,20 @@
 import { useMemo } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
+import type { TradingFiatCurrencyOption } from '@suite-common/trading';
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
-    TradingFiatCurrencyOption,
 } from '@suite-common/trading';
 import { buildCurrencyOptions, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingAllFormProps, TradingFormInputCurrencyProps } from 'src/types/trading/tradingForm';
+import type {
+    TradingAllFormProps,
+    TradingFormInputCurrencyProps,
+} from 'src/types/trading/tradingForm';
 import {
     getFiatCurrenciesProps,
     getSelectedTradingCurrency,

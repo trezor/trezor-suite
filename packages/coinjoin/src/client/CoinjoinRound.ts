@@ -1,15 +1,16 @@
 import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
-import { Network } from '@trezor/utxo-lib';
+import type { Network } from '@trezor/utxo-lib';
 
 import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
-import { EndRoundState, RoundPhase, SessionPhase } from '../enums';
-import { Account } from './Account';
+import type { EndRoundState } from '../enums';
+import { RoundPhase, SessionPhase } from '../enums';
+import type { Account } from './Account';
 import { Alice } from './Alice';
-import { CoinjoinPrison } from './CoinjoinPrison';
-import { CoinjoinClientEvents, Logger } from '../types';
-import { AccountAddress, RegisterAccountParams } from '../types/account';
-import { AffiliationId, CoinjoinRoundParameters, Round } from '../types/coordinator';
-import {
+import type { CoinjoinPrison } from './CoinjoinPrison';
+import type { CoinjoinClientEvents, Logger } from '../types';
+import type { AccountAddress, RegisterAccountParams } from '../types/account';
+import type { AffiliationId, CoinjoinRoundParameters, Round } from '../types/coordinator';
+import type {
     BroadcastedTransactionDetails,
     CoinjoinRequestEvent,
     CoinjoinResponseEvent,

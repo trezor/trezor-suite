@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';

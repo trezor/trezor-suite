@@ -4,15 +4,17 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceInBootloader } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
+import type {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
     HomeStackRoutes,
     LoadingSuccessScreen,
-    RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

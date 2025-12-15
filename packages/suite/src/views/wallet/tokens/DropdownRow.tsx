@@ -1,12 +1,15 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Badge, Icon, Row, Text, TextVariant } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import type { TextVariant } from '@trezor/components';
+import { Badge, Icon, Row, Text } from '@trezor/components';
+import type { TypographyStyle } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`
     transition: transform 0.2s ease-in-out;

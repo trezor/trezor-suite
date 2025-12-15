@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { FlexProps, Row } from '@trezor/components';
+import type { FlexProps } from '@trezor/components';
+import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const OptionRowStyled = styled.div`

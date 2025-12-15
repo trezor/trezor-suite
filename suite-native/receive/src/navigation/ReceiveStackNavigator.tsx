@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    ReceiveStackParamList,
-    ReceiveStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { ReceiveStackParamList } from '@suite-native/navigation';
+import { ReceiveStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { ReceiveAccountScreen } from '../screens/ReceiveAccountScreen';
 import { ReceiveAccountsScreen } from '../screens/ReceiveAccountsScreen';

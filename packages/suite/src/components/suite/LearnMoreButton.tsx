@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Button, ButtonProps } from '@trezor/components';
-import { Url } from '@trezor/urls';
+import type { ButtonProps } from '@trezor/components';
+import { Button } from '@trezor/components';
+import type { Url } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 

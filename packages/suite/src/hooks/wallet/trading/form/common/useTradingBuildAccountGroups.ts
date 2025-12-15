@@ -5,7 +5,7 @@ import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core'
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-import { TradingAccountsOptionsGroupProps } from 'src/types/trading/trading';
+import type { TradingAccountsOptionsGroupProps } from 'src/types/trading/trading';
 import { tradingBuildAccountOptions } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuildAccountGroups = (

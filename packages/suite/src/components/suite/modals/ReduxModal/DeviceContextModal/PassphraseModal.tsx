@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,

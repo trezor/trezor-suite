@@ -1,11 +1,11 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { NativeSupportedFeeLevel } from '../../../types/fees';
+import type { NativeSupportedFeeLevel } from '../../../types/fees';
 import { FeesContent } from '../FeesContent';
 
 // Create a simple validation schema for testing

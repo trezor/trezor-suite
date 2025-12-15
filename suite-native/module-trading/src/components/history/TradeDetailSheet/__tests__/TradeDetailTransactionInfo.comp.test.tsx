@@ -1,5 +1,6 @@
-import { TradingTransaction } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TradingTransaction } from '@suite-common/trading';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     accounts,
     getBuyTrade,
@@ -7,12 +8,10 @@ import {
     getInitializedTradingState,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
-import {
-    TradeDetailTransactionInfo,
-    TradeDetailTransactionInfoProps,
-} from '../TradeDetailTransactionInfo';
+import type { TradeDetailTransactionInfoProps } from '../TradeDetailTransactionInfo';
+import { TradeDetailTransactionInfo } from '../TradeDetailTransactionInfo';
 
 const getPreloadedState = (trades: TradingTransaction[]): PreloadedState => ({
     device: {

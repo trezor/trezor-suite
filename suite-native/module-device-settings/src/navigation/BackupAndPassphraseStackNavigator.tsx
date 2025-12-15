@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
+import type { BackupAndPassphraseParamList } from '@suite-native/navigation';
 import {
-    BackupAndPassphraseParamList,
     BackupAndPassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

@@ -2,12 +2,8 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    TradingExchangeType,
-    invityAPI,
-    tokenSupportsIncreasingAllowance,
-    useTradingInfo,
-} from '@suite-common/trading';
+import type { TradingExchangeType } from '@suite-common/trading';
+import { invityAPI, tokenSupportsIncreasingAllowance, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Banner,

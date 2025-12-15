@@ -1,15 +1,16 @@
 import { createHash, randomBytes } from 'crypto';
 
 import { aesgcm } from './aesgcm';
-import { curve25519, elligator2, getCurve25519KeyPair } from './curve25519';
+import type { getCurve25519KeyPair } from './curve25519';
+import { curve25519, elligator2 } from './curve25519';
 import { bigEndianBytesToBigInt, getIvFromNonce, hashOfTwo, hkdf, sha256 } from './tools';
-import { ThpState } from '../ThpState';
-import {
+import type { ThpState } from '../ThpState';
+import type {
     ThpCredentialResponse,
     ThpHandshakeCredentials,
     ThpHandshakeInitResponse,
-    ThpPairingMethod,
 } from '../messages';
+import { ThpPairingMethod } from '../messages';
 
 const getProtocolName = () =>
     Buffer.concat([Buffer.from('Noise_XX_25519_AESGCM_SHA256'), Buffer.alloc(4).fill(0)]);

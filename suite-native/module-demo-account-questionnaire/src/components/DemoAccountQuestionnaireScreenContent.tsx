@@ -3,22 +3,21 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
+import type {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,
-    EventType,
-    analytics,
 } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
+import type { IconName } from '@suite-native/icons';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type {
     DemoAccountQuestionnaireStackParamList,
     DemoAccountQuestionnaireStackRoutes,
-    Screen,
-    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 

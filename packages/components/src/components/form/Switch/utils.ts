@@ -1,4 +1,5 @@
-import { SpacingValues, TypographyStyle, spacings } from '@trezor/theme';
+import type { SpacingValues, TypographyStyle } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { type SwitchSize } from './types';
 

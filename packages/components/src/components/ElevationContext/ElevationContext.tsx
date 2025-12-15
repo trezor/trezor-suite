@@ -1,8 +1,10 @@
-import { ReactNode, createContext, useContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, nextElevation, prevElevation } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { nextElevation, prevElevation } from '@trezor/theme';
 
 const DEBUG = false;
 

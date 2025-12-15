@@ -1,12 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { allowedAnimationPrimitivesFrameProps, getFramePropsStory } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
-    RotateDeviceImage as RotateDeviceImageComponent,
-    RotateDeviceImageProps,
-} from './RotateDeviceImage';
+import type { RotateDeviceImageProps } from './RotateDeviceImage';
+import { RotateDeviceImage as RotateDeviceImageComponent } from './RotateDeviceImage';
 
 const meta: Meta<typeof RotateDeviceImageComponent> = {
     title: 'RotateDeviceImage',

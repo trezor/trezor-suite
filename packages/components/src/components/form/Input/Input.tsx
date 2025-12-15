@@ -1,29 +1,23 @@
-import { InputHTMLAttributes, ReactElement, Ref, useState } from 'react';
+import type { InputHTMLAttributes, ReactElement, Ref } from 'react';
+import { useState } from 'react';
 import { useMeasure } from 'react-use';
 
 import styled from 'styled-components';
 
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
-import { UIAlignment } from '../../../config/types';
-import { FrameProps } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { UIAlignment } from '../../../config/types';
+import type { FrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Icon } from '../../Icon/Icon';
-import {
-    TextProps,
-    TextPropsKeys,
-    pickAndPrepareTextProps,
-    withTextProps,
-} from '../../typography/utils';
-import {
-    FormCell,
-    FormCellProps,
-    allowedFormCellFrameProps,
-    pickFormCellProps,
-} from '../FormCell/FormCell';
-import { BaseInputProps, INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
-import { InputSize } from '../types';
+import type { TextProps, TextPropsKeys } from '../../typography/utils';
+import { pickAndPrepareTextProps, withTextProps } from '../../typography/utils';
+import type { FormCellProps } from '../FormCell/FormCell';
+import { FormCell, allowedFormCellFrameProps, pickFormCellProps } from '../FormCell/FormCell';
+import type { BaseInputProps } from '../styles';
+import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
+import type { InputSize } from '../types';
 
 export const allowedInputFrameProps = allowedFormCellFrameProps;
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedInputFrameProps)[number]>;

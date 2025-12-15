@@ -1,8 +1,8 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 
 const onboardingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

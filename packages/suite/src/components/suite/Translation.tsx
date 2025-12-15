@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 
 // We cannot use aliases here because this file is directly imported by the @suite-common/intl-types
 // It's little hacky by this will be solved when PR for refactor intl will be merged.

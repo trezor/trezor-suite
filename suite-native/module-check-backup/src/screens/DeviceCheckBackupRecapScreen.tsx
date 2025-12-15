@@ -1,12 +1,12 @@
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes } from '@suite-native/navigation';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 
 import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';

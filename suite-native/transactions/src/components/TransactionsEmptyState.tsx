@@ -5,12 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    ReceiveStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';
 

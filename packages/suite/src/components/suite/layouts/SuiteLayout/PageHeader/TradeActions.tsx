@@ -1,6 +1,6 @@
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';

@@ -6,7 +6,7 @@ import { initialWalletSettingsState, prepareDeviceReducer } from '@suite-common/
 
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import metadataReducer from 'src/reducers/suite/metadataReducer';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { accountsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';

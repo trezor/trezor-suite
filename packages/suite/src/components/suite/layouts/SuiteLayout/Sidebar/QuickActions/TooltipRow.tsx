@@ -1,17 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import {
-    Column,
-    Icon,
-    IconName,
-    IconVariant,
-    Row,
-    Text,
-    getColorForIconVariant,
-    iconSizes,
-} from '@trezor/components';
+import type { IconName, IconVariant } from '@trezor/components';
+import { Column, Icon, Row, Text, getColorForIconVariant, iconSizes } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 type IconCircleWrapperProps = {

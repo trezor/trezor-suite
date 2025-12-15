@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import type { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

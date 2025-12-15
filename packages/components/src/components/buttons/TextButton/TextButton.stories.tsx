@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
+import type { TextButtonProps } from './TextButton';
 import {
     TextButton as TextButtonComponent,
-    TextButtonProps,
     allowedTextButtonFrameProps,
     textButtonSizes,
     textButtonVariants,

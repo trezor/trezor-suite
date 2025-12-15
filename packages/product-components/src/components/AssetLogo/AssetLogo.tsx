@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     getNetwork,
     getNetworkByCoingeckoId,
@@ -12,19 +12,19 @@ import {
 } from '@suite-common/wallet-config';
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import type { FrameProps, FramePropsKeys, TransientProps } from '@trezor/components';
 import {
     ElevationUp,
-    FrameProps,
-    FramePropsKeys,
-    TransientProps,
     pickAndPrepareFrameProps,
     useElevation,
     withFrameProps,
 } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetInitials } from './AssetInitials';
-import { LegacyNetworkSymbol, isNetworkSymbolWithIcon } from '../../constants/networks';
+import type { LegacyNetworkSymbol } from '../../constants/networks';
+import { isNetworkSymbolWithIcon } from '../../constants/networks';
 import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 
 export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;

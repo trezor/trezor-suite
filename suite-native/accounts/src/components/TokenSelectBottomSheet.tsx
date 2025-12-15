@@ -1,12 +1,14 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WritableAtom, useAtom } from 'jotai';
+import type { WritableAtom } from 'jotai';
+import { useAtom } from 'jotai';
 
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 
-import { NativeAccountsRootState, selectAccountListSections } from '../selectors';
-import { OnSelectAccount } from '../types';
+import type { NativeAccountsRootState } from '../selectors';
+import { selectAccountListSections } from '../selectors';
+import type { OnSelectAccount } from '../types';
 import { AccountSelectBottomSheet } from './AccountSelectBottomSheet';
 
 type TokenSelectBottomSheetProps = {

@@ -1,9 +1,9 @@
-import {
+import type {
     AccountLabels,
     MetadataEncryptionVersion,
     WalletLabels,
 } from '@suite-common/metadata-types';
-import { TrezorConnect } from '@trezor/connect';
+import type { TrezorConnect } from '@trezor/connect';
 
 export const FORMAT_VERSION = '1.0.0';
 

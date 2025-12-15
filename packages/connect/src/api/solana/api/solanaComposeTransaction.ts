@@ -5,7 +5,7 @@ import { initBlockchain, isBackendSupported } from '../../../backend/BlockchainL
 import { ERRORS } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getCoinInfo } from '../../../data/coinInfo';
-import { CoinInfo } from '../../../types';
+import type { CoinInfo } from '../../../types';
 import { SolanaComposeTransaction as SolanaComposeTransactionSchema } from '../../../types/api/solana';
 import {
     buildTokenTransferTransaction,

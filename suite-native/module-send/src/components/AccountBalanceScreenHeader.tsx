@@ -1,12 +1,14 @@
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenInfo } from '@suite-native/tokens';
 
 type AccountBalanceScreenHeaderProps = {
     accountKey: AccountKey;

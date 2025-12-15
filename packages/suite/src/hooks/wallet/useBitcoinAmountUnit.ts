@@ -1,4 +1,5 @@
-import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 import {
     selectDeviceUnavailableCapabilities,
     setBitcoinAmountUnits,

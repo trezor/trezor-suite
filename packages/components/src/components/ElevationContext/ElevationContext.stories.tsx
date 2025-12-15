@@ -1,15 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import {
     ElevationContext as ElevationContextComponent,

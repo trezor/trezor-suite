@@ -1,11 +1,6 @@
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBtcAccount, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useSellData } from '../useSellData';

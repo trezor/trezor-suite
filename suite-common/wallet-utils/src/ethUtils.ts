@@ -1,7 +1,7 @@
 import { decodeParameters } from 'web3-eth-abi';
 import { sha3 } from 'web3-utils';
 
-import { EvmTransactionPurpose } from '@suite-common/wallet-types';
+import type { EvmTransactionPurpose } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const isEip1559 = (

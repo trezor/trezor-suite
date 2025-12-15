@@ -1,12 +1,8 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    StackNavigationProps,
-    WipeDeviceStackRoutes,
-} from '@suite-native/navigation';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, WipeDeviceStackRoutes } from '@suite-native/navigation';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 

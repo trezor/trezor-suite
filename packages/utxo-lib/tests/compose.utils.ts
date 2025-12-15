@@ -4,7 +4,7 @@
 // https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/src/apps/bitcoin/sign_tx/tx_weight.py
 // https://github.com/trezor/trezor-firmware/blob/1fceca73da523c5bf2bb0f398c91e00c728bdbe0/core/tests/test_apps.bitcoin.txweight.py
 
-import {
+import type {
     CoinSelectPaymentType,
     ComposeChangeAddress,
     ComposeInput,

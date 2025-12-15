@@ -1,6 +1,6 @@
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import type { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

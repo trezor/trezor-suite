@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { InputButton as InputButtonComponent, InputButtonProps } from './InputButton';
+import type { InputButtonProps } from './InputButton';
+import { InputButton as InputButtonComponent } from './InputButton';
 import { variables } from '../../../config';
 
 const meta: Meta<typeof InputButtonComponent> = {

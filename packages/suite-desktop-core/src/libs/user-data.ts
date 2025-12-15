@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
-import { InvokeResult } from '@trezor/suite-desktop-api';
+import type { InvokeResult } from '@trezor/suite-desktop-api';
 
 export const clearAppCache = () =>
     new Promise<void>((resolve, reject) => {

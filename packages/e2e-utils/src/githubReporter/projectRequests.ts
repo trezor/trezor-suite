@@ -1,6 +1,6 @@
 import type { Octokit } from '@octokit/rest';
 
-import {
+import type {
     CreateFieldResponse,
     CreateProjectMutation,
     LoggingFunctions,

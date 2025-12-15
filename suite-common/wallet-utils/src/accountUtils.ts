@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
     type Bip43Path,
@@ -14,7 +14,7 @@ import {
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
-import {
+import type {
     Account,
     AccountDescriptor,
     AccountKey,
@@ -28,7 +28,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
-import TrezorConnect, {
+import type {
     AccountAddress,
     AccountAddresses,
     AccountInfo,
@@ -40,13 +40,16 @@ import TrezorConnect, {
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import type { BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { getAccountDecimals } from './amountUtils';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
+import type { BaseCurrencyAmount } from './baseCurrency';
+import { asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';

@@ -1,4 +1,5 @@
-import { ReactNode, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite-native/intl';
 
@@ -8,7 +9,8 @@ import { ScreenFooterGradient } from '../ScreenFooterGradient';
 import { BottomSheetModal } from '../Sheet/BottomSheetModal';
 import { useBottomSheetModal } from '../Sheet/hooks/useBottomSheetModal';
 import { VStack } from '../Stack';
-import { SelectItem, SelectItemValue } from './SelectItem';
+import type { SelectItemValue } from './SelectItem';
+import { SelectItem } from './SelectItem';
 import { SelectTrigger } from './SelectTrigger';
 
 export type SelectItemType<TItemValue extends SelectItemValue> = {

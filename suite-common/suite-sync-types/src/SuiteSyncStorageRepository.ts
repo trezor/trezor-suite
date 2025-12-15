@@ -1,5 +1,5 @@
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { SuiteSyncOwner, SuiteSyncOwnerId } from '@suite-common/suite-types';
+import type { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import type { SuiteSyncOwner, SuiteSyncOwnerId } from '@suite-common/suite-types';
 
 export type SuiteSyncStorageRepository = {
     get: (owner: SuiteSyncOwner) => SuiteSyncStorage;

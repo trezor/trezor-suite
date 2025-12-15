@@ -1,4 +1,5 @@
-import { AbstractApiTransport, Transport as AbstractTransport } from '@trezor/transport';
+import type { Transport as AbstractTransport } from '@trezor/transport';
+import { AbstractApiTransport } from '@trezor/transport';
 
 import { BluetoothApi } from './api/BluetoothApi';
 

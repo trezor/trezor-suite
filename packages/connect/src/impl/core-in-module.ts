@@ -1,14 +1,18 @@
 import EventEmitter from 'events';
 
-import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
+import type { DeferredManager } from '@trezor/utils';
+import { cloneObject, createDeferredManager } from '@trezor/utils';
 
 import * as ERRORS from '../constants/errors';
 import { parseConnectSettings } from '../data/connectSettings';
-import {
-    BLOCKCHAIN_EVENT,
+import type {
     CallMethodPayload,
     CoreEventMessage,
     CoreRequestMessage,
+    UiResponseEvent,
+} from '../events';
+import {
+    BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
     IFRAME,
     POPUP,
@@ -17,13 +21,14 @@ import {
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
 } from '../events';
-import { ConnectFactoryDependencies, factory } from '../factory';
+import type { ConnectFactoryDependencies } from '../factory';
+import { factory } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
 import type { SetTransports } from '../types/api/setTransports';
-import { Log, initLog } from '../utils/debug';
+import type { Log } from '../utils/debug';
+import { initLog } from '../utils/debug';
 
 export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsPublic> {
     public eventEmitter = new EventEmitter();

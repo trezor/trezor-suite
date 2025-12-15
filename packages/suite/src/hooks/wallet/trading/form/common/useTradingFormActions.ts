@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -21,7 +22,7 @@ import {
     selectIsNetworkReserveEnabled,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -34,8 +35,8 @@ import { BigNumber, isChanged } from '@trezor/utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
-import {
+import type { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
+import type {
     TradingSellExchangeFormProps,
     TradingUseFormActionsProps,
     TradingUseFormActionsReturnProps,

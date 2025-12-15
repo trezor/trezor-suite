@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';

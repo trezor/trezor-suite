@@ -1,4 +1,7 @@
-import { Account as CommonAccount, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type {
+    Account as CommonAccount,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 
 export const accounts: CommonAccount[] = [
     {

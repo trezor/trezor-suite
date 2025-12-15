@@ -1,7 +1,8 @@
 import BN from 'bn.js';
 
-import { Network, isNetworkType } from '../networks';
-import {
+import type { Network } from '../networks';
+import { isNetworkType } from '../networks';
+import type {
     CoinSelectAlgorithm,
     CoinSelectInput,
     CoinSelectOptions,

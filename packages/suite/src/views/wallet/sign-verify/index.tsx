@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FieldError } from 'react-hook-form';
+import type { FieldError } from 'react-hook-form';
 
 import { getInputState } from '@suite-common/wallet-utils';
 import {
@@ -19,14 +19,15 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { spacings } from '@trezor/theme';
 
 import { isVerifySupported, sign, verify } from 'src/actions/wallet/signVerifyActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCopySignedMessage } from 'src/hooks/wallet/sign-verify/useCopySignedMessage';
+import type { SignVerifyFields } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import {
     MAX_LENGTH_MESSAGE,
     MAX_LENGTH_SIGNATURE,
-    SignVerifyFields,
     useSignVerifyForm,
 } from 'src/hooks/wallet/sign-verify/useSignVerifyForm';
 import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';

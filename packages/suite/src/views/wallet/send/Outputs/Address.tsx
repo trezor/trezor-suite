@@ -21,7 +21,7 @@ import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import {
     HELP_CENTER_EVM_ADDRESS_CHECKSUM,
@@ -32,7 +32,7 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
-import { InputErrorProps } from 'src/components/wallet/InputError';
+import type { InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

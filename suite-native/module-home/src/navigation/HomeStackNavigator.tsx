@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    HomeStackParamList,
-    HomeStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { HomeStackParamList } from '@suite-native/navigation';
+import { HomeStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { HomeScreen } from '../screens/HomeScreen/HomeScreen';
 

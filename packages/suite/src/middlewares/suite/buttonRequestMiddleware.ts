@@ -1,10 +1,10 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import TrezorConnect, { UI } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

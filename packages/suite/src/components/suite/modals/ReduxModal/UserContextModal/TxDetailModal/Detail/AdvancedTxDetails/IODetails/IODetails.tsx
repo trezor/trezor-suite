@@ -1,4 +1,4 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

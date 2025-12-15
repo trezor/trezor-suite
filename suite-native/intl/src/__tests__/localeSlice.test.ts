@@ -1,11 +1,8 @@
-import { DEFAULT_LOCALE, LocaleCode } from '../languages';
-import {
-    LocaleSliceRootState,
-    LocaleState,
-    selectLocale,
-    selectSupportedLanguageLocale,
-} from '../localeSlice';
-import { SupportedLocaleCode } from '../types';
+import type { LocaleCode } from '../languages';
+import { DEFAULT_LOCALE } from '../languages';
+import type { LocaleSliceRootState, LocaleState } from '../localeSlice';
+import { selectLocale, selectSupportedLanguageLocale } from '../localeSlice';
+import type { SupportedLocaleCode } from '../types';
 
 describe('selectSupportedLanguageLocale', () => {
     const testCases = [

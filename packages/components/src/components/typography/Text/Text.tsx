@@ -1,23 +1,16 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { CSSColor, Color, Colors, borders, spacingsPx } from '@trezor/theme';
+import type { CSSColor, Color, Colors } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
 
 import { uiVariants } from '../../../config/types';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
-import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
-    pickAndPrepareTextProps,
-    withTextProps,
-} from '../utils';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
+import type { TextProps as TextPropsCommon, TextPropsKeys } from '../utils';
+import { pickAndPrepareTextProps, withTextProps } from '../utils';
 
 export const allowedTextTextProps = [
     'typographyStyle',

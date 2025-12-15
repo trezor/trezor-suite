@@ -9,7 +9,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 interface AccountEmptyProps {
     account: Account;

@@ -2,7 +2,7 @@ import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Transport } from '@trezor/transport';
-import { PartialRecord } from '@trezor/type-utils';
+import type { PartialRecord } from '@trezor/type-utils';
 
 import type { FirmwareUpdateSource } from '../types/firmware';
 

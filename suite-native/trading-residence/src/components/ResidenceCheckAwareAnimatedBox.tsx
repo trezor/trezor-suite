@@ -1,7 +1,8 @@
 import { StretchInY, StretchOutY } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { AnimatedBox, BoxProps } from '@suite-native/atoms';
+import type { BoxProps } from '@suite-native/atoms';
+import { AnimatedBox } from '@suite-native/atoms';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

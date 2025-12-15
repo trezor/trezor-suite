@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import fs, { readdirSync } from 'fs';
 import { createRequire } from 'module';
 import { resolve } from 'path';
-import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
+import { type Plugin, type ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
 import { suiteVersion } from '../suite/package.json';

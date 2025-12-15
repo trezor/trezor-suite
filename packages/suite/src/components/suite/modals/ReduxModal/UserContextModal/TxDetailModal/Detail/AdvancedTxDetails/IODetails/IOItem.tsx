@@ -1,13 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import {
-    NetworkSymbolExtended,
-    getExplorerUrl,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { getExplorerUrl, isNetworkSymbol } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { AnonymitySet } from '@trezor/blockchain-link-types';
+import type { AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

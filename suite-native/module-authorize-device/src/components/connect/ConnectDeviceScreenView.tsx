@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
 import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import { Screen } from '@suite-native/navigation';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import type { NativeStyleObject } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ConnectDeviceScreenViewProps = {
     children: ReactNode;

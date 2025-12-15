@@ -1,4 +1,5 @@
-import { ReactElement, useCallback } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback } from 'react';
 import {
     runOnJS,
     useAnimatedReaction,

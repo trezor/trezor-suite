@@ -1,9 +1,9 @@
-import {
+import type {
     EncryptableBranded,
     EncryptedHex,
     PlatformEncryption,
-    asEncryptedHex,
 } from '@suite-common/platform-encryption';
+import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { type DesktopApi } from '@trezor/suite-desktop-api';
 import { ok } from '@trezor/type-utils';
 

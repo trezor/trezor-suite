@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

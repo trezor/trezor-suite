@@ -1,6 +1,7 @@
-import { Evolu, EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
+import type { Evolu, EvoluDeps } from '@evolu/common';
+import { SimpleName, createEvolu } from '@evolu/common';
 
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import type { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
 import { Schema } from './schema';

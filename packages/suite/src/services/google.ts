@@ -9,7 +9,7 @@
 import { isDesktop } from '@trezor/env-utils';
 
 import { METADATA_PROVIDER } from 'src/actions/suite/constants';
-import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
+import type { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import {
     extractCredentialsFromAuthorizationFlow,
     getOauthReceiverUrl,

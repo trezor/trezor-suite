@@ -2,8 +2,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
-import { AnyPath, AnyStepId, Step, StepCategory } from 'src/types/onboarding';
-import { TrezorDevice } from 'src/types/suite';
+import type { AnyPath, AnyStepId, Step, StepCategory } from 'src/types/onboarding';
+import type { TrezorDevice } from 'src/types/suite';
 
 import { stepCategories } from '../../config/onboarding/steps';
 

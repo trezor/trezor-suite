@@ -1,15 +1,11 @@
 import { sendFormActions } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { transactionManagementActions } from '@suite-native/transaction-management';
 
-import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
+import type { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
 const mockSignAndSendTransaction = jest.fn(() => Promise.resolve(true));

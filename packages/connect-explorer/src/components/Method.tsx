@@ -5,7 +5,8 @@ import { Inspector } from 'react-inspector';
 import { CopyToClipboard } from 'nextra/components';
 import styled, { useTheme } from 'styled-components';
 
-import { Button, ButtonProps, Card, IconButton, Row, Text, variables } from '@trezor/components';
+import type { ButtonProps } from '@trezor/components';
+import { Button, Card, IconButton, Row, Text, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import * as methodActions from '../actions/methodActions';

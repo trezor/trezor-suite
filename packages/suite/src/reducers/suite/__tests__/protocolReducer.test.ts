@@ -1,7 +1,8 @@
 import type { Action } from 'src/types/suite';
 
 import fixtures from '../__fixtures__/protocolReducer';
-import protocolReducer, { ProtocolState } from '../protocolReducer';
+import type { ProtocolState } from '../protocolReducer';
+import protocolReducer from '../protocolReducer';
 
 describe('Protocol reducer', () => {
     fixtures.forEach(f => {

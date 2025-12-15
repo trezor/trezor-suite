@@ -1,4 +1,4 @@
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isPending,

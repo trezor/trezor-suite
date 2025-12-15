@@ -1,12 +1,15 @@
-import { BluetoothState, prepareInitialState } from '@suite-common/bluetooth';
+import type { BluetoothState } from '@suite-common/bluetooth';
+import { prepareInitialState } from '@suite-common/bluetooth';
 import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/src/support/mocks';
-import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
-import { ThpState, initialThpState } from '@suite-common/thp';
+import type { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import type { ThpState } from '@suite-common/thp';
+import { initialThpState } from '@suite-common/thp';
 import { createCredential, createDeviceThp } from '@suite-common/thp/src/support/mocks';
 import { asBluetoothDeviceId } from '@trezor/connect';
 
 import { defaultDevicePersistentData } from '../../support/deviceMocks';
-import { DeviceReducerState, deviceInitialState } from '../deviceReducer';
+import type { DeviceReducerState } from '../deviceReducer';
+import { deviceInitialState } from '../deviceReducer';
 
 type ForgetPersistentDataPreloadedState = {
     device: DeviceReducerState;

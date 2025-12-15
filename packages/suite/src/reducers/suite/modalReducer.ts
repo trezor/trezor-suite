@@ -1,14 +1,13 @@
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
-import {
-    DEVICE,
+import type {
     Device,
-    UI,
     UiRequestButtonData,
     UiRequestConfirmation,
     UiRequestSelectAccount,
     UiRequestSelectFee,
 } from '@trezor/connect';
+import { DEVICE, UI } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
 import { MODAL } from 'src/actions/suite/constants';

@@ -1,4 +1,4 @@
-import {
+import type {
     FieldError,
     FieldErrors,
     FieldErrorsImpl,
@@ -9,7 +9,8 @@ import {
 
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
-import { Network, NetworkSymbol, NetworkType, getNetwork } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     COMPOSE_ERROR_TYPES,
     DEFAULT_PAYMENT,
@@ -33,8 +34,9 @@ import type {
     SendFormDraftKey,
     TokenAddress,
 } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
-import {
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { baseCurrencies } from '@trezor/blockchain-link-types';
+import type {
     ComposeOutput,
     EthereumTransaction,
     EthereumTransactionEIP1559,

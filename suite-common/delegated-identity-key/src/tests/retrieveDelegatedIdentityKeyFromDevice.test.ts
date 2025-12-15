@@ -1,10 +1,11 @@
-import { DeviceIdentity, asDeviceUniquePath } from '@trezor/connect';
+import type { DeviceIdentity } from '@trezor/connect';
+import { asDeviceUniquePath } from '@trezor/connect';
 
-import {
+import type {
     RetrieveDelegatedIdentityKeyFromDeviceDeps,
     RetrieveDelegatedIdentityKeyParams,
-    createRetrieveDelegatedIdentityKeyFromDevice,
 } from '../retrieveDelegatedIdentityKeyFromDevice';
+import { createRetrieveDelegatedIdentityKeyFromDevice } from '../retrieveDelegatedIdentityKeyFromDevice';
 
 const device123: RetrieveDelegatedIdentityKeyParams['device'] = {
     path: asDeviceUniquePath('1/2/3'),

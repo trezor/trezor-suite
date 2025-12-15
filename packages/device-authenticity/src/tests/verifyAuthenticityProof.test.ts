@@ -1,6 +1,6 @@
 import type { DeviceAuthenticityBlacklistConfig } from '../config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from '../config/deviceAuthenticityConfigTypes';
-import { VerifyAuthenticityProofParams } from '../types';
+import type { VerifyAuthenticityProofParams } from '../types';
 import { verifyAuthenticityProof } from '../verifyAuthenticityProof';
 
 const CA_CERT_OPTIGA =

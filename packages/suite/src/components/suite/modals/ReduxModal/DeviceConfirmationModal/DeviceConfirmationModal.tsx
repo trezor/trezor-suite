@@ -1,6 +1,6 @@
 import { UI } from '@trezor/connect';
 
-import { MODAL } from 'src/actions/suite/constants';
+import type { MODAL } from 'src/actions/suite/constants';
 
 import { SelectAccountModal } from './SelectAccountModal';
 import { SelectFeeModal } from './SelectFeeModal';

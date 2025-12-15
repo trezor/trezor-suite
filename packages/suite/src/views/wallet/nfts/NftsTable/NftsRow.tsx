@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
+import type { EnhancedTokenInfo } from '@suite-common/token-definitions';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { Explorer, Network } from '@suite-common/wallet-config';
+import type { Explorer, Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import {
     Badge,

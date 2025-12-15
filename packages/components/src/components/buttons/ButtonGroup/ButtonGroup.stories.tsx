@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { ButtonGroup, ButtonGroupProps, allowedButtonGroupFrameProps } from './ButtonGroup';
+import type { ButtonGroupProps } from './ButtonGroup';
+import { ButtonGroup, allowedButtonGroupFrameProps } from './ButtonGroup';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { Tooltip } from '../../Tooltip/Tooltip';
 import { Button } from '../Button/Button';

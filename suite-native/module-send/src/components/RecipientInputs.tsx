@@ -2,8 +2,9 @@ import React from 'react';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { CardDivider, VStack } from '@suite-native/atoms';
 
 import { AddressInput } from './AddressInput';

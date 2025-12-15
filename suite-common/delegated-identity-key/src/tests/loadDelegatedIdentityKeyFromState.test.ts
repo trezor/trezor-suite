@@ -1,7 +1,6 @@
+import type { EncryptableBranded, EncryptedHex } from '@suite-common/platform-encryption';
 import {
     DecryptionFailed,
-    EncryptableBranded,
-    EncryptedHex,
     EncryptionUnavailable,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';

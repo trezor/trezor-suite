@@ -2,21 +2,19 @@ import { useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
+import type { NotificationEntry } from '@suite-common/toast-notifications';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Column, Icon, Row } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import {
-    NotificationRenderer,
-    NotificationViewProps,
-    mapActionVariantToIntent,
-} from 'src/components/suite';
+import type { NotificationViewProps } from 'src/components/suite';
+import { NotificationRenderer, mapActionVariantToIntent } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 
-import { ToastNotificationVariant } from '../../../types/suite';
-import { NotificationAction } from './Notifications/NotificationGroup/NotificationList/NotificationView';
+import type { ToastNotificationVariant } from '../../../types/suite';
+import type { NotificationAction } from './Notifications/NotificationGroup/NotificationList/NotificationView';
 
 const Wrapper = styled.div<{ $variant: ToastNotificationVariant }>`
     display: flex;

@@ -1,10 +1,6 @@
-import {
-    AccountType,
-    Bip43PathTemplate,
-    NetworkType,
-    getNetwork,
-} from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { AccountType, Bip43PathTemplate, NetworkType } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';

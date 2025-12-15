@@ -9,8 +9,8 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
+import type { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
 import {
-    SeedInputStatus,
     checkSeed,
     setAdvancedRecovery,
     setStatus,

@@ -1,9 +1,5 @@
-import {
-    ElectronMainOptions,
-    IPCMode,
-    captureConsoleIntegration,
-    init,
-} from '@sentry/electron/main';
+import type { ElectronMainOptions } from '@sentry/electron/main';
+import { IPCMode, captureConsoleIntegration, init } from '@sentry/electron/main';
 import { session } from 'electron';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';

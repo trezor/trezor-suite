@@ -1,7 +1,7 @@
 import { UI } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { MODAL } from 'src/actions/suite/constants';
+import type { MODAL } from 'src/actions/suite/constants';
 import { onCancel as onCancelAction } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import type { AcquiredDevice } from 'src/types/suite';

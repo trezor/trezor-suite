@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import { AccountType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 
 import { useTranslation } from './useTranslation';

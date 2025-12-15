@@ -9,14 +9,16 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
+import type {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToTabCompositeProps,
+} from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
+    HomeStackRoutes,
+    RootStackRoutes,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';

@@ -1,8 +1,8 @@
-import { DiscoveryStatus } from '@suite-common/wallet-types';
-import { DeviceUniquePath } from '@trezor/connect';
+import type { DiscoveryStatus } from '@suite-common/wallet-types';
+import type { DeviceUniquePath } from '@trezor/connect';
 
-import { DiscoveryRootState } from './discoveryReducer';
-import { DeviceRootState } from '../device/deviceReducer';
+import type { DiscoveryRootState } from './discoveryReducer';
+import type { DeviceRootState } from '../device/deviceReducer';
 import { selectSelectedDevice } from '../device/deviceSelectors';
 
 export const selectDiscoveryByDevicePath = (state: DiscoveryRootState, path?: DeviceUniquePath) =>

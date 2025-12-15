@@ -17,11 +17,11 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
-import { UpdateInfo } from '@trezor/suite-desktop-api';
+import type { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
+import type { UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 

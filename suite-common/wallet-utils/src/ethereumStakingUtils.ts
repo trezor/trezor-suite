@@ -1,7 +1,8 @@
 import { fromWei, hexToNumberString } from 'web3-utils';
 
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import {
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
+import type {
     Account,
     FormState,
     ReviewOutput,
@@ -9,8 +10,8 @@ import {
     StakeType,
     StakingPoolExtended,
     SupportedEthereumNetworkSymbol,
-    supportedNetworkSymbols,
 } from '@suite-common/wallet-types';
+import { supportedNetworkSymbols } from '@suite-common/wallet-types';
 import { isArrayMember } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

@@ -1,14 +1,14 @@
-import { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
+import type { ExchangeTrade, ExchangeTradeQuoteRequest } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { selectTradingCoinSymbolByCryptoId } from '../../selectors/tradingSelectors';
-import {
+import type {
     HandleExchangeRequestThunkProps,
     MinimalExchangeFormProps,
     TradingExchangeType,

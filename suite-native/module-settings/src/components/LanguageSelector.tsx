@@ -1,13 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Select, SelectItemType } from '@suite-native/atoms';
-import {
-    AppLocaleOption,
-    LANGUAGES,
-    Translation,
-    selectAppLocaleCode,
-    setAppLocaleCode,
-} from '@suite-native/intl';
+import type { SelectItemType } from '@suite-native/atoms';
+import { Select } from '@suite-native/atoms';
+import type { AppLocaleOption } from '@suite-native/intl';
+import { LANGUAGES, Translation, selectAppLocaleCode, setAppLocaleCode } from '@suite-native/intl';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
 

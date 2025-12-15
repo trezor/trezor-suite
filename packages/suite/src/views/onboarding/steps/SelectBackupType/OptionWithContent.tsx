@@ -1,16 +1,12 @@
-import { ReactNode, forwardRef } from 'react';
+import type { ReactNode } from 'react';
+import { forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, useElevation, variables } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';

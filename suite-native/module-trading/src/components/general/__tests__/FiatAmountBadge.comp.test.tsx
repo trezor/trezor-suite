@@ -2,7 +2,8 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FiatAmountBadge, FiatAmountBadgeProps } from '../FiatAmountBadge';
+import type { FiatAmountBadgeProps } from '../FiatAmountBadge';
+import { FiatAmountBadge } from '../FiatAmountBadge';
 
 describe('FiatAmountBadge', () => {
     const renderFiatAmountBadge = (props: FiatAmountBadgeProps) =>

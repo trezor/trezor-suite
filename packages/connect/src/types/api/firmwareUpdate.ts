@@ -1,5 +1,6 @@
 import type { VersionArray } from '@trezor/device-utils';
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import type { Params, Response } from '../params';
 

@@ -6,13 +6,9 @@ import { selectHasRunningDiscovery, selectIsDeviceInitialized } from '@suite-com
 import { HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import { DeviceImage } from '@suite-native/device';
 import { useIsMultiline } from '@suite-native/helpers';
-import {
-    DeviceNameStackRoutes,
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceNameStackRoutes, DeviceSettingsStackRoutes } from '@suite-native/navigation';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type DeviceInfoProps = {

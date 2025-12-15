@@ -1,10 +1,10 @@
 import { deviceActions } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
+import type { Url } from '@trezor/urls';
 import {
     HELP_CENTER_ENTROPY_CHECK_URL,
     TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL,
     TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
-    Url,
 } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';

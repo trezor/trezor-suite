@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { AcquiredDevice } from '@suite-common/suite-types';
+import type { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
-import { ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
+import type { ButtonProps } from '@trezor/components';
+import { Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';
 

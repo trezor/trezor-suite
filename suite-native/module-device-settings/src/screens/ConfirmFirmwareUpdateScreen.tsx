@@ -5,14 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useDeviceLowBatteryAlert } from '@suite-native/device';
 import { FirmwareInfoScreenContent, FirmwareInfoScreenFooter } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceSettingsStackParamList,
-    DynamicScreenHeader,
     FirmwareUpdateStackParamList,
-    FirmwareUpdateStackRoutes,
-    Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DynamicScreenHeader, FirmwareUpdateStackRoutes, Screen } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     FirmwareUpdateStackParamList,

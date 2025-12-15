@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/browser.js
 
-import { SystemInfo } from '@trezor/connect';
+import type { SystemInfo } from '@trezor/connect';
 import { storage } from '@trezor/connect-common';
 
 import { container, showView } from './common';

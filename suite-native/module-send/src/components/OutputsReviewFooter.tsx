@@ -6,23 +6,24 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
+import type { AccountsRootState, TransactionsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    TransactionsRootState,
     selectAccountByKey,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Button, Card } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import type {
+    RootStackParamList,
+    SendStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import {
     AppTabsRoutes,
-    RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { cleanupSendFormThunk, sendTransactionThunk } from '@suite-native/send';

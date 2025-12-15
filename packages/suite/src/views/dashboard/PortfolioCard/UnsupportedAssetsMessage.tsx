@@ -1,6 +1,7 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { union } from '@trezor/utils';
 

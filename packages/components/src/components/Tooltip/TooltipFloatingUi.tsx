@@ -1,9 +1,5 @@
+import type { CSSProperties, HTMLProps, MutableRefObject, ReactNode, RefObject } from 'react';
 import {
-    CSSProperties,
-    HTMLProps,
-    MutableRefObject,
-    ReactNode,
-    RefObject,
     cloneElement,
     createContext,
     forwardRef,

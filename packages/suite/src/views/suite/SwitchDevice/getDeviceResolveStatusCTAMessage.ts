@@ -1,5 +1,5 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { getStatus } from '@suite-common/suite-utils';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { getStatus } from '@suite-common/suite-utils';
 
 export const getDeviceResolveStatusCTAMessage = (
     deviceStatus: ReturnType<typeof getStatus>,

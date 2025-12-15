@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { IconName } from '@trezor/components';
+import type { IconName } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 

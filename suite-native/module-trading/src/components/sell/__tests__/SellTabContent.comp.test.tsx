@@ -1,10 +1,5 @@
-import {
-    PreloadedState,
-    act,
-    renderWithStoreProviderAsync,
-    screen,
-    userEvent,
-} from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { act, renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import { SellTabContent } from '../SellTabContent';
 

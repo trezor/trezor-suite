@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
@@ -11,18 +11,21 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
 import { tradingMiddlewareFixtures } from 'src/middlewares/wallet/__fixtures__/tradingMiddleware';
 import { tradingMiddleware } from 'src/middlewares/wallet/tradingMiddleware';
-import modalReducer, { State as ModalState } from 'src/reducers/suite/modalReducer';
-import routerReducer, { RouterState } from 'src/reducers/suite/routerReducer';
-import suiteReducer, { SuiteState } from 'src/reducers/suite/suiteReducer';
+import type { State as ModalState } from 'src/reducers/suite/modalReducer';
+import modalReducer from 'src/reducers/suite/modalReducer';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
+import routerReducer from 'src/reducers/suite/routerReducer';
+import type { SuiteState } from 'src/reducers/suite/suiteReducer';
+import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accounts } from 'src/reducers/wallet/__fixtures__/transactionConstants';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 jest.mock('@suite-common/trading', () => {
     const originalModule = jest.requireActual('@suite-common/trading');

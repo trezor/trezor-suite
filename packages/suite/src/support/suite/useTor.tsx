@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getLocationHostname, isDesktop, isWeb } from '@trezor/env-utils';
-import { BootstrapTorEvent, TorStatusEvent, desktopApi } from '@trezor/suite-desktop-api';
+import type { BootstrapTorEvent, TorStatusEvent } from '@trezor/suite-desktop-api';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import {
     setTorBootstrap,

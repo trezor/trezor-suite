@@ -3,7 +3,8 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { Button, Dropdown, DropdownMenuItemProps, Switch, Text } from '@trezor/components';
+import type { DropdownMenuItemProps } from '@trezor/components';
+import { Button, Dropdown, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 import { Translation } from 'src/components/suite/Translation';

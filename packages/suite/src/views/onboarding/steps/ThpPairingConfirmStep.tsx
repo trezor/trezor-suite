@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 
 import { ConfirmActionModal } from '../../../components/suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';

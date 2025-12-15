@@ -1,13 +1,14 @@
-import { ValidatorsQueue } from '@suite-common/wallet-core';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, {
+import type { ValidatorsQueue } from '@suite-common/wallet-core';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type {
     AccountInfo,
     InternalTransfer,
     Success,
     SuccessWithDevice,
     Unsuccessful,
 } from '@trezor/connect';
-import {
+import TrezorConnect from '@trezor/connect';
+import type {
     BlockchainEstimatedFee,
     BlockchainEstimatedFeeLevel,
 } from '@trezor/connect/src/types/api/blockchainEstimateFee';
@@ -31,7 +32,7 @@ import {
     unstakeFailedFixture,
     unstakeFixture,
 } from '../__fixtures__/ethereumStaking';
-import {
+import type {
     GetStakeFormsDefaultValuesParams,
     GetStakeTxGasLimitParams,
     StakeTxBaseArgs,

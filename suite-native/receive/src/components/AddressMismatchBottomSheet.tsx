@@ -1,12 +1,5 @@
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    BulletListItem,
-    Button,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Box, BulletListItem, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { HELP_CENTER_VERIFY_TREZOR_SUITE_ADDRESSES_URL } from '@trezor/urls';

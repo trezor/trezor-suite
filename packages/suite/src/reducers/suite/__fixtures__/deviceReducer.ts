@@ -1,12 +1,9 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import {
-    DeviceReducerState,
-    deviceActions,
-    deviceReducerInitialState,
-} from '@suite-common/wallet-core';
+import type { DeviceReducerState } from '@suite-common/wallet-core';
+import { deviceActions, deviceReducerInitialState } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import type { DeepPartial } from '@trezor/type-utils';
 
 const { getConnectDevice, getSuiteDevice } = testMocks;
 

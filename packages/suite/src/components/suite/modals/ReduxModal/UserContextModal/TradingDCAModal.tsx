@@ -1,11 +1,13 @@
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { cryptoIdToNetwork, getTradingNetworkDecimals } from '@suite-common/trading/src/utils';
-import { Network, getNetwork } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { Network } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -21,7 +23,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { AccountAddress } from '@trezor/connect';
+import type { AccountAddress } from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
@@ -32,7 +34,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
-import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
+import type { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 
 const cryptoId = 'bitcoin' as CryptoId;

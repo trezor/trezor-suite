@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { AnyAction, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import type { AnyAction } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

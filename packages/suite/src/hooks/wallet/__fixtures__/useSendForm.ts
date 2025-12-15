@@ -1,18 +1,20 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { LabelingState, SuiteSyncState } from '@suite-common/suite-sync';
+import type { LabelingState, SuiteSyncState } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Network, getNetwork } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { SendState, accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
-import { FeesState, SelectedAccountStatus } from '@suite-common/wallet-types';
+import type { SendState } from '@suite-common/wallet-core';
+import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
+import type { FeesState, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-import { DeepPartial } from '@trezor/type-utils';
+import type { DeepPartial } from '@trezor/type-utils';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { AppState } from '../../../reducers/store';
+import type { AppState } from '../../../reducers/store';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 

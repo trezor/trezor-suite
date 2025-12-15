@@ -1,8 +1,5 @@
-import {
-    NotificationEntry,
-    notificationsActions,
-    notificationsReducer,
-} from '@suite-common/toast-notifications';
+import type { NotificationEntry } from '@suite-common/toast-notifications';
+import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
 import protocolReducer from 'src/reducers/suite/protocolReducer';

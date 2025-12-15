@@ -1,23 +1,17 @@
-import {
-    Dispatch,
-    KeyboardEvent,
-    SetStateAction,
-    useCallback,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import type { Dispatch, KeyboardEvent, SetStateAction } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { Elevation, spacingsPx, typography } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 
 import { motionEasing } from '../../../config/motion';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { Row } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
+import type { IconName } from '../../Icon/Icon';
 import { IconButton } from '../../buttons/IconButton/IconButton';
 import { mapElevationToButtonOnBackground } from '../../buttons/buttonStyleUtils';
 import { mapSizeToBorderRadius } from '../../buttons/utils';

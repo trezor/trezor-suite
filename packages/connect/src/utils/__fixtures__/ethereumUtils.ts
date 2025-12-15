@@ -2,7 +2,7 @@ import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import coinsJSON from '@trezor/connect-common/files/coins.json';
 
 import { getEthereumNetwork, parseCoinsJson } from '../../data/coinInfo';
-import { getNetworkLabel } from '../ethereumUtils';
+import type { getNetworkLabel } from '../ethereumUtils';
 
 parseCoinsJson({
     ...coinsJSON,

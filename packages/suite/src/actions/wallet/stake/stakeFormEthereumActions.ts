@@ -18,21 +18,23 @@ import {
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKE_INTERCHANGES,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
+import type { ComposeActionContext } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
-import {
-    AddressDisplayOptions,
+import type {
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
     StakeFormState,
 } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 const calculateStakingTransaction = (
     availableBalance: string,

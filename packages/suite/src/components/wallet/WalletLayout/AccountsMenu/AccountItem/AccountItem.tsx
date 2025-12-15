@@ -1,15 +1,16 @@
-import { Ref, forwardRef } from 'react';
+import type { Ref } from 'react';
+import { forwardRef } from 'react';
 
 import styled from 'styled-components';
 
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { Account, AccountItemType } from 'src/types/wallet';
+import type { Account, AccountItemType } from 'src/types/wallet';
 
 import { AccountItemLogo } from './AccountItemLogo/AccountItemLogo';
 import { AccountRow } from './AccountRow/AccountRow';

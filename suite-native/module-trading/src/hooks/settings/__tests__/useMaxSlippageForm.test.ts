@@ -1,9 +1,5 @@
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { useMaxSlippageForm } from '../useMaxSlippageForm';
 

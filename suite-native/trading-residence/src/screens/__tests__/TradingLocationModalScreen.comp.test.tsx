@@ -1,17 +1,12 @@
-import { RouteProp } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    RootStackRoutes,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import {
-    TradingLocationModalScreen,
-    TradingLocationModalScreenProps,
-} from '../TradingLocationModalScreen';
+import type { TradingLocationModalScreenProps } from '../TradingLocationModalScreen';
+import { TradingLocationModalScreen } from '../TradingLocationModalScreen';
 
 const mockNavigationDispatch = jest.fn();
 const mockRoute: TradingLocationModalScreenProps['route'] = {

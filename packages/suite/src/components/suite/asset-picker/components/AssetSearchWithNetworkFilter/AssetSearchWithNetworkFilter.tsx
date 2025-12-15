@@ -1,9 +1,10 @@
-import { RefObject, memo } from 'react';
+import type { RefObject } from 'react';
+import { memo } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
+import type { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

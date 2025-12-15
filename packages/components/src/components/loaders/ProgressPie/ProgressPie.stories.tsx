@@ -1,10 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import {
-    ProgressPie as ProgressPieComponent,
-    ProgressPieProps,
-    allowedProgressPieFrameProps,
-} from './ProgressPie';
+import type { ProgressPieProps } from './ProgressPie';
+import { ProgressPie as ProgressPieComponent, allowedProgressPieFrameProps } from './ProgressPie';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta = {

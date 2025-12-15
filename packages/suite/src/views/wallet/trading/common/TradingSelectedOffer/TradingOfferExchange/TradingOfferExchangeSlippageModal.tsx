@@ -1,11 +1,12 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { FieldError } from 'react-hook-form';
+import type { ChangeEvent } from 'react';
+import { useEffect, useState } from 'react';
+import type { FieldError } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { TradingExchangeType } from '@suite-common/trading';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeType,
     getTradingNetworkDecimals,
     useTradingInfo,
 } from '@suite-common/trading';

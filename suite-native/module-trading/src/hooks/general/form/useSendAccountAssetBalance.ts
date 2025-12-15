@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import {
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import type {
     AccountsRootState,
     DeviceRootState,
     TransactionsRootState,
-    selectAccountFormattedBalance,
 } from '@suite-common/wallet-core';
+import { selectAccountFormattedBalance } from '@suite-common/wallet-core';
 import type { UseFormReturn } from '@suite-native/forms';
 import { selectAccountTokenBalance } from '@suite-native/tokens';
-import {
+import type {
     ExchangeFormType,
     ExchangeFormValues,
     SellFormType,

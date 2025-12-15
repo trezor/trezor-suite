@@ -3,19 +3,15 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
+import type { TradingRootState } from '@suite-common/trading';
 import {
-    TradingRootState,
     cryptoIdToNetwork,
     selectTradingCoinInfoByCryptoId,
     selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import {
-    EventType,
-    TradingExchangeAction,
-    TradingExchangeStep,
-    analytics,
-} from '@suite-native/analytics';
+import type { TradingExchangeAction, TradingExchangeStep } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {

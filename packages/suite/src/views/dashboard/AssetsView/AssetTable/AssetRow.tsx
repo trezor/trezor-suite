@@ -2,14 +2,14 @@ import { memo } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { AssetFiatBalance } from '@suite-common/assets';
+import type { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { Account, RatesByKey } from '@suite-common/wallet-types';
+import type { AmountUnit } from '@suite-common/wallet-utils';
+import { isTestnet } from '@suite-common/wallet-utils';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';

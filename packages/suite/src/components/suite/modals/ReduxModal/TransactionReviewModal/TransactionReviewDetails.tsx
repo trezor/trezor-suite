@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

@@ -11,7 +11,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -31,8 +31,8 @@ import {
     signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { AppState } from 'src/types/suite';
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import type { AppState } from 'src/types/suite';
+import type { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useFees } from './form/useFees';
 import { useUtxoSelection } from './form/useUtxoSelection';

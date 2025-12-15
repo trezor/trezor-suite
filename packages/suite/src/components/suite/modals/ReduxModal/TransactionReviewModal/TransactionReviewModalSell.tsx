@@ -1,10 +1,11 @@
-import { SendState, StakeState, sendFormActions } from '@suite-common/wallet-core';
-import { FormState, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { SendState, StakeState } from '@suite-common/wallet-core';
+import { sendFormActions } from '@suite-common/wallet-core';
+import type { FormState, SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingSellForm } from 'src/hooks/wallet/trading/form/useTradingSellForm';
 
-import { TransactionReviewModalProps } from './TransactionReviewModal';
+import type { TransactionReviewModalProps } from './TransactionReviewModal';
 import { TransactionReviewModalBody } from './TransactionReviewModalBody';
 
 type TransactionReviewModalSellProps = {

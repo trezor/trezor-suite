@@ -1,14 +1,10 @@
 import { useState } from 'react';
 
-import { DexApprovalType, ExchangeTrade } from 'invity-api';
+import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import {
-    TradingExchangeType,
-    invityAPI,
-    tradingExchangeActions,
-    useTradingInfo,
-} from '@suite-common/trading';
+import type { TradingExchangeType } from '@suite-common/trading';
+import { invityAPI, tradingExchangeActions, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     Box,
@@ -32,7 +28,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
+import type { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 

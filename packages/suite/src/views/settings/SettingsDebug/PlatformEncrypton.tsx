@@ -4,7 +4,7 @@ import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { useServices } from '@suite-common/redux-utils';
 import { Button, ButtonGroup, Column, Textarea } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { Branded } from '@trezor/type-utils';
+import type { Branded } from '@trezor/type-utils';
 
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 

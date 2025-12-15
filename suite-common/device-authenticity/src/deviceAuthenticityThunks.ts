@@ -4,7 +4,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
-import { StoredAuthenticateDeviceResult } from './types';
+import type { StoredAuthenticateDeviceResult } from './types';
 import { isDeviceAuthenticityValid } from './utils';
 
 type CheckDeviceAuthenticityThunkParams = {

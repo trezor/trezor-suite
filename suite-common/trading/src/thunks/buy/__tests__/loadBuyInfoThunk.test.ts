@@ -1,5 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { BuyCryptoPaymentMethod, BuyProviderInfo, CryptoId, FiatCurrenciesProps } from 'invity-api';
+import type {
+    BuyCryptoPaymentMethod,
+    BuyProviderInfo,
+    CryptoId,
+    FiatCurrenciesProps,
+} from 'invity-api';
 
 import { configureMockStore } from '@suite-common/test-utils';
 

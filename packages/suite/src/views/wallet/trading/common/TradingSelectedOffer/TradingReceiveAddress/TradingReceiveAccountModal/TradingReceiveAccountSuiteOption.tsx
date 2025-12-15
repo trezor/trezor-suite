@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
@@ -13,7 +13,7 @@ import { AccountLabeling, CoinBalance, HiddenPlaceholder } from 'src/components/
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
+import type { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';

@@ -1,6 +1,7 @@
 import { EventType } from '@trezor/connect-analytics';
 
-import { CoreEventMessage, UI_REQUEST } from '../events';
+import type { CoreEventMessage } from '../events';
+import { UI_REQUEST } from '../events';
 import type { Device } from '../types';
 
 export const enhanceMessageWithAnalytics = (

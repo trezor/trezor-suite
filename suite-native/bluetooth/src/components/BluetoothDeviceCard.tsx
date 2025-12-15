@@ -1,16 +1,11 @@
-import {
-    Box,
-    Button,
-    Card,
-    InlineAlertBoxProps,
-    Text,
-    resetLetterSpacingOnAndroidStyle,
-} from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import type { InlineAlertBoxProps } from '@suite-native/atoms';
+import { Box, Button, Card, Text, resetLetterSpacingOnAndroidStyle } from '@suite-native/atoms';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { models } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { BluetoothDevice } from '../types';
+import type { BluetoothDevice } from '../types';
 import { DeviceColorImage } from './DeviceColorImage';
 
 type Variant = 'connect' | 'remove';

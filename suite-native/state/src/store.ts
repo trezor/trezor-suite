@@ -1,12 +1,10 @@
-import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
+import type { Middleware, StoreEnhancer } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 import { logger } from 'redux-logger';
 
-import {
-    ExtraDependencies,
-    castExtraStore,
-    createStoreWithExtraStoreMiddleware,
-} from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import {
     prepareFiatRatesMiddleware,
@@ -19,7 +17,7 @@ import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
-import { DeepPartial } from '@trezor/type-utils';
+import type { DeepPartial } from '@trezor/type-utils';
 
 import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';

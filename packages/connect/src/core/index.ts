@@ -6,7 +6,7 @@ import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
-import { AbstractMethod } from './AbstractMethod';
+import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
@@ -14,19 +14,22 @@ import { DataManager } from '../data/DataManager';
 import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
 import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
-import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
+import type { IDeviceList } from '../device/DeviceList';
+import { DeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import { WebextensionStateStorage } from '../device/StateStorage';
 import * as workflows from '../device/workflow';
-import {
-    CORE_EVENT,
+import type {
     CoreEventMessage,
     CoreRequestMessage,
+    IFrameCallMessage,
+    TransportInfo,
+} from '../events';
+import {
+    CORE_EVENT,
     DEVICE,
     IFRAME,
-    IFrameCallMessage,
     POPUP,
     RESPONSE_EVENT,
-    TransportInfo,
     UI,
     createDeviceMessage,
     createPopupMessage,
@@ -35,7 +38,8 @@ import {
     createUiMessage,
 } from '../events';
 import type { ConnectSettings, DeviceIdentity, Device as DeviceTyped } from '../types';
-import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
+import type { LogWriter } from '../utils/debug';
+import { enableLog, initLog, setLogWriter } from '../utils/debug';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';

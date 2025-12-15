@@ -1,11 +1,13 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { ActionsFromAsyncThunk, createThunk } from '@suite-common/redux-utils';
+import type { ActionsFromAsyncThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import {
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import type {
     Account,
     AccountKey,
     FormState,
@@ -32,10 +34,11 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import type { PROTO, Success, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
-import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
+import type { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { exhaustive } from '@trezor/type-utils';
 import { cloneObject } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -68,7 +71,7 @@ import {
     composeSolanaTransactionFeeLevelsThunk,
     signSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
-import {
+import type {
     ComposeActionContext,
     ComposeFeeLevelsError,
     PushTransactionError,

@@ -1,7 +1,8 @@
-import { IDBPDatabase, IDBPTransaction, StoreNames } from 'idb';
+import type { IDBPDatabase, IDBPTransaction, StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
-import SuiteDB, { OnUpgradeFunc } from '@trezor/suite-storage';
+import type { OnUpgradeFunc } from '@trezor/suite-storage';
+import SuiteDB from '@trezor/suite-storage';
 
 import { reloadApp } from 'src/utils/suite/reload';
 

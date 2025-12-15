@@ -4,13 +4,14 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import type { PROTO } from '../../../constants';
+import { ERRORS } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { EthereumNetworkInfo } from '../../../types';
+import type { EthereumSignTypedDataTypes } from '../../../types/api/ethereum';
 import {
     EthereumSignTypedData as EthereumSignTypedDataParams,
-    EthereumSignTypedDataTypes,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
 } from '../../../types/api/ethereum';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';

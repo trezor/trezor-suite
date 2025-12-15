@@ -1,13 +1,15 @@
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
-import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import type { AppTabsParamList } from '@suite-native/navigation';
+import { AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import {
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,

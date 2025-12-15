@@ -1,6 +1,7 @@
-import { TypographyStyle, spacings, spacingsPx } from '@trezor/theme';
+import type { TypographyStyle } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
-import { TabsSize } from './types';
+import type { TabsSize } from './types';
 
 type mapArgs = {
     $size: TabsSize;

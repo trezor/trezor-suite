@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
     mapTestnetSymbol,
 } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import type { FiatRatesResult, Rate, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     getFiatRateKey,

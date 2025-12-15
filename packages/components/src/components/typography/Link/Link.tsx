@@ -1,18 +1,16 @@
-import { HTMLProps, MouseEvent, ReactNode, forwardRef } from 'react';
+import type { HTMLProps, MouseEvent, ReactNode } from 'react';
+import { forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { spacingsPx, typographyStylesBase } from '@trezor/theme';
 
-import { TransientProps } from '../../../utils/transientProps';
-import { Icon, IconName } from '../../Icon/Icon';
+import type { TransientProps } from '../../../utils/transientProps';
+import type { IconName } from '../../Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { allowedTextTextProps } from '../Text/Text';
-import {
-    TextProps as TextPropsCommon,
-    TextPropsKeys,
-    pickAndPrepareTextProps,
-    withTextProps,
-} from '../utils';
+import type { TextProps as TextPropsCommon, TextPropsKeys } from '../utils';
+import { pickAndPrepareTextProps, withTextProps } from '../utils';
 
 export const allowedLinkTextProps = [
     'typographyStyle',

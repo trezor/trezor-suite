@@ -1,6 +1,6 @@
-import { ElementType } from 'react';
+import type { ElementType } from 'react';
 
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import type { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';

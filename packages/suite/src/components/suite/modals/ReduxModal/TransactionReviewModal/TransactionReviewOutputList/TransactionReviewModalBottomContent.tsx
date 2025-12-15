@@ -1,16 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { SendState, StakeState } from '@suite-common/wallet-core';
-import { Account, FormState, RbfTransactionType, ReviewOutput } from '@suite-common/wallet-types';
+import type { SendState, StakeState } from '@suite-common/wallet-core';
+import type {
+    Account,
+    FormState,
+    RbfTransactionType,
+    ReviewOutput,
+} from '@suite-common/wallet-types';
 import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
-import { StakeType } from '@trezor/blockchain-link-types';
+import type { StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
-import { Deferred } from '@trezor/utils';
+import type { TransactionCreatedEvent } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import type { Deferred } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
 

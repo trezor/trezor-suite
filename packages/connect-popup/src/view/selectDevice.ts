@@ -1,12 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectDevice.js
 
+import type { UiRequestSelectDevice } from '@trezor/connect';
 import {
     ERRORS,
     POPUP,
     TRANSPORT,
     UI,
     UI_EVENT,
-    UiRequestSelectDevice,
     WEBEXTENSION,
     createUiResponse,
 } from '@trezor/connect';

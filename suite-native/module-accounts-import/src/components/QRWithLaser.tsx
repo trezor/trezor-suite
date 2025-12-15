@@ -8,6 +8,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
+import type { RoundedRectProps } from '@shopify/react-native-skia';
 import {
     BlendMode,
     Canvas,
@@ -17,7 +18,6 @@ import {
     Mask,
     Rect,
     RoundedRect,
-    RoundedRectProps,
     Skia,
     useSVG,
     vec,

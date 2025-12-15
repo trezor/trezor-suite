@@ -3,13 +3,8 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import {
-    TileStyles,
-    TileVariant,
-    variantToColorMap,
-    variantToIconName,
-    variantToLabel,
-} from './presets';
+import type { TileStyles, TileVariant } from './presets';
+import { variantToColorMap, variantToIconName, variantToLabel } from './presets';
 
 type MarqueeTileProps = {
     variant: TileVariant;

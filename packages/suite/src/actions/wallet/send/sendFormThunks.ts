@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { MetadataAddPayload } from '@suite-common/metadata-types';
+import type { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
@@ -15,14 +15,14 @@ import {
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import {
+import type {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
-import { PROTO, Unsuccessful } from '@trezor/connect';
+import type { PROTO, Unsuccessful } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { getSynchronize } from '@trezor/utils';
 
@@ -33,7 +33,7 @@ import {
     selectIsSelectedAccountLoaded,
     selectSelectedAccountKey,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
+import type { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';

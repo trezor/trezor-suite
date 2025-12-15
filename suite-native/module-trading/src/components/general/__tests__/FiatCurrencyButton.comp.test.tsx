@@ -1,6 +1,7 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FiatCurrencyButton, FiatCurrencyButtonProps } from '../FiatCurrencyButton';
+import type { FiatCurrencyButtonProps } from '../FiatCurrencyButton';
+import { FiatCurrencyButton } from '../FiatCurrencyButton';
 
 describe('FiatCurrencyButton', () => {
     const renderFiatCurrencyButton = (props: Partial<FiatCurrencyButtonProps>) =>

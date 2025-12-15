@@ -3,11 +3,11 @@ import { RendererContext, ThemeContext } from 'react-fela';
 
 import { darken, lighten, transparentize } from 'polished';
 
-import { NativeTheme, Theme } from '@trezor/theme';
+import type { NativeTheme, Theme } from '@trezor/theme';
 
 import { mediaQueries } from './mediaQueries';
 import { processNativeStyles, processStyles } from './processStyles';
-import {
+import type {
     ColorTransformFunction,
     NativeStyle,
     NativeStyleObject,

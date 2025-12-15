@@ -1,9 +1,5 @@
-import Animated, {
-    SharedValue,
-    useAnimatedStyle,
-    useDerivedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
+import Animated, { useAnimatedStyle, useDerivedValue, withTiming } from 'react-native-reanimated';
 
 import { IconButton } from '@suite-native/atoms';
 

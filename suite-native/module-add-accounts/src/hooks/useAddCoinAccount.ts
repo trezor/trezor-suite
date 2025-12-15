@@ -11,31 +11,33 @@ import {
     networkSymbolCollection,
     networks,
 } from '@suite-common/wallet-config';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    DeviceRootState,
     accountsActions,
     selectDeviceAccounts,
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
-import {
+import type { TxKeyPath } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
+import type {
     AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes,
     AddCoinFlowType,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AddCoinAccountStackRoutes,
     AppTabsRoutes,
     ReceiveStackRoutes,
-    RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 

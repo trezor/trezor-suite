@@ -2,9 +2,9 @@ import type { FieldValues } from 'react-hook-form';
 
 import { createSlice } from '@reduxjs/toolkit';
 
+import type { FormDraftAction } from '@suite-common/wallet-core';
 import {
     FORM_DRAFT as COMMON_FORM_DRAFT,
-    FormDraftAction,
     formDraftReducer as commonFormDraftReducer,
     formDraftInitialState,
 } from '@suite-common/wallet-core';

@@ -1,11 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { ComposeOutput, TransactionInputOutputSortingStrategy, composeTx } from '@trezor/utxo-lib';
+import type { ComposeOutput, TransactionInputOutputSortingStrategy } from '@trezor/utxo-lib';
+import { composeTx } from '@trezor/utxo-lib';
 
-import { Blockchain } from '../../backend/BlockchainLink';
+import type { Blockchain } from '../../backend/BlockchainLink';
 import { getOrInitBitcoinFeeLevels } from '../../backend/fees';
-import { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
+import type { BitcoinFeeLevels } from '../../backend/fees/BitcoinFeeLevels';
 import type { BitcoinNetworkInfo, DiscoveryAccount, SelectFeeLevel } from '../../types';
 import type {
     ComposeResult,

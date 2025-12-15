@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
-import { MessagesSchema as Messages } from '@trezor/protobuf';
+import type { MessagesSchema as Messages } from '@trezor/protobuf';
 
 import { ERRORS, PROTO } from '../constants';
 import { getBech32Network, getSegwitNetwork } from '../data/coinInfo';

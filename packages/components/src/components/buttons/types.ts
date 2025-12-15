@@ -1,4 +1,4 @@
-import { UIIntent, UIPriority, UISize } from '../../config/types';
+import type { UIIntent, UIPriority, UISize } from '../../config/types';
 
 export const buttonIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
 export type ButtonIntent = Extract<UIIntent, (typeof buttonIntents)[number]>;

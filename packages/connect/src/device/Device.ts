@@ -1,21 +1,25 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { DeviceModelInternal, FirmwareRelease, models } from '@trezor/device-utils';
+import type { FirmwareRelease } from '@trezor/device-utils';
+import { DeviceModelInternal, models } from '@trezor/device-utils';
 import {
     type DecodedTrezorPushNotification,
-    TransportProtocol,
+    type TransportProtocol,
     thp as protocolThp,
     v1 as protocolV1,
     v2 as protocolV2,
 } from '@trezor/protocol';
-import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { type Descriptor, type Transport } from '@trezor/transport';
-import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
-import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
+import type { Descriptor, Session, Transport } from '@trezor/transport';
+import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
+import type { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
+import type { Deferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
 import { DeviceCommands } from './DeviceCommands';
-import { ERRORS, FIRMWARE, PROTO } from '../constants';
-import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
-import { IStateStorage } from './StateStorage';
+import type { PROTO } from '../constants';
+import { ERRORS, FIRMWARE } from '../constants';
+import type { TypedCallProvider } from './DeviceCurrentSession';
+import { DeviceCurrentSession } from './DeviceCurrentSession';
+import type { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
@@ -27,19 +31,18 @@ import {
     getLanguage,
     getReleaseByVersion,
 } from '../data/firmwareInfo';
-import {
-    DEVICE,
+import type {
     DeviceButtonRequestPayload,
     DeviceThpCredentialsChangedPayload,
     DeviceThpPairingPayload,
     DeviceVersionChanged,
-    UI,
     UiResponsePassphrase,
     UiResponsePin,
     UiResponseThpPairingTag,
     UiResponseWord,
 } from '../events';
-import {
+import { DEVICE, UI } from '../events';
+import type {
     DeviceBusyStatus,
     DeviceFirmwareStatus,
     DeviceState,
@@ -54,8 +57,8 @@ import {
     KnownDevice,
     UnavailableCapabilities,
     VersionArray,
-    asBluetoothDeviceId,
 } from '../types';
+import { asBluetoothDeviceId } from '../types';
 import { handshakeCancel } from './workflow/handshake';
 import { getReleaseAsset } from '../utils/assetUtils';
 import { initLog } from '../utils/debug';

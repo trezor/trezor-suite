@@ -1,21 +1,18 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { Column } from '../../Flex/Flex';
-import { IconName } from '../../Icon/Icon';
+import type { IconName } from '../../Icon/Icon';
 import { BottomText } from '../BottomText';
 import { TopAddons } from '../TopAddons';
-import { InputState } from '../types';
+import type { InputState } from '../types';
 
 export const allowedFormCellFrameProps = [
     'margin',

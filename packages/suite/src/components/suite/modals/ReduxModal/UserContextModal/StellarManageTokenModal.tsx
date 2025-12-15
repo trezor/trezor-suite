@@ -7,9 +7,10 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAndUpdateAccountThunk, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
+import type { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Button, Column, Modal, Row, Text } from '@trezor/components';

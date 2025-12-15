@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import styled, { ThemeProvider } from 'styled-components';
 
 import { Button, Paragraph, intermediaryTheme } from '@trezor/components';
-import { LogMessage } from '@trezor/connect/src/utils/debug';
+import type { LogMessage } from '@trezor/connect/src/utils/debug';
 import { InfoPanel } from '@trezor/connect-ui/src/components/InfoPanel';
 import { View } from '@trezor/connect-ui/src/components/View';
 import { ErrorBoundary } from '@trezor/connect-ui/src/support/ErrorBoundary';

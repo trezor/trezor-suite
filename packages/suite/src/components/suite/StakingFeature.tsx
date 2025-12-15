@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { H3, IconCircle, IconName, Paragraph } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { H3, IconCircle, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 interface StakingFeatureProps {

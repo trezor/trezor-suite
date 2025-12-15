@@ -1,4 +1,5 @@
-import ReactMarkdown, { Options } from 'react-markdown';
+import type { Options } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
 
 import styled from 'styled-components';
 

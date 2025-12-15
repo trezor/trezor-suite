@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form';
 
 import type {
@@ -35,17 +35,21 @@ import type {
     TradingType,
     TradingVerifiedAddress,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { AccountsState } from '@suite-common/wallet-core';
-import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
-import { Timer } from '@trezor/react-utils';
+import type { Network } from '@suite-common/wallet-config';
+import type { AccountsState } from '@suite-common/wallet-core';
+import type {
+    FeeInfo,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
+} from '@suite-common/wallet-types';
+import type { FeeLevel } from '@trezor/connect';
+import type { Timer } from '@trezor/react-utils';
 
 import type { TranslationKey } from 'src/components/suite/Translation';
-import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
-import { AppState } from 'src/reducers/store';
-import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import {
+import type { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
+import type { AppState } from 'src/reducers/store';
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetProvidersInfoProps,
@@ -53,8 +57,8 @@ import {
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
 import type { Account } from 'src/types/wallet';
-import { SendContextValues } from 'src/types/wallet/sendForm';
-import { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
+import type { SendContextValues } from 'src/types/wallet/sendForm';
+import type { AmountLimitProps, CryptoAmountLimitProps } from 'src/utils/suite/validation';
 
 export interface TradingBuyFormDefaultValuesProps {
     defaultValues: TradingBuyFormProps;

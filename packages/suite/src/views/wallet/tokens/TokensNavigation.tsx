@@ -1,10 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Route } from '@suite-common/suite-types';
+import type { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
-import { NetworkType } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
+import type { NetworkType } from '@suite-common/wallet-config';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { IconName } from '@trezor/components';
+import { Button, IconButton, InputButton, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -14,9 +16,10 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
+import type { GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
 
-import { TranslationKey } from '../../../components/suite/Translation';
+import type { TranslationKey } from '../../../components/suite/Translation';
 
 type SubTabConfig = {
     isNft: boolean;

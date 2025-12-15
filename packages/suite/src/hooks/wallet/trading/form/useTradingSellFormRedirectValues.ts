@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
-import { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
+import type { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingSellFormProps,
     getDefaultCountry,
     selectTradingComposedTransactionInfo,

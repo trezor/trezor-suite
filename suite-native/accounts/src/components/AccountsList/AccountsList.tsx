@@ -4,15 +4,13 @@ import { useSelector } from 'react-redux';
 import { A } from '@mobily/ts-belt';
 import { atom, useSetAtom } from 'jotai';
 
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { Card, VStack } from '@suite-native/atoms';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
-import {
-    NativeAccountsRootState,
-    selectFilteredDeviceAccountsGroupedByNetworkAccountType,
-} from '../../selectors';
-import { OnSelectAccount } from '../../types';
+import type { NativeAccountsRootState } from '../../selectors';
+import { selectFilteredDeviceAccountsGroupedByNetworkAccountType } from '../../selectors';
+import type { OnSelectAccount } from '../../types';
 import { TokenSelectBottomSheet } from '../TokenSelectBottomSheet';
 import { AccountsListItem } from './AccountsListItem';
 

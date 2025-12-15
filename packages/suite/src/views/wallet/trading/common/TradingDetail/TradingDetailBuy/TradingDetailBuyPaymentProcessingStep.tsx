@@ -1,6 +1,7 @@
-import { BuyProviderInfo, BuyTrade } from 'invity-api';
+import type { BuyProviderInfo, BuyTrade } from 'invity-api';
 
-import { BulletListItemState, Card, Column } from '@trezor/components';
+import type { BulletListItemState } from '@trezor/components';
+import { Card, Column } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';

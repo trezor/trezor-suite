@@ -1,20 +1,14 @@
 import { A } from '@mobily/ts-belt';
 
-import { AccountItem } from '@suite-common/graph';
+import type { AccountItem } from '@suite-common/graph';
 import { isIgnoredBalanceHistoryCoin } from '@suite-common/graph/src/constants';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
-    TokenDefinitionsRootState,
-    selectFilterKnownTokens,
-} from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectAccountByKey,
-    selectDeviceMainnetAccounts,
-} from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { selectFilterKnownTokens } from '@suite-common/token-definitions';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectDeviceMainnetAccounts } from '@suite-common/wallet-core';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;

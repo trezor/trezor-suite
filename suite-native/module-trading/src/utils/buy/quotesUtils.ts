@@ -1,15 +1,14 @@
 import type { BuyTrade, CoinInfo } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import {
+import type {
     TradingBuyFormProps,
     TradingCountryOption,
     TradingPaymentMethodListProps,
-    cryptoIdToNetwork,
-    toCryptoOption,
 } from '@suite-common/trading';
+import { cryptoIdToNetwork, toCryptoOption } from '@suite-common/trading';
 import { coinInfoToTradeableAsset, getCurrencyLabel } from '@suite-native/trading-atoms';
-import { BuyFormType } from '@suite-native/trading-types';
+import type { BuyFormType } from '@suite-native/trading-types';
 
 export type GetAnalyticsTradingBuyPayloadProps = {
     quote: BuyTrade | undefined;

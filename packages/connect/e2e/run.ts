@@ -4,9 +4,9 @@ import path from 'path';
 import webpack from 'webpack';
 
 import {
-    EmuStartOptsType,
-    Firmwares,
-    Model,
+    type EmuStartOptsType,
+    type Firmwares,
+    type Model,
     TrezorUserEnvLink,
 } from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';

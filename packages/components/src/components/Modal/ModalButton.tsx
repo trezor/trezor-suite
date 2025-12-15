@@ -1,6 +1,7 @@
 import { ModalContext, useModalContext } from './ModalContext';
-import { ModalVariant } from './types';
-import { Button, ButtonProps } from '../buttons/Button/Button';
+import type { ModalVariant } from './types';
+import type { ButtonProps } from '../buttons/Button/Button';
+import { Button } from '../buttons/Button/Button';
 
 const mapVariantToIntent = (
     variant: ModalVariant | undefined,

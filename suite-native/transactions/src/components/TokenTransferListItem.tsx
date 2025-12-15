@@ -1,15 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import {
-    AccountsRootState,
-    TransactionsRootState,
-    selectAccountNetworkSymbol,
-    selectIsPhishingTransaction,
-} from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import type { AccountsRootState, TransactionsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, selectIsPhishingTransaction } from '@suite-common/wallet-core';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import type { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TransactionListItemContainer } from './TransactionListItemContainer';

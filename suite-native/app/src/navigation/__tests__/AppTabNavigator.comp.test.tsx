@@ -1,10 +1,6 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import {
-    PreloadedState,
-    act,
-    fireEvent,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { AppTabNavigator } from '../AppTabNavigator';
 

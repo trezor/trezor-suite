@@ -1,11 +1,12 @@
 import { selectDeviceLabelOrNameById } from '@suite-common/wallet-core';
 import { Row, Tooltip } from '@trezor/components';
-import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
+import { getDeviceColorVariant } from '@trezor/device-utils';
 import { RotateDeviceImage } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 

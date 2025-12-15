@@ -6,7 +6,7 @@ import { Translation } from 'src/components/suite/Translation';
 
 import { BridgeToggle, SuiteDesktopTip } from './BridgeTip';
 import { UdevDescription } from './UdevDescription';
-import { TroubleshootingTipsItem } from '../TroubleshootingTips';
+import type { TroubleshootingTipsItem } from '../TroubleshootingTips';
 
 export const TROUBLESHOOTING_TIP_WEBUSB_ENVIRONMENT: TroubleshootingTipsItem = {
     key: 'webusb-environment',

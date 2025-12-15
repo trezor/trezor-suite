@@ -5,7 +5,7 @@ import { Button, Input, Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTranslation } from 'src/hooks/suite';
-import { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
+import type { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

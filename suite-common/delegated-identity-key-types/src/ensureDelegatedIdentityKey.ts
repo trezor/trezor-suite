@@ -1,6 +1,6 @@
-import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
+import type { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
 import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
-import { Result } from '@trezor/type-utils';
+import type { Result } from '@trezor/type-utils';
 
 export type EnsureDelegatedIdentityKeyParams = {
     device: Pick<

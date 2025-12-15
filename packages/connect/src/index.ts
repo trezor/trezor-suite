@@ -5,10 +5,9 @@ import { createDeferredManager } from '@trezor/utils';
 import { ERRORS } from './constants';
 import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
+import type { CallMethod, CoreEventMessage, UiResponseEvent } from './events';
 import {
     BLOCKCHAIN_EVENT,
-    CallMethod,
-    CoreEventMessage,
     DEVICE_EVENT,
     IFRAME,
     POPUP,
@@ -17,7 +16,6 @@ import {
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
 } from './events';
 import { factory } from './factory';

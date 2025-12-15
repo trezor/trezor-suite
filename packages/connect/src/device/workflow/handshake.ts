@@ -3,8 +3,8 @@ import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
 import { TypedError } from '../../constants/errors';
-import { WorkflowContext } from '../../types/workflow';
-import { Log } from '../../utils/debug';
+import type { WorkflowContext } from '../../types/workflow';
+import type { Log } from '../../utils/debug';
 
 const CANCEL_TIMEOUT = 1_000;
 const ATTEMPTS_LIMIT = 10;

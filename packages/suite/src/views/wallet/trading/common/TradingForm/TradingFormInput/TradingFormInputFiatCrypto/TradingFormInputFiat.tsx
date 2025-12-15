@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
-import { FieldErrors, UseControllerProps, UseFormReturn } from 'react-hook-form';
+import type { FieldErrors, UseControllerProps, UseFormReturn } from 'react-hook-form';
 
+import type { TradingBuyFormProps } from '@suite-common/trading';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
     TRADING_FORM_OUTPUT_FIAT,
-    TradingBuyFormProps,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { selectCurrentFiatRates, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import {
     buildCurrencyShortOption,
     getFiatRateKey,
@@ -26,7 +26,7 @@ import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import {
+import type {
     TradingAllFormProps,
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,

@@ -1,7 +1,7 @@
+import type { Horizon } from '@stellar/stellar-sdk';
 import {
     Account,
     Asset,
-    Horizon,
     Memo,
     Networks,
     Operation,

@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from './deviceModelInternal';
+import type { DeviceModelInternal } from './deviceModelInternal';
 
 export type FirmwareVersionString = `${number}.${number}.${number}`;
 

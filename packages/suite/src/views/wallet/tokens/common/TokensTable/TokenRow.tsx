@@ -1,23 +1,25 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
+import type { EnhancedTokenInfo } from '@suite-common/token-definitions';
 import {
     DefinitionType,
-    EnhancedTokenInfo,
     TokenManagementAction,
     selectIsSpecificCoinDefinitionKnown,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import type { TradingType } from '@suite-common/trading';
 import {
-    TradingType,
     getTradingPrefilledFromAccountData,
     getUnusedAddressFromAccount,
     selectTradingInfo,
     toTokenCryptoId,
     tradingActions,
 } from '@suite-common/trading';
-import { Explorer, Network, getCoingeckoId } from '@suite-common/wallet-config';
+import type { Explorer, Network } from '@suite-common/wallet-config';
+import { getCoingeckoId } from '@suite-common/wallet-config';
 import { selectExplorer, selectSelectedDevice, sendFormActions } from '@suite-common/wallet-core';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import type { Account, TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,

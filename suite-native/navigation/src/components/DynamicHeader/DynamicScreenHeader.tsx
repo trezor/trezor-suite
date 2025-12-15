@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
-import { ScreenHeader, ScreenHeaderProps } from '../ScreenHeader';
+import type { ScreenHeaderProps } from '../ScreenHeader';
+import { ScreenHeader } from '../ScreenHeader';
 
 export type DynamicScreenHeaderProps = {
     subtitle?: ReactNode;

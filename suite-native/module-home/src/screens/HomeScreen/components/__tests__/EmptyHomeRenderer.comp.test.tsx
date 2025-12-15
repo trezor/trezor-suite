@@ -1,5 +1,6 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
-import { PreloadedState, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EmptyHomeRenderer } from '../EmptyHomeRenderer';

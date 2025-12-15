@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { ValidateError } from '@suite-common/message-system';
 import {
-    ValidateError,
     getDefaultExperiment,
     messageSystemActions,
     selectMessageSystemConfig,
     stripFieldFromMessage,
     validateExperimentForm,
 } from '@suite-common/message-system';
-import { Experiments } from '@suite-common/suite-types';
+import type { Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 
 import { Box } from './Box';
 import { Card } from './Card/Card';

@@ -1,4 +1,4 @@
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import type { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
 import { Banner, Link, Paragraph } from '@trezor/components';
 

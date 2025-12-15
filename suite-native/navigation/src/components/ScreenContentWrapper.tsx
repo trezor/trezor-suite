@@ -1,9 +1,10 @@
-import React, { ReactNode, useRef } from 'react';
-import { ScrollView, ScrollViewProps } from 'react-native';
+import type { ReactNode } from 'react';
+import React, { useRef } from 'react';
+import type { ScrollView, ScrollViewProps } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
-import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import type { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
+import type { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { ScrollViewContext, useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

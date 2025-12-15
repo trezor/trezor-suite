@@ -17,7 +17,7 @@ import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
-import { PartialRecord } from '@trezor/type-utils';
+import type { PartialRecord } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { migrateToV56 } from 'src/storage/migrations/legacyVersions/migrateToV56';

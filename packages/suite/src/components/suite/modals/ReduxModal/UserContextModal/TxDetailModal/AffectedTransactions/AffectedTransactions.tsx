@@ -1,4 +1,4 @@
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import type { ChainedTransactions } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Link, Row, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

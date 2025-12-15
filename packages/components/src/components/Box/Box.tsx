@@ -1,20 +1,11 @@
 import styled, { css } from 'styled-components';
 
-import {
-    BorderWidths,
-    CSSColor,
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-} from '@trezor/theme';
+import type { BorderWidths, CSSColor, Elevation } from '@trezor/theme';
+import { mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 const getValueWithUnit = (value: string | number) =>

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { G } from '@mobily/ts-belt';
-import { SetRequired } from 'type-fest';
+import type { SetRequired } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeSpacing } from '@trezor/theme';
+import type { Color, NativeSpacing } from '@trezor/theme';
 
 import { Divider } from '../Divider';
 

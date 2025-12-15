@@ -1,7 +1,7 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
-import { AccountHistoryMovementItem } from '../../types';
+import type { AccountHistoryMovementItem } from '../../types';
 
 export const btcAccountTransactions: WalletAccountTransaction[] = [
     {

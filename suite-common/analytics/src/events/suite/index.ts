@@ -12,6 +12,6 @@ const analytics = new Analytics<SuiteAnalyticsEvent | SuiteSharedAnalyticsEvent>
 });
 
 export { analytics, getRandomId };
-export * from './definitions';
-export * from './types';
+export type * from './definitions';
+export type * from './types';
 export * from './constants';

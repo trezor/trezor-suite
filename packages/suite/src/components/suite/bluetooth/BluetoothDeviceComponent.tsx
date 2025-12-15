@@ -1,10 +1,12 @@
-import { Column, Image, ImageKey, InfoSegments, Row, Text } from '@trezor/components';
-import { DeviceModelInternal, models } from '@trezor/device-utils';
+import type { ImageKey } from '@trezor/components';
+import { Column, Image, InfoSegments, Row, Text } from '@trezor/components';
+import type { DeviceModelInternal } from '@trezor/device-utils';
+import { models } from '@trezor/device-utils';
 
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { BluetoothDebugInfo } from './BluetoothDebugInfo';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { useSelector } from '../../../hooks/suite';
 
 type BluetoothDeviceProps = {

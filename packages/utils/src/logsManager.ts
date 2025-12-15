@@ -1,4 +1,5 @@
-import { Log, LogMessage, LogWriter } from './logs';
+import type { LogMessage, LogWriter } from './logs';
+import { Log } from './logs';
 
 export class LogsManager {
     logs: { [k: string]: Log } = {};

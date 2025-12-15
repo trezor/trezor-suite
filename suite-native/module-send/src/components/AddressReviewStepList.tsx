@@ -7,11 +7,11 @@ import { useSetAtom } from 'jotai';
 
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import type { TransactionReviewOutputsState } from '@suite-native/transaction-management';
 import {
     LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
-    TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
     useActiveStepOffset,
 } from '@suite-native/transaction-management';

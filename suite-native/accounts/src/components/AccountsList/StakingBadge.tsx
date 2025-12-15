@@ -1,4 +1,5 @@
-import { RoundedIcon, RoundedIconProps } from '@suite-native/atoms';
+import type { RoundedIconProps } from '@suite-native/atoms';
+import { RoundedIcon } from '@suite-native/atoms';
 
 export const StakingBadge = (props: Partial<RoundedIconProps>) => (
     <RoundedIcon

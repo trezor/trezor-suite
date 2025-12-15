@@ -1,9 +1,9 @@
-import {
+import type {
     EncryptableBranded,
     EncryptedHex,
     PlatformEncryption,
-    asEncryptedHex,
 } from '@suite-common/platform-encryption';
+import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { ok } from '@trezor/type-utils';
 
 export const createNativePlatformEncryption = (): PlatformEncryption => ({

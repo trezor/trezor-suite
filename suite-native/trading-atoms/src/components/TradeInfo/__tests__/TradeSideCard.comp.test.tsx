@@ -4,7 +4,8 @@ import type { CryptoId } from 'invity-api';
 
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { TradeSideCard, TradeSideCardProps } from '../TradeSideCard';
+import type { TradeSideCardProps } from '../TradeSideCard';
+import { TradeSideCard } from '../TradeSideCard';
 
 describe('TradeSideCard', () => {
     const renderTradeSideCard = (props: Partial<TradeSideCardProps>) =>

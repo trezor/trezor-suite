@@ -1,17 +1,13 @@
 import styled from 'styled-components';
 
-import { SpacingValuesNew } from '@trezor/theme';
+import type { SpacingValuesNew } from '@trezor/theme';
 
 import { BulletListContext } from './BulletListContext';
 import { BulletListItem } from './BulletListItem';
-import { BulletLineWidth, BulletListDirection, BulletSize } from './types';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { BulletLineWidth, BulletListDirection, BulletSize } from './types';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 
 export type { BulletListItemState } from './types';
 

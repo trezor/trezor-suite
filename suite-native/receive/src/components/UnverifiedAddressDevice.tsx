@@ -1,10 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Pressable } from 'react-native';
-import {
-    GestureEvent,
-    PanGestureHandler,
-    PanGestureHandlerEventPayload,
-} from 'react-native-gesture-handler';
+import type { GestureEvent, PanGestureHandlerEventPayload } from 'react-native-gesture-handler';
+import { PanGestureHandler } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 

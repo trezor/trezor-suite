@@ -1,9 +1,7 @@
 import type { BuyTradeStatus, CryptoId, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
+import type { TradingTradeType, TradingTransaction, TradingType } from '@suite-common/trading';
 import {
-    TradingTradeType,
-    TradingTransaction,
-    TradingType,
     isBuyTrade,
     isExchangeTrade,
     isSellFiatTrade,

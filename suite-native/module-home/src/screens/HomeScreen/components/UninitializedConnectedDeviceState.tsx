@@ -6,12 +6,8 @@ import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

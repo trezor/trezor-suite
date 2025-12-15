@@ -1,18 +1,8 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
-import {
-    Button,
-    ButtonProps,
-    Card,
-    Column,
-    Divider,
-    H2,
-    IconCircle,
-    IconCircleVariant,
-    IconName,
-    Paragraph,
-    Row,
-} from '@trezor/components';
+import type { ButtonProps, IconCircleVariant, IconName } from '@trezor/components';
+import { Button, Card, Column, Divider, H2, IconCircle, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 interface AccountExceptionLayoutProps {

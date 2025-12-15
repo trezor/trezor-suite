@@ -1,9 +1,6 @@
 import { Translation } from '@suite-native/intl';
-import {
-    CloseActionType,
-    ScreenHeader,
-    useNavigateToInitialScreen,
-} from '@suite-native/navigation';
+import type { CloseActionType } from '@suite-native/navigation';
+import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 
 type AccountImportScreenHeaderProps = {
     closeActionType?: CloseActionType;

@@ -1,4 +1,5 @@
-import { FormatPercentageArgs, localizePercentage } from '../localizePercentage';
+import type { FormatPercentageArgs } from '../localizePercentage';
+import { localizePercentage } from '../localizePercentage';
 
 const NON_BREAKING_SPACE = '\u00A0';
 

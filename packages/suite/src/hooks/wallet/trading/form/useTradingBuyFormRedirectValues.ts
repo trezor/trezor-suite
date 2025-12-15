@@ -1,11 +1,7 @@
-import { BuyTradeQuoteRequest, FiatCurrencyCode } from 'invity-api';
+import type { BuyTradeQuoteRequest, FiatCurrencyCode } from 'invity-api';
 
-import {
-    TradingBuyFormProps,
-    TradingCountryCode,
-    getDefaultCountry,
-    useTradingInfo,
-} from '@suite-common/trading';
+import type { TradingBuyFormProps, TradingCountryCode } from '@suite-common/trading';
+import { getDefaultCountry, useTradingInfo } from '@suite-common/trading';
 
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 

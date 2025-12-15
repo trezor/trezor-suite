@@ -1,7 +1,9 @@
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../../constants';
-import { Address as AddressShared, DerivationPath } from '../../params';
+import type { Address as AddressShared } from '../../params';
+import { DerivationPath } from '../../params';
 
 export type MoneroNetworkType = PROTO.MoneroNetworkType;
 

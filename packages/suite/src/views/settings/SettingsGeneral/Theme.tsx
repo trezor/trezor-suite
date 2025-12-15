@@ -1,6 +1,6 @@
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { ThemeColorVariant } from '@trezor/theme';
+import type { ThemeColorVariant } from '@trezor/theme';
 
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';

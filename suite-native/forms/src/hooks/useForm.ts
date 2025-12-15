@@ -1,12 +1,8 @@
-import {
-    FieldValues,
-    UseFormProps,
-    UseFormReturn,
-    useForm as hookFormUseForm,
-} from 'react-hook-form';
+import type { FieldValues, UseFormProps, UseFormReturn } from 'react-hook-form';
+import { useForm as hookFormUseForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AnyObjectSchema } from 'yup';
+import type { AnyObjectSchema } from 'yup';
 
 export { useFormState, useWatch, useController } from 'react-hook-form';
 

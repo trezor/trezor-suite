@@ -4,12 +4,13 @@ import styled from 'styled-components';
 
 import {
     type Network,
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetwork,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { Row, Tooltip, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
 import { CheckableTag } from './CheckableTag';
 import { CoinLogo } from '../CoinLogo/CoinLogo';

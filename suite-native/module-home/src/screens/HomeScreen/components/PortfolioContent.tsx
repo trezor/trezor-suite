@@ -14,16 +14,12 @@ import { Assets } from '@suite-native/assets';
 import { AnimatedVStack, Button, HStack, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    ReceiveStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    SendStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { ReceiveStackRoutes, RootStackRoutes, SendStackRoutes } from '@suite-native/navigation';
 
 import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
-import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
+import type { PortfolioGraphRef } from './PortfolioGraph';
+import { PortfolioGraph } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {

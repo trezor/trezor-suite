@@ -1,6 +1,9 @@
-import { SuiteSyncStorageRepositoryDep, UpdateOutputLabel } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
-import { StaticSessionId } from '@trezor/connect';
+import type {
+    SuiteSyncStorageRepositoryDep,
+    UpdateOutputLabel,
+} from '@suite-common/suite-sync-types';
+import type { SuiteSyncOwner } from '@suite-common/suite-types';
+import type { StaticSessionId } from '@trezor/connect';
 
 export type UpdateOutputLabelDeps = {
     findSuiteSyncOwnerForDeviceStaticId: (staticId: StaticSessionId) => SuiteSyncOwner | null;

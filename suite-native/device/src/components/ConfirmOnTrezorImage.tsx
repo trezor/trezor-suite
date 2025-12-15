@@ -1,4 +1,5 @@
-import React, { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import React, { useMemo } from 'react';
 import { Image } from 'react-native';
 import { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 

@@ -1,6 +1,7 @@
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { ServerOffline, ServerOfflineProps } from '../ServerOffline';
+import type { ServerOfflineProps } from '../ServerOffline';
+import { ServerOffline } from '../ServerOffline';
 
 describe('ServerOffline', () => {
     const renderServerOffline = (props: Partial<ServerOfflineProps>) =>

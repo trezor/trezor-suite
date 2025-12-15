@@ -10,18 +10,18 @@ import {
     tokenSupportsIncreasingAllowance,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import {
+import type {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import type { ExchangeFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { useExchangeAnalyticReportCallback } from './useExchangeAnalyticReportCallback';

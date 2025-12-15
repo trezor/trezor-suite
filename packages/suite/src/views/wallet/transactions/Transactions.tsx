@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import {
     selectAccountTransactionsWithNulls,
@@ -7,7 +7,7 @@ import {
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
 import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';

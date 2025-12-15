@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import type { TrezorConnect } from '../../..';
 
 export const blockchainEstimateFee = async (api: TrezorConnect) => {
     const simple = await api.blockchainEstimateFee({ coin: 'btc' });

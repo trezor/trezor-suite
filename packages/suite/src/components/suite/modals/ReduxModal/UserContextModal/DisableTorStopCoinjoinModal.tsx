@@ -1,4 +1,4 @@
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

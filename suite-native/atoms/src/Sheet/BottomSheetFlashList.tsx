@@ -1,14 +1,16 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Dimensions, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { BottomSheetProps } from '@gorhom/bottom-sheet';
 import {
     BottomSheetBackdrop,
     BottomSheetModal,
-    BottomSheetProps,
     useBottomSheetScrollableCreator,
 } from '@gorhom/bottom-sheet';
-import { FlashList, FlashListProps } from '@shopify/flash-list';
+import type { FlashListProps } from '@shopify/flash-list';
+import { FlashList } from '@shopify/flash-list';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

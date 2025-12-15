@@ -2,21 +2,20 @@ import fs from 'fs/promises';
 import stringify from 'json-stable-stringify';
 import path from 'path';
 
-import {
-    HttpServer,
+import type {
     ParamsValidatorHandler,
     RequestHandler,
     RequestWithParams,
     Response,
-    parseBodyJSON,
-    parseBodyText,
 } from '@trezor/node-utils';
+import { HttpServer, parseBodyJSON, parseBodyText } from '@trezor/node-utils';
 import { checkOrigin } from '@trezor/node-utils/src/http';
-import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import type { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UNEXPECTED_ERROR } from '@trezor/transport/src/errors';
-import { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
+import type { Descriptor, PathPublic, Session } from '@trezor/transport/src/types';
 import { validateProtocolMessage } from '@trezor/transport/src/utils/bridgeProtocolMessage';
-import { Log, Throttler, arrayPartition } from '@trezor/utils';
+import type { Log } from '@trezor/utils';
+import { Throttler, arrayPartition } from '@trezor/utils';
 
 import { createCore } from './core';
 

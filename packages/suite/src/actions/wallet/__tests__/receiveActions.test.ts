@@ -3,7 +3,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import modalReducer from 'src/reducers/suite/modalReducer';

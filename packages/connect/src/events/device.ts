@@ -1,5 +1,5 @@
 import type { VersionArray } from '@trezor/device-utils';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     DecodedTrezorPushNotification,
     ThpCredentials,

@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import {
+import type {
     Action,
     GuideArticle,
     GuideCategory,
@@ -9,21 +9,20 @@ import {
     TrezorDevice,
 } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
-import {
+import type {
     Account,
     BlockchainNetworks,
     FeeInfo,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import {
+import type {
     AccountUtxo,
     Device,
     DeviceUniquePath,
     Features,
-    FirmwareType,
     TrezorConnect,
-    asDeviceUniquePath,
 } from '@trezor/connect';
+import { FirmwareType, asDeviceUniquePath } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 /**

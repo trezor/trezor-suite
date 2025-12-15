@@ -3,8 +3,8 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
+import type { DiscoveryRootState } from '@suite-common/wallet-core';
 import {
-    DiscoveryRootState,
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectSelectedDevice,

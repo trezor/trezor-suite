@@ -1,5 +1,5 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, FormState } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Account, FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Banner,
@@ -16,8 +16,10 @@ import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
 import { Address, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
-import { RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
+import type { RbfContextValues } from 'src/hooks/wallet/useRbfForm';
+import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 type AmountRowProps = {
     labelTranslationKey: TranslationKey;

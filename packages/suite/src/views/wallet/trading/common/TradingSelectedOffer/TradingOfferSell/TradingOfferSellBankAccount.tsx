@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { BankAccount } from 'invity-api';
+import type { BankAccount } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
 import { type TradingSellType, sellUtils } from '@suite-common/trading';

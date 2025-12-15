@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
-import {
+import type {
     TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
-    selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
+import { selectDeviceTradingTradesOrderedByDate } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useBottomSheetControls } from '@suite-native/trading-atoms';

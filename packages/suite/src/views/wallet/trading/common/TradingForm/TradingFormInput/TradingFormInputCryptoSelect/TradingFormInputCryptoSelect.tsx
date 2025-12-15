@@ -1,11 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
-import {
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingTradeBuyExchangeType,
+} from '@suite-common/trading';
+import {
     parseCryptoId,
     selectTradingLoadingAndTimestamp,
     useTradingInfo,
@@ -16,7 +18,7 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingFormInputCryptoSelectProps } from 'src/types/trading/tradingForm';
+import type { TradingFormInputCryptoSelectProps } from 'src/types/trading/tradingForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 import { TradingSelectAssetModal } from './TradingSelectAssetModal/TradingSelectAssetModal';

@@ -1,20 +1,21 @@
-import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, getNetworkFeatures } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import {
     TOKEN_DEFINITIONS_PREFIX_URL,
     TOKEN_DEFINITIONS_SUFFIX_URL,
 } from './tokenDefinitionsConstants';
-import {
-    DefinitionType,
+import type {
     SimpleTokenStructure,
     TokenDefinitionsState,
     TokenManagementAction,
     TokenManagementStorage,
     TokenStructureType,
 } from './tokenDefinitionsTypes';
+import { DefinitionType } from './tokenDefinitionsTypes';
 
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
 const tokenDefinitionsMap = new WeakMap<SimpleTokenStructure, Set<string>>();

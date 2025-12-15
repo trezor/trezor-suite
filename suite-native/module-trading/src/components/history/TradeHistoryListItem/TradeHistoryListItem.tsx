@@ -3,11 +3,8 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import {
-    TradingRootState,
-    TradingTransaction,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
+import type { TradingRootState, TradingTransaction } from '@suite-common/trading';
+import { selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

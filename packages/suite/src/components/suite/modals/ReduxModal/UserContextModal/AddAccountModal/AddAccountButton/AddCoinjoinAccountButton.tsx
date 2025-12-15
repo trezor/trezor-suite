@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { UnavailableCapabilities } from '@trezor/connect';
+import type { UnavailableCapabilities } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -15,7 +15,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
 

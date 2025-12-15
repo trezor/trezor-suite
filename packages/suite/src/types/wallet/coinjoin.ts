@@ -1,19 +1,15 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
-import {
+import type {
     CoinjoinClientVersion,
     CoinjoinPrisonInmate,
     CoinjoinStatusEvent,
     RegisterAccountParams,
 } from '@trezor/coinjoin';
-import {
-    EndRoundState,
-    RoundPhase,
-    SessionPhase,
-    WabiSabiProtocolErrorCode,
-} from '@trezor/coinjoin/src/enums';
-import { PartialRecord } from '@trezor/type-utils';
+import type { RoundPhase, SessionPhase } from '@trezor/coinjoin/src/enums';
+import { EndRoundState, WabiSabiProtocolErrorCode } from '@trezor/coinjoin/src/enums';
+import type { PartialRecord } from '@trezor/type-utils';
 
 import type { CoinjoinNetworksConfig } from 'src/services/coinjoin';
 

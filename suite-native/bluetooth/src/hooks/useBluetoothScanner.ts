@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 import { AppState } from 'react-native';
 
-import { BleError, bluetoothManager } from '@trezor/transport-native-bluetooth';
+import type { BleError } from '@trezor/transport-native-bluetooth';
+import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
 export const useBluetoothScanner = () => {
     const startDeviceScan = useCallback((errorHandler?: (error: BleError) => void) => {

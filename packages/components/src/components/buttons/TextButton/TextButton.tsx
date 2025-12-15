@@ -1,20 +1,21 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 
-import styled, { DefaultTheme, useTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
-import { CSSColor, borders, spacingsPx, typography } from '@trezor/theme';
+import type { CSSColor } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
-import { Icon, IconName } from '../../Icon/Icon';
+import type { IconName } from '../../Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { IconAlignment, getIconColor, getIconSize } from '../buttonStyleUtils';
+import type { IconAlignment } from '../buttonStyleUtils';
+import { getIconColor, getIconSize } from '../buttonStyleUtils';
 
 export const allowedTextButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedTextButtonFrameProps = Pick<

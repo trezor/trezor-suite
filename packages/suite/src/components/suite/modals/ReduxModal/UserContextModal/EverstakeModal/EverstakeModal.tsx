@@ -1,13 +1,15 @@
-import { JSX, useMemo, useState } from 'react';
+import type { JSX } from 'react';
+import { useMemo, useState } from 'react';
 
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import type { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectVotingDelegationOption,
 } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
-import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 

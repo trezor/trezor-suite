@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 export const useTradingNavigation = (account: Account) => {
     const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import { UI_EVENT } from './ui-request';
 import type { ConnectSettings, SystemInfo } from '../types';
 import type { MessageFactoryFn } from '../types/utils';
-import { LogMessage } from '../utils/debug';
+import type { LogMessage } from '../utils/debug';
 
 export const IFRAME = {
     // Message called from iframe.html inline script before "window.onload" event. This is first message from iframe to window.opener.

@@ -1,4 +1,4 @@
-import { UnknownAction } from '@reduxjs/toolkit';
+import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependenciesMock, getSuiteDevice } from '@suite-common/test-utils';
@@ -9,7 +9,8 @@ import {
 } from '@suite-common/wallet-core';
 import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
 import { featureFlagsSlice } from '@suite-native/feature-flags';
-import { NativeFirmwareState, nativeFirmwareReducer } from '@suite-native/firmware';
+import type { NativeFirmwareState } from '@suite-native/firmware';
+import { nativeFirmwareReducer } from '@suite-native/firmware';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,

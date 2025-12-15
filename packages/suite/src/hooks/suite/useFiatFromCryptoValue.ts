@@ -1,7 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
-import { AmountUnit, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import type { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
+import type { AmountUnit } from '@suite-common/wallet-utils';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

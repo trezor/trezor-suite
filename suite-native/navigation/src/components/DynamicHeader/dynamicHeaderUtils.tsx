@@ -1,6 +1,8 @@
-import { ReactElement, ReactNode, isValidElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { isValidElement } from 'react';
 
-import { DynamicScreenHeader, DynamicScreenHeaderProps } from './DynamicScreenHeader';
+import type { DynamicScreenHeaderProps } from './DynamicScreenHeader';
+import { DynamicScreenHeader } from './DynamicScreenHeader';
 
 export const isScreenHeaderPropDynamic = (
     element: ReactNode,

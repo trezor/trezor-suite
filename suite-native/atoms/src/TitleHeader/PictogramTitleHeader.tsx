@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { IconName } from '@suite-native/icons';
-import { NativeTypographyStyle } from '@trezor/theme';
+import type { IconName } from '@suite-native/icons';
+import type { NativeTypographyStyle } from '@trezor/theme';
 
-import { Pictogram, PictogramVariant } from '../Pictogram/Pictogram';
+import type { PictogramVariant } from '../Pictogram/Pictogram';
+import { Pictogram } from '../Pictogram/Pictogram';
 import { VStack } from '../Stack';
 import { CenteredTitleHeader } from './CenteredTitleHeader';
 

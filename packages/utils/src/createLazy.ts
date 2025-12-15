@@ -1,4 +1,5 @@
-import { Deferred, createDeferred } from './createDeferred';
+import type { Deferred } from './createDeferred';
+import { createDeferred } from './createDeferred';
 
 export const createLazy = <T, TArgs extends Array<any>>(
     initLazy: (...args: TArgs) => Promise<T>,

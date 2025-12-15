@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Text } from '@trezor/components';
 import { borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
-import { AssetLogo, AssetLogoProps } from '../AssetLogo/AssetLogo';
+import type { AssetLogoProps } from '../AssetLogo/AssetLogo';
+import { AssetLogo } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 const Container = styled.div<{ $itemsCount: number }>`

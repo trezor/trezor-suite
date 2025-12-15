@@ -1,12 +1,11 @@
-import { RouteProp } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
 import {
-    PreloadedState,
-    TestStore,
     initStore,
     renderWithStoreProviderAsync,
     userEvent,
@@ -14,10 +13,8 @@ import {
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
-import {
-    TradingExchangePreviewScreen,
-    TradingExchangePreviewScreenProps,
-} from '../TradingExchangePreviewScreen';
+import type { TradingExchangePreviewScreenProps } from '../TradingExchangePreviewScreen';
+import { TradingExchangePreviewScreen } from '../TradingExchangePreviewScreen';
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),

@@ -1,7 +1,8 @@
 import { fireEvent, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { paletteV1 } from '@trezor/theme';
 
-import { AMOUNT_INPUT_TEST_ID, AmountInput, AmountInputProps } from '../AmountInput';
+import type { AmountInputProps } from '../AmountInput';
+import { AMOUNT_INPUT_TEST_ID, AmountInput } from '../AmountInput';
 
 describe('AmountInput', () => {
     const renderAmountInput = (props: Partial<AmountInputProps>) =>

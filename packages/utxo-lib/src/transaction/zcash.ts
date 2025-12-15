@@ -5,7 +5,8 @@ import { blake2b } from 'blakejs';
 import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter, varIntSize } from '../bufferutils';
-import { EMPTY_SCRIPT, TransactionBase, TransactionOptions, varSliceSize } from './base';
+import type { TransactionOptions } from './base';
+import { EMPTY_SCRIPT, TransactionBase, varSliceSize } from './base';
 import { hash256 } from '../crypto';
 
 const ZCASH_JOINSPLITS_SUPPORT_VERSION = 2;

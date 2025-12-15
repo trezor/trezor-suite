@@ -1,4 +1,4 @@
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { Banner, Paragraph, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

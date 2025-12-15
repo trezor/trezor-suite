@@ -2,7 +2,7 @@
 
 import * as jws from 'jws';
 
-import { TokenStructure } from '../../src/tokenDefinitionsTypes';
+import type { TokenStructure } from '../../src/tokenDefinitionsTypes';
 
 const JWS_SIGN_ALGORITHM = 'ES256';
 

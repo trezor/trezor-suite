@@ -4,11 +4,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectThpStep } from '@suite-common/thp';
-import {
-    FirmwareUpdateStackParamList,
-    FirmwareUpdateStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { FirmwareUpdateStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { FirmwareUpdateStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackNavigationProps<

@@ -1,7 +1,8 @@
 import { useTranslate } from '@suite-native/intl';
-import { FilterItem, FilterTabs } from '@suite-native/trading-atoms';
+import type { FilterItem } from '@suite-native/trading-atoms';
+import { FilterTabs } from '@suite-native/trading-atoms';
 
-import { FilterValue } from '../../../hooks/general/useProviderFilters';
+import type { FilterValue } from '../../../hooks/general/useProviderFilters';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 

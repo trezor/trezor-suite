@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { selectAdapterStatus } from '@suite-common/bluetooth';
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
 import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';

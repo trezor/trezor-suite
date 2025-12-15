@@ -3,28 +3,28 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { BuyTrade } from 'invity-api';
 
-import {
+import type {
     TradingRootState,
     TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionSell,
     TradingType,
+} from '@suite-common/trading';
+import {
     selectTradingProviderByNameAndTradeType,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
 import { FullAlertBox } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import type { IconName } from '@suite-native/icons';
+import type { TxKeyPath } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
 import { buildTradingUrl } from '../../../utils/general/formUtils';
-import { TradeStatusStep } from '../../../utils/general/utils';
+import type { TradeStatusStep } from '../../../utils/general/utils';
 
 type AlertConfig = {
     iconName: IconName;

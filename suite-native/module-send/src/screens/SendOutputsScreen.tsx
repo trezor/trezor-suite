@@ -4,7 +4,8 @@ import { AccountDetailsCard } from '@suite-native/accounts';
 import { Box, InlineAlertBox } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { Screen, SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';

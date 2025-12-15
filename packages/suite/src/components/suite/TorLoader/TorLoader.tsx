@@ -1,4 +1,5 @@
-import { ComponentType, ReactNode, useEffect, useState } from 'react';
+import type { ComponentType, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     Banner,

@@ -1,4 +1,5 @@
-import { BrowserOptions, captureConsoleIntegration, init } from '@sentry/electron/renderer';
+import type { BrowserOptions } from '@sentry/electron/renderer';
+import { captureConsoleIntegration, init } from '@sentry/electron/renderer';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 

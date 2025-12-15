@@ -4,7 +4,8 @@ import { Icon, Input, Select } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { CoinLogo } from '../CoinLogo/CoinLogo';
-import { SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
+import type { SearchAssetSelectConfig } from './hooks/useNetworkSelect';
+import { useNetworkSelect } from './hooks/useNetworkSelect';
 
 const SelectWrapper = styled.div`
     /* stylelint-disable selector-class-pattern */

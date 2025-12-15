@@ -1,13 +1,10 @@
 import styled from 'styled-components';
 
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectAddressByNetworkAndPath,
-    selectDeviceAccounts,
-} from '@suite-common/wallet-core';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectAddressByNetworkAndPath, selectDeviceAccounts } from '@suite-common/wallet-core';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';

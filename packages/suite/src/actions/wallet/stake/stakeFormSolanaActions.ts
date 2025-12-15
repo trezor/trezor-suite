@@ -10,17 +10,17 @@ import {
     prepareUnstakeSolTx,
 } from '@suite-common/staking-solana';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
     SOL_STAKING_OPERATION_FEE,
 } from '@suite-common/wallet-constants';
-import { ComposeActionContext, selectSelectedDevice } from '@suite-common/wallet-core';
-import {
+import type { ComposeActionContext } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import type {
     Account,
-    AddressDisplayOptions,
     BlockchainNetworks,
     EstimatedFee,
     ExternalOutput,
@@ -30,14 +30,16 @@ import {
     SelectedAccountStatus,
     StakeFormState,
 } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import type { Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import type { FeeLevel } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,

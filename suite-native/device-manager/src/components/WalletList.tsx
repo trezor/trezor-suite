@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,

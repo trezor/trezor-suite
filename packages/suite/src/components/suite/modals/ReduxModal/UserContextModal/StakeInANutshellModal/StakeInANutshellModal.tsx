@@ -1,16 +1,17 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
-import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { NetworkType } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS } from '@suite-common/wallet-constants';
 import { selectPoolStatsApyData, selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getUnstakingPeriodInDays } from '@suite-common/wallet-utils';
+import type { IconName } from '@trezor/components';
 import {
     Badge,
     CollapsibleBox,
     Column,
     Divider,
     Icon,
-    IconName,
     List,
     Modal,
     Paragraph,

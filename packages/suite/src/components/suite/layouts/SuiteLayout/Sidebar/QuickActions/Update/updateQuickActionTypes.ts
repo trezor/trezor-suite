@@ -1,8 +1,8 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
-import { IconName } from '@trezor/components';
-import { UIVariant } from '@trezor/components/src/config/types';
-import { CSSColor, Color } from '@trezor/theme';
+import type { IconName } from '@trezor/components';
+import type { UIVariant } from '@trezor/components/src/config/types';
+import type { CSSColor, Color } from '@trezor/theme';
 
 import {
     installUpdate,
@@ -10,7 +10,7 @@ import {
     setIsUpdateModalVisible,
 } from '../../../../../../../actions/suite/desktopUpdateActions';
 import { goto } from '../../../../../../../actions/suite/routerActions';
-import { Dispatch } from '../../../../../../../types/suite';
+import type { Dispatch } from '../../../../../../../types/suite';
 
 export const updateVariants = ['tertiary', 'info', 'purple'] as const;
 export type UpdateVariant = Extract<UIVariant, (typeof updateVariants)[number]> | 'purple';

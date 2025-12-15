@@ -1,11 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account } from '@suite-common/wallet-types';
-import TrezorConnect, {
-    EthereumSignTypedDataMessage,
-    EthereumSignTypedDataTypes,
-} from '@trezor/connect';
+import type { Account } from '@suite-common/wallet-types';
+import type { EthereumSignTypedDataMessage, EthereumSignTypedDataTypes } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { transformTypedData } from '@trezor/connect-plugin-ethereum';
 
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';

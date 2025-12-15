@@ -1,27 +1,24 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     type Network,
     type NetworkSymbol,
     getNetwork,
     networksCollection,
 } from '@suite-common/wallet-config';
-import {
+import type {
     AccountsRootState,
     DeviceRootState,
     WalletSettingsRootState,
-    selectDeviceSupportedNetworks,
-    selectEnabledNetworks,
 } from '@suite-common/wallet-core';
+import { selectDeviceSupportedNetworks, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { filterTestnetNetworks, sortNetworks } from '@suite-native/config';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
-import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import type { SettingsSliceRootState } from '@suite-native/settings';
+import { selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
     isCoinWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,

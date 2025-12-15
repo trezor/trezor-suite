@@ -1,20 +1,17 @@
 import { useCallback } from 'react';
 
-import {
-    DeviceBluetoothConnectionStatusType,
-    bluetoothActions,
-    selectKnownDevices,
-    selectNearbyDevices,
-} from '@suite-common/bluetooth';
+import type { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
+import { bluetoothActions, selectKnownDevices, selectNearbyDevices } from '@suite-common/bluetooth';
 import { Button, Row } from '@trezor/components';
-import { BluetoothDeviceId } from '@trezor/connect';
+import type { BluetoothDeviceId } from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
-import { Translation, TranslationKey } from '../Translation';
+import type { TranslationKey } from '../Translation';
+import { Translation } from '../Translation';
 import { PairingState } from './PairingState';
 import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 

@@ -1,22 +1,21 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import type { FiatRatesRootState, TransactionsRootState } from '@suite-common/wallet-core';
 import {
-    FiatRatesRootState,
-    TransactionsRootState,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     selectIsPhishingTransaction,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
-import { AccountKey, Timestamp } from '@suite-common/wallet-types';
+import type { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Box, Card, InlineAlertBox, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import type { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import Lottie, { LottieOptions } from 'lottie-react';
+import type { LottieOptions } from 'lottie-react';
+import Lottie from 'lottie-react';
 import styled from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
 
-import { AnimationWrapper, Shape } from './AnimationPrimitives';
+import type { Shape } from './AnimationPrimitives';
+import { AnimationWrapper } from './AnimationPrimitives';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;

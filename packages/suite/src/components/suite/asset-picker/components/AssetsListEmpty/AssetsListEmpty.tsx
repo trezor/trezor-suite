@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';

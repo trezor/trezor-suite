@@ -1,5 +1,5 @@
 import { isRejected } from '@reduxjs/toolkit';
-import {
+import type {
     CryptoId,
     ExchangeProviderInfo,
     ExchangeTradeSigned,
@@ -8,7 +8,8 @@ import {
 } from 'invity-api';
 
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import type { PROTO } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 

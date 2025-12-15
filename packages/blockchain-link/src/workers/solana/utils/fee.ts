@@ -1,4 +1,4 @@
-import {
+import type {
     Address,
     Base64EncodedWireTransaction,
     CompilableTransactionMessage,
@@ -10,6 +10,8 @@ import {
     SimulateTransactionApi,
     TransactionMessageBytes,
     TransactionMessageBytesBase64,
+} from '@solana/kit';
+import {
     getBase64Decoder,
     getCompiledTransactionMessageEncoder,
     getTransactionEncoder,

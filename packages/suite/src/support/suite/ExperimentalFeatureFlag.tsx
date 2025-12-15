@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
+import type { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 
 export const ExperimentalFeatureFlag = memo(

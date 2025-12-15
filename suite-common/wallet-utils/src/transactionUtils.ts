@@ -1,10 +1,10 @@
 import { addDays, startOfMonth } from 'date-fns';
 import { fromWei, toWei } from 'web3-utils';
 
-import { AccountLabels } from '@suite-common/metadata-types';
-import { SignOperator } from '@suite-common/suite-types';
-import { NetworkType } from '@suite-common/wallet-config';
-import {
+import type { AccountLabels } from '@suite-common/metadata-types';
+import type { SignOperator } from '@suite-common/suite-types';
+import type { NetworkType } from '@suite-common/wallet-config';
+import type {
     Account,
     AccountKey,
     ChainedTransactions,
@@ -20,14 +20,14 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
+import type {
     AccountAddress,
     AccountTransaction,
     InternalTransfer,
     TokenInfo,
     TokenTransfer,
 } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import type { Branded } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

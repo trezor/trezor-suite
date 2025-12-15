@@ -1,7 +1,7 @@
-import { FractionButtonProps } from '@trezor/components';
+import type { FractionButtonProps } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
+import type { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
 export const generateFractionButtons = (
     helpers: TradingUseFormActionsReturnProps,

@@ -1,11 +1,15 @@
-import { Icon, IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box, BoxProps } from '../Box';
-import { Button, ButtonProps } from '../Button/Button';
+import type { BoxProps } from '../Box';
+import { Box } from '../Box';
+import type { ButtonProps } from '../Button/Button';
+import { Button } from '../Button/Button';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
-import { AlertVariant, FullAlertStyles, variantToColorMap, variantToIconName } from './presets';
+import type { AlertVariant, FullAlertStyles } from './presets';
+import { variantToColorMap, variantToIconName } from './presets';
 
 const containerStyle = prepareNativeStyle<Pick<FullAlertStyles, 'backgroundColor' | 'borderColor'>>(
     (utils, { backgroundColor, borderColor }) => ({

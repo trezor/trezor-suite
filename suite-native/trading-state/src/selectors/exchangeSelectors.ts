@@ -6,22 +6,16 @@ import {
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+import type { Account } from '@suite-common/wallet-types';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 
-import {
-    TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-} from '../reducers';
+import type { TradingRootState } from '../reducers';
+import { createMemoizedSelector, createMemoizedSelectorWithAccounts } from '../reducers';
 
 export type TradingWithFeatureFlagsRootState = TradingRootState & FeatureFlagsRootState;
 

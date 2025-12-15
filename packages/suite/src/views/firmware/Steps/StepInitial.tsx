@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { FirmwareStatus } from '@suite-common/suite-types';
+import type { FirmwareStatus } from '@suite-common/suite-types';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 

@@ -3,20 +3,15 @@ import { useSelector } from 'react-redux';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    selectAccountLabel,
-    selectAccountNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountLabel, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    CloseActionType,
-    ScreenHeader,
-    useNavigateToInitialScreen,
-} from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import type { CloseActionType } from '@suite-native/navigation';
+import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
 
 type ReceiveScreenHeaderProps = {

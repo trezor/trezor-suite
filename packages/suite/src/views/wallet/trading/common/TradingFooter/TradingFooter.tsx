@@ -1,4 +1,4 @@
-import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
+import type { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 import styled, { css } from 'styled-components';
 
 import { Column, Link, Row, Text, Tooltip } from '@trezor/components';

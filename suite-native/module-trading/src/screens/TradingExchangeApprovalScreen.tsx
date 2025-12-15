@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import type { TradingRootState } from '@suite-common/trading';
 import {
-    TradingRootState,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangePreselectedQuote,
     selectTradingProviderByNameAndTradeType,
@@ -10,14 +10,13 @@ import {
 } from '@suite-common/trading';
 import { InlineAlertBox, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    DynamicScreenHeader,
+import type {
     RootStackParamList,
-    Screen,
     StackToStackCompositeScreenProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeApprovalDetailsCard } from '../components/exchange/Approval/ExchangeApprovalDetailsCard';

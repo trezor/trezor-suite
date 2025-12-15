@@ -1,10 +1,11 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { AccountLabels } from '@suite-common/metadata-types';
+import type { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { InputButton } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { spacings } from '@trezor/theme';

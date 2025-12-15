@@ -7,7 +7,7 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { WalletParams } from 'src/types/wallet';
+import type { WalletParams } from 'src/types/wallet';
 
 import { HeaderDropdown } from './HeaderDropdown';
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';

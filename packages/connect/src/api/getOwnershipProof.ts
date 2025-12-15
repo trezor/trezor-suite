@@ -1,8 +1,9 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 
 import { getFirmwareRange } from './common/paramsValidator';
-import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
+import type { MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import { Bundle } from '../types';

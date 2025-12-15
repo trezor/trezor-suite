@@ -1,6 +1,6 @@
 import { satisfies } from 'semver';
 
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';

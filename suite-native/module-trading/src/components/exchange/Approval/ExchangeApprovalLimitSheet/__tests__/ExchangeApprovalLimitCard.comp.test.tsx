@@ -2,10 +2,8 @@ import { Text } from 'react-native';
 
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import {
-    ExchangeApprovalLimitCard,
-    ExchangeApprovalLimitCardProps,
-} from '../ExchangeApprovalLimitCard';
+import type { ExchangeApprovalLimitCardProps } from '../ExchangeApprovalLimitCard';
+import { ExchangeApprovalLimitCard } from '../ExchangeApprovalLimitCard';
 
 const mockOnChange = jest.fn();
 

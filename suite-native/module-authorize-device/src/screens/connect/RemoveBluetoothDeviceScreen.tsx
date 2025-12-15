@@ -2,18 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import type { BluetoothDevice } from '@suite-native/bluetooth';
 import {
-    BluetoothDevice,
     BluetoothDeviceList,
     selectKnownBluetoothDevices,
     useBluetoothDevice,
 } from '@suite-native/bluetooth';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    Screen,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { AuthorizeDeviceStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes, Screen } from '@suite-native/navigation';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
 

@@ -3,8 +3,8 @@ import { ReactSVG } from 'react-svg';
 import styled, { useTheme } from 'styled-components';
 
 import {
-    FrameProps,
-    FramePropsKeys,
+    type FrameProps,
+    type FramePropsKeys,
     type TransientProps,
     pickAndPrepareFrameProps,
     withFrameProps,

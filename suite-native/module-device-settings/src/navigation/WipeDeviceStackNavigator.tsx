@@ -1,11 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
-import {
-    WipeDeviceStackParamList,
-    WipeDeviceStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { WipeDeviceStackParamList } from '@suite-native/navigation';
+import { WipeDeviceStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { FactoryResetScreen } from '../screens/FactoryResetScreen';
 import { WipeDeviceContinueOnTrezorScreen } from '../screens/WipeDeviceContinueOnTrezorScreen';

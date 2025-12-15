@@ -29,7 +29,7 @@ import type {
 
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 
-import {
+import type {
     InvityServerEnvironment,
     InvityServers,
     TradingOTC,

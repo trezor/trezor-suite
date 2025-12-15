@@ -1,4 +1,4 @@
-import {
+import type {
     SupportedCardanoNetworkSymbols,
     SupportedEthereumNetworkSymbol,
     SupportedSolanaNetworkSymbols,

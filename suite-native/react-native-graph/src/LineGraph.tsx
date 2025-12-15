@@ -1,4 +1,5 @@
-import { ReactElement, memo } from 'react';
+import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import { AnimatedLineGraph } from './AnimatedLineGraph';
 import type { LineGraphProps } from './LineGraphProps';

@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { SerializedTx, selectSelectedDevice } from '@suite-common/wallet-core';
-import { ReviewOutput } from '@suite-common/wallet-types';
+import type { SerializedTx } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import type { ReviewOutput } from '@suite-common/wallet-types';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';

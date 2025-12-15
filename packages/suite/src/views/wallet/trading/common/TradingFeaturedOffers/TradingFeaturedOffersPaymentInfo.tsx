@@ -4,7 +4,10 @@ import type { TradingType } from '@suite-common/trading';
 import { spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TradingTradeBuySellType, TradingTradeDetailBuySellType } from 'src/types/trading/trading';
+import type {
+    TradingTradeBuySellType,
+    TradingTradeDetailBuySellType,
+} from 'src/types/trading/trading';
 import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
 
 const PaymentInfoWrapper = styled.div`

@@ -1,13 +1,11 @@
-import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
-import { TokenAddress, TransactionType } from '@suite-common/wallet-types';
+import type { NetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { TokenAddress, TransactionType } from '@suite-common/wallet-types';
 import { Box, CircularSpinner, RoundedIcon } from '@suite-native/atoms';
-import { CryptoIcon, IconName, IconSize } from '@suite-native/icons';
+import type { IconName, IconSize } from '@suite-native/icons';
+import { CryptoIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
 
 type TransactionIconProps = {
     transactionType: TransactionType;

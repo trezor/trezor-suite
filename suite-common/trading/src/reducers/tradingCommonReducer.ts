@@ -1,20 +1,25 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type { Coins, CryptoId, InfoResponse, Platforms } from 'invity-api';
 
-import { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
+import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { CardanoOutput, FeeLevel, PROTO } from '@trezor/connect';
 
-import {
+import type {
     TradingPaymentMethodListProps,
     TradingTransaction,
     TradingType,
     TradingVerifiedAddress,
 } from '../types';
-import { TradingBuyState, buyInitialState } from './buyReducer';
+import type { TradingBuyState } from './buyReducer';
+import { buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
-import { TradingExchangeState, exchangeInitialState } from './exchangeReducer';
-import { TradingSellState, sellInitialState } from './sellReducer';
-import { TradingSettingsState, settingsInitialState } from './settingsReducer';
+import type { TradingExchangeState } from './exchangeReducer';
+import { exchangeInitialState } from './exchangeReducer';
+import type { TradingSellState } from './sellReducer';
+import { sellInitialState } from './sellReducer';
+import type { TradingSettingsState } from './settingsReducer';
+import { settingsInitialState } from './settingsReducer';
 
 type TradingComposedTransactionInfoOutputs = {
     outputs?: PROTO.TxOutputType[] | CardanoOutput[];

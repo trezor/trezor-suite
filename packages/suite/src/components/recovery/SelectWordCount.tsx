@@ -3,7 +3,7 @@ import { Grid } from '@trezor/components';
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
 import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { WordCount } from 'src/types/recovery';
+import type { WordCount } from 'src/types/recovery';
 
 type SelectWordCountProps = {
     onSelect: (number: WordCount) => void;

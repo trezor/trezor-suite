@@ -1,8 +1,5 @@
-import {
-    AbstractMessageChannel,
-    AbstractMessageChannelConstructorParams,
-    Message,
-} from './abstract';
+import type { AbstractMessageChannelConstructorParams, Message } from './abstract';
+import { AbstractMessageChannel } from './abstract';
 
 /**
  * Communication channel between:

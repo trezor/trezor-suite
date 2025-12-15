@@ -1,4 +1,4 @@
-import { UISize } from '../../config/types';
+import type { UISize } from '../../config/types';
 
 export type InputState = 'warning' | 'error' | 'primary' | 'default';
 

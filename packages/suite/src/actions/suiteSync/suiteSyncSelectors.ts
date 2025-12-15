@@ -1,4 +1,4 @@
-import { DesktopSuiteSyncRootState } from './suiteSyncSlice';
+import type { DesktopSuiteSyncRootState } from './suiteSyncSlice';
 
 export const selectShowEnableSuiteSyncModal = (state: DesktopSuiteSyncRootState): boolean =>
     state.suiteSync.showEnableSuiteSyncModal;

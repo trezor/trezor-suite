@@ -8,14 +8,14 @@ import {
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
     STAKE_GAS_LIMIT_RESERVE,
 } from '@suite-common/wallet-constants';
-import {
+import type {
     Account,
-    AddressDisplayOptions,
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
     RbfTransactionParams,
 } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,
@@ -38,11 +38,12 @@ import {
     subunitsToUnits,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
+import type { FeeLevel, TokenInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
+import type {
     ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,

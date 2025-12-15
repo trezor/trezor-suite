@@ -1,7 +1,9 @@
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
-import { BundledParams, DerivationPath, Params, Response } from '../params';
+import type { BundledParams, Params, Response } from '../params';
+import { DerivationPath } from '../params';
 
 export type GetOwnershipId = Static<typeof GetOwnershipId>;
 export const GetOwnershipId = Type.Object({

@@ -2,20 +2,24 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import * as ERRORS from '@trezor/connect/src/constants/errors';
-import {
+import type {
     CallMethodAnyResponse,
     CallMethodPayload,
+    UiResponseEvent,
+} from '@trezor/connect/src/events';
+import {
     DEVICE_EVENT,
     IFRAME,
     POPUP,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
 } from '@trezor/connect/src/events';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
 import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { Log, LogMessage, LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
+import type { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { Log, LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+import { initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
 import { createDeferred } from '@trezor/utils';
 
 import { parseConnectSettings } from '../connectSettings';

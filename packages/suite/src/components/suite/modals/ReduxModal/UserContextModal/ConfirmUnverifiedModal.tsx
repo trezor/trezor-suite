@@ -5,9 +5,10 @@ import { Button, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { onCancel } from 'src/actions/suite/modalActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 interface ConfirmUnverifiedModalProps {
     action: {

@@ -4,28 +4,26 @@ import { useSelector } from 'react-redux';
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getExplorerUrl } from '@suite-common/wallet-config';
+import type { ExplorerState, TransactionsRootState } from '@suite-common/wallet-core';
 import {
-    ExplorerState,
-    TransactionsRootState,
     selectExplorer,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    Screen,
-    ScreenHeader,
+import type {
     StackProps,
     TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
+import type { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';

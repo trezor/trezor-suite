@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
+import type { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
 import { ExperimentId } from '@suite-common/message-system';
 import {
@@ -15,7 +15,7 @@ import {
     useTradingInfo,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
 import { breakpoints, spacings } from '@trezor/theme';
@@ -28,7 +28,7 @@ import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextM
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
+import type {
     TradingExchangeApprovalType,
     TradingFormContextValues,
 } from 'src/types/trading/tradingForm';

@@ -1,11 +1,13 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
 import { Card } from '../Card/Card';
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import type { InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox } from '../InlineAlertBox/InlineAlertBox';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 

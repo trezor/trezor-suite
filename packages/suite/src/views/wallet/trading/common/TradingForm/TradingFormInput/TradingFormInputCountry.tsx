@@ -1,12 +1,14 @@
-import { Control, Controller } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { TRADING_FORM_COUNTRY_SELECT, TradingCountryOption, regional } from '@suite-common/trading';
+import type { TradingCountryOption } from '@suite-common/trading';
+import { TRADING_FORM_COUNTRY_SELECT, regional } from '@suite-common/trading';
 import { Flag, Row, Select } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingTradeBuySellType } from 'src/types/trading/trading';
-import {
+import type { TradingTradeBuySellType } from 'src/types/trading/trading';
+import type {
     TradingBuySellFormProps,
     TradingFormInputDefaultProps,
 } from 'src/types/trading/tradingForm';

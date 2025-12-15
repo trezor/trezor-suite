@@ -1,4 +1,4 @@
-import { Options, Event as SentryEvent } from '@sentry/core';
+import type { Options, Event as SentryEvent } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';

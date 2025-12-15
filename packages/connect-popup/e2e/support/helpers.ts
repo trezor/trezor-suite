@@ -1,4 +1,4 @@
-import { BrowserContext, Page, chromium, expect } from '@playwright/test';
+import { type BrowserContext, type Page, chromium, expect } from '@playwright/test';
 import path from 'path';
 
 // Waits and clicks for an array on buttons in serial order.

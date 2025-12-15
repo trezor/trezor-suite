@@ -1,14 +1,15 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { UINT256_MAX } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { NetworkType } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
-import { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import type { EvmTransactionPurpose, ReviewOutput, StakeType } from '@suite-common/wallet-types';
+import type { EvmApprovalPurpose } from '@suite-common/wallet-utils';
 import {
-    EvmApprovalPurpose,
     findAccountsByAddress,
     getCardanoFingerprint,
     isApprovalFlowSupported,
@@ -22,14 +23,14 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Translation } from 'src/components/suite/Translation';
 import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
+import type { TranslationFunction } from 'src/hooks/suite/useTranslation';
 import type { Account } from 'src/types/wallet';
 
-import {
+import type {
     OutputElementLine,
-    TransactionReviewOutputElement,
     TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
+import { TransactionReviewOutputElement } from './TransactionReviewOutputElement';
 
 const getFeeLabel = (networkType: NetworkType) => {
     switch (networkType) {

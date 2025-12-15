@@ -5,7 +5,8 @@ import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite/useDevice';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {

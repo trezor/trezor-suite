@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { firmwareUpdate } from '@suite-common/firmware';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
@@ -15,7 +15,7 @@ import {
     selectDevices,
     selectDevicesCount,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {

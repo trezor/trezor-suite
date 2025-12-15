@@ -1,15 +1,10 @@
 import { useMemo, useState } from 'react';
 
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
-    AssetOptionBaseProps,
-    SearchAsset,
-    SelectAssetModal,
-    TokenTab,
-    TokenTabs,
-} from '@trezor/product-components';
+import type { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { AssetOptionBaseProps, TokenTab } from '@trezor/product-components';
+import { SearchAsset, SelectAssetModal, TokenTabs } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TokenBalance } from 'src/components/wallet/TokenBalance';

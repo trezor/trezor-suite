@@ -1,12 +1,13 @@
 import { useTheme } from 'styled-components';
 
-import { SignValue } from '@suite-common/suite-types';
+import type { SignValue } from '@suite-common/suite-types';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isNftMultitokenTransfer } from '@suite-common/wallet-utils';
 import { Box, Column, Row, Text } from '@trezor/components';
-import { TokenTransfer } from '@trezor/connect';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import type { TokenTransfer } from '@trezor/connect';
+import type { TypographyStyle } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';

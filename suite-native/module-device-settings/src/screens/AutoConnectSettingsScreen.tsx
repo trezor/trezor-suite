@@ -9,13 +9,8 @@ import { selectDeviceAutoconnectCredentials } from '@suite-common/wallet-core';
 import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    DynamicScreenHeader,
-    Screen,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useThpAutoconnectActions } from '@suite-native/thp';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';

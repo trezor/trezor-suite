@@ -8,13 +8,13 @@ import {
     selectSelectedDevice,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,
     sortByBIP44AddressIndex,
     substituteBip43Path,
 } from '@suite-common/wallet-utils';
-import { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coinjoin';
+import type { BroadcastedTransactionDetails, ScanAccountProgress } from '@trezor/coinjoin';
 import TrezorConnect from '@trezor/connect';
 import { promiseAllSequence } from '@trezor/utils';
 
@@ -34,8 +34,8 @@ import {
 import { selectIsDeviceLocked } from 'src/selectors/suite/suiteSelectors';
 import { COORDINATOR_FEE_RATE_MULTIPLIER, CoinjoinService } from 'src/services/coinjoin';
 import type { CoinjoinSymbol } from 'src/services/coinjoin';
-import { Dispatch, GetState } from 'src/types/suite';
-import {
+import type { Dispatch, GetState } from 'src/types/suite';
+import type {
     CoinjoinAccount,
     CoinjoinConfig,
     CoinjoinDiscoveryCheckpoint,

@@ -1,6 +1,7 @@
-import { TradeableAsset } from '@suite-native/trading-types';
+import type { TradeableAsset } from '@suite-native/trading-types';
 
-import { TradingRootState, createMemoizedSelector } from '../reducers';
+import type { TradingRootState } from '../reducers';
+import { createMemoizedSelector } from '../reducers';
 
 export const selectTradingFavouriteAssets = (state: TradingRootState) =>
     state.wallet.trading.favouriteAssets;

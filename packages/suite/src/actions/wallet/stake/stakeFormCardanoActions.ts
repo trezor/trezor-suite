@@ -3,20 +3,16 @@ import {
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_DREP,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
 } from '@suite-common/wallet-constants';
-import {
-    ComposeActionContext,
-    VotingDelegationOption,
-    selectCardanoPoolsInfo,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import {
+import type { ComposeActionContext, VotingDelegationOption } from '@suite-common/wallet-core';
+import { selectCardanoPoolsInfo, selectSelectedDevice } from '@suite-common/wallet-core';
+import type {
     Account,
     CardanoAction,
     CardanoPoolInfo,
@@ -45,11 +41,12 @@ import {
     subunitsToUnits,
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 const calculateTransaction = (
     availableBalance: string,

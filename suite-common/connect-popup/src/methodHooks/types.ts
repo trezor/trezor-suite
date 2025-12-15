@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit/react';
+import type { Dispatch } from '@reduxjs/toolkit/react';
 
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import {
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type {
     CallMethodKeys,
     CallMethodParams,
     CallMethodResponse,
@@ -9,7 +9,7 @@ import {
     Unsuccessful,
 } from '@trezor/connect';
 
-import { ConnectCallSource } from '../connectPopupTypes';
+import type { ConnectCallSource } from '../connectPopupTypes';
 
 export type PreCallHookParams<M extends CallMethodKeys> = {
     method: M;

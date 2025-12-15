@@ -2,14 +2,10 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag } from '@suite-native/feature-flags';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     exchangeQuotes,
@@ -18,7 +14,7 @@ import {
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { exchangeActions } from '@suite-native/trading-state';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import type { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';

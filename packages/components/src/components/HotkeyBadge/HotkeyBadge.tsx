@@ -2,15 +2,11 @@ import { Fragment } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacingsPx, typography } from '@trezor/theme';
 
-import { Keys, keyboardKeys } from './keyboardKeys';
+import type { Keys } from './keyboardKeys';
+import { keyboardKeys } from './keyboardKeys';
 import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`

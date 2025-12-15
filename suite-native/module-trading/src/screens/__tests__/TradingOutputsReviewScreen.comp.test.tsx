@@ -1,8 +1,9 @@
-import { RouteProp } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 
-import { TokenAddress } from '@suite-common/wallet-types';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TokenAddress } from '@suite-common/wallet-types';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { TestStore } from '@suite-native/test-utils';
+import { initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import {

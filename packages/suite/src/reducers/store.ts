@@ -1,13 +1,7 @@
 /* eslint-disable import/order */
 // fixes bindActionCreators() https://github.com/reduxjs/redux-thunk/blob/e3d452948d5562b9ce871cc9391403219f83b4ff/extend-redux.d.ts#L11
-import {
-    DevToolsEnhancerOptions,
-    Dispatch,
-    Middleware,
-    Reducer,
-    combineReducers,
-    configureStore,
-} from '@reduxjs/toolkit';
+import type { DevToolsEnhancerOptions, Dispatch, Middleware, Reducer } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
 
 import { prepareFirmwareReducer } from '@suite-common/firmware';
@@ -18,11 +12,8 @@ import { accountsActions } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 import { suiteSyncSlice } from 'src/actions/suiteSync/suiteSyncSlice';
-import {
-    ExtraDependencies,
-    castExtraStore,
-    createStoreWithExtraStoreMiddleware,
-} from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { castExtraStore, createStoreWithExtraStoreMiddleware } from '@suite-common/redux-utils';
 
 import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';

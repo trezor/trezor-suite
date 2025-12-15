@@ -1,15 +1,17 @@
 import { useEffect, useMemo } from 'react';
 import type { UseFormSetValue } from 'react-hook-form';
 
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
+import type {
+    TradingExchangeFormProps,
+    TradingExchangeFormType,
+    TradingExchangeRateType,
+} from '@suite-common/trading';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
-    TradingExchangeFormProps,
-    TradingExchangeFormType,
-    TradingExchangeRateType,
     exchangeUtils,
 } from '@suite-common/trading';
 

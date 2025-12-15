@@ -2,7 +2,7 @@ import { TrezorPushNotificationMode, TrezorPushNotificationType, tpn } from '@tr
 import { resolveAfter } from '@trezor/utils';
 
 import { DEVICE } from '../../events/device';
-import { TpnWorkflowContext } from '../../types/workflow';
+import type { TpnWorkflowContext } from '../../types/workflow';
 import { getThpChannel } from '../thp';
 
 const setupDeviceMode = async (

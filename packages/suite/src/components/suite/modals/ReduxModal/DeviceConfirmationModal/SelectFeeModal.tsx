@@ -3,9 +3,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
-import { Account, FormState } from '@suite-common/wallet-types';
+import type { Account, FormState } from '@suite-common/wallet-types';
 import { Button, Column, Modal } from '@trezor/components';
 import type { ComposeOutput, UiRequestSelectFee } from '@trezor/connect';
 import { spacings } from '@trezor/theme';

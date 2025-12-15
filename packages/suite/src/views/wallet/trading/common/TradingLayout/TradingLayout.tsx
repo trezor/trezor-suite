@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';

@@ -1,6 +1,7 @@
-import { JSX, useEffect } from 'react';
+import type { JSX } from 'react';
+import { useEffect } from 'react';
 
-import { TooltipProps } from 'recharts';
+import type { TooltipProps } from 'recharts';
 import styled from 'styled-components';
 
 import { Row, Text } from '@trezor/components';
@@ -8,7 +9,7 @@ import { paletteV1, paletteV2, spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
+import type { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 // Used for triggering custom Tooltip alignment
 const OFFSET_LIMIT_HORIZONTAL = 125;

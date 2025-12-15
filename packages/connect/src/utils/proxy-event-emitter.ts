@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 /**
  * ProxyEventEmitter is an EventEmitter that allows to use multiple EventEmitters as one

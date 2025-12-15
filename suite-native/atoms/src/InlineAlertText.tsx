@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import type { Color } from '@trezor/theme';
 
 import { HStack } from './Stack';
 import { Text } from './Text';

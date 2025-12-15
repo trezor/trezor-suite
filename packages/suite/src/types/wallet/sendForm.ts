@@ -1,8 +1,8 @@
-import { Dispatch, SetStateAction } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import type { Dispatch, SetStateAction } from 'react';
+import type { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { Network } from '@suite-common/wallet-config';
-import {
+import type { Network } from '@suite-common/wallet-config';
+import type {
     Account,
     AccountKey,
     ExcludedUtxos,
@@ -17,13 +17,13 @@ import {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
+import type { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
-import {
+import type {
     HandleAmountChangeParams,
     HandleFiatChangeParams,
 } from 'src/hooks/wallet/useSendFormChangeHandlers';
-import { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
+import type { GetCurrentRateParams } from 'src/hooks/wallet/useSendFormFields';
 
 // local state of @wallet-hooks/useSendForm
 export type UseSendFormState = {

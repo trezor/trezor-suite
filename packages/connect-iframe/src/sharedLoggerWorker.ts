@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { LogMessage } from '@trezor/connect/src/utils/debug';
+import type { LogMessage } from '@trezor/connect/src/utils/debug';
 
 export interface LogEntry {
     type: 'add-log' | 'get-logs' | 'subscribe';

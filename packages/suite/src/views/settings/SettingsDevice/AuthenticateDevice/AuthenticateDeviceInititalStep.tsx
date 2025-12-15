@@ -1,5 +1,6 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { IconName } from '@trezor/components';
+import { Icon, List, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

@@ -13,8 +13,8 @@ import { updateGraphData } from 'src/actions/wallet/graphActions';
 import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
-import { AggregatedDashboardHistory } from 'src/types/wallet/graph';
+import type { Account } from 'src/types/wallet';
+import type { AggregatedDashboardHistory } from 'src/types/wallet/graph';
 import { getMinMaxValueFromData, prepareGraphDataAsync } from 'src/utils/wallet/graph';
 
 import { useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';

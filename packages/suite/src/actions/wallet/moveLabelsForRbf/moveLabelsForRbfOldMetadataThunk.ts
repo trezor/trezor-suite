@@ -1,14 +1,14 @@
-import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
+import type { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { Dispatch } from 'src/types/suite';
+import type { Dispatch } from 'src/types/suite';
 
 import { selectLabelingDataForAccount } from '../../../reducers/suite/metadataReducer';
-import { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
+import type { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
 import { MODULE_PREFIX } from '../send/sendThunksConsts';
 
 type DeleteAllOutputLabelsParams = {

@@ -1,18 +1,14 @@
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { CoinLogo } from '@trezor/product-components';
-import {
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    paletteV2,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBackground, mapElevationToBorder, paletteV2 } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 

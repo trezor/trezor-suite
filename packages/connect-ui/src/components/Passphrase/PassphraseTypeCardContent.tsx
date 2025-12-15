@@ -1,4 +1,4 @@
-import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
+import type { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
@@ -11,7 +11,7 @@ import { useKeyPress } from '@trezor/react-utils';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { DOT } from './consts';
-import { WalletType } from './types';
+import type { WalletType } from './types';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const PassphraseInput = styled(Input)`

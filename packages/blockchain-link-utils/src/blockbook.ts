@@ -17,8 +17,8 @@ import type {
 } from '@trezor/blockchain-link-types/src/blockbook';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
+import type { Addresses } from './utils';
 import {
-    Addresses,
     enhanceVinVout,
     filterShadowedPendingTxsByNonce,
     filterTargets,

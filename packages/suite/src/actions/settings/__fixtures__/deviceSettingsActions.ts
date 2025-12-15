@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -9,9 +9,9 @@ import {
     prepareDeviceReducer,
     wipeDeviceThunk,
 } from '@suite-common/wallet-core';
-import { Response } from '@trezor/connect';
+import type { Response } from '@trezor/connect';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import type suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';

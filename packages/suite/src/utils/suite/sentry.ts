@@ -1,10 +1,10 @@
 import * as Sentry from '@sentry/core';
 
 import { allowReportTag } from '@suite-common/sentry';
-import { ReportSecurityCheckProps } from '@suite-common/suite-types';
+import type { ReportSecurityCheckProps } from '@suite-common/suite-types';
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 import { getApplicationLog, redactDevice } from 'src/utils/suite/logsUtils';
 
 export const setSentryContext = Sentry.setContext;

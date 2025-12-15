@@ -1,10 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { RequireAllOrNone } from 'type-fest';
+import type { RequireAllOrNone } from 'type-fest';
 
-import { IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
 
-import { Card, CardProps } from './Card';
+import type { CardProps } from './Card';
+import { Card } from './Card';
 import { TextButton } from '../Button/TextButton';
 import { Headered } from '../Headered';
 import { HStack } from '../Stack';

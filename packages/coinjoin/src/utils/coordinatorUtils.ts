@@ -1,13 +1,13 @@
 import { bufferUtils } from '@trezor/utils';
+import type { Network } from '@trezor/utxo-lib';
 import {
-    Network,
     bufferutils as bUtils,
     address as baddress,
     script as bscript,
     payments,
 } from '@trezor/utxo-lib';
 
-import {
+import type {
     AllowedScriptTypes,
     CoinjoinInput,
     CoinjoinOutput,

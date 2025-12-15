@@ -1,14 +1,14 @@
-import { SharedValue } from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceCheckBackupStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CheckBackupTutorialStep } from './CheckBackupTutorialStep';

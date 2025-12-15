@@ -1,4 +1,5 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { Pressable } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -16,13 +17,8 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    Screen,
-    ScreenHeader,
-    SettingsStackParamList,
-    SettingsStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { SettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { Screen, ScreenHeader, SettingsStackRoutes } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
 const CHECKBOX_ANIMATION_DURATION = 200; // same as in useAccordionAnimation

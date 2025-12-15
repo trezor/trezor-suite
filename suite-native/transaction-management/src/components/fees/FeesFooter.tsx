@@ -8,8 +8,9 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { FeesRootState } from '@suite-common/wallet-core';
+import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
@@ -18,11 +19,8 @@ import {
 } from '@suite-native/formatters';
 import { FormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    TokensRootState,
-    selectAccountTokenDecimals,
-    selectAccountTokenSymbol,
-} from '@suite-native/tokens';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenDecimals, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type BaseProps = {

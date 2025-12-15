@@ -1,11 +1,11 @@
 import { decode, verify } from 'jws';
 
-import { FirmwareReleaseConfig } from '@trezor/device-utils';
+import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/env-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
 import { getOnlineFirmwareBaseUrl } from '../data/firmwareInfo';
-import { FirmwareUpdateSource } from '../types/firmware';
+import type { FirmwareUpdateSource } from '../types/firmware';
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',

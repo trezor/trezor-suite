@@ -1,4 +1,4 @@
-import {
+import type {
     Account,
     Address,
     Blockhash,
@@ -7,6 +7,8 @@ import {
     SignatureBytes,
     Transaction,
     TransactionMessageWithBlockhashLifetime,
+} from '@solana/kit';
+import {
     address,
     appendTransactionMessageInstruction,
     createAddressWithSeed,
@@ -24,9 +26,9 @@ import {
     getSetComputeUnitLimitInstruction,
     getSetComputeUnitPriceInstruction,
 } from '@solana-program/compute-budget';
+import type { StakeStateAccount } from '@solana-program/stake';
 import {
     STAKE_PROGRAM_ADDRESS,
-    StakeStateAccount,
     getDeactivateInstruction,
     getDelegateStakeInstruction,
     getInitializeInstruction,
@@ -58,7 +60,7 @@ import {
     STAKE_CONFIG_ACCOUNT,
     STAKE_HISTORY_ACCOUNT,
 } from '../constants';
-import {
+import type {
     ClaimParams,
     ClaimResponse,
     Connection,

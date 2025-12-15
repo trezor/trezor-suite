@@ -1,7 +1,7 @@
 import { validateAndParseRequest } from './request';
 import { getErrorResult, getResult } from './result';
 import { coinselect } from '../coinselect';
-import {
+import type {
     ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,

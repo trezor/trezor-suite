@@ -15,7 +15,8 @@ import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
-import { TorModal, TorResult } from './CustomBackends/TorModal';
+import type { TorResult } from './CustomBackends/TorModal';
+import { TorModal } from './CustomBackends/TorModal';
 import { ExplorerConfigForm } from './ExplorerConfigForm';
 
 type AdvancedCoinSettingsModalProps = {

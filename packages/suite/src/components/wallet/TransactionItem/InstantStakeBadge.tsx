@@ -2,15 +2,16 @@ import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getInstantStakeType } from '@suite-common/staking';
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { StakeType } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import type { StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 const getTranslationId = (instantStakeType: StakeType) => {
     switch (instantStakeType) {

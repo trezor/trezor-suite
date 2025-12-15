@@ -1,12 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    FeesRootState,
-    selectAreFeesLoading,
-    useFetchFeesOnce,
-    useRefetchFees,
-} from '@suite-common/wallet-core';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { FeesRootState } from '@suite-common/wallet-core';
+import { selectAreFeesLoading, useFetchFeesOnce, useRefetchFees } from '@suite-common/wallet-core';
 
 export type UseFeesFetchingProps = {
     networkSymbol: NetworkSymbol | undefined;

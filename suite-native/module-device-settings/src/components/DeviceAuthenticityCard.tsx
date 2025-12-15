@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceAuthenticityStackParamList,
     DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes } from '@suite-native/navigation';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';
 

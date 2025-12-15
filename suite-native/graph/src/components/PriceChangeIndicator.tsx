@@ -1,4 +1,5 @@
-import { Atom, useAtom } from 'jotai';
+import type { Atom } from 'jotai';
+import { useAtom } from 'jotai';
 
 import { PriceChangeBadge } from '@suite-native/atoms';
 

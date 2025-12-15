@@ -1,7 +1,8 @@
-import { coinSelection, types } from '@fivebinaries/coin-selection';
+import type { types } from '@fivebinaries/coin-selection';
+import { coinSelection } from '@fivebinaries/coin-selection';
 
 import { PROTO } from '../../constants';
-import { AccountUtxo, CardanoCertificate } from '../../types';
+import type { AccountUtxo, CardanoCertificate } from '../../types';
 
 const CARDANO_DEFAULT_TTL_OFFSET = 7200;
 

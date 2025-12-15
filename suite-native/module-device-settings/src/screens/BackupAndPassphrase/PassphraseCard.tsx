@@ -8,11 +8,8 @@ import {
 } from '@suite-common/wallet-core';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    BackupAndPassphraseParamList,
-    BackupAndPassphraseStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { BackupAndPassphraseParamList, StackNavigationProps } from '@suite-native/navigation';
+import { BackupAndPassphraseStackRoutes } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 

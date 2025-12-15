@@ -1,4 +1,4 @@
-import { FeeInfo } from '@suite-common/wallet-types';
+import type { FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';

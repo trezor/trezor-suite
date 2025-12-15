@@ -1,4 +1,4 @@
-import { Locator, Page, Response } from '@playwright/test';
+import { type Locator, type Page, type Response } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { solanaUrlPattern } from '../../mocks/tradingMock';

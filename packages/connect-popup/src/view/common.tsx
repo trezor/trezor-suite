@@ -2,15 +2,10 @@
 
 import { createRoot } from 'react-dom/client';
 
-import {
-    CoreEventMessage,
-    CoreRequestMessage,
-    ERRORS,
-    POPUP,
-    PopupInit,
-    createUiResponse,
-} from '@trezor/connect';
-import { ConnectUI, State, getDefaultState } from '@trezor/connect-ui';
+import type { CoreEventMessage, CoreRequestMessage, PopupInit } from '@trezor/connect';
+import { ERRORS, POPUP, createUiResponse } from '@trezor/connect';
+import type { State } from '@trezor/connect-ui';
+import { ConnectUI, getDefaultState } from '@trezor/connect-ui';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
 
 import { StyleSheetWrapper } from './react/StylesSheetWrapper';

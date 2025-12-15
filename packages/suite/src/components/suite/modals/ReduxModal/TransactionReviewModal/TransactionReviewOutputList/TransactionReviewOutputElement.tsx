@@ -1,10 +1,11 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import {
     Box,
@@ -18,14 +19,15 @@ import {
     TextButton,
     useElevation,
 } from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
-import { Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import type { TokenInfo } from '@trezor/connect';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBackground, spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
 import { Address, BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 const DataWrapper = styled.p<{ $isExpanded: boolean; $elevation: Elevation }>`
     word-break: break-all;

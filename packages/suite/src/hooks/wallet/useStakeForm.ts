@@ -5,14 +5,14 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { fromWei } from 'web3-utils';
 
 import { getStakeFormsDefaultValues, getStakingContractAddress } from '@suite-common/staking';
+import type { StakeContextValues } from '@suite-common/wallet-core';
 import {
-    StakeContextValues,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import {
+import type {
     PrecomposedTransactionFinal,
     SelectedAccountLoaded,
     StakeFormState,

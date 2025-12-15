@@ -2,8 +2,8 @@ import { Alice } from '../../src/client/Alice';
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import {
-    AliceGenerator,
-    CoinjoinRoundGenerator,
+    type AliceGenerator,
+    type CoinjoinRoundGenerator,
     getAccountCandidates,
     getRoundCandidates,
     getUnregisteredAccounts,

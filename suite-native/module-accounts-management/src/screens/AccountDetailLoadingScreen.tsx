@@ -1,14 +1,11 @@
 import { Dimensions } from 'react-native';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-} from '@suite-native/navigation';
+import type { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;

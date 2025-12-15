@@ -1,10 +1,5 @@
-import {
-    MethodState,
-    initialState,
-    prepareBundle,
-    setAffectedValues,
-    updateParams,
-} from './methodCommon';
+import type { MethodState } from './methodCommon';
+import { initialState, prepareBundle, setAffectedValues, updateParams } from './methodCommon';
 import { getMethodState, getMethodStateFromSchema } from './methodInit';
 import type { MethodAction, TrezorConnectAction } from '../types/actions';
 import {

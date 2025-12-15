@@ -1,10 +1,12 @@
-import { ReactNode, useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import type { NativeStyleObject } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BottomSheetSearchInputWithCancel } from './BottomSheetSearchInputWithCancel';
 import { SheetHeaderTitle } from './SheetHeaderTitle';

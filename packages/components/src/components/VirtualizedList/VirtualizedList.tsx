@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from '
 
 import styled from 'styled-components';
 
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 function debounce<T extends (...args: unknown[]) => void>(
     func: T,

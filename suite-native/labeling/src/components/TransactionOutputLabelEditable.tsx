@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/redux-utils';
-import { WithLabelingState, selectOutputLabel } from '@suite-common/suite-sync';
+import type { WithLabelingState } from '@suite-common/suite-sync';
+import { selectOutputLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 

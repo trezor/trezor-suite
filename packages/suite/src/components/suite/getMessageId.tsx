@@ -1,9 +1,9 @@
-import { DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
+import type { DeviceStatus as ConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import type { PrerequisiteType } from 'src/types/suite';
 
-import { TranslationKey } from './Translation';
+import type { TranslationKey } from './Translation';
 
 const getWarningMessage = ({
     deviceStatus,

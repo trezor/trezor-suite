@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
+import type {
     PrecomposedLevelsCardano,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
@@ -14,10 +14,11 @@ import {
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
+import type {
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,

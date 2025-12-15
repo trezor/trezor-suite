@@ -4,14 +4,15 @@ import { Bar, CartesianGrid, Cell, ComposedChart, Line, Tooltip, XAxis, YAxis } 
 import styled, { useTheme } from 'styled-components';
 
 import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, isPending } from '@suite-common/wallet-utils';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { typography, zIndices } from '@trezor/theme';
 
 import { GraphRangeSelector, GraphSkeleton } from 'src/components/suite';
 import { useGraph, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
-import {
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
+import type {
     AggregatedAccountHistory,
     AggregatedDashboardHistory,
     GraphRange,

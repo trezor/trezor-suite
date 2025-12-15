@@ -1,11 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTx.js
 
-import { Common, Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
-import { FeeMarketEIP1559TxData, LegacyTxData, createTx } from '@ethereumjs/tx';
+import type { Common } from '@ethereumjs/common';
+import { Hardfork, Mainnet, createCustomCommon } from '@ethereumjs/common';
+import type { FeeMarketEIP1559TxData, LegacyTxData } from '@ethereumjs/tx';
+import { createTx } from '@ethereumjs/tx';
 
-import { MessagesSchema } from '@trezor/protobuf';
+import type { MessagesSchema } from '@trezor/protobuf';
 
-import { ERRORS, PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
+import { ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type {
     EthereumAccessList,

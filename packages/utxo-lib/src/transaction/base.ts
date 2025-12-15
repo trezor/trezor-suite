@@ -2,7 +2,8 @@ import * as varuint from 'varuint-bitcoin';
 
 import { getChunkSize, reverseBuffer } from '../bufferutils';
 import * as bcrypto from '../crypto';
-import { bitcoin as BITCOIN_NETWORK, Network, isNetworkType } from '../networks';
+import type { Network } from '../networks';
+import { bitcoin as BITCOIN_NETWORK, isNetworkType } from '../networks';
 import * as bscript from '../script';
 import * as types from '../types';
 

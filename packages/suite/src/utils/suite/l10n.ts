@@ -1,4 +1,5 @@
-import { LANGUAGES, Locale } from '@suite-common/suite-types';
+import type { Locale } from '@suite-common/suite-types';
+import { LANGUAGES } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 
 const DEFAULT_LOCALE = 'en-US';

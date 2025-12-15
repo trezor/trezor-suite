@@ -1,8 +1,8 @@
-import { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api';
+import type { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api';
 
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 
-import { TradingCryptoSelectItemProps } from '../types';
+import type { TradingCryptoSelectItemProps } from '../types';
 import { cryptoIdToNetwork, isCryptoIdForNativeToken, parseCryptoId } from '../utils';
 
 export const getTradingCoinInfoByCryptoId = (

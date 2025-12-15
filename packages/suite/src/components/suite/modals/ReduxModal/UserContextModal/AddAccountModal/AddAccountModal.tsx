@@ -3,13 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    Network,
-    NetworkAccount,
-    NetworkSymbol,
-    getNetwork,
-    networks,
-} from '@suite-common/wallet-config';
+import type { Network, NetworkAccount, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, networks } from '@suite-common/wallet-config';
 import {
     accountsActions,
     changeCoinVisibility,
@@ -32,8 +27,8 @@ import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
 } from 'src/selectors/suite/suiteSelectors';
-import { TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
+import type { TrezorDevice } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 
 import { AccountTypeSelect } from './AccountTypeSelect/AccountTypeSelect';
 import { AddAccountButton } from './AddAccountButton/AddAccountButton';

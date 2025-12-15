@@ -1,5 +1,6 @@
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { ButtonGroup, ButtonProps } from '@trezor/components';
+import type { GlobalSendReceiveType } from '@suite-common/wallet-types';
+import type { ButtonProps } from '@trezor/components';
+import { ButtonGroup } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from '../../../../Translation';

@@ -5,11 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { selectTradingExchangePreselectedQuote } from '@suite-common/trading';
 import { AsyncButton, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    StackNavigationProps,
-    TradingStackParamList,
-    TradingStackRoutes,
-} from '@suite-native/navigation';
+import type { StackNavigationProps, TradingStackParamList } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 
 import { useExchangeFlow } from '../../../hooks/exchange/useExchangeFlow';
 

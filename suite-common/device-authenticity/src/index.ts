@@ -1,4 +1,4 @@
 export * from './deviceAuthenticityActions';
 export * from './deviceAuthenticityThunks';
-export * from './types';
+export type * from './types';
 export * from './utils';

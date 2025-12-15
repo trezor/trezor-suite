@@ -1,5 +1,6 @@
 import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 
 import { getEnv } from './connectSettings';

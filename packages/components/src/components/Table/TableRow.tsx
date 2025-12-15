@@ -1,13 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import {
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    nextElevation,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBackground, mapElevationToBorder, nextElevation } from '@trezor/theme';
 
 import { useTable } from './TableContext';
 import { useTableHeader } from './TableHeader';

@@ -2,13 +2,10 @@ import { useMemo } from 'react';
 
 import { Image } from 'expo-image';
 
-import { CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
-import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
-    getCoingeckoId,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import type { CryptoIconName } from '@suite-common/icons';
+import { cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import type { NetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, isNetworkSymbol } from '@suite-common/wallet-config';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';

@@ -1,12 +1,14 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import { createContractAlert } from './alertBuilders';

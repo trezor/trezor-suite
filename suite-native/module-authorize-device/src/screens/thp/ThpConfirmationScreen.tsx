@@ -1,14 +1,14 @@
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { selectThpStep } from '@suite-common/thp';
 import { useAlert } from '@suite-native/alerts';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import type { AuthorizeDeviceStackParamList } from '@suite-native/navigation';
 import {
-    AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     Screen,
     useInterceptNativeNavigation,

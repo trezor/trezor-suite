@@ -1,4 +1,4 @@
-import { BridgeProtocolMessage } from '../src/types';
+import type { BridgeProtocolMessage } from '../src/types';
 import { validateProtocolMessage } from '../src/utils/bridgeProtocolMessage';
 
 type Fixture = {

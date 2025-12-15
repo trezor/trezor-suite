@@ -4,14 +4,16 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Box, Button, IconListTextItem, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceAuthenticityStackParamList,
-    DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    DeviceAuthenticityStackRoutes,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     Screen,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

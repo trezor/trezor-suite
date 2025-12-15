@@ -1,4 +1,5 @@
-import { UseFormReturn, useForm } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
@@ -11,7 +12,7 @@ import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 
-import { TranslationFunction } from './useTranslation';
+import type { TranslationFunction } from './useTranslation';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({

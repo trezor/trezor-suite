@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { Output, TokenAddress } from '@suite-common/wallet-types';
+import type { Output, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     findToken,

@@ -3,25 +3,20 @@
 import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import {
-    CoreEventMessage,
-    DEVICE_EVENT,
-    IFRAME,
-    IFrameLoaded,
-    POPUP,
-    UI,
-} from '@trezor/connect/src/events';
+import type { CoreEventMessage, IFrameLoaded } from '@trezor/connect/src/events';
+import { DEVICE_EVENT, IFRAME, POPUP, UI } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
-import { Log } from '@trezor/connect/src/utils/debug';
+import type { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import {
+import type {
     AbstractMessageChannel,
     Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
 import type { IntervalId, TimerId } from '@trezor/type-utils';
-import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
+import type { Deferred } from '@trezor/utils';
+import { createDeferred, scheduleAction } from '@trezor/utils';
 
 import { showPopupRequest } from './showPopupRequest';
 

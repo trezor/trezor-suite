@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
 
 import { useTranslation } from 'src/hooks/suite';

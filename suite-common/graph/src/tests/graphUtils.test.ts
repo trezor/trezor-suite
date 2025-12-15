@@ -1,13 +1,13 @@
 import { fromUnixTime } from 'date-fns';
 
-import { FiatRatesItem } from '../graphDataFetching';
+import type { FiatRatesItem } from '../graphDataFetching';
 import {
     findOldestBalanceMovementTimestamp,
     getDataStepInMinutes,
     mapCryptoBalanceMovementToFixedTimeFrame,
     mergeMultipleFiatBalanceHistories,
 } from '../graphUtils';
-import {
+import type {
     AccountHistoryBalancePoint,
     AccountWithBalanceHistory,
     FiatGraphPointWithCryptoBalance,

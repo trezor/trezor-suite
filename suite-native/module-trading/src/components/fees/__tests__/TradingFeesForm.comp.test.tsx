@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import type { PreloadedState } from '@suite-native/test-utils';
 import {
-    PreloadedState,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';

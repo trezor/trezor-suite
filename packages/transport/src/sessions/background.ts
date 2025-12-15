@@ -9,8 +9,9 @@
  * - we can say we trust the caller but not really thats why we implement auto-unlock
  */
 
-import { TimerId } from '@trezor/type-utils';
-import { Deferred, TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
+import type { TimerId } from '@trezor/type-utils';
+import type { Deferred } from '@trezor/utils';
+import { TypedEmitter, createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import type {
     AcquireDoneRequest,

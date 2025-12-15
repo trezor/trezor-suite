@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import type { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     analyzeTransactions,
     findAccountDevice,
@@ -14,7 +14,8 @@ import {
     isTrezorConnectBackendType,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { AccountInfo, TokenInfo } from '@trezor/connect';
+import type { AccountInfo, TokenInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { accountsActions } from './accountsActions';
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';

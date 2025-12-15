@@ -1,14 +1,17 @@
-import { ReactNode, useCallback, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import {
+import type {
     TradingFulfillValue,
     TradingSellFormProps,
     TradingSendRejectedProps,
     TradingSignAndPushSendFormTransactionProps,
+} from '@suite-common/trading';
+import {
     cryptoIdToNetworkAndContractAddress,
     exchangeThunks,
     selectTradingAccountKeyByTradeType,
@@ -17,12 +20,14 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
+import type {
     AccountsRootState,
     FeesRootState,
     FormDraftRootState,
     SerializedTx,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
     selectDeepCopyOfFormDraft,
@@ -30,11 +35,13 @@ import {
     selectSendSerializedTx,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
-import { TradingRootState, getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import type { TokenAddress } from '@suite-common/wallet-types';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenDecimals } from '@suite-native/tokens';
+import type { TradingRootState } from '@suite-native/trading-state';
+import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
+import type { NativeSupportedFeeLevel } from '@suite-native/transaction-management';
 import {
-    NativeSupportedFeeLevel,
     selectFeeLevels,
     useFeesFetching,
     usePrecomposedTransactionError,

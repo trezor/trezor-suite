@@ -1,12 +1,7 @@
 import { config } from '@trezor/connect/src/data/config';
 import { suggestUdevInstaller } from '@trezor/connect/src/data/udevInfo';
-import {
-    CoreEventMessage,
-    CoreRequestMessage,
-    ERRORS,
-    TRANSPORT,
-    TRANSPORT_EVENT,
-} from '@trezor/connect/src/exports';
+import type { CoreEventMessage, CoreRequestMessage } from '@trezor/connect/src/exports';
+import { ERRORS, TRANSPORT, TRANSPORT_EVENT } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
 import { CoreInModule } from '@trezor/connect/src/impl/core-in-module';

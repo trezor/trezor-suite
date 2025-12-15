@@ -2,7 +2,7 @@ import path from 'path';
 
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
-import { InterceptorOptions } from '../src/types';
+import type { InterceptorOptions } from '../src/types';
 
 // The purpose of this script is to allow "manual" testing Tor identities changing some parameters.
 // Run it like:

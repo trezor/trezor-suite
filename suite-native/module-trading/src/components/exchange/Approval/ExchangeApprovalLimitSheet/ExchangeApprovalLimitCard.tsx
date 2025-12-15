@@ -1,7 +1,8 @@
-import { ReactNode, memo } from 'react';
+import type { ReactNode } from 'react';
+import { memo } from 'react';
 import { Pressable } from 'react-native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 

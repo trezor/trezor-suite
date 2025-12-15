@@ -1,4 +1,4 @@
-import { ReportSecurityCheckProps } from '@suite-common/suite-types';
+import type { ReportSecurityCheckProps } from '@suite-common/suite-types';
 
 import { captureSentryException, withSentryScope } from './sentry';
 

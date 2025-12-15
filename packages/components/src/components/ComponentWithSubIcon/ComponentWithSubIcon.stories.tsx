@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
+import type { ComponentWithSubIconProps } from './ComponentWithSubIcon';
 import {
     ComponentWithSubIcon as ComponentWithSubIconComponent,
-    ComponentWithSubIconProps,
     allowedComponentWithSubIconFrameProps,
 } from './ComponentWithSubIcon';
 import { getFramePropsStory } from '../../utils/frameProps';

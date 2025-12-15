@@ -15,7 +15,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceScreenPagination } from './DeviceScreenPagination';
 import { DEVICE_SCREEN_BACKGROUND_COLOR, DEVICE_TEXT_COLOR } from '../constants';
-import { DevicePaginationActivePage, isPaginationCompatibleDeviceModel } from '../types';
+import type { DevicePaginationActivePage } from '../types';
+import { isPaginationCompatibleDeviceModel } from '../types';
 import { parseAddressToDeviceLines } from '../utils';
 
 type DeviceScreenContentProps = {

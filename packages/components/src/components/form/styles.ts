@@ -1,14 +1,10 @@
-import styled, { DefaultTheme, css } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacingsPx, typography } from '@trezor/theme';
 
-import { InputSize, InputState } from './types';
+import type { InputSize, InputState } from './types';
 import { motionEasingStrings } from '../../config/motion';
 
 export const INPUT_HEIGHTS: Record<InputSize, number> = {

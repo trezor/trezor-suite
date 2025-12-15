@@ -1,5 +1,5 @@
 import { formDraftActions, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
-import { Output } from '@suite-common/wallet-types';
+import type { Output } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 
 type FormState = {

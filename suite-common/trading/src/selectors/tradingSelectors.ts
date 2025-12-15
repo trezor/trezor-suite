@@ -1,7 +1,7 @@
-import { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
+import type { Coins, CryptoId, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
+import type { NetworkSymbolExtended, NetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DeviceRootState,
@@ -9,15 +9,15 @@ import {
     selectDeviceAccounts,
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
-import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
+import type { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
 import addressValidator from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
-import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
-import { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
-import { SellInfo, TradingSellState } from '../reducers/sellReducer';
+import type { BuyInfo, TradingBuyState } from '../reducers/buyReducer';
+import type { ExchangeInfo, TradingExchangeState } from '../reducers/exchangeReducer';
+import type { SellInfo, TradingSellState } from '../reducers/sellReducer';
 import type { TradingRootState, TradingState } from '../reducers/tradingCommonReducer';
-import {
+import type {
     TradingFiatCurrenciesProps,
     TradingPaymentMethodProps,
     TradingTransaction,

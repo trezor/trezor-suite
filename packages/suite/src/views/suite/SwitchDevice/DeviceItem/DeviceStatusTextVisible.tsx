@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { selectWalletLabel } from '@suite-common/suite-sync';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

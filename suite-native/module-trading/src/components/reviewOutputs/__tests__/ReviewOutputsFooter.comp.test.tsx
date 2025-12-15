@@ -1,6 +1,8 @@
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import { ReviewOutputsFooter, ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
+import type { ReviewOutputsFooterProps } from '../ReviewOutputsFooter';
+import { ReviewOutputsFooter } from '../ReviewOutputsFooter';
 
 describe('ReviewOutputsFooter', () => {
     const renderReviewOutputsFooter = (

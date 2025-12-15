@@ -2,7 +2,7 @@ import { toWei } from 'web3-utils';
 
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import {
+import type {
     Account,
     AccountKey,
     FormState,
@@ -25,9 +25,10 @@ import {
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
+import type { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect, { AccountInfo, AccountTransaction, TokenTransfer } from '@trezor/connect';
+import type { AccountInfo, AccountTransaction, TokenTransfer } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import {

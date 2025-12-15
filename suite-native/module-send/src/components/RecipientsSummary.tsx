@@ -1,20 +1,22 @@
 import { useSelector } from 'react-redux';
 
-import {
+import type {
     AccountsRootState,
     SendRootState,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
     selectAccountNetworkSymbol,
     selectIsAmountInSats,
     selectSendFormDraftOutputsByAccountKey,
 } from '@suite-common/wallet-core';
-import {
+import type {
     AccountKey,
     GeneralPrecomposedTransaction,
     Output,
     TokenAddress,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

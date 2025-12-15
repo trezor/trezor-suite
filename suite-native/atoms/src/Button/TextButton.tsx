@@ -1,4 +1,5 @@
-import { FlexStyle, Pressable } from 'react-native';
+import type { FlexStyle } from 'react-native';
+import { Pressable } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -7,11 +8,12 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
 
 import { HStack } from '../Stack';
 import { pressTimingConfig } from '../constants';
-import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
+import type { ButtonProps, ButtonSize } from './Button';
+import { ButtonAccessoryView, buttonToTextSizeMap } from './Button';
 
 export type TextButtonVariant = 'primary' | 'tertiary' | 'blue';
 

@@ -1,10 +1,8 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { btcAsset, ethOnBaseAsset, usdcAsset } from '@suite-native/trading-fixtures';
 
-import {
-    TradeableAssetNetworkInfo,
-    TradeableAssetNetworkInfoProps,
-} from '../TradeableAssetNetworkInfo';
+import type { TradeableAssetNetworkInfoProps } from '../TradeableAssetNetworkInfo';
+import { TradeableAssetNetworkInfo } from '../TradeableAssetNetworkInfo';
 
 describe('TradeableAssetNetworkInfo', () => {
     const renderTradeableAssetNetworkInfo = (asset: TradeableAssetNetworkInfoProps['asset']) =>

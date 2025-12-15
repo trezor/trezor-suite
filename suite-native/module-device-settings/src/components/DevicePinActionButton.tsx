@@ -1,16 +1,18 @@
-import { ReactNode, useCallback } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Button, ButtonColorScheme } from '@suite-native/atoms';
-import {
+import type { ButtonColorScheme } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
+import type {
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     PinActionType,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes } from '@suite-native/navigation';
 
 type NavigationProp = StackNavigationProps<
     DeviceSettingsStackParamList,

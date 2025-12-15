@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
+import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { Device } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
 
 import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
 import { createCredential, createDeviceThp } from '../src/support/mocks';
-import { ThpState, prepareThpReducer } from '../src/thpReducer';
+import { type ThpState, prepareThpReducer } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesMock);
 const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);

@@ -24,10 +24,8 @@ import {
 } from '../cardanoAuxiliaryData';
 import { transformCertificate } from '../cardanoCertificate';
 import type { CertificateWithPoolOwnersAndRelays } from '../cardanoCertificate';
+import type { CollateralInputWithPath, InputWithPath, Path } from '../cardanoInputs';
 import {
-    CollateralInputWithPath,
-    InputWithPath,
-    Path,
     transformCollateralInput,
     transformInput,
     transformReferenceInput,

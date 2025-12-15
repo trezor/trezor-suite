@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import type { MotionProps } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
 import { Banner, Icon, motionEasing } from '@trezor/components';

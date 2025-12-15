@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    SendStackParamList,
-    SendStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { SendStackParamList } from '@suite-native/navigation';
+import { SendStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { SendAccountsScreen } from '../screens/SendAccountsScreen';
 import { SendAddressReviewScreen } from '../screens/SendAddressReviewScreen';

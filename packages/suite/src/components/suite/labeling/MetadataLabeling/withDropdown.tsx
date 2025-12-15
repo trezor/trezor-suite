@@ -1,9 +1,11 @@
-import { FC, useRef } from 'react';
+import type { FC } from 'react';
+import { useRef } from 'react';
 
-import { Menu, Popover, PopoverRef } from '@trezor/components';
-import { RequiredKey } from '@trezor/type-utils';
+import type { PopoverRef } from '@trezor/components';
+import { Menu, Popover } from '@trezor/components';
+import type { RequiredKey } from '@trezor/type-utils';
 
-import { PrimitiveProps } from './definitions';
+import type { PrimitiveProps } from './definitions';
 
 type Props = RequiredKey<PrimitiveProps, 'dropdownOptions'>;
 

@@ -1,4 +1,4 @@
-import { CoinSelectOutputFinal, ComposeChangeAddress, ComposeFinalOutput } from '../../types';
+import type { CoinSelectOutputFinal, ComposeChangeAddress, ComposeFinalOutput } from '../../types';
 
 export const convertOutput = (
     selectedOutput: CoinSelectOutputFinal,

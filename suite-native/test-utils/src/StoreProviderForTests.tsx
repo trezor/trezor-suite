@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
-import { PreloadedState, Store, initStore } from '@suite-native/state';
+import type { PreloadedState, Store } from '@suite-native/state';
+import { initStore } from '@suite-native/state';
 
 import { BasicProviderForTests } from './BasicProviderForTests';
 

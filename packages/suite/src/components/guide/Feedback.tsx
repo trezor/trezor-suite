@@ -1,14 +1,10 @@
-import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
-import {
-    FeedbackCategory,
-    FeedbackType,
-    Rating,
-    buildUserFeedbackData,
-    sendFeedbackAction,
-} from '@suite-common/feedback';
+import type { FeedbackCategory, FeedbackType, Rating } from '@suite-common/feedback';
+import { buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { typography } from '@trezor/theme';

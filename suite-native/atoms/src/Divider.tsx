@@ -1,13 +1,10 @@
 import { G } from '@mobily/ts-belt';
 
-import {
-    NativeStyleObject,
-    mergeNativeStyleObjects,
-    prepareNativeStyle,
-    useNativeStyles,
-} from '@trezor/styles';
+import type { NativeStyleObject } from '@trezor/styles';
+import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box, BoxProps } from './Box';
+import type { BoxProps } from './Box';
+import { Box } from './Box';
 
 type DividerProps = Omit<BoxProps, 'style'> & {
     style?: NativeStyleObject;

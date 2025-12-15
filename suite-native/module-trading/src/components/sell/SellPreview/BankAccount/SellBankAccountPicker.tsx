@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import type { BankAccount } from 'invity-api';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import type { TradingRootState } from '@suite-common/trading';
+import { selectTradingTradeByOrderId } from '@suite-common/trading';
 import { AnimatedCard, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoHeader } from '@suite-native/trading-atoms';

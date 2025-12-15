@@ -1,25 +1,22 @@
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
+import type { MessageSystemRootState } from '@suite-common/message-system';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { getIsIgnoredEntropyCheckError } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
-import {
+import type {
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
-import { ERRORS } from '@trezor/connect';
+import type { ERRORS } from '@trezor/connect';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 

@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-import { CoinSelectAlgorithm, CoinSelectInput, CoinSelectResult } from '../../types';
+import type { CoinSelectAlgorithm, CoinSelectInput, CoinSelectResult } from '../../types';
 import {
     ZERO,
     bignumberOrNaN,

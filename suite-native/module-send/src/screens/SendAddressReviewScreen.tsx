@@ -6,14 +6,10 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import type { SendStackParamList, StackProps } from '@suite-native/navigation';
+import { ScreenHeader, SendStackRoutes } from '@suite-native/navigation';
+import type { TransactionReviewOutputsState } from '@suite-native/transaction-management';
 import {
-    ScreenHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
-import {
-    TransactionReviewOutputsState,
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';

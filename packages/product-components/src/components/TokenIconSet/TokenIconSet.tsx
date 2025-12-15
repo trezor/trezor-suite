@@ -2,10 +2,12 @@ import { useMemo } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetLogo } from '../AssetLogo/AssetLogo';
 

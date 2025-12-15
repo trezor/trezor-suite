@@ -1,9 +1,10 @@
 import React from 'react';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import { TradingTradeType, useTradingInfo } from '@suite-common/trading';
+import type { TradingTradeType } from '@suite-common/trading';
+import { useTradingInfo } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';

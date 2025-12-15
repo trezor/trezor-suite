@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import styled, { CSSProperties } from 'styled-components';
+import type { CSSProperties } from 'styled-components';
+import styled from 'styled-components';
 
 import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';

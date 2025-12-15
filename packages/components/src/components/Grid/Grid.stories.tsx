@@ -1,9 +1,10 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import type { ArgTypes, Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import { Grid as GridComponent, GridProps, allowedGridFrameProps } from './Grid';
+import type { GridProps } from './Grid';
+import { Grid as GridComponent, allowedGridFrameProps } from './Grid';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div`

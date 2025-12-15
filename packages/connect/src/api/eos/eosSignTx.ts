@@ -1,6 +1,7 @@
 import bs58 from 'bs58';
 
-import { ERRORS, PROTO } from '../../constants';
+import type { PROTO } from '../../constants';
+import { ERRORS } from '../../constants';
 import type { TypedCall } from '../../device/DeviceCommands';
 import type {
     EosAuthorization as $EosAuthorization,

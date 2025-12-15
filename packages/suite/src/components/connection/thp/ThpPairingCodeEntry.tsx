@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { thpActions } from '@suite-common/thp';
 import { PinInput, Row, Spinner } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { SpacingValues } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
 
 import { useDispatch } from '../../../hooks/suite';
 

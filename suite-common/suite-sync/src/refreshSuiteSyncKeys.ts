@@ -1,12 +1,9 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import type { Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import type { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { ensureDeviceHasQuotaThunk } from '@suite-common/suite-sync-quota-manager';
-import {
-    EnsureSuiteSyncOwnerDep,
-    RefreshSuiteKeysUnavailable,
-    RefreshSuiteSyncKeys,
-} from '@suite-common/suite-sync-types';
+import type { EnsureSuiteSyncOwnerDep, RefreshSuiteSyncKeys } from '@suite-common/suite-sync-types';
+import { RefreshSuiteKeysUnavailable } from '@suite-common/suite-sync-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err, ok } from '@trezor/type-utils';

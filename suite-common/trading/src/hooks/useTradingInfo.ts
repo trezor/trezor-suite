@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
 import addressValidator from '@trezor/address-validator';
 
 import { selectTradingInfo } from '../selectors/tradingSelectors';
-import {
+import type {
     TradingCryptoSelectItemProps,
     TradingCryptoSelectOptionProps,
     TradingInfoProps,

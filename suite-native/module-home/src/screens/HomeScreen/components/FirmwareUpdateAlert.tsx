@@ -19,12 +19,8 @@ import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceSettingsStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const containerStyle = prepareNativeStyle(utils => ({

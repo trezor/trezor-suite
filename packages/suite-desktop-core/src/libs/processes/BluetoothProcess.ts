@@ -1,7 +1,8 @@
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isWindows } from '@trezor/env-utils';
 
-import { BaseProcess, Status } from './BaseProcess';
+import type { Status } from './BaseProcess';
+import { BaseProcess } from './BaseProcess';
 import { getSwitchValue } from '../process-switches';
 
 export class BluetoothProcess extends BaseProcess {

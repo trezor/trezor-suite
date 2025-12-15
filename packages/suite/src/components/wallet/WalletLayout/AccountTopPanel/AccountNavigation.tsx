@@ -3,12 +3,13 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite/Translation';
-import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
+import type { NavigationItem } from 'src/components/suite/layouts/SuiteLayout';
+import { SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
-import { WalletParams } from 'src/types/wallet';
+import type { WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);

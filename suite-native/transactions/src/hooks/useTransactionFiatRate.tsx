@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import type { FiatRatesRootState } from '@suite-common/wallet-core';
 import {
-    FiatRatesRootState,
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import {
+import type {
     AccountKey,
     Timestamp,
     TokenAddress,

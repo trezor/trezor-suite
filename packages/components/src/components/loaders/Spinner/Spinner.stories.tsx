@@ -1,6 +1,7 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import type { ArgTypes, Meta, StoryObj } from '@storybook/react';
 
-import { Spinner as SpinnerComponent, SpinnerProps, allowedSpinnerFrameProps } from './Spinner';
+import type { SpinnerProps } from './Spinner';
+import { Spinner as SpinnerComponent, allowedSpinnerFrameProps } from './Spinner';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof SpinnerComponent> = {

@@ -4,7 +4,8 @@ import { resolveAfter } from '@trezor/utils/src/resolveAfter';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
-import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
+import type { MethodReturnType } from '../core/AbstractMethod';
+import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';
 import type { AccountInfo, AccountUtxo, CoinInfo, DerivationPath } from '../types';

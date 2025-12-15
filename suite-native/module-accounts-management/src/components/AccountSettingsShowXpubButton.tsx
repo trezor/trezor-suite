@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import type { AccountsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
     selectAccountByKey,
     selectIsDeviceBackupRequired,
     selectSelectedDevice,

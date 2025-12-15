@@ -1,10 +1,5 @@
-import {
-    BlockquoteHTMLAttributes,
-    Children,
-    PropsWithChildren,
-    cloneElement,
-    isValidElement,
-} from 'react';
+import type { BlockquoteHTMLAttributes, PropsWithChildren } from 'react';
+import { Children, cloneElement, isValidElement } from 'react';
 
 import styled from 'styled-components';
 

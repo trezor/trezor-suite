@@ -1,16 +1,12 @@
-import { RouteProp } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 
 import {
     selectTradingExchangePreselectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { TestStore } from '@suite-native/test-utils';
+import { fireEvent, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingExchangeApprovalScreen } from '../TradingExchangeApprovalScreen';

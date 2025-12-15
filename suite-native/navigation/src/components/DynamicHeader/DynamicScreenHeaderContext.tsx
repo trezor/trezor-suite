@@ -1,7 +1,8 @@
-import { ReactNode, createContext, useCallback, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
-import { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import type { NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
+import type { NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 type HeaderContextType = {
     setScrollableHeaderHeight: (height: number) => void;

@@ -1,12 +1,10 @@
-import {
-    BluetoothState,
-    prepareBluetoothReducerCreator,
-    prepareInitialState,
-} from '@suite-common/bluetooth';
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import type { BluetoothState } from '@suite-common/bluetooth';
+import { prepareBluetoothReducerCreator, prepareInitialState } from '@suite-common/bluetooth';
+import type { AnyAction } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 export type DesktopBluetoothState = BluetoothState<DesktopBluetoothDevice> & {
     // When we get an update that KnownDevice appeared, we start auto-connecting to it.

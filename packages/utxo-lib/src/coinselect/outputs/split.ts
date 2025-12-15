@@ -1,6 +1,6 @@
 import BN from 'bn.js';
 
-import {
+import type {
     CoinSelectInput,
     CoinSelectOptions,
     CoinSelectOutput,

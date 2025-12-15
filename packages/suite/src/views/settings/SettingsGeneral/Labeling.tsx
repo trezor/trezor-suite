@@ -11,12 +11,14 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import {
-    LABELING_LEGACY_OPTION_LABEL,
-    LABELING_SELECT_OPTIONS,
+import type {
     LabelingOption,
     LabelingOptionTranslated,
     LabelingSelectValue,
+} from 'src/constants/suite/labeling';
+import {
+    LABELING_LEGACY_OPTION_LABEL,
+    LABELING_SELECT_OPTIONS,
 } from 'src/constants/suite/labeling';
 import { useDevice, useSelector, useTranslation } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';

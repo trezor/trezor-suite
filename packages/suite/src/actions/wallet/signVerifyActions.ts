@@ -8,7 +8,8 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, Success, Unsuccessful } from '@trezor/connect';
+import type { Success, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO } from '@trezor/connect';
 import { getSerializedPath } from '@trezor/connect/src/utils/pathUtils';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';

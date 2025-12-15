@@ -1,5 +1,6 @@
 import { getWeakRandomNumberInRange } from '@trezor/utils';
-import { Network, Transaction, bufferutils } from '@trezor/utxo-lib';
+import type { Network } from '@trezor/utxo-lib';
+import { Transaction, bufferutils } from '@trezor/utxo-lib';
 
 import {
     COORDINATOR_FEE_RATE_FALLBACK,
@@ -10,15 +11,15 @@ import {
     ROUND_REGISTRATION_END_OFFSET,
 } from '../constants';
 import { RoundPhase } from '../enums';
-import { CoinjoinTransactionData } from '../types';
-import {
+import type { CoinjoinTransactionData } from '../types';
+import type {
     CoinjoinRoundParameters,
     CoinjoinState,
     CoinjoinStateEvent,
     CoinjoinStatus,
     Round,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
+import type { Credentials } from '../types/middleware';
 
 export const getRoundEvents = <T extends CoinjoinStateEvent['Type']>(
     type: T,

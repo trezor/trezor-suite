@@ -3,7 +3,8 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
-import { ERRORS, PROTO } from '../constants';
+import type { PROTO } from '../constants';
+import { ERRORS } from '../constants';
 import {
     createPendingTransaction,
     deriveOutputScript,
@@ -22,7 +23,8 @@ import {
     validateTrezorOutputs,
     verifyTx,
 } from './bitcoin';
-import { Blockchain, initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
+import type { Blockchain } from '../backend/BlockchainLink';
+import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
 import { AbstractMethod } from '../core/AbstractMethod';
 import type { AccountAddresses, BitcoinNetworkInfo } from '../types';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';

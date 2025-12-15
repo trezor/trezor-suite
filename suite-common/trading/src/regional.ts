@@ -1,13 +1,13 @@
+import type { EEACountryCodeType } from '@suite-common/geolocation';
 import {
     ComprehensivelySanctionedCountryCodes,
-    EEACountryCodeType,
     EEACountryCodes,
     OfacSanctionedCountryCodes,
     countries as countriesRecord,
 } from '@suite-common/geolocation';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
-import { TradingCountryCode, TradingCountryOption } from './types';
+import type { TradingCountryCode, TradingCountryOption } from './types';
 
 type CountryItem = (typeof countriesRecord)[keyof typeof countriesRecord];
 

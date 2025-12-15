@@ -1,10 +1,11 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
-import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
+import type { UpdateInfo, UpdateProgress } from '@trezor/suite-desktop-api';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 export type DesktopUpdateAction =

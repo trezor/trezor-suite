@@ -2,11 +2,8 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectThpStep } from '@suite-common/thp';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import { ThpCodeEntryScreenContent } from '@suite-native/thp';
 
 import { NonClosableDeviceOnboardingScreen } from '../components/NonClosableDeviceOnboardingScreen';

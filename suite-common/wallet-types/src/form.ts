@@ -1,4 +1,4 @@
-import {
+import type {
     FormDraftPrefixKeyValues,
     FormDraftWithSendPrefixKeyValues,
 } from '@suite-common/wallet-constants';

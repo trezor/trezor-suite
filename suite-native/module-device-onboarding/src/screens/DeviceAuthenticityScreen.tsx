@@ -1,12 +1,14 @@
 import { useCallback, useEffect } from 'react';
 
 import { ContinueOnTrezorScreenContent, useDeviceAuthenticityCheck } from '@suite-native/device';
-import {
+import type {
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    DeviceOnboardingStackRoutes,
+    RootStackRoutes,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

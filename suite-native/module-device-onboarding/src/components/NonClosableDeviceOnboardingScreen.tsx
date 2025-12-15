@@ -1,12 +1,9 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import { Box } from '@suite-native/atoms';
-import {
-    Screen,
-    ScreenHeader,
-    ScreenProps,
-    useInterceptNativeNavigation,
-} from '@suite-native/navigation';
+import type { ScreenProps } from '@suite-native/navigation';
+import { Screen, ScreenHeader, useInterceptNativeNavigation } from '@suite-native/navigation';
 
 type NonClosableDeviceOnboardingScreenProps = {
     screenHeaderRightIcon?: ReactNode;

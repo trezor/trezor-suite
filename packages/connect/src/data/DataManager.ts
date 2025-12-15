@@ -2,7 +2,7 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
-import {
+import type {
     ConditionalRelease,
     DeviceModelInternal,
     FirmwareReleaseConfig,

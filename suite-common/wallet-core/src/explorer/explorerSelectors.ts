@@ -1,4 +1,4 @@
-import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { type ExplorerState } from './explorerReducer';
 

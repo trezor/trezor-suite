@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { AccountsImportStackParamList } from '@suite-native/navigation';
+import { AccountsImportStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { AccountImportLoadingScreen } from '../screens/AccountImportLoadingScreen';
 import { AccountImportSummaryScreen } from '../screens/AccountImportSummaryScreen';

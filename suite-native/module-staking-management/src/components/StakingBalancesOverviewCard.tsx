@@ -1,12 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import type { NativeStakingRootState } from '@suite-native/staking';
 import {
-    NativeStakingRootState,
     selectAPYByAccountKey,
     selectRewardsBalanceByAccountKey,
     selectStakedBalanceByAccountKey,

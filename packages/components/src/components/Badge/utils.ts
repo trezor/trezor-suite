@@ -1,9 +1,9 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color, TypographyStyle } from '@trezor/theme';
+import type { CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
-import { BadgeIntent, BadgeSize } from './types';
-import { Padding } from '../../utils/frameProps';
+import type { BadgeIntent, BadgeSize } from './types';
+import type { Padding } from '../../utils/frameProps';
 
 export const mapIntentToBackgroundColor = (intent: BadgeIntent, theme: DefaultTheme): CSSColor => {
     const colorMap: Record<BadgeIntent, Color> = {

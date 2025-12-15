@@ -2,14 +2,16 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 
 import { accountBtc, accountEth } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
 import { tradingBuyActions } from '../../../reducers/buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from '../../../reducers/exchangeReducer';
-import { SellInfo, tradingSellActions } from '../../../reducers/sellReducer';
-import { TradingState, initialState, tradingActions } from '../../../reducers/tradingCommonReducer';
+import type { SellInfo } from '../../../reducers/sellReducer';
+import { tradingSellActions } from '../../../reducers/sellReducer';
+import type { TradingState } from '../../../reducers/tradingCommonReducer';
+import { initialState, tradingActions } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { regional } from '../../../regional';
 import { buyThunks } from '../../buy';

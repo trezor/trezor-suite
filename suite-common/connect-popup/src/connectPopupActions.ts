@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import {
+import type {
     AppRememberedPermission,
     ConnectPopupCall,
     ConnectSerializedError,

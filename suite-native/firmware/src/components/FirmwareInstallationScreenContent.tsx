@@ -23,7 +23,8 @@ import { DoNotCloseAppBottomSheetTrigger } from './DoNotCloseAppBottomSheetTrigg
 import { FirmwareInstallationProgressTitles } from './FirmwareInstallationProgressTitles';
 import { MayBeStuckedBottomSheet } from './MayBeStuckedBottomSheet';
 import { TrezorFacts } from './TrezorFacts';
-import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
+import type { UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
+import { UpdateProgressIndicator } from './UpdateProgressIndicator';
 import { useFirmware } from '../hooks/useFirmware';
 import { useFirmwareAnalytics } from '../hooks/useFirmwareAnalytics';
 

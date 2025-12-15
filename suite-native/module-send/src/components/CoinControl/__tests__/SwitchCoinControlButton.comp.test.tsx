@@ -3,7 +3,8 @@ import {
     renderHook,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { NativeStyleUtils, useNativeStyles } from '@trezor/styles';
+import type { NativeStyleUtils } from '@trezor/styles';
+import { useNativeStyles } from '@trezor/styles';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';

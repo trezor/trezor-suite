@@ -1,6 +1,6 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
-import {
+import type {
     NotificationId,
     NotificationsRootState,
     ToastPayload,

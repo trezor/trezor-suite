@@ -1,6 +1,6 @@
-import { Reporter, TestCase } from '@playwright/test/reporter';
+import { type Reporter, type TestCase } from '@playwright/test/reporter';
 
-import { GitHubReporterBase, LoggingFunctions } from '@trezor/e2e-utils';
+import { GitHubReporterBase, type LoggingFunctions } from '@trezor/e2e-utils';
 
 import { TestReportProvider } from './annotations';
 

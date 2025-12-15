@@ -12,7 +12,7 @@ import {
     selectIsFirmwareAuthenticityCheckDismissed,
 } from '@suite-common/wallet-core';
 
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 import {
     selectIsEntropyCheckEnabled,

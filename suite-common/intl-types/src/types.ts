@@ -1,6 +1,6 @@
 // IMPORTANT! This package is just temporary solution until https://github.com/trezor/trezor-suite/pull/5647 will be merged.
 // Then we won't need this package anymore and can be deleted.
-import { ComponentProps } from 'react';
+import type { ComponentProps } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 // Warning, very hacky import solution, do not use this anywhere else than in this file.

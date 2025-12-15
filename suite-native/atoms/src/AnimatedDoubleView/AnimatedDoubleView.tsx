@@ -3,11 +3,8 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import {
-    ANIMATION_DURATION,
-    AnimatedViewWrapper,
-    AnimatedViewWrapperProps,
-} from './AnimatedViewWrapper';
+import type { AnimatedViewWrapperProps } from './AnimatedViewWrapper';
+import { ANIMATION_DURATION, AnimatedViewWrapper } from './AnimatedViewWrapper';
 import { SwitchViewsButton } from './SwitchViewsButton';
 
 export type { RenderViewProps } from './AnimatedViewWrapper';

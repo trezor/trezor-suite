@@ -1,5 +1,6 @@
-import { TradingTransaction } from '@suite-common/trading';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TradingTransaction } from '@suite-common/trading';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 
 import { HistoryButton } from '../HistoryButton';

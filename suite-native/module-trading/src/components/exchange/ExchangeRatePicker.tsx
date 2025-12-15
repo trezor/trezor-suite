@@ -2,10 +2,8 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
-import {
-    TradingRootState as CommonTradingRootState,
-    selectTradingProviderByNameAndTradeType,
-} from '@suite-common/trading';
+import type { TradingRootState as CommonTradingRootState } from '@suite-common/trading';
+import { selectTradingProviderByNameAndTradeType } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';

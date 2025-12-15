@@ -1,5 +1,5 @@
 import { G } from '@mobily/ts-belt';
-import { UnknownAction } from '@reduxjs/toolkit';
+import type { UnknownAction } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
 

@@ -1,4 +1,4 @@
-import { ExchangeProviderInfo } from 'invity-api';
+import type { ExchangeProviderInfo } from 'invity-api';
 
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
@@ -8,7 +8,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';

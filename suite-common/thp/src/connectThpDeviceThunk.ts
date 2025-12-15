@@ -1,6 +1,6 @@
 import { selectFirmware } from '@suite-common/firmware/src/firmwareReducer';
 import { createThunk } from '@suite-common/redux-utils';
-import { Device } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
 
 import { THP_PREFIX, thpActions } from './thpActions';
 import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './thpConstants';

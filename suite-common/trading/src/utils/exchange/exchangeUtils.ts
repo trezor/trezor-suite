@@ -1,8 +1,8 @@
-import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, TRADING_EXCHANGE_RATE_FIXED } from '../../constants';
-import { ExchangeInfo } from '../../reducers/exchangeReducer';
-import { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
+import type { ExchangeInfo } from '../../reducers/exchangeReducer';
+import type { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
 import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
 
 type GetAmountLimitsProps = {

@@ -1,11 +1,10 @@
-import {
+import type {
     NetworkSymbol,
     NetworkType,
-    STAKING_SYMBOLS,
-    STAKING_TYPES,
     StakingNetworkSymbol,
     StakingNetworkType,
 } from '@suite-common/wallet-config';
+import { STAKING_SYMBOLS, STAKING_TYPES } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
     CARDANO_STAKING_REGISTRATION_DEPOSIT,
@@ -26,7 +25,7 @@ import {
     SOLANA_EPOCH_DAYS,
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
-import {
+import type {
     Account,
     PrecomposedLevels,
     StakingPoolExtended,

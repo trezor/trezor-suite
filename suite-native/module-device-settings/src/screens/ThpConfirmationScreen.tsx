@@ -7,11 +7,13 @@ import { selectThpStep } from '@suite-common/thp';
 import { Box } from '@suite-native/atoms';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { nativeFirmwareActions } from '@suite-native/firmware';
-import {
+import type {
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
-    Screen,
     StackNavigationProps,
+} from '@suite-native/navigation';
+import {
+    Screen,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';

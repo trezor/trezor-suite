@@ -2,8 +2,8 @@ import type { CryptoId } from 'invity-api';
 
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Form } from '@suite-native/forms';
+import type { TestStore } from '@suite-native/test-utils';
 import {
-    TestStore,
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
@@ -15,7 +15,7 @@ import {
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
-import { ExchangeFormType, MyAssetTradeable } from '@suite-native/trading-types';
+import type { ExchangeFormType, MyAssetTradeable } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';

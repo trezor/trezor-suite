@@ -1,4 +1,4 @@
-import { TradingTransaction } from '@suite-common/trading';
+import type { TradingTransaction } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';

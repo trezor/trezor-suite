@@ -2,18 +2,8 @@ import { useState } from 'react';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectIsAutoForgetDeviceDataEnabled } from '@suite-common/wallet-core';
-import {
-    Badge,
-    Banner,
-    Card,
-    Column,
-    H4,
-    Modal,
-    ModalProps,
-    Paragraph,
-    Radio,
-    Row,
-} from '@trezor/components';
+import type { ModalProps } from '@trezor/components';
+import { Badge, Banner, Card, Column, H4, Modal, Paragraph, Radio, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAutoForgetDeviceDataThunk } from 'src/actions/suite/autoForgetDeviceDataThunks';

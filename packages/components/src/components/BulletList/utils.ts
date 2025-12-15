@@ -1,8 +1,8 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
-import { CSSColor, TypographyStyle } from '@trezor/theme';
+import type { CSSColor, TypographyStyle } from '@trezor/theme';
 
-import { BulletListDirection, BulletListItemState, BulletSize } from './types';
+import type { BulletListDirection, BulletListItemState, BulletSize } from './types';
 
 type colorMapArgs = {
     $state: BulletListItemState;

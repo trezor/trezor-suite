@@ -38,7 +38,7 @@ import {
 import { selectIsDeviceOrUiLocked, selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { CoinjoinService } from 'src/services/coinjoin';
 import type { Action, AppState, Dispatch } from 'src/types/suite';
-import { CoinjoinConfig } from 'src/types/wallet/coinjoin';
+import type { CoinjoinConfig } from 'src/types/wallet/coinjoin';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 
 export const coinjoinMiddleware =

@@ -1,11 +1,12 @@
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { getSynchronize } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
-import { CallMethodPayload, createErrorMessage } from '../events';
-import { ConnectFactoryDependencies } from '../factory';
-import { InitFullSettings } from '../types/api/init';
+import type { CallMethodPayload } from '../events';
+import { createErrorMessage } from '../events';
+import type { ConnectFactoryDependencies } from '../factory';
+import type { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
 import type { Manifest } from '../types/settings';
 import { ProxyEventEmitter } from '../utils/proxy-event-emitter';

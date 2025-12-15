@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Account } from '@suite-common/wallet-types';
-import { Icon, Text, TextVariant } from '@trezor/components';
+import type { Account } from '@suite-common/wallet-types';
+import type { TextVariant } from '@trezor/components';
+import { Icon, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
-import { TypographyStyle } from '@trezor/theme';
+import type { TypographyStyle } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';

@@ -1,4 +1,4 @@
-import { Locator, Page, test } from '@playwright/test';
+import { type Locator, type Page, test } from '@playwright/test';
 
 import { TrezorUserEnvLinkProxy, step } from '../common';
 

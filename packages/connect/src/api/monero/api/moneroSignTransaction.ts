@@ -1,5 +1,7 @@
-import { ERRORS, PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import type { PROTO } from '../../../constants';
+import { ERRORS } from '../../../constants';
+import type { MethodReturnType } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';

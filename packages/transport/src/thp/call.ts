@@ -1,5 +1,6 @@
 import { receiveThpMessage } from './receive';
-import { SendThpMessageProps, sendThpMessage } from './send';
+import type { SendThpMessageProps } from './send';
+import { sendThpMessage } from './send';
 
 export const callThpMessage = async ({
     thpState,

@@ -1,8 +1,8 @@
 import { ERRORS } from '../../constants';
 import { DataManager } from '../../data/DataManager';
 import { DEVICE, UI, createDeviceMessage, createUiMessage } from '../../events';
-import { StaticSessionId } from '../../types';
-import { WorkflowContext } from '../../types/workflow';
+import type { StaticSessionId } from '../../types';
+import type { WorkflowContext } from '../../types/workflow';
 import { toHardened } from '../../utils/pathUtils';
 import { createThpSession } from '../thp';
 

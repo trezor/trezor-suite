@@ -1,4 +1,5 @@
-import { Hint, Kind, TSchema } from '@sinclair/typebox';
+import type { TSchema } from '@sinclair/typebox';
+import { Hint, Kind } from '@sinclair/typebox';
 
 export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
     let typeName = value[Kind];

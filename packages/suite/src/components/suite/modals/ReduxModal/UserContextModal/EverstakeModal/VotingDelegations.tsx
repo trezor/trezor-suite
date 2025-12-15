@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-    VotingDelegationOption,
-    selectVotingDelegationOption,
-    stakeActions,
-} from '@suite-common/wallet-core';
+import type { VotingDelegationOption } from '@suite-common/wallet-core';
+import { selectVotingDelegationOption, stakeActions } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Input, Radio, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

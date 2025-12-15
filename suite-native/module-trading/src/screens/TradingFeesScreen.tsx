@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import {
-    Screen,
-    ScreenHeader,
+import type {
     StackProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 
 import { TradingFeesForm } from '../components/fees/TradingFeesForm';

@@ -7,16 +7,16 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
-import { OnSelectAccount } from '@suite-native/accounts';
+import type { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import {
+import type {
     AppTabsParamList,
     AppTabsRoutes,
     RootStackParamList,
-    RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 import { selectDeviceNetworksWithAssets } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';

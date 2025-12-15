@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import type { TradingRootState as TradingRootStateCommon } from '@suite-common/trading';
 import {
-    TradingRootState as TradingRootStateCommon,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';

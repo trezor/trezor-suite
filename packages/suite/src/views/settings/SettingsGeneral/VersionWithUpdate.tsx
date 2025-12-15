@@ -1,5 +1,6 @@
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Button, ButtonProps } from '@trezor/components';
+import type { ButtonProps } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
@@ -13,7 +14,8 @@ import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/componen
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
-import { DesktopUpdateState, UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import type { DesktopUpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {

@@ -1,17 +1,17 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 import styled from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { Popover as PopoverComponent, PopoverProps } from './Popover';
-import {
-    POPOVER_PLACEMENT_ALIGNMENT,
-    POPOVER_PLACEMENT_POSITION,
+import type { PopoverProps } from './Popover';
+import { Popover as PopoverComponent } from './Popover';
+import type {
     PopoverPlacement,
     PopoverPlacementAlignment,
     PopoverPlacementPosition,
 } from './utils';
+import { POPOVER_PLACEMENT_ALIGNMENT, POPOVER_PLACEMENT_POSITION } from './utils';
 import { Card } from '../Card/Card';
 import { Button } from '../buttons/Button/Button';
 

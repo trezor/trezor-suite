@@ -1,9 +1,11 @@
-import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { Branded } from '@trezor/type-utils';
+import type { Branded } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { AMOUNT_UNIT_ZERO, AmountUnit, asAmountSubunit, asAmountUnit } from './AmountTypes';
+import type { AmountUnit } from './AmountTypes';
+import { AMOUNT_UNIT_ZERO, asAmountSubunit, asAmountUnit } from './AmountTypes';
 import { subunitsToUnits, unitsToSubunits } from './amountUtils';
 import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from './fiatConverterUtils';
 

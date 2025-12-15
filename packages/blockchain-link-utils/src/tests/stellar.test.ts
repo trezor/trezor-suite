@@ -1,8 +1,9 @@
-import { Horizon } from '@stellar/stellar-sdk';
+import type { Horizon } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils';
 
-import { StellarAsset, buildSendTransaction, toStroops, transformTransaction } from '../stellar';
+import type { StellarAsset } from '../stellar';
+import { buildSendTransaction, toStroops, transformTransaction } from '../stellar';
 import { fixtures } from './fixtures/stellar';
 
 describe('stellar/utils', () => {

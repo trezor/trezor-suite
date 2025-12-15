@@ -1,4 +1,4 @@
-import { AccountLabels } from '@suite-common/metadata-types';
+import type { AccountLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import {
@@ -7,7 +7,7 @@ import {
     selectHistoricFiatRates,
     selectTransactions,
 } from '@suite-common/wallet-core';
-import { Account, ExportFileType } from '@suite-common/wallet-types';
+import type { Account, ExportFileType } from '@suite-common/wallet-types';
 import { advancedSearchTransactions, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';

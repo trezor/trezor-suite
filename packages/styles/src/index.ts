@@ -1,7 +1,7 @@
 export * from './StylesProvider';
 export * from './prepareStyle';
 export * from './useStyles';
-export * from './types';
+export type * from './types';
 export * from './createRenderer';
 export * from './useDirection';
 export * from './mergeStyleObjects';

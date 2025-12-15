@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import { FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Column, FractionButton, FractionButtonProps, Row, TextButton } from '@trezor/components';
+import type { FractionButtonProps } from '@trezor/components';
+import { Column, FractionButton, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { NumberInput, NumberInputProps } from '../NumberInput/NumberInput';
+import type { NumberInputProps } from '../NumberInput/NumberInput';
+import { NumberInput } from '../NumberInput/NumberInput';
 
 const InputWithOptionsContainer = styled.div`
     width: 100%;

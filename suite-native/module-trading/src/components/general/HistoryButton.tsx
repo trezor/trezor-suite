@@ -8,12 +8,12 @@ import { useNavigation } from '@react-navigation/native';
 import { AnimatedBox, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles/src';
 

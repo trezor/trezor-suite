@@ -1,8 +1,8 @@
-import { Locator, Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 import { BigNumber } from '@trezor/utils';
 
-import { SolanaReward } from '../../../fixtures/staking/sol-staking-accounts';
+import { type SolanaReward } from '../../../fixtures/staking/sol-staking-accounts';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 

@@ -2,16 +2,13 @@ import { useCallback, useEffect, useReducer, useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { ZIndexValues, zIndices } from '@trezor/theme';
+import type { ZIndexValues } from '@trezor/theme';
+import { zIndices } from '@trezor/theme';
 import { createCooldown } from '@trezor/utils';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 
 export const allowedResizableBoxFrameProps = ['margin', 'flex'] as const satisfies FramePropsKeys[];
 type AllowedResizableBoxFrameProps = Pick<

@@ -1,4 +1,4 @@
-import { LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+import type { LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
 
 interface LogWorkerClass extends SharedWorker {
     new (): SharedWorker;

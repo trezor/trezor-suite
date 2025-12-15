@@ -1,7 +1,8 @@
-import { CryptoId, ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
-import { TradingExchangeAmountLimitProps } from '../../types';
-import { ExchangeInfo, exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
+import type { TradingExchangeAmountLimitProps } from '../../types';
+import type { ExchangeInfo } from '../exchangeReducer';
+import { exchangeInitialState, tradingExchangeActions } from '../exchangeReducer';
 
 export const exchange: ExchangeProviderInfo = {
     name: 'test',

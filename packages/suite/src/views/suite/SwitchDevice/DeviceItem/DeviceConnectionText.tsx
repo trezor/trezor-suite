@@ -1,8 +1,9 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Icon, IconName, IconVariant, Row, Spinner, Text } from '@trezor/components';
+import type { IconName, IconVariant } from '@trezor/components';
+import { Icon, Row, Spinner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 const Container = styled.span<{ $isAction?: boolean }>`

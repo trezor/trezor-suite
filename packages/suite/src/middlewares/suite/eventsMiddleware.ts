@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
@@ -11,7 +11,7 @@ import {
 import { DEVICE } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 /*

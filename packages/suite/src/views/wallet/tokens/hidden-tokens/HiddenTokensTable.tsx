@@ -1,5 +1,5 @@
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Banner, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';

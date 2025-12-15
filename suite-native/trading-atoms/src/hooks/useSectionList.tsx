@@ -1,4 +1,5 @@
-import { ReactElement, ReactNode, useMemo } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { useMemo } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedBox, Text } from '@suite-native/atoms';

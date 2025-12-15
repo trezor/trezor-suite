@@ -1,4 +1,4 @@
-import messages from './messages';
+import type messages from './messages';
 
 /**
  * This file is here just to be picked up by type-check to check that keys and ids match in `messages.ts`

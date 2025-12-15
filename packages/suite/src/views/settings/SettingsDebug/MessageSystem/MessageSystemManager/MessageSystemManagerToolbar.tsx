@@ -3,7 +3,8 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { CONTEXT_PATTERNS, FEATURE_LIST } from '@suite-common/message-system';
-import { Category, Condition } from '@suite-common/suite-types';
+import type { Category, Condition } from '@suite-common/suite-types';
+import type { PopoverRef } from '@trezor/components';
 import {
     Button,
     ButtonGroup,
@@ -11,7 +12,6 @@ import {
     IconButton,
     Menu,
     Popover,
-    PopoverRef,
     Row,
     Text,
     Tooltip,

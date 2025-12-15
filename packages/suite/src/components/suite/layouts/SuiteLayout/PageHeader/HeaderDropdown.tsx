@@ -1,7 +1,8 @@
-import { JSX } from 'react';
+import type { JSX } from 'react';
 
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
+import type { DropdownMenuItemProps, IconName } from '@trezor/components';
+import { Dropdown } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { breakpoints } from '@trezor/theme';
 

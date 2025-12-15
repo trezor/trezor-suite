@@ -1,17 +1,16 @@
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { Box, Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
+import type {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    Screen,
-    ScreenHeader,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, Screen, ScreenHeader } from '@suite-native/navigation';
 import { SUITE_WEB_DEVICE_SETTINGS_URL } from '@trezor/urls';
 
 type RouteProps = RouteProp<

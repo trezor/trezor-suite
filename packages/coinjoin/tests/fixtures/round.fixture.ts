@@ -1,7 +1,7 @@
 import { CoinjoinPrison } from '../../src/client/CoinjoinPrison';
 import { CoinjoinRound } from '../../src/client/CoinjoinRound';
 import { ROUND_SELECTION_REGISTRATION_OFFSET } from '../../src/constants';
-import { AllowedScriptTypes, Round } from '../../src/types/coordinator';
+import type { AllowedScriptTypes, Round } from '../../src/types/coordinator';
 
 export const ROUND_CREATION_EVENT = {
     Type: 'RoundCreated' as const,

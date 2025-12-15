@@ -1,10 +1,12 @@
-import { JSX, useContext } from 'react';
+import type { JSX } from 'react';
+import { useContext } from 'react';
 
 import styled, { css } from 'styled-components';
 
 import { IconButton, useElevation } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBorder, typography, zIndices } from '@trezor/theme';
 
 import { close } from 'src/actions/suite/guideActions';
 import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';

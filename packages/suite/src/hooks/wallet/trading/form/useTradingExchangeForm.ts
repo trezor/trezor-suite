@@ -12,7 +12,7 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
-    TradingExchangeType,
+    type TradingExchangeType,
     type TradingSendRejectedProps,
     type TradingSignAndPushSendFormTransactionProps,
     type TradingTransactionExchange,
@@ -40,7 +40,7 @@ import {
     updateFeeInfoThunk,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
@@ -57,9 +57,9 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch } from 'src/types/suite';
-import { UseTradingFormCommonProps } from 'src/types/trading/trading';
-import {
+import type { Dispatch } from 'src/types/suite';
+import type { UseTradingFormCommonProps } from 'src/types/trading/trading';
+import type {
     TradingExchangeConfirmTradeProps,
     TradingExchangeFormContextProps,
 } from 'src/types/trading/tradingForm';

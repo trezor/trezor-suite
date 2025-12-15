@@ -2,14 +2,15 @@ import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getSessionNetworks,
     selectSessions,
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
-import { Column, Modal, Option, Row, Select } from '@trezor/components';
+import type { Option } from '@trezor/components';
+import { Column, Modal, Row, Select } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

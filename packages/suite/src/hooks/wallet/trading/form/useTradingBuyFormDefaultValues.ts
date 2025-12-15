@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { CryptoId, FiatCurrencyCode } from 'invity-api';
+import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingBuyInfoSelector,
-    TradingCountryCode,
+    type TradingCountryCode,
     type TradingPaymentMethodListProps,
     enabledTradingCurrencies,
     getDefaultCountry,
@@ -19,8 +19,8 @@ import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
+import type { TradingBuyFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import type { Account } from 'src/types/wallet';
 import { buildTradingFiatOption } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingBuyFormDefaultValues = (

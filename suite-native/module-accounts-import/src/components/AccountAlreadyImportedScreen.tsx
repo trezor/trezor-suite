@@ -1,15 +1,17 @@
 import { useNavigation } from '@react-navigation/core';
 
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Button, Card, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AccountsImportStackParamList,
-    AccountsImportStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToTabCompositeProps,
+} from '@suite-native/navigation';
+import {
+    AccountsImportStackRoutes,
+    RootStackRoutes,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

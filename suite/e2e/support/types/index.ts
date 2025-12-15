@@ -1,6 +1,6 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import type { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 
 export type Requests = ReturnType<typeof urlSearchParams>[];
 

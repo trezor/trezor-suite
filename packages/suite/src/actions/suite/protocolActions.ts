@@ -1,5 +1,5 @@
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { Protocol } from '@suite-common/suite-constants';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
@@ -15,16 +15,14 @@ import { isArrayMember } from '@trezor/utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
-import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
+import type { CoinProtocolInfo } from 'src/utils/suite/protocol';
+import { getProtocolInfo } from 'src/utils/suite/protocol';
 
 import { PROTOCOL } from './constants';
-import {
-    AnchorSettingSection,
-    SettingsAnchor,
-    mapAnchorToRoute,
-} from '../../constants/suite/anchors';
+import type { AnchorSettingSection } from '../../constants/suite/anchors';
+import { SettingsAnchor, mapAnchorToRoute } from '../../constants/suite/anchors';
 
 export type ProtocolAction =
     | {

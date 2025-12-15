@@ -1,20 +1,20 @@
-import { NavigatorScreenParams } from '@react-navigation/native';
+import type { NavigatorScreenParams } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
-import { RequireAllOrNone } from 'type-fest';
+import type { RequireAllOrNone } from 'type-fest';
 
-import { BackupType } from '@suite-common/suite-types';
-import { TradingType } from '@suite-common/trading';
-import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import {
+import type { BackupType } from '@suite-common/suite-types';
+import type { TradingType } from '@suite-common/trading';
+import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import type {
     AccountKey,
     GeneralPrecomposedTransactionFinal,
     TokenAddress,
     XpubAddress,
 } from '@suite-common/wallet-types';
-import { AccountInfo } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { AccountInfo } from '@trezor/connect';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 
-import {
+import type {
     AccountsImportStackRoutes,
     AccountsStackRoutes,
     AddCoinAccountStackRoutes,
@@ -41,7 +41,7 @@ import {
     TransactionDetailStackRoutes,
     WipeDeviceStackRoutes,
 } from './routes';
-import { NavigateParameters } from './types';
+import type { NavigateParameters } from './types';
 
 type AddCoinFlowParams = RequireAllOrNone<
     { networkSymbol: NetworkSymbol; accountType: AccountType; accountIndex: number },

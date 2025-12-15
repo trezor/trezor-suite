@@ -1,14 +1,14 @@
-import { NetworkType as NetworkTypeConfig } from '@suite-common/wallet-config';
+import type { NetworkType as NetworkTypeConfig } from '@suite-common/wallet-config';
 import { Form } from '@suite-native/forms';
+import type { PreloadedState } from '@suite-native/test-utils';
 import {
-    PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
+import type { FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
 import { CustomFeeLabel } from '../CustomFeeLabel';
 

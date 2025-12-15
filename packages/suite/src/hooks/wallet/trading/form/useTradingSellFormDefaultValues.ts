@@ -12,14 +12,14 @@ import {
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { FormState, Output } from '@suite-common/wallet-types';
+import type { FormState, Output } from '@suite-common/wallet-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
+import type { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
+import type { Account } from 'src/types/wallet';
 import {
     buildTradingFiatOption,
     getAddressAndTokenFromAccountOptionsGroupProps,

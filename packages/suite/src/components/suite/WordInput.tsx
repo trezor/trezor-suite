@@ -1,7 +1,8 @@
 import { memo } from 'react';
-import { SelectInstance, StylesConfig, createFilter } from 'react-select';
+import type { SelectInstance, StylesConfig } from 'react-select';
+import { createFilter } from 'react-select';
 
-import { CSSObject } from 'styled-components';
+import type { CSSObject } from 'styled-components';
 
 import { Select } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';

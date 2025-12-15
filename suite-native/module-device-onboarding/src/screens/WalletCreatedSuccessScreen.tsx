@@ -1,12 +1,8 @@
 import { useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    LoadingSuccessScreen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, LoadingSuccessScreen } from '@suite-native/navigation';
 
 const NAVIGATION_TIMEOUT = 3000;
 

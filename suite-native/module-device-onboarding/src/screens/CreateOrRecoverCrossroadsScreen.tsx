@@ -3,11 +3,8 @@ import { useSetAtom } from 'jotai';
 import { Box, Button, Card, CenteredTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';

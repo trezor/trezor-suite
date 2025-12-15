@@ -1,11 +1,13 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { UIVariant } from '../../config/types';
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import type { UIVariant } from '../../config/types';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import type { IconName } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 export const allowedNoteFrameProps = ['margin', 'minWidth'] as const satisfies FramePropsKeys[];

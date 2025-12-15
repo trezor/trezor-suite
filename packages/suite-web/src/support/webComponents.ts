@@ -1,6 +1,7 @@
-import { ComponentType, LazyExoticComponent, lazy } from 'react';
+import type { ComponentType, LazyExoticComponent } from 'react';
+import { lazy } from 'react';
 
-import { PageName } from '@suite-common/suite-types';
+import type { PageName } from '@suite-common/suite-types';
 
 export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>> = {
     'suite-index': lazy(() =>

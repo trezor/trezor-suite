@@ -1,11 +1,13 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import {
+import type {
     TradingProviderInfo,
     TradingRootState,
     TradingTradeType,
     TradingType,
+} from '@suite-common/trading';
+import {
     isBuyTrade,
     isSellFiatTrade,
     selectTradingProviderByNameAndTradeType,

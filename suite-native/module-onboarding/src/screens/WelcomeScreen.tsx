@@ -5,12 +5,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { OnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { OnboardingStackRoutes, Screen } from '@suite-native/navigation';
 import { getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { colorVariants } from '@trezor/theme';

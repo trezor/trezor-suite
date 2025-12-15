@@ -1,4 +1,4 @@
-import { AsyncThunkAction } from '@reduxjs/toolkit';
+import type { AsyncThunkAction } from '@reduxjs/toolkit';
 
 declare module 'redux' {
     export interface Dispatch {

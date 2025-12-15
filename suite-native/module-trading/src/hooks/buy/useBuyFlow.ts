@@ -4,24 +4,23 @@ import { useNavigation } from '@react-navigation/native';
 import type { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import type { TradingRootState } from '@suite-common/trading';
 import {
-    TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
+import type {
     RootStackParamList,
-    RootStackRoutes,
     StackNavigationProps,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { RootStackRoutes, TradingStackRoutes } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
-import { BuyFormType } from '@suite-native/trading-types';
+import type { BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';

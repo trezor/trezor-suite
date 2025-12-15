@@ -1,4 +1,5 @@
-import React, { ChangeEvent, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 

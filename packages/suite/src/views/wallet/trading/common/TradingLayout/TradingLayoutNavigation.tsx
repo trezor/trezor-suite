@@ -1,9 +1,11 @@
-import { Route } from '@suite-common/suite-types';
-import { IconName, SubTabs } from '@trezor/components';
+import type { Route } from '@suite-common/suite-types';
+import type { IconName } from '@trezor/components';
+import { SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 type TradingLayoutNavigationProps = {

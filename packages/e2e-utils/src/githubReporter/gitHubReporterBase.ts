@@ -2,16 +2,12 @@ import type { Octokit } from '@octokit/rest';
 
 import { scheduleAction } from '@trezor/utils';
 
-import { TestReportProviderBase } from './annotationBase';
+import type { TestReportProviderBase } from './annotationBase';
 import { GitHubProject } from './gitHubProject';
 import { IssueRequests } from './issueRequests';
-import { LoggingFunctions, ProjectField } from './types';
-import {
-    TestOsEmoticons,
-    TestOsMatrix,
-    osMatrixAnnotation,
-    statusAnnotation,
-} from '../enums/testAnnotations';
+import type { LoggingFunctions, ProjectField } from './types';
+import type { TestOsMatrix } from '../enums/testAnnotations';
+import { TestOsEmoticons, osMatrixAnnotation, statusAnnotation } from '../enums/testAnnotations';
 
 export const RETRY_CONF = {
     attempts: 5,

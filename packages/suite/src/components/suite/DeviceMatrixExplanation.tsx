@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Icon, IconName, IconProps, Image, variables } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { IconName, IconProps } from '@trezor/components';
+import { Icon, Image, variables } from '@trezor/components';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { typography } from '@trezor/theme';
 
 import { useGuide } from 'src/hooks/guide';

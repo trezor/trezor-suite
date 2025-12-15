@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
-import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';

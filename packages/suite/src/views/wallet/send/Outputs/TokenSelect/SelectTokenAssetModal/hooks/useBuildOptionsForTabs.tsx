@@ -1,20 +1,19 @@
 import { useMemo } from 'react';
 
-import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
-import {
-    NetworkSymbol,
-    getCoingeckoId,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import type { TokenDefinitions } from '@suite-common/token-definitions';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
-import { AssetProps, ITEM_HEIGHT, TokenTab } from '@trezor/product-components';
+import type { AssetProps, TokenTab } from '@trezor/product-components';
+import { ITEM_HEIGHT } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
+import type { EnahncedTokenInfoWithFiat } from 'src/utils/wallet/tokenUtils';
 import {
-    EnahncedTokenInfoWithFiat,
     enhanceTokensWithRates,
     formatTokenSymbol,
     getTokens,

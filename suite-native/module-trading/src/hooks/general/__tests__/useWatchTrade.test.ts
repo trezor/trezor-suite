@@ -1,8 +1,5 @@
-import {
-    PreloadedState,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useWatchTrade } from '../useWatchTrade';

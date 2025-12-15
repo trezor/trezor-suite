@@ -4,11 +4,11 @@ import {
     convertSendFormDraftsBtcAmountUnitsThunk,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account, Output, FormState as SendFormState } from '@suite-common/wallet-types';
+import type { Account, Output, FormState as SendFormState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { RouterState } from 'src/reducers/suite/routerReducer';
-import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
+import type { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 
 export const blockchainSubscription = [
     {

@@ -1,9 +1,9 @@
-import { FiatRatesState } from '@suite-common/wallet-core';
-import {
+import type { FiatRatesState } from '@suite-common/wallet-core';
+import type {
     Account,
     GeneralPrecomposedLevels,
     RatesByKey,
-    type WalletSettings,
+    WalletSettings,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 

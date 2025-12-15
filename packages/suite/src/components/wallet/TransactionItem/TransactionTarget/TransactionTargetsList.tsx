@@ -1,12 +1,12 @@
 import { AnimatePresence } from 'framer-motion';
 
-import {
+import type {
     InternalTransfer as InternalTransferType,
     TokenTransfer as TokenTransferType,
 } from '@trezor/blockchain-link-types';
 
-import { AccountLabels } from 'src/types/suite/metadata';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { AccountLabels } from 'src/types/suite/metadata';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { BlurWrapper } from '../TransactionItemBlurWrapper';
 import { TransactionTarget } from './TransactionTarget';

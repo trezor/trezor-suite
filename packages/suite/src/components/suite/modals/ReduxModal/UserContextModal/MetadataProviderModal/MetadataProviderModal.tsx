@@ -7,7 +7,7 @@ import type { Deferred } from '@trezor/utils';
 import { connectProvider } from 'src/actions/suite/metadataProviderActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { MetadataProviderType } from 'src/types/suite/metadata';
+import type { MetadataProviderType } from 'src/types/suite/metadata';
 
 type MetadataProviderModalProps = {
     onCancel: () => void;

@@ -1,7 +1,7 @@
-import { Locator, Page, TestInfo, expect } from '@playwright/test';
+import { type Locator, type Page, type TestInfo, expect } from '@playwright/test';
 
 import { SUITE as SuiteActions } from '@trezor/suite/src//actions/suite/constants';
-import { StartEmu } from '@trezor/trezor-user-env-link';
+import { type StartEmu } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, isWebProject, step } from '../../common';
 import { SeedType } from '../../enums/seedType';

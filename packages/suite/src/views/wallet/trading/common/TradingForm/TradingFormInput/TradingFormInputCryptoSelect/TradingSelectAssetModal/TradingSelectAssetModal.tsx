@@ -1,20 +1,21 @@
 import { useCallback, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
+import type {
+    TradingCryptoSelectItemProps,
+    TradingCryptoSelectOptionProps,
+} from '@suite-common/trading';
 import {
     CRYPTO_PLATFORM_SEPARATOR,
     TOKEN_SELECT_SELECTABLE_NETWORKS,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
-    TradingCryptoSelectItemProps,
-    TradingCryptoSelectOptionProps,
     isCryptoIdForNativeToken,
     tradingActions,
 } from '@suite-common/trading';
+import type { AssetOptionBaseProps, AssetProps } from '@trezor/product-components';
 import {
-    AssetOptionBaseProps,
-    AssetProps,
     ITEM_HEIGHT,
     NetworkTabs,
     SearchAsset,
@@ -25,7 +26,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { TokenBalance } from 'src/components/wallet/TokenBalance';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
+import type {
     SelectAssetOptionCurrencyProps,
     TradingTradeBuyExchangeType,
 } from 'src/types/trading/trading';

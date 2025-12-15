@@ -4,11 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
 import {
     BackupAndPassphraseStackRoutes,
-    DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';

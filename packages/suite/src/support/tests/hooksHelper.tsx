@@ -1,18 +1,14 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
-import {
-    RenderResult,
-    act,
-    render,
-    screen,
-    waitForElementToBeRemoved,
-} from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
+import { act, render, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { MockedFormatterProvider } from '@suite-common/formatters';
-import { ExtraDependencies, ServicesProvider } from '@suite-common/redux-utils';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { ServicesProvider } from '@suite-common/redux-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 

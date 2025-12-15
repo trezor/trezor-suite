@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { ValidateError } from '@suite-common/message-system';
 import {
     CATEGORY_OPTIONS,
-    ValidateError,
     getDefaultActionByCategory,
     messageSystemActions,
     selectMessageSystemConfig,
     stripFieldFromMessage,
     validateMessageForm,
 } from '@suite-common/message-system';
-import { Action, Category } from '@suite-common/suite-types';
+import type { Action, Category } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Column, Modal, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

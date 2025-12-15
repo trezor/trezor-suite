@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { LogEntry, selectLogs } from '@suite-common/logger';
+import type { LogEntry } from '@suite-common/logger';
+import { selectLogs } from '@suite-common/logger';
 import { getPhysicalDeviceUniqueIds } from '@suite-common/suite-utils';
 import { accountsActions, deviceActions, selectDevices } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
@@ -26,13 +27,13 @@ import {
     getWindowWidth,
     isCodesignBuild,
 } from '@trezor/env-utils';
-import { DeepPartial } from '@trezor/type-utils';
+import type { DeepPartial } from '@trezor/type-utils';
 
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { AppState, TrezorDevice } from 'src/types/suite';
-import { Account } from 'src/types/wallet';
+import type { AppState, TrezorDevice } from 'src/types/suite';
+import type { Account } from 'src/types/wallet';
 import { getIsTorEnabled } from 'src/utils/suite/tor';
 
 export const REDACTED_REPLACEMENT = '[redacted]';

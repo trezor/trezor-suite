@@ -12,7 +12,7 @@ import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-lin
 import type { TokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Blockchain } from '../../backend/Blockchain';
+import type { Blockchain } from '../../backend/Blockchain';
 
 const { SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } = SolanaBlockchainLinkUtils;
 

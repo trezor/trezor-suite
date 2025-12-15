@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 
-import { AccountLabels } from '@suite-common/metadata-types';
+import type { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { ExportFileType } from '@suite-common/wallet-types';
+import type { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -15,7 +15,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
     account: Account;

@@ -1,4 +1,4 @@
-import {
+import type {
     BuyProviderInfo,
     BuyTrade,
     ExchangeProviderInfo,
@@ -13,7 +13,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { TradingProviderInfo } from '../TradingProviderInfo';
 import { TradingDetailTxAddress } from './TradingDetailTxAddress';

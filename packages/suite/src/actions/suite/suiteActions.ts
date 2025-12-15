@@ -2,15 +2,20 @@ import { createAction } from '@reduxjs/toolkit';
 
 import type { Locale } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions } from '@suite-common/wallet-core';
+import type { deviceActions } from '@suite-common/wallet-core';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { HandshakeElectron, desktopApi } from '@trezor/suite-desktop-api';
+import type { HandshakeElectron } from '@trezor/suite-desktop-api';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import type { TranslationKey } from 'src/components/suite/Translation';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { AutodetectSettings, DebugModeOptions, EvmSettings } from 'src/reducers/suite/suiteReducer';
+import type { ExperimentalFeature } from 'src/constants/suite/experimental';
+import type {
+    AutodetectSettings,
+    DebugModeOptions,
+    EvmSettings,
+} from 'src/reducers/suite/suiteReducer';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import type { AppState, Dispatch, GetState, TorBootstrap } from 'src/types/suite';
 import { TorStatus } from 'src/types/suite';

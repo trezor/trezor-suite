@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 import { Dimensions } from 'react-native';
 
-import { TradingCountryOption } from '@suite-common/trading';
+import type { TradingCountryOption } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SearchableSheetHeader } from '@suite-native/trading-atoms';

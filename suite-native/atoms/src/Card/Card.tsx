@@ -1,13 +1,16 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { G } from '@mobily/ts-belt';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import type { NativeStyleObject } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import type { Color } from '@trezor/theme';
 
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import type { InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox } from '../InlineAlertBox/InlineAlertBox';
 
 const CARD_CONTAINER_TEST_ID = '@atom/card/container';
 const ALERT_TEST_ID = '@atom/card/alert/';

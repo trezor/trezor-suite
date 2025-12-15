@@ -3,11 +3,8 @@ import { View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-    PassphraseFormValues,
-    formInputsMaxLength,
-    passphraseFormSchema,
-} from '@suite-common/validators';
+import type { PassphraseFormValues } from '@suite-common/validators';
+import { formInputsMaxLength, passphraseFormSchema } from '@suite-common/validators';
 import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,

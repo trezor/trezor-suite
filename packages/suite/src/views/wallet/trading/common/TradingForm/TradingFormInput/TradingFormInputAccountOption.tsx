@@ -1,12 +1,12 @@
 import { cryptoIdToNetwork, parseCryptoId } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Badge, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
+import type { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import { tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 

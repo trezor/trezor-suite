@@ -1,5 +1,5 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 
 import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';

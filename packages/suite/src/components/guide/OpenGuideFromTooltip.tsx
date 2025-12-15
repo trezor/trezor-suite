@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 
 import { transparentize } from 'polished';
 import styled, { useTheme } from 'styled-components';

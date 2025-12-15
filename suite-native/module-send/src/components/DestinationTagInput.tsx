@@ -1,16 +1,10 @@
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
-import {
-    AnimatedVStack,
-    HStack,
-    InlineAlertBox,
-    InputType,
-    Switch,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import type { InputType } from '@suite-native/atoms';
+import { AnimatedVStack, HStack, InlineAlertBox, Switch, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
@@ -20,7 +14,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
-import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
+import type { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 const titleTextStyle = prepareNativeStyle(utils => ({
     flex: 1,

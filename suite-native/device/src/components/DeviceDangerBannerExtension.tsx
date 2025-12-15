@@ -2,19 +2,20 @@ import { useNavigation } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    DeviceOnboardingStackRoutes,
+import type {
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';
 
-import { DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
+import type { DeviceDangerBannerCause } from '../deviceAtoms';
+import { deviceDangerBannerAtom } from '../deviceAtoms';
 
 export const bannerContentPresets = {
     'device-compromised': {

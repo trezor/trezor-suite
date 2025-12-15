@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import * as fs from 'fs';
 import { join } from 'path';
 
-import { TokenStructure } from '../../src/tokenDefinitionsTypes';
+import type { TokenStructure } from '../../src/tokenDefinitionsTypes';
 import { SCHEMA_FILENAME_SUFFIX, SCHEMA_PATH } from '../constants';
 
 // checks that a config meets the criteria specified by the schema

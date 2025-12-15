@@ -1,9 +1,10 @@
-import { ReactNode, useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 

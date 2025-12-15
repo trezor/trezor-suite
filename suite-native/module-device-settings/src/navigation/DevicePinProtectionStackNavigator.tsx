@@ -1,18 +1,21 @@
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
 import { usePinAction } from '@suite-native/device';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
-import {
+import type {
     DevicePinProtectionStackParamList,
-    DevicePinProtectionStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
+} from '@suite-native/navigation';
+import {
+    DevicePinProtectionStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 

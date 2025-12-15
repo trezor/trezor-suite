@@ -9,8 +9,9 @@ import ecc from 'tiny-secp256k1';
 import { OPS, REVERSE_OPS } from './ops';
 import * as scriptNumber from './scriptNumber';
 import * as scriptSignature from './scriptSignature';
+import type { Stack, StackElement } from '../types';
 import * as types from '../types';
-import { Stack, StackElement, typeforce } from '../types';
+import { typeforce } from '../types';
 
 const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
 

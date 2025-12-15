@@ -1,4 +1,4 @@
-import { Branded, BrandedArity2, Result } from '@trezor/type-utils';
+import type { Branded, BrandedArity2, Result } from '@trezor/type-utils';
 
 export type EncryptableBranded = string & Branded<string>;
 

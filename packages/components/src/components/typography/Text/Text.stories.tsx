@@ -1,11 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import {
-    Text as TextComponent,
-    TextProps,
-    allowedTextFrameProps,
-    allowedTextTextProps,
-} from './Text';
+import type { TextProps } from './Text';
+import { Text as TextComponent, allowedTextFrameProps, allowedTextTextProps } from './Text';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../utils';
 

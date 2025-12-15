@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     tradingBuyActions,
@@ -17,7 +17,7 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { TradingState } from '@suite-native/trading-types';
+import type { TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';

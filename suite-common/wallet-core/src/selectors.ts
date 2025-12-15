@@ -1,17 +1,18 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol, networks, networksCollection } from '@suite-common/wallet-config';
-import { Account, ReviewOutput } from '@suite-common/wallet-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, networksCollection } from '@suite-common/wallet-config';
+import type { Account, ReviewOutput } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     isAccountDiscoverable,
     sortByCoin,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { StaticSessionId, type TrezorConnect } from '@trezor/connect';
+import type { StaticSessionId, TrezorConnect } from '@trezor/connect';
 import { arrayToDictionary } from '@trezor/utils';
 
-import { AccountsRootState } from './accounts/accountsReducer';
+import type { AccountsRootState } from './accounts/accountsReducer';
 import {
     selectAccounts,
     selectAccountsByDeviceState,
@@ -19,15 +20,16 @@ import {
     selectIsDeviceAccountless,
     selectVisibleDeviceAccounts,
 } from './accounts/accountsSelectors';
-import { DeviceRootState } from './device/deviceReducer';
+import type { DeviceRootState } from './device/deviceReducer';
 import {
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
     selectSupportedNetworkByDevice,
 } from './device/deviceSelectors';
-import { DiscoveryRootState } from './discovery/discoveryReducer';
+import type { DiscoveryRootState } from './discovery/discoveryReducer';
 import { selectHasRunningDiscovery } from './discovery/discoverySelectors';
-import { WalletSettingsRootState, selectEnabledNetworks } from './settings/walletSettingsReducer';
+import type { WalletSettingsRootState } from './settings/walletSettingsReducer';
+import { selectEnabledNetworks } from './settings/walletSettingsReducer';
 
 /*
 This file is for selectors that reach into more than one wallet-core reduce

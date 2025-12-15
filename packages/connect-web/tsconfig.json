@@ -10,7 +10,8 @@
             "w3c-web-usb",
             "jest"
         ],
-        "rootDir": ".."
+        "rootDir": "..",
+        "verbatimModuleSyntax": false
     },
     "include": [
         ".",

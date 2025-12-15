@@ -1,5 +1,6 @@
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-import { DefaultTheme, useTheme } from 'styled-components';
+import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import type { DefaultTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 import { type TradingTransaction, exchangeUtils, sellUtils } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';

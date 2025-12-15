@@ -1,4 +1,5 @@
-import { BottomSheetModal, BottomSheetModalRef, Button, Text, VStack } from '@suite-native/atoms';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

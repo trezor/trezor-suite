@@ -1,8 +1,8 @@
-import { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
-import { Result } from '@trezor/type-utils';
+import type { ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
+import type { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import type { Result } from '@trezor/type-utils';
 
 type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;

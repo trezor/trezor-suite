@@ -1,9 +1,5 @@
-import {
-    BackendType,
-    NetworkSymbol,
-    TREZOR_CONNECT_BACKENDS,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { TREZOR_CONNECT_BACKENDS, getNetworkType } from '@suite-common/wallet-config';
 import type {
     Account,
     BackendSettings,

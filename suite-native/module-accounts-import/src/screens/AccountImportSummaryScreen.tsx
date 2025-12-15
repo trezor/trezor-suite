@@ -1,20 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountByDescriptorAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectDeviceAccountByDescriptorAndNetworkSymbol } from '@suite-common/wallet-core';
 import { ErrorMessage } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     RootStackParamList,
     StackToTabCompositeScreenProps,
-    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { useInterceptNativeNavigation } from '@suite-native/navigation';
 
 import { AccountAlreadyImportedScreen } from '../components/AccountAlreadyImportedScreen';
 import { AccountImportConfirmFormScreen } from '../components/AccountImportConfirmFormScreen';

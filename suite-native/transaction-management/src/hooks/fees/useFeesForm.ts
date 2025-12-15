@@ -1,21 +1,15 @@
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    FeesRootState,
-    selectAccountByKey,
-    selectConvertedNetworkFeeInfo,
-} from '@suite-common/wallet-core';
-import {
-    AccountKey,
-    PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import type { AccountsRootState, FeesRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
+import type { AccountKey, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useForm } from '@suite-native/forms';
 
-import { FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
+import type { FeesFormValues } from '../../feesFormSchema';
+import { feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
-import { NativeSupportedFeeLevel } from '../../types/fees';
+import type { NativeSupportedFeeLevel } from '../../types/fees';
 import { getFeeValue } from '../../utils';
 
 export type UseFeesFormProps = {

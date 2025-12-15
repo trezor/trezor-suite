@@ -1,26 +1,26 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
     type TradingBuyType,
     type TradingExchangeType,
-    TradingFiatCurrencyOption,
+    type TradingFiatCurrencyOption,
     type TradingSellType,
     type TradingTradeMapProps,
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
-import { BaseCurrencyOption } from '@suite-common/wallet-types';
+import type { BaseCurrencyOption } from '@suite-common/wallet-types';
 
-import {
+import type {
     TradingCryptoListProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetFiatCurrenciesProps,
     TradingGetPaymentMethodProps,
     TradingGetProvidersInfoProps,
 } from 'src/types/trading/trading';
-import { TradingFormContextValues, TradingFormMapProps } from 'src/types/trading/tradingForm';
+import type { TradingFormContextValues, TradingFormMapProps } from 'src/types/trading/tradingForm';
 
 export const isTradingBuyContext = (
     context: TradingFormMapProps[keyof TradingFormMapProps],

@@ -1,6 +1,7 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { FiatCurrencyListItem, FiatCurrencyListItemProps } from '../FiatCurrencyListItem';
+import type { FiatCurrencyListItemProps } from '../FiatCurrencyListItem';
+import { FiatCurrencyListItem } from '../FiatCurrencyListItem';
 
 describe('FiatCurrencyListItem', () => {
     const renderFiatCurrencyListItem = (props: Partial<FiatCurrencyListItemProps>) =>

@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import type { TrezorConnect } from '../../..';
 
 export const cipherKeyValue = async (api: TrezorConnect) => {
     const kv = await api.cipherKeyValue({

@@ -1,7 +1,7 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 
-import { EventType } from './constants';
+import type { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
 
 export type SuiteAnalyticsEventSuiteReady = {

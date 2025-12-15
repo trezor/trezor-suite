@@ -1,14 +1,12 @@
 import { View } from 'react-native';
 
-import {
-    NetworkDisplaySymbol,
-    NetworkSymbol,
-    getNetworkDisplaySymbol,
-} from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { NetworkDisplaySymbol, NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CryptoIcon, CryptoIconSize, cryptoIconSizes } from './CryptoIcon';
+import type { CryptoIconSize } from './CryptoIcon';
+import { CryptoIcon, cryptoIconSizes } from './CryptoIcon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
 
 export interface CryptoIconWithNetworkProps {

@@ -4,11 +4,11 @@ import {
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     type TradingBuyFormProps,
-    TradingBuyType,
+    type TradingBuyType,
     cryptoIdToNetworkAndContractAddress,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { Card, Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { spacings } from '@trezor/theme';

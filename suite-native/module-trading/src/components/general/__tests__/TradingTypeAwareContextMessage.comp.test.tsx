@@ -1,5 +1,6 @@
-import { TradingType } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TradingType } from '@suite-common/trading';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 

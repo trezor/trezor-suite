@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { FirmwareOperationStatus } from '@suite-common/firmware';
-import { TranslationKey } from '@suite-common/intl-types';
+import type { FirmwareOperationStatus } from '@suite-common/firmware';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

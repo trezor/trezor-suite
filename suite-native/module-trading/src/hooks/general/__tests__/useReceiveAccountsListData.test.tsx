@@ -1,10 +1,12 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
-import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
+import type { ReceiveAccountsListMode } from '../useReceiveAccountsListData';
+import { useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
 describe('useReceiveAccountsListData', () => {
     const defaultPreloadedState = {

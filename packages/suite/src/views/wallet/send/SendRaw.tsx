@@ -9,7 +9,7 @@ import { spacings } from '@trezor/theme';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
 

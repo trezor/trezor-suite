@@ -1,13 +1,8 @@
 import styled from 'styled-components';
 
 import { ElevationUp, Text, Tooltip, useElevation } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 const Content = styled.div`
     margin: ${spacingsPx.xxs};

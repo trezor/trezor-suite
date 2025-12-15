@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { Card, H4, Paragraph, motionEasing } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

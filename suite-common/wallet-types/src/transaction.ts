@@ -1,7 +1,7 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import {
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type {
     AccountAddress,
     AccountTransaction,
     AccountUtxo,
@@ -17,10 +17,10 @@ import {
     StaticSessionId,
     TokenInfo,
 } from '@trezor/connect';
-import { RequiredKey } from '@trezor/type-utils';
+import type { RequiredKey } from '@trezor/type-utils';
 
-import { Account } from './account';
-import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
+import type { Account } from './account';
+import type { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 

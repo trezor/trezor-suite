@@ -1,5 +1,5 @@
-import { AccountOutputLabels } from '@suite-common/metadata-types';
-import { Utxo } from '@trezor/blockchain-link';
+import type { AccountOutputLabels } from '@suite-common/metadata-types';
+import type { Utxo } from '@trezor/blockchain-link';
 
 export type OutputLabels = { [txid: string]: AccountOutputLabels };
 

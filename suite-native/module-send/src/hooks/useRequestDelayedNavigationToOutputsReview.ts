@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import {
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type {
     RootStackParamList,
     SendStackParamList,
-    SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { SendStackRoutes } from '@suite-native/navigation';
 import { useWaitForButtonRequest } from '@suite-native/transaction-management';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

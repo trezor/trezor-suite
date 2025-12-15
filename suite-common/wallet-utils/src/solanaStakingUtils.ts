@@ -1,11 +1,10 @@
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
-import {
-    Account,
-    SupportedSolanaNetworkSymbols,
-    supportedSolanaNetworkSymbols,
-} from '@suite-common/wallet-types';
-import { SolanaStakingAccount, StakeState } from '@trezor/blockchain-link-types/src/solana';
+import type { Account, SupportedSolanaNetworkSymbols } from '@suite-common/wallet-types';
+import { supportedSolanaNetworkSymbols } from '@suite-common/wallet-types';
+import type { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { formatNetworkAmount } from './accountUtils';

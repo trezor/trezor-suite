@@ -10,7 +10,7 @@ import {
     RUN_LIMIT_SECONDS,
     UPDATED_ICONS_LIST_FILE,
 } from './constants';
-import { CoinListData } from './types';
+import type { CoinListData } from './types';
 import {
     COIN_IMAGE_SIZES,
     LEGACY_COIN_IMAGE_SIZES,

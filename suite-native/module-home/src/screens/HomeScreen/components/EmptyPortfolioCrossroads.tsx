@@ -3,23 +3,23 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
+import type { MessageSystemRootState } from '@suite-common/message-system';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
-    AccountsImportStackRoutes,
-    DemoAccountQuestionnaireStackRoutes,
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type {
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AccountsImportStackRoutes,
+    DemoAccountQuestionnaireStackRoutes,
+    RootStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

@@ -1,15 +1,15 @@
 import { IntlProvider } from 'react-intl';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 import { useTheme } from 'styled-components';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
 import { spacingsNew } from '@trezor/theme';
 
+import type { EditableTextProps } from './EditableText';
 import {
     EditableText as EditableTextComponent,
-    EditableTextProps,
     allowedEditableTextFrameProps,
 } from './EditableText';
 

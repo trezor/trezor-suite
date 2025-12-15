@@ -15,7 +15,7 @@ import {
 import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 import SkeletonTransactionItem from 'src/views/wallet/transactions/TransactionList/SkeletonTransactionItem';
 import { ColDate } from 'src/views/wallet/transactions/TransactionList/TransactionsGroup/CommonComponents';
 

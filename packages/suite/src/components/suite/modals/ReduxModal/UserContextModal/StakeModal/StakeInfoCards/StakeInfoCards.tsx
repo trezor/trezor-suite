@@ -1,4 +1,4 @@
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import type { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

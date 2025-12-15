@@ -1,7 +1,7 @@
 /* eslint-disable no-self-assign */
 import { useEffect } from 'react';
+import type { SharedValue } from 'react-native-reanimated';
 import {
-    SharedValue,
     useDerivedValue,
     useSharedValue,
     withDelay,
@@ -9,6 +9,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
+import type { MatrixColorFilterProps } from '@shopify/react-native-skia';
 import {
     BlendColor,
     Canvas,
@@ -16,7 +17,6 @@ import {
     ColorMatrix,
     Group,
     ImageSVG,
-    MatrixColorFilterProps,
     Paint,
     Path,
     Skia,

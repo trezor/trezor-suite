@@ -1,6 +1,7 @@
 import { act, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import { TradingSettingsCard, TradingSettingsCardProps } from '../TradingSettingsCard';
+import type { TradingSettingsCardProps } from '../TradingSettingsCard';
+import { TradingSettingsCard } from '../TradingSettingsCard';
 
 let mockIsTradingCountrySet: boolean;
 let mockIsTradingResidenceCheckEnabled: boolean;

@@ -1,11 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import {
-    ContextDomain,
-    MessageSystemRootState,
-    selectContextMessageContent,
-} from '@suite-common/message-system';
-import { InlineAlertBox, InlineAlertBoxProps, Text } from '@suite-native/atoms';
+import type { ContextDomain, MessageSystemRootState } from '@suite-common/message-system';
+import { selectContextMessageContent } from '@suite-common/message-system';
+import type { InlineAlertBoxProps } from '@suite-native/atoms';
+import { InlineAlertBox, Text } from '@suite-native/atoms';
 import { selectLocale } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 

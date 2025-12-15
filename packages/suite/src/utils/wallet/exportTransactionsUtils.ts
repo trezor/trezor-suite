@@ -3,9 +3,11 @@ import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 
 import { trezorLogo } from '@suite-common/suite-constants';
-import { TokenDefinitions, getIsPhishingTransaction } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
+import type { TokenDefinitions } from '@suite-common/token-definitions';
+import { getIsPhishingTransaction } from '@suite-common/token-definitions';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type {
     ExportFileType,
     RatesByTimestamps,
     Timestamp,
@@ -22,7 +24,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TransactionTarget } from '@trezor/connect';
+import type { TransactionTarget } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {

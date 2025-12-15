@@ -2,7 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 
-import { Logger, Options } from '../libs/logger';
+import type { Options } from '../libs/logger';
+import { Logger } from '../libs/logger';
 
 const testOptions = {
     colors: false,

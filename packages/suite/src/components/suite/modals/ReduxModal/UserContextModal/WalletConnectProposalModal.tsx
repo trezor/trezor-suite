@@ -4,13 +4,14 @@ import styled from 'styled-components';
 
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     selectPendingProposal,
     sessionProposalApproveThunk,
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
-import { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import type { PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import type { Option } from '@trezor/components';
 import {
     Badge,
     Banner,
@@ -18,7 +19,6 @@ import {
     Column,
     ElevationUp,
     Modal,
-    Option,
     Row,
     Select,
     Text,

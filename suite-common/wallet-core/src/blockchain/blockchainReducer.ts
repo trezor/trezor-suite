@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps, createWeakMapSelector } from '@suite-common/redux-utils';
 import {
@@ -7,14 +7,14 @@ import {
     getNetworkOptional,
     networksCollection,
 } from '@suite-common/wallet-config';
-import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
-import {
+import type { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
+import type {
     BlockchainBlock,
     BlockchainError,
     BlockchainInfo,
     BlockchainReconnecting,
-    BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
 } from '@trezor/connect';
+import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 
 import { blockchainActions } from './blockchainActions';
 

@@ -1,12 +1,12 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { Route } from '@suite-common/suite-types';
+import type { Route } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import type { ForegroundAppRoute } from 'src/types/suite';
-import { ModalAppParams } from 'src/utils/suite/router';
+import type { ModalAppParams } from 'src/utils/suite/router';
 
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;

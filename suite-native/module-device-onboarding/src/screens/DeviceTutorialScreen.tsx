@@ -6,10 +6,9 @@ import { useFocusEffect } from '@react-navigation/core';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
 import {
-    DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

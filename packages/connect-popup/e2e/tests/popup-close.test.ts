@@ -1,4 +1,4 @@
-import { BrowserContext, Page, expect, test } from '@playwright/test';
+import { type BrowserContext, type Page, expect, test } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { addDashesToSpaces, resolveAfter } from '@trezor/utils';

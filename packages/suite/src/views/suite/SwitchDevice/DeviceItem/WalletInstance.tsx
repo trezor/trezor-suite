@@ -34,7 +34,7 @@ import { useStore } from 'src/hooks/suite/useStore';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import type { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';

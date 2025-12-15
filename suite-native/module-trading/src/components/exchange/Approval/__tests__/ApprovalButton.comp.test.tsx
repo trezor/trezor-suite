@@ -1,10 +1,6 @@
 import { tradingExchangeActions } from '@suite-common/trading';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { initStore, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { ApprovalButton } from '../ApprovalButton';

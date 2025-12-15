@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { AccountType, Network } from '@suite-common/wallet-config';
-import { ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { AccountType, Network } from '@suite-common/wallet-config';
+import type { ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';

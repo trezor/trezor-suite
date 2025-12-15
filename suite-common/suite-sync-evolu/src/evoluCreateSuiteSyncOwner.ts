@@ -1,4 +1,5 @@
-import { CreateSuiteSyncOwner, CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
+import type { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import { CreateSuiteSyncOwnerError } from '@suite-common/suite-sync-storage';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
 import { err, ok } from '@trezor/type-utils';
 

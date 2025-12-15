@@ -1,7 +1,8 @@
 import { launchArguments } from '@suite-native/config';
 
-import { BaseStoreProvider, BaseStoreProviderProps } from './BaseStoreProvider';
-import { PreloadedState } from './store';
+import type { BaseStoreProviderProps } from './BaseStoreProvider';
+import { BaseStoreProvider } from './BaseStoreProvider';
+import type { PreloadedState } from './store';
 
 type StoreProviderProps = BaseStoreProviderProps;
 

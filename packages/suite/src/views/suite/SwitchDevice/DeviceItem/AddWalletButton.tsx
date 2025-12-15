@@ -20,7 +20,7 @@ import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
-import { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import type { AcquiredDevice, ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
 interface AddWalletButtonProps {
     device: TrezorDevice;

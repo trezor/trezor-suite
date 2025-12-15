@@ -5,7 +5,8 @@
 import { bech32, bech32m } from 'bech32';
 
 import * as bs58check from './bs58check';
-import { bitcoin as BITCOIN_NETWORK, Network } from './networks';
+import type { Network } from './networks';
+import { bitcoin as BITCOIN_NETWORK } from './networks';
 import * as payments from './payments';
 import * as bscript from './script';
 

@@ -6,11 +6,8 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import {
-    DeviceNameStackParamList,
-    DeviceNameStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { DeviceNameStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceNameStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';

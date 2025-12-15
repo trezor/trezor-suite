@@ -1,4 +1,4 @@
-import {
+import type {
     BuyProviderInfo,
     BuyTrade,
     CryptoId,
@@ -8,8 +8,8 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { TokenDefinitionsState } from '@suite-common/token-definitions';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -26,13 +26,13 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { AccountType } from '@suite-common/wallet-config';
-import { AccountsState } from '@suite-common/wallet-core';
-import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
-import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
+import type { AccountType } from '@suite-common/wallet-config';
+import type { AccountsState } from '@suite-common/wallet-core';
+import type { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { StaticSessionId } from '@trezor/connect';
+import type { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
 
-import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
+import type { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 

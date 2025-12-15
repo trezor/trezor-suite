@@ -1,12 +1,8 @@
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
-import {
-    TradingTradeMapProps,
-    getTagAndInfoNote,
-    sellUtils,
-    tradingExchangeActions,
-} from '@suite-common/trading';
+import type { TradingTradeMapProps } from '@suite-common/trading';
+import { getTagAndInfoNote, sellUtils, tradingExchangeActions } from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { spacings, spacingsPx } from '@trezor/theme';

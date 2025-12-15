@@ -7,11 +7,11 @@ import * as Linking from 'expo-linking';
 import { connectPopupDeeplinkThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectPendingProposal, walletConnectPairThunk } from '@suite-common/walletconnect';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
-import {
+import type {
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList,

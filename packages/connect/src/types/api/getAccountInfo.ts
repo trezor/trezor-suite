@@ -1,5 +1,5 @@
 import type { BlockchainLinkParams } from '@trezor/blockchain-link';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { AccountInfo, DiscoveryAccountType } from '../account';
 import type { BundledParams, Params, Response } from '../params';

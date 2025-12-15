@@ -3,7 +3,8 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { processEntropyCheckResultThunk, selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { ERRORS } from '@trezor/connect';
+import type { ERRORS } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import {
@@ -12,7 +13,7 @@ import {
     DEFAULT_STRENGTH,
 } from 'src/constants/suite/device';
 import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>

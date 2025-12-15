@@ -1,4 +1,4 @@
-import {
+import type {
     BuyCryptoPaymentMethod,
     BuyTradeQuoteRequest,
     CryptoId,
@@ -14,11 +14,11 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { FeeLevel, TokenInfo } from '@trezor/connect';
+import type { FeeLevel, TokenInfo } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 interface BuyOfferRedirectParams {
     symbol: Account['symbol'];

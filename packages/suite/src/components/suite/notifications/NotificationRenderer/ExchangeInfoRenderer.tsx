@@ -1,11 +1,8 @@
 import { selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
-import {
-    HiddenPlaceholder,
-    NotificationRendererProps,
-    NotificationViewProps,
-} from 'src/components/suite';
+import type { NotificationRendererProps, NotificationViewProps } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite';
 import { useDefaultAccountLabel } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 

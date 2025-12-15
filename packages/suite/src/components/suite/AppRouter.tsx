@@ -1,6 +1,7 @@
-import { ComponentType, createElement, memo } from 'react';
+import type { ComponentType } from 'react';
+import { createElement, memo } from 'react';
 
-import { PageName } from '@suite-common/suite-types';
+import type { PageName } from '@suite-common/suite-types';
 
 import routes from 'src/constants/suite/routes';
 import { useSelector } from 'src/hooks/suite';

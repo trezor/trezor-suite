@@ -1,8 +1,13 @@
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { NetworkType, networks } from '@suite-common/wallet-config';
+import type { NetworkType } from '@suite-common/wallet-config';
+import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import type {
+    FeeInfo,
+    GeneralPrecomposedTransactionFinal,
+    StakeType,
+} from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     getFee,
@@ -23,7 +28,7 @@ import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 const getEstimatedTime = (
     networkType: NetworkType,

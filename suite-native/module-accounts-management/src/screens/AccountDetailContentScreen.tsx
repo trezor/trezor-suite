@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import type { Account, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
 
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';

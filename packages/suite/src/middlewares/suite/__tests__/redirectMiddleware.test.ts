@@ -10,7 +10,7 @@ import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;
 

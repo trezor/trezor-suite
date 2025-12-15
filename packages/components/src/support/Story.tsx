@@ -1,4 +1,5 @@
-import React, { ComponentProps, Fragment } from 'react';
+import type { ComponentProps } from 'react';
+import React, { Fragment } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 

@@ -14,17 +14,12 @@ import {
 } from '@floating-ui/react';
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { BackupType } from '@suite-common/suite-types';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { FloatingSelections } from './FloatingSelections';
 import { OptionText, SelectedOption } from './OptionWithContent';

@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { bluetoothActions } from '@suite-common/bluetooth';

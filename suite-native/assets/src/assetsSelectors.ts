@@ -2,35 +2,31 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
-import {
+import type {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import {
-    BaseCurrencyAmount,
-    asBaseCurrencyAmount,
-    getAccountFiatBalance,
-} from '@suite-common/wallet-utils';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import {
-    NativeStakingRootState,
-    doesCoinSupportStaking,
-    getAccountCryptoBalanceWithStaking,
-} from '@suite-native/staking';
+import type { NativeStakingRootState } from '@suite-native/staking';
+import { doesCoinSupportStaking, getAccountCryptoBalanceWithStaking } from '@suite-native/staking';
 import { BigNumber } from '@trezor/utils';
 
 export interface AssetType {

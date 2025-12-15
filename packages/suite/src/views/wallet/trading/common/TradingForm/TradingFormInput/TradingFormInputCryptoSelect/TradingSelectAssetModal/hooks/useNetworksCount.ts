@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { getNetworkByCoingeckoId } from '@suite-common/wallet-config';
 
-import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
+import type { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
 const getNetworkCount = (options: SelectAssetOptionCurrencyProps[]) => {
     const networkNetworkGroups = options

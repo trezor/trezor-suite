@@ -1,5 +1,5 @@
 import { normalizePages } from 'nextra/normalize-pages';
-import { Folder, MdxFile, PageMapItem } from 'nextra/types';
+import type { Folder, MdxFile, PageMapItem } from 'nextra/types';
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 

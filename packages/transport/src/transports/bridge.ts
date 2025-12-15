@@ -1,21 +1,13 @@
-import {
-    PROTOCOL_MALFORMED,
-    ThpState,
-    TransportProtocol,
-    bridge as protocolBridge,
-    v1 as protocolV1,
-} from '@trezor/protocol';
+import type { ThpState, TransportProtocol } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED, bridge as protocolBridge, v1 as protocolV1 } from '@trezor/protocol';
 
-import {
-    AbstractTransport,
-    AbstractTransportMethodParams,
-    AbstractTransportParams,
-} from './abstract';
+import type { AbstractTransportMethodParams, AbstractTransportParams } from './abstract';
+import { AbstractTransport } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { ping } from '../pinger/ping';
 import { parseThpMessage } from '../thp/receive';
-import {
+import type {
     AnyError,
     AsyncResultWithTypedError,
     BridgeProtocolMessage,

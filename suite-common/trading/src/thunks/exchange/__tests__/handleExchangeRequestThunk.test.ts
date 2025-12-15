@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -9,7 +9,7 @@ import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { HandleExchangeRequestThunkProps, TradingExchangeFormProps } from '../../../types';
+import type { HandleExchangeRequestThunkProps, TradingExchangeFormProps } from '../../../types';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

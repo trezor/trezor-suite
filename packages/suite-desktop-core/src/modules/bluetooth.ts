@@ -2,10 +2,12 @@ import { exec } from 'child_process';
 import { ipcMain } from 'electron';
 
 import { isMacOs } from '@trezor/env-utils';
-import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
+import type { IpcProxyHandlerOptions } from '@trezor/ipc-proxy';
+import { createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { InvokeResult } from '@trezor/suite-desktop-api';
-import { BluetoothIpc, BluetoothIpcApi, BluetoothTransport } from '@trezor/transport-bluetooth';
+import type { InvokeResult } from '@trezor/suite-desktop-api';
+import type { BluetoothIpcApi } from '@trezor/transport-bluetooth';
+import { BluetoothIpc, BluetoothTransport } from '@trezor/transport-bluetooth';
 import { createLazy, throwError } from '@trezor/utils';
 
 import type { ModuleInit } from './module';

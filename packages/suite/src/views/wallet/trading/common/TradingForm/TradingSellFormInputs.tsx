@@ -3,9 +3,9 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
-    TradingSellType,
+    type TradingSellType,
 } from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';

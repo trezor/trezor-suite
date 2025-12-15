@@ -5,7 +5,8 @@ import { createDeferred } from '@trezor/utils';
 
 import { ERRORS } from '../../constants';
 import { DataManager } from '../../data/DataManager';
-import { DEVICE, UiResponseThpPairingTag } from '../../events';
+import type { UiResponseThpPairingTag } from '../../events';
+import { DEVICE } from '../../events';
 import type { Device } from '../Device';
 import { abortThpWorkflow, thpCall } from './thpCall';
 

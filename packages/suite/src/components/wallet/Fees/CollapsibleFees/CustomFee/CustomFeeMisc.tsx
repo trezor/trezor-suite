@@ -1,7 +1,8 @@
-import { FieldPath, useFormContext, useFormState } from 'react-hook-form';
+import type { FieldPath } from 'react-hook-form';
+import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import { getInputState } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';

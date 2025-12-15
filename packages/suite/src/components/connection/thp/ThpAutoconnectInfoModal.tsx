@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
 

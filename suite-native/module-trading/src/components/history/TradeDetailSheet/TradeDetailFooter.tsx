@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
+import type { TradingRootState } from '@suite-common/trading';
+import { selectTradingTradeByOrderId } from '@suite-common/trading';
 import { Box, Button, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation, useTranslate } from '@suite-native/intl';

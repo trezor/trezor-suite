@@ -1,8 +1,8 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color } from '@trezor/theme';
+import type { CSSColor, Color } from '@trezor/theme';
 
-import { IconCirclePaddingType, IconCircleVariant } from './types';
+import type { IconCirclePaddingType, IconCircleVariant } from './types';
 
 type VariantMapArgs = {
     theme: DefaultTheme;

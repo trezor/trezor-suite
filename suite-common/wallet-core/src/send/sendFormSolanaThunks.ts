@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOL_COMPUTE_UNIT_LIMIT } from '@suite-common/wallet-constants';
-import {
+import type {
     Account,
     ExternalOutput,
     PrecomposedLevels,
@@ -22,11 +22,12 @@ import {
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { tokenStandardToTokenProgramName } from '@trezor/blockchain-link-utils/src/solana';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
+import type {
     ComposeActionContext,
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,

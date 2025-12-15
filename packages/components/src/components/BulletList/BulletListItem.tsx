@@ -1,9 +1,15 @@
 import styled, { css, useTheme } from 'styled-components';
 
-import { SpacingValuesNew, typography } from '@trezor/theme';
+import type { SpacingValuesNew } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 
 import { useBulletList } from './BulletListContext';
-import { BulletLineWidth, BulletListDirection, BulletListItemState, BulletSize } from './types';
+import type {
+    BulletLineWidth,
+    BulletListDirection,
+    BulletListItemState,
+    BulletSize,
+} from './types';
 import { mapPropsToTypographyStyle, mapSizeToDimension, mapStateToColor } from './utils';
 import { IconCircle } from '../IconCircle/IconCircle';
 import { Text } from '../typography/Text/Text';

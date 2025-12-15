@@ -1,4 +1,5 @@
-import { UnknownAction, isAnyOf } from '@reduxjs/toolkit';
+import type { UnknownAction } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { deviceActions, formDraftActions } from '@suite-common/wallet-core';

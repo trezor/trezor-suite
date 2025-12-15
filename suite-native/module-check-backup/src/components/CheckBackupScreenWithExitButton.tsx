@@ -5,15 +5,17 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
-import {
+import type {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     DeviceSettingsStackParamList,
+    ScreenProps,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
     DeviceSettingsStackRoutes,
     Screen,
     ScreenHeader,
-    ScreenProps,
-    StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

@@ -2,7 +2,8 @@ import * as bs58check from '../bs58check';
 import { decred as DECRED_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentOpts, Stack, typeforce } from '../types';
+import type { Payment, PaymentOpts, Stack } from '../types';
+import { typeforce } from '../types';
 
 const { OPS } = bscript;
 

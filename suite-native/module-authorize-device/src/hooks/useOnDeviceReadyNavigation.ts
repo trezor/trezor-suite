@@ -8,15 +8,13 @@ import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
-import {
-    AppTabsRoutes,
+import type {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { AppTabsRoutes, HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 
 const LOADING_TIMEOUT = 2500;
 

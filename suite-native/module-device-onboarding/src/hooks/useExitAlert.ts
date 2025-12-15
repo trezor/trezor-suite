@@ -8,15 +8,13 @@ import { useAlert } from '@suite-native/alerts';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
+import type {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { AppTabsRoutes, HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,

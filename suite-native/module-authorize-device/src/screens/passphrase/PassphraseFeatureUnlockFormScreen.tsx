@@ -3,12 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { IconButton, ScreenHeaderWrapper, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
-import {
+import type {
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
     RootStackParamList,
-    Screen,
     StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AuthorizeDeviceStackRoutes,
+    Screen,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

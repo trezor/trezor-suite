@@ -1,6 +1,6 @@
 import { MODAL } from 'src/actions/suite/constants';
 
-import { useFilteredModal } from '../useFilteredModal';
+import type { useFilteredModal } from '../useFilteredModal';
 
 export const filters: Parameters<typeof useFilteredModal>[] = [
     [[MODAL.CONTEXT_USER]],

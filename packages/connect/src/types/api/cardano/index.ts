@@ -1,7 +1,9 @@
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { CARDANO, PROTO } from '../../../constants';
-import { DerivationPath, GetPublicKey, PublicKey } from '../../params';
+import type { PublicKey } from '../../params';
+import { DerivationPath, GetPublicKey } from '../../params';
 
 // cardanoGetAddress
 

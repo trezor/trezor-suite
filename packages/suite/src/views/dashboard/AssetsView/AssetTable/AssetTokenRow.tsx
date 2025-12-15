@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

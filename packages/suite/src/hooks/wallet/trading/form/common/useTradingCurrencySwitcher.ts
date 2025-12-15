@@ -1,16 +1,19 @@
-import { UseFormReturn, useWatch } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
-import {
+import type {
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_OUTPUT_FIAT,
+} from '@suite-common/trading';
+import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
-    TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -22,8 +25,11 @@ import { useDidUpdate } from '@trezor/react-utils';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAllFormProps, TradingSellExchangeFormProps } from 'src/types/trading/tradingForm';
-import { SendContextValues } from 'src/types/wallet/sendForm';
+import type {
+    TradingAllFormProps,
+    TradingSellExchangeFormProps,
+} from 'src/types/trading/tradingForm';
+import type { SendContextValues } from 'src/types/wallet/sendForm';
 import {
     getTradingNetworkDecimals,
     tradingGetRoundedFiatAmount,

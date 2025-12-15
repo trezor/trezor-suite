@@ -5,10 +5,8 @@ import { AssertWeak } from '@trezor/schema-utils';
 import { ERRORS } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    StellarSignTransaction as StellarSignTransactionSchema,
-    StellarTransaction,
-} from '../../../types/api/stellar';
+import type { StellarTransaction } from '../../../types/api/stellar';
+import { StellarSignTransaction as StellarSignTransactionSchema } from '../../../types/api/stellar';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import * as helper from '../stellarSignTx';

@@ -1,12 +1,8 @@
 import { Form } from '@suite-native/forms';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-import { BuyFormType } from '@suite-native/trading-types';
+import type { BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../buy/useBuyForm';
 import { useFocusedValueWatch } from '../useFocusedValueWatch';

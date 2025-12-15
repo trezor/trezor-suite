@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { selectThpStep } from '@suite-common/thp';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
 import {
-    DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

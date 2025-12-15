@@ -1,9 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions, notificationsReducer } from '@suite-common/toast-notifications';
+import type { AccountsState, BlockchainState, TransactionsState } from '@suite-common/wallet-core';
 import {
-    AccountsState,
-    BlockchainState,
-    TransactionsState,
     feesReducer,
     initBlockchainThunk,
     onBlockMinedThunk,
@@ -13,7 +11,7 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { FeesState } from '@suite-common/wallet-types';
+import type { FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';

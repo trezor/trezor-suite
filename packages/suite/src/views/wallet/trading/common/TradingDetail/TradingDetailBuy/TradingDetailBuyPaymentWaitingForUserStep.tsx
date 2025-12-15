@@ -1,15 +1,16 @@
 import { useState } from 'react';
 
-import { BuyTrade } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { invityAPI } from '@suite-common/trading';
-import { BulletListItemState, Button, Card, Column, Paragraph } from '@trezor/components';
+import type { BulletListItemState } from '@trezor/components';
+import { Button, Card, Column, Paragraph } from '@trezor/components';
 
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { TradingDetailStep } from '../TradingDetailStep';

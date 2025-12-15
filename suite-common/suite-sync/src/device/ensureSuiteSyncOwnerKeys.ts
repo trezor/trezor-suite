@@ -1,8 +1,8 @@
 import { getProofOfDelegatedIdentity } from '@suite-common/delegated-identity-key';
-import { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
-import { EnsureSuiteSyncOwnerKeys } from '@suite-common/suite-sync-types';
+import type { CreateSuiteSyncOwner } from '@suite-common/suite-sync-storage';
+import type { EnsureSuiteSyncOwnerKeys } from '@suite-common/suite-sync-types';
 import { DeviceCancelledErr, DeviceError, isCanceledErrorMessage } from '@suite-common/wallet-core';
-import TrezorConnect from '@trezor/connect';
+import type TrezorConnect from '@trezor/connect';
 import { err } from '@trezor/type-utils';
 
 const PROOF_OF_DELEGATED_IDENTITY_HEADER = 'EvoluGetNode';

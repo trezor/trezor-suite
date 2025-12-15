@@ -1,7 +1,7 @@
 import type { Octokit } from '@octokit/rest';
 
 import { getProjectFields } from './projectRequests';
-import {
+import type {
     AddDraftIssueResponse,
     ProjectField,
     UpdateProjectItemFieldResponse,

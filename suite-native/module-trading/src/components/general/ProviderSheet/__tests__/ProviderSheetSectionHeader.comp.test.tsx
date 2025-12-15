@@ -1,10 +1,8 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { QuotesCategory } from '@suite-native/trading-types';
+import type { QuotesCategory } from '@suite-native/trading-types';
 
-import {
-    ProviderSheetSectionHeader,
-    ProviderSheetSectionHeaderProps,
-} from '../ProviderSheetSectionHeader';
+import type { ProviderSheetSectionHeaderProps } from '../ProviderSheetSectionHeader';
+import { ProviderSheetSectionHeader } from '../ProviderSheetSectionHeader';
 
 describe('ProviderSheetSectionHeader', () => {
     const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>

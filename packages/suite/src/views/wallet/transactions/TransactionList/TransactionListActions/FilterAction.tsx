@@ -5,12 +5,12 @@ import {
     selectIsHideSuspiciousTransactions,
     toggleHideSuspiciousTransactions,
 } from '@suite-common/wallet-core';
+import type { DropdownRef } from '@trezor/components';
 import {
     Box,
     Button,
     Column,
     Dropdown,
-    DropdownRef,
     Paragraph,
     Radio,
     Row,

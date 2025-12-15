@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
-import { FlexAlignType } from 'react-native';
+import type { ReactNode } from 'react';
+import type { FlexAlignType } from 'react-native';
 
-import { IconName, IconSize } from '@suite-native/icons';
-import { Color, NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
+import type { IconName, IconSize } from '@suite-native/icons';
+import type { Color, NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
 
 import { Box } from './Box';
 import { OrderedListIcon } from './OrderedListIcon';

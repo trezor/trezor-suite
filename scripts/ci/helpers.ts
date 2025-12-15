@@ -3,7 +3,7 @@ import path from 'node:path';
 import semver from 'semver';
 import fetch from 'cross-fetch';
 import { promisify } from 'node:util';
-import { ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
+import { type ChildProcessWithoutNullStreams, spawn } from 'node:child_process';
 
 import { getLocalAndRemoteChecksums } from './check-npm-and-local';
 

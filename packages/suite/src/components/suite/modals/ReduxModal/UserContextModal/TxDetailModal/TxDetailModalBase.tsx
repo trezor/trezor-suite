@@ -1,6 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import type { Explorer } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
@@ -16,7 +17,7 @@ import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { BasicTxDetails } from './BasicTxDetails';
 

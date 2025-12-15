@@ -1,14 +1,16 @@
-import { FC, useMemo } from 'react';
+import type { FC } from 'react';
+import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Route } from '@suite-common/suite-types';
+import type { Route } from '@suite-common/suite-types';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
 
-import { NavigationItem, NavigationItemProps } from './NavigationItem';
+import type { NavigationItemProps } from './NavigationItem';
+import { NavigationItem } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
 

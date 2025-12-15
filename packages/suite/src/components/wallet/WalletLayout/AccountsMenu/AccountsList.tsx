@@ -1,7 +1,7 @@
 import { findAccountLabel, selectAccountLabels } from '@suite-common/suite-sync';
-import { AccountType } from '@suite-common/wallet-config';
+import type { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import type { StaticSessionId } from '@trezor/connect';
@@ -11,8 +11,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
-import { AccountItemType } from 'src/types/wallet';
-import { RouteParams } from 'src/utils/suite/router';
+import type { AccountItemType } from 'src/types/wallet';
+import type { RouteParams } from 'src/utils/suite/router';
 
 import { AccountGroup } from './AccountGroup';
 import { AccountItemSkeleton } from './AccountItemSkeleton';

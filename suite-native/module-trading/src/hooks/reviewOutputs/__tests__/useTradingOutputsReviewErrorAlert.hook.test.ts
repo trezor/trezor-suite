@@ -1,10 +1,6 @@
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { AccountKey } from '@suite-common/wallet-types';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useTradingOutputsReviewErrorAlert } from '../useTradingOutputsReviewErrorAlert';

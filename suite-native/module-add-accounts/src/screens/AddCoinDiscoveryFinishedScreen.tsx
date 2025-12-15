@@ -1,22 +1,18 @@
 import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountsByNetworkSymbol,
-} from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
+import type { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
 import { Box, Button, Card, Text, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
-    Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';

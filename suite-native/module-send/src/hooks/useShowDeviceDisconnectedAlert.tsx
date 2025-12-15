@@ -2,15 +2,17 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
+import type {
+    RootStackParamList,
+    SendStackParamList,
+    SendStackRoutes,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
-    SendStackRoutes,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

@@ -1,6 +1,7 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { DebugModeCopyableText, DebugModeCopyableTextProps } from '../DebugModeCopyableText';
+import type { DebugModeCopyableTextProps } from '../DebugModeCopyableText';
+import { DebugModeCopyableText } from '../DebugModeCopyableText';
 
 let mockDebugMode: boolean;
 

@@ -1,4 +1,5 @@
-import { Link, LinkProps } from '@trezor/components';
+import type { LinkProps } from '@trezor/components';
+import { Link } from '@trezor/components';
 
 import { useExternalLink } from 'src/hooks/suite';
 

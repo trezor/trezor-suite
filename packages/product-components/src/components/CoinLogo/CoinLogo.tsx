@@ -1,13 +1,15 @@
-import { ImgHTMLAttributes } from 'react';
+import type { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkOptional } from '@suite-common/wallet-config';
 import { borders } from '@trezor/theme';
 import { roundTo } from '@trezor/utils';
 
-import { COINS, LegacyNetworkSymbol } from '../../constants/coins';
+import type { LegacyNetworkSymbol } from '../../constants/coins';
+import { COINS } from '../../constants/coins';
 import { NETWORK_ICONS } from '../../constants/networks';
 import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     cryptoIdToSymbol,
     getUnusedAddressFromAccount,
@@ -11,7 +11,7 @@ import {
     selectTradingExchangeAccountKey,
 } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -19,7 +19,7 @@ import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import {
+import type {
     TradingAccountType,
     TradingGetTranslationIdsProps,
     TradingVerifyAccountProps,

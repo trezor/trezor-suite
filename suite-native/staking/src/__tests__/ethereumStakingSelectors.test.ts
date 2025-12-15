@@ -1,5 +1,5 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { Account } from '@suite-common/wallet-types';
 
 import {
     selectEthereumAccountHasStaking,

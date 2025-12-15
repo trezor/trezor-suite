@@ -1,6 +1,8 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
-import { Banner, BannerIntent, Box, Button, Column, IconName, Modal } from '@trezor/components';
+import type { BannerIntent, IconName } from '@trezor/components';
+import { Banner, Box, Button, Column, Modal } from '@trezor/components';
 
 import { TroubleshootingTipsList } from './TroubleshootingTipsList';
 import { Translation } from '../Translation';

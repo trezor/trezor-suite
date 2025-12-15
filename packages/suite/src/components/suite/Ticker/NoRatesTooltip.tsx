@@ -5,7 +5,7 @@ import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
-import { TranslationKey } from '../Translation';
+import type { TranslationKey } from '../Translation';
 
 const NoRatesMessage = styled.div`
     ${typography.label};

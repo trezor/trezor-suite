@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 
-import { ModalVariant } from './types';
+import type { ModalVariant } from './types';
 
 export const ModalContext = createContext<{
     variant?: ModalVariant;

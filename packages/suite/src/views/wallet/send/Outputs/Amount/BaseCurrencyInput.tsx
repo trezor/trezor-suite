@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import {
+import type {
     BaseCurrencyOption,
     FiatRatesResult,
     Output,

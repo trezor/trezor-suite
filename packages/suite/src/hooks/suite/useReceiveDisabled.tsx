@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, ReactNode } from 'react';
+import type { FC, PropsWithChildren, ReactNode } from 'react';
 
 import { selectIsDeviceBackupUnfinished } from '@suite-common/wallet-core';
 import { Tooltip } from '@trezor/components';

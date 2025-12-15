@@ -4,23 +4,25 @@ import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import { Button, IconListTextItem, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    AppTabsRoutes,
+import type {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     DeviceSuspicionCause,
-    HomeStackRoutes,
     RootStackParamList,
+    StackToStackCompositeScreenProps,
+} from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
+    HomeStackRoutes,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import type { Url } from '@trezor/urls';
 import {
     TREZOR_SUPPORT_DIFFERENT_PACKAGING,
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
-    Url,
 } from '@trezor/urls';
 
 const causeToLinkMap = {

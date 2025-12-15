@@ -4,7 +4,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { H2, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 const Content = styled.div`
     margin: 0 0 24px;

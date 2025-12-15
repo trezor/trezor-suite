@@ -1,10 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { getFramePropsStory } from '@trezor/components';
 
+import type { AssetLogoProps } from './AssetLogo';
 import {
     AssetLogo as AssetLogoComponent,
-    AssetLogoProps,
     allowedAssetLogoFrameProps,
     allowedAssetLogoSizes,
 } from './AssetLogo';

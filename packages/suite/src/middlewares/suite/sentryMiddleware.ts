@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
@@ -21,7 +21,7 @@ import {
     ROUTER,
     SUITE,
 } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
     addSentryBreadcrumb,

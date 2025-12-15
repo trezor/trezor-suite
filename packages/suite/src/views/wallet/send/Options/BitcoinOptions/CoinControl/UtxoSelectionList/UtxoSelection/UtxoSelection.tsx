@@ -1,4 +1,4 @@
-import { MouseEventHandler, ReactNode } from 'react';
+import type { MouseEventHandler, ReactNode } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
@@ -7,7 +7,7 @@ import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import { Checkbox, Row, Spinner, Text, TextButton, Tooltip } from '@trezor/components';
 import { CheckContainer } from '@trezor/components/src/components/form/Checkbox/Checkbox';
-import { AccountUtxo } from '@trezor/connect';
+import type { AccountUtxo } from '@trezor/connect';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -21,7 +21,7 @@ import {
     selectIsLabelingInitPossible,
     selectLabelingDataForSelectedAccount,
 } from 'src/reducers/suite/metadataReducer';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { UtxoTag } from './UtxoTag';
 

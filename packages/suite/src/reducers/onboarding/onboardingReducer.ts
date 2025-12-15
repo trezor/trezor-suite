@@ -1,13 +1,13 @@
 import { produce } from 'immer';
 
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
-import { OnboardingAnalytics } from '@trezor/suite-analytics';
+import type { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';
 import type { AnyPath, AnyStepId } from 'src/types/onboarding';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 export interface OnboardingRootState {
     onboarding: OnboardingState;

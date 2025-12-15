@@ -1,14 +1,16 @@
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { modalAppParams } from '@suite-common/suite-config';
-import { Route } from '@suite-common/suite-types';
+import type { ExtraDependencies } from '@suite-common/redux-utils';
+import type { modalAppParams } from '@suite-common/suite-config';
+import type { Route } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol, getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
-import {
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkOptional, isAccountOfNetwork } from '@suite-common/wallet-config';
+import type {
     WalletParams as CommonWalletParams,
     GlobalSendReceiveType,
 } from '@suite-common/wallet-types';
 
-import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
+import type { RouterAppWithParams } from 'src/constants/suite/routes';
+import routes from 'src/constants/suite/routes';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg

@@ -1,5 +1,5 @@
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor } from '@trezor/theme';
+import type { CSSColor } from '@trezor/theme';
 
 import { Box } from './Box';
 

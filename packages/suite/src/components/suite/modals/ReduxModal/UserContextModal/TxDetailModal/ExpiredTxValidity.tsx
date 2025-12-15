@@ -1,4 +1,5 @@
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_SOL_SEND } from '@trezor/urls';

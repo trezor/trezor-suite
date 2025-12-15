@@ -1,10 +1,10 @@
 import type { FirmwareType, VersionArray } from '@trezor/device-utils';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { serializeError, versionUtils } from '@trezor/utils';
 
 import { calculateRevisionForDevice } from './calculateRevisionForDevice';
 import { getOnlineReleaseByVersion } from '../data/firmwareInfo';
-import { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
+import type { FirmwareRevisionCheckError, FirmwareRevisionCheckResult } from '../types/device';
 import { HttpRequestError } from '../utils/assetUtils';
 
 const isNotFoundError = (e: unknown): boolean =>

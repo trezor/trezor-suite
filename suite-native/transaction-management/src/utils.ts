@@ -1,4 +1,5 @@
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { BigNumber } from '@trezor/utils';
 
 export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {

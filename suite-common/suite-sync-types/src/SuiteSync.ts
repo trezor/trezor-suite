@@ -1,15 +1,15 @@
-import { CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import type { CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 
-import { SuiteSyncStorageRepositoryDep } from './SuiteSyncStorageRepository';
-import { UpdateAccountLabelDep } from './labeling/updateAccountLabel';
-import { UpdateAddressLabelDep } from './labeling/updateAddressLabel';
-import { UpdateOutputLabelDep } from './labeling/updateOutputLabel';
-import { UpdateWalletLabelDep } from './labeling/updateWalletLabel';
-import { ChangeRelayUrlDep } from './relay/changeRelayUrl';
-import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
-import { TurnOnSuiteSyncForWalletDep } from './storage/turnOnSuiteSyncForWallet';
-import { TurnOffSuiteSyncDep } from './turnOffSuiteSync';
-import { TurnOnSuiteSyncDep } from './turnOnSuiteSync';
+import type { SuiteSyncStorageRepositoryDep } from './SuiteSyncStorageRepository';
+import type { UpdateAccountLabelDep } from './labeling/updateAccountLabel';
+import type { UpdateAddressLabelDep } from './labeling/updateAddressLabel';
+import type { UpdateOutputLabelDep } from './labeling/updateOutputLabel';
+import type { UpdateWalletLabelDep } from './labeling/updateWalletLabel';
+import type { ChangeRelayUrlDep } from './relay/changeRelayUrl';
+import type { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
+import type { TurnOnSuiteSyncForWalletDep } from './storage/turnOnSuiteSyncForWallet';
+import type { TurnOffSuiteSyncDep } from './turnOffSuiteSync';
+import type { TurnOnSuiteSyncDep } from './turnOnSuiteSync';
 
 export type SuiteSync = ChangeRelayUrlDep &
     SuiteSyncStorageRepositoryDep &

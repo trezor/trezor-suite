@@ -1,9 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import {
-    PasswordStrengthIndicator as PasswordStrengthIndicatorComponent,
-    PasswordStrengthIndicatorProps,
-} from './PasswordStrengthIndicator';
+import type { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
+import { PasswordStrengthIndicator as PasswordStrengthIndicatorComponent } from './PasswordStrengthIndicator';
 
 const meta: Meta<typeof PasswordStrengthIndicatorComponent> = {
     title: 'PasswordStrengthIndicator',

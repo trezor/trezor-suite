@@ -1,14 +1,15 @@
 import { type CryptoId } from 'invity-api';
 
-import { TradingTradeType, isBuyTrade, isExchangeTrade } from '@suite-common/trading';
+import type { TradingTradeType } from '@suite-common/trading';
+import { isBuyTrade, isExchangeTrade } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, InfoItem, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
+import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import type { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingInfoExchangeType } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoExchangeType';
 import { TradingInfoPaymentMethod } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingInfo/TradingInfoPaymentMethod';

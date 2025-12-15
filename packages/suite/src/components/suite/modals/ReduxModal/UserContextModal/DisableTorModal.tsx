@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';

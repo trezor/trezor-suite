@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceNeedsAttention,
     getDeviceInternalModel,

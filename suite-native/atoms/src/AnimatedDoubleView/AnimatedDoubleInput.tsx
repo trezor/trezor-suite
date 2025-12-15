@@ -1,14 +1,14 @@
-import { ReactNode, RefObject, useCallback, useRef, useState } from 'react';
+import type { ReactNode, RefObject } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import { useUpdateEffect } from '@suite-native/helpers';
 
+import type { ActiveView, RenderViewProps } from './AnimatedDoubleView';
 import {
     ANIMATED_DOUBLE_VIEW_SWITCH_ANIMATION_DURATION,
-    ActiveView,
     AnimatedDoubleView,
-    RenderViewProps,
 } from './AnimatedDoubleView';
-import { InputType } from '../Input/Input';
+import type { InputType } from '../Input/Input';
 
 export type RenderInputProps = RenderViewProps & {
     inputRef: RefObject<InputType | null>;

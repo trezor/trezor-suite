@@ -1,10 +1,10 @@
 import { produce } from 'immer';
 
-import { DeviceRootState } from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/wallet-core';
 
-import { BackupStatus, ConfirmKey } from 'src/actions/backup/backupActions';
+import type { BackupStatus, ConfirmKey } from 'src/actions/backup/backupActions';
 import { BACKUP } from 'src/actions/backup/constants';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 export interface BackupRootState {
     backup: BackupState;

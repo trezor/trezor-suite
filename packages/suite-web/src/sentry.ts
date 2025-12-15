@@ -1,4 +1,5 @@
-import { BrowserOptions, captureConsoleIntegration, init } from '@sentry/browser';
+import type { BrowserOptions } from '@sentry/browser';
+import { captureConsoleIntegration, init } from '@sentry/browser';
 
 import { SENTRY_CONFIG } from '@suite-common/sentry';
 

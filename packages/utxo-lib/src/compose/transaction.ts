@@ -1,4 +1,4 @@
-import {
+import type {
     CoinSelectSuccess,
     ComposeChangeAddress,
     ComposeFinalOutput,
@@ -10,7 +10,7 @@ import {
 import { bip69SortingStrategy } from './sorting/bip69SortingStrategy';
 import { noneSortingStrategy } from './sorting/noneSortingStrategy';
 import { randomSortingStrategy } from './sorting/randomSortingStrategy';
-import { SortingStrategy } from './sorting/sortingStrategy';
+import type { SortingStrategy } from './sorting/sortingStrategy';
 
 const strategyMap: Record<TransactionInputOutputSortingStrategy, SortingStrategy> = {
     bip69: bip69SortingStrategy,

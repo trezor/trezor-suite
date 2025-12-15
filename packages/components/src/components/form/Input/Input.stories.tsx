@@ -1,14 +1,10 @@
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import {
-    Input as InputComponent,
-    InputProps,
-    allowedInputFrameProps,
-    allowedInputTextProps,
-} from './Input';
+import type { InputProps } from './Input';
+import { Input as InputComponent, allowedInputFrameProps, allowedInputTextProps } from './Input';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { getTextPropsStory } from '../../typography/utils';
 

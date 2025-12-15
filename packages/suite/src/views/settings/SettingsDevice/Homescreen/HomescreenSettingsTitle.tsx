@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
 import { TextColumn } from 'src/components/suite';

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AssetFiatBalance } from '@suite-common/assets';
+import type { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import { AmountUnit } from '@suite-common/wallet-utils';
+import type { Account, RatesByKey } from '@suite-common/wallet-types';
+import type { AmountUnit } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
     Card,
@@ -18,7 +18,7 @@ import {
     SkeletonRectangle,
     Text,
 } from '@trezor/components';
-import { TokenInfo } from '@trezor/connect';
+import type { TokenInfo } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';

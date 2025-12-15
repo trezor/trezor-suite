@@ -1,6 +1,7 @@
-import { ActionCreatorWithPreparedPayload, Dispatch, createAction } from '@reduxjs/toolkit';
+import type { ActionCreatorWithPreparedPayload, Dispatch } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
-import { ExtraDependencies } from './extraDependenciesType';
+import type { ExtraDependencies } from './extraDependenciesType';
 
 type PayloadCreator<TPayload, TReturn> = (
     payload: TPayload,

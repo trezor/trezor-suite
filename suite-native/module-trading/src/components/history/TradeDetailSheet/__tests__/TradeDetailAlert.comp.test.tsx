@@ -1,12 +1,8 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
-import { TradingTransaction } from '@suite-common/trading';
-import {
-    PreloadedState,
-    act,
-    fireEvent,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TradingTransaction } from '@suite-common/trading';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     buyMercuryo,
     exchangeMercuryo,

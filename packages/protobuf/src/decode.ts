@@ -1,4 +1,4 @@
-import { Field, Message as MessageType, Type } from 'protobufjs/light';
+import type { Field, Message as MessageType, Type } from 'protobufjs/light';
 
 import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';

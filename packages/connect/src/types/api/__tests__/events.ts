@@ -1,13 +1,11 @@
+import type { AccountInfo, Address, TrezorConnect } from '../../..';
 import {
-    AccountInfo,
-    Address,
     BLOCKCHAIN,
     BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
     ThpPairingMethod,
-    TrezorConnect,
     UI,
     UI_EVENT,
 } from '../../..';

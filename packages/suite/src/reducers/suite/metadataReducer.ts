@@ -1,19 +1,18 @@
 import { produce } from 'immer';
 
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import type { AccountsRootState, DeviceReducerState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    DeviceReducerState,
     deviceActions,
     selectAccountByKey,
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import type { AccountKey } from '@suite-common/wallet-types';
+import type { DeviceState, StaticSessionId } from '@trezor/connect';
 
-import { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
+import type { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
 import {
     METADATA,
     METADATA_LABELING,
@@ -24,17 +23,17 @@ import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
 } from 'src/actions/suite/constants/metadataLabelingConstants';
-import { DesktopSuiteSyncRootState } from 'src/actions/suiteSync/suiteSyncSlice';
-import { Action, TrezorDevice } from 'src/types/suite';
-import {
+import type { DesktopSuiteSyncRootState } from 'src/actions/suiteSync/suiteSyncSlice';
+import type { Action, TrezorDevice } from 'src/types/suite';
+import type {
     AccountLabels,
     MetadataState,
     PasswordManagerState,
     WalletLabels,
 } from 'src/types/suite/metadata';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
-import { SuiteRootState } from './suiteReducer';
+import type { SuiteRootState } from './suiteReducer';
 
 export const initialState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?

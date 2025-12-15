@@ -3,7 +3,7 @@ import { memo, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { getInstantStakeType } from '@suite-common/staking';
-import { AccountType, Network } from '@suite-common/wallet-config';
+import type { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isStakeTypeTx, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
@@ -19,8 +19,8 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { AccountLabels } from 'src/types/suite/metadata';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { AccountLabels } from 'src/types/suite/metadata';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { Content, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 import { TransactionHeading } from './TransactionHeading';

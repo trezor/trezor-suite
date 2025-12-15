@@ -6,11 +6,8 @@ import { useSetAtom } from 'jotai';
 import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import { ConfirmFirmwareUpdateScreenFooter, FirmwareVersionCard } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

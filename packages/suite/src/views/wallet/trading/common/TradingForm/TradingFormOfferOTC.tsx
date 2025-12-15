@@ -1,16 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
 import { FormattedList } from 'react-intl';
 
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
-import {
-    TradingOTC,
-    TradingTradeBuySellType,
-    cryptoIdToNetworkAndContractAddress,
-    invityAPI,
-} from '@suite-common/trading';
+import type { TradingOTC, TradingTradeBuySellType } from '@suite-common/trading';
+import { cryptoIdToNetworkAndContractAddress, invityAPI } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Banner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';

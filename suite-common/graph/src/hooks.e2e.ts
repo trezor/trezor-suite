@@ -3,7 +3,7 @@
  */
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import {
+import type {
     AccountItem,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,

@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
 import {
@@ -9,7 +9,7 @@ import {
     TokenToFiatAmountFormatter,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import type { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import {
     TransactionIcon,
     getTransactionValueSign,

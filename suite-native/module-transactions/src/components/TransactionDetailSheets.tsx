@@ -1,4 +1,4 @@
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

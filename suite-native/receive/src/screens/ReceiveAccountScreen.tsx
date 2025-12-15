@@ -1,14 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
-} from '@suite-common/wallet-core';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
-import { ReceiveStackParamList, ReceiveStackRoutes, Screen } from '@suite-native/navigation';
+import type { ReceiveStackParamList, ReceiveStackRoutes } from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 import { getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

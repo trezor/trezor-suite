@@ -1,13 +1,15 @@
-import { AnyAction, Draft } from '@reduxjs/toolkit';
+import type { AnyAction, Draft } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { DeviceConnectActionPayload, deviceActions } from '@suite-common/wallet-core';
-import { BluetoothDeviceId, TrezorPushNotificationType } from '@trezor/connect';
+import type { DeviceConnectActionPayload } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/wallet-core';
+import type { BluetoothDeviceId } from '@trezor/connect';
+import { TrezorPushNotificationType } from '@trezor/connect';
 
 import { bluetoothActions } from './bluetoothActions';
 import { deserializeBluetoothDeviceSerialization } from './deserializeBluetoothDeviceSerialization';
 import { filterOutOldDuplicates } from './filterOutOldDuplicates';
-import {
+import type {
     BluetoothAdapterStatus,
     BluetoothAutoConnectPolicy,
     BluetoothDeviceCommon,

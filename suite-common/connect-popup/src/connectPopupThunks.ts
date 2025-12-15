@@ -1,17 +1,15 @@
-import { AsyncThunkAction } from '@reduxjs/toolkit';
+import type { AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { EventType, analytics } from '@suite-common/analytics';
-import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
+import type { CustomThunkAPI } from '@suite-common/redux-utils';
+import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import TrezorConnect, {
-    CallMethodKeys,
-    CallMethodParams,
-    CallMethodPayload,
-} from '@trezor/connect';
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { CallMethodKeys, CallMethodParams, CallMethodPayload } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
-import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import type { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { connectCallableMethods } from '@trezor/connect/src/factory';
 import { resolveAfter } from '@trezor/utils';
@@ -19,11 +17,8 @@ import { resolveAfter } from '@trezor/utils';
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import { selectConnectAppPermissions, selectConnectPopupCall } from './connectPopupReducer';
-import {
-    CALL_SOURCE_DEEPLINK,
-    CALL_SOURCE_WALLETCONNECT,
-    ConnectCallSource,
-} from './connectPopupTypes';
+import type { ConnectCallSource } from './connectPopupTypes';
+import { CALL_SOURCE_DEEPLINK, CALL_SOURCE_WALLETCONNECT } from './connectPopupTypes';
 import { postCallHooks, preCallHooks } from './methodHooks';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';

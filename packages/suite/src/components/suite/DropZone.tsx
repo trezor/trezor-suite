@@ -1,16 +1,13 @@
-import { ChangeEvent, DragEvent, MouseEvent, useCallback, useMemo, useRef, useState } from 'react';
+import type { ChangeEvent, DragEvent, MouseEvent } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { Column, Icon, IconName, Paragraph, Row, Text, useElevation } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacings,
-} from '@trezor/theme';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { IconName } from '@trezor/components';
+import { Column, Icon, Paragraph, Row, Text, useElevation } from '@trezor/components';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 

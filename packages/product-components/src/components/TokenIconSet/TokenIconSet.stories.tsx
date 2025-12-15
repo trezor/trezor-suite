@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { TokenIconSet as TokenIconSetComponent, TokenIconSetProps } from './TokenIconSet';
+import type { TokenIconSetProps } from './TokenIconSet';
+import { TokenIconSet as TokenIconSetComponent } from './TokenIconSet';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,

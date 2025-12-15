@@ -1,11 +1,11 @@
-export * from './api';
-export * from './account';
+export type * from './api';
+export type * from './account';
 export * from './coinInfo';
 export * from './device';
 export * from './fees';
-export * from './firmware';
+export type * from './firmware';
 export * from './params';
-export * from './settings';
+export type * from './settings';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano';

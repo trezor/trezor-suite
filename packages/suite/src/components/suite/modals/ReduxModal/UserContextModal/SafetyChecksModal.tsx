@@ -1,15 +1,7 @@
 import { useState } from 'react';
 
-import {
-    Banner,
-    Card,
-    Column,
-    Modal,
-    ModalProps,
-    Paragraph,
-    Radio,
-    Text,
-} from '@trezor/components';
+import type { ModalProps } from '@trezor/components';
+import { Banner, Card, Column, Modal, Paragraph, Radio, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

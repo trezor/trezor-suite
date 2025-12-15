@@ -1,17 +1,12 @@
-import {
-    ChangeEvent,
-    KeyboardEvent,
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Input, InputProps, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import type { InputProps } from '@trezor/components';
+import { Input, useElevation } from '@trezor/components';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBorder, typography } from '@trezor/theme';
 
 const LevelContainer = styled.div`
     width: 64px;

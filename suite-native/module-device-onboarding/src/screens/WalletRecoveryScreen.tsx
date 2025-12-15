@@ -2,11 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { ContinueOnTrezorScreenContent, recoverWalletThunk } from '@suite-native/device';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 

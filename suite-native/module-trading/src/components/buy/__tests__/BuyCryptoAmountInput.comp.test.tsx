@@ -1,17 +1,18 @@
 import { Form } from '@suite-native/forms';
+import type { PreloadedState } from '@suite-native/test-utils';
 import {
-    PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
     userEvent,
 } from '@suite-native/test-utils';
 import { btcAsset, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import type { BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyCryptoAmountInput, CryptoAmountInputProps } from '../BuyCryptoAmountInput';
+import type { CryptoAmountInputProps } from '../BuyCryptoAmountInput';
+import { BuyCryptoAmountInput } from '../BuyCryptoAmountInput';
 
 describe('BuyCryptoAmountInput', () => {
     const renderCryptoAmountInput = (

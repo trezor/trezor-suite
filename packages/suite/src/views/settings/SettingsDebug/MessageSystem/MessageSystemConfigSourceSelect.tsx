@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
+import type { MessageSystemConfigSource } from '@suite-common/message-system';
 import {
-    MessageSystemConfigSource,
     initMessageSystemThunk,
     messageSystemActions,
     selectMessageSystemConfigSource,

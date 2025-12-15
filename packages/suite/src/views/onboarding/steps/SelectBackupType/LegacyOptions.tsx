@@ -1,4 +1,4 @@
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import { Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

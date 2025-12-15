@@ -1,11 +1,13 @@
-import { ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import { selectAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
+import type { ModalProps } from '@trezor/components';
 import {
     Banner,
     Box,
@@ -18,7 +20,6 @@ import {
     IconCircle,
     Link,
     Modal,
-    ModalProps,
     Paragraph,
     Row,
     Text,
@@ -39,7 +40,7 @@ import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsActionAbortable } from 'src/selectors/suite/suiteSelectors';
-import { ThunkAction } from 'src/types/suite';
+import type { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {

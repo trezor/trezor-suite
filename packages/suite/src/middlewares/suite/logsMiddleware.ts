@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { addLog } from '@suite-common/logger';
@@ -19,7 +19,7 @@ import {
     ROUTER,
     SUITE,
 } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 
 const log =

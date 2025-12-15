@@ -8,13 +8,15 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { IconButton } from '@suite-native/atoms';
+import type {
+    AddCoinFlowType,
+    RootStackParamList,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 import {
     AccountsImportStackRoutes,
     AddCoinAccountStackRoutes,
-    AddCoinFlowType,
-    RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { useAccountAlerts } from '../hooks/useAccountAlerts';

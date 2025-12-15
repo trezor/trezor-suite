@@ -1,5 +1,6 @@
-import { RefObject, useState } from 'react';
-import { TextInput } from 'react-native';
+import type { RefObject } from 'react';
+import { useState } from 'react';
+import type { TextInput } from 'react-native';
 
 export const useSearchInputCallbacks = <T extends RefObject<TextInput | null>>(
     searchInputRef: T,

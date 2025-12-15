@@ -1,5 +1,5 @@
+import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
-    VerifyAuthenticityProofResult,
     deviceAuthenticityBlacklistConfig,
     deviceAuthenticityConfig,
     getRandomChallenge,

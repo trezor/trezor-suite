@@ -1,9 +1,11 @@
 import { EventEmitter } from 'events';
 
 import { checkSocks5Proxy } from '@trezor/node-utils';
-import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
+import type { ScheduleActionParams, ScheduledAction } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
-import { TOR_CONTROLLER_STATUS, TorControllerStatus, TorExternalConnectionOptions } from './types';
+import type { TorControllerStatus, TorExternalConnectionOptions } from './types';
+import { TOR_CONTROLLER_STATUS } from './types';
 
 const WAITING_TIME = 1_000;
 const MAX_TRIES_WAITING = 200;

@@ -1,6 +1,6 @@
-import { Formatter } from '@suite-common/formatters';
+import type { Formatter } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getAmountValidationResult,
@@ -11,7 +11,7 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
+import type { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 interface ValidateDecimalsOptions {
     decimals: number;

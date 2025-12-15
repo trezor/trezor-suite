@@ -5,10 +5,8 @@ import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema,
-    CardanoNativeScript,
-} from '../../../types/api/cardano';
+import type { CardanoNativeScript } from '../../../types/api/cardano';
+import { CardanoGetNativeScriptHash as CardanoGetNativeScriptHashSchema } from '../../../types/api/cardano';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 

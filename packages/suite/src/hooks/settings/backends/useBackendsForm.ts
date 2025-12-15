@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
-import { BackendSettings } from '@suite-common/wallet-types';
+import type { BackendSettings } from '@suite-common/wallet-types';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isUrlWithQuery } from '@trezor/utils';

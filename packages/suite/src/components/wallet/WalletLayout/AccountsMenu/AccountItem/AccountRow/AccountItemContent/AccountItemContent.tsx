@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 
 import { selectCardanoPoolsInfo, selectIsDiscreteModeActive } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount, isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
+import type { Account } from '@suite-common/wallet-types';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
 import { Column, Icon, Row } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -10,7 +11,7 @@ import { AccountLabel, CoinBalance } from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { AccountItemType } from 'src/types/wallet';
+import type { AccountItemType } from 'src/types/wallet';
 
 import { BalancePlaceholder } from './BalancePlaceholder';
 import { BaseCurrency } from './BaseCurrency';

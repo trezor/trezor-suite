@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';

@@ -1,11 +1,7 @@
 import Localization, { type Locale } from 'expo-localization';
 
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { residenceActions } from '@suite-native/trading-state';
 
 import { useLocationForm } from '../useLocationForm';

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 import { Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';

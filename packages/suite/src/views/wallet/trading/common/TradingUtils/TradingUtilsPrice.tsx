@@ -1,12 +1,10 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
 import { ExperimentId } from '@suite-common/message-system';
-import {
-    TradingTradeMapProps,
-    cryptoIdToNetworkSymbolAndContractAddress,
-} from '@suite-common/trading';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TradingTradeMapProps } from '@suite-common/trading';
+import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Column, Paragraph, Row, Text, Tooltip } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -17,7 +15,7 @@ import { BaseCurrencyValue } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingCryptoAmountProps } from 'src/types/trading/trading';
+import type { TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {
     isTradingExchangeContext,
     isTradingSellContext,

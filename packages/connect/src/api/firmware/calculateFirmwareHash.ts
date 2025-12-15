@@ -1,6 +1,7 @@
 import { blake2sHex } from 'blakejs';
 
-import { DeviceModelInternal, VersionArray } from '@trezor/device-utils';
+import type { VersionArray } from '@trezor/device-utils';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 // Size values are taken from

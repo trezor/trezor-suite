@@ -1,10 +1,12 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-import { FrameProps, FramePropsKeys } from '../../utils/frameProps';
-import { IconName } from '../Icon/Icon';
-import { DropdownMenuItemProps, Menu, MenuProps } from '../Menu/Menu';
-import { Popover, PopoverRef } from '../Popover/Popover';
-import { PopoverPlacement } from '../Popover/utils';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import type { IconName } from '../Icon/Icon';
+import type { DropdownMenuItemProps, MenuProps } from '../Menu/Menu';
+import { Menu } from '../Menu/Menu';
+import type { PopoverRef } from '../Popover/Popover';
+import { Popover } from '../Popover/Popover';
+import type { PopoverPlacement } from '../Popover/utils';
 import { IconButton } from '../buttons/IconButton/IconButton';
 
 export const allowedDropdownFrameProps = ['width', 'minWidth'] as const satisfies FramePropsKeys[];

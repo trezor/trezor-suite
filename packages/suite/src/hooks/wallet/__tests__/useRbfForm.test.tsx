@@ -7,8 +7,8 @@ import {
     extraDependenciesMock,
     initPreloadedState,
 } from '@suite-common/test-utils';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { ServerInfo } from '@trezor/blockchain-link-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 
 // eslint-disable-next-line import/order

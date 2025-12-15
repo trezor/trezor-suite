@@ -1,4 +1,4 @@
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type { BigNumber } from '@trezor/utils/src/bigNumber';
 
 /**
  * Rounds a value to a given number of non-zero fractional digits.

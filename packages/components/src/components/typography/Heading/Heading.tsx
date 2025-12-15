@@ -1,6 +1,7 @@
-import { TypographyStyle } from '@trezor/theme';
+import type { TypographyStyle } from '@trezor/theme';
 
-import { Text, TextProps } from '../Text/Text';
+import type { TextProps } from '../Text/Text';
+import { Text } from '../Text/Text';
 
 const createHeading =
     (as: 'h1' | 'h2' | 'h3' | 'h4', defaultTypographyStyle: TypographyStyle) =>

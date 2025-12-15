@@ -6,14 +6,12 @@ import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DevUtilsStackParamList,
-    DevUtilsStackRoutes,
-    DynamicScreenHeader,
     RootStackParamList,
-    Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DevUtilsStackRoutes, DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';

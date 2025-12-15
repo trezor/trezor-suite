@@ -1,7 +1,7 @@
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import type { ComposeActionContext } from '@suite-common/wallet-core';
 import {
-    ComposeActionContext,
     addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
@@ -10,7 +10,7 @@ import {
     stakeActions,
     syncAccountsWithBlockchainThunk,
 } from '@suite-common/wallet-core';
-import {
+import type {
     PrecomposedTransactionFinal,
     StakeFormState,
     StakeType,
@@ -25,10 +25,11 @@ import {
     isSupportedSolStakingNetworkSymbol,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { Unsuccessful } from '@trezor/connect';
+import type { Unsuccessful } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Dispatch, GetState } from 'src/types/suite';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import { setPendingStakeTx } from './cardanoStakingActions';
 import * as modalActions from '../suite/modalActions';

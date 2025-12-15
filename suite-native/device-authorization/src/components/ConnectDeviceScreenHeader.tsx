@@ -7,15 +7,15 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     CloseActionType,
     NavigateParameters,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
-    useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { useInterceptNativeNavigation } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import {

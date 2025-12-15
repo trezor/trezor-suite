@@ -3,7 +3,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { TradingSendRejectedProps } from '../../types';
+import type { TradingSendRejectedProps } from '../../types';
 
 export const getNonce = createThunk<string, void, { rejectValue: TradingSendRejectedProps }>(
     `${TRADING_THUNK_PREFIX}/getNonce`,

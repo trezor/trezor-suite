@@ -10,14 +10,13 @@ import {
     selectIsAnyPhysicalDeviceConnectedViaUsb,
     selectIsDeviceThpRequired,
 } from '@suite-common/wallet-core';
-import {
-    AuthorizeDeviceStackRoutes,
+import type {
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,

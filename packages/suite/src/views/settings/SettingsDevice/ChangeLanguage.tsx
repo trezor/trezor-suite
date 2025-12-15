@@ -1,4 +1,5 @@
-import { LANGUAGES, Locale } from '@suite-common/suite-types';
+import type { Locale } from '@suite-common/suite-types';
+import { LANGUAGES } from '@suite-common/suite-types';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';

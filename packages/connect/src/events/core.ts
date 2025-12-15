@@ -12,7 +12,7 @@ import type {
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
-import { ErrorCode, TrezorError } from '../constants/errors';
+import type { ErrorCode, TrezorError } from '../constants/errors';
 import type { Unsuccessful } from '../types/params';
 
 export const CORE_EVENT = 'CORE_EVENT';

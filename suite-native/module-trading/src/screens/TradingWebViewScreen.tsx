@@ -5,19 +5,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useLinkingURL } from 'expo-linking';
-import { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
+import type { WebViewSource } from 'react-native-webview/lib/WebViewTypes';
 
-import { TradingRootState, selectTradingTradeByOrderId } from '@suite-common/trading';
-import { AccountsRootState, DeviceRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import type { TradingRootState } from '@suite-common/trading';
+import { selectTradingTradeByOrderId } from '@suite-common/trading';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { DebugModeCopyableText } from '@suite-native/trading-debug';
 import { tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

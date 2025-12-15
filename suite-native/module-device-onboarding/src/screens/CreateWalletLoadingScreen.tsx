@@ -1,14 +1,11 @@
 import { useEffect } from 'react';
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    Screen,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CreateWalletLoader, LOADER_DURATION } from '../components/CreateWalletLoader';

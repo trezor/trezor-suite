@@ -1,5 +1,6 @@
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 
@@ -7,7 +8,7 @@ import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
+import type { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
     getTradingNetworkDecimals,
     tradingGetAccountLabel,

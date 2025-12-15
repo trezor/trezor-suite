@@ -1,8 +1,9 @@
-import { Deferred, createDeferred } from '@trezor/utils';
+import type { Deferred } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
 
 import { error, success } from './result';
 import { ABORTED_BY_SIGNAL, INTERFACE_DATA_TRANSFER } from '../errors';
-import { ResultWithTypedError } from '../types';
+import type { ResultWithTypedError } from '../types';
 
 type ReadResult = ResultWithTypedError<
     Buffer,

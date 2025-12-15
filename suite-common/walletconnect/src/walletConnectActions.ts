@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { PendingConnectionProposal, WalletConnectSession } from './walletConnectTypes';
+import type { PendingConnectionProposal, WalletConnectSession } from './walletConnectTypes';
 
 export const ACTION_PREFIX = '@suite-common/walletconnect';
 

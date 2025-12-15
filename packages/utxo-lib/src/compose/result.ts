@@ -2,8 +2,7 @@ import BN from 'bn.js';
 
 import { createTransaction } from './transaction';
 import { transactionBytes } from '../coinselect/coinselectUtils';
-import {
-    COMPOSE_ERROR_TYPES,
+import type {
     CoinSelectRequest,
     CoinSelectResult,
     ComposeChangeAddress,
@@ -16,6 +15,7 @@ import {
     ComposeResultError,
     ComposeResultFinal,
 } from '../types';
+import { COMPOSE_ERROR_TYPES } from '../types';
 
 export function getErrorResult(error: unknown): ComposeResultError {
     const message = error instanceof Error ? error.message : `${error}`;

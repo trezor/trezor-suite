@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import {
+import type {
     TradingBuyState as CommonTradingBuyState,
     TradingExchangeState as CommonTradingExchangeState,
     TradingSellState as CommonTradingSellState,

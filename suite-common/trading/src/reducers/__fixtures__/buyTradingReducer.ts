@@ -1,7 +1,8 @@
-import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
+import type { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
-import { TradingAmountLimitProps } from '../../types';
-import { BuyInfo, buyInitialState, tradingBuyActions } from '../buyReducer';
+import type { TradingAmountLimitProps } from '../../types';
+import type { BuyInfo } from '../buyReducer';
+import { buyInitialState, tradingBuyActions } from '../buyReducer';
 
 const buyInfo: BuyInfo = {
     buyInfo: {

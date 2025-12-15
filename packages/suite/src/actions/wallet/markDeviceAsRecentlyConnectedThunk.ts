@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { DEVICE_MODULE_PREFIX, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Device } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
 
 import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelectors';
 

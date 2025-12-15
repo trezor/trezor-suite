@@ -1,5 +1,6 @@
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
-import { WebsocketClient, WebsocketRequest, WebsocketResponse } from '@trezor/websocket-client';
+import type { WebsocketRequest, WebsocketResponse } from '@trezor/websocket-client';
+import { WebsocketClient } from '@trezor/websocket-client';
 
 interface Subscription<T> {
     id: string;

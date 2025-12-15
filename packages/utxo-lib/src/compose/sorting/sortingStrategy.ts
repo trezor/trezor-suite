@@ -1,4 +1,4 @@
-import {
+import type {
     CoinSelectSuccess,
     ComposeChangeAddress,
     ComposeFinalOutput,

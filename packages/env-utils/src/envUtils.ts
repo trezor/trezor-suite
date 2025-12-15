@@ -1,7 +1,7 @@
 import { UAParser } from 'ua-parser-js';
 
 import { firmwareConfigPublicKey, publicKey } from './jws';
-import { EnvUtils, Environment } from './types';
+import type { EnvUtils, Environment } from './types';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';
 

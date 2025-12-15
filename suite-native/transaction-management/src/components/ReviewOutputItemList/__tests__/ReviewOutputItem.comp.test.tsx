@@ -1,8 +1,9 @@
 import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { StatefulReviewOutput } from '../../../types';
-import { ReviewOutputItem, ReviewOutputItemProps } from '../ReviewOutputItem';
+import type { StatefulReviewOutput } from '../../../types';
+import type { ReviewOutputItemProps } from '../ReviewOutputItem';
+import { ReviewOutputItem } from '../ReviewOutputItem';
 
 jest.mock('../ReviewOutputItemValues', () => ({
     ReviewOutputItemValues: ({

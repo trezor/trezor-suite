@@ -1,4 +1,4 @@
-import * as ERRORS from '../errors';
+import type * as ERRORS from '../errors';
 import type { AcquireInput } from '../transports/abstract';
 import type {
     Descriptor,

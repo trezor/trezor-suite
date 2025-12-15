@@ -1,18 +1,15 @@
-import { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
-import { Icon, IconName } from '../../Icon/Icon';
+import type { IconName } from '../../Icon/Icon';
+import { Icon } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
+import type { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,

@@ -1,12 +1,9 @@
 import { OnboardingStackRoutes } from '@suite-native/navigation';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { initStore, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 
-import { BiometricsScreen, BiometricsScreenProps } from '../BiometricsScreen';
+import type { BiometricsScreenProps } from '../BiometricsScreen';
+import { BiometricsScreen } from '../BiometricsScreen';
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();

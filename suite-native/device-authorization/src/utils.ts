@@ -1,4 +1,4 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import type { AnyAction } from '@reduxjs/toolkit';
 
 export const isPinButtonRequestCode = (action: AnyAction) =>
     action.payload.code === 'ButtonRequest_PinEntry' || // T2 with PIN entry on device

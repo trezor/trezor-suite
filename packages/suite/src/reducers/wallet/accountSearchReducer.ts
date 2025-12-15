@@ -1,9 +1,10 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { changeNetworks, deviceActions } from '@suite-common/wallet-core';
 
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 export const ACCOUNT_SEARCH_PREFIX = '@suite/account-search';
 

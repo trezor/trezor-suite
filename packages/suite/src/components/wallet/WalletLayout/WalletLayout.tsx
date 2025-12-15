@@ -1,14 +1,14 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { Column, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import { PrimitiveType } from '@trezor/type-utils';
+import type { PrimitiveType } from '@trezor/type-utils';
 
-import { TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useTranslation } from 'src/hooks/suite';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 
 import { AccountBanners } from './AccountBanners/AccountBanners';
 import { AccountException } from './AccountException/AccountException';

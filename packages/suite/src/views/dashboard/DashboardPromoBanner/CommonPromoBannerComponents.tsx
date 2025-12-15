@@ -6,7 +6,7 @@ import { borders, spacingsPx } from '@trezor/theme';
 
 import { setFlag } from '../../../actions/suite/suiteActions';
 import { useDispatch } from '../../../hooks/suite';
-import { Flags } from '../../../reducers/suite/suiteReducer';
+import type { Flags } from '../../../reducers/suite/suiteReducer';
 import { bannerAnimationConfig } from '../banner-animations';
 
 const CloseButtonContainer = styled.div`

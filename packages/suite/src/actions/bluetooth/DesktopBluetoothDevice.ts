@@ -1,10 +1,8 @@
-import {
-    BluetoothManufacturerData,
-    parseManufacturerData,
-    serializeManufacturerData,
-} from '@suite-common/bluetooth';
-import { BluetoothDeviceId, asBluetoothDeviceId } from '@trezor/connect';
-import { BluetoothDevice } from '@trezor/transport-bluetooth';
+import type { BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { parseManufacturerData, serializeManufacturerData } from '@suite-common/bluetooth';
+import type { BluetoothDeviceId } from '@trezor/connect';
+import { asBluetoothDeviceId } from '@trezor/connect';
+import type { BluetoothDevice } from '@trezor/transport-bluetooth';
 
 // ignore 'connected' as it is abstraction of connectionStatus
 export type DesktopBluetoothDevice = Omit<BluetoothDevice, 'data' | 'id' | 'connected'> & {

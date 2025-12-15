@@ -4,25 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    DeviceRootState,
     changeCoinVisibility,
     selectDeviceAccountsByNetworkSymbol,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
+import type { Account } from '@suite-common/wallet-types';
+import type { SpinnerLoadingState } from '@suite-native/atoms';
+import { Spinner, Text, VStack } from '@suite-native/atoms';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import {
-    AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { AddCoinAccountStackParamList, StackProps } from '@suite-native/navigation';
+import { AddCoinAccountStackRoutes, Screen } from '@suite-native/navigation';
 
-import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
+import type { AddCoinAccountNavigationProps } from '../hooks/useAddCoinAccount';
+import { useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
 export const AddCoinDiscoveryRunningScreen = ({
     route,

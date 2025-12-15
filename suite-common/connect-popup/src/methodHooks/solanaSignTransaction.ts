@@ -1,15 +1,16 @@
-import { Bip43Path, getNetwork } from '@suite-common/wallet-config';
+import type { Bip43Path } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { PostCallHookParams, PreCallHookParams } from './types';
+import type { PostCallHookParams, PreCallHookParams } from './types';
 import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];

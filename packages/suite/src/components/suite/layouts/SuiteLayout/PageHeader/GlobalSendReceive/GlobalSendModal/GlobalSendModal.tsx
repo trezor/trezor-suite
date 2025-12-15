@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
+import type { Account } from '@suite-common/wallet-types';
+import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { Divider } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -22,10 +22,8 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
 import { useFilterAccountsWithTokens } from './hooks/useFilterAccountsWithTokens';
-import {
-    GlobalSendListItem,
-    useInsertGroupLabelsAndSpaces,
-} from './hooks/useInsertGroupLabelsAndSpaces';
+import type { GlobalSendListItem } from './hooks/useInsertGroupLabelsAndSpaces';
+import { useInsertGroupLabelsAndSpaces } from './hooks/useInsertGroupLabelsAndSpaces';
 
 type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;

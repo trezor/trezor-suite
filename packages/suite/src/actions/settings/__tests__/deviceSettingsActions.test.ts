@@ -5,10 +5,8 @@ import TrezorConnect from '@trezor/connect';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
 
-import fixtures, {
-    DeviceSettingsFixtureState,
-    deviceReducer,
-} from '../__fixtures__/deviceSettingsActions';
+import type { DeviceSettingsFixtureState } from '../__fixtures__/deviceSettingsActions';
+import fixtures, { deviceReducer } from '../__fixtures__/deviceSettingsActions';
 
 const { getSuiteDevice } = testMocks;
 

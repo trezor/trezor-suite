@@ -1,10 +1,7 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 
-import {
-    TRADING_EXCHANGE_FORM,
-    TRADING_EXCHANGE_FORM_DEX,
-    TradingTradeBuyExchangeType,
-} from '@suite-common/trading';
+import type { TradingTradeBuyExchangeType } from '@suite-common/trading';
+import { TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_DEX } from '@suite-common/trading';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';

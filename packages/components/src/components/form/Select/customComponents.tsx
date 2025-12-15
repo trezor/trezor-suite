@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { ControlProps, GroupHeadingProps, OptionProps, components } from 'react-select';
+import type { ControlProps, GroupHeadingProps, OptionProps } from 'react-select';
+import { components } from 'react-select';
 import { useDeepCompareEffect } from 'react-use';
 
 import { deepEqual } from '@trezor/utils';

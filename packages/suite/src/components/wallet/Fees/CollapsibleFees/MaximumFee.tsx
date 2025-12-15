@@ -1,13 +1,13 @@
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Column, LoadingContent, Text } from '@trezor/components';
-import { TypographyStyle } from '@trezor/theme';
+import type { TypographyStyle } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { useFeesContext } from '../context/FeesContext';
-import { TransactionMaxFee } from './hooks/useTransactionMaxFee';
+import type { TransactionMaxFee } from './hooks/useTransactionMaxFee';
 import { useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 
 export type MaximumFeeProps = {

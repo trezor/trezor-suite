@@ -1,6 +1,6 @@
 import { networksCollection } from '@suite-common/wallet-config';
 
-import { PendingConnectionProposalNetwork, WalletConnectSession } from './walletConnectTypes';
+import type { PendingConnectionProposalNetwork, WalletConnectSession } from './walletConnectTypes';
 
 export const getSessionNetworks = (session: WalletConnectSession) => {
     const networks: PendingConnectionProposalNetwork[] = [];

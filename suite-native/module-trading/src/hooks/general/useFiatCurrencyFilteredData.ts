@@ -1,7 +1,8 @@
-import { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 
 import { useListDataFilter } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem } from '@suite-native/trading-types';
+import type { FiatCurrencyItem } from '@suite-native/trading-types';
 
 const filterCallback = ({ label, value }: FiatCurrencyItem, filterValue: string): boolean =>
     label.toLowerCase().includes(filterValue.toLowerCase()) ||

@@ -1,4 +1,5 @@
-import { Network, getMainnets, getTestnets } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
+import { getMainnets, getTestnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { arrayPartition } from '@trezor/utils';

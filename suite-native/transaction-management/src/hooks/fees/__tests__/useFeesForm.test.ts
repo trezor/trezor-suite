@@ -1,6 +1,7 @@
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { UseFeesFormProps, useFeesForm } from '../useFeesForm';
+import type { UseFeesFormProps } from '../useFeesForm';
+import { useFeesForm } from '../useFeesForm';
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {

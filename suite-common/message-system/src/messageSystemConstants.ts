@@ -1,4 +1,4 @@
-import {
+import type {
     CTAAction,
     Category,
     Condition,
@@ -10,7 +10,8 @@ import {
     Vendor,
 } from '@suite-common/suite-types';
 
-import { Context, ExperimentId, Feature } from './messageSystemTypes';
+import type { Context } from './messageSystemTypes';
+import { ExperimentId, Feature } from './messageSystemTypes';
 import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
 import schema from '../schema/config.schema.v1.json';
 

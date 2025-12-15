@@ -2,8 +2,10 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../../../constants';
-import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
+import type { PROTO } from '../../../constants';
+import { ERRORS } from '../../../constants';
+import type { MethodReturnType } from '../../../core/AbstractMethod';
+import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';
 import type { EthereumNetworkInfoDefinitionValues } from '../../../types';

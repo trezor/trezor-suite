@@ -1,17 +1,21 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
-import {
+import type { CombinedLabelingState } from '@suite-native/labeling';
+import { selectAccountLabel } from '@suite-native/labeling';
+import type {
     AccountsStackParamList,
     RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
     RootStackRoutes,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 

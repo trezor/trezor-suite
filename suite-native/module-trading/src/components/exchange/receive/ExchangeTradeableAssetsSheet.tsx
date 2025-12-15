@@ -1,8 +1,6 @@
 import { useExchangeBuyTradeableAssetsFilteredData } from '../../../hooks/exchange/useExchangeBuyTradeableAssetsFilteredData';
-import {
-    TradeableAssetSheet,
-    TradeableAssetsSheetProps,
-} from '../../general/TradeableAssetSheet/TradeableAssetSheet';
+import type { TradeableAssetsSheetProps } from '../../general/TradeableAssetSheet/TradeableAssetSheet';
+import { TradeableAssetSheet } from '../../general/TradeableAssetSheet/TradeableAssetSheet';
 
 export type ExchangeTradeableAssetsSheetProps = Omit<
     TradeableAssetsSheetProps,

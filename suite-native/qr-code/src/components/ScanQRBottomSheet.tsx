@@ -1,7 +1,9 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
-import { BottomSheetModal, BottomSheetModalRef, VStack } from '@suite-native/atoms';
-import { NativeSpacing } from '@trezor/theme';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, VStack } from '@suite-native/atoms';
+import type { NativeSpacing } from '@trezor/theme';
 
 import { PickQRFromGalleryButton } from './PickQRFromGalleryButton';
 import { QRCodeScanner } from './QRCodeScanner';

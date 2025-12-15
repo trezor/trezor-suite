@@ -1,5 +1,6 @@
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
-import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
+import type { UpdateInfo } from '@trezor/suite-desktop-api';
+import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { download } from 'src/actions/suite/desktopUpdateActions';

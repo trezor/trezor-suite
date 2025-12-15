@@ -1,8 +1,10 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import type { AnyAction } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import type { DeviceReducerState } from '@suite-common/wallet-core';
 import {
-    DeviceReducerState,
     deviceInitialState as commonInitialState,
     deviceActions,
     prepareDeviceReducer,

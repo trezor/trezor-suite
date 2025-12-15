@@ -1,6 +1,6 @@
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import type { ReceiveAccount } from '@suite-native/trading-types';
 
 import { AccountListItem } from '../AccountListItem';
 

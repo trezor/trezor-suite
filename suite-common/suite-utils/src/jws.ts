@@ -1,4 +1,5 @@
-import { Algorithm, createVerify, decode } from 'jws';
+import type { Algorithm } from 'jws';
+import { createVerify, decode } from 'jws';
 
 import { getJWSPublicKey } from '@trezor/env-utils';
 

@@ -1,11 +1,11 @@
-import { BuyProviderInfo, BuyTrade } from 'invity-api';
+import type { BuyProviderInfo, BuyTrade } from 'invity-api';
 
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 

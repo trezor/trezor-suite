@@ -1,12 +1,14 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { transparentize } from 'polished';
 import styled from 'styled-components';
 
 import { selectAccountTransactions } from '@suite-common/wallet-core';
-import { Icon, IconName, Paragraph, useElevation } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { Icon, Paragraph, useElevation } from '@trezor/components';
 import type { AccountUtxo } from '@trezor/connect';
-import { CSSColor, Elevation, mapElevationToBorder, typography } from '@trezor/theme';
+import type { CSSColor, Elevation } from '@trezor/theme';
+import { mapElevationToBorder, typography } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';

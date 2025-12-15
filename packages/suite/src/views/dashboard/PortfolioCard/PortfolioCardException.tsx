@@ -1,16 +1,19 @@
-import { ComponentProps, JSX } from 'react';
+import type { ComponentProps, JSX } from 'react';
 
-import { NetworkType, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkType } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
-import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
-import { Button, Column, H3, IconCircle, IconName, Row, Text } from '@trezor/components';
+import type { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
+import type { IconName } from '@trezor/components';
+import { Button, Column, H3, IconCircle, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { DiscoveryStatusType } from 'src/types/wallet';
+import type { DiscoveryStatusType } from 'src/types/wallet';
 
 interface CTA {
     label?: TranslationKey;

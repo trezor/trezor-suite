@@ -1,9 +1,10 @@
-import { RouteProp } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
 
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
 import { TradingHistoryScreen } from '../TradingHistoryScreen';
 

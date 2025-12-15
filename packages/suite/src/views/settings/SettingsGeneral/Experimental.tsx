@@ -11,7 +11,8 @@ import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
+import type { ExperimentalFeature } from 'src/constants/suite/experimental';
+import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

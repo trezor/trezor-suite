@@ -1,10 +1,11 @@
-import { Button, ButtonProps, TOOLTIP_DELAY_NORMAL, TextButton, Tooltip } from '@trezor/components';
+import type { ButtonProps } from '@trezor/components';
+import { Button, TOOLTIP_DELAY_NORMAL, TextButton, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 

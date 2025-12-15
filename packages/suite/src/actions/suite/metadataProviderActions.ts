@@ -1,21 +1,21 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Device } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, typedObjectKeys } from '@trezor/utils';
 
 import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { Dispatch, GetState } from 'src/types/suite';
-import {
+import type { Dispatch, GetState } from 'src/types/suite';
+import type {
     DataType,
     MetadataProvider,
     Error as MetadataProviderError,
     MetadataProviderType,
     OAuthServerEnvironment,
-    ProviderErrorAction,
     Tokens,
 } from 'src/types/suite/metadata';
+import { ProviderErrorAction } from 'src/types/suite/metadata';
 
 import * as metadataActions from './metadataActions';
 import { DropboxProvider } from '../../services/suite/metadata/DropboxProvider';

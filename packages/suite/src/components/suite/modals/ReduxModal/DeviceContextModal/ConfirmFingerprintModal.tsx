@@ -5,7 +5,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { Fingerprint } from 'src/components/firmware';
 import { Translation } from 'src/components/suite/Translation';
-import { TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 
 type ConfirmFingerprintProps = {
     device: TrezorDevice;

@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import type { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import type { TradingRootState as TradingRootStateCommon } from '@suite-common/trading';
 import {
-    TradingRootState as TradingRootStateCommon,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
@@ -14,10 +14,8 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
-import {
-    TradingRootState,
-    selectBuyQuotesByPaymentMethodNative,
-} from '@suite-native/trading-state';
+import type { TradingRootState } from '@suite-native/trading-state';
+import { selectBuyQuotesByPaymentMethodNative } from '@suite-native/trading-state';
 
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useSheetControls } from '../../hooks/general/useSheetControls';

@@ -18,12 +18,8 @@ import {
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import {
-    AccountLabeling,
-    HiddenPlaceholder,
-    NotificationRendererProps,
-    NotificationViewProps,
-} from 'src/components/suite';
+import type { NotificationRendererProps, NotificationViewProps } from 'src/components/suite';
+import { AccountLabeling, HiddenPlaceholder } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { getTxAnchor } from 'src/utils/suite/anchor';

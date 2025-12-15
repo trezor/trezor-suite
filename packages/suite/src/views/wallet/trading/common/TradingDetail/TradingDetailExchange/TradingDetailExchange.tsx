@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { ExchangeTradeStatus } from 'invity-api';
+import type { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { Feature, selectFeatureConfig } from '@suite-common/message-system';
@@ -18,7 +18,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import type { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
 import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';
 import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';

@@ -2,13 +2,13 @@
  * messages to UI emitted as UI_EVENT
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
-import {
+import type {
     DeviceModelInternal,
     FirmwareRelease,
     FirmwareType,
     VersionArray,
 } from '@trezor/device-utils';
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import type { MethodPermission } from '../core/AbstractMethod';

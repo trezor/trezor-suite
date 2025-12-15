@@ -4,30 +4,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/core';
 import { FlashList } from '@shopify/flash-list';
 
-import {
-    TokenDefinitionsRootState,
-    selectFilterKnownTokens,
-} from '@suite-common/token-definitions';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { selectFilterKnownTokens } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { AccountsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
+import type { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { AccountFormValues } from '@suite-native/accounts';
+import { useAccountLabelForm } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { AccountInfo, TokenInfo } from '@trezor/connect';
+import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import type { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { useShowImportError } from '../useShowImportError';

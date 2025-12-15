@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import type { FirmwareLanguageStackParamList } from '@suite-native/navigation';
 import {
-    FirmwareLanguageStackParamList,
     FirmwareLanguageStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

@@ -1,4 +1,5 @@
-import { BaseProcess, Status } from './BaseProcess';
+import type { Status } from './BaseProcess';
+import { BaseProcess } from './BaseProcess';
 
 export class BridgeProcess extends BaseProcess {
     constructor() {

@@ -1,15 +1,21 @@
-import { Explorer, getNetwork } from '@suite-common/wallet-config';
+import type { Explorer } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import {
     selectAccountByKey,
     selectExplorer,
     selectIsPhishingTransaction,
 } from '@suite-common/wallet-core';
-import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type {
+    Account,
+    ChainedTransactions,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
+import type { TabID } from './AdvancedTxDetails/AdvancedTxDetails';
+import { AdvancedTxDetails } from './AdvancedTxDetails/AdvancedTxDetails';
 import { useSelector } from '../../../../../../../hooks/suite';
 import { Translation } from '../../../../../Translation';
 import { TxDetailModalBase } from '../TxDetailModalBase';

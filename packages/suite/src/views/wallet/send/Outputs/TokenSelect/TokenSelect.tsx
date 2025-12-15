@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
+import type { Explorer } from '@suite-common/wallet-config';
 import {
-    Explorer,
     getCoingeckoId,
     getNetwork,
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,

@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     accountsFiatBalanceInDescOrderComparator,
     findAccountsByNetwork,
@@ -21,8 +21,8 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import type { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 import {
-    TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,

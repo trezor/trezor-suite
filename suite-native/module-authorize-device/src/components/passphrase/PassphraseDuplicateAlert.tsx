@@ -7,15 +7,13 @@ import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
+import type {
     AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { AppTabsRoutes, HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

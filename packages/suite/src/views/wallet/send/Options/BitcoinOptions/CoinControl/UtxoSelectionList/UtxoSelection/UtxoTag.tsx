@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { Icon, IconName, Tooltip } from '@trezor/components';
-import { CSSColor } from '@trezor/theme';
+import type { IconName } from '@trezor/components';
+import { Icon, Tooltip } from '@trezor/components';
+import type { CSSColor } from '@trezor/theme';
 
 interface UtxoTagProps {
     icon: IconName;

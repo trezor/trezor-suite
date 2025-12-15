@@ -1,10 +1,21 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable jest/no-commented-out-tests */
-import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
+import {
+    type BrowserContext,
+    type Page,
+    type TestInfo,
+    test as base,
+    mergeTests,
+} from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import {
+    type Model,
+    type SetupEmu,
+    type StartEmu,
+    TrezorUserEnvLinkClass,
+} from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -13,7 +24,7 @@ import {
     isDesktopProject,
     mockRemoteMessageSystem,
 } from '../common';
-import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
+import { type LaunchSuiteParams, type Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';

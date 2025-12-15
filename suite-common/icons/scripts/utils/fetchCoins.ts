@@ -1,6 +1,6 @@
 import { sleep } from './sleep';
 import { COIN_DATA_URL, COIN_LIST_URL, UPDATED_ICONS_LIST_URL } from '../constants';
-import { CoinData, CoinListData, UpdatedIconsList } from '../types';
+import type { CoinData, CoinListData, UpdatedIconsList } from '../types';
 
 const coingeckoApiOptions = {
     method: 'GET',

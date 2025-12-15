@@ -1,4 +1,5 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -9,10 +10,8 @@ import {
     usdtAsset,
 } from '@suite-native/trading-fixtures';
 
-import {
-    TradeableAssetAccountBalance,
-    TradeableAssetAccountBalanceProps,
-} from '../TradeableAssetAccountBalance';
+import type { TradeableAssetAccountBalanceProps } from '../TradeableAssetAccountBalance';
+import { TradeableAssetAccountBalance } from '../TradeableAssetAccountBalance';
 
 describe('TradeableAssetAccountBalance', () => {
     const renderTradeableAssetAccountBalance = (

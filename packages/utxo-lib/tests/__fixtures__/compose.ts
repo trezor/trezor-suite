@@ -1,5 +1,5 @@
 import { bitcoincash, doge } from '../../src/networks';
-import {
+import type {
     ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,

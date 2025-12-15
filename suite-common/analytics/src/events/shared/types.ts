@@ -1,4 +1,4 @@
-import { EventType } from './constants';
+import type { EventType } from './constants';
 
 export type SuiteSharedAnalyticsEvent =
     | {

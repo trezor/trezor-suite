@@ -1,4 +1,4 @@
-import { BlockFilter } from '../../src/types/backend';
+import type { BlockFilter } from '../../src/types/backend';
 
 export type MockBlockFilter = BlockFilter & {
     prevHash: string;

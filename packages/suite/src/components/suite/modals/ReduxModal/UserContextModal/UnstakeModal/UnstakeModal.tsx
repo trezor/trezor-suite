@@ -1,5 +1,5 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';

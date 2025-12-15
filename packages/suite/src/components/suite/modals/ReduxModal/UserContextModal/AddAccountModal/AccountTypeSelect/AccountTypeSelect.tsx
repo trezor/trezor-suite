@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import type { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Column, Paragraph, Select } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';

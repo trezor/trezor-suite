@@ -2,13 +2,8 @@ import { useSetAtom } from 'jotai';
 
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceOnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, Screen, ScreenHeader } from '@suite-native/navigation';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';

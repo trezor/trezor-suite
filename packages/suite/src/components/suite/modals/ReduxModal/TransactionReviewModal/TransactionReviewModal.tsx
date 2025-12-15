@@ -1,7 +1,6 @@
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
+import type { SendState, StakeState } from '@suite-common/wallet-core';
 import {
-    SendState,
-    StakeState,
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
     selectStake,
@@ -9,7 +8,7 @@ import {
     sendFormActions,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import {

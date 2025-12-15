@@ -1,9 +1,7 @@
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import {
-    MyAssetsDisabledListItem,
-    MyAssetsDisabledListItemProps,
-} from '../MyAssetsDisabledListItem';
+import type { MyAssetsDisabledListItemProps } from '../MyAssetsDisabledListItem';
+import { MyAssetsDisabledListItem } from '../MyAssetsDisabledListItem';
 
 describe('MyAssetsDisabledListItem', () => {
     const renderMyAssetsDisabledListItem = (props: MyAssetsDisabledListItemProps) =>

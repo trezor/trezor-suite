@@ -9,7 +9,7 @@ import {
     selectCardanoPoolsInfo,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     calculateRewards,
     getAccountTotalStakingBalance,

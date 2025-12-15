@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 
-import { FeatureFlag, toggleFeatureFlag } from './featureFlagsSlice';
+import type { FeatureFlag } from './featureFlagsSlice';
+import { toggleFeatureFlag } from './featureFlagsSlice';
 
 export const useToggleFeatureFlag = (featureFlag: FeatureFlag): (() => void) => {
     const dispatch = useDispatch();

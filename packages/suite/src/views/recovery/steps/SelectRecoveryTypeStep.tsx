@@ -2,7 +2,8 @@ import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { RecoveryType, recoveryTypes } from 'src/types/recovery';
+import type { RecoveryType } from 'src/types/recovery';
+import { recoveryTypes } from 'src/types/recovery';
 
 type SelectRecoveryTypeStepProps = {
     setRecoveryType: (type: RecoveryType) => void;

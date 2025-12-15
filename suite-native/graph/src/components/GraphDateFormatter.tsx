@@ -1,7 +1,8 @@
-import { Atom, useAtomValue } from 'jotai';
+import type { Atom } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import { useFormatters } from '@suite-common/formatters';
-import { FiatGraphPoint } from '@suite-common/graph';
+import type { FiatGraphPoint } from '@suite-common/graph';
 import { Text } from '@suite-native/atoms';
 
 type SelectedPointAtom = Atom<FiatGraphPoint | null>;

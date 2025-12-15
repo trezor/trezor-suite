@@ -13,30 +13,28 @@ import {
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 import { createZip, sanitizeFilename } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
-import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
+import type { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import {
     selectLabelingDataForSelectedAccount,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
-import { Dispatch, GetState } from 'src/types/suite';
-import {
+import type { Dispatch, GetState } from 'src/types/suite';
+import type {
+    AbstractMetadataProvider,
     AccountLabels,
+    Bip329Label,
     DataType,
     DeviceMetadata,
     Labels,
     MetadataProvider,
-    WalletLabels,
-} from 'src/types/suite/metadata';
-import type {
-    AbstractMetadataProvider,
-    Bip329Label,
     PasswordManagerState,
+    WalletLabels,
 } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { slip15ToBip329 } from 'src/utils/suite/slip15ToBip329';

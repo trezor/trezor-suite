@@ -1,4 +1,4 @@
-import {
+import type {
     BuyTrade,
     Coins,
     CryptoId,
@@ -8,19 +8,21 @@ import {
     SellFiatTrade,
 } from 'invity-api';
 
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
 import { invityAPIFixtures } from '../../__fixtures__/invityAPI';
 import platforms from '../../__fixtures__/platforms.json';
 import { accountBtc, accountEth } from '../../__fixtures__/utils';
-import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
-import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
-import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
+import type { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
+import type { ExchangeInfo } from '../../reducers/exchangeReducer';
+import { exchangeInitialState } from '../../reducers/exchangeReducer';
+import type { SellInfo } from '../../reducers/sellReducer';
+import { sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
 import type { TradingPaymentMethodListProps, TradingPaymentMethodProps } from '../../types';
+import type { TradingRootStateWithDeviceAndAccounts } from '../tradingSelectors';
 import {
-    TradingRootStateWithDeviceAndAccounts,
     selectBestBuyQuoteByPaymentMethod,
     selectBuyQuotesByPaymentMethod,
     selectDeviceHasTradingTrades,

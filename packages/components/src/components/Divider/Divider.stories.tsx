@@ -1,9 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { colorVariants } from '@trezor/theme';
 
-import { Divider as DividerComponent, DividerProps, allowedDividerFrameProps } from './Divider';
+import type { DividerProps } from './Divider';
+import { Divider as DividerComponent, allowedDividerFrameProps } from './Divider';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Container = styled.div<Pick<DividerProps, 'orientation'>>`

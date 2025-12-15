@@ -1,12 +1,7 @@
 import { type ReactElement } from 'react';
 
-import {
-    RenderHookOptions,
-    RenderOptions,
-    render,
-    renderHook,
-    waitFor,
-} from '@testing-library/react-native';
+import type { RenderHookOptions, RenderOptions } from '@testing-library/react-native';
+import { render, renderHook, waitFor } from '@testing-library/react-native';
 
 import type { PreloadedState } from '@suite-native/state';
 

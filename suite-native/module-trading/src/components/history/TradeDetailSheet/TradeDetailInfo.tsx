@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import type { TradingRootState } from '@suite-common/trading';
 import {
-    TradingRootState,
     selectTradingProviderByNameAndTradeType,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';

@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Link as LinkComponent, LinkProps, allowedLinkTextProps } from '../../../index';
+import type { LinkProps } from '../../../index';
+import { Link as LinkComponent, allowedLinkTextProps } from '../../../index';
 import { getTextPropsStory } from '../utils';
 
 const meta: Meta<typeof LinkComponent> = {

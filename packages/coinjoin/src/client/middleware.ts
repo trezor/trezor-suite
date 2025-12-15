@@ -1,5 +1,6 @@
-import { RequestOptions, coordinatorRequest as request } from './coordinatorRequest';
-import {
+import type { RequestOptions } from './coordinatorRequest';
+import { coordinatorRequest as request } from './coordinatorRequest';
+import type {
     AllowedRange,
     AllowedScriptTypes,
     CoordinationFeeRate,
@@ -8,7 +9,7 @@ import {
     RealCredentials,
     ZeroCredentials,
 } from '../types/coordinator';
-import {
+import type {
     AnalyzeResult,
     AnalyzeTransactionDetails,
     Credentials,
@@ -154,4 +155,4 @@ export const getLiquidityClue = async (
 };
 
 // reexport all middleware types
-export * from '../types/middleware';
+export type * from '../types/middleware';

@@ -1,4 +1,5 @@
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 import { selectThpStep } from '@suite-common/thp';
 import { acquireDevice, selectSelectedDevice } from '@suite-common/wallet-core';

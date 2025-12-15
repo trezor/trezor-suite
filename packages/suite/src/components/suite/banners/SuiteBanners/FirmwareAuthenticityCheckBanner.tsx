@@ -1,11 +1,11 @@
-import {
+import type {
     SkippedHashCheckError,
     SkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Banner, Row } from '@trezor/components';
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import type { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 

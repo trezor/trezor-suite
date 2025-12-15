@@ -4,12 +4,12 @@ import * as toml from 'toml';
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
 import {
-    AdvancedTokenStructure,
-    SimpleTokenStructure,
+    type AdvancedTokenStructure,
+    type SimpleTokenStructure,
     TokenStructureType,
 } from '../../src/tokenDefinitionsTypes';
 import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
-import { CoinData } from '../types';
+import type { CoinData } from '../types';
 
 export const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
     const address = platforms[assetPlatformId];

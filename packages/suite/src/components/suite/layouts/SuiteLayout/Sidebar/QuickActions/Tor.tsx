@@ -1,13 +1,7 @@
 import { useTheme } from 'styled-components';
 
-import {
-    Column,
-    ComponentWithSubIcon,
-    Icon,
-    IconName,
-    IconVariant,
-    iconSizes,
-} from '@trezor/components';
+import type { IconName, IconVariant } from '@trezor/components';
+import { Column, ComponentWithSubIcon, Icon, iconSizes } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
@@ -19,7 +13,8 @@ import { TorStatus } from 'src/types/suite';
 
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
-import { Translation, TranslationKey } from '../../../../Translation';
+import type { TranslationKey } from '../../../../Translation';
+import { Translation } from '../../../../Translation';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',

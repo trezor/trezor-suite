@@ -4,17 +4,15 @@ import { A } from '@mobily/ts-belt';
 // That's because tsconfig.json in local-first-storage "infects" its upstream packages with exactOptionalPropertyTypes (it shouldn't).
 // Probably caused by circular deps?
 import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
-import {
-    Feature,
-    MessageSystemRootState,
-} from '@suite-common/message-system/src/messageSystemTypes';
+import type { MessageSystemRootState } from '@suite-common/message-system/src/messageSystemTypes';
+import { Feature } from '@suite-common/message-system/src/messageSystemTypes';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    NetworkSymbol,
     getNetwork,
     networkSymbolCollection,
     networksCollection,

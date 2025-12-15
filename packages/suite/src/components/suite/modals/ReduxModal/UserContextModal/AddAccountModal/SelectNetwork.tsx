@@ -1,4 +1,4 @@
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Paragraph } from '@trezor/components';
 
 import { CoinList } from 'src/components/suite';

@@ -1,6 +1,7 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FeesFormContext, feesFormValidationSchema } from '../feesFormSchema';
+import type { FeesFormContext } from '../feesFormSchema';
+import { feesFormValidationSchema } from '../feesFormSchema';
 
 describe('feesFormValidationSchema', () => {
     const createContext = (overrides: Partial<FeesFormContext> = {}): FeesFormContext => ({

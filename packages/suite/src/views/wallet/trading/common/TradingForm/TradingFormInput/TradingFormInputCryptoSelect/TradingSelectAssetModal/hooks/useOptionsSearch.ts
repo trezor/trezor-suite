@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
+import type { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
 function createSearchFilter(search: string) {
     return function searchFor(property?: string) {

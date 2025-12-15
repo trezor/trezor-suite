@@ -7,7 +7,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
+import type { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {
     TROUBLESHOOTING_TIP_CABLE,

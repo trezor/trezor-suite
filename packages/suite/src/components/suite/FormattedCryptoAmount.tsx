@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 import { isSignValuePositive } from '@suite-common/formatters';
-import { SignValue } from '@suite-common/suite-types';
+import type { SignValue } from '@suite-common/suite-types';
 import {
     type NetworkSymbolExtended,
     getDisplaySymbol,
     getNetworkOptional,
 } from '@suite-common/wallet-config';
+import type { AmountUnit } from '@suite-common/wallet-utils';
 import {
-    AmountUnit,
     formatCoinBalance,
     localizeNumber,
     networkAmountToSmallestUnit,

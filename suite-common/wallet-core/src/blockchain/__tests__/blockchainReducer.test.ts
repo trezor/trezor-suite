@@ -1,7 +1,8 @@
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { BackendSettings } from '@suite-common/wallet-types';
+import type { BackendSettings } from '@suite-common/wallet-types';
 
-import { SetBackendPayload, blockchainActions } from '../blockchainActions';
+import type { SetBackendPayload } from '../blockchainActions';
+import { blockchainActions } from '../blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchainReducer';
 
 const blockchainReducer = prepareBlockchainReducer(extraDependenciesMock);

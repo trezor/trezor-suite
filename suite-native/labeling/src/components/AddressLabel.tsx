@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
+import type { WithLabelingState } from '@suite-common/suite-sync';
+import { selectAddressLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 

@@ -8,7 +8,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { CallMethodKeys } from '@trezor/connect';
+import type { CallMethodKeys } from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 

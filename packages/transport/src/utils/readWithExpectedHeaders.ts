@@ -2,8 +2,8 @@ import { thp as protocolThp } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
 import { success } from './result';
-import { AbstractApi } from '../api/abstract';
-import { Logger } from '../types';
+import type { AbstractApi } from '../api/abstract';
+import type { Logger } from '../types';
 
 type Receiver = (attemptSignal?: AbortSignal) => ReturnType<AbstractApi['read']>;
 

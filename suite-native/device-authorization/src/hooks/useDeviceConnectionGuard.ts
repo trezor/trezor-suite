@@ -5,13 +5,15 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { selectDeviceBluetoothId, selectIsDeviceConnected } from '@suite-common/wallet-core';
+import type {
+    RootStackParamList,
+    SettingsStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
     RootStackRoutes,
-    SettingsStackParamList,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import type { Meta, StoryFn } from '@storybook/react';
 
 import { StoryColumn } from '@trezor/components';
 // todo: product-components should not depend on protobuf

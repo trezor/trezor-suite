@@ -1,6 +1,7 @@
 import { D } from '@mobily/ts-belt';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkType } from '@suite-common/wallet-config';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';

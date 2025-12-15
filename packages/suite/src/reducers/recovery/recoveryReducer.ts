@@ -1,9 +1,9 @@
 import { produce } from 'immer';
 
 import { RECOVERY } from 'src/actions/recovery/constants';
-import { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
-import { WordCount } from 'src/types/recovery';
-import { Action } from 'src/types/suite';
+import type { SeedInputStatus } from 'src/actions/recovery/recoveryActions';
+import type { WordCount } from 'src/types/recovery';
+import type { Action } from 'src/types/suite';
 
 export interface RecoveryState {
     advancedRecovery: boolean;

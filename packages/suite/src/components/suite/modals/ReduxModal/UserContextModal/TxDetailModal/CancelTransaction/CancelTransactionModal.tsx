@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import type { ComposeCancelTransactionPartialAccount } from '@suite-common/wallet-core';
 import {
-    ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
-import {
+import type {
     Account,
     ChainedTransactions,
     PrecomposedTransactionFinalCancelRbf,

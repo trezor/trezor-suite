@@ -1,18 +1,12 @@
-import { ChangeEvent, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { css, useTheme } from 'styled-components';
 
-import {
-    Button,
-    Checkbox,
-    Icon,
-    Input,
-    Tooltip,
-    TooltipProps,
-    motionAnimation,
-} from '@trezor/components';
+import type { TooltipProps } from '@trezor/components';
+import { Button, Checkbox, Icon, Input, Tooltip, motionAnimation } from '@trezor/components';
 import { setCaretPosition } from '@trezor/dom-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
@@ -20,7 +14,7 @@ import { useKeyPress } from '@trezor/react-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { countBytesInString } from '@trezor/utils';
 
-import { WalletType } from './types';
+import type { WalletType } from './types';
 
 type WrapperProps = {
     $type: WalletType;

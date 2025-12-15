@@ -5,7 +5,7 @@ import {
     CARDANO_EPOCH_DAYS,
     SOLANA_EPOCH_DAYS,
 } from '@suite-common/wallet-constants';
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingAccountCurrentStatus,
     getTxStakeType,
@@ -15,7 +15,7 @@ import { Column, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
-import { ProgressLabelData } from '../components/ProgressLabels/types';
+import type { ProgressLabelData } from '../components/ProgressLabels/types';
 
 type UseProgressLabelsData = {
     daysToAddToPool?: number;

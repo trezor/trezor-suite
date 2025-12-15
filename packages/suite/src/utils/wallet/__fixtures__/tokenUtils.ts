@@ -1,10 +1,10 @@
-import {
+import type {
     EnhancedTokenInfo,
     TokenDefinition,
     TokenDefinitionsState,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenInfo } from '@trezor/connect';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { TokenInfo } from '@trezor/connect';
 
 export const getTokensFixtures = [
     {

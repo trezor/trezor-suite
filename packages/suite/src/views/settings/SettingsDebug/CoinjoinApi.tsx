@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
@@ -9,8 +10,9 @@ import { typedObjectKeys } from '@trezor/utils';
 import { setDebugSettings } from 'src/actions/wallet/coinjoinClientActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { COINJOIN_NETWORKS, CoinjoinSymbol } from 'src/services/coinjoin';
-import { CoinjoinClientInstance, CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
+import type { CoinjoinSymbol } from 'src/services/coinjoin';
+import { COINJOIN_NETWORKS } from 'src/services/coinjoin';
+import type { CoinjoinClientInstance, CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import { reloadApp } from 'src/utils/suite/reload';
 import { isCoinjoinSupportedSymbol } from 'src/utils/wallet/coinjoinUtils';
 

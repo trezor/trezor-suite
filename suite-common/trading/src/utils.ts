@@ -1,4 +1,4 @@
-import {
+import type {
     BuyTrade,
     BuyTradeFinalStatus,
     CryptoId,
@@ -30,7 +30,7 @@ import {
     TOKEN_SELECT_SELECTABLE_NETWORKS,
 } from './constants';
 import { regional } from './regional';
-import {
+import type {
     TradingCountryCode,
     TradingExchangeType,
     TradingParsedCryptoIdProps,

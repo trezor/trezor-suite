@@ -1,21 +1,23 @@
 import { useMemo } from 'react';
 
-import { TradingCryptoSelectOptionProps, cryptoIdToNetwork } from '@suite-common/trading';
-import { NetworkSymbolExtended, isNetworkSymbol } from '@suite-common/wallet-config';
+import type { TradingCryptoSelectOptionProps } from '@suite-common/trading';
+import { cryptoIdToNetwork } from '@suite-common/trading';
+import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
-import { RatesByKey, TokenAddress } from '@suite-common/wallet-types';
+import type { RatesByKey, TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
-import { AssetTokenBalance } from '@trezor/product-components';
+import type { AssetTokenBalance } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
-import { Account } from 'src/types/wallet';
+import type { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
+import type { Account } from 'src/types/wallet';
 
 type MinimalTokenInfo = Pick<TokenInfo, 'contract' | 'balance' | 'symbol'>;
 type TokensInfoByContract = Record<Lowercase<TokenInfo['contract']>, MinimalTokenInfo>;

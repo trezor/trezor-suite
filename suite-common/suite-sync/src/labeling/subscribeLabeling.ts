@@ -1,6 +1,6 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import type { Dispatch } from '@reduxjs/toolkit';
 
-import {
+import type {
     SubscribeLabeling,
     SubscriptionStorageDep,
     SuiteSyncStorageRepositoryDep,

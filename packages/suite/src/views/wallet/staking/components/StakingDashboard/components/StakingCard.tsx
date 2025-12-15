@@ -6,19 +6,19 @@ import {
     selectCardanoPoolsInfo,
     selectStakingTotalRewards,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
     isPending,
 } from '@suite-common/wallet-utils';
+import type { IconName } from '@trezor/components';
 import {
     Badge,
     Button,
     Card,
     Column,
     Grid,
-    IconName,
     InfoItem,
     Paragraph,
     Row,

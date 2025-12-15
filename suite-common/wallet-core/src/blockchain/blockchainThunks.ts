@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    NetworkSymbol,
     externalBackendTypeNetworks,
     getNetworkOptional,
     isNetworkSymbol,
@@ -22,11 +22,8 @@ import {
     shouldSubscribeBlocks,
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
-    BlockchainBlock,
-    BlockchainError,
-    BlockchainNotification,
-} from '@trezor/connect';
+import type { BlockchainBlock, BlockchainError, BlockchainNotification } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import type { TimerId } from '@trezor/type-utils';
 import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 

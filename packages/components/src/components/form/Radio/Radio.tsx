@@ -1,21 +1,24 @@
-import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
+import type { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 
 import styled from 'styled-components';
 
-import { Color, borders } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import { UIVariant } from '../../../config/types';
+import type { UIVariant } from '../../../config/types';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { pickAndPrepareFrameProps } from '../../../utils/frameProps';
 import { getFocusShadowStyle } from '../../../utils/utils';
-import {
+import type {
     AllowedCheckboxFrameProps,
+    LabelAlignment,
+    VerticalAlignment,
+} from '../Checkbox/Checkbox';
+import {
     CheckContainer,
     Container,
     HiddenInput,
     Label,
-    LabelAlignment,
-    VerticalAlignment,
     allowedCheckboxFrameProps,
     variantStyles,
 } from '../Checkbox/Checkbox';

@@ -1,28 +1,26 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { InfoItemVariant, InfoItemVerticalAlignment } from './types';
+import type { InfoItemVariant, InfoItemVerticalAlignment } from './types';
 import {
     mapTypographyStyleToIconGap,
     mapTypographyStyleToIconSize,
     mapTypographyStyleToLabelGap,
     mapVerticalAlignmentToAlignItems,
 } from './utils';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 import { Flex, Row } from '../Flex/Flex';
-import { FlexDirection } from '../Flex/FlexProp';
-import { Icon, IconName } from '../Icon/Icon';
+import type { FlexDirection } from '../Flex/FlexProp';
+import type { IconName } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
-import { TextProps, TextPropsKeys } from '../typography/utils';
+import type { TextProps, TextPropsKeys } from '../typography/utils';
 
 export const allowedInfoItemTextProps = [
     'typographyStyle',

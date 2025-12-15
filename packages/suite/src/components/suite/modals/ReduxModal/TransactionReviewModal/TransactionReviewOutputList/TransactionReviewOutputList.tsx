@@ -2,13 +2,15 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { DeviceRootState, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/wallet-core';
+import { selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
     GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
     StakeFormState,
+    StakeType,
 } from '@suite-common/wallet-types';
-import { ReviewOutput, StakeType } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
     getEvmTransactionTextSignature,

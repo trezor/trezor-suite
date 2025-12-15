@@ -1,8 +1,11 @@
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { AppColorScheme, useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type { AppColorScheme } from '@suite-native/theme';
+import { useSystemColorScheme, useUserColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor, colorVariants } from '@trezor/theme';
+import type { CSSColor } from '@trezor/theme';
+import { colorVariants } from '@trezor/theme';
 
 type ColorSchemePickerItemProps = {
     colorScheme: AppColorScheme;

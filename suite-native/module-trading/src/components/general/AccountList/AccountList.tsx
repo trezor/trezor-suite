@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import { TradingType, tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { TradingType } from '@suite-common/trading';
+import { tradingBuyActions, tradingExchangeActions } from '@suite-common/trading';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/wallet-core';
-import {
+import type {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
@@ -18,7 +19,7 @@ import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import type { ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
@@ -26,10 +27,8 @@ import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
 import { AddressListEmptyComponent } from './AddressListEmptyComponent';
 import { NoAccountsComponent } from './NoAccountsComponent';
-import {
-    ReceiveAccountsListMode,
-    useReceiveAccountsListData,
-} from '../../../hooks/general/useReceiveAccountsListData';
+import type { ReceiveAccountsListMode } from '../../../hooks/general/useReceiveAccountsListData';
+import { useReceiveAccountsListData } from '../../../hooks/general/useReceiveAccountsListData';
 import { isFullySelectedReceiveAccount } from '../../../utils/general/receiveAccountUtils';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

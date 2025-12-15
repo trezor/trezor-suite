@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findTransaction } from '@suite-common/wallet-utils';
 
 import { transactionsActions } from './transactionsActions';
@@ -10,7 +10,7 @@ import {
     fetchTransactionsPageThunk,
 } from './transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { AccountsRootState } from '../accounts/accountsReducer';
+import type { AccountsRootState } from '../accounts/accountsReducer';
 
 export type AccountTransactionsFetchStatusDetail =
     | {

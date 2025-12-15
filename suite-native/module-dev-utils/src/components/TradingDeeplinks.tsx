@@ -1,14 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
-import {
+import type {
     AppTabsParamList,
-    AppTabsRoutes,
     DevUtilsStackParamList,
     DevUtilsStackRoutes,
     StackToTabCompositeProps,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { AppTabsRoutes, TradingStackRoutes } from '@suite-native/navigation';
 
 type NavigationProp = StackToTabCompositeProps<
     DevUtilsStackParamList,

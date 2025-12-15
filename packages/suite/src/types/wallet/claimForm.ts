@@ -1,7 +1,7 @@
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
-import { BaseStakeContextValues } from '@suite-common/wallet-core';
-import { StakeFormState } from '@suite-common/wallet-types';
+import type { BaseStakeContextValues } from '@suite-common/wallet-core';
+import type { StakeFormState } from '@suite-common/wallet-types';
 
 export type ClaimFormState = Omit<
     StakeFormState,

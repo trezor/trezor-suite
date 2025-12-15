@@ -1,5 +1,5 @@
-export * from './common';
-export * from './params';
+export type * from './common';
+export type * from './params';
 
 export type { Response } from './responses';
 export * from './baseCurrency';

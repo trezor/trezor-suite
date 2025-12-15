@@ -1,10 +1,13 @@
-import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import type { JSX, ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { CoreRequestMessage, POPUP, UI } from '@trezor/connect';
+import type { CoreRequestMessage } from '@trezor/connect';
+import { POPUP, UI } from '@trezor/connect';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
-import { OriginBoundState, storage } from '@trezor/connect-common';
+import type { OriginBoundState } from '@trezor/connect-common';
+import { storage } from '@trezor/connect-common';
 import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 // views
@@ -20,9 +23,11 @@ import { ErrorBoundary } from './support/ErrorBoundary';
 import { GlobalStyle } from './support/GlobalStyle';
 import { IntlWrapper } from './support/IntlWrapper';
 import { ThemeWrapper } from './support/ThemeWrapper';
-import { State, getDefaultState } from './types';
+import type { State } from './types';
+import { getDefaultState } from './types';
 import { initAnalytics } from './utils/analytics';
-import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
+import type { ConnectUIEventProps } from './utils/eventBus';
+import { reactEventBus } from './utils/eventBus';
 import { ErrorView } from './views/Error';
 import { Passphrase } from './views/Passphrase';
 import { Transport } from './views/Transport';

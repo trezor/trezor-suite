@@ -1,4 +1,4 @@
-import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
     selectBaseCurrency,
@@ -6,7 +6,7 @@ import {
     selectFiatRatesByFiatRateKey,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
@@ -14,14 +14,16 @@ import {
     isCardanoStakedWithFiveBinaries,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { Badge, BadgeIntent, Card, Table } from '@trezor/components';
+import type { BadgeIntent } from '@trezor/components';
+import { Badge, Card, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber, arrayPartition } from '@trezor/utils';
 
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';

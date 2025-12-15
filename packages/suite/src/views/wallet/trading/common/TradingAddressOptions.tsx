@@ -1,8 +1,10 @@
-import { ReactElement, ReactNode, useEffect } from 'react';
-import { Control, Controller, UseFormReturn } from 'react-hook-form';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect } from 'react';
+import type { Control, UseFormReturn } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import type { MenuPlacement } from 'react-select';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';

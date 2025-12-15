@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    TradingRootStateWithDeviceAndAccounts,
-    selectDeviceTradingTrades,
-} from '@suite-common/trading';
+import type { TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import { selectDeviceTradingTrades } from '@suite-common/trading';
 
 import { useAllTradesReloadTimer } from './useAllTradesReloadTimer';
 import { useTransactionStateChangeAnalyticsReporting } from './useTransactionStateChangeAnalyticsReporting';

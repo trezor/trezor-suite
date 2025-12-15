@@ -5,7 +5,8 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 
-import { CoinjoinProcessStep, CoinjoinProcessStepProps } from './CoinjoinProcessStep';
+import type { CoinjoinProcessStepProps } from './CoinjoinProcessStep';
+import { CoinjoinProcessStep } from './CoinjoinProcessStep';
 
 const Heading = styled.div`
     display: flex;

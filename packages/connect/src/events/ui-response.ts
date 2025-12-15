@@ -1,6 +1,6 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
-import { POPUP } from './popup';
+import type { POPUP } from './popup';
 import { UI_EVENT } from './ui-request';
 import type { Device } from '../types/device';
 import type { LocalFirmwares } from '../types/settings';

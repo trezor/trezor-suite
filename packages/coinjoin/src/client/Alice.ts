@@ -1,12 +1,12 @@
-import { AccountUtxo } from '../types/account';
-import {
+import type { AccountUtxo } from '../types/account';
+import type {
     AllowedScriptTypes,
     ConfirmationData,
     RealCredentials,
     RegistrationData,
 } from '../types/coordinator';
-import { Credentials } from '../types/middleware';
-import { CoinjoinRequestEvent, SerializedAlice } from '../types/round';
+import type { Credentials } from '../types/middleware';
+import type { CoinjoinRequestEvent, SerializedAlice } from '../types/round';
 import { getInputSize, getOutputSize, getWitnessFromSignature } from '../utils/coordinatorUtils';
 
 interface AlicePendingRequest {

@@ -1,4 +1,5 @@
-import styled, { RuleSet, css } from 'styled-components';
+import type { RuleSet } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';

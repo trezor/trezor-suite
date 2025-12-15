@@ -1,12 +1,5 @@
-import {
-    ReactNode,
-    RefObject,
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import type { ReactNode, RefObject } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 type ModalContextData = {
     isDisabled: boolean;

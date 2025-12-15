@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
+import type { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { Banner, Card, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
 import { PairingState } from './PairingState';
 

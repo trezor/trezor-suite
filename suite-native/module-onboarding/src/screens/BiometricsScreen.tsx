@@ -5,13 +5,8 @@ import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
+import type { OnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { OnboardingStackRoutes, Screen, ScreenHeader } from '@suite-native/navigation';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

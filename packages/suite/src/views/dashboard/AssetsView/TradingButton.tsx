@@ -1,7 +1,7 @@
-import { MouseEvent, ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 
-import { Route } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Route } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
 
 import * as routerActions from 'src/actions/suite/routerActions';

@@ -1,6 +1,7 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SimpleSheetHeader, SimpleSheetHeaderProps } from '../SimpleSheetHeader';
+import type { SimpleSheetHeaderProps } from '../SimpleSheetHeader';
+import { SimpleSheetHeader } from '../SimpleSheetHeader';
 
 describe('SimpleSheetHeader', () => {
     const renderSimpleSheetHeader = (props: SimpleSheetHeaderProps) =>

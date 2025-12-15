@@ -1,8 +1,10 @@
-import { MouseEvent, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useState } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { Icon, Link, Text, TextProps } from '@trezor/components';
+import type { TextProps } from '@trezor/components';
+import { Icon, Link, Text } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 
 const IconWrapper = styled.div`

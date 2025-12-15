@@ -1,13 +1,21 @@
-import { Borders, NativeBorders, nativeBorders } from './borders';
-import { BoxShadows, NativeBoxShadows, nativeBoxShadows } from './boxShadows';
-import { CoinsColors, coinsColors } from './coinsColors';
-import { Colors, ThemeColorVariant, colorVariants } from './colors';
-import { FontFamilies, NativeFontFamilies, nativeFontFamilies } from './fontFamilies';
-import { FontWeights, fontWeights } from './fontWeights';
-import { Sizes } from './sizes';
-import { NativeSpacings, Spacings, nativeSpacings } from './spacings';
-import { NativeTypographyStyles, TypographyStyles, nativeTypography } from './typography';
-import { ZIndices } from './zIndices';
+import type { Borders, NativeBorders } from './borders';
+import { nativeBorders } from './borders';
+import type { BoxShadows, NativeBoxShadows } from './boxShadows';
+import { nativeBoxShadows } from './boxShadows';
+import type { CoinsColors } from './coinsColors';
+import { coinsColors } from './coinsColors';
+import type { Colors, ThemeColorVariant } from './colors';
+import { colorVariants } from './colors';
+import type { FontFamilies, NativeFontFamilies } from './fontFamilies';
+import { nativeFontFamilies } from './fontFamilies';
+import type { FontWeights } from './fontWeights';
+import { fontWeights } from './fontWeights';
+import type { Sizes } from './sizes';
+import type { NativeSpacings, Spacings } from './spacings';
+import { nativeSpacings } from './spacings';
+import type { NativeTypographyStyles, TypographyStyles } from './typography';
+import { nativeTypography } from './typography';
+import type { ZIndices } from './zIndices';
 
 export interface Theme {
     borders: Borders;

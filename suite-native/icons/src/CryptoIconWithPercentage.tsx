@@ -13,7 +13,8 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import type { CryptoIconName } from '@suite-common/icons';
+import { cryptoIcons } from '@suite-common/icons';
 import { useNativeStyles } from '@trezor/styles';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';

@@ -1,22 +1,20 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import type { AnyAction } from '@reduxjs/toolkit';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { ThpSuiteCredentials } from '@suite-common/suite-types';
-import {
-    DEVICE,
+import type { ThpSuiteCredentials } from '@suite-common/suite-types';
+import type {
     DeviceButtonRequest,
     DeviceThpCredentialsChanged,
-    UI,
     UiRequestConfirmation,
     UiRequestThpPairing,
 } from '@trezor/connect';
+import { DEVICE, UI } from '@trezor/connect';
 import type { ThpCredentials } from '@trezor/protocol';
 
 import { thpActions } from './thpActions';
-import {
-    NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT,
-    THP_BUTTON_REQUESTS_NAMES,
-} from './thpConstants';
+import type { THP_BUTTON_REQUESTS_NAMES } from './thpConstants';
+import { NUMBER_OF_CONNECTIONS_TO_ASK_FOR_AUTOCONNECT } from './thpConstants';
 
 export type THPButtonRequestName = (typeof THP_BUTTON_REQUESTS_NAMES)[number];
 

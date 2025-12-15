@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { StakeFormState } from '@suite-common/wallet-types';
+import type { StakeFormState } from '@suite-common/wallet-types';
 import { getInputState, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';

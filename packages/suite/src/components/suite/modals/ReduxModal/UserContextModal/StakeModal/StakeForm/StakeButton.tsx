@@ -1,4 +1,4 @@
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import type { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
@@ -10,9 +10,9 @@ import { Translation } from '@suite-native/intl';
 
 import { CustomFeeBottomSheet } from './CustomFeeBottomSheet';
 import { CustomFeeCard } from './CustomFeeCard';
-import { FeesFormValues } from '../../../feesFormSchema';
+import type { FeesFormValues } from '../../../feesFormSchema';
 import { useCustomFee } from '../../../hooks/fees/useCustomFee';
-import { NativeSupportedFeeLevel } from '../../../types/fees';
+import type { NativeSupportedFeeLevel } from '../../../types/fees';
 
 type CustomFeeProps = {
     accountKey: AccountKey;

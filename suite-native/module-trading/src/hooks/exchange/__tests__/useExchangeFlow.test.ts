@@ -1,12 +1,7 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,

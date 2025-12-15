@@ -1,15 +1,15 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    DeviceRootState,
     selectAccountByKey,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
-import { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import type { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
 
 import { AccountDetailContentScreen } from './AccountDetailContentScreen';
 import { AccountDetailLoadingScreen } from './AccountDetailLoadingScreen';

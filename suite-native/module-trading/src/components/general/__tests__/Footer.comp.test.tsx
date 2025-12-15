@@ -2,7 +2,8 @@ import { Linking } from 'react-native';
 
 import type { CryptoId } from 'invity-api';
 
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 
 import { Footer } from '../Footer';

@@ -1,16 +1,20 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
+import type { ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import type { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
+import ReactSelect from 'react-select';
 
 // Todo: hack to workaround the issue, see:
 //      - https://github.com/JedWatson/react-select/issues/4631
 // eslint-disable-next-line import/no-extraneous-dependencies
 import createCache from '@emotion/cache';
+import type { EmotionCache } from '@emotion/react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { CacheProvider, EmotionCache } from '@emotion/react';
-import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
+import { CacheProvider } from '@emotion/react';
+import type { CSSObject, DefaultTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
+import type { Elevation } from '@trezor/theme';
 import {
-    Elevation,
     borders,
     spacings,
     spacingsPx,
@@ -19,27 +23,18 @@ import {
     zIndices,
 } from '@trezor/theme';
 
-import { Option as OptionType } from './types';
-import { FrameProps } from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { Option as OptionType } from './types';
+import type { FrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { DROPDOWN_MENU, menuStyle } from '../../Menu/menuStyle';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import {
-    FormCell,
-    FormCellProps,
-    allowedFormCellFrameProps,
-    pickFormCellProps,
-} from '../FormCell/FormCell';
+import type { FormCellProps } from '../FormCell/FormCell';
+import { FormCell, allowedFormCellFrameProps, pickFormCellProps } from '../FormCell/FormCell';
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../styles';
-import { InputSize } from '../types';
-import {
-    Control,
-    ControlComponentProps,
-    GroupHeading,
-    Option,
-    OptionComponentProps,
-} from './customComponents';
+import type { InputSize } from '../types';
+import type { ControlComponentProps, OptionComponentProps } from './customComponents';
+import { Control, GroupHeading, Option } from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
 
 const reactSelectClassNamePrefix = 'react-select';

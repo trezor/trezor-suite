@@ -8,15 +8,20 @@ import {
     getStakingContractAddress,
     simulateUnstake,
 } from '@suite-common/staking';
-import {
+import type {
     UnstakeContextValues as UnstakeContextValuesBase,
     UnstakeFormState,
+} from '@suite-common/wallet-core';
+import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
     useFormDraft,
 } from '@suite-common/wallet-core';
-import { PrecomposedTransactionFinal, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type {
+    PrecomposedTransactionFinal,
+    SelectedAccountLoaded,
+} from '@suite-common/wallet-types';
 import {
     fromBaseCurrencyToCryptoUnit,
     getConvertedOrDefaultFeeInfo,

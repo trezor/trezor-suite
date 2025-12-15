@@ -1,11 +1,9 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import {
-    StoredAuthenticateDeviceResult,
-    deviceAuthenticityActions,
-} from '@suite-common/device-authenticity';
+import type { StoredAuthenticateDeviceResult } from '@suite-common/device-authenticity';
+import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import {
+import type {
     AcquiredDevice,
     ButtonRequest,
     PersistentDeviceData,
@@ -14,10 +12,11 @@ import {
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
-import { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
+import type { Device, DeviceState, Features, KnownDevice, StaticSessionId } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 
-import { DeviceStateActionPayload, deviceActions } from './deviceActions';
+import type { DeviceStateActionPayload } from './deviceActions';
+import { deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type DeviceReducerState = {

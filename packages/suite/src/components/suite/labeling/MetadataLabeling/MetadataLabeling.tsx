@@ -1,13 +1,16 @@
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
 import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
-import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
-import { StaticSessionId } from '@trezor/connect';
-import { EditableText, EditableTextProps } from '@trezor/product-components';
+import type { DropdownMenuItemProps } from '@trezor/components';
+import { Button, Row, Text, Tooltip } from '@trezor/components';
+import type { StaticSessionId } from '@trezor/connect';
+import type { EditableTextProps } from '@trezor/product-components';
+import { EditableText } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
@@ -17,9 +20,14 @@ import {
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from 'src/reducers/suite/metadataReducer';
-import { MetadataAddPayload } from 'src/types/suite/metadata';
+import type { MetadataAddPayload } from 'src/types/suite/metadata';
 
-import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
+import type {
+    LabelContentProps,
+    LabelingVariant,
+    MetadataProps,
+    PrimitiveProps,
+} from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '../../../../actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';

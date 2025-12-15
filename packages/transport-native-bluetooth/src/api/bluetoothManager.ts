@@ -1,21 +1,19 @@
-import {
+import type {
     BleError,
-    BleErrorCode,
-    BleManager,
     Characteristic,
     ConnectionOptions,
     Device,
-    LogLevel,
     State,
     Subscription,
 } from 'react-native-ble-plx';
+import { BleErrorCode, BleManager, LogLevel } from 'react-native-ble-plx';
 
 import { EventEmitter } from 'events';
 
 import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
 import type { TimerId } from '@trezor/type-utils';
 
-import {
+import type {
     BluetoothDevice,
     DeviceBatteryLevelChangeEvent,
     DeviceConnectionStatusChangeEvent,

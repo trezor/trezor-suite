@@ -1,14 +1,15 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { BITCOIN_ONLY_SYMBOLS, BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import type { BitcoinOnlySymbolsItemType } from '@suite-common/suite-constants';
+import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
-import {
+import type {
     Account,
-    AddressDisplayOptions,
     FormState,
     PrecomposedLevels,
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
     formatNetworkAmount,
@@ -18,17 +19,12 @@ import {
     isRbfBumpFeeTransaction,
     restoreOrigOutputsOrder,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
-    DEFAULT_SORTING_STRATEGY,
-    FeeLevel,
-    Params,
-    SignTransaction,
-    SignedTransaction,
-} from '@trezor/connect';
+import type { FeeLevel, Params, SignTransaction, SignedTransaction } from '@trezor/connect';
+import TrezorConnect, { DEFAULT_SORTING_STRATEGY } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
+import type {
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,

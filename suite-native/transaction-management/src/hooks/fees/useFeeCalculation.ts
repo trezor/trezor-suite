@@ -2,24 +2,23 @@ import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import type { AccountsRootState, FeesRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
-import {
+import type {
     AccountKey,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useFeesFetching } from './useFeesFetching';
 import { useFeesForm } from './useFeesForm';
 import { selectFeeLevels } from '../../selectors';
-import { NativeSupportedFeeLevel } from '../../types';
+import type { NativeSupportedFeeLevel } from '../../types';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;

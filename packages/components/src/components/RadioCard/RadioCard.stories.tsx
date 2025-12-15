@@ -1,10 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import {
-    RadioCard as RadioCardComponent,
-    RadioCardProps,
-    allowedRadioCardFrameProps,
-} from './RadioCard';
+import type { RadioCardProps } from './RadioCard';
+import { RadioCard as RadioCardComponent, allowedRadioCardFrameProps } from './RadioCard';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof RadioCardComponent> = {

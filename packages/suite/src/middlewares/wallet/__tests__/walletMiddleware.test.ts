@@ -1,21 +1,17 @@
 import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
-import {
-    SendState,
-    prepareBlockchainMiddleware,
-    prepareSendFormReducer,
-} from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { SendState } from '@suite-common/wallet-core';
+import { prepareBlockchainMiddleware, prepareSendFormReducer } from '@suite-common/wallet-core';
+import type { Account } from '@suite-common/wallet-types';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
 import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
 import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
-import selectedAccountReducer, {
-    State as SelectedAccountState,
-} from 'src/reducers/wallet/selectedAccountReducer';
+import type { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
+import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 import * as fixtures from '../__fixtures__/walletMiddleware';
 

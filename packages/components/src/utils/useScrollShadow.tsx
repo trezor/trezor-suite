@@ -1,8 +1,11 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import type { RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import styled, { CSSObject, DefaultTheme } from 'styled-components';
+import type { CSSObject, DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { Color, Elevation, mapElevationToBackground } from '@trezor/theme';
+import type { Color, Elevation } from '@trezor/theme';
+import { mapElevationToBackground } from '@trezor/theme';
 
 import { useElevation } from '../components/ElevationContext/ElevationContext';
 

@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { StakeAccountRewards } from '@suite-common/wallet-core';
+import type { StakeAccountRewards } from '@suite-common/wallet-core';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
 import { isInt } from '@trezor/utils';
 
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 export function useRewardsNotAvailableYet(
     account: Account,

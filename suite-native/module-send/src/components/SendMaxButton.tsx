@@ -6,25 +6,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { getNetwork } from '@suite-common/wallet-config';
+import type { AccountsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
     selectAccountNetworkSymbol,
     selectAreSatsAmountUnit,
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency, isAddressValid } from '@suite-common/wallet-utils';
 import { Button } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenBalance } from '@suite-native/tokens';
 import { calculateFeeLevelsMaxAmountThunk } from '@suite-native/transaction-management';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import type { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { constructFormDraft, getOutputFieldName } from '../utils';
 
 type SendMaxButtonProps = {

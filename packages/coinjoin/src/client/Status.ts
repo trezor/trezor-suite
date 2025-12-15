@@ -5,13 +5,13 @@ import * as coordinator from './coordinator';
 import { coordinatorRequest } from './coordinatorRequest';
 import { STATUS_TIMEOUT } from '../constants';
 import { RoundPhase } from '../enums';
-import {
+import type {
     CoinjoinClientSettings,
     CoinjoinClientVersion,
     CoinjoinStatusEvent,
     LogEvent,
 } from '../types';
-import { Round } from '../types/coordinator';
+import type { Round } from '../types/coordinator';
 import { patchResponse } from '../utils/http';
 import { transformStatus } from '../utils/roundUtils';
 

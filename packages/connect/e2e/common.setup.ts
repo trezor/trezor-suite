@@ -1,6 +1,6 @@
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
-    EmuStartOptsType,
+    type EmuStartOptsType,
     MNEMONICS,
     TrezorUserEnvLink,
     type TrezorUserEnvLinkClass,

@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    TradingStackParamList,
-    TradingStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { TradingStackParamList } from '@suite-native/navigation';
+import { TradingStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { TradingExchangeApprovalScreen } from '../screens/TradingExchangeApprovalScreen';
 import { TradingExchangePreviewScreen } from '../screens/TradingExchangePreviewScreen';

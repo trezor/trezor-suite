@@ -1,6 +1,6 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import type { NetworkType } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import {
+import type {
     Account,
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -19,13 +19,13 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 
-import {
+import type {
     OutputElementLine,
-    TransactionReviewOutputElement,
     TransactionReviewOutputElementProps,
 } from './TransactionReviewOutputElement';
+import { TransactionReviewOutputElement } from './TransactionReviewOutputElement';
 
 interface GetLinesParams {
     device: TrezorDevice;

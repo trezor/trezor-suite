@@ -1,7 +1,7 @@
-import { Locator, Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
-import { TradingCountryCode } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TradingCountryCode } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import messages from '@trezor/suite/src//support/messages';
 
@@ -9,7 +9,7 @@ import { Fees } from './fees';
 import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
 import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
-import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
+import { type PaymentMethods, type PercentageOfBalanceParams } from '../../types';
 import { DevicePrompt } from '../devicePrompt';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';

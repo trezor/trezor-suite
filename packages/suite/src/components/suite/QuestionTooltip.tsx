@@ -1,8 +1,8 @@
-import { JSX } from 'react';
+import type { JSX } from 'react';
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { H3, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

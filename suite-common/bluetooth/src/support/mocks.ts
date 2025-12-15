@@ -1,7 +1,7 @@
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { BluetoothDeviceCommon } from '../types';
+import type { BluetoothDeviceCommon } from '../types';
 
 // This file is intentionally not reexported in index.ts, so that bundler won't have to import.
 

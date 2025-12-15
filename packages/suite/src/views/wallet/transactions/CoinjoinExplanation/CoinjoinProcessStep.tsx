@@ -1,8 +1,9 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { H3, IconCircle, Paragraph, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

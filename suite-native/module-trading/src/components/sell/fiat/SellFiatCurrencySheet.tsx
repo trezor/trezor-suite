@@ -2,10 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { selectSellSupportedFiatCurrenciesList } from '@suite-native/trading-state';
 
-import {
-    FiatCurrencySheet,
-    FiatCurrencySheetProps,
-} from '../../general/FiatCurrencySheet/FiatCurrencySheet';
+import type { FiatCurrencySheetProps } from '../../general/FiatCurrencySheet/FiatCurrencySheet';
+import { FiatCurrencySheet } from '../../general/FiatCurrencySheet/FiatCurrencySheet';
 
 export type SellFiatCurrencySheetProps = Omit<FiatCurrencySheetProps, 'supportedFiatCurrencies'>;
 

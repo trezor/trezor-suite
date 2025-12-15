@@ -1,7 +1,8 @@
 import { randomBytes } from 'crypto';
 
 import { encodeMessage } from '@trezor/protobuf';
-import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
+import type { ThpPairingMethod } from '@trezor/protocol';
+import { thp as protocolThp } from '@trezor/protocol';
 
 import { thpCall } from './thpCall';
 import { ERRORS } from '../../constants';

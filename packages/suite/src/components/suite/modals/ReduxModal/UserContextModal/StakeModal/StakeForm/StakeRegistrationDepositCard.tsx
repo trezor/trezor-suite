@@ -4,7 +4,7 @@ import {
     selectAccountIsStakingActive,
     selectVotingDelegationOption,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

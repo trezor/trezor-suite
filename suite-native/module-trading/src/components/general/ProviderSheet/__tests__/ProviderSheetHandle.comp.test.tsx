@@ -1,6 +1,8 @@
-import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { ProviderSheetHandle, ProviderSheetHandleProps } from '../ProviderSheetHandle';
+import type { ProviderSheetHandleProps } from '../ProviderSheetHandle';
+import { ProviderSheetHandle } from '../ProviderSheetHandle';
 
 jest.mock('@suite-common/message-system', () => {
     const messages: Record<string, unknown> = {

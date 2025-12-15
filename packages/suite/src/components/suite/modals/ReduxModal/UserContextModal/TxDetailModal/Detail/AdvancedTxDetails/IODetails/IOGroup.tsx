@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Grid, Icon, InfoSegments, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
-import { IODetails } from './IODetails';
+import type { IODetails } from './IODetails';
 import { IOItem } from './IOItem';
 
 const GridWrapper = styled.div`

@@ -1,14 +1,16 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext } from '@suite-native/forms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 import { createChecksumAlert } from './alertBuilders';

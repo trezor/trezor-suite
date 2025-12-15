@@ -1,16 +1,13 @@
 import * as semver from 'semver';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
-import { Device } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
-import {
-    ConfirmOnDevicePill,
-    DeviceAnimation,
-    DeviceAnimationProps,
-} from '@trezor/product-components';
+import type { DeviceAnimationProps } from '@trezor/product-components';
+import { ConfirmOnDevicePill, DeviceAnimation } from '@trezor/product-components';
 import { usePreviousDefined } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 

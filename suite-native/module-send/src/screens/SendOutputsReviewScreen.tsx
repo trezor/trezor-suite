@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    ScreenHeader,
-    SendStackParamList,
-    SendStackRoutes,
-    StackProps,
-    useNavigateToInitialScreen,
-} from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { ScreenHeader, useNavigateToInitialScreen } from '@suite-native/navigation';
 import {
     ReviewOutputItemList,
     selectIsTransactionAlreadySigned,

@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 
 import { yup } from '@suite-common/validators';
-import { Button, InputType, VStack } from '@suite-native/atoms';
+import type { InputType } from '@suite-native/atoms';
+import { Button, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 

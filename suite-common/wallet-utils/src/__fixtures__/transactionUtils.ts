@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
-import { AccountTransaction } from '@trezor/connect';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
+import type { AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
 

@@ -1,4 +1,9 @@
-import { Account, TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
+import type {
+    Account,
+    TokenAddress,
+    TokenInfoBranded,
+    TokenSymbol,
+} from '@suite-common/wallet-types';
 
 export type GroupedByTypeAccounts = Record<string, [Account, ...Account[]]>;
 

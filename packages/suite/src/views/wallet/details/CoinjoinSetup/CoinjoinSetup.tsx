@@ -11,7 +11,8 @@ import {
     motionEasing,
     useElevation,
 } from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBorder } from '@trezor/theme';
 
 import { coinjoinAccountUpdateSetupOption } from 'src/actions/wallet/coinjoinAccountActions';
 import { Translation } from 'src/components/suite/Translation';

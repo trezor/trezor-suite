@@ -1,4 +1,4 @@
-import {
+import type {
     IDBPDatabase,
     IDBPTransaction,
     IndexKey,
@@ -6,9 +6,8 @@ import {
     StoreKey,
     StoreNames,
     StoreValue,
-    deleteDB,
-    openDB,
 } from 'idb';
+import { deleteDB, openDB } from 'idb';
 
 import { createLazy } from '@trezor/utils';
 

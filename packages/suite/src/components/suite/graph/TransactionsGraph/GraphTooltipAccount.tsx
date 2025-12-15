@@ -1,14 +1,15 @@
-import { TooltipProps } from 'recharts';
+import type { TooltipProps } from 'recharts';
 
-import { Formatters, useFormatters } from '@suite-common/formatters';
-import { SignOperator } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import type { Formatters } from '@suite-common/formatters';
+import { useFormatters } from '@suite-common/formatters';
+import type { SignOperator } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
+import type { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 
 import { GraphTooltipBase } from './GraphTooltipBase';
 import type { CryptoGraphProps } from './TransactionsGraph';

@@ -4,7 +4,8 @@ import { useDispatch } from 'react-redux';
 import * as Clipboard from 'expo-clipboard';
 
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
-import { BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { useToast } from '@suite-native/toasts';

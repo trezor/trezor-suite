@@ -1,7 +1,6 @@
-import { AnyAction } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
-import {
-    DEVICE,
+import type { AnyAction } from '@suite-common/redux-utils';
+import type { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import type {
     Device,
     DeviceEvent,
     DeviceMode,
@@ -9,6 +8,7 @@ import {
     PROTO,
     UnavailableCapability,
 } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';

@@ -1,6 +1,7 @@
-import { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountType, NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 
-import { Context, GeneralContextKey, SettingsCategory } from '../messageSystemTypes';
+import type { GeneralContextKey, SettingsCategory } from '../messageSystemTypes';
+import { Context } from '../messageSystemTypes';
 
 describe('Message system types', () => {
     describe('Context', () => {

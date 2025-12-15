@@ -1,21 +1,21 @@
-import { MouseEvent, Ref, forwardRef } from 'react';
+import type { MouseEvent, Ref } from 'react';
+import { forwardRef } from 'react';
 import { ReactSVG } from 'react-svg';
 
-import styled, { DefaultTheme, css } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 // TODO: suite-common imports in non-suite packages should not be allowed
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { IconName, icons } from '@suite-common/icons/src/icons';
-import { CSSColor, Color } from '@trezor/theme';
+import type { IconName } from '@suite-common/icons/src/icons';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { icons } from '@suite-common/icons/src/icons';
+import type { CSSColor, Color } from '@trezor/theme';
 
-import { UIVariant } from '../../config/types';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { UIVariant } from '../../config/types';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 
 export const iconVariants = [
     'primary',

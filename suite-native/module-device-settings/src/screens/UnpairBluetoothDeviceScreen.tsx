@@ -4,13 +4,8 @@ import { Button, VStack } from '@suite-native/atoms';
 import { useBluetoothDevice } from '@suite-native/bluetooth';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    DynamicScreenHeader,
-    Screen,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceSettingsStackRoutes, DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 
 type NavigationProp = StackNavigationProps<

@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { Button, HStack, VStack } from '@suite-native/atoms';
 
-import { UpdateProgressIndicator, UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
+import type { UpdateProgressIndicatorStatus } from './UpdateProgressIndicator';
+import { UpdateProgressIndicator } from './UpdateProgressIndicator';
 
 // DEBUG ONLY:This component is useful for testing animation states of UpdateProgressIndicator
 export const UpdateProgressIndicatorDemo = () => {

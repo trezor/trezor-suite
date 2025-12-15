@@ -1,11 +1,6 @@
 import { isDeviceInBootloaderMode } from './modeUtils';
-import {
-    FirmwareSource,
-    FirmwareType,
-    FirmwareVersionString,
-    PartialDevice,
-    VersionArray,
-} from './types';
+import type { FirmwareSource, FirmwareVersionString, PartialDevice, VersionArray } from './types';
+import { FirmwareType } from './types';
 
 export const getFirmwareSource = (device?: PartialDevice): FirmwareSource => {
     if (device?.mode === 'bootloader') {

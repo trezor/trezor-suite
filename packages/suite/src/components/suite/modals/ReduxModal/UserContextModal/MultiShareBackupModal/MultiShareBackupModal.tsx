@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Modal, ModalProps } from '@trezor/components';
+import type { ModalProps } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';

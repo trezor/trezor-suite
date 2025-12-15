@@ -1,7 +1,7 @@
 import { isArrayMember } from '@trezor/utils';
 
 import { FIRMWARE } from '../../constants';
-import { Log } from '../../utils/debug';
+import type { Log } from '../../utils/debug';
 import type { Device } from '../Device';
 import { checkFirmwareHash } from './checkFirmwareHash';
 

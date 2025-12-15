@@ -1,16 +1,9 @@
 import { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { FirmwareUpdateStuckedState } from '@suite-native/analytics';
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    Button,
-    NumberedListItem,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import type { FirmwareUpdateStuckedState } from '@suite-native/analytics';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Box, Button, NumberedListItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type MayBeStuckedBottomSheetProps = {

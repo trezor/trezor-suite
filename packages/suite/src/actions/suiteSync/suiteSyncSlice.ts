@@ -1,11 +1,12 @@
-import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import type { AnyAction } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import type { SuiteSyncState } from '@suite-common/suite-sync';
 import {
-    SuiteSyncState,
     initialSuiteSyncState as commonInitialState,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
 
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 

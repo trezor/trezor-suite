@@ -1,9 +1,10 @@
 import { useDispatch } from 'react-redux';
 
-import { Link, Text, TextVariant } from '@trezor/components';
+import type { TextVariant } from '@trezor/components';
+import { Link, Text } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 type TradingDetailTxAddressProps = {
     address: string;

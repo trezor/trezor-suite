@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    AddCoinAccountStackParamList,
-    AddCoinAccountStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { AddCoinAccountStackParamList } from '@suite-native/navigation';
+import { AddCoinAccountStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { AddCoinAccountScreen } from '../screens/AddCoinAccountScreen';
 import { AddCoinDiscoveryFinishedScreen } from '../screens/AddCoinDiscoveryFinishedScreen';

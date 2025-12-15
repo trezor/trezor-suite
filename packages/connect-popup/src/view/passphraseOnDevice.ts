@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/passphraseOnDevice.js
 
-import { UiRequestDeviceAction } from '@trezor/connect';
+import type { UiRequestDeviceAction } from '@trezor/connect';
 
 import { container, showView } from './common';
 

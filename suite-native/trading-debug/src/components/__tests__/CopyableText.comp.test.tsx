@@ -1,6 +1,7 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { CopyableText, CopyableTextProps } from '../CopyableText';
+import type { CopyableTextProps } from '../CopyableText';
+import { CopyableText } from '../CopyableText';
 
 const mockCopyToClipboard = jest.fn();
 

@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { LayoutChangeEvent, PixelRatio } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
+import { PixelRatio } from 'react-native';
 
 import { useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import type { NativeTypographyStyle } from '@trezor/theme';
 
 export const useIsMultiline = (fontType: NativeTypographyStyle = 'titleMedium') => {
     const [isMultiline, setIsMultiline] = useState<boolean | null>(false);

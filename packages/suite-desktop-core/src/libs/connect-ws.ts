@@ -1,22 +1,22 @@
 import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
-import {
+import type {
     ConnectSettings,
-    IFRAME,
     IFrameCallMessage,
-    POPUP,
     PopupClosedMessage,
     PopupHandshake,
-    parseConnectSettings,
 } from '@trezor/connect';
+import { IFRAME, POPUP, parseConnectSettings } from '@trezor/connect';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
-import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
-import { Deferred, createDeferred, resolveAfter } from '@trezor/utils';
+import type { ProcessInfo } from '@trezor/node-utils';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+import type { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
+import type { Deferred } from '@trezor/utils';
+import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { createHttpReceiver } from './http-receiver';
-import { Dependencies } from '../modules';
+import type { createHttpReceiver } from './http-receiver';
+import type { Dependencies } from '../modules';
 import { app } from '../typed-electron';
 
 const LOG_PREFIX = 'connect-ws';

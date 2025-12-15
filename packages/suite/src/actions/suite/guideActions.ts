@@ -1,7 +1,7 @@
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Dispatch } from 'src/types/suite';
+import type { Dispatch } from 'src/types/suite';
 
 import { GUIDE } from './constants';
 

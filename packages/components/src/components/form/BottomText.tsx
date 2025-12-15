@@ -1,14 +1,16 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import { InputState } from './types';
-import { UIVariant } from '../../config/types';
+import type { InputState } from './types';
+import type { UIVariant } from '../../config/types';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName, IconVariant } from '../Icon/Icon';
-import { Text, TextVariant } from '../typography/Text/Text';
+import type { IconName, IconVariant } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
+import type { TextVariant } from '../typography/Text/Text';
+import { Text } from '../typography/Text/Text';
 
 export const mapInputStateToUIVariant = (inputState: InputState): UIVariant => {
     const variantMap: Record<InputState, UIVariant> = {

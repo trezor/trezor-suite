@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Menu as MenuComponent, MenuProps, allowedMenuFrameProps } from './Menu';
+import type { MenuProps } from './Menu';
+import { Menu as MenuComponent, allowedMenuFrameProps } from './Menu';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const meta: Meta<typeof MenuComponent> = {

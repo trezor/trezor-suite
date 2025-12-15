@@ -1,5 +1,7 @@
-import { ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import type { ReactElement } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Reanimated, {
     FadeInDown,
@@ -16,15 +18,14 @@ import Reanimated, {
     withTiming,
 } from 'react-native-reanimated';
 
+import type { PathCommand, SkPath } from '@shopify/react-native-skia';
 import {
     Canvas,
     Circle,
     Group,
     LinearGradient,
     Path,
-    PathCommand,
     Shadow,
-    SkPath,
     Skia,
     mix,
     vec,

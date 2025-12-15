@@ -3,11 +3,8 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
-import {
-    FirmwareUpdateStackParamList,
-    FirmwareUpdateStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { FirmwareUpdateStackParamList } from '@suite-native/navigation';
+import { FirmwareUpdateStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { DeviceConnectionGuardScreen } from '../screens/DeviceConnectionGuardScreen';

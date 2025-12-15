@@ -1,7 +1,8 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

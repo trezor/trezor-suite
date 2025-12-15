@@ -1,7 +1,8 @@
 import { Pressable } from 'react-native';
 
 import { Box } from '@suite-native/atoms';
-import { Icon, IconProps } from '@suite-native/icons';
+import type { IconProps } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 
 export type FavouriteIconProps = {

@@ -1,4 +1,4 @@
-import { AuthenticateDeviceResult, Unsuccessful } from '@trezor/connect';
+import type { AuthenticateDeviceResult, Unsuccessful } from '@trezor/connect';
 
 type ConnectErrorPayload = Unsuccessful['payload'];
 // note: corresponds to Awaited<Response<AuthenticateDeviceResult>>['payload'] but this is IMO clearer

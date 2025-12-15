@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import { Option, Select as SelectComponent, SelectProps } from './Select';
+import type { Option, SelectProps } from './Select';
+import { Select as SelectComponent } from './Select';
 
 const values: any = {
     'None (default)': null,

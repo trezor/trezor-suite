@@ -1,9 +1,11 @@
-import { ReactNode } from 'react';
-import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { ReactNode } from 'react';
+import type { EdgeInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { Box, BoxProps } from './Box';
+import type { BoxProps } from './Box';
+import { Box } from './Box';
 
 type ScreenHeaderWrapperProps = {
     children: ReactNode;

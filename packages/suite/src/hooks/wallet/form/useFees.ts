@@ -1,18 +1,18 @@
 import { useEffect, useRef } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import type { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import {
+import type {
     FeeInfo,
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
 
 import { useDispatch } from 'src/hooks/suite';
 
-import { SendContextValues } from '../../../types/wallet/sendForm';
+import type { SendContextValues } from '../../../types/wallet/sendForm';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];

@@ -1,10 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
+import type { MessageSystemRootState } from '@suite-common/message-system';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 
 export const useIsInAppRatingEnabled = () => {
     const isInAppRatingEnabled = useSelector((state: MessageSystemRootState) =>

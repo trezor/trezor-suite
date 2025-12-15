@@ -1,13 +1,9 @@
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import { PROTO } from '../../constants';
-import {
-    Address as AddressShared,
-    BundledParams,
-    GetAddress as GetAddressShared,
-    Params,
-    Response,
-} from '../params';
+import type { Address as AddressShared, BundledParams, Params, Response } from '../params';
+import { GetAddress as GetAddressShared } from '../params';
 
 export type GetAddress = Static<typeof GetAddress>;
 export const GetAddress = Type.Composite([

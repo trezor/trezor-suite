@@ -3,7 +3,8 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { cloneObject } from '@trezor/utils';
 
@@ -13,16 +14,16 @@ import {
     selectMetadata,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
-import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
-import {
+import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
+import type {
     AccountLabels,
     MetadataAddPayload,
     MetadataEncryptionVersion,
     MetadataProvider,
-    ProviderErrorAction,
     WalletLabels,
 } from 'src/types/suite/metadata';
-import { Account } from 'src/types/wallet';
+import { ProviderErrorAction } from 'src/types/suite/metadata';
+import type { Account } from 'src/types/wallet';
 import * as metadataUtils from 'src/utils/suite/metadata';
 
 import type { MetadataAction } from './metadataActions';

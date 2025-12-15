@@ -5,16 +5,18 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { invariant } from '@suite-common/suite-utils';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
-import { AccountKey, FormState, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkType } from '@suite-common/wallet-core';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { FeesFormValues } from '../../feesFormSchema';
+import type { FeesFormValues } from '../../feesFormSchema';
 import { selectCustomFeeLevel, selectFeeLevelTransactionBytes } from '../../selectors';
-import { NativeSendRootState } from '../../sendFormSlice';
+import type { NativeSendRootState } from '../../sendFormSlice';
 import { calculateCustomFeeLevelThunk } from '../../thunks';
 
 type UseCustomFeeProps = {

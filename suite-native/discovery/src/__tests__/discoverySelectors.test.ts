@@ -1,6 +1,7 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
-import { PreloadedState, initStore } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { initStore } from '@suite-native/test-utils';
 
 import { selectDiscoverySupportedNetworks } from '../discoverySelectors';
 

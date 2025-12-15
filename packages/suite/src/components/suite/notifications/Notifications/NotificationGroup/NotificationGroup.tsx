@@ -2,7 +2,7 @@ import { Column, H4, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { AppState } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
 import { getSeenAndUnseenNotifications } from 'src/utils/suite/notification';
 
 import { NotificationList } from './NotificationList/NotificationList';

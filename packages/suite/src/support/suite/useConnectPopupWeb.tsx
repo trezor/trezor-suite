@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
+import type { ManifestPartial } from '@suite-common/connect-popup';
 import {
     CALL_SOURCE_WEB,
-    ManifestPartial,
     connectPopupCallThunk,
     connectPopupCancelThunk,
     getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { CallMethodKeys, IFRAME, POPUP, RESPONSE_EVENT, createPopupMessage } from '@trezor/connect';
+import type { CallMethodKeys } from '@trezor/connect';
+import { IFRAME, POPUP, RESPONSE_EVENT, createPopupMessage } from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

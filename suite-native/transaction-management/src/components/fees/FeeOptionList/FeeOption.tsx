@@ -9,27 +9,28 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
+import type { FeesRootState } from '@suite-common/wallet-core';
 import {
-    FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
-import {
+import type {
     GeneralPrecomposedTransaction,
     GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { EmptyAmountSkeleton } from '@suite-native/formatters/src/components/EmptyAmountSkeleton';
 import { FormContext } from '@suite-native/forms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
-import { NativeSupportedPredefinedFeeLevel } from '../../../types';
+import type { NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;

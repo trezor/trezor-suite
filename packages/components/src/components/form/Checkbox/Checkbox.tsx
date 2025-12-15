@@ -1,18 +1,15 @@
-import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
+import type { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Color, borders, spacingsPx, typography } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 
-import { UIAlignment, UIVariant } from '../../../config/types';
+import type { UIAlignment, UIVariant } from '../../../config/types';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { Icon } from '../../Icon/Icon';
 

@@ -1,4 +1,5 @@
-import { ResponsiveContainer, ResponsiveContainerProps } from 'recharts';
+import type { ResponsiveContainerProps } from 'recharts';
+import { ResponsiveContainer } from 'recharts';
 
 // https://github.com/recharts/recharts/issues/1767#issuecomment-598607012
 export const GraphResponsiveContainer = (props: ResponsiveContainerProps) => (

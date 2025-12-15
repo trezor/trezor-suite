@@ -13,12 +13,12 @@ import { Button } from '@suite-native/atoms';
 import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes } from '@suite-native/navigation';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 type NavigationProp = StackToStackCompositeNavigationProps<

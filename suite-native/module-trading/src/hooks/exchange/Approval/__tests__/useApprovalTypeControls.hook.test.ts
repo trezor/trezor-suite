@@ -4,12 +4,8 @@ import {
     selectTradingExchangePreselectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import {
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useApprovalTypeControls } from '../useApprovalTypeControls';

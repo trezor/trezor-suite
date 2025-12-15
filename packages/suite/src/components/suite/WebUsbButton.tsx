@@ -1,4 +1,5 @@
-import { Button, ButtonProps } from '@trezor/components';
+import type { ButtonProps } from '@trezor/components';
+import { Button } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
 

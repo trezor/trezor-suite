@@ -1,16 +1,13 @@
-import { CryptoId, InfoResponse } from 'invity-api';
+import type { CryptoId, InfoResponse } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
-import {
-    TradingComposedTransactionInfo,
-    initialState,
-    tradingActions,
-} from '../tradingCommonReducer';
+import type { TradingComposedTransactionInfo } from '../tradingCommonReducer';
+import { initialState, tradingActions } from '../tradingCommonReducer';
 import { accounts } from './account';
-import {
+import type {
     TradingPaymentMethodListProps,
     TradingTransactionBuy,
     TradingTransactionExchange,

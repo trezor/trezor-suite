@@ -1,7 +1,7 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { H3, Icon, Row, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 

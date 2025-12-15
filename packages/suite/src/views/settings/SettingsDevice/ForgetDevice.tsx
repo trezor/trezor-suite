@@ -7,7 +7,8 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
+import type { ModalProps } from '@trezor/components';
+import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';

@@ -1,12 +1,9 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectAccountNetworkType,
-} from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkType } from '@suite-common/wallet-core';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 

@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 
 import { useDispatch } from '../../../hooks/suite';

@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import { fromWei } from 'web3-utils';
 
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
-import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Banner, Column, H3, Paragraph } from '@trezor/components';
-import { InternalTransfer } from '@trezor/connect';
+import type { InternalTransfer } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

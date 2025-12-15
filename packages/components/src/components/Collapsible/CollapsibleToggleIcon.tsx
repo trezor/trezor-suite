@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 import { useCollapsible } from './CollapsibleContext';
 import { motionEasing } from '../../config/motion';
-import { Icon, IconName, IconProps } from '../Icon/Icon';
+import type { IconName, IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 
 const ANIMATION_DURATION = 0.4;
 

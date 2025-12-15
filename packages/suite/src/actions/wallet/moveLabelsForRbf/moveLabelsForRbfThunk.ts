@@ -1,6 +1,6 @@
 import { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataThunk';
-import { Dispatch } from '../../../types/suite';
-import { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
+import type { Dispatch } from '../../../types/suite';
+import type { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
 
 type MoveLabelsForRbfThunkParams = {
     newTxid: string;

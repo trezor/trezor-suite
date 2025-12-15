@@ -2,7 +2,8 @@ import { Text } from 'react-native';
 
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { Card, CardProps } from '../Card';
+import type { CardProps } from '../Card';
+import { Card } from '../Card';
 
 describe('Card', () => {
     const renderComponent = (props: Omit<CardProps, 'children'>) => {

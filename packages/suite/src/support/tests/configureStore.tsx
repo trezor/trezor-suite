@@ -1,6 +1,8 @@
-import { AnyAction, isFulfilled, isPending } from '@reduxjs/toolkit';
-import { Dispatch } from 'redux';
-import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
+import type { AnyAction } from '@reduxjs/toolkit';
+import { isFulfilled, isPending } from '@reduxjs/toolkit';
+import type { Dispatch } from 'redux';
+import type { MockStoreCreator } from 'redux-mock-store';
+import reduxMockStore from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
 import type { ExtraDependencies } from '@suite-common/redux-utils';

@@ -1,4 +1,5 @@
-import { Dispatch, ReactNode, createContext, useContext, useState } from 'react';
+import type { Dispatch, ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type OnCancelHandler = () => void;
 

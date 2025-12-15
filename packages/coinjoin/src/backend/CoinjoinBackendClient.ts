@@ -17,7 +17,8 @@ import type {
     BlockbookTransaction,
     MempoolFilterResponse,
 } from '../types/backend';
-import { RequestOptions, resetIdentityCircuit } from '../utils/http';
+import type { RequestOptions } from '../utils/http';
+import { resetIdentityCircuit } from '../utils/http';
 
 type CoinjoinBackendClientSettings = CoinjoinBackendSettings & {
     timeout?: number;

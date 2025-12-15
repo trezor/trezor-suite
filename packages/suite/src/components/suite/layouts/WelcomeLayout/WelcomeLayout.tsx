@@ -1,7 +1,5 @@
-import {
-    WelcomeLayoutWithoutModalSwitcher,
-    WelcomeLayoutWithoutModalSwitcherProps,
-} from './WelcomeLayoutWithoutModalSwitcher';
+import type { WelcomeLayoutWithoutModalSwitcherProps } from './WelcomeLayoutWithoutModalSwitcher';
+import { WelcomeLayoutWithoutModalSwitcher } from './WelcomeLayoutWithoutModalSwitcher';
 import { ModalSwitcher } from '../../modals/ModalSwitcher/ModalSwitcher';
 import { PassphraseFlow } from '../SuiteLayout/PassphraseFlow';
 

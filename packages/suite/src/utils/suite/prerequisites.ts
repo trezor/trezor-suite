@@ -1,4 +1,4 @@
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
 

@@ -1,9 +1,6 @@
-import {
-    AssetFiatBalance,
-    AssetFiatBalanceWithPercentage,
-    calculateAssetsPercentage,
-} from '@suite-common/assets';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AssetFiatBalance, AssetFiatBalanceWithPercentage } from '@suite-common/assets';
+import { calculateAssetsPercentage } from '@suite-common/assets';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, SkeletonCircle, Tooltip } from '@trezor/components';
 import { AssetShareIndicator } from '@trezor/product-components';

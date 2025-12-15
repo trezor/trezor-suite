@@ -1,12 +1,13 @@
 import { Alert } from 'react-native';
-import { MMKV, createMMKV } from 'react-native-mmkv';
+import type { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
 import { captureException, captureMessage } from '@sentry/react-native';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
-import { Storage } from 'redux-persist';
+import type { Storage } from 'redux-persist';
 
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
 

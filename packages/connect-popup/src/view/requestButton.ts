@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/requestButton.js
 
-import { UiRequestButton } from '@trezor/connect';
+import type { UiRequestButton } from '@trezor/connect';
 
 import { container, showView } from './common';
 

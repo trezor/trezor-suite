@@ -17,7 +17,8 @@ import {
 } from '@suite-native/navigation';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 
-import { DeviceDangerBannerCause, deviceDangerBannerAtom } from '../deviceAtoms';
+import type { DeviceDangerBannerCause } from '../deviceAtoms';
+import { deviceDangerBannerAtom } from '../deviceAtoms';
 import {
     selectFirmwareRevisionCheckErrorIfEnabled,
     selectIsSkippedRevisionCheckError,

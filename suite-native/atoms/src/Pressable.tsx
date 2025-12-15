@@ -1,4 +1,5 @@
-import { Pressable, PressableProps } from 'react-native';
+import type { PressableProps } from 'react-native';
+import { Pressable } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { pressTimingConfig } from './constants';

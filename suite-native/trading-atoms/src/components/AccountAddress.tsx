@@ -1,4 +1,5 @@
-import { Text, TextProps } from '@suite-native/atoms';
+import type { TextProps } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 
 type AccountAddressProps = {
     address: string;

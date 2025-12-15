@@ -1,11 +1,6 @@
 import { PixelRatio } from 'react-native';
-import {
-    SharedValue,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withTiming,
-} from 'react-native-reanimated';
+import type { SharedValue } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
 import { AnimatedBox, Box, useIllustrationColors } from '@suite-native/atoms';

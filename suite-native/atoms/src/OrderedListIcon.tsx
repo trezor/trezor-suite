@@ -1,8 +1,9 @@
-import { RequireExactlyOne } from 'type-fest';
+import type { RequireExactlyOne } from 'type-fest';
 
-import { Icon, IconName, IconSize, getIconSize } from '@suite-native/icons';
+import type { IconName, IconSize } from '@suite-native/icons';
+import { Icon, getIconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, NativeRadius } from '@trezor/theme';
+import type { Color, NativeRadius } from '@trezor/theme';
 
 import { Box } from './Box';
 import { Text } from './Text';

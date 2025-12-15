@@ -1,4 +1,4 @@
-import { PersistentDeviceData } from '@suite-common/suite-types';
+import type { PersistentDeviceData } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 // This file is intentionally not reexported in index.ts, so that bundler won't have to import.

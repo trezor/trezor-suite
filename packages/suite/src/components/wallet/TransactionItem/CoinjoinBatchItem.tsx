@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { useFormatters } from '@suite-common/formatters';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
+import type { Timestamp } from '@suite-common/wallet-types';
 import {
     asBaseCurrencyAmount,
     formatNetworkAmount,
@@ -22,7 +22,7 @@ import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet/index';
+import type { WalletAccountTransaction } from 'src/types/wallet/index';
 
 import { Content, Description, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 import { TransactionTargetLayout } from './TransactionTargetLayout';

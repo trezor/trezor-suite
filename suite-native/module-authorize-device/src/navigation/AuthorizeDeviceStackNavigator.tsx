@@ -5,11 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { AuthorizeDeviceStackParamList } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';

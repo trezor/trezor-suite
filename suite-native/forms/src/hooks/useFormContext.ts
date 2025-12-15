@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import type { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { FormContext } from '../Form';
 

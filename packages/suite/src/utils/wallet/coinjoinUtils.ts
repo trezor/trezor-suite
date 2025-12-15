@@ -2,17 +2,16 @@ import { createHash } from 'crypto';
 import { hoursToMilliseconds } from 'date-fns';
 
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { getBip43Type, getUtxoOutpoint } from '@suite-common/wallet-utils';
-import { AnonymitySet } from '@trezor/blockchain-link';
-import {
+import type { AnonymitySet } from '@trezor/blockchain-link';
+import type {
     CoinjoinStatusEvent,
     CoinjoinTransactionData,
     RegisterAccountParams,
-    RoundPhase,
-    SessionPhase,
 } from '@trezor/coinjoin';
+import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { isArrayMember } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -24,7 +23,7 @@ import {
     SKIP_ROUNDS_VALUE_WHEN_ENABLED,
 } from 'src/services/coinjoin/config';
 import type { CoinjoinSymbol } from 'src/services/coinjoin/config';
-import {
+import type {
     AnonymityGainPerRound,
     CoinjoinAccount,
     CoinjoinSessionParameters,

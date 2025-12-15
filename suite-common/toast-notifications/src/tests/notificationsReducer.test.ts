@@ -4,7 +4,7 @@ import { notificationsActions } from '../notificationsActions';
 import { notificationsReducer } from '../notificationsReducer';
 import { selectNotifications } from '../notificationsSelectors';
 import { removeAccountEventsThunk, removeTransactionEventsThunk } from '../notificationsThunks';
-import { NotificationsRootState, NotificationsState } from '../types';
+import type { NotificationsRootState, NotificationsState } from '../types';
 
 interface InitStoreArgs {
     preloadedState?: NotificationsRootState;

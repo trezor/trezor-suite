@@ -1,4 +1,4 @@
-import TrezorConnect, { BundleProgress, UI } from '../../../src';
+import TrezorConnect, { type BundleProgress, UI } from '../../../src';
 import type { DiscoverAccountsProgress } from '../../../src/types/api/discoverAccounts';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
 

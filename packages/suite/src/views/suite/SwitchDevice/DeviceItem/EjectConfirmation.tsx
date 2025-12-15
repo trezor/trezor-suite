@@ -1,6 +1,6 @@
-import { MouseEventHandler } from 'react';
+import type { MouseEventHandler } from 'react';
 
-import { AcquiredDevice } from '@suite-common/suite-types';
+import type { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';

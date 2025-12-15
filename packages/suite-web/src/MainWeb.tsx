@@ -3,7 +3,8 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { History, createBrowserHistory } from 'history';
+import type { History } from 'history';
+import { createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
 import { ServicesProvider } from '@suite-common/redux-utils';

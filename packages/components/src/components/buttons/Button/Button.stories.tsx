@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
+import type { ButtonProps } from './Button';
+import { Button as ButtonComponent, allowedButtonFrameProps } from './Button';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { buttonIntents, buttonPriorities, buttonSizes } from '../types';

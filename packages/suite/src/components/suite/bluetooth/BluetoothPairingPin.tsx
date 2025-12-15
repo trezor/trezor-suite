@@ -4,7 +4,7 @@ import { Card, Row, Text } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
-import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 
 const Pin = styled.span`
     letter-spacing: ${spacingsPx.md};

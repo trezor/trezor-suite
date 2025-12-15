@@ -1,9 +1,9 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
-import { Account } from '@suite-common/wallet-types';
+import type { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
+import type { Account } from '@suite-common/wallet-types';
 
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
+import type { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 
 export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
     error: false,

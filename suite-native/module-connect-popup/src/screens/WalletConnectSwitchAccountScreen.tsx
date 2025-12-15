@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getSessionNetworks,
     selectSessions,
@@ -14,13 +14,8 @@ import {
 import { AccountsListItem } from '@suite-native/accounts';
 import { Card, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, RootStackRoutes, StackProps } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 type NavigationProps = StackProps<RootStackParamList, RootStackRoutes.WalletConnectSwitchAccount>;
 

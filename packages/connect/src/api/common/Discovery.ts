@@ -2,7 +2,7 @@
 
 import { TypedEmitter } from '@trezor/utils';
 
-import { Blockchain } from '../../backend/BlockchainLink';
+import type { Blockchain } from '../../backend/BlockchainLink';
 import { ERRORS } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';

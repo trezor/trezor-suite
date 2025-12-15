@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import type { AccountsRootState, TransactionsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
-    TransactionsRootState,
     confirmAddressOnDeviceThunk,
     selectAccountNetworkSymbol,
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import type { AccountKey } from '@suite-common/wallet-types';
+import type { NativeAccountsRootState } from '@suite-native/accounts';
+import { selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';

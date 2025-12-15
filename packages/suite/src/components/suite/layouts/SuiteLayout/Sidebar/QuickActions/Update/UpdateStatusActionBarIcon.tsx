@@ -1,21 +1,23 @@
 import { useDispatch } from 'react-redux';
 
-import styled, { DefaultTheme, css, useTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { ComponentWithSubIcon, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
+import type { IconSize } from '@trezor/components';
+import { ComponentWithSubIcon, Icon, getIconSize, iconSizes } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
-import { CSSColor, Color, borders } from '@trezor/theme';
+import type { CSSColor, Color } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 import { useDevice, useSelector } from 'src/hooks/suite';
 
 import { QuickActionButton } from '../QuickActionButton';
 import { UpdateIconGroup } from './UpdateIconGroup';
 import { UpdateTooltip } from './UpdateTooltip';
+import type { UpdateStatus, UpdateVariant } from './updateQuickActionTypes';
 import {
-    UpdateStatus,
-    UpdateVariant,
     mapDeviceUpdateToClick,
     mapSuiteUpdateToClick,
     mapUpdateStatusToIcon,

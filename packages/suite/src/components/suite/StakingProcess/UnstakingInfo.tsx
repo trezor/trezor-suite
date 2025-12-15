@@ -1,6 +1,8 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 
-import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueue } from '@suite-common/wallet-core';
 import { getUnstakingPeriodInDays, isStakingNetworkType } from '@suite-common/wallet-utils';
@@ -10,7 +12,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import type { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 
 import { InfoRow } from './InfoRow';
 

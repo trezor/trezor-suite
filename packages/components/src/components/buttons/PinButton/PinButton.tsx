@@ -1,8 +1,9 @@
-import { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { useElevation } from '../../ElevationContext/ElevationContext';
 

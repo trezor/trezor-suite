@@ -12,14 +12,15 @@ import {
     TextDivider,
     VStack,
 } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import {
+import type { IconName } from '@suite-native/icons';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type {
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes } from '@suite-native/navigation';
 
 import { ConnectDeviceScreen } from '../../components/connect/ConnectDeviceScreen';
 

@@ -1,8 +1,10 @@
-import { ChangeEvent, ClipboardEvent, forwardRef, useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, ClipboardEvent } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';

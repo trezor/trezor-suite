@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-key */
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Button, CollapsibleBox, Icon, IconName, intermediaryTheme } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { Button, CollapsibleBox, Icon, intermediaryTheme } from '@trezor/components';
 import { isFirefox } from '@trezor/env-utils';
 import { spacings, typography } from '@trezor/theme';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';

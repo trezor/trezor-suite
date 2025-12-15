@@ -1,12 +1,12 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { XRP_FLAG } from '@suite-common/wallet-constants';
-import {
-    AddressDisplayOptions,
+import type {
     ExternalOutput,
     PrecomposedLevels,
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     calculateMax,
@@ -18,17 +18,13 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { buildSendTransaction, toStroops } from '@trezor/blockchain-link-utils/src/stellar';
-import TrezorConnect, {
-    FeeLevel,
-    RipplePayment,
-    StellarOperation,
-    TokenInfo,
-} from '@trezor/connect';
+import type { FeeLevel, RipplePayment, StellarOperation, TokenInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
-import {
+import type {
     ComposeFeeLevelsError,
     ComposeTransactionThunkArguments,
     SignTransactionError,

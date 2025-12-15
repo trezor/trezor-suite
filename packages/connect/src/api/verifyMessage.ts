@@ -2,7 +2,8 @@
 
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../constants';
+import type { PROTO } from '../constants';
+import { ERRORS } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';

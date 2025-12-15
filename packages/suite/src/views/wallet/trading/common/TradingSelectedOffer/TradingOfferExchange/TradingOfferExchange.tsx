@@ -1,7 +1,7 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
+import type { TradingExchangeType } from '@suite-common/trading';
 import {
-    TradingExchangeType,
     selectTradingExchangeFormStep,
     selectTradingExchangeReceiveAccountKey,
 } from '@suite-common/trading';
@@ -14,8 +14,8 @@ import { spacings } from '@trezor/theme';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
-import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
+import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import type { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
 
 import { TradingOfferExchangeDetails } from './TradingOfferExchangeDetails';

@@ -1,12 +1,12 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import {
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingCryptoSelectItemProps,
 } from '@suite-common/trading';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 import {
     FIXTURE_ACCOUNTS,
     FIXTURE_ACCOUNT_OPTIONS,

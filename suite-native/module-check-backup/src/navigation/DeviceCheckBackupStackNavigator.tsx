@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import type { DeviceCheckBackupStackParamList } from '@suite-native/navigation';
 import {
-    DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

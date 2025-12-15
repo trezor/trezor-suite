@@ -1,16 +1,13 @@
 import { EventEmitter } from 'events';
 import path from 'path';
 
-import { ScheduleActionParams, ScheduledAction, scheduleAction } from '@trezor/utils';
+import type { ScheduleActionParams, ScheduledAction } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
 import { BOOTSTRAP_EVENT_PROGRESS, bootstrapParser } from './events/bootstrap';
 import { TorControlPort } from './torControlPort';
-import {
-    BootstrapEvent,
-    TOR_CONTROLLER_STATUS,
-    TorConnectionOptions,
-    TorControllerStatus,
-} from './types';
+import type { BootstrapEvent, TorConnectionOptions, TorControllerStatus } from './types';
+import { TOR_CONTROLLER_STATUS } from './types';
 
 const WAITING_TIME = 1000;
 const MAX_TRIES_WAITING = 200;

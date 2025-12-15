@@ -3,12 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import {
-    DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { DeviceSettingsStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { DeviceCheckBackupStackRoutes, DeviceSettingsStackRoutes } from '@suite-native/navigation';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 
 const checkBackupUnsupportedDeviceModels: DeviceModelInternal[] = [DeviceModelInternal.T1B1];

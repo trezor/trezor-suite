@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react';
+import type { MouseEventHandler } from 'react';
 
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';

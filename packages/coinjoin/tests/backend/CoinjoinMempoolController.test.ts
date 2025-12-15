@@ -1,7 +1,7 @@
 import { networks } from '@trezor/utxo-lib';
 
 import { CoinjoinMempoolController } from '../../src/backend/CoinjoinMempoolController';
-import { AccountAddress } from '../../src/types/backend';
+import type { AccountAddress } from '../../src/types/backend';
 import {
     BLOCKS,
     SEGWIT_CHANGE_ADDRESSES,

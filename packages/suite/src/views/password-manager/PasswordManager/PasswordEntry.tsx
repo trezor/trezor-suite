@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
-import TrezorConnect, { DeviceUniquePath } from '@trezor/connect';
+import type { DeviceUniquePath } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { spacings, spacingsPx } from '@trezor/theme';
 
 import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';

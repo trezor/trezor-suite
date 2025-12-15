@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useTheme } from 'styled-components';
 
@@ -6,17 +6,19 @@ import { BannerButton } from './BannerButton';
 import { BannerContext } from './BannerContext';
 import { BannerIconButton } from './BannerIconButton';
 import { DEFAULT_INTENT } from './consts';
-import { BannerIntent } from './types';
+import type { BannerIntent } from './types';
 import {
     mapIntentToBackgroundColor,
     mapIntentToIcon,
     mapIntentToIconColor,
     mapIntentToTextColor,
 } from './utils';
-import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import type { IconName } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
 import { Text } from '../typography/Text/Text';
 

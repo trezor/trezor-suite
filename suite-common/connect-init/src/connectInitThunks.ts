@@ -5,7 +5,7 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceActions,
     deviceConnectThunks,
@@ -14,11 +14,11 @@ import {
     selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
+import type { Device } from '@trezor/connect';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     DEVICE,
     DEVICE_EVENT,
-    Device,
     TRANSPORT_EVENT,
     UI,
     UI_EVENT,
@@ -29,7 +29,7 @@ import { DATA_URL } from '@trezor/urls';
 import { capitalizeFirstLetter, getSynchronize } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
-import { ConnectKey, ConnectWebKey } from './types';
+import type { ConnectKey, ConnectWebKey } from './types';
 
 const CONNECT_INIT_MODULE = '@common/connect-init';
 

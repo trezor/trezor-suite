@@ -1,7 +1,9 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
-import { TradingTransaction, cryptoIdToNetwork, toTokenCryptoId } from '@suite-common/trading';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import type { TradingTransaction } from '@suite-common/trading';
+import { cryptoIdToNetwork, toTokenCryptoId } from '@suite-common/trading';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
@@ -9,10 +11,10 @@ import {
     findAccountsByNetwork,
     getContractAddressForNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { OnUpgradeFunc } from '@trezor/suite-storage';
+import type { OnUpgradeFunc } from '@trezor/suite-storage';
 
-import { SuiteDBSchema } from 'src/storage/definitions';
-import { DBWalletAccountTransactionCompatible } from 'src/storage/migrations';
+import type { SuiteDBSchema } from 'src/storage/definitions';
+import type { DBWalletAccountTransactionCompatible } from 'src/storage/migrations';
 
 import { updateAll } from '../utils';
 

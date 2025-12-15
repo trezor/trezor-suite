@@ -1,10 +1,7 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    StakeState,
-    initialWalletSettingsState,
-    stakeInitialState,
-} from '@suite-common/wallet-core';
-import { Account, Timestamp } from '@suite-common/wallet-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { StakeState } from '@suite-common/wallet-core';
+import { initialWalletSettingsState, stakeInitialState } from '@suite-common/wallet-core';
+import type { Account, Timestamp } from '@suite-common/wallet-types';
 
 import {
     selectExpectedRewardsForEpoch,

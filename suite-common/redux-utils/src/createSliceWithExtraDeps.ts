@@ -1,12 +1,11 @@
-import {
+import type {
     ActionReducerMapBuilder,
     CreateSliceOptions,
     SliceCaseReducers,
-    createAction,
-    createSlice,
 } from '@reduxjs/toolkit';
+import { createAction, createSlice } from '@reduxjs/toolkit';
 
-import { ExtraDependenciesForReducer } from './extraDependenciesType';
+import type { ExtraDependenciesForReducer } from './extraDependenciesType';
 
 /*
 This is nearly same function as createSlice from redux-toolkit, but instead of generating reducer it will generate

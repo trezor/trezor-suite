@@ -1,14 +1,14 @@
 import { EventType, analytics } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import type { PreloadedState } from '@suite-native/test-utils';
 import {
-    PreloadedState,
     act,
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import type { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellReceiveMethodPicker } from '../SellReceiveMethodPicker';

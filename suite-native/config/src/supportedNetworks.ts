@@ -1,12 +1,7 @@
 import { A } from '@mobily/ts-belt';
 
-import {
-    AccountType,
-    Network,
-    NetworkSymbol,
-    NetworkType,
-    networkSymbolCollection,
-} from '@suite-common/wallet-config';
+import type { AccountType, Network, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 export const orderedAccountTypes: AccountType[] = [

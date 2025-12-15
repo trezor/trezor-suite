@@ -22,7 +22,7 @@ import graphReducer from 'src/reducers/wallet/graphReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { configureStore } from 'src/support/tests/configureStore';
-import { AcquiredDevice, AppState } from 'src/types/suite';
+import type { AcquiredDevice, AppState } from 'src/types/suite';
 
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';

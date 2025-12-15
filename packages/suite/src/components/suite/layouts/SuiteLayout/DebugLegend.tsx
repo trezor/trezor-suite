@@ -3,15 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Code, Column, Divider, Icon, Row, Text } from '@trezor/components';
-import {
-    CSSColor,
-    Elevation,
-    borders,
-    colorVariants,
-    spacings,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import type { CSSColor, Elevation } from '@trezor/theme';
+import { borders, colorVariants, spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { typedObjectKeys } from '@trezor/utils';
 
 const DebugLegendContainer = styled.div`

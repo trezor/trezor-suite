@@ -1,14 +1,15 @@
-import { ExchangeTrade } from 'invity-api';
+import type { ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
 import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
-    TradingExchangeFormType,
+    type TradingExchangeFormType,
     type TradingUtilsProvidersProps,
 } from '@suite-common/trading';
 import { Badge, Radio, Row, Text, Tooltip, useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TradingUtilsProvider } from 'src/views/wallet/trading/common/TradingUtils/TradingUtilsProvider';

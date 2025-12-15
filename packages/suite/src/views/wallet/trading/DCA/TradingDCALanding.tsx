@@ -1,9 +1,11 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import type { IconName } from '@trezor/components';
 import {
     BulletList,
     Button,
@@ -11,7 +13,6 @@ import {
     Column,
     H2,
     Icon,
-    IconName,
     Image,
     Paragraph,
     Row,
@@ -27,7 +28,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import type { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingLayout } from 'src/views/wallet/trading/common/TradingLayout/TradingLayout';
 

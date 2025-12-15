@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import type { UseFormSetValue } from 'react-hook-form';
 
+import type { TradingBuyFormProps } from '@suite-common/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
-    TradingBuyFormProps,
     buyThunks,
     getTradingPaymentMethods,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
-import { Timer } from '@trezor/react-utils';
+import type { Network } from '@suite-common/wallet-config';
+import type { Timer } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';

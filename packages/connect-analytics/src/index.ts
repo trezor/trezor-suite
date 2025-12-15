@@ -9,5 +9,5 @@ const analytics = new Analytics<ConnectAnalyticsEvent>({
 });
 
 export { analytics, getRandomId };
-export * from './types/events';
+export type * from './types/events';
 export * from './constants';

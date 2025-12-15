@@ -1,4 +1,5 @@
-import { TPlugin, createRenderer as createFelaRenderer } from 'fela';
+import type { TPlugin } from 'fela';
+import { createRenderer as createFelaRenderer } from 'fela';
 import felaEnforceLonghands from 'fela-enforce-longhands';
 import felaPluginEmbedded from 'fela-plugin-embedded';
 import felaPluginMultipleSelectors from 'fela-plugin-multiple-selectors';

@@ -1,4 +1,5 @@
-import { BigNumber, BigNumberValue } from './bigNumber';
+import type { BigNumberValue } from './bigNumber';
+import { BigNumber } from './bigNumber';
 
 /**
  * Check if two BigNumber values are approximately equal based on relative difference

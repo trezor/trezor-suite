@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { FiatRatesResult, Output, Rate, RatesByKey, Timestamp } from '@suite-common/wallet-types';
+import type {
+    FiatRatesResult,
+    Output,
+    Rate,
+    RatesByKey,
+    Timestamp,
+} from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -11,12 +17,13 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { baseCurrencies } from '@trezor/blockchain-link-types';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { UseSendFormState } from 'src/types/wallet/sendForm';
+import type { UseSendFormState } from 'src/types/wallet/sendForm';
 
 type useSendFormImportProps = {
     network: UseSendFormState['network'];

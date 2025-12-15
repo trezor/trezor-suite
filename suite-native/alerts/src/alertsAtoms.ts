@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { atom } from 'jotai';
 
-import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { NativeSpacing } from '@trezor/theme';
+import type { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
+import type { IconName } from '@suite-native/icons';
+import type { NativeSpacing } from '@trezor/theme';
 
 export type AlertType =
     | 'autoEject'

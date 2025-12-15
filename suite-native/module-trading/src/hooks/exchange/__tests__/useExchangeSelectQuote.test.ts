@@ -1,12 +1,7 @@
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     exchangeQuotes,
@@ -14,7 +9,7 @@ import {
     getEthAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import type { ExchangeFormType } from '@suite-native/trading-types';
 
 import * as approvalStatusUtils from '../../../utils/general/approvalStatusUtils';
 import { useExchangeForm } from '../useExchangeForm';

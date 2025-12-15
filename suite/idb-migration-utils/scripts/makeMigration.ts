@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { SemVer } from 'semver';
 
-import { VersionInfo, parseIdbVersion } from '../src/parseIdbVersion';
+import { type VersionInfo, parseIdbVersion } from '../src/parseIdbVersion';
 
 const SUITE_ROOT = path.resolve(__dirname, '..', '..', '..', 'packages', 'suite');
 const MIGRATIONS_DIR = path.join(SUITE_ROOT, 'src', 'storage', 'migrations', 'versions');

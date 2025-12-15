@@ -1,10 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import {
-    Dropdown as DropdownComponent,
-    DropdownProps,
-    allowedDropdownFrameProps,
-} from './Dropdown';
+import type { DropdownProps } from './Dropdown';
+import { Dropdown as DropdownComponent, allowedDropdownFrameProps } from './Dropdown';
 import { variables } from '../../config';
 import { getFramePropsStory } from '../../utils/frameProps';
 

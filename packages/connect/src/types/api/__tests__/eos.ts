@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import type { TrezorConnect } from '../../..';
 
 export const eosGetPublicKey = async (api: TrezorConnect) => {
     // regular

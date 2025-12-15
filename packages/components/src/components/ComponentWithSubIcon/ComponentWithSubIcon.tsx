@@ -1,17 +1,16 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { SpacingValues, borders } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
-import { ExclusiveColorOrVariant, getColorForIconVariant } from '../Icon/Icon';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
+import type { ExclusiveColorOrVariant } from '../Icon/Icon';
+import { getColorForIconVariant } from '../Icon/Icon';
 
 export const allowedComponentWithSubIconFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedComponentWithSubIconFrameProps)[number]>;

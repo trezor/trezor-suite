@@ -1,8 +1,10 @@
-import { ReactNode } from 'react';
-import { SharedValue, useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
+import type { ReactNode } from 'react';
+import type { SharedValue } from 'react-native-reanimated';
+import { useAnimatedStyle, withDelay, withTiming } from 'react-native-reanimated';
 
 import { AnimatedCard, Text, VStack } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

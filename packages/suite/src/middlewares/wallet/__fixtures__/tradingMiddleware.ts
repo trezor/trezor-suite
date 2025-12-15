@@ -1,4 +1,4 @@
-import { RouterState } from 'src/reducers/suite/routerReducer';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
 
 const TRADING_BUY_ROUTE = {
     anchor: undefined,

@@ -1,6 +1,6 @@
 import type tls from 'tls';
 
-import { BaseCurrencyCode } from './baseCurrency';
+import type { BaseCurrencyCode } from './baseCurrency';
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
 import type {
     AddressAlias,

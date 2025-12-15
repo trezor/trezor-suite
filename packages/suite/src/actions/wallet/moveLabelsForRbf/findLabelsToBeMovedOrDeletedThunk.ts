@@ -1,8 +1,8 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 
-import { Dispatch, GetState } from '../../../types/suite';
-import { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
+import type { Dispatch, GetState } from '../../../types/suite';
+import type { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
 
 type FindLabelsToBeMovedOrDeletedThunkParams = {
     prevTxid: string;

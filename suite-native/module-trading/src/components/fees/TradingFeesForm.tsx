@@ -2,20 +2,18 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
-import { FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
-import { AccountKey, FormDraftKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import type { FormDraftRootState } from '@suite-common/wallet-core';
+import { selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
+import type { AccountKey, FormDraftKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import {
-    FeesContent,
-    FeesFooter,
-    NativeSupportedFeeLevel,
-    useFeesManagement,
-} from '@suite-native/transaction-management';
+import type { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type { NativeSupportedFeeLevel } from '@suite-native/transaction-management';
+import { FeesContent, FeesFooter, useFeesManagement } from '@suite-native/transaction-management';
 
 import { updateTradingSelectedFeeLevelThunk } from '../../thunks';
 

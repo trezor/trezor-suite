@@ -1,9 +1,9 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FormStateTradingExchange } from '@suite-common/wallet-types';
-import { DEVICE } from '@trezor/connect';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
+import type { TrezorDevice } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { FormStateTradingExchange } from '@suite-common/wallet-types';
+import type { DEVICE } from '@trezor/connect';
 
 export type NotificationId = number;
 

@@ -1,10 +1,9 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
-import {
-    SellToFiatTradePreviewCard,
-    SellToFiatTradePreviewCardProps,
-} from '../SellToFiatTradePreviewCard';
+import type { SellToFiatTradePreviewCardProps } from '../SellToFiatTradePreviewCard';
+import { SellToFiatTradePreviewCard } from '../SellToFiatTradePreviewCard';
 
 describe('SellToFiatTradePreviewCard', () => {
     const renderSellToFiatTradePreviewCard = (

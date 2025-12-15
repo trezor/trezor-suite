@@ -20,7 +20,7 @@ export * from './components/DeviceDangerBanner';
 export * from './utils';
 export * from './selectors';
 export * from './deviceThunks';
-export * from './types';
+export type * from './types';
 export * from './deviceAtoms';
 export * from './components/EmptyWalletSvg';
 export * from './components/ConfirmOnTrezorAnimation';

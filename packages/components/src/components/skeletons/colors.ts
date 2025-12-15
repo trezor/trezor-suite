@@ -1,4 +1,4 @@
-import { CSSColor, Color, Colors, Elevation } from '@trezor/theme';
+import type { CSSColor, Color, Colors, Elevation } from '@trezor/theme';
 
 type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components

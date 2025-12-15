@@ -1,15 +1,11 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import type { NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    Button,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { Video, VideoName } from '@suite-native/video-assets';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Box, Button, Text, VStack } from '@suite-native/atoms';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type { VideoName } from '@suite-native/video-assets';
+import { Video } from '@suite-native/video-assets';
 
 type XpubHintBottomSheetProps = {
     networkType: NetworkType;

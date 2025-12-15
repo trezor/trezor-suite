@@ -4,15 +4,17 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectHasBitcoinOnlyFirmware, selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import type {
+    DeviceOnboardingStackParamList,
+    DeviceOnboardingStackRoutes,
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

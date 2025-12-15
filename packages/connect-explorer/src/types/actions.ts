@@ -1,7 +1,7 @@
 import type { TSchema } from '@sinclair/typebox';
 
-import TrezorConnect, { DEVICE } from '@trezor/connect-web';
-import type { TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
+import type TrezorConnect from '@trezor/connect-web';
+import type { DEVICE, TrezorConnect as TrezorConnectType } from '@trezor/connect-web';
 
 import type { Field, TrezorConnectDevice } from './common';
 

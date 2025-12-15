@@ -1,8 +1,9 @@
-import { Placement } from '@floating-ui/react';
-import { Meta, StoryObj } from '@storybook/react';
+import type { Placement } from '@floating-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { Tooltip as TooltipComponent, TooltipProps, allowedTooltipFrameProps } from './Tooltip';
+import type { TooltipProps } from './Tooltip';
+import { Tooltip as TooltipComponent, allowedTooltipFrameProps } from './Tooltip';
 import {
     TOOLTIP_DELAY_LONG,
     TOOLTIP_DELAY_NONE,

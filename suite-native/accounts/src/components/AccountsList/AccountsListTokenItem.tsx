@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
+import type { Account, TokenInfoBranded } from '@suite-common/wallet-types';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
+import type { TokensRootState } from '@suite-native/tokens';
+import { getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 

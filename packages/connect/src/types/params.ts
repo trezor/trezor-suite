@@ -1,9 +1,10 @@
 // API params
 
-import { Static, TSchema, Type } from '@trezor/schema-utils';
+import type { Static, TSchema } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
-import { DeviceState, DeviceUniquePath } from './device';
-import { ErrorCode } from '../constants/errors';
+import type { DeviceState, DeviceUniquePath } from './device';
+import type { ErrorCode } from '../constants/errors';
 
 export interface DeviceIdentity {
     path?: DeviceUniquePath;

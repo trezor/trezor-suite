@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
+import type { TradingRootState as TradingRootStateCommon } from '@suite-common/trading';
 import {
-    TradingRootState as TradingRootStateCommon,
     selectTradingProviderByNameAndTradeType,
     selectTradingSellIsLoading,
     selectTradingSellProviders,
@@ -14,7 +14,8 @@ import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
-import { TradingRootState, selectSellQuotesByPaymentMethod } from '@suite-native/trading-state';
+import type { TradingRootState } from '@suite-native/trading-state';
+import { selectSellQuotesByPaymentMethod } from '@suite-native/trading-state';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';

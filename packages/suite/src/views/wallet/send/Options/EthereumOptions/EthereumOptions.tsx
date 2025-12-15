@@ -1,4 +1,4 @@
-import { FormOptions } from '@suite-common/wallet-types';
+import type { FormOptions } from '@suite-common/wallet-types';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';

@@ -4,9 +4,8 @@ import type { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
+import type { TradingCountryCode, TradingPaymentMethodProps } from '@suite-common/trading';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
@@ -20,14 +19,11 @@ import {
     getCurrencyLabel,
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
-import { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
+import type { BuyFormValues, FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { selectTradingResidenceCountry } from './residenceSelectors';
-import {
-    TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-} from '../reducers';
+import type { TradingRootState } from '../reducers';
+import { createMemoizedSelector, createMemoizedSelectorWithAccounts } from '../reducers';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 

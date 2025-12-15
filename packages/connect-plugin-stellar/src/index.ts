@@ -1,14 +1,5 @@
-import {
-    Asset,
-    Keypair,
-    Memo,
-    MemoHash,
-    MemoID,
-    MemoReturn,
-    MemoText,
-    Signer,
-    Transaction,
-} from '@stellar/stellar-sdk';
+import type { Memo, Signer, Transaction } from '@stellar/stellar-sdk';
+import { Asset, Keypair, MemoHash, MemoID, MemoReturn, MemoText } from '@stellar/stellar-sdk';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

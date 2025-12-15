@@ -8,16 +8,18 @@ import {
 } from '@suite-native/device';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import { useTranslate } from '@suite-native/intl';
-import {
-    AppTabsRoutes,
+import type {
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
+    StackToStackCompositeScreenProps,
+} from '@suite-native/navigation';
+import {
+    AppTabsRoutes,
+    HomeStackRoutes,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

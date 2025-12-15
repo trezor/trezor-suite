@@ -1,8 +1,9 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import type { DefaultTheme, RuleSet } from 'styled-components';
+import { css } from 'styled-components';
 
-import { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
+import type { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
 
-import { ButtonIntent, ButtonPriority, ButtonSize } from './types';
+import type { ButtonIntent, ButtonPriority, ButtonSize } from './types';
 
 const OPACITY_HOVER_STATE = 0.82;
 const OPACITY_ACTIVE_STATE = 0.74;

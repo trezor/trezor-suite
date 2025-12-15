@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import { getLowestFeeFromLevels } from '@suite-common/wallet-utils';
 import { Banner, Collapsible } from '@trezor/components';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';

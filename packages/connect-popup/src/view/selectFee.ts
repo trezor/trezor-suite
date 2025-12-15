@@ -1,13 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectFee.js
 
-import {
+import type {
     BitcoinNetworkInfo,
     SelectFeeLevel,
-    UI,
     UiRequestSelectFee,
     UpdateCustomFee,
-    createUiResponse,
 } from '@trezor/connect';
+import { UI, createUiResponse } from '@trezor/connect';
 import { formatAmount, formatTime } from '@trezor/connect/src/utils/formatUtils';
 
 import { container, postMessage, showView } from './common';

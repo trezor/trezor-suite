@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import type { RouteProp } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { checkAddressCheckSum } from 'web3-utils';
 
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { useFormContext } from '@suite-native/forms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import type { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
 
 import { useAddressChecksum } from './useAddressChecksum';
 import { useContractAddressCheck } from './useContractAddressCheck';

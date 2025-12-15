@@ -1,4 +1,4 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { parseCryptoId, useTradingInfo } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';

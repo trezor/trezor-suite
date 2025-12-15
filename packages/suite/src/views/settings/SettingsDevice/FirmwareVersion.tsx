@@ -10,7 +10,7 @@ import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/componen
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
-import { AcquiredDevice } from 'src/types/suite';
+import type { AcquiredDevice } from 'src/types/suite';
 
 const Version = styled.div`
     span {

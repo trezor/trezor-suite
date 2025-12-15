@@ -5,8 +5,8 @@ import { serializeError } from '@trezor/utils';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../../api/firmware';
 import { DataManager } from '../../data/DataManager';
 import { getFirmwareLocation, getReleaseByVersion } from '../../data/firmwareInfo';
-import { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
-import { Log } from '../../utils/debug';
+import type { FirmwareHashCheckError, FirmwareHashCheckResult } from '../../types';
+import type { Log } from '../../utils/debug';
 import { getFirmwareType } from '../../utils/firmwareUtils';
 import type { Device } from '../Device';
 

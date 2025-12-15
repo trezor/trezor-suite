@@ -1,11 +1,13 @@
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { HStack, OrderedListIcon, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import type { IconName } from '@suite-native/icons';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { ColorVariant, connectorColorsMap, iconColorsMap } from './presets';
+import type { ColorVariant } from './presets';
+import { connectorColorsMap, iconColorsMap } from './presets';
 
 type WalletBackupRecapListItemProps = {
     labelId: TxKeyPath;

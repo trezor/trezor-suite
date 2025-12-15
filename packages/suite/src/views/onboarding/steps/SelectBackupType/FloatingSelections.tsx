@@ -1,8 +1,9 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import type { CSSProperties } from 'react';
+import { forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { BackupType } from '@suite-common/suite-types';
+import type { BackupType } from '@suite-common/suite-types';
 import {
     Banner,
     CollapsibleBox,
@@ -12,14 +13,8 @@ import {
     useElevation,
     variables,
 } from '@trezor/components';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    spacings,
-    spacingsPx,
-    zIndices,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite';

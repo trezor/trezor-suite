@@ -1,6 +1,6 @@
 import { getIntegerInRangeFromString } from '@trezor/utils';
 
-import { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
+import type { ExperimentId, ExperimentsItemType } from './messageSystemTypes';
 
 type ExperimentCategoriesProps = {
     experiment: ExperimentsItemType | undefined;

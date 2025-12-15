@@ -1,5 +1,5 @@
-import { AccountType } from '@suite-common/wallet-config';
-import {
+import type { AccountType } from '@suite-common/wallet-config';
+import type {
     Account,
     Output,
     PoolsResponse,
@@ -7,7 +7,8 @@ import {
     PrecomposedTransactionFinalCardano,
     StakePool,
 } from '@suite-common/wallet-types';
-import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
+import type { CardanoCertificate, CardanoOutput } from '@trezor/connect';
+import { CARDANO, PROTO } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {

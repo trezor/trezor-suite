@@ -4,14 +4,13 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Image, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    AccountsImportStackRoutes,
+import type {
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
+import { AccountsImportStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;

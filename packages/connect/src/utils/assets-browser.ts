@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 
 import { HttpRequestError } from './assetUtils';
-import { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
+import type { HttpRequestOptions, HttpRequestReturnType, HttpRequestType } from './assetsTypes';
 
 /**
  * Http request wrapper for Suite Web & Desktop to handle various response states in a unified way.

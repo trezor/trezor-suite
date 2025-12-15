@@ -1,5 +1,5 @@
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { StakeType } from '@suite-common/wallet-types';
+import type { StakeType } from '@suite-common/wallet-types';
 import {
     getTxHeaderSymbol,
     isCardanoStakingTx,
@@ -7,13 +7,13 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
-import { AccountTransaction } from '@trezor/connect';
+import type { AccountTransaction } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { useTranslation } from 'src/hooks/suite';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 type TransactionHeaderProps = {

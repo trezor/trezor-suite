@@ -31,11 +31,8 @@ import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
 import { TradingWebViewScreen } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { RootStackParamList } from '@suite-native/navigation';
+import { RootStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 import { ReceiveStackNavigator } from '@suite-native/receive';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { TradingLocationModalScreen } from '@suite-native/trading-residence';

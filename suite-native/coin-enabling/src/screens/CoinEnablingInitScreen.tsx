@@ -9,17 +9,20 @@ import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/a
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
     RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AuthorizeDeviceStackRoutes,
     RootStackRoutes,
     Screen,
-    StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 
-import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
+import type { CoinEnablingFormValues } from '../coinEnablingSchema';
+import { coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

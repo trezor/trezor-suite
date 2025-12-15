@@ -1,6 +1,6 @@
+import type { TradingSurveyPayload } from '@suite-common/message-system';
 import {
     Feature,
-    TradingSurveyPayload,
     resolveMessageContent,
     selectFeatureConfig,
     validateTradingSurvey,

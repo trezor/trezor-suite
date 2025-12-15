@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { BulletList, BulletListItemState, Text } from '@trezor/components';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { BulletListItemState } from '@trezor/components';
+import { BulletList, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';

@@ -1,15 +1,16 @@
-import { NetworkType } from '@suite-common/wallet-config';
-import { RbfTransactionType } from '@suite-common/wallet-types';
+import type { NetworkType } from '@suite-common/wallet-config';
+import type { RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
+import type { Url } from '@trezor/urls';
 import {
     HELP_CENTER_CANCEL_TRANSACTION,
     HELP_CENTER_REPLACE_BY_FEE_BITCOIN,
     HELP_CENTER_REPLACE_BY_FEE_ETHEREUM,
-    Url,
 } from '@trezor/urls';
 
-import { Translation, TranslationKey } from '../../../../Translation';
+import type { TranslationKey } from '../../../../Translation';
+import { Translation } from '../../../../Translation';
 import { TrezorLink } from '../../../../TrezorLink';
 
 export type ReplaceByFeeFailedOriginalTxConfirmedProps = {

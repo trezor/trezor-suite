@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { motionEasing } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 const Fact = styled(motion.p)`
     max-width: 460px;

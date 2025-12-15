@@ -9,7 +9,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getAccountMovementEvents } from './graphBalanceEvents';
 import { getMultipleAccountBalanceHistoryWithFiat } from './graphDataFetching';
-import {
+import type {
     AccountItem,
     FiatGraphPoint,
     FiatGraphPointWithCryptoBalance,

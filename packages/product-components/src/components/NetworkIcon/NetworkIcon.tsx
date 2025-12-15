@@ -2,9 +2,10 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { LegacyNetworkSymbol, NETWORK_ICONS } from '../../constants/networks';
+import type { LegacyNetworkSymbol } from '../../constants/networks';
+import { NETWORK_ICONS } from '../../constants/networks';
 
 const StyledReactSVG = styled(ReactSVG)`
     line-height: 0;

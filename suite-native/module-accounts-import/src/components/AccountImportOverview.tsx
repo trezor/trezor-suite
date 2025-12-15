@@ -1,12 +1,9 @@
-import { Control } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import {
-    AccountFormValues,
-    AccountLabelFieldHint,
-    MAX_ACCOUNT_LABEL_LENGTH,
-} from '@suite-native/accounts';
+import type { AccountFormValues } from '@suite-native/accounts';
+import { AccountLabelFieldHint, MAX_ACCOUNT_LABEL_LENGTH } from '@suite-native/accounts';
 import { RoundedIcon, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountLargeFormatter,

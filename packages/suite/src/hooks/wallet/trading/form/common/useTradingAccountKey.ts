@@ -6,11 +6,11 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
-import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { TradingTradeSellExchangeType } from 'src/types/trading/trading';
+import type { TradingTradeSellExchangeType } from 'src/types/trading/trading';
 import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseAccountKeyProps {

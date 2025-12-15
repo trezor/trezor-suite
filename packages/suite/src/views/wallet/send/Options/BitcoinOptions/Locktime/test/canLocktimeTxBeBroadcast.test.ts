@@ -1,7 +1,5 @@
-import {
-    CanLocktimeTxBeBroadcastParams,
-    canLocktimeTxBeBroadcast,
-} from '../canLocktimeTxBeBroadcast';
+import type { CanLocktimeTxBeBroadcastParams } from '../canLocktimeTxBeBroadcast';
+import { canLocktimeTxBeBroadcast } from '../canLocktimeTxBeBroadcast';
 
 const data: Array<{
     it: string;

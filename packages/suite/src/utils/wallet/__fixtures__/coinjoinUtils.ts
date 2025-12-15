@@ -1,8 +1,8 @@
-import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
+import type { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 
 import { ANONYMITY_GAINS_HINDSIGHT_COUNT } from 'src/services/coinjoin';
 
-import * as coinjoinUtils from '../coinjoinUtils';
+import type * as coinjoinUtils from '../coinjoinUtils';
 
 const baseUtxo = {
     txid: '1',

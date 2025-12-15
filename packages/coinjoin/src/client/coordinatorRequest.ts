@@ -2,13 +2,8 @@ import { enumUtils, scheduleAction } from '@trezor/utils';
 
 import { HTTP_REQUEST_TIMEOUT } from '../constants';
 import { WabiSabiProtocolErrorCode } from '../enums';
-import {
-    RequestOptions,
-    httpGet,
-    httpPost,
-    patchResponse,
-    resetIdentityCircuit,
-} from '../utils/http';
+import type { RequestOptions } from '../utils/http';
+import { httpGet, httpPost, patchResponse, resetIdentityCircuit } from '../utils/http';
 
 export type { RequestOptions } from '../utils/http';
 

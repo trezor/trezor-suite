@@ -6,8 +6,9 @@ import { cloneObject } from '@trezor/utils';
 
 import { METADATA, METADATA_PASSWORDS, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
-import { Dispatch, GetState } from 'src/types/suite';
-import { LabelableEntityKeys, PasswordEntry, ProviderErrorAction } from 'src/types/suite/metadata';
+import type { Dispatch, GetState } from 'src/types/suite';
+import type { LabelableEntityKeys, PasswordEntry } from 'src/types/suite/metadata';
+import { ProviderErrorAction } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 
 import * as metadataActions from './metadataActions';

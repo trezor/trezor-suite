@@ -1,12 +1,10 @@
 import { getSuiteVersion } from '@trezor/env-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
+import type { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
-import {
-    DesktopUpdateState,
-    UpdateState,
-} from '../../../../../../../reducers/suite/desktopUpdateReducer';
+import type { DesktopUpdateState } from '../../../../../../../reducers/suite/desktopUpdateReducer';
+import { UpdateState } from '../../../../../../../reducers/suite/desktopUpdateReducer';
 
 type UpdateStatusData = {
     updateStatus: UpdateStatus;

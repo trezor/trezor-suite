@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { TradingExchangeType } from '@suite-common/trading';
+import type { TradingExchangeType } from '@suite-common/trading';
 
 import { getTradingCryptoInfo } from 'src/utils/wallet/trading/tradingUtils';
 

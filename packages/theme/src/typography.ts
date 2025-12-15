@@ -1,7 +1,8 @@
 import { D, pipe } from '@mobily/ts-belt';
 
-import { NativeFont } from './fontFamilies';
-import { FontWeightValue, fontWeights } from './fontWeights';
+import type { NativeFont } from './fontFamilies';
+import type { FontWeightValue } from './fontWeights';
+import { fontWeights } from './fontWeights';
 
 export const nativeTypographyStyles = [
     'titleLarge',

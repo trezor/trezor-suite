@@ -1,10 +1,9 @@
-import { DeepPartial } from 'react-hook-form';
+import type { DeepPartial } from 'react-hook-form';
 
-import { AnyAction } from '@suite-common/redux-utils';
+import type { AnyAction } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import type { AccountsState, BlockchainState } from '@suite-common/wallet-core';
 import {
-    AccountsState,
-    BlockchainState,
     accountsActions,
     blockchainActions,
     feesActions,

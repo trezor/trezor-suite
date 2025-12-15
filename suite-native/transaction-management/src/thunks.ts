@@ -8,17 +8,17 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
 } from '@suite-common/wallet-core';
-import {
+import type {
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
 import { transactionManagementActions } from './sendFormSlice';
-import { FeeLevelsMaxAmount } from './types/fees';
+import type { FeeLevelsMaxAmount } from './types/fees';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';
 

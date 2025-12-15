@@ -46,11 +46,11 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import {
+import type {
     TradingAccountOptionsGroupOptionProps,
     UseTradingFormProps,
 } from 'src/types/trading/trading';
-import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
+import type { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 import {
     getTradingCryptoInfo,

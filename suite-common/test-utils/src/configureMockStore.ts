@@ -1,13 +1,10 @@
 import { D } from '@mobily/ts-belt';
-import {
-    Middleware as RTKMiddleware,
-    Reducer,
-    ReducersMapObject,
-    configureStore,
-} from '@reduxjs/toolkit';
-import { ThunkDispatch } from 'redux-thunk';
+import type { Middleware as RTKMiddleware, Reducer, ReducersMapObject } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import type { ThunkDispatch } from 'redux-thunk';
 
-import { AnyAction, ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
+import type { AnyAction, ExtraDependenciesPartial } from '@suite-common/redux-utils';
+import { createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 import { extraDependenciesMock } from './extraDependenciesMock';

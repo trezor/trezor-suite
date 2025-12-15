@@ -6,7 +6,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Box, Spinner, SpinnerLoadingState, Text } from '@suite-native/atoms';
+import type { SpinnerLoadingState } from '@suite-native/atoms';
+import { Box, Spinner, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

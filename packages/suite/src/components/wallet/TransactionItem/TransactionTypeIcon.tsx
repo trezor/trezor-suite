@@ -1,9 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 
 import { getTxIcon } from '@suite-common/wallet-utils';
-import { Icon, IconProps } from '@trezor/components';
+import type { IconProps } from '@trezor/components';
+import { Icon } from '@trezor/components';
 
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 const IconsWrapper = styled.div<{ $isJoint: boolean }>`
     position: relative;

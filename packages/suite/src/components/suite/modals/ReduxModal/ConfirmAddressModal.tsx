@@ -7,10 +7,8 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite/Translation';
-import {
-    ConfirmValueModal,
-    ConfirmValueModalProps,
-} from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
+import type { ConfirmValueModalProps } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
+import { ConfirmValueModal } from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 

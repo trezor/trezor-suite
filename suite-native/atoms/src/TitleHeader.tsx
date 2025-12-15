@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import type { NativeTypographyStyle } from '@trezor/theme';
 
 import { VStack } from './Stack';
 import { Text } from './Text';

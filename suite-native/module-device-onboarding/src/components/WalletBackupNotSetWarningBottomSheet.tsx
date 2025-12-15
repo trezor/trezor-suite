@@ -1,17 +1,16 @@
 import { forwardRef, useCallback } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
 
 import { BottomSheetModal, Button, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 type WalletBackupNotSetWarningBottomSheetProps = {

@@ -1,6 +1,6 @@
 import { UTXO } from './compose';
-import { CoinSelectPaymentType } from '../../src';
-import {
+import type { CoinSelectPaymentType } from '../../src';
+import type {
     ComposeChangeAddress,
     ComposeInput,
     ComposeOutput,

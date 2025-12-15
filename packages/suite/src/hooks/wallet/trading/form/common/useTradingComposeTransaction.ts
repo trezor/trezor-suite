@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { UseFormReturn } from 'react-hook-form';
+import type { UseFormReturn } from 'react-hook-form';
 
 import {
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -21,7 +21,7 @@ import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useCompose } from 'src/hooks/wallet/form/useCompose';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
-import {
+import type {
     TradingSellExchangeFormProps,
     TradingUseComposeTransactionProps,
     TradingUseComposeTransactionReturnProps,

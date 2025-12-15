@@ -7,12 +7,12 @@ import { useFocusEffect } from '@react-navigation/native';
 import { isFinalStatus, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
-import {
-    Screen,
+import type {
     StackProps,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,

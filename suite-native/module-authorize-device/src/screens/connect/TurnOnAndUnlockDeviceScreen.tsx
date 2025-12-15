@@ -13,11 +13,8 @@ import {
 } from '@suite-native/bluetooth';
 import { TurnOnAndUnlockDeviceScreenContent } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { AuthorizeDeviceStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes } from '@suite-native/navigation';
 
 import { BluetoothPairingAnimation } from '../../components/connect/BluetoothPairingAnimation';
 import { BluetoothPairingSettings } from '../../components/connect/BluetoothPairingSettings';

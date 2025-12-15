@@ -4,10 +4,13 @@ import EventEmitter from 'events';
 // in packages/suite-build/configs/web.webpack.config.ts
 import * as ERRORS from '@trezor/connect/src/constants/errors';
 import { config } from '@trezor/connect/src/data/config';
-import {
-    BLOCKCHAIN_EVENT,
+import type {
     CallMethodPayload,
     CoreEventMessage,
+    UiResponseEvent,
+} from '@trezor/connect/src/events';
+import {
+    BLOCKCHAIN_EVENT,
     DEVICE_EVENT,
     IFRAME,
     POPUP,
@@ -15,20 +18,22 @@ import {
     TRANSPORT,
     TRANSPORT_EVENT,
     UI_EVENT,
-    UiResponseEvent,
     createErrorMessage,
     parseMessage,
 } from '@trezor/connect/src/events';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import type { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
 import type {
     ConnectSettings,
     ConnectSettingsWeb,
     DeviceIdentity,
     Manifest,
 } from '@trezor/connect/src/types';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
-import { Log, initLog } from '@trezor/connect/src/utils/debug';
-import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
+import type { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { Log } from '@trezor/connect/src/utils/debug';
+import { initLog } from '@trezor/connect/src/utils/debug';
+import type { DeferredManager } from '@trezor/utils/src/createDeferredManager';
+import { createDeferredManager } from '@trezor/utils/src/createDeferredManager';
 
 import { parseConnectSettings } from '../connectSettings';
 import * as iframe from '../iframe';

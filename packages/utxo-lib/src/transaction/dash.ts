@@ -1,7 +1,8 @@
 import * as varuint from 'varuint-bitcoin';
 
 import { BufferReader, BufferWriter } from '../bufferutils';
-import { TransactionBase, TransactionOptions, varSliceSize, vectorSize } from './base';
+import type { TransactionOptions } from './base';
+import { TransactionBase, varSliceSize, vectorSize } from './base';
 
 const DASH_NORMAL = 0;
 const DASH_QUORUM_COMMITMENT = 6;

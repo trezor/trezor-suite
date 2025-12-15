@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/word.js
 
-import { UI, UiRequestDeviceAction, createUiResponse } from '@trezor/connect';
+import type { UiRequestDeviceAction } from '@trezor/connect';
+import { UI, createUiResponse } from '@trezor/connect';
 import { bip39 } from '@trezor/crypto-utils';
 
 import { container, postMessage, showView } from './common';

@@ -1,7 +1,7 @@
 import { resolveAfter } from '@trezor/utils';
 import { WebsocketClient } from '@trezor/websocket-client';
 
-import {
+import type {
     BluetoothDevice,
     BluetoothInfo,
     NotificationCharacteristic,

@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { spacings } from '@trezor/theme';
 
 import { List as ListComponent, allowedListFrameProps, allowedListTextProps } from './List';
 import { bulletVerticalAlignments, listVariants } from './types';
 import { getFramePropsStory } from '../../utils/frameProps';
-import { Icon, IconProps } from '../Icon/Icon';
+import type { IconProps } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { getTextPropsStory } from '../typography/utils';
 
 const meta: Meta<typeof ListComponent> = {

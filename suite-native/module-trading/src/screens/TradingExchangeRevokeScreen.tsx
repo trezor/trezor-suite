@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import type { TradingRootState } from '@suite-common/trading';
 import {
-    TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
@@ -14,15 +14,13 @@ import { Box, Button, Card, HStack, InlineAlertBox, Text, VStack } from '@suite-
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    DynamicScreenHeader,
+import type {
     RootStackParamList,
-    Screen,
     StackToStackCompositeNavigationProps,
     StackToStackCompositeScreenProps,
     TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { DynamicScreenHeader, Screen, TradingStackRoutes } from '@suite-native/navigation';
 import { ProviderLogo, TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 import { BigNumber } from '@trezor/utils';

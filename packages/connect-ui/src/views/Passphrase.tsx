@@ -3,7 +3,8 @@ import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { Divider, variables } from '@trezor/components';
-import { CoreRequestMessage, UI, UiEvent } from '@trezor/connect';
+import type { CoreRequestMessage, UiEvent } from '@trezor/connect';
+import { UI } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { spacingsPx } from '@trezor/theme';
 

@@ -1,6 +1,6 @@
-export * from './navigators';
+export type * from './navigators';
 export * from './routes';
-export * from './types';
+export type * from './types';
 export * from './config';
 export * from './hooks/useInterceptNativeNavigation';
 export * from './hooks/useNavigateToInitialScreen';

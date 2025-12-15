@@ -1,21 +1,20 @@
 import type { CryptoId } from 'invity-api';
 
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
+import type { MessageSystemRootState } from '@suite-common/message-system';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import type { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import {
+import type {
     TradingRootStateWithDeviceAndAccounts,
     TradingTransaction,
     TradingType,
+} from '@suite-common/trading';
+import {
     cryptoIdToSymbol,
     isFinalStatus,
     selectDeviceTradingTrades,
@@ -27,10 +26,12 @@ import {
     getNetworkDisplaySymbolName,
     getNetworkType,
 } from '@suite-common/wallet-config';
-import {
+import type {
     AccountsRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
     selectAccountByKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -38,24 +39,18 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
-import { TokensRootState } from '@suite-native/tokens';
-import {
-    SectionListData,
-    getSymbolFromTradeableAsset,
-    toCaseAwareCryptoId,
-} from '@suite-native/trading-atoms';
-import { MyAsset, MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import type { TokensRootState } from '@suite-native/tokens';
+import type { SectionListData } from '@suite-native/trading-atoms';
+import { getSymbolFromTradeableAsset, toCaseAwareCryptoId } from '@suite-native/trading-atoms';
+import type { MyAsset, MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
-import { TradingRootState } from '../reducers';
+import type { TradingRootState } from '../reducers';
 
 export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
     TokenDefinitionsRootState &

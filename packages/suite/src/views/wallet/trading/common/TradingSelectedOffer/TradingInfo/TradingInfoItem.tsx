@@ -1,9 +1,9 @@
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 import { useTheme } from 'styled-components';
 
 import { ExperimentId } from '@suite-common/message-system';
 import { type TradingType, cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import type { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
@@ -13,7 +13,7 @@ import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWra
 import { Translation } from 'src/components/suite/Translation';
 import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useTranslation } from 'src/hooks/suite';
-import { TradingPayGetLabelType } from 'src/types/trading/trading';
+import type { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 

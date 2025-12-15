@@ -1,4 +1,4 @@
-import { SpacingValuesNew, SpacingValuesPxNew } from './spacings';
+import type { SpacingValuesNew, SpacingValuesPxNew } from './spacings';
 
 export const borders = {
     widths: {

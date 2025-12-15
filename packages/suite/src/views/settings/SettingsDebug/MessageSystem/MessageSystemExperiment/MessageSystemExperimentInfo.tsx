@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import type { ExperimentsItemType } from '@suite-common/message-system';
 import {
-    ExperimentsItemType,
     buildExperimentGroupRanges,
     getInclusionFromInstanceId,
     messageSystemActions,

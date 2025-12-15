@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import { Translation } from 'src/components/suite/Translation';

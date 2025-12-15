@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 import { networks, networksCollection } from '@suite-common/wallet-config';
-import { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import * as fixtures from '../__fixtures__/sendFormUtils';

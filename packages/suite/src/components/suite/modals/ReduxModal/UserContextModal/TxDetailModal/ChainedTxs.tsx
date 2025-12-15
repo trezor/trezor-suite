@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { AccountType, Network } from '@suite-common/wallet-config';
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import type { AccountType, Network } from '@suite-common/wallet-config';
+import type { ChainedTransactions } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
 import { TrezorLink } from 'src/components/suite';

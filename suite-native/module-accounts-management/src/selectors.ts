@@ -1,9 +1,6 @@
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 export const selectIsNetworkSendFlowEnabled = (
     state: FeatureFlagsRootState,

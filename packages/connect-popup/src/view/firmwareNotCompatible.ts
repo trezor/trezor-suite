@@ -1,6 +1,7 @@
 // origin https://github.com/trezor/connect/blob/develop/src/js/popup/view/firmwareNotCompatible.js
 
-import { UI, UiRequestUnexpectedDeviceMode, createUiResponse } from '@trezor/connect';
+import type { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
+import { UI, createUiResponse } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { getState, postMessage, showView } from './common';

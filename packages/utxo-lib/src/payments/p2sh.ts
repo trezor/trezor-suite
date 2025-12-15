@@ -8,7 +8,8 @@ import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
-import { Payment, PaymentFunction, PaymentOpts, Stack, StackFunction, typeforce } from '../types';
+import type { Payment, PaymentFunction, PaymentOpts, Stack, StackFunction } from '../types';
+import { typeforce } from '../types';
 
 const { OPS } = bscript;
 

@@ -1,13 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import {
-    BottomSheetModal,
-    BottomSheetModalRef,
-    Box,
-    Button,
-    Text,
-    VStack,
-} from '@suite-native/atoms';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type ConfirmOnTrezorBottomSheetProps = {

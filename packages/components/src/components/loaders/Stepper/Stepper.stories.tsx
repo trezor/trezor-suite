@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Stepper as StepperComponent, StepperProps } from './Stepper';
+import type { StepperProps } from './Stepper';
+import { Stepper as StepperComponent } from './Stepper';
 
 const meta: Meta<typeof StepperComponent> = {
     title: 'Stepper',

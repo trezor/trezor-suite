@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { TorSettings } from '@trezor/suite-desktop-api/src/messages';
+import type { TorSettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';

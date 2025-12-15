@@ -2,16 +2,16 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
-import { AnalyticsState } from '@suite-common/analytics';
+import type { AnalyticsState } from '@suite-common/analytics';
 import { extraDependenciesMock } from '@suite-common/test-utils';
-import { TransportInfo } from '@trezor/connect';
+import type { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
-import { DeepPartial } from '@trezor/type-utils';
+import type { DeepPartial } from '@trezor/type-utils';
 
-import { DesktopDeviceState } from 'src/actions/device/deviceSlice';
-import { AppState } from 'src/reducers/store';
-import { RouterState } from 'src/reducers/suite/routerReducer';
-import { SuiteState } from 'src/reducers/suite/suiteReducer';
+import type { DesktopDeviceState } from 'src/actions/device/deviceSlice';
+import type { AppState } from 'src/reducers/store';
+import type { RouterState } from 'src/reducers/suite/routerReducer';
+import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { findByTestId, renderWithProviders } from 'src/support/tests/hooksHelper';

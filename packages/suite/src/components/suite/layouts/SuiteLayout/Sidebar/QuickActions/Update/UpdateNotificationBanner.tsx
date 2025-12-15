@@ -1,22 +1,19 @@
-import { MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 
 import { type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import {
-    UpdateStatus,
-    UpdateStatusDevice,
-    UpdateStatusSuite,
-    mapDeviceUpdateToClick,
-    mapSuiteUpdateToClick,
-} from './updateQuickActionTypes';
+import type { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
+import { mapDeviceUpdateToClick, mapSuiteUpdateToClick } from './updateQuickActionTypes';
 
 type ContainerProps = { $elevation: Elevation };
 

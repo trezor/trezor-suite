@@ -1,4 +1,4 @@
-import { LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
+import type { LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
 
 let worker: SharedWorker | undefined;
 

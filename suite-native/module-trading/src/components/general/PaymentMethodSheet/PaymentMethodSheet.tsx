@@ -2,11 +2,8 @@ import type { BuyTrade, SellFiatTrade } from 'invity-api';
 
 import { BottomSheetFlashList } from '@suite-native/atoms';
 
-import {
-    ESTIMATED_HEADER_HEIGHT,
-    SimpleSheetHeader,
-    SimpleSheetHeaderProps,
-} from '../SimpleSheetHeader';
+import type { SimpleSheetHeaderProps } from '../SimpleSheetHeader';
+import { ESTIMATED_HEADER_HEIGHT, SimpleSheetHeader } from '../SimpleSheetHeader';
 import { PAYMENT_METHOD_LIST_ITEM_HEIGHT, PaymentMethodListItem } from './PaymentMethodListItem';
 
 export type PaymentMethodsSheetProps<T extends BuyTrade | SellFiatTrade> = {

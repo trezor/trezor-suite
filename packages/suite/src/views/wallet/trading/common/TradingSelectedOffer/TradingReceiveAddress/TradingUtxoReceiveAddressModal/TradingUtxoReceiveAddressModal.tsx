@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { Address } from '@trezor/blockchain-link-types';
+import type { Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

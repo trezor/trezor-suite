@@ -1,22 +1,13 @@
 import { useState } from 'react';
-import { PressableProps } from 'react-native';
+import type { PressableProps } from 'react-native';
 
-import { Icon, IconName } from '@suite-native/icons';
-import {
-    NativeStyleObject,
-    mergeNativeStyles,
-    prepareNativeStyle,
-    useNativeStyles,
-} from '@trezor/styles';
+import type { IconName } from '@suite-native/icons';
+import { Icon } from '@suite-native/icons';
+import type { NativeStyleObject } from '@trezor/styles';
+import { mergeNativeStyles, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import {
-    ButtonColorScheme,
-    ButtonSize,
-    ButtonStyleProps,
-    buttonSchemeToColorsMap,
-    buttonStyle,
-    buttonToIconSizeMap,
-} from './Button';
+import type { ButtonColorScheme, ButtonSize, ButtonStyleProps } from './Button';
+import { buttonSchemeToColorsMap, buttonStyle, buttonToIconSizeMap } from './Button';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
 import { AnimatedPressable } from '../Pressable';

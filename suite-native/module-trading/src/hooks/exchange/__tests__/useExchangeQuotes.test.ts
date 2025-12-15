@@ -3,13 +3,8 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import {
-    PreloadedState,
-    TestStore,
-    act,
-    initStore,
-    renderHookWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
+import { act, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -19,7 +14,7 @@ import {
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormValues } from '@suite-native/trading-types';
+import type { ExchangeFormValues } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useExchangeForm } from '../useExchangeForm';

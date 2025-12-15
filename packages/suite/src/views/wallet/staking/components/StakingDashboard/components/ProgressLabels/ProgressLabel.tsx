@@ -1,12 +1,14 @@
-import { ReactNode, useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import styled, { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { IconCircle, Row, Text } from '@trezor/components';
-import { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
+import type { IconCirclePaddingType } from '@trezor/components/src/components/IconCircle/types';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
 
-import { ProgressLabelState } from './types';
+import type { ProgressLabelState } from './types';
 
 const DEFAULT_LABEL_HEIGHT = 48;
 

@@ -1,4 +1,4 @@
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
 export type TurnOnSuiteSyncForWalletParams = { staticSessionId: StaticSessionId | undefined };
 

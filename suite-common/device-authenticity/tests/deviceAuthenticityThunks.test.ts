@@ -1,7 +1,7 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import type {
     AuthenticateDeviceResult,
     Response,

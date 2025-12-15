@@ -1,7 +1,7 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
-import { TradingTransactionStatus } from '@suite-common/trading';
-import { BadgeVariant } from '@suite-native/atoms';
+import type { TradingTransactionStatus } from '@suite-common/trading';
+import type { BadgeVariant } from '@suite-native/atoms';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 

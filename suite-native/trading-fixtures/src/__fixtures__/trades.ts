@@ -6,7 +6,7 @@ import type {
     SellTradeStatus,
 } from 'invity-api';
 
-import {
+import type {
     TradingTransactionBuy,
     TradingTransactionExchange,
     TradingTransactionSell,

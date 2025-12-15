@@ -1,18 +1,15 @@
 import { v1 as v1Protocol } from '@trezor/protocol';
 
-import {
-    AbstractTransport,
-    AbstractTransportMethodParams,
-    AbstractTransportParams,
-} from './abstract';
-import { AbstractApi, OpenDeviceChannel } from '../api/abstract';
+import type { AbstractTransportMethodParams, AbstractTransportParams } from './abstract';
+import { AbstractTransport } from './abstract';
+import type { AbstractApi, OpenDeviceChannel } from '../api/abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
 import { SessionsBackground } from '../sessions/background';
 import { SessionsClient } from '../sessions/client';
-import { SessionsBackgroundInterface } from '../sessions/types';
+import type { SessionsBackgroundInterface } from '../sessions/types';
 import { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from '../thp';
-import { Session } from '../types';
+import type { Session } from '../types';
 import { receiveAndParse } from '../utils/receive';
 import { buildMessage, createChunks, sendChunks } from '../utils/send';
 

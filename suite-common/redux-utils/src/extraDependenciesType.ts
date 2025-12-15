@@ -1,21 +1,25 @@
-import {
+import type {
     ActionCreatorWithPayload,
     ActionCreatorWithPreparedPayload,
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
-import { SuiteSync } from '@suite-common/suite-sync-types';
-import {
+import type { MetadataAddPayload } from '@suite-common/metadata-types';
+import type { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
+import type { SuiteSync } from '@suite-common/suite-sync-types';
+import type {
     ReportSecurityCheckProps,
     Route,
     TrezorDevice,
     UserContextPayload,
 } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
-import {
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type {
+    Account,
+    AddressDisplayOptions,
+    SelectedAccountStatus,
+} from '@suite-common/wallet-types';
+import type {
     BlockchainBlock,
     BluetoothDeviceId,
     ConnectSettings,
@@ -23,7 +27,7 @@ import {
     StaticSessionId,
 } from '@trezor/connect';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import type { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

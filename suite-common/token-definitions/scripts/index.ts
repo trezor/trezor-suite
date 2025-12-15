@@ -7,7 +7,11 @@ import { buildCoinDataForPlatform, fetchAllCoins } from './utils/fetchCoins';
 import { fetchNftData } from './utils/fetchNft';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
-import { DefinitionType, TokenStructure, TokenStructureType } from '../src/tokenDefinitionsTypes';
+import {
+    DefinitionType,
+    type TokenStructure,
+    TokenStructureType,
+} from '../src/tokenDefinitionsTypes';
 
 const writeDefinitionFiles = (
     assetPlatformId: string,

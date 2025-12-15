@@ -1,16 +1,13 @@
 import { IntlProvider } from 'react-intl';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 import { ThemeProvider } from 'styled-components';
 
 import { Modal, intermediaryTheme } from '@trezor/components';
 
-import {
-    AssetProps,
-    ITEM_HEIGHT,
-    SelectAssetModal as SelectAssetModalComponent,
-} from './SelectAssetModal';
+import type { AssetProps } from './SelectAssetModal';
+import { ITEM_HEIGHT, SelectAssetModal as SelectAssetModalComponent } from './SelectAssetModal';
 import { selectAssetModalOptions } from './SelectAssetModal.storiesData';
 
 const meta = {

@@ -1,9 +1,11 @@
-import { ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column, Icon, IconName, List, Paragraph, Row, Tooltip } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { Button, Column, Icon, List, Paragraph, Row, Tooltip } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 

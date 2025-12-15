@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react';
 
-import { SpacingValuesNew } from '@trezor/theme';
+import type { SpacingValuesNew } from '@trezor/theme';
 
-import { BulletLineWidth, BulletListDirection, BulletSize } from './types';
+import type { BulletLineWidth, BulletListDirection, BulletSize } from './types';
 
 type BulletListContextValue = {
     itemGap: SpacingValuesNew;

@@ -8,11 +8,8 @@ import {
     selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
-import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { AuthorizeDeviceStackParamList } from '@suite-native/navigation';
+import { AuthorizeDeviceStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { PassphraseDuplicateAlert } from '../components/passphrase/PassphraseDuplicateAlert';
 import { PassphraseFlowDoneRedirect } from '../components/passphrase/PassphraseFlowDoneRedirect';

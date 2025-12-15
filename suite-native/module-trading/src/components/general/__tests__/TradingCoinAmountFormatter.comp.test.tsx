@@ -3,10 +3,8 @@ import type { CryptoId } from 'invity-api';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { btcAsset, getWalletState, usdcAsset } from '@suite-native/trading-fixtures';
 
-import {
-    TradingCoinAmountFormatter,
-    TradingCoinAmountFormatterProps,
-} from '../TradingCoinAmountFormatter';
+import type { TradingCoinAmountFormatterProps } from '../TradingCoinAmountFormatter';
+import { TradingCoinAmountFormatter } from '../TradingCoinAmountFormatter';
 
 describe('TradingCoinAmountFormatter', () => {
     const renderTradingCoinAmountFormatter = (

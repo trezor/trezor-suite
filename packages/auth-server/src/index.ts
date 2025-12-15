@@ -1,4 +1,5 @@
-import cors, { CorsOptions } from 'cors';
+import type { CorsOptions } from 'cors';
+import cors from 'cors';
 import express from 'express';
 
 const app = express();

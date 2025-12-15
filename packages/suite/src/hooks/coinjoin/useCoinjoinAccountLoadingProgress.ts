@@ -1,8 +1,8 @@
 import { useEffect, useReducer } from 'react';
 
-import { ScanProgressInfo } from '@trezor/coinjoin';
+import type { ScanProgressInfo } from '@trezor/coinjoin';
 
-import { TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CoinjoinService } from 'src/services/coinjoin';

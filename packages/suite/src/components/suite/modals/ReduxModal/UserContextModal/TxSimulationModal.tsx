@@ -5,16 +5,16 @@ import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
+import type { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
 import {
-    AssetDiff,
-    AssetExposure,
     getSimulationErrorRiskLevel,
     useTxSimulationConnectPopup,
 } from '@suite-common/tx-simulation';
-import { Network, getExplorerUrl } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
+import { getExplorerUrl } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { selectDeviceAccounts, selectExplorer } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import {
     Banner,

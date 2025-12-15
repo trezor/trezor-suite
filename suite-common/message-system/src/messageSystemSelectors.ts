@@ -2,11 +2,11 @@ import { createSelector } from '@reduxjs/toolkit';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { Category, Message } from '@suite-common/suite-types';
+import type { Category, Message } from '@suite-common/suite-types';
 
 import { getActiveExperimentGroup } from './experimentUtils';
 import { EXPERIMENT_MAP } from './messageSystemConstants';
-import {
+import type {
     ContextDomain,
     ExperimentId,
     ExperimentsItemType,

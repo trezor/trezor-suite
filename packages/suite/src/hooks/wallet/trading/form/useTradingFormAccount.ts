@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react';
 
-import { CryptoId } from 'invity-api';
+import type { CryptoId } from 'invity-api';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import {
@@ -18,7 +18,7 @@ import {
     selectAllAccountsToList,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

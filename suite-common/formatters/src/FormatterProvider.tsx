@@ -1,33 +1,30 @@
-import { ReactNode, createContext, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
-import { FormatNumberOptions } from '@formatjs/intl';
+import type { FormatNumberOptions } from '@formatjs/intl';
 
-import { SignValue } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import type { SignValue } from '@suite-common/suite-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
 
 import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
-import {
-    BaseCurrencyAmountFormatterDataContext,
-    prepareBaseCurrencyAmountFormatter,
-} from './formatters/prepareBaseCurrencyAmountFormatter';
-import {
+import type { BaseCurrencyAmountFormatterDataContext } from './formatters/prepareBaseCurrencyAmountFormatter';
+import { prepareBaseCurrencyAmountFormatter } from './formatters/prepareBaseCurrencyAmountFormatter';
+import type {
     CryptoAmountFormatterDataContext,
     CryptoAmountFormatterInputValue,
-    prepareCryptoAmountFormatter,
 } from './formatters/prepareCryptoAmountFormatter';
+import { prepareCryptoAmountFormatter } from './formatters/prepareCryptoAmountFormatter';
 import { prepareDateFormatter } from './formatters/prepareDateFormatter';
 import { prepareDateTimeFormatter } from './formatters/prepareDateTimeFormatter';
-import {
-    DisplaySymbolFormatterDataContext,
-    prepareDisplaySymbolFormatter,
-} from './formatters/prepareDisplaySymbolFormatter';
+import type { DisplaySymbolFormatterDataContext } from './formatters/prepareDisplaySymbolFormatter';
+import { prepareDisplaySymbolFormatter } from './formatters/prepareDisplaySymbolFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
-import { Formatter } from './makeFormatter';
-import { FormatterConfig, FormatterProviderConfig } from './types';
+import type { Formatter } from './makeFormatter';
+import type { FormatterConfig, FormatterProviderConfig } from './types';
 
 type FormatterProviderProps = {
     children: ReactNode;

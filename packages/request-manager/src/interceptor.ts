@@ -8,7 +8,7 @@ import { interceptNetConnect } from './interceptor/interceptNetConnect';
 import { interceptNetSocketConnect } from './interceptor/interceptNetSocketConnect';
 import { interceptTlsConnect } from './interceptor/interceptTlsConnect';
 import { TorIdentities } from './torIdentities';
-import { InterceptorOptions } from './types';
+import type { InterceptorOptions } from './types';
 
 export const createInterceptor = (interceptorOptions: InterceptorOptions) => {
     const requestPool = createRequestPool(interceptorOptions);

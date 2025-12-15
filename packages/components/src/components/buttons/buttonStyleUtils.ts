@@ -1,6 +1,8 @@
-import { DefaultTheme, css, useTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import { css, useTheme } from 'styled-components';
 
-import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
+import type { Color, Colors, Elevation } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { capitalizeFirstLetter, hexToRgba } from '@trezor/utils';
 
 import type { UIAlignment, UISize, UIVariant } from '../../config/types';

@@ -1,13 +1,12 @@
 import type { TradingPaymentMethodType } from '@suite-common/trading';
-import { Flex, FlexProps } from '@trezor/components';
+import type { FlexProps } from '@trezor/components';
+import { Flex } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useLayoutSize } from 'src/hooks/suite';
 import { TradingPaymentType } from 'src/views/wallet/trading/common/TradingPaymentType';
-import {
-    TradingProviderInfo,
-    TradingProviderInfoProps,
-} from 'src/views/wallet/trading/common/TradingProviderInfo';
+import type { TradingProviderInfoProps } from 'src/views/wallet/trading/common/TradingProviderInfo';
+import { TradingProviderInfo } from 'src/views/wallet/trading/common/TradingProviderInfo';
 
 interface TradingTransactionProvidersProps extends TradingProviderInfoProps {
     paymentMethod?: TradingPaymentMethodType;

@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import * as electron from 'electron';
 
-import * as desktopApi from '@trezor/suite-desktop-api';
+import type * as desktopApi from '@trezor/suite-desktop-api';
 
 export type StrictIpcMain = desktopApi.StrictIpcMain<
     Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>,

@@ -1,15 +1,11 @@
-import { JSX } from 'react';
+import type { JSX } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
 import { modalSizes, modalVariants } from './types';
-import {
-    Modal as ModalComponent,
-    ModalProps,
-    allowedModalFrameProps,
-    variables,
-} from '../../index';
+import type { ModalProps } from '../../index';
+import { Modal as ModalComponent, allowedModalFrameProps, variables } from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (

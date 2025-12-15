@@ -3,32 +3,35 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/popup.js/
 import type { Core } from '@trezor/connect/src/core';
 import { config } from '@trezor/connect/src/data/config';
-import {
+import type {
     CoreEventMessage,
-    DEVICE_EVENT,
-    IFRAME,
     IFrameCallMessage,
     IFrameLogRequest,
     MethodResponseMessage,
-    POPUP,
     PopupContentScriptLoaded,
     PopupEvent,
     PopupHandshake,
     PopupInit,
+    UiEvent,
+} from '@trezor/connect/src/exports';
+import {
+    DEVICE_EVENT,
+    IFRAME,
+    POPUP,
     RESPONSE_EVENT,
     UI_REQUEST,
-    UiEvent,
     createPopupMessage,
     parseMessage,
 } from '@trezor/connect/src/exports';
-import { LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
+import type { LogWriter } from '@trezor/connect/src/utils/debug';
+import { initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
 import { reactEventBus } from '@trezor/connect-ui/src/utils/eventBus';
-import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
+import type { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
 import type { TimerId } from '@trezor/type-utils';
 
 import { isPhishingDomain } from './utils/isPhishingDomain';

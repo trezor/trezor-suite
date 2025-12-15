@@ -1,5 +1,6 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';

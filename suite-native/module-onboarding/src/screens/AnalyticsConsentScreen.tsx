@@ -13,12 +13,8 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { OnboardingStackParamList, StackProps } from '@suite-native/navigation';
+import { OnboardingStackRoutes, Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
 

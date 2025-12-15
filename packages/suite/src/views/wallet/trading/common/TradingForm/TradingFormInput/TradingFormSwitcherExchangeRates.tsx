@@ -1,16 +1,16 @@
-import { UseFormSetValue } from 'react-hook-form';
+import type { UseFormSetValue } from 'react-hook-form';
 
+import type { TradingExchangeFormProps, TradingExchangeRateType } from '@suite-common/trading';
 import {
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FIXED,
     TRADING_EXCHANGE_RATE_FLOATING,
-    TradingExchangeFormProps,
-    TradingExchangeRateType,
 } from '@suite-common/trading';
 import { Column, Grid, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 
 type ItemProps = {
     isSelected: boolean;

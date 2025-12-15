@@ -1,13 +1,13 @@
 import { getUnixTime } from 'date-fns';
 
 import { testMocks } from '@suite-common/test-utils';
-import { BlockchainBlock } from '@trezor/connect';
+import type { BlockchainBlock } from '@trezor/connect';
 
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { transactionsReducer } from 'src/reducers/wallet';
 import cardanoStakingReducer from 'src/reducers/wallet/cardanoStakingReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { CARDANO_STAKING } from '../constants';
 

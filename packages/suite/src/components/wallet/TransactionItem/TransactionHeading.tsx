@@ -16,7 +16,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';
 import { TransactionHeader } from './TransactionHeader';

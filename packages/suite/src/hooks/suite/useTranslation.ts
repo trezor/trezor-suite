@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { PrimitiveType } from '@trezor/type-utils';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { PrimitiveType } from '@trezor/type-utils';
 
 import messages from 'src/support/messages';
 

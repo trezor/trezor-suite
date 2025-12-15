@@ -1,6 +1,6 @@
-import { DeviceMetadata } from '@suite-common/metadata-types';
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
+import type { DeviceMetadata } from '@suite-common/metadata-types';
+import type { EncryptedHex } from '@suite-common/platform-encryption';
+import type {
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
@@ -11,8 +11,8 @@ import {
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
 } from '@trezor/connect';
-import { VersionArray } from '@trezor/device-utils';
-import { Branded, UnionSubset } from '@trezor/type-utils';
+import type { VersionArray } from '@trezor/device-utils';
+import type { Branded, UnionSubset } from '@trezor/type-utils';
 
 // Extend original ButtonRequestMessage from @trezor/connect
 // suite (deviceReducer) stores them in slightly different shape:

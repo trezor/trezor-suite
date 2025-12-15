@@ -1,4 +1,5 @@
-import { EffectCallback, useEffect, useRef } from 'react';
+import type { EffectCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const useUpdateEffect = (effect: EffectCallback) => {
     const isFirstMount = useRef(true);

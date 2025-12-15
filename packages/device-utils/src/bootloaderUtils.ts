@@ -1,5 +1,5 @@
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { PartialDevice } from './types';
+import type { PartialDevice } from './types';
 
 export const getBootloaderHash = (device?: PartialDevice) =>
     device?.features?.bootloader_hash || '';

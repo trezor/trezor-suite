@@ -1,8 +1,9 @@
-import { ForwardRefExoticComponent, RefAttributes } from 'react';
+import type { ForwardRefExoticComponent, RefAttributes } from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { AutoScalingInput as AutoScalingInputComponent, Props } from './AutoScalingInput';
+import type { Props } from './AutoScalingInput';
+import { AutoScalingInput as AutoScalingInputComponent } from './AutoScalingInput';
 
 const meta: Meta = {
     title: '✏️ Form',

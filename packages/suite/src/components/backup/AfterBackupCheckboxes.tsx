@@ -1,7 +1,8 @@
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { ConfirmKey, toggleCheckboxByKey } from 'src/actions/backup/backupActions';
+import type { ConfirmKey } from 'src/actions/backup/backupActions';
+import { toggleCheckboxByKey } from 'src/actions/backup/backupActions';
 import { CheckItem } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';

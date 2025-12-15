@@ -12,7 +12,7 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { AccountItem, type AccountItemProps } from './AccountItem/AccountItem';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';

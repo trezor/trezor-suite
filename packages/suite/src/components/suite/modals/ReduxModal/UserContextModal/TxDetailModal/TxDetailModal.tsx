@@ -7,17 +7,17 @@ import {
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
+import type { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
 import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { CancelTransactionModal } from './CancelTransaction/CancelTransactionModal';
 import { BumpFeeModal } from './ChangeFee/BumpFeeModal';
-import { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
+import type { TabID } from './Detail/AdvancedTxDetails/AdvancedTxDetails';
 import { DetailModal } from './Detail/DetailModal';
 
 const hasRbfParams = (

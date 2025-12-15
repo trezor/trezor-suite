@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-    TOKEN_SELECT_SELECTABLE_NETWORKS,
-    TradingTradeBuyExchangeType,
-} from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
+import type { TradingTradeBuyExchangeType } from '@suite-common/trading';
+import { TOKEN_SELECT_SELECTABLE_NETWORKS } from '@suite-common/trading';
+import type { Network } from '@suite-common/wallet-config';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
+import type { SelectAssetOptionCurrencyProps } from 'src/types/trading/trading';
 
 export type NetworkTab = Network | null;
 

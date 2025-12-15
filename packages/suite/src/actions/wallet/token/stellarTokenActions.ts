@@ -2,7 +2,7 @@ import { G } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { selectRawNetworkFeeInfo, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
     isTestnet,

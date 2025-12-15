@@ -5,7 +5,8 @@
  * visual challenge that will be shown on the device.
  */
 
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import type { Params, Response } from '../params';
 

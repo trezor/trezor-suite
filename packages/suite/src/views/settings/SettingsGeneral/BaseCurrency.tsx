@@ -2,11 +2,8 @@ import { useMemo } from 'react';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
-import {
-    BaseCurrencyCode,
-    fiatBaseCurrencies,
-    valuablesBaseCurrencies,
-} from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { fiatBaseCurrencies, valuablesBaseCurrencies } from '@trezor/blockchain-link-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { typedObjectKeys } from '@trezor/utils';
 

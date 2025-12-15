@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
-import { LANGUAGES, Locale, LocaleInfo } from '@suite-common/suite-types';
+import type { Locale, LocaleInfo } from '@suite-common/suite-types';
+import { LANGUAGES } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { CROWDIN_URL } from '@trezor/urls';

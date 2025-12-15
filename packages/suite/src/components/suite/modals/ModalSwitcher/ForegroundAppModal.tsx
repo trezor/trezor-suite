@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';

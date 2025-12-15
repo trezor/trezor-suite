@@ -4,7 +4,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
-import { AcquiredDevice, AppState } from 'src/types/suite';
+import type { AcquiredDevice, AppState } from 'src/types/suite';
 
 import { selectShouldDisplayDeviceCompromisedOnRoute } from '../selectShouldDisplayDeviceCompromisedOnRoute';
 

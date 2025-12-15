@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics';
+import type { ExperimentsItemType } from '@suite-common/message-system';
 import {
-    ExperimentsItemType,
     getActiveExperimentGroup,
     getExperimentGroupByInclusion,
     messageSystemActions,
@@ -12,7 +12,7 @@ import {
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
-import { Experiments } from '@suite-common/suite-types';
+import type { Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { borders, spacings, spacingsPx } from '@trezor/theme';

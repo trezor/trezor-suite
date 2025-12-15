@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
-import { FieldErrors } from 'react-hook-form';
+import type { FieldErrors } from 'react-hook-form';
 
 import { useFormatters } from '@suite-common/formatters';
+import type { TradingBuyFormProps } from '@suite-common/trading';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingBuyFormProps,
     useTradingInfo,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
-import { FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
@@ -21,11 +21,11 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import {
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingCryptoListProps,
 } from 'src/types/trading/trading';
-import {
+import type {
     TradingAllFormProps,
     TradingFormInputFiatCryptoProps,
     TradingSellExchangeFormProps,

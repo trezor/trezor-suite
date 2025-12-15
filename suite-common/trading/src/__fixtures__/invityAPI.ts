@@ -1,4 +1,4 @@
-import {
+import type {
     BuyProviderInfo,
     BuyTrade,
     BuyTradeFormResponse,
@@ -22,7 +22,7 @@ import {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { TradingOTC } from '../types';
+import type { TradingOTC } from '../types';
 
 const exchangeList: ExchangeProviderInfo[] = [
     {

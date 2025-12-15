@@ -1,10 +1,6 @@
 import { firmwareAssets } from '@trezor/connect-common';
-import {
-    DeviceModelInternal,
-    FirmwareRelease,
-    FirmwareType,
-    VersionArray,
-} from '@trezor/device-utils';
+import type { DeviceModelInternal, FirmwareRelease, VersionArray } from '@trezor/device-utils';
+import { FirmwareType } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
 export class HttpRequestError extends Error {

@@ -1,7 +1,7 @@
-import { DecryptionError, EncryptionError } from '@suite-common/platform-encryption';
-import { Result } from '@trezor/type-utils';
+import type { DecryptionError, EncryptionError } from '@suite-common/platform-encryption';
+import type { Result } from '@trezor/type-utils';
 
-import {
+import type {
     BioAuthSettings,
     BootstrapTorEvent,
     BridgeSettings,
@@ -23,7 +23,7 @@ import {
     UpdateInfo,
     UpdateProgress,
 } from './messages';
-import { InvokeMethod, ListenerMethod, SendMethod } from './methods';
+import type { InvokeMethod, ListenerMethod, SendMethod } from './methods';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)

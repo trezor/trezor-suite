@@ -1,5 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
-import { Text, TextProps } from '@suite-native/atoms';
+import type { TextProps } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 
 type NumberValues = number;
 type PercentageDifferenceFormatterProps = {

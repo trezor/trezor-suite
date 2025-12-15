@@ -2,10 +2,8 @@ import { HoldToConfirmButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SwipeableWalkthroughStep } from '@suite-native/swipeable-walkthrough';
 
-import {
-    WALLET_RECOVERY_RECAP_STEPS,
-    WalletBackupTutorialNumberedStepProps,
-} from './WalletRecoveryRecapStep1';
+import type { WalletBackupTutorialNumberedStepProps } from './WalletRecoveryRecapStep1';
+import { WALLET_RECOVERY_RECAP_STEPS } from './WalletRecoveryRecapStep1';
 import { useOnWalletRecapFinishedNavigation } from '../../../hooks/useOnWalletRecapFinishedNavigation';
 import { WalletRecapStepContent } from '../../WalletBackupRecap/WalletRecapStepContent';
 

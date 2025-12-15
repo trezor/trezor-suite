@@ -1,7 +1,7 @@
 import { TypedEmitter, getWeakRandomId } from '@trezor/utils';
 
-import { Descriptor } from '../types';
-import {
+import type { Descriptor } from '../types';
+import type {
     AcquireDoneRequest,
     AcquireIntentRequest,
     EnumerateDoneRequest,

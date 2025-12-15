@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    SettingsStackParamList,
-    SettingsStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { SettingsStackParamList } from '@suite-native/navigation';
+import { SettingsStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';

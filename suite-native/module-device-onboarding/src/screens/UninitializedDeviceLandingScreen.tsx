@@ -10,14 +10,15 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
-import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
+import type { SetupSupportingDeviceModel } from '@suite-native/device';
+import { useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';

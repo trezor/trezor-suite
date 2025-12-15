@@ -1,8 +1,8 @@
-import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
-import { TranslationKey } from '@suite-common/intl-types';
+import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
-import { FirmwareHashCheckError } from '@trezor/connect';
+import type { FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 import {

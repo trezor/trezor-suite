@@ -1,17 +1,16 @@
+import type { WithLabelingState, WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
 import {
-    WithLabelingState,
-    WithSuiteSyncAndDeviceState,
     selectAccountLabel as selectAccountLabelLocalFirst,
     selectIsFeatureSuiteSyncAvailable,
 } from '@suite-common/suite-sync';
+import type { AccountsRootState } from '@suite-common/wallet-core';
 import {
-    AccountsRootState,
     selectIsPortfolioTrackerDevice,
     selectAccountLabel as selectReduxAccountLabel,
 } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
 export type CombinedLabelingState = WithLabelingState &
     WithSuiteSyncAndDeviceState &

@@ -2,11 +2,8 @@ import styled from 'styled-components';
 
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import {
-    NetworkSymbol,
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-} from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { isBech32AddressUppercase } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';

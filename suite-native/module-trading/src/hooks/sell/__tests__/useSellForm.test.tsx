@@ -3,9 +3,8 @@ import type { SellFiatTrade } from 'invity-api';
 import { tradingSellActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
+import type { PreloadedState, TestStore } from '@suite-native/test-utils';
 import {
-    PreloadedState,
-    TestStore,
     act,
     initStore,
     renderHook,
@@ -20,7 +19,7 @@ import {
     usdcAsset,
 } from '@suite-native/trading-fixtures';
 import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
-import { SellFormType } from '@suite-native/trading-types';
+import type { SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from '../useSellForm';

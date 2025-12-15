@@ -1,4 +1,4 @@
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite/Translation';

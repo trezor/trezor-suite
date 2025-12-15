@@ -1,8 +1,10 @@
-import { ReactNode, createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext } from 'react';
 
-import { SpacingValues, spacings } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
-import { BulletVerticalAlignment, ListStyleType } from './types';
+import type { BulletVerticalAlignment, ListStyleType } from './types';
 
 type ListContextValue = {
     bulletGap: SpacingValues;

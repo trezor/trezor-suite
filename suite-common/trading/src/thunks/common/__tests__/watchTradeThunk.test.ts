@@ -1,13 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingState, initialState } from '../../../reducers/tradingCommonReducer';
+import type { TradingState } from '../../../reducers/tradingCommonReducer';
+import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import {
+import type {
     TradingTransaction,
     TradingTransactionBuy,
     TradingTransactionExchange,

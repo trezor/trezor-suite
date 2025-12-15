@@ -1,12 +1,13 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
-import { FieldPath, UseFormReturn } from 'react-hook-form';
+import type { Dispatch, SetStateAction } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { FieldPath, UseFormReturn } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
-import {
+import type {
     ExcludedUtxos,
     FeeInfo,
     FormState,
@@ -16,12 +17,12 @@ import {
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { findComposeErrors } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 import { isChanged } from '@trezor/utils';
 
-import { TranslationKey } from 'src/components/suite/Translation';
-import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import type { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useTranslation } from '../suite';
 import { useSolanaSubscribeBlocks } from './form/useSolanaSubscribeBlocks';

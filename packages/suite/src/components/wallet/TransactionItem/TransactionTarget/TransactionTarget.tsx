@@ -1,13 +1,14 @@
 import { useMemo } from 'react';
 
 import { selectOutputLabels } from '@suite-common/suite-sync';
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import type { ToastPayload } from '@suite-common/toast-notifications';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import type { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -27,14 +28,14 @@ import {
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
-import { AccountLabels } from 'src/types/suite/metadata';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { AccountLabels } from 'src/types/suite/metadata';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { AmountComponent } from '../../AmountComponent';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
-import { CombinedTarget } from './TransactionTargetsList';
+import type { CombinedTarget } from './TransactionTargetsList';
 
 type TransactionTargetProps = CombinedTarget & {
     transaction: WalletAccountTransaction;

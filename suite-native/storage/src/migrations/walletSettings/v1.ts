@@ -1,9 +1,12 @@
 import { pipe } from '@mobily/ts-belt';
-import { PersistedState, getStoredState } from 'redux-persist';
+import type { PersistedState } from 'redux-persist';
+import { getStoredState } from 'redux-persist';
 
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { WalletSettings } from '@suite-common/wallet-types';
-import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { isNetworkSymbol } from '@suite-common/wallet-config';
+import type { WalletSettings } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
 import { initMmkvStorage } from '../../storage';

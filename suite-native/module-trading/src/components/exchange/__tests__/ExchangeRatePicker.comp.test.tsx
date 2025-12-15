@@ -1,7 +1,9 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { ExchangeRatePicker, ExchangeRatePickerProps } from '../ExchangeRatePicker';
+import type { ExchangeRatePickerProps } from '../ExchangeRatePicker';
+import { ExchangeRatePicker } from '../ExchangeRatePicker';
 
 describe('ExchangeRatePicker', () => {
     let preloadedState: PreloadedState;

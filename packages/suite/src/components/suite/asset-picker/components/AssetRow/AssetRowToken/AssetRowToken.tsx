@@ -1,11 +1,11 @@
 import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
+import type { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AssetAmount } from './AssetAmount';

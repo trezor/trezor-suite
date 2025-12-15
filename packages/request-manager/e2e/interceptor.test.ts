@@ -5,7 +5,7 @@ import WebSocket from 'ws';
 import { TorController, createInterceptor } from '../src';
 import { torRunner } from './torRunner';
 import { TorIdentities } from '../src/torIdentities';
-import { InterceptorOptions } from '../src/types';
+import type { InterceptorOptions } from '../src/types';
 
 const hostIp = '127.0.0.1';
 const port = 38835;

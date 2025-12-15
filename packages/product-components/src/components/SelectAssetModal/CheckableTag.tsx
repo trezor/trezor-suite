@@ -1,8 +1,9 @@
-import styled, { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled from 'styled-components';
 
-import { UIVariant } from '@trezor/components/src/config/types';
+import type { UIVariant } from '@trezor/components/src/config/types';
+import type { Elevation } from '@trezor/theme';
 import {
-    Elevation,
     borders,
     mapElevationToBackground,
     mapElevationToBorder,

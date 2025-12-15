@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/permissions.js
 
-import { UI, UiRequestPermission, createUiResponse } from '@trezor/connect';
+import type { UiRequestPermission } from '@trezor/connect';
+import { UI, createUiResponse } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/connect-analytics';
 
 import { container, createTooltip, getState, postMessage, showView } from './common';

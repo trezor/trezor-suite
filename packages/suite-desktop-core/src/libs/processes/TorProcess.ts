@@ -1,7 +1,8 @@
 import { TOR_CONTROLLER_STATUS, TorController } from '@trezor/request-manager';
-import { TorConnectionOptions } from '@trezor/request-manager/src/types';
+import type { TorConnectionOptions } from '@trezor/request-manager/src/types';
 
-import { BaseProcess, Status } from './BaseProcess';
+import type { Status } from './BaseProcess';
+import { BaseProcess } from './BaseProcess';
 
 export type TorProcessStatus = Status & { isBootstrapping?: boolean };
 

@@ -1,9 +1,9 @@
-import {
+import type {
     EncryptableBranded,
     EncryptedHex,
-    EncryptionUnavailable,
     PlatformEncryption,
 } from '@suite-common/platform-encryption';
+import { EncryptionUnavailable } from '@suite-common/platform-encryption';
 import { err } from '@trezor/type-utils';
 
 export const createWebauthnPlatformEncryption = (): PlatformEncryption => ({

@@ -4,13 +4,8 @@ import styled from 'styled-components';
 
 import { Button, Icon, Paragraph, Row, useElevation } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-} from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBackground, mapElevationToBorder, spacingsPx } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import {

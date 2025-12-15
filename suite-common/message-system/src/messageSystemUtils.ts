@@ -2,7 +2,6 @@ import * as semver from 'semver';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { Localization } from '@suite-common/suite-types';
 import type {
     Action,
     Category,
@@ -11,6 +10,7 @@ import type {
     Duration,
     Environment,
     Experiments,
+    Localization,
     Message,
     MessageSystem,
     Settings,
@@ -26,8 +26,8 @@ import {
     getFirmwareRevision,
     getFirmwareVersion,
 } from '@trezor/device-utils';
+import type { Environment as EnvironmentType } from '@trezor/env-utils';
 import {
-    Environment as EnvironmentType,
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
@@ -38,7 +38,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 
 import { getCachedOsVersion } from './cachedEnvData';
-import { ValidMessagesPayload } from './messageSystemActions';
+import type { ValidMessagesPayload } from './messageSystemActions';
 
 export const categorizeMessages = (messages: Message[]): ValidMessagesPayload => {
     const validMessages: ValidMessagesPayload = {

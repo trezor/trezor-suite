@@ -1,4 +1,4 @@
-import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
+import type { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
 
 import { TradingReceiveAccountAddSuiteOption } from './TradingReceiveAccountAddSuiteOption';
 import { TradingReceiveAccountNonSuiteOption } from './TradingReceiveAccountNonSuiteOption';

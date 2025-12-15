@@ -7,12 +7,8 @@ import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TitledSection } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    SettingsStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes, SettingsStackRoutes } from '@suite-native/navigation';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
 import { isDevButtonVisibleAtom } from './ProductionDebug';

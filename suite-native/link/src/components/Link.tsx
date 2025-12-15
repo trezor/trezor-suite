@@ -1,4 +1,4 @@
-import { GestureResponderEvent } from 'react-native';
+import type { GestureResponderEvent } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -6,10 +6,10 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { RequireAtLeastOne } from 'type-fest';
+import type { RequireAtLeastOne } from 'type-fest';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color, TypographyStyle } from '@trezor/theme';
+import type { Color, TypographyStyle } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
 

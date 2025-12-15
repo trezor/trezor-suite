@@ -3,12 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     DemoAccountQuestionnaireStackParamList,
+    StackNavigationProps,
+} from '@suite-native/navigation';
+import {
     DemoAccountQuestionnaireStackRoutes,
     Screen,
     ScreenHeader,
-    StackNavigationProps,
 } from '@suite-native/navigation';
 
 export const DemoAccountQuestionnaireIntroScreen = () => {

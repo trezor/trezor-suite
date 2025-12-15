@@ -1,4 +1,4 @@
-import TrezorConnect, { ConnectSettings, Device, UiEvent } from '../../../src';
+import TrezorConnect, { type ConnectSettings, type Device, type UiEvent } from '../../../src';
 import { getController, initTrezorConnect, restartEmu, setup } from '../../common.setup';
 
 describe('THP pairing', () => {

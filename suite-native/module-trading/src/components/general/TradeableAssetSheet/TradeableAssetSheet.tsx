@@ -1,17 +1,16 @@
 import { memo, useCallback } from 'react';
 import { Keyboard } from 'react-native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BottomSheetSectionList, ItemRenderConfig } from '@suite-native/trading-atoms';
-import { TradeableAsset } from '@suite-native/trading-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { ItemRenderConfig } from '@suite-native/trading-atoms';
+import { BottomSheetSectionList } from '@suite-native/trading-atoms';
+import type { TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetListEmptyComponent } from './TradeableAssetListEmptyComponent';
 import { TradeableAssetListItem } from './TradeableAssetListItem';
 import { TradeableAssetSheetHeader } from './TradeableAssetSheetHeader';
-import {
-    ListItemExtraData,
-    useFavouriteAssetsSectionList,
-} from '../../../hooks/general/useFavouriteAssetsSectionList';
+import type { ListItemExtraData } from '../../../hooks/general/useFavouriteAssetsSectionList';
+import { useFavouriteAssetsSectionList } from '../../../hooks/general/useFavouriteAssetsSectionList';
 
 export type TradeableAssetsSheetProps = {
     isVisible: boolean;

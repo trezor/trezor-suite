@@ -1,14 +1,10 @@
-import { ArgTypes, Meta, StoryObj } from '@storybook/react';
+import type { ArgTypes, Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
 import { spacings } from '@trezor/theme';
 
-import {
-    Column as ColumnComponent,
-    FlexProps,
-    Row as RowComponent,
-    allowedFlexFrameProps,
-} from './Flex';
+import type { FlexProps } from './Flex';
+import { Column as ColumnComponent, Row as RowComponent, allowedFlexFrameProps } from './Flex';
 import { flexAlignItems, flexJustifyContent, flexWrap } from './FlexProp';
 import { getFramePropsStory } from '../../utils/frameProps';
 

@@ -6,7 +6,7 @@
     },
     "references": [],
     "include": [
-        "suite-common/intl-types/**/*",
+        "suite-common/intl-types/**/*.ts",
         "packages/suite/src/components/suite/Translation"
     ]
 }

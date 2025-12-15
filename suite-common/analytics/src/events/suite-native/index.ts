@@ -1,4 +1,5 @@
-import { Analytics, Event, getRandomId } from '@trezor/analytics';
+import type { Event } from '@trezor/analytics';
+import { Analytics, getRandomId } from '@trezor/analytics';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import type { SuiteNativeAnalyticsEvent } from './types';
@@ -24,6 +25,6 @@ if (isDebugEnv()) {
 }
 
 export { analytics, getRandomId };
-export * from './definitions';
-export * from './types';
+export type * from './definitions';
+export type * from './types';
 export * from './constants';

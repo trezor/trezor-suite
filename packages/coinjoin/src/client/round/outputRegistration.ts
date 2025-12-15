@@ -1,10 +1,11 @@
 import { arrayShuffle, getWeakRandomId, getWeakRandomInt } from '@trezor/utils';
 
 import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
-import { AccountAddress } from '../../types';
+import type { AccountAddress } from '../../types';
 import * as coordinator from '../coordinator';
 import * as middleware from '../middleware';
-import { Bob, outputDecomposition } from './outputDecomposition';
+import type { Bob } from './outputDecomposition';
+import { outputDecomposition } from './outputDecomposition';
 import { scheduleDelay } from '../../utils/roundUtils';
 import type { Account } from '../Account';
 import type { Alice } from '../Alice';

@@ -1,12 +1,11 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/selectAccount.js
 
-import {
+import type {
     DiscoveryAccount,
     DiscoveryAccountType,
-    UI,
     UiRequestSelectAccount,
-    createUiResponse,
 } from '@trezor/connect';
+import { UI, createUiResponse } from '@trezor/connect';
 
 import { container, postMessage, showView } from './common';
 

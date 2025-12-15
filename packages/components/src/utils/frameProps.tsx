@@ -1,8 +1,10 @@
 import { css } from 'styled-components';
 
-import { BorderRadii, SpacingValues, SpacingValuesNew, borders } from '@trezor/theme';
+import type { BorderRadii, SpacingValues, SpacingValuesNew } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import { TransientProps, makePropsTransient } from './transientProps';
+import type { TransientProps } from './transientProps';
+import { makePropsTransient } from './transientProps';
 import type { FlexType } from '../components/Flex/FlexProp';
 
 export type Margin =

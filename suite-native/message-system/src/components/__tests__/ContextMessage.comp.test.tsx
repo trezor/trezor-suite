@@ -1,6 +1,8 @@
-import { Context, ContextDomain } from '@suite-common/message-system';
-import { Action, Message } from '@suite-common/suite-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { ContextDomain } from '@suite-common/message-system';
+import { Context } from '@suite-common/message-system';
+import type { Action, Message } from '@suite-common/suite-types';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { ContextMessage } from '../ContextMessage';
 

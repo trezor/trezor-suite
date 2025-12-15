@@ -1,17 +1,18 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { DemoAccountQuestionnaireLinkKey, EventType, analytics } from '@suite-native/analytics';
+import type { DemoAccountQuestionnaireLinkKey } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import type { IconName } from '@suite-native/icons';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import {
+import type {
     DemoAccountQuestionnaireStackParamList,
     DemoAccountQuestionnaireStackRoutes,
-    Screen,
-    ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { BuyTradeStatus } from 'invity-api';
+import type { BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
@@ -13,7 +13,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import type { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
 import { TradingDetailBuyPaymentProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessingStep';
 import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';

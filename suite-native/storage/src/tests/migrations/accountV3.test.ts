@@ -1,4 +1,5 @@
-import { Account, deriveAccountTypeFromPaymentType } from '../../migrations/account/v3';
+import type { Account } from '../../migrations/account/v3';
+import { deriveAccountTypeFromPaymentType } from '../../migrations/account/v3';
 
 describe('deriveAccountTypeFromPaymentType', () => {
     it('should derive account type correctly for each account', () => {

@@ -1,4 +1,4 @@
-import { JSX, ReactElement } from 'react';
+import type { JSX, ReactElement } from 'react';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 import styled from 'styled-components';
@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '@suite-common/trading';
-import { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
+import type { RateTypeWithoutHistoric, TokenAddress } from '@suite-common/wallet-types';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { SkeletonRectangle } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
@@ -16,7 +16,7 @@ import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
-import { HiddenPlaceholderProps } from './HiddenPlaceholder';
+import type { HiddenPlaceholderProps } from './HiddenPlaceholder';
 
 // Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
 const SameWidthNums = styled.span<HiddenPlaceholderProps>`

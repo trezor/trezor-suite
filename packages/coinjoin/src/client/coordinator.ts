@@ -1,6 +1,7 @@
-import { RequestOptions, coordinatorRequest } from './coordinatorRequest';
+import type { RequestOptions } from './coordinatorRequest';
+import { coordinatorRequest } from './coordinatorRequest';
 import { AFFILIATION_ID } from '../constants';
-import {
+import type {
     CoinjoinStatus,
     ConfirmationData,
     IssuanceData,
@@ -151,4 +152,4 @@ export const transactionSignature = (
 export { WabiSabiProtocolException } from './coordinatorRequest';
 
 // reexport all coordinator types
-export * from '../types/coordinator';
+export type * from '../types/coordinator';

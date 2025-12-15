@@ -1,4 +1,4 @@
-import { Account, RatesByKey } from '@suite-common/wallet-types';
+import type { Account, RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 

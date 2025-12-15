@@ -1,16 +1,13 @@
 import { useEffect } from 'react';
 
 import { useFormContext } from '@suite-native/forms';
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import type { TestStore } from '@suite-native/test-utils';
+import { fireEvent, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { TradingLocationFormValues } from '../../types/tradingLocationForm';
-import { ConfirmLocationButton, ConfirmLocationButtonProps } from '../ConfirmLocationButton';
+import type { TradingLocationFormValues } from '../../types/tradingLocationForm';
+import type { ConfirmLocationButtonProps } from '../ConfirmLocationButton';
+import { ConfirmLocationButton } from '../ConfirmLocationButton';
 import { LocationForm } from '../LocationForm';
 
 const mockAnalyticsReport = jest.fn();

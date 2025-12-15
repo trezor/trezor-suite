@@ -1,36 +1,36 @@
-import { FieldValues } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
-import { AnalyticsState } from '@suite-common/analytics';
-import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import type { AnalyticsState } from '@suite-common/analytics';
+import type { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
-import { SuiteSyncSettings } from '@suite-common/suite-sync';
+import type { SuiteSyncSettings } from '@suite-common/suite-sync';
 import type {
     DeviceWithEmptyPath,
     MessageSystem,
     PersistentDeviceData,
     ThpSuiteCredentials,
 } from '@suite-common/suite-types';
-import { SimpleTokenStructure } from '@suite-common/token-definitions';
+import type { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
-import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
+import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import type {
     BackendSettings,
     FormState,
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import type { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
-import { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
+import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
-import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
-import { GraphData } from '../types/wallet/graph';
+import type { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
+import type { GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;

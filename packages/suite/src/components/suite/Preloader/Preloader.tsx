@@ -1,4 +1,5 @@
-import { FC, PropsWithChildren, useEffect } from 'react';
+import type { FC, PropsWithChildren } from 'react';
+import { useEffect } from 'react';
 
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';

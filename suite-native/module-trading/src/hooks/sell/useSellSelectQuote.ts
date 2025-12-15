@@ -10,14 +10,14 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { useFormState } from '@suite-native/forms';
-import {
+import type {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
-    TradingStackRoutes,
 } from '@suite-native/navigation';
+import { TradingStackRoutes } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
-import { SellFormType } from '@suite-native/trading-types';
+import type { SellFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearSellFormQuoteData } from './useSellForm';

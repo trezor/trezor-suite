@@ -11,14 +11,12 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevices } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
+import type { BluetoothDevice } from '@trezor/transport-bluetooth';
+import { bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
-import {
-    DesktopBluetoothDevice,
-    fromBluetoothDevice,
-    toBluetoothDevice,
-} from './DesktopBluetoothDevice';
+import type { DesktopBluetoothDevice } from './DesktopBluetoothDevice';
+import { fromBluetoothDevice, toBluetoothDevice } from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';

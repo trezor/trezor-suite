@@ -1,9 +1,9 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
-import { CSSColor, Color } from '@trezor/theme';
+import type { CSSColor, Color } from '@trezor/theme';
 
-import { BannerIntent } from './types';
-import { IconName } from '../Icon/Icon';
+import type { BannerIntent } from './types';
+import type { IconName } from '../Icon/Icon';
 
 export const mapIntentToBackgroundColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
     const colorMap: Record<BannerIntent, Color> = {

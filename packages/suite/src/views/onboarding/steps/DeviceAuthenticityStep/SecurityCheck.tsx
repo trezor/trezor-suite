@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import type { AcquiredDevice } from '@suite-common/suite-types';
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
@@ -40,7 +40,7 @@ import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingRedu
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 import { SecurityChecklist } from './SecurityChecklist';
-import { SecurityChecklistItem } from './types';
+import type { SecurityChecklistItem } from './types';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../../support/suite/ContentFlex';
 import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
 

@@ -1,7 +1,8 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
-import { NativeTypographyStyle } from '@trezor/theme';
+import type { TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import type { NativeTypographyStyle } from '@trezor/theme';
 
 type TransactionNameProps = {
     transaction: WalletAccountTransaction;

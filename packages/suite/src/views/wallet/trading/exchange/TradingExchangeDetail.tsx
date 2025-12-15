@@ -1,8 +1,8 @@
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { TradingDetailContext, useTradingDetail } from 'src/hooks/wallet/trading/useTradingDetail';
-import { UseTradingProps } from 'src/types/trading/trading';
+import type { UseTradingProps } from 'src/types/trading/trading';
 import { getTradeProvider } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';
 import { TradingDetailExchange } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchange';

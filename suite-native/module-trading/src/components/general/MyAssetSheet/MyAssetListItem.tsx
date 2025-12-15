@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { TradingRootState, selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import type { TradingRootState } from '@suite-common/trading';
+import { selectTradingCoinInfoByCryptoId } from '@suite-common/trading';
+import type { Account } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -11,7 +12,7 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
-import { MyAsset, TradeableAsset } from '@suite-native/trading-types';
+import type { MyAsset, TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
 

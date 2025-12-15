@@ -1,6 +1,7 @@
-import { ReactNode, useMemo } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import {
@@ -8,7 +9,7 @@ import {
     ASSET_ROW_HEIGHTS_BY_SIZE,
 } from 'src/components/suite/asset-picker/components';
 
-import { AccountWithTokensOption } from './useAccountWithTokensOptions';
+import type { AccountWithTokensOption } from './useAccountWithTokensOptions';
 
 export type GlobalSendListItem =
     | AccountWithTokensOption

@@ -1,4 +1,4 @@
-import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import type { SuiteSyncOwnerId } from '@suite-common/suite-types';
 
 /**
  * SuiteSync can handle multiple domains.

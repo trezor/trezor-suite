@@ -4,7 +4,8 @@ import { Account } from './Account';
 import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { Status } from './Status';
-import { AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
+import type { AnalyzeTransactionsResult } from './analyzeTransactions';
+import { analyzeTransactions } from './analyzeTransactions';
 import type {
     CoinjoinClientEvents,
     CoinjoinClientSettings,

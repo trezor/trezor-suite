@@ -6,12 +6,9 @@ import { G } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    AccountsRootState,
-    selectAccountByKey,
-    selectIsDeviceBackupRequired,
-} from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectIsDeviceBackupRequired } from '@suite-common/wallet-core';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import {
     AnimatedBox,
@@ -29,7 +26,7 @@ import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
-import { CloseActionType } from '@suite-native/navigation';
+import type { CloseActionType } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 

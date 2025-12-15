@@ -1,12 +1,14 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
-import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
+import type { Device } from '@trezor/connect';
+import { DEVICE, TRANSPORT } from '@trezor/connect';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { AppState, TorStatus } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
+import { TorStatus } from 'src/types/suite';
 
-import { SuiteState } from '../../../reducers/suite/suiteReducer';
+import type { SuiteState } from '../../../reducers/suite/suiteReducer';
 import * as suiteActions from '../suiteActions';
 
 const { getSuiteDevice, getConnectDevice } = testMocks;

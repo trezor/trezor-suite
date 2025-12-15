@@ -1,10 +1,10 @@
 import { configureMockStore } from '@suite-common/test-utils';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { PrecomposeResultFinal } from '@trezor/connect';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
+import TrezorConnect, { type PrecomposeResultFinal } from '@trezor/connect';
 
 import { chainedTxsFixture } from './chainedTransactions.fixture';
 import {
-    ComposeCancelTransactionThunkParams,
+    type ComposeCancelTransactionThunkParams,
     composeCancelTransactionThunk,
 } from '../../../src/send/composeCancelTransaction/composeCancelTransactionThunk';
 

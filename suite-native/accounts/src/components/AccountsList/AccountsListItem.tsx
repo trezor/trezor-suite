@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectFormattedAccountType } from '@suite-common/wallet-core';
+import type { Account, AccountKey } from '@suite-common/wallet-types';
 import { Badge } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -12,10 +13,12 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
-import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
+import type { CombinedLabelingState } from '@suite-native/labeling';
+import { selectAccountLabel } from '@suite-native/labeling';
+import type { NativeStakingRootState } from '@suite-native/staking';
+import { selectAccountHasStaking } from '@suite-native/staking';
+import type { TokensRootState } from '@suite-native/tokens';
 import {
-    TokensRootState,
     isCoinWithTokens,
     selectAccountHasAnyKnownToken,
     selectNumberOfAccountTokensWithFiatRates,
@@ -23,8 +26,9 @@ import {
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 import { StakingBadge } from './StakingBadge';
-import { NativeAccountsRootState, selectAccountFiatBalance } from '../../selectors';
-import { OnSelectAccount } from '../../types';
+import type { NativeAccountsRootState } from '../../selectors';
+import { selectAccountFiatBalance } from '../../selectors';
+import type { OnSelectAccount } from '../../types';
 
 export type AccountListItemProps = {
     account: Account;

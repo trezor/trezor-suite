@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 
 import * as Linking from 'expo-linking';
 
-import { BottomSheetModal, BottomSheetModalRef, Button } from '@suite-native/atoms';
+import type { BottomSheetModalRef } from '@suite-native/atoms';
+import { BottomSheetModal, Button } from '@suite-native/atoms';
 import TrezorConnectDeeplink from '@trezor/connect-mobile';
 
 type ConnectPopupDebugOptionsProps = React.PropsWithChildren<{

@@ -8,7 +8,7 @@ import {
     ETH_SPEED_UP_TX_MULTIPLIER,
 } from '@suite-common/wallet-constants';
 import { DEFAULT_FEE_INFO, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import {
+import type {
     ChainedTransactions,
     FeeInfo,
     FormOptions,

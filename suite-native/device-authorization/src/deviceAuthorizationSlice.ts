@@ -1,10 +1,8 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import {
-    DeviceRootState,
-    DiscoveryRootState,
-    selectDiscoveryByDevicePath,
-} from '@suite-common/wallet-core';
+import type { DeviceRootState, DiscoveryRootState } from '@suite-common/wallet-core';
+import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
 import { isPinButtonRequestCode } from './utils';

@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
-import { Network } from '@suite-common/wallet-config';
+import type { Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
+import type { InfoItemProps } from '@trezor/components';
 import {
     Box,
     Card,
@@ -11,21 +12,21 @@ import {
     H3,
     Icon,
     InfoItem,
-    InfoItemProps,
     InfoSegments,
     Row,
     Text,
     useElevation,
 } from '@trezor/components';
 import { CoinLogo, FeeRate } from '@trezor/product-components';
-import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
-import { WalletAccountTransaction } from 'src/types/wallet';
+import type { WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div<{ $elevation: Elevation }>`

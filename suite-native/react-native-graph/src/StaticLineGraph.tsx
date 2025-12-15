@@ -1,5 +1,7 @@
-import { ReactElement, useCallback, useMemo, useState } from 'react';
-import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import type { ReactElement } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import type { LayoutChangeEvent } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Canvas, LinearGradient, Path, vec } from '@shopify/react-native-skia';
 

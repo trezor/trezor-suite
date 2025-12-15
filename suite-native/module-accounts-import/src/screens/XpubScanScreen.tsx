@@ -4,25 +4,22 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import {
+import type {
     XpubFormContext,
     XpubFormValues,
-    xpubFormValidationSchema,
 } from '@suite-common/validators/src/schemas/xpubSchema';
+import { xpubFormValidationSchema } from '@suite-common/validators/src/schemas/xpubSchema';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork, isAddressValid } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
-import { Alert, useAlert } from '@suite-native/alerts';
+import type { Alert } from '@suite-native/alerts';
+import { useAlert } from '@suite-native/alerts';
 import { Button, Card, TextDivider, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes,
-    Screen,
-    StackProps,
-} from '@suite-native/navigation';
+import type { AccountsImportStackParamList, StackProps } from '@suite-native/navigation';
+import { AccountsImportStackRoutes, Screen } from '@suite-native/navigation';
 import { ScanQRBottomSheet } from '@suite-native/qr-code';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

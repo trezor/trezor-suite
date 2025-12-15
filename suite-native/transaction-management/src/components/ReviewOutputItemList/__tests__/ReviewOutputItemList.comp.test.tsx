@@ -1,8 +1,9 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
-import { ReviewSummaryOutput, StatefulReviewOutput } from '../../../types';
-import { ReviewOutputItemList, ReviewOutputItemListProps } from '../ReviewOutputItemList';
+import type { ReviewSummaryOutput, StatefulReviewOutput } from '../../../types';
+import type { ReviewOutputItemListProps } from '../ReviewOutputItemList';
+import { ReviewOutputItemList } from '../ReviewOutputItemList';
 
 let mockSelectTransactionReviewOutputsFromDraftReturnValue: StatefulReviewOutput[] | null;
 let mockSelectIsTransactionAlreadySignedValue: boolean;

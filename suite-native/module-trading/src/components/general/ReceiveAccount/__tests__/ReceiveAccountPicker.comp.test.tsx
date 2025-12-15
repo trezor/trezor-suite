@@ -1,7 +1,8 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { getBtcAccount } from '@suite-native/trading-fixtures';
 
-import { ReceiveAccountPicker, ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
+import type { ReceiveAccountPickerProps } from '../ReceiveAccountPicker';
+import { ReceiveAccountPicker } from '../ReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
 

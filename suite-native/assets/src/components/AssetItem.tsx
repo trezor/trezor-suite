@@ -12,22 +12,21 @@ import { Badge, Box, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
+import type {
     AppTabsParamList,
     AppTabsRoutes,
     RootStackParamList,
-    RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import {
-    NativeStakingRootState,
-    selectHasAnyDeviceAccountsWithStaking,
-} from '@suite-native/staking';
-import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import { RootStackRoutes } from '@suite-native/navigation';
+import type { NativeStakingRootState } from '@suite-native/staking';
+import { selectHasAnyDeviceAccountsWithStaking } from '@suite-native/staking';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
+import type { AssetsRootState } from '../assetsSelectors';
 import {
-    AssetsRootState,
     selectAssetCryptoValue,
     selectAssetFiatValue,
     selectAssetFiatValuePercentage,

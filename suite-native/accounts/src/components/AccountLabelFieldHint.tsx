@@ -1,11 +1,12 @@
-import { Control, useWatch } from 'react-hook-form';
+import type { Control } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { Box, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
+import type { AccountFormValues } from '../hooks/useAccountLabelForm';
 import {
     ALMOST_MAX_ACCOUNT_LABEL_LENGTH,
-    AccountFormValues,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '../hooks/useAccountLabelForm';
 

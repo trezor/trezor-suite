@@ -1,11 +1,7 @@
 import { type ReactElement } from 'react';
 
-import {
-    RenderHookOptions,
-    RenderOptions,
-    render,
-    renderHook,
-} from '@testing-library/react-native';
+import type { RenderHookOptions, RenderOptions } from '@testing-library/react-native';
+import { render, renderHook } from '@testing-library/react-native';
 
 import type { FormatterProviderConfig } from '@suite-common/formatters';
 

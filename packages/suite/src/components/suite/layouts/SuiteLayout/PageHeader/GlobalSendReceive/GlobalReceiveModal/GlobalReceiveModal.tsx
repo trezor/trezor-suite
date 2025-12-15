@@ -20,10 +20,11 @@ import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserCont
 import { AddAccountButton } from 'src/components/wallet/WalletLayout/AccountsMenu/AddAccountButton';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { Account, AccountItemType } from 'src/types/wallet';
+import type { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
-import { FilteredAccountOption, useFilterAccounts } from './hooks/useFilterAccounts';
+import type { FilteredAccountOption } from './hooks/useFilterAccounts';
+import { useFilterAccounts } from './hooks/useFilterAccounts';
 
 type GlobalReceiveModalProps = {
     onCancel: (filledSearch: boolean) => void;

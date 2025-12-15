@@ -5,16 +5,13 @@ import { Assert } from '@trezor/schema-utils';
 import { CARDANO, ERRORS, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
-import {
-    CardanoMessageHeaders,
-    CardanoSignMessage as CardanoSignMessageSchema,
-    CardanoSignedMessage,
-} from '../../../types/api/cardano';
+import type { CardanoMessageHeaders, CardanoSignedMessage } from '../../../types/api/cardano';
+import { CardanoSignMessage as CardanoSignMessageSchema } from '../../../types/api/cardano';
 import { hasHexPrefix, isHexString } from '../../../utils/formatUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import { getFirmwareRange } from '../../common/paramsValidator';
 import { addressParametersToProto } from '../cardanoAddressParameters';
-import { Path } from '../cardanoInputs';
+import type { Path } from '../cardanoInputs';
 import { hexStringByteLength } from '../cardanoUtils';
 
 export type CardanoSignMessageParams = {

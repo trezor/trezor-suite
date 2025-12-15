@@ -1,5 +1,6 @@
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { Static, Type } from '@trezor/schema-utils';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import type { Params, Response } from '../params';
 

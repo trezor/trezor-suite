@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { typography } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

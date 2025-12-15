@@ -1,9 +1,10 @@
+import type { VerifyAuthenticityProofResult } from '@trezor/device-authenticity';
 import {
     DeviceAuthenticityBlacklistConfig,
     DeviceAuthenticityConfig,
-    VerifyAuthenticityProofResult,
 } from '@trezor/device-authenticity';
-import { Static, Type } from '@trezor/schema-utils';
+import type { Static } from '@trezor/schema-utils';
+import { Type } from '@trezor/schema-utils';
 
 import type { Params, Response } from '../params';
 

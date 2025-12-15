@@ -1,4 +1,5 @@
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
@@ -16,8 +17,8 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
-import { Account } from 'src/types/wallet';
+import type { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
+import type { Account } from 'src/types/wallet';
 
 import { InfoRow } from './InfoRow';
 

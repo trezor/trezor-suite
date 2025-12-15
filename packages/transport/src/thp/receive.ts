@@ -4,7 +4,7 @@ import { decodeMessage } from '@trezor/protobuf';
 import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 
 import type { AbstractApi } from '../api/abstract';
-import { Logger } from '../types';
+import type { Logger } from '../types';
 import { readWithExpectedHeaders } from '../utils/readWithExpectedHeaders';
 import { receive } from '../utils/receive';
 import { error } from '../utils/result';

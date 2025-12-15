@@ -12,13 +12,15 @@ import {
 import { Button } from '@suite-native/atoms';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import type {
+    RootStackParamList,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';

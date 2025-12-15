@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import type { DeviceRootState, WalletCoreCompoundRootState } from '@suite-common/wallet-core';
 import {
-    DeviceRootState,
-    WalletCoreCompoundRootState,
     selectDeviceModelById,
     selectIsDeviceConnected,
     selectIsPortfolioTrackerDevice,

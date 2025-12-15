@@ -3,8 +3,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/messageSystemActions';
+import type { MessageSystemState } from '../index';
 import {
-    MessageSystemState,
     initMessageSystemThunk,
     messageSystemActions,
     prepareMessageSystemReducer,

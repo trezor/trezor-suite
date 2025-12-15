@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import type { MotionProps } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import {

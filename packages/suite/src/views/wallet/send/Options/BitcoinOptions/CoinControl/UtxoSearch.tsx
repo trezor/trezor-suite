@@ -1,4 +1,5 @@
-import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useCallback, useRef } from 'react';
+import type { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction } from 'react';
+import { useCallback, useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 

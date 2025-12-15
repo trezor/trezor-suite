@@ -1,7 +1,8 @@
 import { BLUETOOTH_PREFIX, bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import TrezorConnect, { BluetoothDeviceId, Device } from '@trezor/connect';
+import type { BluetoothDeviceId, Device } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 

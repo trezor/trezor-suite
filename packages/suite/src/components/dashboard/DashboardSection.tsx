@@ -1,4 +1,5 @@
-import { HTMLAttributes, ReactElement, Ref, forwardRef, useEffect, useState } from 'react';
+import type { HTMLAttributes, ReactElement, Ref } from 'react';
+import { forwardRef, useEffect, useState } from 'react';
 
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';

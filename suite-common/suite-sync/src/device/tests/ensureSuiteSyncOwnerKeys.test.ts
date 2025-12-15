@@ -1,6 +1,6 @@
-import { EnsureSuiteSyncOwnerKeysParams } from '@suite-common/suite-sync-types';
+import type { EnsureSuiteSyncOwnerKeysParams } from '@suite-common/suite-sync-types';
+import type { SuiteSyncOwner } from '@suite-common/suite-types';
 import {
-    SuiteSyncOwner,
     asDelegatedIdentityKey,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
@@ -8,10 +8,8 @@ import {
 import { asDeviceUniquePath } from '@trezor/connect';
 import { ok } from '@trezor/type-utils';
 
-import {
-    EnsureSuiteSyncOwnerDeps,
-    createEnsureSuiteSyncOwnerKeys,
-} from '../ensureSuiteSyncOwnerKeys';
+import type { EnsureSuiteSyncOwnerDeps } from '../ensureSuiteSyncOwnerKeys';
+import { createEnsureSuiteSyncOwnerKeys } from '../ensureSuiteSyncOwnerKeys';
 
 const device: EnsureSuiteSyncOwnerKeysParams['device'] = {
     instance: 0,

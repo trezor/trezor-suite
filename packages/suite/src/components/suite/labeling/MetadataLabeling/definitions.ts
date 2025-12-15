@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { AccountType, Bip43Path, NetworkType } from '@suite-common/wallet-config';
-import { DropdownMenuItemProps } from '@trezor/components';
+import type { AccountType, Bip43Path, NetworkType } from '@suite-common/wallet-config';
+import type { DropdownMenuItemProps } from '@trezor/components';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { MetadataAddPayload } from 'src/types/suite/metadata';
+import type { MetadataAddPayload } from 'src/types/suite/metadata';
 
 export type LabelingVariant = 'button' | 'text';
 

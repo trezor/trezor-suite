@@ -1,19 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import {
-    BulletList,
-    BulletListItemState,
-    Card,
-    Flex,
-    FlexDirection,
-    Grid,
-    Icon,
-    IconName,
-    Note,
-    Paragraph,
-    Row,
-} from '@trezor/components';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { BulletListItemState, FlexDirection, IconName } from '@trezor/components';
+import { BulletList, Card, Flex, Grid, Icon, Note, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 

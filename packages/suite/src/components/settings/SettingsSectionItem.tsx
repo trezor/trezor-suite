@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { SectionItem } from 'src/components/suite';
-import { SettingsAnchorValue } from 'src/constants/suite/anchors';
+import type { SettingsAnchorValue } from 'src/constants/suite/anchors';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 
 type SettingsSectionItemProps = {

@@ -1,4 +1,4 @@
-import { UIAlignment, UISize, UIVariant } from '../../config/types';
+import type { UIAlignment, UISize, UIVariant } from '../../config/types';
 
 export const modalVariants = ['primary', 'warning', 'destructive', 'info'] as const;
 export type ModalVariant = Extract<UIVariant, (typeof modalVariants)[number]>;

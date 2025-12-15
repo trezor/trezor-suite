@@ -3,11 +3,11 @@ import { arrayPartition, arrayToDictionary } from '@trezor/utils';
 import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
-import { Account } from '../Account';
-import { Alice } from '../Alice';
-import { CoinjoinPrison } from '../CoinjoinPrison';
+import type { Account } from '../Account';
+import type { Alice } from '../Alice';
+import type { CoinjoinPrison } from '../CoinjoinPrison';
 import type { CoinjoinRound, CoinjoinRoundOptions } from '../CoinjoinRound';
-import { Round } from '../coordinator';
+import type { Round } from '../coordinator';
 import * as middleware from '../middleware';
 
 export type CoinjoinRoundGenerator = (

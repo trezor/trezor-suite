@@ -1,11 +1,11 @@
-import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import type { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressType } from '@suite-common/wallet-types';
-import { UI } from '@trezor/connect';
-import { Deferred } from '@trezor/utils';
+import type { Account, AddressType } from '@suite-common/wallet-types';
+import type { UI } from '@trezor/connect';
+import type { Deferred } from '@trezor/utils';
 
-import { TrezorDevice } from './device';
-import { StakingFlow } from './staking';
+import type { TrezorDevice } from './device';
+import type { StakingFlow } from './staking';
 
 export type UserContextPayload =
     | {

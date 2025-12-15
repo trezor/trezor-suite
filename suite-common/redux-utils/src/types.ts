@@ -1,4 +1,4 @@
-import { Action, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
+import type { Action, AsyncThunk, ThunkAction } from '@reduxjs/toolkit';
 
 export interface AnyAction extends Action {
     [extraProps: string]: any;

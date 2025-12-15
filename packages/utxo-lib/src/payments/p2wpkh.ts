@@ -6,7 +6,8 @@ import ecc from 'tiny-secp256k1';
 import * as bcrypto from '../crypto';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
-import { Payment, PaymentOpts, typeforce } from '../types';
+import type { Payment, PaymentOpts } from '../types';
+import { typeforce } from '../types';
 import * as lazy from './lazy';
 
 const { OPS } = bscript;

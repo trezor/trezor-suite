@@ -1,6 +1,6 @@
 import { DataManager } from '../../data/DataManager';
 import { parseConnectSettings } from '../../data/connectSettings';
-import { ConnectSettings } from '../../types/settings';
+import type { ConnectSettings } from '../../types/settings';
 import { initCoreState } from '../index';
 
 // import { createTestTransport } from '../../device/__tests__/DeviceList.test';

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { getNetwork } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';

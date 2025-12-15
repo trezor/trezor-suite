@@ -1,10 +1,7 @@
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
-    StackProps,
-} from '@suite-native/navigation';
+import type { DeviceCheckBackupStackParamList, StackProps } from '@suite-native/navigation';
+import { DeviceCheckBackupStackRoutes } from '@suite-native/navigation';
 
 import { CheckBackupScreenWithExitButton } from '../components/CheckBackupScreenWithExitButton';
 

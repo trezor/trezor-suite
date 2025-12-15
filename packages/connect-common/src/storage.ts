@@ -1,6 +1,6 @@
 // https://github.com/trezor/connect/blob/develop/src/js/storage/index.js
 
-import { Branded } from '@trezor/type-utils';
+import type { Branded } from '@trezor/type-utils';
 import { TypedEmitter } from '@trezor/utils';
 
 const storageVersion = 2;

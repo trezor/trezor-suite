@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import * as STEP from 'src/constants/onboarding/steps';
 import { useOnboarding } from 'src/hooks/suite';
-import { AnyStepId } from 'src/types/onboarding';
+import type { AnyStepId } from 'src/types/onboarding';
 
 type SkipStepConfirmationProps = {
     onCancel: () => void;

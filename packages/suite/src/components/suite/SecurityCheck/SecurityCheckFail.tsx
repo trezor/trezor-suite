@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { SecurityChecklist } from 'src/views/onboarding/steps/DeviceAuthenticityStep/SecurityChecklist';
-import { SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
+import type { SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
 
 import { SecurityCheckLayout } from './SecurityCheckLayout';
 import { hardFailureChecklistItems } from './checklistItems';

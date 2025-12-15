@@ -1,7 +1,7 @@
 import { Controller } from 'react-hook-form';
 import { createFilter } from 'react-select';
 
-import { FiatCurrencyCode } from 'invity-api';
+import type { FiatCurrencyCode } from 'invity-api';
 
 import {
     type TradingExchangeFormProps,
@@ -17,12 +17,12 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingCryptoListProps,
     TradingTradeSellExchangeType,
 } from 'src/types/trading/trading';
-import { TradingFormInputAccountProps } from 'src/types/trading/tradingForm';
+import type { TradingFormInputAccountProps } from 'src/types/trading/tradingForm';
 import { isTradingExchangeContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccountOption';

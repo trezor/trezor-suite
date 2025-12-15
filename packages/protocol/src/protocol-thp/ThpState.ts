@@ -1,10 +1,10 @@
-import {
+import type {
     ThpCredentials,
     ThpDeviceProperties,
     ThpHandshakeCredentials,
     ThpMessageSyncBit,
-    ThpPairingMethod,
 } from './messages';
+import { ThpPairingMethod } from './messages';
 
 export type ThpStateSerialized = {
     properties?: ThpDeviceProperties;

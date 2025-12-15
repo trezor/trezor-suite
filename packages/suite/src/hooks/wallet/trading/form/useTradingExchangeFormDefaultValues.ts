@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
 
+import type {
+    TradingExchangeFormType,
+    TradingExchangeKycFilter,
+    TradingExchangeRateFilter,
+    TradingExchangeRateType,
+} from '@suite-common/trading';
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -9,15 +15,11 @@ import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_RATE,
     TRADING_EXCHANGE_RATE_FIXED,
-    TradingExchangeFormType,
-    TradingExchangeKycFilter,
-    TradingExchangeRateFilter,
-    TradingExchangeRateType,
     enabledTradingCurrencies,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { FormState, Output } from '@suite-common/wallet-types';
+import type { FormState, Output } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 

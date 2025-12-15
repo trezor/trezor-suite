@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceProtectedByPin } from '@suite-common/wallet-core';
-import {
+import type {
     DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 
 import { useOnDeviceOnboardingFinishedNavigation } from './useOnDeviceOnboardingFinishedNavigation';
 

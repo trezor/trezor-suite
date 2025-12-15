@@ -1,4 +1,4 @@
-import { Root } from 'protobufjs/light';
+import type { Root } from 'protobufjs/light';
 
 type Definitions = Record<string, unknown>;
 

@@ -1,6 +1,7 @@
 import { useSharedValue } from 'react-native-reanimated';
 
-import { AccordionItem, AccordionItemProps } from './AccordionItem';
+import type { AccordionItemProps } from './AccordionItem';
+import { AccordionItem } from './AccordionItem';
 import { VStack } from '../Stack';
 
 type AccordionListProps = {

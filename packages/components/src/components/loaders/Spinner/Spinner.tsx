@@ -7,13 +7,9 @@ import animationEnd from './animationData/refresh-spinner-end-success.json';
 import animationWarn from './animationData/refresh-spinner-end-warning.json';
 import animationMiddle from './animationData/refresh-spinner-middle.json';
 import animationStart from './animationData/refresh-spinner-start.json';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../../utils/frameProps';
+import type { TransientProps } from '../../../utils/transientProps';
 import { recolorLottieAnimation } from '../../animations/recolorLottieAnimation';
 
 export const allowedSpinnerFrameProps = ['margin', 'opacity'] as const satisfies FramePropsKeys[];

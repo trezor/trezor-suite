@@ -1,9 +1,7 @@
 import { DemoAccountQuestionnaireStackRoutes } from '@suite-native/navigation';
 
-import {
-    DemoAccountQuestionnaireAnswerOption,
-    DemoAccountQuestionnaireScreenContent,
-} from '../components/DemoAccountQuestionnaireScreenContent';
+import type { DemoAccountQuestionnaireAnswerOption } from '../components/DemoAccountQuestionnaireScreenContent';
+import { DemoAccountQuestionnaireScreenContent } from '../components/DemoAccountQuestionnaireScreenContent';
 
 const SUITE_ACTION_ANSWER_OPTIONS = [
     {

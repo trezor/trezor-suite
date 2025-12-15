@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTheme } from 'styled-components';
 
 import { Box } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 
 import { ConfirmOnDevicePillContent } from './ConfirmOnDevicePillContent';
 

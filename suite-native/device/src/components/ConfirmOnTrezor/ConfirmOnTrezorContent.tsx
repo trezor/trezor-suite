@@ -1,10 +1,11 @@
 import { type PropsWithChildren } from 'react';
-import { GestureDetector, GestureType } from 'react-native-gesture-handler';
+import type { GestureType } from 'react-native-gesture-handler';
+import { GestureDetector } from 'react-native-gesture-handler';
+import type { SharedValue } from 'react-native-reanimated';
 import {
     FadeIn,
     FadeOut,
     LinearTransition,
-    SharedValue,
     interpolate,
     useAnimatedStyle,
 } from 'react-native-reanimated';
@@ -16,9 +17,9 @@ import { Screen, type ScreenHeaderProps } from '@suite-native/navigation';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { getScreenWidth, getWindowWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { ThemeColorVariant } from '@trezor/theme';
+import type { ThemeColorVariant } from '@trezor/theme';
 
-import { BottomSheetControlProps } from './hooks/useConfirmOnTrezorSheet';
+import type { BottomSheetControlProps } from './hooks/useConfirmOnTrezorSheet';
 
 const SCREEN_WIDTH = getScreenWidth();
 const WINDOW_WIDTH = getWindowWidth();

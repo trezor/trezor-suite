@@ -1,12 +1,10 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index
+import type { CallMethod, ConnectSettings, Manifest } from '@trezor/connect/src/exports';
 import {
-    CallMethod,
-    ConnectSettings,
     ERRORS,
     IFRAME,
-    Manifest,
     POPUP,
     WEBEXTENSION,
     createErrorMessage,

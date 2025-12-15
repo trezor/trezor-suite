@@ -1,11 +1,7 @@
 import { useRef } from 'react';
 
-import {
-    BottomSheetSearchInput,
-    BottomSheetSearchInputProps,
-    BottomSheetSearchInputRef,
-    SearchInputWithCancel,
-} from '@suite-native/atoms';
+import type { BottomSheetSearchInputProps, BottomSheetSearchInputRef } from '@suite-native/atoms';
+import { BottomSheetSearchInput, SearchInputWithCancel } from '@suite-native/atoms';
 
 const noOp = () => {};
 

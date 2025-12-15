@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EncryptedHex } from '@suite-common/platform-encryption';
-import {
+import type { EncryptedHex } from '@suite-common/platform-encryption';
+import type {
     AcquiredDevice,
     ButtonRequest,
     DelegatedIdentityKey,
@@ -9,13 +9,13 @@ import {
     ThpSuiteCredentials,
     TrezorDevice,
 } from '@suite-common/suite-types';
-import {
-    DEVICE,
+import type {
     DecodedTrezorPushNotification,
     Device,
     DeviceState,
     StaticSessionId,
 } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 

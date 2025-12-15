@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectWalletLabel } from '@suite-common/suite-sync';
+import type { WithLabelingState } from '@suite-common/suite-sync';
+import { selectWalletLabel } from '@suite-common/suite-sync';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { selectIsLabelingEnabled } from '../selectors';

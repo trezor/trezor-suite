@@ -1,8 +1,8 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountKey, FormState } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
+import type { PreloadedState } from '@suite-native/test-utils';
 import {
-    PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
@@ -10,7 +10,7 @@ import {
 } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
-import { FeesFormType } from '../../../../feesFormSchema';
+import type { FeesFormType } from '../../../../feesFormSchema';
 import { useFeesForm } from '../../../../hooks';
 import { useCustomFee } from '../../../../hooks/fees/useCustomFee';
 import { CustomFee } from '../CustomFee';

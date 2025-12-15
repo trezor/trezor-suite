@@ -3,16 +3,17 @@ import { PixelRatio } from 'react-native';
 
 import * as Haptics from 'expo-haptics';
 
-import {
+import type {
     FiatGraphPoint,
     GroupedBalanceMovementEvent,
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
 import { Box, Loader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { GraphPoint, LineGraph } from '@suite-native/react-native-graph';
+import type { GraphPoint } from '@suite-native/react-native-graph';
+import { LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TimerId } from '@trezor/type-utils';
+import type { TimerId } from '@trezor/type-utils';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel } from './AxisLabel';

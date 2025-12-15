@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
-import { EventType, SuiteAnalyticsEvent, analytics } from '@trezor/suite-analytics';
+import type { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 type SendModalEventOptions = Extract<
     SuiteAnalyticsEvent,

@@ -1,6 +1,5 @@
+import type { AppOwner, Owner } from '@evolu/common';
 import {
-    AppOwner,
-    Owner,
     OwnerEncryptionKey,
     OwnerIdBytes,
     OwnerSecret,

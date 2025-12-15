@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/firmwareRequiredUpdate.js
 
-import { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
+import type { UiRequestUnexpectedDeviceMode } from '@trezor/connect';
 import { SUITE_FIRMWARE_URL } from '@trezor/urls';
 
 import { showView } from './common';

@@ -6,15 +6,13 @@ import {
     renderWithBasicProvider,
     userEvent,
 } from '@suite-native/test-utils';
-import { useListDataFilter } from '@suite-native/trading-atoms';
+import type { useListDataFilter } from '@suite-native/trading-atoms';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
-import { TradingLocationFormValues } from '../../../types/tradingLocationForm';
+import type { TradingLocationFormValues } from '../../../types/tradingLocationForm';
 import { locationFormValidationSchema } from '../../../utils/locationFormValidationSchema';
-import {
-    CountryOfResidencePicker,
-    CountryOfResidencePickerProps,
-} from '../CountryOfResidencePicker';
+import type { CountryOfResidencePickerProps } from '../CountryOfResidencePicker';
+import { CountryOfResidencePicker } from '../CountryOfResidencePicker';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 

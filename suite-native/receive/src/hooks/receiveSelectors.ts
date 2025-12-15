@@ -1,6 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
+import type { DeviceRootState } from '@suite-common/wallet-core';
+import { selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
 
 export const hasReceiveAddressButtonRequest = (state: DeviceRootState) =>
     pipe(

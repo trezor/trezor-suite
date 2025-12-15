@@ -1,4 +1,4 @@
-import { BuyProviderInfo } from 'invity-api';
+import type { BuyProviderInfo } from 'invity-api';
 
 import {
     type TradingTransactionBuy as TradingTxBuy,
@@ -10,7 +10,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 import { TradingTransactionId } from 'src/views/wallet/trading/common';
 import { TradingTransactionAmounts } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionAmounts';
 import { TradingTransactionContainer } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionContainer';

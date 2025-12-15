@@ -7,7 +7,7 @@ import {
     asBaseCurrencyAmount,
     useShouldRedactNumbers,
 } from '@suite-common/wallet-utils';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -15,9 +15,10 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { Account } from 'src/types/wallet';
-import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
-import { FiatValueMap, sumFiatValueMap } from 'src/utils/wallet/graph';
+import type { Account } from 'src/types/wallet';
+import type { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';
+import type { FiatValueMap } from 'src/utils/wallet/graph';
+import { sumFiatValueMap } from 'src/utils/wallet/graph';
 
 import { InfoCard } from './InfoCard';
 

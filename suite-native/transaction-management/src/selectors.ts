@@ -1,10 +1,12 @@
 import { A, G, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import {
+import type {
     AccountsRootState,
     DeviceRootState,
     FormDraftRootState,
+} from '@suite-common/wallet-core';
+import {
     selectAccountByKey,
     selectFormDraft,
     selectSelectedDevice,
@@ -13,7 +15,7 @@ import {
     selectSendPrecomposedTx,
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
-import {
+import type {
     AccountKey,
     FormDraftWithSendKeyPrefix,
     FormState,
@@ -31,8 +33,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeSendRootState } from './sendFormSlice';
-import { NativeSupportedFeeLevel, StatefulReviewOutput } from './types';
+import type { NativeSendRootState } from './sendFormSlice';
+import type { NativeSupportedFeeLevel, StatefulReviewOutput } from './types';
 
 export type TransactionReviewOutputsState = NativeSendRootState &
     AccountsRootState &

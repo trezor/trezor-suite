@@ -1,4 +1,5 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { ExchangeApprovalLimitSheet } from '../ExchangeApprovalLimitSheet';

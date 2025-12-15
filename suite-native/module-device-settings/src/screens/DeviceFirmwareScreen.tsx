@@ -16,15 +16,17 @@ import {
 } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToCheckBackup } from '@suite-native/module-check-backup';
+import type {
+    DeviceSettingsStackParamList,
+    RootStackParamList,
+    StackToStackCompositeScreenProps,
+} from '@suite-native/navigation';
 import {
     DeviceOnboardingStackRoutes,
-    DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
-    RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 
 export const DeviceFirmwareScreen = ({

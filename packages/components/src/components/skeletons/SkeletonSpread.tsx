@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
-import { SkeletonStack, SkeletonStackProps } from './SkeletonStack';
+import type { SkeletonStackProps } from './SkeletonStack';
+import { SkeletonStack } from './SkeletonStack';
 
 export interface SkeletonSpreadProps extends SkeletonStackProps {
     $spaceAround?: boolean;

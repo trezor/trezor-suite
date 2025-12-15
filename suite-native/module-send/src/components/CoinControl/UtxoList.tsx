@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
-import { Utxo } from '@trezor/blockchain-link-types';
-import { StaticSessionId } from '@trezor/connect';
+import type { Utxo } from '@trezor/blockchain-link-types';
+import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { UtxoCard } from './UtxoCard';

@@ -4,7 +4,7 @@ import { configureMockStore, extraDependenciesMock } from '@suite-common/test-ut
 
 import { prepareThpReducer, thpActions } from '../src';
 import { createCredential } from '../src/support/mocks';
-import { ThpState } from '../src/thpReducer';
+import type { ThpState } from '../src/thpReducer';
 
 const thpReduce = prepareThpReducer(extraDependenciesMock);
 

@@ -1,12 +1,15 @@
-import { DeviceRootState, selectSelectedDevice } from '@suite-common/wallet-core';
-import { TransportInfo } from '@trezor/connect';
+import type { DeviceRootState } from '@suite-common/wallet-core';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import type { TransportInfo } from '@trezor/connect';
 import { versionUtils } from '@trezor/utils';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
-import { RouterRootState, selectRouter } from 'src/reducers/suite/routerReducer';
-import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/suite';
+import type { ExperimentalFeature } from 'src/constants/suite/experimental';
+import type { RouterRootState } from 'src/reducers/suite/routerReducer';
+import { selectRouter } from 'src/reducers/suite/routerReducer';
+import type { SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import type { AppState, PrerequisiteType, TrezorDevice } from 'src/types/suite';
+import { TorStatus } from 'src/types/suite';
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 

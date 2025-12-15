@@ -1,10 +1,12 @@
 import React from 'react';
 
-import styled, { DefaultTheme, css } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Elevation, SpacingValues, SpacingValuesNew, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation, SpacingValues, SpacingValuesNew } from '@trezor/theme';
+import { mapElevationToBorder } from '@trezor/theme';
 
-import {
+import type {
     FlexAlignItems,
     FlexAlignSelf,
     FlexDirection,
@@ -12,13 +14,10 @@ import {
     FlexType,
     FlexWrap,
 } from './FlexProp';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
+import { makePropsTransient } from '../../utils/transientProps';
 import { useElevation } from '../ElevationContext/ElevationContext';
 
 export const allowedFlexFrameProps = [

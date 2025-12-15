@@ -1,16 +1,9 @@
 import styled from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import {
-    FrameProps,
-    FramePropsKeys,
-    Image,
-    ObjectFit,
-    TransientProps,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { FrameProps, FramePropsKeys, ObjectFit, TransientProps } from '@trezor/components';
+import { Image, pickAndPrepareFrameProps, withFrameProps } from '@trezor/components';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { borders, paletteV2 } from '@trezor/theme';
 
 import { getLargeModelImagePath } from '../../utils/getModelFrontColor';

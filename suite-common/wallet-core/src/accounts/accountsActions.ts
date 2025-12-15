@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import {
+import type {
     Account,
     AccountBackendSpecific,
     AccountFailureSpecific,
@@ -15,7 +15,7 @@ import {
     getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
-import { AccountInfo, StaticSessionId } from '@trezor/connect';
+import type { AccountInfo, StaticSessionId } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
 import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';

@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { Modal, ModalSize } from '@trezor/components';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ModalSize } from '@trezor/components';
+import { Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';

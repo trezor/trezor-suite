@@ -15,7 +15,7 @@ import {
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
 

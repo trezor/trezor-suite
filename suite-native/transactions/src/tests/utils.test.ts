@@ -1,4 +1,4 @@
-import { VinVoutAddress } from '../types';
+import type { VinVoutAddress } from '../types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from '../utils';
 import {
     transactionWithChangeAddress,

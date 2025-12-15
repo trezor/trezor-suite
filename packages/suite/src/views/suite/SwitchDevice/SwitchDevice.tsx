@@ -9,7 +9,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { ForegroundAppProps } from 'src/types/suite';
+import type { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';

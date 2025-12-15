@@ -1,4 +1,5 @@
-import { BaseProcess, Status } from './BaseProcess';
+import type { Status } from './BaseProcess';
+import { BaseProcess } from './BaseProcess';
 
 export class CoinjoinProcess extends BaseProcess {
     private readonly port;

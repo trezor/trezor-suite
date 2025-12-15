@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils';
 
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
+import type { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 interface ValidateMaxOptions {
     maxAmount: BigNumber;

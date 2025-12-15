@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { Icon, Row, useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 
 import { CheckableTag } from './CheckableTag';
 

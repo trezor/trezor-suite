@@ -1,5 +1,5 @@
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
-import {
+import type {
     ChainedTransactions,
     SelectedAccountLoaded,
     WalletAccountTransactionWithRequiredRbfParams,

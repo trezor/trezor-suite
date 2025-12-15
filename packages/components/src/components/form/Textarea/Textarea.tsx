@@ -1,13 +1,16 @@
-import { ReactNode, Ref, TextareaHTMLAttributes } from 'react';
+import type { ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, spacingsPx } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
-import { CharacterCount, CharacterCountProps } from './CharacterCount';
-import { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
+import type { CharacterCountProps } from './CharacterCount';
+import { CharacterCount } from './CharacterCount';
+import type { FrameProps, FramePropsKeys } from '../../../utils/frameProps';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { FormCell, FormCellProps, pickFormCellProps } from '../FormCell/FormCell';
+import type { FormCellProps } from '../FormCell/FormCell';
+import { FormCell, pickFormCellProps } from '../FormCell/FormCell';
 import {
     INPUT_PADDING_TOP,
     InputWrapper,
@@ -16,7 +19,7 @@ import {
     baseInputStyle,
     getInputStateBgColor,
 } from '../styles';
-import { InputState } from '../types';
+import type { InputState } from '../types';
 
 export const allowedTextareaFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 

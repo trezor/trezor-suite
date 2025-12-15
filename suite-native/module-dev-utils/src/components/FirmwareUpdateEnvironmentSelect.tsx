@@ -5,8 +5,9 @@ import { reloadAppAsync } from 'expo';
 
 import { firmwareActions, selectFirmwareUpdateSource } from '@suite-common/firmware';
 import { useAlert } from '@suite-native/alerts';
-import { Select, SelectItemType } from '@suite-native/atoms';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import type { SelectItemType } from '@suite-native/atoms';
+import { Select } from '@suite-native/atoms';
+import type { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
 
 const options: SelectItemType<FirmwareUpdateSource>[] = [
     { label: 'Production', value: 'production' },

@@ -2,7 +2,7 @@
  * Show a "Do not disconnect" dialog instead of the standard homescreen.
  */
 
-import { MessagesSchema as PROTO } from '@trezor/protobuf';
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { Params, Response } from '../params';
 

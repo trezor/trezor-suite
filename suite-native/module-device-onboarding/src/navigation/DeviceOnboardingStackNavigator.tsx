@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import type { DeviceOnboardingStackParamList } from '@suite-native/navigation';
 import {
-    DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

@@ -8,11 +8,13 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
-import {
+import type {
     AccountsRootState,
     FeesRootState,
     SendRootState,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -22,17 +24,15 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import type { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits, getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
+import type { SendStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { SendStackRoutes } from '@suite-native/navigation';
+import type { TokensRootState } from '@suite-native/tokens';
+import { selectAccountTokenInfo } from '@suite-native/tokens';
+import type { FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import {
-    SendStackParamList,
-    SendStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import {
-    FeeLevelsMaxAmount,
     calculateFeeLevelsMaxAmountThunk,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
@@ -40,7 +40,8 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 
 import { useUtxoSelection } from './useUtxoSelection';
-import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
+import type { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
 
 const getDefaultValues = ({

@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import {
     invityAPI,
@@ -14,7 +14,7 @@ import {
 
 import { ROUTER } from 'src/actions/suite/constants';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 
 export const tradingMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>

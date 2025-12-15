@@ -1,6 +1,6 @@
-import { CreateSuiteStorage } from '@suite-common/suite-sync-storage';
+import type { CreateSuiteStorage } from '@suite-common/suite-sync-storage';
 import {
-    SuiteSyncOwner,
+    type SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';

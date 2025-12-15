@@ -6,7 +6,8 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
+import type { InlineAlertBoxProps } from '@suite-native/atoms';
+import { Box, Card } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
 import type { StaticSessionId } from '@trezor/connect';

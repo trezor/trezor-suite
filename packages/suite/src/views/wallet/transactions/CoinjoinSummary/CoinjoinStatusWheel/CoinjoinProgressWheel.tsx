@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
 
 import { lighten, rgba } from 'polished';
-import styled, { DefaultTheme, css, keyframes } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
 
 import { Tooltip, useElevation } from '@trezor/components';
-import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import type { Elevation } from '@trezor/theme';
+import { mapElevationToBorder } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';

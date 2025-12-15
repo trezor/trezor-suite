@@ -17,7 +17,7 @@ import {
     motionEasing,
 } from '@trezor/components';
 import { UI } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
+import type { DeviceModelInternal } from '@trezor/device-utils';
 import { isAndroid } from '@trezor/env-utils';
 import { PasswordStrengthIndicator } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';

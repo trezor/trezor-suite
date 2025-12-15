@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import type { CoinImageSize } from '@suite-common/icons/src/index';
 import {
     COIN_IMAGE_SIZES,
-    CoinImageSize,
     ICONS_URL_BASE,
     createCoinImageName,
 } from '@suite-common/icons/src/index';

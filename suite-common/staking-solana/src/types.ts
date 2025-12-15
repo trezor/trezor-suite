@@ -1,4 +1,4 @@
-import {
+import type {
     Account,
     Address,
     ClusterUrl,
@@ -9,9 +9,9 @@ import {
     Transaction,
     TransactionMessageWithBlockhashLifetime,
 } from '@solana/kit';
-import { StakeStateAccount } from '@solana-program/stake';
+import type { StakeStateAccount } from '@solana-program/stake';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { SolanaSignTransaction } from '@trezor/connect';
 
 export enum Network {

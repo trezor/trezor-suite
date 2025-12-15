@@ -1,9 +1,11 @@
-import { DefaultTheme, RuleSet, css } from 'styled-components';
+import type { DefaultTheme, RuleSet } from 'styled-components';
+import { css } from 'styled-components';
 
-import { CSSColor, Elevation, mapElevationToBackground, spacings } from '@trezor/theme';
+import type { CSSColor, Elevation } from '@trezor/theme';
+import { mapElevationToBackground, spacings } from '@trezor/theme';
 
-import { CardVariant, FillType, PaddingType } from './types';
-import { Padding } from '../../utils/frameProps';
+import type { CardVariant, FillType, PaddingType } from './types';
+import type { Padding } from '../../utils/frameProps';
 
 type PaddingMapArgs = {
     paddingType: PaddingType;

@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import type { StakeAccountRewards } from '@suite-common/wallet-core';
 import {
     EverstakeRewardsEndpointType,
-    StakeAccountRewards,
     fetchEverstakeRewards,
     selectStakingRewardsHistory,
 } from '@suite-common/wallet-core';
 import { useDebounce } from '@trezor/react-utils';
 
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { useSelector } from '../suite';
 

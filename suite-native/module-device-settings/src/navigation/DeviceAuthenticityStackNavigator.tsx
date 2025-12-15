@@ -5,14 +5,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useDeviceAuthenticityCheck } from '@suite-native/device';
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
-import {
+import type {
     DeviceAuthenticityStackParamList,
-    DeviceAuthenticityStackRoutes,
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    DeviceAuthenticityStackRoutes,
+    DeviceSettingsStackRoutes,
+    RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 

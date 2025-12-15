@@ -1,6 +1,7 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { HotkeyBadge as HotkeyBadgeComponent, HotkeyBadgeProps } from './HotkeyBadge';
+import type { HotkeyBadgeProps } from './HotkeyBadge';
+import { HotkeyBadge as HotkeyBadgeComponent } from './HotkeyBadge';
 
 const meta: Meta<typeof HotkeyBadgeComponent> = {
     title: 'HotkeyBadge',

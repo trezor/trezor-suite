@@ -1,7 +1,8 @@
-import { RefObject, useEffect, useMemo, useState } from 'react';
+import type { RefObject } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GlobalSendReceiveType } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { GlobalSendReceiveType } from '@suite-common/wallet-types';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';

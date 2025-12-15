@@ -1,8 +1,9 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { Paragraph as P } from './Paragraph';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { TextProps, allowedTextFrameProps, allowedTextTextProps } from '../Text/Text';
+import type { TextProps } from '../Text/Text';
+import { allowedTextFrameProps, allowedTextTextProps } from '../Text/Text';
 import { getTextPropsStory } from '../utils';
 
 const meta: Meta<typeof P> = {

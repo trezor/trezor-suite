@@ -1,4 +1,4 @@
-import { MiddlewareAPI } from 'redux';
+import type { MiddlewareAPI } from 'redux';
 
 import { deviceActions } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
@@ -6,7 +6,7 @@ import { UI } from '@trezor/connect';
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import { SUITE } from 'src/actions/suite/constants';
-import { Action, AppState, Dispatch } from 'src/types/suite';
+import type { Action, AppState, Dispatch } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 

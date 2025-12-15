@@ -4,12 +4,14 @@
 import { Menu, Tray } from 'electron';
 import path from 'path';
 
-import { DEVICE, DeviceEvent } from '@trezor/connect';
+import type { DeviceEvent } from '@trezor/connect';
+import { DEVICE } from '@trezor/connect';
 import { validateIpcMessage } from '@trezor/ipc-proxy';
-import { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
+import type { Status, TraySettings } from '@trezor/suite-desktop-api/src/messages';
 
 import { app, ipcMain } from '../typed-electron';
-import { ModuleInitBackground, mainThreadEmitter } from './module';
+import type { ModuleInitBackground } from './module';
+import { mainThreadEmitter } from './module';
 
 export const SERVICE_NAME = 'tray';
 

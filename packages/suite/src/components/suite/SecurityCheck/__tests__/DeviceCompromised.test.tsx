@@ -2,11 +2,12 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
-import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
+import type { DeviceReducerState } from '@suite-common/wallet-core';
+import { deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
-import { TranslationKey } from 'src/components/suite/Translation';
-import { AppState } from 'src/reducers/store';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import type { AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';

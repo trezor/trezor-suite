@@ -1,6 +1,6 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type {
     CryptoBaseCurrencyPair,
     RatesByTimestamps,
     TickerId,
@@ -8,9 +8,8 @@ import {
     Timestamp,
     TokenAddress,
     WalletAccountTransaction,
-    asCryptoBaseCurrencyCode,
-    asTimestamp,
 } from '@suite-common/wallet-types';
+import { asCryptoBaseCurrencyCode, asTimestamp } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { typedObjectKeys } from '@trezor/utils';
 

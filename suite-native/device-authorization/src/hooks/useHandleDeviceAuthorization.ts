@@ -3,17 +3,16 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    DiscoveryRootState,
-    selectDiscoveryByDevicePath,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
-import {
+import type { DiscoveryRootState } from '@suite-common/wallet-core';
+import { selectDiscoveryByDevicePath, selectSelectedDevice } from '@suite-common/wallet-core';
+import type {
     AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+import {
+    AuthorizeDeviceStackRoutes,
+    RootStackRoutes,
     useLastRouteName,
 } from '@suite-native/navigation';
 

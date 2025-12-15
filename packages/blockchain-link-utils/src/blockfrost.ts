@@ -15,7 +15,8 @@ import type {
     TransferType,
     Utxo,
 } from '@trezor/blockchain-link-types/src/common';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import type { BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     enhanceVinVout,

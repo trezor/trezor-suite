@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
-import { NetworkFeature } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import type { NetworkFeature } from '@suite-common/wallet-config';
+import type { Account } from '@suite-common/wallet-types';
 
 import * as fixtures from '../__fixtures__/accountUtils';
 import {

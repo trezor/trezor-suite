@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { TrezorDevice } from '@suite-common/suite-types';
 
-import { StoredAuthenticateDeviceResult } from './types';
+import type { StoredAuthenticateDeviceResult } from './types';
 
 export const ACTION_PREFIX = '@device-authenticity';
 

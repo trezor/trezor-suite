@@ -1,15 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { Box, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
-import {
+import type {
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
     TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { RootStackRoutes, TransactionDetailStackRoutes } from '@suite-native/navigation';
+import type { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import {
     TokenTransferListItemValues,
     TransactionListItemValues,

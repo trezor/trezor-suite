@@ -4,26 +4,27 @@ import { useSelector } from 'react-redux';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
-import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import type { SendRootState } from '@suite-common/wallet-core';
+import { selectSendFormDraftByKey } from '@suite-common/wallet-core';
+import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
-import {
-    AuthorizeDeviceStackRoutes,
+import type {
     RootStackParamList,
-    RootStackRoutes,
     SendStackParamList,
-    SendStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import {
-    FeesContent,
-    FeesFooter,
+    AuthorizeDeviceStackRoutes,
+    RootStackRoutes,
+    SendStackRoutes,
+} from '@suite-native/navigation';
+import { updateSelectedFeeLevelThunk } from '@suite-native/send';
+import type {
     NativeSendRootState,
     NativeSupportedFeeLevel,
-    useFeesManagement,
 } from '@suite-native/transaction-management';
+import { FeesContent, FeesFooter, useFeesManagement } from '@suite-native/transaction-management';
 
 import { RecipientsSummary } from './RecipientsSummary';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';

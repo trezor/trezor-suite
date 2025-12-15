@@ -1,4 +1,5 @@
-import { NetworkSymbol, NetworkType, hasNetworkSettlementLayer } from '@suite-common/wallet-config';
+import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
+import { hasNetworkSettlementLayer } from '@suite-common/wallet-config';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

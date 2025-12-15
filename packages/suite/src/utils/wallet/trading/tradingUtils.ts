@@ -1,23 +1,28 @@
-import { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import type {
+    BuyTrade,
+    CryptoId,
+    ExchangeTrade,
+    FiatCurrencyCode,
+    SellFiatTrade,
+} from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
-    TradingCryptoSelectItemProps,
+    type TradingCryptoSelectItemProps,
     type TradingType,
     cryptoIdToSymbol,
     toTokenCryptoId,
 } from '@suite-common/trading';
+import type { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    Network,
-    NetworkSymbol,
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkDisplaySymbolName,
     getNetworkFeatures,
     getNetworkType,
 } from '@suite-common/wallet-config';
-import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import type { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     getContractAddressForNetworkSymbol,
@@ -25,11 +30,12 @@ import {
     substituteBip43Path,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import type { FeeLevel } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { Route, TrezorDevice } from 'src/types/suite';
-import {
+import type { Route, TrezorDevice } from 'src/types/suite';
+import type {
     TradingAccountOptionsGroupOptionProps,
     TradingAccountsOptionsGroupProps,
     TradingBuildAccountOptionsProps,
@@ -38,7 +44,7 @@ import {
     TradingGetProvidersInfoProps,
     TradingGetSortedAccountsProps,
 } from 'src/types/trading/trading';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 interface TradingGetDecimalsProps {
     sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;

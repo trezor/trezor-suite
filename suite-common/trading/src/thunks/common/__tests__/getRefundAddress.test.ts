@@ -3,7 +3,8 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState } from '../../../reducers/tradingCommonReducer';

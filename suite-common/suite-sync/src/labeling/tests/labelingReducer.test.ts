@@ -3,7 +3,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { configureMockStore } from '@suite-common/test-utils';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
-import { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
 
 import {
     clearAllLabels,
@@ -12,7 +12,8 @@ import {
     setOutputLabel,
     setWalletLabel,
 } from '../labelingActions';
-import { LabelingState, labelingReducer } from '../labelingReducer';
+import type { LabelingState } from '../labelingReducer';
+import { labelingReducer } from '../labelingReducer';
 import {
     selectAccountLabel,
     selectAccountLabels,

@@ -5,7 +5,7 @@ import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-util
 import { useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
-import { AccountWithTokensOption } from './useAccountWithTokensOptions';
+import type { AccountWithTokensOption } from './useAccountWithTokensOptions';
 
 export function useFilterAccountsWithTokens(accountsWithTokens: AccountWithTokensOption[]) {
     const search = useSelector(globalSendReceiveFilters.selectors.selectSearch);

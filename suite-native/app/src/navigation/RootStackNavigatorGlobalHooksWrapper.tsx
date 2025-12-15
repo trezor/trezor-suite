@@ -1,4 +1,5 @@
-import { ReactNode, useContext } from 'react';
+import type { ReactNode } from 'react';
+import { useContext } from 'react';
 
 import { IsNavigationReadyContext } from '@suite-native/navigation';
 

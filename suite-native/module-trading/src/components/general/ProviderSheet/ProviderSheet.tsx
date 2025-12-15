@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { TradingTradeMapProps, TradingTradeType, TradingType } from '@suite-common/trading';
+import type { TradingTradeMapProps, TradingTradeType, TradingType } from '@suite-common/trading';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
-import { TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
-import { QuotesByCategories, QuotesCategory } from '@suite-native/trading-types';
+import type { TradingWithFeatureFlagsRootState } from '@suite-native/trading-state';
+import type { QuotesByCategories, QuotesCategory } from '@suite-native/trading-types';
 import { prepareNativeStyle } from '@trezor/styles';
 
 import { useProviderFilters } from '../../../hooks/general/useProviderFilters';

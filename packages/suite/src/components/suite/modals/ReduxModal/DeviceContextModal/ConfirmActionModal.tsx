@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite-common/intl-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { Column, H2, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -12,7 +12,7 @@ import { DeviceConfirmImage } from 'src/components/suite';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
 import messages from 'src/support/messages';
-import { TrezorDevice } from 'src/types/suite';
+import type { TrezorDevice } from 'src/types/suite';
 
 interface ConfirmActionProps {
     cancelable?: boolean;

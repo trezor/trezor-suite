@@ -1,4 +1,4 @@
-import { Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from '../../../../../actions/suite/routerActions';

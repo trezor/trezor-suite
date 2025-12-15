@@ -1,17 +1,12 @@
-import {
-    ClipboardEvent,
-    FormEvent,
-    KeyboardEvent,
-    useCallback,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react';
-import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
+import type { ClipboardEvent, FormEvent, KeyboardEvent } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import type { Control, FieldValues, UseControllerProps } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 
-import { Locale } from '@suite-common/suite-types';
+import type { Locale } from '@suite-common/suite-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import { Input, InputProps } from '@trezor/components';
+import type { InputProps } from '@trezor/components';
+import { Input } from '@trezor/components';
 import { getLocaleSeparators } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

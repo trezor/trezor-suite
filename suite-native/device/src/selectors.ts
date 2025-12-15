@@ -5,19 +5,18 @@ import {
     isSkippedRevisionCheckError,
     revisionCheckErrorScenarios,
 } from '@suite-common/firmware-authenticity';
-import {
-    Feature,
-    MessageSystemRootState,
-    selectIsFeatureEnabled,
-} from '@suite-common/message-system';
+import type { MessageSystemRootState } from '@suite-common/message-system';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
+import type {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
     FiatRatesRootState,
-    PORTFOLIO_TRACKER_DEVICE_ID,
     WalletSettingsRootState,
+} from '@suite-common/wallet-core';
+import {
+    PORTFOLIO_TRACKER_DEVICE_ID,
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
@@ -41,19 +40,14 @@ import {
     selectSelectedDevice,
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
-import {
-    BaseCurrencyAmount,
-    asBaseCurrencyAmount,
-    getAccountFiatBalance,
-} from '@suite-common/wallet-utils';
-import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { NativeFirmwareRootState } from '@suite-native/firmware';
-import {
-    SettingsSliceRootState,
-    selectIsDeviceAuthenticityCheckEnabled,
-} from '@suite-native/settings';
+import type { Account, RatesByKey } from '@suite-common/wallet-types';
+import type { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { asBaseCurrencyAmount, getAccountFiatBalance } from '@suite-common/wallet-utils';
+import type { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import type { NativeFirmwareRootState } from '@suite-native/firmware';
+import type { SettingsSliceRootState } from '@suite-native/settings';
+import { selectIsDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';

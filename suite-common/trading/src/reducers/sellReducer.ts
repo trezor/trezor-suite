@@ -1,10 +1,16 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { CryptoId, SellFiatTrade, SellFiatTradeQuoteRequest, SellProviderInfo } from 'invity-api';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import type {
+    CryptoId,
+    SellFiatTrade,
+    SellFiatTradeQuoteRequest,
+    SellProviderInfo,
+} from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_PREFIX } from '../constants';
-import { TradingAmountLimitProps, TradingCountryCode, TradingSellStepType } from '../types';
+import type { TradingAmountLimitProps, TradingCountryCode, TradingSellStepType } from '../types';
 
 export interface SellInfo {
     providerInfos: { [name: string]: SellProviderInfo };

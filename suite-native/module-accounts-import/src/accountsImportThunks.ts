@@ -13,11 +13,12 @@ import {
     selectAccountsByNetworkAndDeviceState,
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import type { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 import { isCoinWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import type { AccountInfo } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { convertTaprootXpub } from '@trezor/utils';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 

@@ -1,4 +1,5 @@
-import { Enum, Type } from 'protobufjs/light';
+import type { Type } from 'protobufjs/light';
+import { Enum } from 'protobufjs/light';
 
 import { createMessageFromName, isPrimitiveField } from './utils';
 

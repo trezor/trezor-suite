@@ -2,13 +2,8 @@ import { Kind, OptionalKind, type TSchema } from '@sinclair/typebox';
 
 import type { TrezorConnect } from '@trezor/connect-web';
 
-import {
-    MethodState,
-    initialState,
-    prepareBundle,
-    setAffectedValues,
-    updateParams,
-} from './methodCommon';
+import type { MethodState } from './methodCommon';
+import { initialState, prepareBundle, setAffectedValues, updateParams } from './methodCommon';
 import { coinsSelect } from '../constants/coins';
 import type { Field, FieldBasic } from '../types/common';
 import { isFieldBasic } from '../types/common';

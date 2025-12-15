@@ -1,4 +1,4 @@
-import { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
+import type { SuiteSyncQuotaManagerState } from './quotaManagerReducer';
 
 type WithSuiteSyncQuotaManagerState = {
     suiteSyncQuotaManager: SuiteSyncQuotaManagerState;

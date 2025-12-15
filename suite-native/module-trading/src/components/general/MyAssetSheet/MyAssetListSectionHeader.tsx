@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
-import { NativeAccountsRootState, selectAccountFiatBalance } from '@suite-native/accounts';
+import type { AccountsRootState } from '@suite-common/wallet-core';
+import { selectFormattedAccountType } from '@suite-common/wallet-core';
+import type { Account } from '@suite-common/wallet-types';
+import type { NativeAccountsRootState } from '@suite-native/accounts';
+import { selectAccountFiatBalance } from '@suite-native/accounts';
 import { Badge, HStack, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 

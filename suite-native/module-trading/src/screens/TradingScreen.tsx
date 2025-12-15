@@ -16,7 +16,8 @@ import {
 
 import { Footer } from '../components/general/Footer';
 import { Header } from '../components/general/Header/Header';
-import { HistoryButton, NavigationProps } from '../components/general/HistoryButton';
+import type { NavigationProps } from '../components/general/HistoryButton';
+import { HistoryButton } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
 import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';

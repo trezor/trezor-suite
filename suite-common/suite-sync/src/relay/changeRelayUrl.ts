@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import type { Dispatch } from '@reduxjs/toolkit';
 
-import { ChangeRelayUrl, SuiteSyncStorageRepositoryDep } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import type { ChangeRelayUrl, SuiteSyncStorageRepositoryDep } from '@suite-common/suite-sync-types';
+import type { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncActions';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';

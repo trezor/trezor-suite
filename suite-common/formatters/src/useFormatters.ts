@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 
-import { FormatterProviderContext, Formatters } from './FormatterProvider';
+import type { Formatters } from './FormatterProvider';
+import { FormatterProviderContext } from './FormatterProvider';
 
 export const useFormatters = (): Formatters => useContext(FormatterProviderContext);

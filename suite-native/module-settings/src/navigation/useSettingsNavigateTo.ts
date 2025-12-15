@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/core';
 
-import {
+import type {
     RootStackParamList,
-    RootStackRoutes,
     SettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 
 export const useSettingsNavigateTo = () => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();

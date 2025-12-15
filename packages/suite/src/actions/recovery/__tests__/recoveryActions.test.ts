@@ -3,7 +3,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import { configureStore } from 'src/support/tests/configureStore';
-import { Action } from 'src/types/suite';
+import type { Action } from 'src/types/suite';
 
 const getInitialState = (custom?: any): any => ({
     suite: {

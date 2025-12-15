@@ -1,4 +1,5 @@
-import { LayoutChangeEvent, View } from 'react-native';
+import type { LayoutChangeEvent } from 'react-native';
+import { View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { EventType, analytics } from '@suite-native/analytics';

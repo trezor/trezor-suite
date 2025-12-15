@@ -1,6 +1,8 @@
-import { Image as ExImage, ImageProps as ExImageProps } from 'expo-image';
+import type { ImageProps as ExImageProps } from 'expo-image';
+import { Image as ExImage } from 'expo-image';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import type { NativeStyleObject } from '@trezor/styles';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type ImageProps = {
     width?: number;

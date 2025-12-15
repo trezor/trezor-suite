@@ -1,10 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {
-    OnboardingStackParamList,
-    OnboardingStackRoutes,
-    stackNavigationOptionsConfig,
-} from '@suite-native/navigation';
+import type { OnboardingStackParamList } from '@suite-native/navigation';
+import { OnboardingStackRoutes, stackNavigationOptionsConfig } from '@suite-native/navigation';
 
 import { AnalyticsConsentScreen } from '../screens/AnalyticsConsentScreen';
 import { BiometricsScreen } from '../screens/BiometricsScreen';

@@ -1,7 +1,8 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
-import { ResizableBox as ResizableBoxComponent, ResizableBoxProps } from './ResizableBox';
+import type { ResizableBoxProps } from './ResizableBox';
+import { ResizableBox as ResizableBoxComponent } from './ResizableBox';
 
 const Container = styled.div`
     position: relative;

@@ -4,7 +4,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';

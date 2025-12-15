@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 
-import {
-    ContextDomain,
-    messageSystemActions,
-    selectContextMessageContent,
-} from '@suite-common/message-system';
+import type { ContextDomain } from '@suite-common/message-system';
+import { messageSystemActions, selectContextMessageContent } from '@suite-common/message-system';
 import { Banner, Row } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';

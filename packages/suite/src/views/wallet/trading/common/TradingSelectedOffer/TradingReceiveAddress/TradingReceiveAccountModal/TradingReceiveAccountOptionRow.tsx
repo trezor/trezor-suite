@@ -1,9 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { FlexProps, Row } from '@trezor/components';
+import type { FlexProps } from '@trezor/components';
+import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

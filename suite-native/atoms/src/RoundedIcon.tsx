@@ -1,12 +1,14 @@
 import { G } from '@mobily/ts-belt';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
-import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { TokenAddress } from '@suite-common/wallet-types';
+import type { IconName, IconSize } from '@suite-native/icons';
+import { CryptoIcon, Icon, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import type { Color } from '@trezor/theme';
 
-import { Box, BoxProps } from './Box';
+import type { BoxProps } from './Box';
+import { Box } from './Box';
 
 export type RoundedIconProps = {
     name?: IconName;

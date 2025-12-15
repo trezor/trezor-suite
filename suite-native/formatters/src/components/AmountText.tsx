@@ -1,9 +1,5 @@
-import {
-    DiscreetText,
-    Text,
-    TextProps,
-    resetLetterSpacingOnAndroidStyle,
-} from '@suite-native/atoms';
+import type { TextProps } from '@suite-native/atoms';
+import { DiscreetText, Text, resetLetterSpacingOnAndroidStyle } from '@suite-native/atoms';
 import { mergeNativeStyleObjects, useNativeStyles } from '@trezor/styles';
 
 type AmountTextProps = {

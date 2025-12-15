@@ -5,17 +5,14 @@ import styled from 'styled-components';
 import { borders, spacings } from '@trezor/theme';
 
 import { menuStyle } from './menuStyle';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
 import { ElevationUp } from '../ElevationContext/ElevationContext';
 import { Column, Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import type { IconName } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedMenuFrameProps = [

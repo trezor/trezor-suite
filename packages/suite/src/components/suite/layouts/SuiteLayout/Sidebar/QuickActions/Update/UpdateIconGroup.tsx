@@ -2,7 +2,8 @@ import styled, { css } from 'styled-components';
 
 import { spacingsPx } from '@trezor/theme';
 
-import { UpdateVariant, mapVariantToIconBackground } from './updateQuickActionTypes';
+import type { UpdateVariant } from './updateQuickActionTypes';
+import { mapVariantToIconBackground } from './updateQuickActionTypes';
 
 type UpdateIconGroupProps = {
     $variant?: UpdateVariant;

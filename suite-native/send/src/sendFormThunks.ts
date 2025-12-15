@@ -2,10 +2,12 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import {
+import type {
     PushTransactionError,
     SignTransactionError,
     SignTransactionTimeoutError,
+} from '@suite-common/wallet-core';
+import {
     deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
@@ -16,7 +18,7 @@ import {
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import {
+import type {
     Account,
     AccountKey,
     GeneralPrecomposedTransactionFinal,
@@ -26,12 +28,10 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
-import {
-    UpdateSelectedFeeLevelThunkParams,
-    addTransactionLabelingThunk,
-} from '@suite-native/transaction-management';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Success } from '@trezor/connect';
+import type { UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
+import { addTransactionLabelingThunk } from '@suite-native/transaction-management';
+import type { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import type { Success } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './constants';
 

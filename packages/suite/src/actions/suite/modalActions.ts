@@ -1,11 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { UserContextPayload } from '@suite-common/suite-types';
-import TrezorConnect, { UI, UiResponseFee } from '@trezor/connect';
-import { DeferredResponse, createDeferred } from '@trezor/utils';
+import type { UserContextPayload } from '@suite-common/suite-types';
+import type { UiResponseFee } from '@trezor/connect';
+import TrezorConnect, { UI } from '@trezor/connect';
+import type { DeferredResponse } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { Dispatch } from 'src/types/suite';
+import type { Dispatch } from 'src/types/suite';
 
 export type ModalAction =
     | { type: typeof MODAL.CLOSE }

@@ -7,7 +7,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
+import type { ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
+import { ConfirmValueModal } from './ConfirmValueModal/ConfirmValueModal';
 import { ConfirmActionModal } from './DeviceContextModal/ConfirmActionModal';
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 

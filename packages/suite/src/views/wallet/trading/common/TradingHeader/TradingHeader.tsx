@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS } from '@suite-common/trading';
 import { H2 } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';

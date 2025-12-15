@@ -1,26 +1,20 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { SpacingValues, spacings, spacingsPx } from '@trezor/theme';
+import type { SpacingValues } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 
 import { ListContext } from './ListContext';
 import { ListItem } from './ListItem';
-import { BulletVerticalAlignment, ListStyleType, ListVariant } from './types';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps, makePropsTransient } from '../../utils/transientProps';
+import type { BulletVerticalAlignment, ListStyleType, ListVariant } from './types';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
+import { makePropsTransient } from '../../utils/transientProps';
 import { Text } from '../typography/Text/Text';
-import {
-    TextProps,
-    TextPropsKeys,
-    pickAndPrepareTextProps,
-    withTextProps,
-} from '../typography/utils';
+import type { TextProps, TextPropsKeys } from '../typography/utils';
+import { pickAndPrepareTextProps, withTextProps } from '../typography/utils';
 
 export const allowedListFrameProps = [
     'margin',

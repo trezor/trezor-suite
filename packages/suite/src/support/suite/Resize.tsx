@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 
-import {
+import type {
     Breakpoint,
     BreakpointFlagName,
     BreakpointFlags,
     BreakpointValue,
+} from '@trezor/theme';
+import {
     aboveBreakpoint,
     belowBreakpoint,
     breakpoints,

@@ -1,5 +1,6 @@
-import { KeyboardEvent, RefObject, useCallback, useRef } from 'react';
-import { GroupBase, Options, OptionsOrGroups, SelectInstance } from 'react-select';
+import type { KeyboardEvent, RefObject } from 'react';
+import { useCallback, useRef } from 'react';
+import type { GroupBase, Options, OptionsOrGroups, SelectInstance } from 'react-select';
 
 import type { Option } from './types';
 

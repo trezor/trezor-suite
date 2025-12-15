@@ -1,11 +1,8 @@
-import { TradingCountryCode } from '@suite-common/trading';
-import {
-    FeatureFlag,
-    FeatureFlagsRootState,
-    featureFlagsInitialState,
-} from '@suite-native/feature-flags';
+import type { TradingCountryCode } from '@suite-common/trading';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { TradingResidenceRootState, TradingResidenceState } from '@suite-native/trading-types';
+import type { TradingResidenceRootState, TradingResidenceState } from '@suite-native/trading-types';
 
 import {
     selectIsTradingCountrySet,

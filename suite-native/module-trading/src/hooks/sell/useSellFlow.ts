@@ -10,11 +10,8 @@ import {
     sellThunks,
     sellUtils,
 } from '@suite-common/trading';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';

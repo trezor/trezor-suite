@@ -6,7 +6,8 @@ import { findBackend, isBackendSupported } from '../backend/BlockchainLink';
 import { ERRORS } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
-import { CoinInfo, CoinObj } from '../types';
+import type { CoinInfo } from '../types';
+import { CoinObj } from '../types';
 
 type Params = {
     coinInfo: CoinInfo;

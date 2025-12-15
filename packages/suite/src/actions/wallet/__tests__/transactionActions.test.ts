@@ -2,11 +2,8 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { testMocks } from '@suite-common/test-utils';
-import {
-    TransactionsState,
-    transactionsActions,
-    transactionsInitialState,
-} from '@suite-common/wallet-core';
+import type { TransactionsState } from '@suite-common/wallet-core';
+import { transactionsActions, transactionsInitialState } from '@suite-common/wallet-core';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { transactionsReducer } from 'src/reducers/wallet';

@@ -1,4 +1,4 @@
-import { UserContextPayload } from '@suite-common/suite-types';
+import type { UserContextPayload } from '@suite-common/suite-types';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
-import { WalletConnectSession } from '@suite-common/walletconnect/src/walletConnectTypes';
+import type { WalletConnectSession } from '@suite-common/walletconnect/src/walletConnectTypes';
 import {
     AnimatedBox,
     Button,
@@ -20,13 +20,8 @@ import {
 import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionContent';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes, Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { WalletConnectPairBottomSheet } from '../components/WalletConnectPairBottomSheet';

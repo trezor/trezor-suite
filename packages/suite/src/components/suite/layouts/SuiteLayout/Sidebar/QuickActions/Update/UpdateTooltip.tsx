@@ -1,19 +1,15 @@
 import styled, { useTheme } from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
-import { Column, Icon, IconSize, getIconSize, iconSizes } from '@trezor/components';
+import type { TranslationKey } from '@suite-common/intl-types';
+import type { IconSize } from '@trezor/components';
+import { Column, Icon, getIconSize, iconSizes } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import {
-    UpdateStatus,
-    UpdateStatusDevice,
-    UpdateStatusSuite,
-    mapUpdateStatusToIcon,
-    mapUpdateStatusToVariant,
-} from './updateQuickActionTypes';
+import type { UpdateStatus, UpdateStatusDevice, UpdateStatusSuite } from './updateQuickActionTypes';
+import { mapUpdateStatusToIcon, mapUpdateStatusToVariant } from './updateQuickActionTypes';
 import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import { Translation } from '../../../../../Translation';
 import { TooltipRow } from '../TooltipRow';

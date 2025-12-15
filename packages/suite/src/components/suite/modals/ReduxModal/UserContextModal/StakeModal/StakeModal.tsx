@@ -1,7 +1,7 @@
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import type { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';

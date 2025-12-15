@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { FormCell as FormCellComponent, allowedFormCellFrameProps } from './FormCell';
 import { variables } from '../../../config';

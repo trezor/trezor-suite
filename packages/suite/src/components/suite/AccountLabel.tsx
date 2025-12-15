@@ -1,5 +1,6 @@
-import { Account } from '@suite-common/wallet-types';
-import { BadgeSize, Row, Text } from '@trezor/components';
+import type { Account } from '@suite-common/wallet-types';
+import type { BadgeSize } from '@trezor/components';
+import { Row, Text } from '@trezor/components';
 
 import { useDefaultAccountLabel } from 'src/hooks/suite';
 

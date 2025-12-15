@@ -4,7 +4,7 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
+import type { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';

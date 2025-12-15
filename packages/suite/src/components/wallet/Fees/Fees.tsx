@@ -1,9 +1,11 @@
-import { Column, FlexProps } from '@trezor/components';
+import type { FlexProps } from '@trezor/components';
+import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
-import { CollapsibleFees, CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
+import type { CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
+import { CollapsibleFees } from './CollapsibleFees/CollapsibleFees';
 import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
 import { FieldErrorBanner } from './FieldErrorBanner';
 

@@ -3,13 +3,12 @@ import { G } from '@mobily/ts-belt';
 import { SelectableNetworkItem } from '@suite-native/accounts';
 import { Card, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import {
+import type {
     AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
-    Screen,
-    ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { Screen, ScreenHeader } from '@suite-native/navigation';
 
 import { AccountTypeDecisionBottomSheet } from '../components/AccountTypeDecisionBottomSheet';
 import { useAddCoinAccount } from '../hooks/useAddCoinAccount';

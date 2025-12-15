@@ -4,15 +4,14 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { convertCryptoToFiatAmount, useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { FiatRatesRootState, TransactionsRootState } from '@suite-common/wallet-core';
 import {
-    FiatRatesRootState,
-    TransactionsRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectTransactionBlockTimeById,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import {
     Card,
@@ -31,14 +30,13 @@ import {
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { AddressLabel, TransactionOutputLabel } from '@suite-native/labeling';
-import {
+import type {
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
     TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { Utxo } from '@trezor/blockchain-link-types';
+import { RootStackRoutes, TransactionDetailStackRoutes } from '@suite-native/navigation';
+import type { Utxo } from '@trezor/blockchain-link-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

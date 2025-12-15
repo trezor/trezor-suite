@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { borders } from '@trezor/theme';
 
-import { BadgeIntent, BadgeSize } from './types';
+import type { BadgeIntent, BadgeSize } from './types';
 import {
     mapIntentToBackgroundColor,
     mapIntentToIconColor,
@@ -13,15 +13,12 @@ import {
     mapSizeToPadding,
     mapSizeToTypographyStyle,
 } from './utils';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../utils/frameProps';
-import { TransientProps } from '../../utils/transientProps';
+import type { FrameProps, FramePropsKeys } from '../../utils/frameProps';
+import { pickAndPrepareFrameProps, withFrameProps } from '../../utils/frameProps';
+import type { TransientProps } from '../../utils/transientProps';
 import { Row } from '../Flex/Flex';
-import { Icon, IconName } from '../Icon/Icon';
+import type { IconName } from '../Icon/Icon';
+import { Icon } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
 
 export const allowedBadgeFrameProps = ['margin', 'cursor'] as const satisfies FramePropsKeys[];

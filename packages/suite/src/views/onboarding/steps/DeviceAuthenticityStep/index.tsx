@@ -2,12 +2,14 @@ import { useState } from 'react';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
-import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
+import type { IconName } from '@trezor/components';
+import { Card, Column, Grid, Icon, Paragraph } from '@trezor/components';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
+import type { TranslationKey } from 'src/components/suite/Translation';
+import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

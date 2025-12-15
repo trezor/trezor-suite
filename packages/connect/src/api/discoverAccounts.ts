@@ -10,14 +10,13 @@ import { UI, createUiMessage } from '../events';
 import type { CoinInfo, FirmwareRange } from '../types';
 import { getFirmwareRange, validateParams } from './common/paramsValidator';
 import type { AccountDescriptor } from '../device/DeviceCommands';
-import {
-    ACCOUNT_TYPES,
+import type {
     AccountTypeItem,
     AccountTypeKey,
     AdditionalParams,
-    CARDANO_DERIVATIONS,
     DiscoverAccountsProgress,
 } from '../types/api/discoverAccounts';
+import { ACCOUNT_TYPES, CARDANO_DERIVATIONS } from '../types/api/discoverAccounts';
 import { isUtxoBased } from '../utils/accountUtils';
 import { validatePath } from '../utils/pathUtils';
 

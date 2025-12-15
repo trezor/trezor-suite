@@ -2,21 +2,14 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    AccountsList,
-    OnSelectAccount,
-    SearchableAccountsListHeader,
-} from '@suite-native/accounts';
+import type { OnSelectAccount } from '@suite-native/accounts';
+import { AccountsList, SearchableAccountsListHeader } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
-import {
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    StackNavigationProps,
-} from '@suite-native/navigation';
+import type { RootStackParamList, StackNavigationProps } from '@suite-native/navigation';
+import { RootStackRoutes, Screen } from '@suite-native/navigation';
 
 export const AccountsScreen = () => {
     const navigation =

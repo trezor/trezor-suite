@@ -1,11 +1,10 @@
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import type { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { PreloadedState } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import {
-    ExchangePreviewContinueButton,
-    ExchangePreviewContinueButtonProps,
-} from '../ExchangePreviewContinueButton';
+import type { ExchangePreviewContinueButtonProps } from '../ExchangePreviewContinueButton';
+import { ExchangePreviewContinueButton } from '../ExchangePreviewContinueButton';
 
 const mockNavigate = jest.fn();
 

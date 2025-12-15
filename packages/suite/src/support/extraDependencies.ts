@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
@@ -7,18 +7,16 @@ import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-web
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
+import type {
     ExtraDependenciesStatic,
     ExtraWithStoreFactory,
     LocationPushState,
     To,
 } from '@suite-common/redux-utils';
-import {
-    TokenDefinitionsState,
-    buildTokenDefinitionsFromStorage,
-} from '@suite-common/token-definitions';
+import type { TokenDefinitionsState } from '@suite-common/token-definitions';
+import { buildTokenDefinitionsFromStorage } from '@suite-common/token-definitions';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
-import {
+import type {
     BlockchainState,
     DeviceReducerState,
     ExplorerConfig,
@@ -28,14 +26,15 @@ import {
     WalletSettingsState,
 } from '@suite-common/wallet-core';
 import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
-import TrezorConnect, { StaticSessionId } from '@trezor/connect';
+import type { StaticSessionId } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
-import { StorageLoadAction } from 'src/actions/suite/storageActions';
+import type { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
@@ -44,7 +43,7 @@ import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
-import { AppState, TrezorDevice } from '../types/suite';
+import type { AppState, TrezorDevice } from '../types/suite';
 
 const connectSrc = '../';
 // 'https://localhost:8088/';

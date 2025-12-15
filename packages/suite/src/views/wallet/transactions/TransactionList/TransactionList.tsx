@@ -1,4 +1,5 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -16,7 +17,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
-import { Account, WalletAccountTransaction } from 'src/types/wallet';
+import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 
 import { NoSearchResults } from './NoSearchResults';

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { FormattedList } from 'react-intl';
 
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import type { TradingExchangeType } from '@suite-common/trading';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
-    TradingExchangeType,
     cryptoIdToNetwork,
     getTradingNetworkDecimals,
     selectTradingComposedTransactionInfo,
@@ -26,7 +26,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
+import type { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 
 import { TradingOfferExchangeSlippageModal } from './TradingOfferExchangeSlippageModal';
 import { TradingProviderInfo } from '../../TradingProviderInfo';

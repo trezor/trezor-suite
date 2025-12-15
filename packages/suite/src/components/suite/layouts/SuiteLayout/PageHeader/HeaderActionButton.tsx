@@ -1,4 +1,5 @@
-import { Button, ButtonProps, IconButton, IconName } from '@trezor/components';
+import type { ButtonProps, IconName } from '@trezor/components';
+import { Button, IconButton } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';

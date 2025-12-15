@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
+import type { RecoveryDevice } from '@trezor/connect';
+import TrezorConnect, { PROTO, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
@@ -7,8 +8,8 @@ import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { RECOVERY } from 'src/actions/recovery/constants';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
-import { WordCount } from 'src/types/recovery';
-import { Dispatch, GetState } from 'src/types/suite';
+import type { WordCount } from 'src/types/recovery';
+import type { Dispatch, GetState } from 'src/types/suite';
 
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 

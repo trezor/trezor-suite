@@ -1,11 +1,11 @@
-import { Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
-import { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
+import type { SuiteAnalyticsEvent } from '@trezor/suite-analytics';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
-import { EventPayload, Requests } from './types';
+import type { EventPayload, Requests } from './types';
 
 export class AnalyticsFixture {
     private page: Page;

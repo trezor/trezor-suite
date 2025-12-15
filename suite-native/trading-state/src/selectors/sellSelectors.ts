@@ -1,9 +1,8 @@
 import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'invity-api';
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import type { TradingCountryCode, TradingPaymentMethodProps } from '@suite-common/trading';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
@@ -12,14 +11,11 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getCurrencyLabel } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem, SellFormValues } from '@suite-native/trading-types';
+import type { FiatCurrencyItem, SellFormValues } from '@suite-native/trading-types';
 
 import { selectTradingResidenceCountry } from './residenceSelectors';
-import {
-    TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-} from '../reducers';
+import type { TradingRootState } from '../reducers';
+import { createMemoizedSelector, createMemoizedSelectorWithAccounts } from '../reducers';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 export const selectTradingSell = (state: TradingRootState) => state.wallet.trading.sell;

@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { BluetoothDeviceId } from '@trezor/connect';
+import type { BluetoothDeviceId } from '@trezor/connect';
 
-import {
+import type {
     BluetoothAdapterStatus,
     BluetoothDeviceCommon,
     BluetoothScanStatus,

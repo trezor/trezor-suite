@@ -1,9 +1,9 @@
-import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
+import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
-import { Account } from 'src/types/wallet';
+import type { Account } from 'src/types/wallet';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 

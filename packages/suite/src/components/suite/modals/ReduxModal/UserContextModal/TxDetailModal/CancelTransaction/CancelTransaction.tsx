@@ -1,4 +1,4 @@
-import { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
+import type { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';

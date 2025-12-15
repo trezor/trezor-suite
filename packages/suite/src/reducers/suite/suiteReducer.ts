@@ -1,19 +1,21 @@
 import { produce } from 'immer';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { Locale } from '@suite-common/suite-types';
+import type { Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { ConnectSettings, InstallerInfo, TRANSPORT, TransportInfo } from '@trezor/connect';
+import type { ConnectSettings, InstallerInfo, TransportInfo } from '@trezor/connect';
+import { TRANSPORT } from '@trezor/connect';
 import { isWeb } from '@trezor/env-utils';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import type { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import { LOCK_TYPE } from 'src/actions/suite/constants/suiteConstants';
-import { ExperimentalFeature } from 'src/constants/suite/experimental';
+import type { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
-import { Action, TorBootstrap, TorStatus } from 'src/types/suite';
+import type { Action, TorBootstrap } from 'src/types/suite';
+import { TorStatus } from 'src/types/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 
 export interface SuiteRootState {

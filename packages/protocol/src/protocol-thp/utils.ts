@@ -1,5 +1,6 @@
 import type { ThpState } from './ThpState';
-import { ThpMessageSyncBit, ThpPairingMethod } from './messages';
+import type { ThpMessageSyncBit } from './messages';
+import { ThpPairingMethod } from './messages';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 
 export const addAckBit = (magic: number, ackBit: number) => {

@@ -1,5 +1,5 @@
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { Account, FormState } from '@suite-common/wallet-types';
+import type { Account, FormState } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
