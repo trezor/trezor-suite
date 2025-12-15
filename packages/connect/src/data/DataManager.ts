@@ -63,7 +63,7 @@ export class DataManager {
         });
 
         this.prepareLocalFirmwareReleaseData();
-        await this.loadFirmwareRelaseConfig(onlyLocalFirmwareConfig);
+        await this.loadFirmwareReleaseConfig(onlyLocalFirmwareConfig);
     }
 
     static prepareLocalFirmwareReleaseData() {
@@ -71,7 +71,7 @@ export class DataManager {
         this.setLocalFirmwareReleaseConfig(config);
     }
 
-    static async loadFirmwareRelaseConfig(onlyLocal: boolean): Promise<void> {
+    static async loadFirmwareReleaseConfig(onlyLocal: boolean): Promise<void> {
         let firmwareRelaseConfig;
         if (onlyLocal) {
             firmwareRelaseConfig = {
