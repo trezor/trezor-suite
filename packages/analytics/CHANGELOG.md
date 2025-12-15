@@ -1,3 +1,9 @@
+# 1.5.0
+
+- npm-prerelease: @trezor/analytics 1.4.5-beta.2 (dea35ad5ef)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/analytics 1.4.5-beta.1 (45e4244671)
+
 # 1.4.3
 
 - npm-prerelease: @trezor/analytics 1.4.3-beta.1 (1b02e9292c)
