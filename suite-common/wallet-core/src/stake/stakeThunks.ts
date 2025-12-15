@@ -1,15 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
-import {
-    SupportedCardanoNetworkSymbols,
-    SupportedEthereumNetworkSymbol,
-    SupportedSolanaNetworkSymbols,
-} from '@suite-common/wallet-types';
-import {
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedSolStakingNetworkSymbol,
-    isTestnet,
-} from '@suite-common/wallet-utils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -39,7 +30,7 @@ const STAKE_MODULE = '@common/wallet-core/stake';
 export const fetchEverstakeData = createThunk<
     ValidatorsQueue | { ethApy: number; nextRewardPayout: number },
     {
-        symbol: SupportedEthereumNetworkSymbol;
+        symbol: 'eth';
         endpointType: EverstakeEndpointType;
     },
     { rejectValue: string }
@@ -84,20 +75,22 @@ export const fetchEverstakeData = createThunk<
 });
 
 const getStakingInfoEndpointParams = (symbol: NetworkSymbol) => {
-    if (isSupportedSolStakingNetworkSymbol(symbol)) {
-        return `name=solana`;
-    }
-    if (isSupportedAdaStakingNetworkSymbol(symbol)) {
-        return `limit=1000&offset=0&partner=Trezor`;
-    }
+    switch (symbol) {
+        case 'sol':
+            return 'name=solana';
 
-    return '';
+        case 'ada':
+            return 'limit=1000&offset=0&partner=Trezor';
+
+        default:
+            return '';
+    }
 };
 
 export const fetchEverstakeStakingInfo = createThunk<
     EverstakeStakingInfo,
     {
-        symbol: SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols;
+        symbol: 'sol' | 'ada';
         endpointType: EverstakeAssetEndpointType;
     },
     { rejectValue: string }
@@ -114,9 +107,7 @@ export const fetchEverstakeStakingInfo = createThunk<
             const assetResponse = await fetch(
                 `${endpointPrefix}/${endpointSuffix}?${endpointParams}`,
                 {
-                    headers: isSupportedAdaStakingNetworkSymbol(symbol)
-                        ? { 'x-api-key': EVERSTAKE_API_KEY }
-                        : undefined,
+                    headers: symbol === 'ada' ? { 'x-api-key': EVERSTAKE_API_KEY } : undefined,
                 },
             );
             if (!assetResponse.ok) {
@@ -124,7 +115,7 @@ export const fetchEverstakeStakingInfo = createThunk<
             }
             const assetData = await assetResponse.json();
 
-            if (isSupportedAdaStakingNetworkSymbol(symbol)) {
+            if (symbol === 'ada') {
                 return fulfillWithValue({
                     pools: assetData?.data?.map((pool: CardanoValidatorStats) => ({
                         apy: Number(pool.apy.value),
@@ -146,7 +137,7 @@ export const fetchEverstakeStakingInfo = createThunk<
 export const fetchEverstakeRewards = createThunk<
     { rewardsHistory: StakeRewardsByAccount; totalRewards: TotalStakeRewardsByAccount },
     {
-        symbol: SupportedSolanaNetworkSymbols;
+        symbol: 'sol';
         endpointType: EverstakeRewardsEndpointType;
         address: string;
         signal?: AbortSignal;
@@ -218,13 +209,8 @@ export const initStakeDataThunk = createThunk(
             return;
         }
 
-        // TODO: change to accept only mainnet
         const createPromises = (
-            networks: (
-                | SupportedSolanaNetworkSymbols
-                | SupportedEthereumNetworkSymbol
-                | SupportedCardanoNetworkSymbols
-            )[],
+            networks: ['eth' | 'sol' | 'ada'],
             endpointTypes: typeof EverstakeEndpointType | typeof EverstakeAssetEndpointType,
         ) =>
             networks
@@ -239,10 +225,9 @@ export const initStakeDataThunk = createThunk(
                             data?.lastSuccessfulFetchTimestamp <= fiveMinutesAgo;
 
                         if (shouldRefetch) {
-                            if (
-                                isSupportedSolStakingNetworkSymbol(symbol) ||
-                                isSupportedAdaStakingNetworkSymbol(symbol)
-                            ) {
+                            if (isTestnet(symbol)) return null;
+
+                            if (symbol === 'sol' || symbol === 'ada') {
                                 return dispatch(
                                     fetchEverstakeStakingInfo({
                                         symbol,

@@ -66,7 +66,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModal
             >
                 <Grid columns={isBelowTablet ? 1 : 2} gap={spacings.xxl}>
                     <StakeForm flow={flow} />
-                    <StakeInfoCards flow={flow} />
+                    <StakeInfoCards account={account} flow={flow} />
                 </Grid>
             </Modal>
         </StakeFormContext.Provider>

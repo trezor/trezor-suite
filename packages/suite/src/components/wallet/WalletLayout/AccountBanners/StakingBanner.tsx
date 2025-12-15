@@ -22,6 +22,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics } from 'src/support/useAnalytics';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 type StakingBannerProps = {
     account: Account;
@@ -144,7 +145,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
             icon="piggyBank"
             intent="brand"
             title={
-                <Translation id="TR_STAKING_BANNER_DETAIL_TITLE" values={{ apy, displaySymbol }} />
+                <Translation
+                    id="TR_STAKING_BANNER_DETAIL_TITLE"
+                    values={{ apy: formatApyValue(apy), displaySymbol }}
+                />
             }
             description={
                 !hasEnoughBalanceForStaking || !hasPotentialRewards ? (

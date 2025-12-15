@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
 import { VotingDelegationOption, stakeActions } from './stakeActions';
 import {
@@ -102,27 +102,34 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.serializedTx;
         })
         .addCase(fetchEverstakeData.pending, (state, action) => {
-            const { symbol } = action.meta.arg;
+            const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             if (!state.data[symbol]) {
-                state.data[symbol] = {
-                    poolStats: {
-                        error: false,
-                        isLoading: true,
-                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
-                    },
-                    validatorsQueue: {
-                        error: false,
-                        isLoading: true,
-                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
-                    },
+                state.data[symbol] = {};
+            }
+
+            if (!state.data[symbol][endpointType]) {
+                state.data[symbol][endpointType] = {
+                    error: false,
+                    isLoading: true,
+                    lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                    data: {},
                 };
+            } else {
+                state.data[symbol][endpointType].isLoading = true;
+                state.data[symbol][endpointType].error = false;
             }
         })
         .addCase(fetchEverstakeData.fulfilled, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             const data = state.data[symbol];
 
@@ -138,6 +145,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(fetchEverstakeData.rejected, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
             const data = state.data[symbol];
 
             if (data?.[endpointType]) {
@@ -152,7 +163,15 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(fetchEverstakeStakingInfo.pending, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
-            if (!state.data[symbol]?.[endpointType]) {
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
+            if (!state.data[symbol]) {
+                state.data[symbol] = {};
+            }
+
+            if (!state.data[symbol][endpointType]) {
                 state.data[symbol] = {
                     ...state.data[symbol],
                     stakingInfo: {
@@ -162,10 +181,17 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                         data: {},
                     },
                 };
+            } else {
+                state.data[symbol][endpointType].isLoading = true;
+                state.data[symbol][endpointType].error = false;
             }
         })
         .addCase(fetchEverstakeStakingInfo.fulfilled, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             const data = state.data[symbol];
 
@@ -181,6 +207,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(fetchEverstakeStakingInfo.rejected, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
             const data = state.data[symbol];
 
             if (data?.[endpointType]) {
@@ -194,6 +224,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         })
         .addCase(fetchEverstakeRewards.pending, (state, action) => {
             const { symbol, endpointType, address } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             const data = state.data[symbol]?.[endpointType]?.data;
 
@@ -212,6 +246,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(fetchEverstakeRewards.fulfilled, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
             const data = state.data[symbol];
 
             if (data?.[endpointType]) {
@@ -226,6 +264,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
 
         .addCase(fetchEverstakeRewards.rejected, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             const data = state.data[symbol];
 

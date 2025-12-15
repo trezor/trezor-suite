@@ -6,6 +6,7 @@ import { Banner } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();
@@ -33,7 +34,9 @@ export const CardanoOutdatedStakingBanner = () => {
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }
-            description={<Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy }} />}
+            description={
+                <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy: formatApyValue(apy) }} />
+            }
         />
     );
 };

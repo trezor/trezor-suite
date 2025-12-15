@@ -9355,6 +9355,18 @@ export const messages = defineMessages({
         id: 'TR_STAKE_UNKNOWN_APY',
         defaultMessage: 'Unknown',
     },
+    TR_STAKE_NOT_AVAILABLE: {
+        id: 'TR_STAKE_NOT_AVAILABLE',
+        defaultMessage: 'Not available',
+    },
+    TR_STAKE_N_A: {
+        id: 'TR_STAKE_N_A',
+        defaultMessage: 'N/A',
+    },
+    TR_STAKE_APY_REQUIRED: {
+        id: 'TR_STAKE_APY_REQUIRED',
+        defaultMessage: 'APY required to calculate rewards',
+    },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual Percentage Yield',
