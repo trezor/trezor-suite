@@ -1,3 +1,8 @@
+# 1.2.0
+
+- npm-prerelease: @trezor/crypto-utils 1.1.6-beta.1 (0c2f4a7af1)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+
 # 1.1.5
 
 - npm-prerelease: @trezor/crypto-utils 1.1.5-beta.1 (fa87d94567)
