@@ -351,9 +351,16 @@ export const useTradingBuyForm = ({
             return;
         }
 
-        if (!values.countrySelect || !values.receiveAddress || !values.currencySelect) return;
+        if (
+            !values.cryptoSelect ||
+            !values.countrySelect ||
+            !values.receiveAddress ||
+            !values.currencySelect
+        )
+            return;
 
         if (
+            isChanged(previousValues.current?.cryptoSelect, values.cryptoSelect) ||
             isChanged(previousValues.current?.countrySelect, values.countrySelect) ||
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
             isChanged(previousValues.current?.receiveAddress, values?.receiveAddress)
