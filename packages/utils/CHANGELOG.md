@@ -1,3 +1,18 @@
+# 9.5.0
+
+- feat: add propperly typed hasOwn util (972d021017)
+- npm-prerelease: @trezor/utils 9.4.5-beta.2 (26cc2e6f56)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- fix(connect): properly advertise @trezor/utils as ESM (446763e94d)
+- chore(connect): small tweaks in libESM config (05738c1257)
+- feat(utils): sanitizeFilename (2eb5907b84)
+- feat: add TopAssets & NetworkIcon components (9409fbbeb2)
+- chore(utils): remove unused code (ed9f97dbcf)
+- chore: change fail in test names to error to find fails easier (2393763310)
+- npm-prerelease: @trezor/utils 9.4.5-beta.1 (9dad3eee2f)
+- chore(suite): update network backends (74e276011e)
+- docs(packages): remove link to non-existing document (9291fe7872)
+
 # 9.4.4
 
 - npm-prerelease: @trezor/utils 9.4.4-beta.1 (a3165420ab)
