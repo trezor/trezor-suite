@@ -1,3 +1,19 @@
+# 0.5.0
+
+- chore: remove tada from suite (2e60907d0c)
+- npm-prerelease: @trezor/connect-common 0.5.0-beta.2 (47cbe9d59f)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/connect-common 0.5.0-beta.1 (57e7c36773)
+- docs(releases): bundling new firmwares (82ddc09e9f)
+- npm-prerelease: @trezor/connect-common 0.4.5-beta.1 (0780b8e249)
+- chore(connect-common): bundle latest releases fw (19be9a7521)
+- feat(connect-webextension): suite web popup implementation for webextension (175e40c82d)
+- chore(connect): move message channel impl to common (eeed9f440a)
+- chore(suite): update network backends (74e276011e)
+- chore(suite): update AVAX backend server (6d7c023598)
+- docs(packages): remove link to non-existing document (9291fe7872)
+- chore(connect): add Avax (21c129caf1)
+
 # 0.4.4
 
 - npm-prerelease: @trezor/connect-common 0.4.4-beta.1 (21b32236d3)
