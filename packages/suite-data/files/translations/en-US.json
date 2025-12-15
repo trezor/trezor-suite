@@ -2339,6 +2339,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Swap amount",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} swaps} one {{totalSwaps} swap} other {{totalSwaps} swaps} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Security first with your Trezor",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "fixed-rate offers",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "floating-rate offers",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Security first with your Trezor",
   "TR_TRADING_SWAP_UNAVAILABLE": "Swap unavailable",
   "TR_TRADING_TERMS_1": "Invity doesn't provide this service. It's governed by ",

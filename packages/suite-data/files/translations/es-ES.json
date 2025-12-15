@@ -2339,6 +2339,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Cantidad del intercambio",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} intercambios} one {{totalSwaps} intercambio} other {{totalSwaps} intercambios} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "La seguridad es lo primero con tu Trezor",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "Ofertas de comisión fija",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "Ofertas de comisión variable",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "La seguridad es lo primero con tu Trezor",
   "TR_TRADING_SWAP_UNAVAILABLE": "Intercambio no disponible",
   "TR_TRADING_TERMS_1": "Invity no provee este servicio. Está gobernado por",

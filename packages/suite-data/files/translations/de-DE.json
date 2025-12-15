@@ -2338,6 +2338,8 @@
   "TR_TRADING_SWAP_AMOUNT": "Swap-Betrag",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} Swaps} one {{totalSwaps} Swap} other {{totalSwaps} Swaps} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Sicherheit geht bei Trezor vor",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "Angebote mit Festpreis",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "Angebote mit variablem Preis",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Sicherheit geht bei Trezor vor",
   "TR_TRADING_SWAP_UNAVAILABLE": "Swap nicht verfügbar",
   "TR_TRADING_TERMS_1": "Invity bietet diesen Service nicht an. Er wird bereitgestellt von",

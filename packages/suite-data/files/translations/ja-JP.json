@@ -2339,6 +2339,8 @@
   "TR_TRADING_SWAP_AMOUNT": "交換額",
   "TR_TRADING_SWAP_COUNTER": "{totalSwaps, plural, =0 {{totalSwaps} 交換} other {{totalSwaps} 交換} }",
   "TR_TRADING_SWAP_DEX_MODAL_SECURITY_HEADER": "Trezorでセキュリティを確保してください",
+  "TR_TRADING_SWAP_FIXED_RATE_OFFER": "固定レートのオファー",
+  "TR_TRADING_SWAP_FLOATING_RATE_OFFER": "変動レートのオファー",
   "TR_TRADING_SWAP_MODAL_SECURITY_HEADER": "Trezorでセキュリティを確保してください",
   "TR_TRADING_SWAP_UNAVAILABLE": "交換が利用できません",
   "TR_TRADING_TERMS_1": "Invityはこのサービスを提供していません。 ....によって管理されています",
