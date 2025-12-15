@@ -1,3 +1,22 @@
+# 1.6.0
+
+- fix(transport): wrap errors from `receive` utility (8702dc753a)
+- npm-prerelease: @trezor/transport 1.6.0-beta.2 (9a35d5c97d)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- chore(protocol): distinguish DeviceThpState and ThpChannelState (780e5327f4)
+- npm-prerelease: @trezor/transport 1.6.0-beta.1 (68d0660362)
+- chore: change fail in test names to error to find fails easier (2393763310)
+- refactor(protocol): encode ThpAck **only** from ThpState (a43bdb2945)
+- chore(transport): readWithExpectedHeaders using ThpState (1fb9c1b001)
+- chore: improve Result<T, Err> Types (8201108523)
+- chore: bump babel packages (09afb8370d)
+- fix(transport): reuse unaborted transportIn (8ee516be8d)
+- Revert fix(transport): allow skipping ThpAck from device (37cd1c6ba1)
+- npm-prerelease: @trezor/transport 1.5.5-beta.1 (552305ffbb)
+- fix(transport): allow skipping ThpAck from device (118327a6ba)
+- fix(transport): fix usb/udp loop with node-bridge (5f96b11e4f)
+- docs(packages): remove link to non-existing document (9291fe7872)
+
 # 1.5.4
 
 - npm-prerelease: @trezor/transport 1.5.4-beta.1 (18949fe103)
