@@ -5,7 +5,6 @@ import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack, { DefinePlugin } from 'webpack';
 
-import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import * as URLS from '@trezor/urls';
 
 import { version } from '../package.json';
@@ -95,13 +94,12 @@ const config: webpack.Configuration = {
             urls: URLS,
         }),
         // deeplink fallback page for all versions
-        ...Array.from(
-            { length: DEEPLINK_VERSION },
-            (_, i) =>
+        ...['1', 'wc'].map(
+            v =>
                 new HtmlWebpackPlugin({
                     chunks: ['deeplink'],
                     template: `${STATIC_SRC}/deeplink.html`,
-                    filename: `deeplink/${i + 1}/index.html`,
+                    filename: `deeplink/${v}/index.html`,
                     inject: false,
                     minify: false,
                     urls: URLS,
