@@ -1,3 +1,8 @@
+# 1.4.0
+
+- npm-prerelease: @trezor/schema-utils 1.3.5-beta.1 (9743a91e0f)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+
 # 1.3.4
 
 - npm-prerelease: @trezor/schema-utils 1.3.4-beta.1 (db7e1e88c0)
