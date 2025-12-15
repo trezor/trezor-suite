@@ -5,7 +5,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 
 import { averageRewards, calculateBlockTime } from './block';
 import { toHex } from './hex';
-import { DEFAULT_GAS_LIMIT, EIP1559_BLOCKS_TO_ANALYZE, EIP1559_PERCENTILES } from '../constants';
+import { EIP1559_BLOCKS_TO_ANALYZE, EIP1559_PERCENTILES } from '../constants';
 
 export const calculateEip1559Fees = async (
     client: PublicClient,
@@ -74,9 +74,7 @@ export const estimateGasLimit = async (
         const gasEstimate = await client.estimateGas(params);
 
         return gasEstimate;
-    } catch (error) {
-        console.warn('[evm-rpc] Failed to estimate gas:', error);
-
-        return BigInt(DEFAULT_GAS_LIMIT);
+    } catch {
+        return undefined;
     }
 };

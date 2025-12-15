@@ -25,7 +25,11 @@ export const useUnsupportedNetworkMessage = ({
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
             ? accounts
-                  .filter(account => account.history && !isNetworkWithGraphFeature(account.symbol))
+                  .filter(
+                      account =>
+                          account.history &&
+                          !isNetworkWithGraphFeature(account.symbol, account.backendType),
+                  )
                   .map(({ symbol }) => symbol)
             : [];
 

@@ -1,4 +1,4 @@
-import { type PublicClient, createPublicClient, http } from 'viem';
+import { type PublicClient, createPublicClient } from 'viem';
 
 import type { Response } from '@trezor/blockchain-link-types';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
@@ -15,7 +15,9 @@ import { getTransaction } from './handlers/getTransaction';
 import { pushTransaction } from './handlers/pushTransaction';
 import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
+import { validateRpcUrl } from './handlers/validateRpcUrl';
 import type { Request } from './types';
+import { getTransportType } from './utils/transportType';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
@@ -39,6 +41,8 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
             return unsubscribe(request);
         case MESSAGES.RPC_CALL:
             return rpcCall(request);
+        case MESSAGES.VALIDATE_EVM_RPC:
+            return validateRpcUrl(request);
         default:
             throw new CustomError('worker_unknown_request', `+${request.type}`);
     }
@@ -55,9 +59,15 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
     }
 
     protected async tryConnect(url: string): Promise<PublicClient> {
+        const transportType = getTransportType(url);
+
+        if (!transportType) {
+            throw new CustomError('invalid_param', 'Invalid URL');
+        }
+
         this.state.url = url;
         const client = createPublicClient({
-            transport: http(url),
+            transport: transportType(url),
         });
 
         await client.getChainId();

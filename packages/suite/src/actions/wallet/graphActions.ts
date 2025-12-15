@@ -169,7 +169,9 @@ export const updateGraphData = createThunk<
         const { graph } = getState().wallet;
 
         const supportedAccounts = accounts.filter(
-            a => isTrezorConnectBackendType(a.backendType) && isNetworkWithGraphFeature(a.symbol),
+            a =>
+                isTrezorConnectBackendType(a.backendType) &&
+                isNetworkWithGraphFeature(a.symbol, a.backendType),
         );
 
         const graphDataPointsByAccount = new Map<AccountKey, AccountHistoryWithBalance[]>(

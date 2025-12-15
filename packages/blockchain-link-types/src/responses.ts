@@ -159,6 +159,14 @@ export interface PushTransaction {
     payload: string;
 }
 
+export interface ValidateEvmRpc {
+    type: typeof RESPONSES.VALIDATE_EVM_RPC;
+    payload: {
+        valid: boolean;
+        actualChainId?: number;
+    };
+}
+
 interface WithoutPayload {
     id: number;
     type: typeof HANDSHAKE | typeof RESPONSES.CONNECTED;
@@ -187,4 +195,5 @@ export type Response =
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<Notification>
-    | ChannelMessage<PushTransaction>;
+    | ChannelMessage<PushTransaction>
+    | ChannelMessage<ValidateEvmRpc>;

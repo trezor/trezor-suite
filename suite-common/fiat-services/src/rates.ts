@@ -27,7 +27,7 @@ const parallelRequestsCache = new ParallelRequestsCache();
 type FiatRatesParams = {
     ticker: TickerId;
     localCurrency: BaseCurrencyCode;
-    backendType: BackendType | undefined;
+    backendType?: BackendType;
     skipCache?: boolean;
 };
 
