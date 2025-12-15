@@ -227,10 +227,11 @@ export const getThpCredentials = async (device: Device, autoconnect = false) => 
     return { ...credentials.message, autoconnect, host_static_key };
 };
 
-export const thpPairingEnd = (device: Device) => {
+export const thpPairingEnd = async (device: Device) => {
+    const result = await thpCall(device, 'ThpEndRequest', {});
     device.getThpState()?.setPhase('paired');
 
-    return thpCall(device, 'ThpEndRequest', {});
+    return result;
 };
 
 // State HH2/HH3 -> HP0 -> HP1 -> HP2 -> HP3 -> HP4
