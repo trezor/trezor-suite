@@ -40,13 +40,10 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     private readonly boundOnCoreEvent = this.onCoreEvent.bind(this);
 
-    private onCoreHook?: (message: CoreEventMessage) => CoreEventMessage;
-
-    public constructor(onCoreHook?: (message: CoreEventMessage) => CoreEventMessage) {
+    public constructor() {
         this._settings = parseConnectSettings();
         this._log = initLog('@trezor/connect-web');
         this._messagePromises = createDeferredManager({ initialId: 1 });
-        this.onCoreHook = onCoreHook;
     }
 
     private async initCoreManager() {
@@ -114,10 +111,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
 
     // handle message received from Core
     private onCoreEvent(rawMessage: CoreEventMessage) {
-        let message = cloneObject(rawMessage);
-        if (this.onCoreHook) {
-            message = this.onCoreHook(message);
-        }
+        const message = cloneObject(rawMessage);
 
         const { event, type, payload } = message;
 
