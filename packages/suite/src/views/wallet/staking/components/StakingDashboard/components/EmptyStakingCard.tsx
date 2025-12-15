@@ -31,10 +31,9 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
-import { useDevice, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
@@ -43,10 +42,8 @@ export const EmptyStakingCard = () => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector(selectSelectedAccount);
-    const { device } = useDevice();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
-    const isDeviceConnected = device?.connected && device?.available;
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const isCardano = account?.networkType === 'cardano';
@@ -155,7 +152,6 @@ export const EmptyStakingCard = () => {
     return (
         <DashboardSection data-testid="@wallet/staking/empty-card">
             <Column gap={16}>
-                {!isDeviceConnected && <ConnectDeviceGenericPromo />}
                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                 <Card>
