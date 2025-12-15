@@ -99,7 +99,7 @@
   "METADATA_PROVIDER_AUTH_ERROR": "Fehler beim Synchronisieren der Labels mit dem Cloud-Storage-Provider {provider}. Der Benutzer wurde abgemeldet.",
   "METADATA_PROVIDER_NOT_FOUND_ERROR": "Metadaten konnten nicht im Cloud-Provider gefunden werden.",
   "METADATA_PROVIDER_UNEXPECTED_ERROR": "Fehler beim Synchronisieren der Labels mit dem Cloud-Storage-Provider {provider}. Der Benutzer wurde abgemeldet.",
-  "MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY": "CoinJoin-Konto nur in der Trezor Suite Desktop-App verfügbar.",
+  "MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY": "Coinjoin-Konto nur in der Trezor Suite Desktop-App verfügbar.",
   "MODAL_ADD_ACCOUNT_COINJOIN_LIMIT_EXCEEDED": "Du darfst nur ein CoinJoin-Konto pro Wallet haben.",
   "MODAL_ADD_ACCOUNT_COINJOIN_NO_SUPPORT": "Firmware-Update durchführen, um CoinJoin zu verwenden",
   "MODAL_ADD_ACCOUNT_COINJOIN_UPDATE_REQUIRED": "Firmware-Update durchführen, um CoinJoin zu aktivieren",
