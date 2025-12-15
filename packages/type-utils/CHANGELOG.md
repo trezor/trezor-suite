@@ -1,3 +1,14 @@
+# 1.2.0
+
+- feat: add propperly typed hasOwn util (972d021017)
+- feat(suite): implement Quota Manager reducers, actions and thunks (510aa62c78)
+- npm-prerelease: @trezor/type-utils 1.2.0-beta.2 (8501d0af66)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/type-utils 1.2.0-beta.1 (350c039cc6)
+- chore: refactor initEvoluThunk from redux toolkit, to simple Resut<OK,ERR> pattern (939581ee34)
+- chore: improve Result<T, Err> Types (8201108523)
+- feat(suite): support a delegated key-based retrieval of evolu node without the user confirmation (bfdd7fa1b6)
+
 # 1.1.9
 
 - npm-prerelease: @trezor/type-utils 1.1.9-beta.1 (00a0110ac7)
