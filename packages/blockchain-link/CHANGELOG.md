@@ -1,3 +1,17 @@
+# 2.6.0
+
+- npm-prerelease: @trezor/blockchain-link 2.6.0-beta.2 (f782d73fa1)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- chore(blockchain-link-types): remove TokenInfo.type (11ae574860)
+- npm-prerelease: @trezor/blockchain-link 2.6.0-beta.1 (636770f9ab)
+- chore: bump xrpl (70df85521c)
+- npm-prerelease: @trezor/blockchain-link 2.5.5-beta.1 (91619afb78)
+- feat(blockchain-link): refactor base reserve handling and add trustline transaction builders (2b32cef13c)
+- chore(suite): update network backends (74e276011e)
+- chore(suite): update AVAX backend server (6d7c023598)
+- docs(packages): remove link to non-existing document (9291fe7872)
+- chore(connect): add Avax (21c129caf1)
+
 # 2.5.4
 
 - npm-prerelease: @trezor/blockchain-link 2.5.4-beta.1 (8972100854)
