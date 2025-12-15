@@ -40,7 +40,6 @@ test.describe(
                     await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
                     await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
 
-                    await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
                     await metadataPage.account.metadataInput.fill(dropboxLabel);
                     await page.keyboard.press('Enter');
                     await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
@@ -79,7 +78,6 @@ test.describe(
                     await page.getByTestId('@modal/metadata-provider/google-button').click();
                     await expect(page.getByTestId('@modal/metadata-provider')).toBeHidden();
 
-                    await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
                     await metadataPage.account.metadataInput.fill(googleLabel);
                     await page.keyboard.press('Enter');
                     await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(
