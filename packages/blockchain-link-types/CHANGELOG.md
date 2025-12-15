@@ -1,3 +1,16 @@
+# 1.5.0
+
+- feat(suite-native): address order (d1b9ae23cc)
+- npm-prerelease: @trezor/blockchain-link-types 1.5.0-beta.2 (6d9b43a59b)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- chore(blockchain-link-types): remove TokenInfo.type (11ae574860)
+- fix(blockchain-link-utils): properly type TokenInfo standard (35c52365fe)
+- npm-prerelease: @trezor/blockchain-link-types 1.5.0-beta.1 (c517c687a3)
+- feat(blockchain-link-utils): Add support for change trust operations in transaction processing (3ab9ae7e76)
+- npm-prerelease: @trezor/blockchain-link-types 1.4.5-beta.1 (ee94d2b88c)
+- feat(suite): enhance Stellar inactive tokens with home domain and rating fields (8105a93761)
+- feat(suite-native): enable async migrations and initial migrations from other parts of state (d742df59d6)
+
 # 1.4.4
 
 - npm-prerelease: @trezor/blockchain-link-types 1.4.4-beta.1 (57b50a6a1c)
