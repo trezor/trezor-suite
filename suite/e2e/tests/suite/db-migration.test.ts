@@ -135,11 +135,7 @@ test.describe(
                     await page.getByTestId('@account-menu/btc/normal/0').click();
                     await walletPage.openAccount({ symbol: 'btc' });
                     await dashboardPage.openDeviceSwitcher();
-                    await expect(
-                        page
-                            .getByTestId('@menu/switch-device')
-                            .getByTestId('@deviceStatus-disconnected'),
-                    ).toBeVisible();
+                    await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
                     await expect(dashboardPage.walletAtIndex(0)).toContainTranslation(
                         'TR_PASSPHRASE_WALLET',
                         {

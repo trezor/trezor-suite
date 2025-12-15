@@ -59,6 +59,7 @@ export class WalletPage {
     readonly sellButton: Locator;
     readonly swapButton: Locator;
     readonly overviewTabButton: Locator;
+    readonly deviceDisconnectedStatus: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -102,6 +103,9 @@ export class WalletPage {
         this.sellButton = this.page.getByTestId('@trading/menu/wallet-trading-sell');
         this.swapButton = this.page.getByTestId('@trading/menu/wallet-trading-exchange');
         this.overviewTabButton = this.page.getByTestId('@wallet/menu/wallet-overview');
+        this.deviceDisconnectedStatus = page
+            .getByTestId('@menu/switch-device')
+            .getByTestId('@deviceStatus-disconnected');
     }
 
     accountButton = ({
