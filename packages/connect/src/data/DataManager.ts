@@ -29,7 +29,9 @@ export class DataManager {
     static assets: AssetCollection = {};
 
     private static settings: ConnectSettings;
-    private static messages: Record<string, any> = messages;
+    // at the moment, messages is readonly but it might make sense to modify this in the future, when
+    // we implement additive protobufs handling as a part of modularization effort
+    private static readonly messages: Record<string, any> = messages;
     private static localFirmwares: LocalFirmwares = { firmwareDir: '', firmwareList: [] };
     private static firmwareReleasesConfig: Partial<
         Record<keyof typeof DeviceModelInternal, Record<FirmwareType, ConditionalRelease>>
