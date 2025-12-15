@@ -612,41 +612,6 @@ export const networks = {
         tradeCryptoId: undefined,
         caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
     },
-    tada: {
-        // icarus derivation
-        symbol: 'tada',
-        displaySymbol: 'tADA',
-        name: 'Cardano Testnet',
-        networkType: 'cardano',
-        bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
-        testnet: true,
-        features: ['tokens', 'staking'],
-        explorer: getExplorerUrls('https://preview.cexplorer.io', 'cardano'),
-        support: {
-            [DeviceModelInternal.T2T1]: '2.4.3',
-            [DeviceModelInternal.T2B1]: '2.6.1',
-            [DeviceModelInternal.T3B1]: '2.0.0',
-            [DeviceModelInternal.T3T1]: '2.0.0',
-            [DeviceModelInternal.T3W1]: '2.0.0',
-        },
-        backendTypes: ['blockfrost'],
-        accountTypes: {
-            legacy: {
-                // icarus-trezor derivation
-                accountType: 'legacy',
-                bip43Path: "m/1852'/1815'/i'",
-            },
-            ledger: {
-                // ledger derivation
-                accountType: 'ledger',
-                bip43Path: "m/1852'/1815'/i'",
-            },
-        },
-        isDebugOnlyNetwork: true,
-        coingeckoId: undefined,
-        tradeCryptoId: undefined,
-    },
     txrp: {
         symbol: 'txrp',
         displaySymbol: 'tXRP',

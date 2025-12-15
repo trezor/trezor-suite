@@ -33,7 +33,6 @@ describe('cardano utils', () => {
 
     it('basic test', () => {
         expect(getProtocolMagic('ada')).toEqual(CARDANO.PROTOCOL_MAGICS.mainnet);
-        expect(getProtocolMagic('tada')).toEqual(1097911063);
 
         expect(getDerivationType('normal')).toEqual(1);
         expect(getDerivationType('legacy')).toEqual(2);
@@ -41,8 +40,7 @@ describe('cardano utils', () => {
         // TS does not allow this, but in runtime, the default case handles it
         expect(getDerivationType(undefined as any)).toEqual(1);
 
-        expect(getNetworkId('ada')).toEqual(CARDANO.NETWORK_IDS.mainnet);
-        expect(getNetworkId('tada')).toEqual(CARDANO.NETWORK_IDS.testnet);
+        expect(getNetworkId()).toEqual(CARDANO.NETWORK_IDS.mainnet);
 
         expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);
         expect(getAddressType()).toEqual(PROTO.CardanoAddressType.BASE);

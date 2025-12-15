@@ -78,7 +78,6 @@ export const StakingDashboard = () => {
         sol: solCurrentRate,
         ada: adaCurrentRate,
         thod: ethCurrentRate,
-        tada: adaCurrentRate,
         dsol: solCurrentRate,
     };
 

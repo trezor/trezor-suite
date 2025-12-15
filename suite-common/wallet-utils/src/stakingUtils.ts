@@ -115,7 +115,6 @@ export const getStakingLimitsByNetworkSymbol = (
                 MIN_BALANCE_FOR_STAKING: MIN_SOL_BALANCE_FOR_STAKING,
             };
 
-        case 'tada':
         case 'ada':
             return {
                 MIN_AMOUNT_FOR_STAKING: MIN_CARDANO_AMOUNT_FOR_STAKING,

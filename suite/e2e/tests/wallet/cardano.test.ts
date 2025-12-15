@@ -6,7 +6,6 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const receiveAddress =
-    // 'addr_test1qphsv6vspp4l3nvmqzw529teq2ha08s0fgjvzghzh628uccfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrq5at0x5';
     'addr1q8y96gsk7dh870g7zhzj7d62yv9qasjqdkpvmq93u8aaxzgfey0wtrgp5rmxvld7khc745x9mk7gts5ctuzerlf4edrqz4fyst';
 
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature

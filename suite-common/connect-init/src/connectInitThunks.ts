@@ -152,7 +152,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
                     const enabledNetworks = getEnabledNetworks();
                     const isCardanoMethod = key.startsWith('cardano');
                     const cardanoEnabled =
-                        !!enabledNetworks.find(a => a === 'ada' || a === 'tada') || isCardanoMethod;
+                        !!enabledNetworks.find(a => a === 'ada') || isCardanoMethod;
 
                     const result = await synchronize(() =>
                         original({ ...params, useCardanoDerivation: cardanoEnabled }),

@@ -58,7 +58,6 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).not.toContain('thod');
         expect(networkSymbols).not.toContain('txrp');
         expect(networkSymbols).not.toContain('txlm');
-        expect(networkSymbols).not.toContain('tada');
         expect(networkSymbols).not.toContain('dsol');
         // Mainnet networks should still be included
         expect(networkSymbols).toContain('btc');
@@ -80,7 +79,6 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('thod');
         expect(networkSymbols).toContain('txrp');
         expect(networkSymbols).toContain('txlm');
-        expect(networkSymbols).toContain('tada');
         expect(networkSymbols).toContain('dsol');
         // Mainnet networks should also be included
         expect(networkSymbols).toContain('btc');
@@ -134,7 +132,6 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('thod');
         expect(networkSymbols).toContain('txrp');
         expect(networkSymbols).toContain('txlm');
-        expect(networkSymbols).toContain('tada');
         expect(networkSymbols).toContain('dsol');
         // Mainnet networks should also be included
         expect(networkSymbols).toContain('btc');

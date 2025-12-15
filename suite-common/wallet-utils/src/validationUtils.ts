@@ -25,8 +25,6 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
             return 'xrp';
         case 'txlm':
             return 'xlm';
-        case 'tada':
-            return 'ada';
         case 'dsol':
             return 'sol';
         case 'tsep':

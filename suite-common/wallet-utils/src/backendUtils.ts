@@ -13,7 +13,7 @@ import type {
 import { parseElectrumUrl } from '@trezor/utils';
 
 export const getDefaultBackendType = (symbol: NetworkSymbol) => {
-    if (symbol === 'ada' || symbol === 'tada') {
+    if (symbol === 'ada') {
         return 'blockfrost';
     }
     if (symbol === 'sol' || symbol === 'dsol') {
