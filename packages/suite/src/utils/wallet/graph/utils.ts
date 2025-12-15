@@ -2,7 +2,12 @@ import { differenceInMonths, fromUnixTime, isWithinInterval } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
-import { type NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
+import {
+    BackendType,
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkFeatures,
+} from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -65,8 +70,13 @@ export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts
 /**
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
  */
-export function isNetworkWithGraphFeature(symbol: NetworkSymbol) {
-    return getNetworkFeatures(symbol).includes('graph');
+export function isNetworkWithGraphFeature(symbol: NetworkSymbol, backendType?: BackendType) {
+    const hasGraphFeature = getNetworkFeatures(symbol).includes('graph');
+    if (!hasGraphFeature) {
+        return false;
+    }
+
+    return backendType !== 'evm-rpc';
 }
 
 export const enhanceBlockchainAccountHistory = (

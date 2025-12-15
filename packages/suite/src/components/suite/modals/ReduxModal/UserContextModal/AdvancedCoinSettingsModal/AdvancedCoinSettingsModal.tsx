@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Badge, Card, CollapsibleBox, Column, Modal, Row, Text } from '@trezor/components';
+import { Badge, Banner, Card, CollapsibleBox, Column, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
@@ -36,14 +36,17 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
     const explorerForm = useExplorerForm(symbol);
     const backendsForm = useBackendsForm(symbol);
 
-    const onSaveClick = () => {
+    const onSaveClick = async () => {
         explorerForm.save();
 
         if (!isTorEnabled && backendsForm.hasOnlyOnions()) {
             setTorModalOpen(true);
         } else {
-            backendsForm.save();
-            onCancel();
+            const success = await backendsForm.save();
+
+            if (success) {
+                onCancel();
+            }
         }
     };
 
@@ -53,8 +56,11 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 await dispatch(toggleTor(true, modalType));
 
                 setTorModalOpen(false);
-                backendsForm.save();
-                onCancel();
+                backendsForm.save().then(success => {
+                    if (success) {
+                        onCancel();
+                    }
+                });
 
                 break;
             case 'use-defaults':
@@ -67,7 +73,9 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
 
     const isEditable = backendsForm.type !== 'default';
     const isSubmitButtonDisabled =
-        (isEditable && !!backendsForm.input.error) || !explorerForm.isValid;
+        (isEditable && !!backendsForm.input.error) ||
+        !explorerForm.isValid ||
+        backendsForm.isValidating;
 
     if (torModalOpen) {
         return <TorModal onResult={onTorResult} />;
@@ -88,9 +96,12 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                     <Modal.Button
                         onClick={onSaveClick}
                         isDisabled={isSubmitButtonDisabled}
+                        isLoading={backendsForm.isValidating}
                         data-testid="@settings/advance/button/save"
                     >
-                        <Translation id="TR_CONFIRM" />
+                        <Translation
+                            id={backendsForm.isValidating ? 'TR_VALIDATING' : 'TR_CONFIRM'}
+                        />
                     </Modal.Button>
                     <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
                         <Translation id="TR_CANCEL" />
@@ -117,6 +128,12 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                         removeUrl={backendsForm.removeUrl}
                     />
                 </Card>
+
+                {backendsForm.validationError && (
+                    <Banner intent="critical">
+                        <Text>{backendsForm.validationError}</Text>
+                    </Banner>
+                )}
 
                 <CollapsibleBox
                     heading={

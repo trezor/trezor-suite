@@ -6386,8 +6386,8 @@ export default defineMessages({
         defaultMessage: 'Trezor servers (default)',
     },
     TR_BACKEND_CUSTOM_RPC: {
-      id: 'TR_BACKEND_CUSTOM_RPC',
-      defaultMessage: 'Custom RPC',
+        id: 'TR_BACKEND_CUSTOM_RPC',
+        defaultMessage: 'Custom RPC',
     },
     TR_BACKEND_CUSTOM_SERVERS: {
         id: 'TR_BACKEND_CUSTOM_SERVERS',
@@ -6404,6 +6404,26 @@ export default defineMessages({
     TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED: {
         id: 'TR_CUSTOM_BACKEND_BACKEND_ALREADY_ADDED',
         defaultMessage: 'The backend is already added',
+    },
+    TR_CUSTOM_BACKEND_CONNECTION_ERROR: {
+        id: 'TR_CUSTOM_BACKEND_CONNECTION_ERROR',
+        defaultMessage: 'Could not connect to {url}',
+    },
+    TR_CUSTOM_BACKEND_CHAIN_MISMATCH: {
+        id: 'TR_CUSTOM_BACKEND_CHAIN_MISMATCH',
+        defaultMessage: 'Chain ID mismatch for {url}: expected {expected}, but got {actual}',
+    },
+    TR_CUSTOM_BACKEND_VALIDATION_ERROR: {
+        id: 'TR_CUSTOM_BACKEND_VALIDATION_ERROR',
+        defaultMessage: 'Failed to validate {url}',
+    },
+    TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID: {
+        id: 'TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID',
+        defaultMessage: 'Network does not have a chain ID configured',
+    },
+    TR_VALIDATING: {
+        id: 'TR_VALIDATING',
+        defaultMessage: 'Validating...',
     },
     TR_OTHER_COINS_USE_DEFAULT_BACKEND: {
         id: 'TR_OTHER_COINS_USE_DEFAULT_BACKEND',

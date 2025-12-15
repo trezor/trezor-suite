@@ -19,6 +19,7 @@ export { default as blockchainSubscribe } from './blockchainSubscribe';
 export { default as blockchainSubscribeFiatRates } from './blockchainSubscribeFiatRates';
 export { default as blockchainUnsubscribe } from './blockchainUnsubscribe';
 export { default as blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
+export { default as blockchainValidateEvmRpcUrl } from './blockchainValidateEvmRpcUrl';
 export { default as changeLanguage } from './changeLanguage';
 export { default as changePin } from './changePin';
 export { default as changeWipeCode } from './changeWipeCode';

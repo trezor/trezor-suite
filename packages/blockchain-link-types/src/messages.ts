@@ -136,6 +136,14 @@ export interface PushTransaction {
     };
 }
 
+export interface ValidateEvmRpc {
+    type: typeof MESSAGES.VALIDATE_EVM_RPC;
+    payload: {
+        url: string;
+        chainId: number;
+    };
+}
+
 export type Message =
     | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: typeof undefined }>
     | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
@@ -156,4 +164,5 @@ export type Message =
     | ChannelMessage<RpcCall>
     | ChannelMessage<Subscribe>
     | ChannelMessage<Unsubscribe>
-    | ChannelMessage<PushTransaction>;
+    | ChannelMessage<PushTransaction>
+    | ChannelMessage<ValidateEvmRpc>;

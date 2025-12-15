@@ -161,7 +161,7 @@ export const TokensNavigation = ({
                 {showAddToken && (
                     <IconButton
                         icon="plus"
-                        size="small"
+                        size="medium"
                         intent="neutral"
                         priority="secondary"
                         onClick={handleAddToken}

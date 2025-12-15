@@ -17,6 +17,7 @@ import { GraphScaleDropdownItem, GraphSkeleton } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
+import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { DashboardGraph } from './DashboardGraph';
@@ -47,7 +48,8 @@ export const PortfolioCard = memo(() => {
     const passphraseEntryCanceled = accounts.length === 0 && discoveryStatus === undefined;
 
     const hasNetworkWithEnabledGraph = networksCollection.some(
-        network => network.features.includes('graph') && enabledNetworks.includes(network.symbol),
+        network =>
+            isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
     );
 
     const isGraphHidden = dashboardGraphHidden || !hasNetworkWithEnabledGraph;

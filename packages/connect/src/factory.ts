@@ -36,6 +36,7 @@ export const connectCallableMethods = [
     'blockchainSubscribeFiatRates',
     'blockchainUnsubscribe',
     'blockchainUnsubscribeFiatRates',
+    'blockchainValidateEvmRpcUrl',
     'cancelCoinjoinAuthorization',
     'cardanoComposeTransaction',
     'cardanoGetAddress',

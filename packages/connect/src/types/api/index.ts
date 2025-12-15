@@ -17,6 +17,7 @@ import { blockchainSubscribe } from './blockchainSubscribe';
 import { blockchainSubscribeFiatRates } from './blockchainSubscribeFiatRates';
 import { blockchainUnsubscribe } from './blockchainUnsubscribe';
 import { blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
+import { blockchainValidateEvmRpcUrl } from './blockchainValidateEvmRpcUrl';
 import { cancel } from './cancel';
 import { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
 import { cardanoComposeTransaction } from './cardanoComposeTransaction';
@@ -160,6 +161,9 @@ export interface TrezorConnect {
 
     // todo: link docs
     blockchainUnsubscribeFiatRates: typeof blockchainUnsubscribeFiatRates;
+
+    // todo: link docs
+    blockchainValidateEvmRpcUrl: typeof blockchainValidateEvmRpcUrl;
 
     // todo: link docs
     cancel: typeof cancel;

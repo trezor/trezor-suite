@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import { BackendType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { BackendSettings } from '@suite-common/wallet-types';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isUrlWithQuery } from '@trezor/utils';
 
@@ -109,17 +110,22 @@ const getStoredState = (
 export const useBackendsForm = (symbol: NetworkSymbol) => {
     const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
+    const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>
         getStoredState(symbol, backends.selected, backends.urls),
     );
+    const [isValidating, setIsValidating] = useState(false);
+    const [validationError, setValidationError] = useState<string | null>(null);
 
     useEffect(() => {
         setCurrentValues(getStoredState(symbol, backends.selected, backends.urls));
+        setValidationError(null);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol]);
 
     const changeType = (type: BackendOption) => {
         setCurrentValues(getStoredState(symbol, type, backends.urls));
+        setValidationError(null);
     };
 
     const addUrl = (url: string) => {
@@ -127,6 +133,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
             type,
             urls: [...urls, url],
         }));
+        setValidationError(null);
     };
 
     const removeUrl = (url: string) => {
@@ -134,6 +141,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
             type,
             urls: urls.filter(u => u !== url),
         }));
+        setValidationError(null);
     };
 
     const input = useBackendUrlInput(symbol, currentValues.type, currentValues.urls);
@@ -150,9 +158,75 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         return !!urls.length && urls.every(isOnionUrl);
     };
 
-    const save = () => {
+    const validateEvmRpcUrls = async (urls: string[]): Promise<boolean> => {
+        setIsValidating(true);
+        setValidationError(null);
+
+        const network = getNetwork(symbol);
+        const expectedChainId = network.chainId;
+
+        if (!expectedChainId) {
+            setValidationError(translationString('TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID'));
+            setIsValidating(false);
+
+            return false;
+        }
+
+        for (const url of urls) {
+            try {
+                const result = await TrezorConnect.blockchainValidateEvmRpcUrl({
+                    url,
+                    chainId: expectedChainId,
+                });
+
+                if (!result.success) {
+                    setValidationError(
+                        translationString('TR_CUSTOM_BACKEND_CONNECTION_ERROR', { url }),
+                    );
+                    setIsValidating(false);
+
+                    return false;
+                }
+
+                if (!result.payload.valid) {
+                    const { actualChainId } = result.payload;
+                    setValidationError(
+                        translationString('TR_CUSTOM_BACKEND_CHAIN_MISMATCH', {
+                            url,
+                            expected: `${network.name} (${expectedChainId})`,
+                            actual: actualChainId?.toString() || 'unknown',
+                        }),
+                    );
+                    setIsValidating(false);
+
+                    return false;
+                }
+            } catch {
+                setValidationError(
+                    translationString('TR_CUSTOM_BACKEND_VALIDATION_ERROR', { url }),
+                );
+                setIsValidating(false);
+
+                return false;
+            }
+        }
+
+        setIsValidating(false);
+
+        return true;
+    };
+
+    const save = async (): Promise<boolean> => {
         const { type } = currentValues;
         const urls = type === 'default' ? [] : getUrls();
+
+        if (type === 'evm-rpc' && urls.length > 0) {
+            const isValid = await validateEvmRpcUrls(urls);
+            if (!isValid) {
+                return false;
+            }
+        }
+
         dispatch(blockchainActions.setBackend({ symbol, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
@@ -165,6 +239,8 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
                 totalOnion,
             },
         });
+
+        return true;
     };
 
     return {
@@ -176,6 +252,8 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         removeUrl,
         changeType,
         save,
+        isValidating,
+        validationError,
     } as const;
 };
 
