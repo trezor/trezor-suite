@@ -17,7 +17,7 @@ export class AccountMetadata extends MetadataBase {
 
     @step()
     async changeLabel(accountId: string, newLabel: string) {
-        await this.resetMousePosition();
+        await this.page.resetMousePosition();
         // ensure account label is loaded - test can be too fast
         await expect(this.accountLabel(accountId)).toHaveText(/[A-Za-z]+/);
         await this.accountLabel(accountId).hover();
@@ -27,7 +27,7 @@ export class AccountMetadata extends MetadataBase {
 
     @step()
     async clickEditLabelButton(accountId: string) {
-        await this.resetMousePosition();
+        await this.page.resetMousePosition();
         await this.accountLabel(accountId).hover();
         await this.editLabelButton(accountId).click();
     }

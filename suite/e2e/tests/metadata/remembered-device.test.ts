@@ -124,7 +124,6 @@ test.describe(
                 await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
                 await metadataPage.metadataProviderButton(MetadataProvider.GOOGLE).click();
                 await expect(metadataPage.metadataModal).toBeHidden();
-                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
                 await metadataPage.account.fillLabelInput('mnau');
                 await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toContainText(
                     'mnau',

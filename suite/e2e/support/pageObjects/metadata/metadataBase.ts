@@ -22,10 +22,6 @@ export class MetadataBase {
             .and(page.locator('[contenteditable="true"]'));
     }
 
-    async resetMousePosition() {
-        await this.page.mouse.move(0, 0); // reset mouse position to avoid hover issues
-    }
-
     @step()
     async fillLabelInput(label: string, options?: MetadataSubmitOptions) {
         await this.metadataInput.fill(label);

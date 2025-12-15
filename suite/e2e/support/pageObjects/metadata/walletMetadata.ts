@@ -11,7 +11,7 @@ export class WalletMetadata extends MetadataBase {
         this.walletOnIndex(index).getByTestId(this.successId);
     @step()
     async clickEditLabel(index: number) {
-        await this.resetMousePosition();
+        await this.page.resetMousePosition();
         // ensure wallet label is loaded - test can be too fast
         await expect(this.walletLabel(index)).toHaveText(/[A-Za-z]+/);
         await this.walletOnIndex(index).getByTestId(this.inputId).hover();

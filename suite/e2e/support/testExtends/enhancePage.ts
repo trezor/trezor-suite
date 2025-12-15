@@ -9,8 +9,6 @@ declare module '@playwright/test' {
 
         // Methods
         discoveryShouldFinish(): Promise<void>;
-        selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
-        getReduxObject(objectPath: string): Promise<any>;
         expectReduxObjectNotToBeEmpty(
             objectPath: string,
             options?: { timeout?: number },
@@ -26,10 +24,13 @@ declare module '@playwright/test' {
             expectedValue: unknown,
             options?: { timeout?: number },
         ): Promise<void>;
+        getReduxObject(objectPath: string): Promise<any>;
+        resetMousePosition(): Promise<void>;
         runWithReduxDump<T>(
             action: () => Promise<T>,
             options?: { slice?: string; filePrefix?: string },
         ): Promise<void>;
+        selectDropdownOptionWithRetry(dropdown: Locator, option: Locator): Promise<void>;
     }
 }
 
@@ -145,6 +146,10 @@ export const enhancePage = (page: Page): Page => {
 - ${afterPath}
 You can use a diff tool to compare the state before and after the action.
         `);
+    };
+
+    page.resetMousePosition = async function () {
+        await page.mouse.move(0, 0); // reset mouse position to avoid hover issues
     };
 
     return page;

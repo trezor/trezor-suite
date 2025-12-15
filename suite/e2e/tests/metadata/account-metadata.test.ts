@@ -31,7 +31,6 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
         });
 
         await test.step('Edit label with Enter submit', async () => {
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.account.metadataInput.fill('cool new label');
             await page.keyboard.press('Enter');
             await expect(
