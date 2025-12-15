@@ -327,6 +327,7 @@ describe('selectors', () => {
         it('should return correct expected rewards', () => {
             const testState = getTestState({
                 accounts: [solAccountWithStaking],
+                withSolStakeData: true,
             });
 
             expect(
@@ -336,12 +337,13 @@ describe('selectors', () => {
                     },
                     'sol1',
                 ),
-            ).toEqual('0.000376438');
+            ).toEqual('0.000340274');
         });
 
         it('should return "0" for account without activated or deactivating stake', () => {
             const testState = getTestState({
                 accounts: [solAccountWithActivatingStaking],
+                withSolStakeData: true,
             });
 
             expect(
