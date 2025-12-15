@@ -1,3 +1,12 @@
+# 1.5.0
+
+- npm-prerelease: @trezor/env-utils 1.5.0-beta.2 (2fa7e2306c)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- npm-prerelease: @trezor/env-utils 1.5.0-beta.1 (16092bfb1e)
+- chore(suite-desktop): clean up ASSET_PREFIX for desktop vs. other apps (3bfdfc6c9b)
+- fix(env-utils): connect build (3cc73bd8a4)
+- chore: unify resolveStaticPath (318272410b)
+
 # 1.4.3
 
 - npm-prerelease: @trezor/env-utils 1.4.3-beta.1 (472a410f42)
