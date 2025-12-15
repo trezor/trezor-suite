@@ -1,3 +1,26 @@
+# 1.3.0
+
+- chore(protocol): use v2 messageType in `protocol-thp` decode (fae6a1a62f)
+- chore(protocol): return `protocol-v2` messageType as number (4c3f7116d0)
+- refactor(protocol): use `protocol-v2` constants in `protocol-thp` (27668ed095)
+- chore(protocol): validate control byte (magic) in protocol v2 decode (c149719480)
+- npm-prerelease: @trezor/protocol 1.3.0-beta.2 (ece7e089e4)
+- refactor(protocol): return unmasked magic from readThpHeader (8246ad65a6)
+- refactor(connect): new replace-imports.sh script using babel (2128d273f3)
+- test(protocol): adjust unit tests (424182b171)
+- fix(protocol): don't throw on malformed push notification (d382cbfbe0)
+- chore(protocol): export ThpPairingMethod as enum (e61610e32b)
+- chore(protocol): distinguish DeviceThpState and ThpChannelState (780e5327f4)
+- npm-prerelease: @trezor/protocol 1.3.0-beta.1 (13e1275ffb)
+- refactor(protocol): encode ThpAck **only** from ThpState (a43bdb2945)
+- refactor(protocol): THP getControlBit returns both ack and sequence bits (10c54bd35d)
+- feat(protocol): add ThpState sendAckBit and receiveAckBit (3d948f28ff)
+- fix(protobuf): add patch for ThpDeviceProperties.pairing_methods (161406226b)
+- feat(protocol): power status change notification (6855b5e74f)
+- Revert fix(transport): allow skipping ThpAck from device (37cd1c6ba1)
+- npm-prerelease: @trezor/protocol 1.2.11-beta.1 (fd0b9af6a7)
+- fix(transport): allow skipping ThpAck from device (118327a6ba)
+
 # 1.2.10
 
 - npm-prerelease: @trezor/protocol 1.2.10-beta.1 (f4d27203cc)
