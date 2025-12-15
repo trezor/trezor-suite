@@ -3,6 +3,7 @@ import {
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_EXCHANGE_RATE,
+    TRADING_EXCHANGE_RATE_FIXED,
     TRADING_EXCHANGE_RATE_FLOATING,
     TradingType,
     type TradingUtilsProvidersProps,
@@ -11,7 +12,7 @@ import { Card, Column, Paragraph, Row, Spinner } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingExchangeFormContextProps } from 'src/types/trading/tradingForm';
 import { TradingFormOffersSwitcherItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcherItem';
@@ -37,7 +38,8 @@ export const TradingFormOffersSwitcher = ({
 }: TradingFormOffersSwitcherProps) => {
     const { isTorEnabled } = useSelector(selectTorState);
     const { setValue, getValues, dexQuotes, cexQuotes, preselectedQuote } = context;
-    const { exchangeType } = getValues();
+    const { translationString } = useTranslation();
+    const { exchangeType, rateType } = getValues();
     const cexQuote = cexQuotes?.[0];
     const dexQuote = dexQuotes?.[0];
     const hasSingleOption = !cexQuote !== !dexQuote;
@@ -82,6 +84,13 @@ export const TradingFormOffersSwitcher = ({
                                     ? 'TR_TRADING_OFFERS_EMPTY'
                                     : 'TR_TRADING_NO_OFFER_SWAP'
                             }
+                            values={{
+                                offers: translationString(
+                                    rateType === TRADING_EXCHANGE_RATE_FIXED
+                                        ? 'TR_TRADING_SWAP_FIXED_RATE_OFFER'
+                                        : 'TR_TRADING_SWAP_FLOATING_RATE_OFFER',
+                                ),
+                            }}
                         />
                     </Paragraph>
                 </Card>
