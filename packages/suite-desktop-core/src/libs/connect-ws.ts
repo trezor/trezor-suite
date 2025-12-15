@@ -110,6 +110,7 @@ export const exposeConnectWs = ({
     });
 
     wss.on('connection', (ws, req) => {
+        const connectionPendingMessages = new Set<string>();
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
         if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
@@ -195,51 +196,64 @@ export const exposeConnectWs = ({
                 const { method, ...rest } = message.payload;
 
                 messages[message.id] = createDeferred();
+                connectionPendingMessages.add(message.id);
 
-                // check window exists, if not wait for it to be created
-                if (!mainWindowProxy.getInstance()) {
-                    mainThreadEmitter.emit('app/show');
-                    logger.info(LOG_PREFIX, 'waiting for window to start');
-                    appInit = createDeferred();
-                    // todo: do we actually need to clean this timeout?
-                    const appInitTimeout = resolveAfter(10000);
-                    await Promise.race([appInit.promise, appInitTimeout]);
-                    appInit = undefined;
-                }
+                try {
+                    // check window exists, if not wait for it to be created
+                    if (!mainWindowProxy.getInstance()) {
+                        mainThreadEmitter.emit('app/show');
+                        logger.info(LOG_PREFIX, 'waiting for window to start');
+                        appInit = createDeferred();
+                        // todo: do we actually need to clean this timeout?
+                        const appInitTimeout = resolveAfter(10000);
+                        await Promise.race([appInit.promise, appInitTimeout]);
+                        appInit = undefined;
+                    }
 
-                // send call to renderer
-                mainWindowProxy.getInstance()?.webContents.send('connect-popup/call', {
-                    id: message.id,
-                    method,
-                    payload: rest,
-                    origin,
-                    process: processOnPort
-                        ? {
-                              name: processOnPort.name,
-                              fullPath: processOnPort.fullPath,
-                              warning: !!processOnPort.warning,
-                              icon: await getProcessIcon(processOnPort.fullPath),
-                          }
-                        : undefined,
-                    manifest: {
-                        appName: settings.manifest.appName,
-                        appIcon: settings.manifest.appIcon,
-                    },
-                });
-
-                // wait for response
-                const response = await messages[message.id].promise;
-
-                ws.send(
-                    JSON.stringify({
-                        ...response,
+                    // send call to renderer
+                    mainWindowProxy.getInstance()?.webContents.send('connect-popup/call', {
                         id: message.id,
-                    }),
-                );
+                        method,
+                        payload: rest,
+                        origin,
+                        process: processOnPort
+                            ? {
+                                  name: processOnPort.name,
+                                  fullPath: processOnPort.fullPath,
+                                  warning: !!processOnPort.warning,
+                                  icon: await getProcessIcon(processOnPort.fullPath),
+                              }
+                            : undefined,
+                        manifest: {
+                            appName: settings.manifest.appName,
+                            appIcon: settings.manifest.appIcon,
+                        },
+                    });
+
+                    // wait for response
+                    const response = await messages[message.id].promise;
+
+                    ws.send(
+                        JSON.stringify({
+                            ...response,
+                            id: message.id,
+                        }),
+                    );
+                } catch (e) {
+                    logger.error(LOG_PREFIX, 'error handling call: ' + e);
+                } finally {
+                    connectionPendingMessages.delete(message.id);
+                }
             }
         });
         ws.on('close', () => {
             logger.info(LOG_PREFIX, 'Connection closed');
+
+            if (connectionPendingMessages.size > 0) {
+                mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
+                    error: 'Connection closed',
+                });
+            }
         });
     });
     wss.on('close', () => {
