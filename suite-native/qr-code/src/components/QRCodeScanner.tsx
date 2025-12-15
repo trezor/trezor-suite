@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, Platform } from 'react-native';
 
-import { BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
+import { type BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
 
 import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';

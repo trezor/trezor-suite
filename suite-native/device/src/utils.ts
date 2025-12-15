@@ -1,8 +1,8 @@
 import { G } from '@mobily/ts-belt';
 import * as semver from 'semver';
 
-import { AnyAction } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type AnyAction } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInternalModel,
     getDeviceLanguage,
@@ -11,7 +11,7 @@ import {
     getIsDevicePinProtected,
 } from '@suite-common/suite-utils';
 import { EventType, analytics } from '@suite-native/analytics';
-import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
+import { type Device, type DeviceEvent, type VersionArray } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersionArray,

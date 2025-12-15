@@ -16,14 +16,14 @@ import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/devi
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { FirmwareUpdateAlert } from './FirmwareUpdateAlert';
-import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
+import { PortfolioGraph, type PortfolioGraphRef } from './PortfolioGraph';
 import { ReferralButton } from './ReferralButton';
 
 export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {

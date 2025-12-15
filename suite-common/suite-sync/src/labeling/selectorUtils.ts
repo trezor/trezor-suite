@@ -1,5 +1,5 @@
-import { AccountLabel, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountLabel, type AddressLabel, type OutputLabel } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 type FindAccountLabelParams = {

@@ -3,15 +3,15 @@ import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    FeesRootState,
+    type AccountsRootState,
+    type FeesRootState,
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
@@ -19,7 +19,7 @@ import { BigNumber } from '@trezor/utils';
 import { useFeesFetching } from './useFeesFetching';
 import { useFeesForm } from './useFeesForm';
 import { selectFeeLevels } from '../../selectors';
-import { NativeSupportedFeeLevel } from '../../types';
+import { type NativeSupportedFeeLevel } from '../../types';
 
 type UseFeeCalculationParams = {
     accountKey: AccountKey;

@@ -1,4 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 
@@ -13,7 +13,7 @@ import {
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
 import { sellThunks } from '../thunks/sell';
-import { TradingTransaction } from '../types';
+import { type TradingTransaction } from '../types';
 import { tradingBuyReducer } from './buyReducer';
 import { tradingExchangeReducer } from './exchangeReducer';
 import { tradingSellReducer } from './sellReducer';

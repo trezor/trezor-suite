@@ -2,17 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Card, Divider, HStack, Text, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TransactionDetailStackParamList,
+    type StackNavigationProps,
+    type TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';

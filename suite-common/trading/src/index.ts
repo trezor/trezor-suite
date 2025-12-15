@@ -1,4 +1,4 @@
-export * from './types';
+export type * from './types';
 export * from './invityAPI';
 export * from './regional';
 export * from './utils';
@@ -22,5 +22,5 @@ export { exchangeThunks } from './thunks/exchange';
 export { sellThunks } from './thunks/sell';
 export * from './hooks/useTradingInfo';
 export * from './hooks/useTradingDetail';
-export * from './types/tradingDetail';
+export type * from './types/tradingDetail';
 export * from './currency';

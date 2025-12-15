@@ -1,4 +1,4 @@
-import { Utxo } from '@trezor/blockchain-link';
+import { type Utxo } from '@trezor/blockchain-link';
 
 export const baseUtxo: Omit<Utxo, 'address'> = {
     txid: '1',

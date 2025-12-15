@@ -1,5 +1,5 @@
 import { Translation } from '@suite-native/intl';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { Text } from './Text';
 

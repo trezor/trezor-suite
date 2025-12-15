@@ -1,4 +1,4 @@
-import { Protocol } from '@suite-common/suite-constants';
+import { type Protocol } from '@suite-common/suite-constants';
 
 import * as fixtures from '../__fixtures__/protocol';
 import { getNetworkSymbolForProtocol } from '../protocol';

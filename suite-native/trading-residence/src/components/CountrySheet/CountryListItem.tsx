@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 

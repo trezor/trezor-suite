@@ -4,7 +4,7 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
 } from '@suite-native/test-utils';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeAlert } from '../ExchangeAlert';

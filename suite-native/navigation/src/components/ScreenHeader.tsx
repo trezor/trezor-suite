@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { RequireOneOrNone } from 'type-fest';
+import { type RequireOneOrNone } from 'type-fest';
 
 import { Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { GoBackIcon } from './GoBackIcon';
-import { CloseActionType } from '../navigators';
+import { type CloseActionType } from '../navigators';
 import { ScreenHeaderContent, type ScreenHeaderContentProps } from './ScreenHeaderContent';
 
 export type ScreenHeaderProps = ScreenHeaderContentProps &

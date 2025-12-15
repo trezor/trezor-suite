@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
+import { FormatterProvider, type FormatterProviderConfig } from '@suite-common/formatters';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 

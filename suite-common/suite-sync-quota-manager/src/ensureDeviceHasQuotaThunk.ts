@@ -1,10 +1,10 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
-import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite-types';
+import { type DelegatedIdentityKey, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';

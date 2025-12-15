@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import type {
     BuyCryptoPaymentMethod,
@@ -19,20 +19,20 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
-import { CountryCode } from '@suite-common/geolocation';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { AccountType, Network, NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type CountryCode } from '@suite-common/geolocation';
+import { type ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { type AccountType, type Network, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import {
-    Account,
-    BaseCurrencyOption,
-    FormState,
-    GeneralPrecomposedTransactionFinal,
+    type Account,
+    type BaseCurrencyOption,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { PROTO, Success, Unsuccessful } from '@trezor/connect';
-import { Timer } from '@trezor/react-utils';
-import { PrimitiveType } from '@trezor/type-utils';
+import { type PROTO, type Success, type Unsuccessful } from '@trezor/connect';
+import { type Timer } from '@trezor/react-utils';
+import { type PrimitiveType } from '@trezor/type-utils';
 
-import * as constants from './constants';
+import type * as constants from './constants';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;

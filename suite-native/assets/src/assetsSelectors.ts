@@ -3,16 +3,16 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 import { calculateAssetsPercentage } from '@suite-common/assets';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    DeviceRootState,
-    FiatRatesRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type DeviceRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAccounts,
@@ -20,14 +20,14 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
-    BaseCurrencyAmount,
+    type BaseCurrencyAmount,
     asBaseCurrencyAmount,
     getAccountFiatBalance,
 } from '@suite-common/wallet-utils';
 import { getAccountListSections } from '@suite-native/accounts';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     doesCoinSupportStaking,
     getAccountCryptoBalanceWithStaking,
 } from '@suite-native/staking';

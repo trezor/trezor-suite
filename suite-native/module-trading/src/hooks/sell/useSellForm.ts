@@ -4,13 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import {
-    TradingAmountLimitProps,
+    type TradingAmountLimitProps,
     getBestRatedQuote,
     selectTradingSellQuotesRequest,
     selectValidTradingSellQuotes,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
@@ -23,7 +23,7 @@ import {
     selectSellSelectedSendAccount,
     sellActions,
 } from '@suite-native/trading-state';
-import { SellFormType, SellFormValues } from '@suite-native/trading-types';
+import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';

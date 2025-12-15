@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
 import {
     AnimatedVStack,
     HStack,
     InlineAlertBox,
-    InputType,
+    type InputType,
     Switch,
     Text,
     VStack,
@@ -20,7 +20,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
-import { SendFieldName, SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendFieldName, type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
 const titleTextStyle = prepareNativeStyle(utils => ({
     flex: 1,

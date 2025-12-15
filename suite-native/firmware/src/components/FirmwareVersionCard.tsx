@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { PixelRatio } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -13,13 +13,13 @@ import {
     Card,
     HStack,
     InlineAlertText,
-    InlineAlertTextProps,
+    type InlineAlertTextProps,
     Text,
     VStack,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { VersionArray } from '@trezor/device-utils';
+import { type VersionArray } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { FirmwareChangelogButton } from './FirmwareChangelogButton';

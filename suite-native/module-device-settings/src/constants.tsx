@@ -1,4 +1,4 @@
-import { CardStepperMap } from '@suite-native/atoms';
+import { type CardStepperMap } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const wipeDeviceStepToContentMap = {

@@ -1,6 +1,6 @@
-import { PersistedState, getStoredState } from 'redux-persist';
+import { type PersistedState, getStoredState } from 'redux-persist';
 
-import { WalletSettings } from '@suite-common/wallet-types';
+import { type WalletSettings } from '@suite-common/wallet-types';
 
 import { isPersistedState } from '../../migrationTypes';
 import { initMmkvStorage } from '../../storage';

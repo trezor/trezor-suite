@@ -14,10 +14,10 @@ import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { UI } from '@trezor/connect';
 

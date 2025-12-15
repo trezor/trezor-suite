@@ -6,21 +6,21 @@ import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
     AppTabsRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    DeviceSuspicionCause,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
+    type DeviceSuspicionCause,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import {
     TREZOR_SUPPORT_DIFFERENT_PACKAGING,
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
-    Url,
+    type Url,
 } from '@trezor/urls';
 
 const causeToLinkMap = {

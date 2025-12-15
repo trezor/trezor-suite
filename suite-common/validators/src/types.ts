@@ -1,4 +1,4 @@
-import { AnySchema } from 'yup';
+import { type AnySchema } from 'yup';
 
 declare module 'yup' {
     interface StringSchema {

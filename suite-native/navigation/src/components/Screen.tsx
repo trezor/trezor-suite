@@ -1,8 +1,8 @@
-import { ReactNode, useContext } from 'react';
-import { ScrollViewProps, View, ViewProps } from 'react-native';
+import { type ReactNode, useContext } from 'react';
+import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
-import { EdgeInsets } from 'react-native-safe-area-context';
+import { type EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
@@ -11,9 +11,9 @@ import { useRoute } from '@react-navigation/native';
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
+import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';

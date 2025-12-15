@@ -1,6 +1,6 @@
-import { DeviceRootState } from '@suite-common/wallet-core';
+import { type DeviceRootState } from '@suite-common/wallet-core';
 
-import { SuiteSyncState } from './suiteSyncReducer';
+import { type SuiteSyncState } from './suiteSyncReducer';
 
 export type WithSuiteSyncState = {
     suiteSync: SuiteSyncState;

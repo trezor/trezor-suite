@@ -1,9 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { AccountImportScreenHeader } from '../components/AccountImportScreenHeader';

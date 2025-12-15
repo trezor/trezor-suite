@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { NetworkSymbol, NetworkSymbolExtended } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { NetworkBadge } from '@suite-native/trading-atoms';

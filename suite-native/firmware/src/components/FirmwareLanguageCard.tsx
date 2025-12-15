@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import {
     selectDeviceLanguage,
     selectIsDeviceLanguageConfigurable,

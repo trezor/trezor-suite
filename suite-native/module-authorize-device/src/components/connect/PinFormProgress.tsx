@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';

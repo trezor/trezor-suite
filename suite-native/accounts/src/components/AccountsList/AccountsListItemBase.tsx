@@ -1,5 +1,5 @@
 import React from 'react';
-import { PressableProps } from 'react-native';
+import { type PressableProps } from 'react-native';
 
 import { Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

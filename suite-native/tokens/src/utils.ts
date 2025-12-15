@@ -1,6 +1,6 @@
 import { G, S } from '@mobily/ts-belt';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { isArrayMember } from '@trezor/utils';
 

@@ -1,4 +1,4 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     btcAsset,
     ethAsset,
@@ -11,7 +11,7 @@ import {
 
 import {
     TradeableAssetAccountBalance,
-    TradeableAssetAccountBalanceProps,
+    type TradeableAssetAccountBalanceProps,
 } from '../TradeableAssetAccountBalance';
 
 describe('TradeableAssetAccountBalance', () => {

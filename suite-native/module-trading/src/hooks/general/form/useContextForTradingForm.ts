@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { TradingAmountLimitProps } from '@suite-common/trading';
+import { type TradingAmountLimitProps } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
-import { TradingFormContext } from '@suite-native/trading-types';
+import { type TradingFormContext } from '@suite-native/trading-types';
 
 import { useConvertFormValueToBaseUnit } from '../useConvertFormValueToBaseUnit';
 

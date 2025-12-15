@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
-    FirmwareLanguageStackParamList,
+    type FirmwareLanguageStackParamList,
     FirmwareLanguageStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

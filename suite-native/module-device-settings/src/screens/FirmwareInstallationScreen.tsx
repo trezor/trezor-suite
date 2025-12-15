@@ -6,9 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 import { selectThpStep } from '@suite-common/thp';
 import { FirmwareInstallationScreenContent } from '@suite-native/firmware';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 

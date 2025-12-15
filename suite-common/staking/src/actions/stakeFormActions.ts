@@ -1,11 +1,11 @@
-import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { ComposeActionContext } from '@suite-common/wallet-core';
+import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type ComposeActionContext } from '@suite-common/wallet-core';
 import {
-    EstimatedFee,
-    ExternalOutput,
-    PrecomposedLevels,
-    PrecomposedTransaction,
-    StakeFormState,
+    type EstimatedFee,
+    type ExternalOutput,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
 import {
     calculateMax,
@@ -13,7 +13,7 @@ import {
     convertAmountSubunitsToUnits,
     getExternalComposeOutput,
 } from '@suite-common/wallet-utils';
-import { FeeLevel } from '@trezor/connect';
+import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 type StakingParams = {

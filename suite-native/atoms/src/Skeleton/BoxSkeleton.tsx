@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { AccessibilityProps } from 'react-native';
+import { type AccessibilityProps } from 'react-native';
 import {
     interpolate,
     useDerivedValue,
@@ -19,10 +19,10 @@ import {
 } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
-import { Color, NativeRadius } from '@trezor/theme';
+import { type Color, type NativeRadius } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from '../constants';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { nativeRadiusToNumber } from '../utils';
 
 type BoxSkeletonProps = {

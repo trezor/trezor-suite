@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { AccountLabel, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { type AccountLabel, type AddressLabel, type OutputLabel } from '@suite-common/suite-sync-storage';
 import type { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { labelingActions } from './labelingActions';

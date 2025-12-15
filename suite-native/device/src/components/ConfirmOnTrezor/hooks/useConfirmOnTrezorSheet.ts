@@ -1,13 +1,13 @@
 import { useCallback, useImperativeHandle, useMemo, useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 import { Gesture } from 'react-native-gesture-handler';
 import { clamp, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 import * as Haptics from 'expo-haptics';
 
 import { useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
-import { SendStackParamList, SendStackRoutes } from '@suite-native/navigation';
+import { type SendStackParamList, type SendStackRoutes } from '@suite-native/navigation';
 import { getScreenHeight } from '@trezor/env-utils';
 
 const SCREEN_HEIGHT = getScreenHeight();

@@ -1,6 +1,6 @@
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { SkipButton, SkipButtonProps } from '../SkipButton';
+import { SkipButton, type SkipButtonProps } from '../SkipButton';
 
 const mockAnalyticsReport = jest.fn();
 

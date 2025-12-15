@@ -1,18 +1,18 @@
 import { useState } from 'react';
-import { PressableProps } from 'react-native';
+import { type PressableProps } from 'react-native';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import {
-    NativeStyleObject,
+    type NativeStyleObject,
     mergeNativeStyles,
     prepareNativeStyle,
     useNativeStyles,
 } from '@trezor/styles';
 
 import {
-    ButtonColorScheme,
-    ButtonSize,
-    ButtonStyleProps,
+    type ButtonColorScheme,
+    type ButtonSize,
+    type ButtonStyleProps,
     buttonSchemeToColorsMap,
     buttonStyle,
     buttonToIconSizeMap,

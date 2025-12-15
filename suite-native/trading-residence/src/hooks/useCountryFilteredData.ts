@@ -1,4 +1,4 @@
-import { TradingCountryOption, nonSanctionedRegional } from '@suite-common/trading';
+import { type TradingCountryOption, nonSanctionedRegional } from '@suite-common/trading';
 import { useListDataFilter } from '@suite-native/trading-atoms';
 
 const filterCallback = ({ label, value }: TradingCountryOption, filterValue: string): boolean =>

@@ -9,7 +9,7 @@ import {
     selectInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

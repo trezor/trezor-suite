@@ -4,19 +4,19 @@ import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    CloseActionType,
+    type CloseActionType,
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
 
 type ReceiveScreenHeaderProps = {

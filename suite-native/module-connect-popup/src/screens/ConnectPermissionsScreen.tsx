@@ -2,7 +2,7 @@ import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reani
 import { useDispatch, useSelector } from 'react-redux';
 
 import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/connect-popup';
-import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
     AnimatedBox,
     Button,

@@ -7,9 +7,9 @@ import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/devi
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { NoTransactionsSvg } from './NoTransactionsSvg';

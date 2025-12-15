@@ -5,17 +5,17 @@ import { useNavigation } from '@react-navigation/native';
 
 import { EventTypeShared, analytics } from '@suite-native/analytics';
 import {
-    BluetoothDevice,
+    type BluetoothDevice,
     BluetoothDeviceList,
     selectNearbyBluetoothDevices,
     selectNearbyPairableBluetoothDevices,
     useBluetoothDevice,
 } from '@suite-native/bluetooth';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    type AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackRoutes,
     Screen,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';

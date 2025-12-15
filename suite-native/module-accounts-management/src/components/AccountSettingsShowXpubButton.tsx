@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountByKey,
     selectIsDeviceBackupRequired,
     selectSelectedDevice,

@@ -1,5 +1,5 @@
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
@@ -10,7 +10,7 @@ import {
 } from '@suite-native/trading-state';
 
 import { LocationForm } from '../LocationForm';
-import { OnboardingButtons, OnboardingButtonsProps } from '../OnboardingButtons';
+import { OnboardingButtons, type OnboardingButtonsProps } from '../OnboardingButtons';
 
 describe('OnboardingButtons', () => {
     let store: TestStore;

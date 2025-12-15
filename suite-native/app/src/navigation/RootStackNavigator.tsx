@@ -32,7 +32,7 @@ import { StakingDetailScreen } from '@suite-native/module-staking-management';
 import { TradingWebViewScreen } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

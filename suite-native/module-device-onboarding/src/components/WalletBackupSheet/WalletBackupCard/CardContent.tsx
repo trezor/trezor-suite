@@ -1,4 +1,4 @@
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { VStack } from '@suite-native/atoms';
 
 import { CardContentRow } from './CardContentRow';

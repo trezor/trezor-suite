@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
-import { CryptoIcon, Icon, IconName, IconSize, icons } from '@suite-native/icons';
+import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import { CryptoIcon, Icon, type IconName, type IconSize, icons } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { BoxProps } from './Box';
+import { type BoxProps } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
-import { SurfaceElevation } from './types';
+import { type SurfaceElevation } from './types';
 
 export type BadgeVariant = 'neutral' | 'green' | 'greenSubtle' | 'yellow' | 'red' | 'blue' | 'bold';
 export type BadgeSize = 'small' | 'medium';

@@ -6,7 +6,7 @@ import { A } from '@mobily/ts-belt';
 import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
 } from '@suite-common/message-system/src/messageSystemTypes';
 import {
     createReducerWithExtraDeps,
@@ -14,7 +14,7 @@ import {
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetwork,
     networkSymbolCollection,
     networksCollection,

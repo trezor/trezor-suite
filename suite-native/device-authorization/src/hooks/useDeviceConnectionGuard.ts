@@ -8,10 +8,10 @@ import { selectDeviceBluetoothId, selectIsDeviceConnected } from '@suite-common/
 import {
     AuthorizeDeviceStackRoutes,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SettingsStackParamList,
-    StackToStackCompositeNavigationProps,
+    type SettingsStackParamList,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

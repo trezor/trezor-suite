@@ -2,7 +2,7 @@ import { Group, ImageSVG, useSVG } from '@shopify/react-native-skia';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { PaginationCompatibleDeviceModel } from '../types';
+import { type PaginationCompatibleDeviceModel } from '../types';
 
 type DeviceScreenPaginationProps = {
     deviceModel: PaginationCompatibleDeviceModel;

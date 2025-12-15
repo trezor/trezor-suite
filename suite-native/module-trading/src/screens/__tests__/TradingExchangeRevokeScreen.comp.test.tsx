@@ -1,6 +1,6 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     accounts,

@@ -1,12 +1,12 @@
 import { Pressable } from 'react-native';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { CSSColor, nativeBorders } from '@trezor/theme';
+import { type NativeStyle, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type CSSColor, nativeBorders } from '@trezor/theme';
 
 import { DEVICE_SCREEN_BACKGROUND_COLOR, DEVICE_TEXT_COLOR } from '../constants';
-import { DevicePaginationActivePage, PaginationCompatibleDeviceModel } from '../types';
+import { type DevicePaginationActivePage, type PaginationCompatibleDeviceModel } from '../types';
 
 type DeviceScreenPaginationProps = {
     activePage: DevicePaginationActivePage;

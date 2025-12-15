@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import { type CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
@@ -9,11 +9,11 @@ import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    WipeDeviceStackParamList,
+    type WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 

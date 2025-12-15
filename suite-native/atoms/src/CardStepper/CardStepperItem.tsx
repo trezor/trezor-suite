@@ -1,11 +1,11 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
-import { Button, ButtonColorScheme } from '../Button/Button';
+import { Button, type ButtonColorScheme } from '../Button/Button';
 import { AnimatedCard } from '../Card/Card';
 import { Divider } from '../Divider';
 import { AnimatedVStack, HStack, VStack } from '../Stack';

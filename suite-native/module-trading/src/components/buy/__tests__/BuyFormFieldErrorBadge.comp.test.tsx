@@ -2,17 +2,17 @@ import type { CryptoId } from 'invity-api';
 
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { btcAsset, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
-import { BuyFormFieldErrorBadge, BuyFormFieldErrorBadgeProps } from '../BuyFormFieldErrorBadge';
+import { BuyFormFieldErrorBadge, type BuyFormFieldErrorBadgeProps } from '../BuyFormFieldErrorBadge';
 
 describe('BuyFormFieldErrorBadge', () => {
     let tradingForm: BuyFormType;

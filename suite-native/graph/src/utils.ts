@@ -1,4 +1,4 @@
-import { FiatGraphPoint } from '@suite-common/graph';
+import { type FiatGraphPoint } from '@suite-common/graph';
 
 /**
  * Graph points and its dates follow each other from the unix epoch

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Utxo } from '@trezor/blockchain-link-types';
+import { type Utxo } from '@trezor/blockchain-link-types';
 
-import { OutputLabels, filterUtxos } from '../filterAndCategorizeUtxosUtils';
+import { type OutputLabels, filterUtxos } from '../filterAndCategorizeUtxosUtils';
 
 export const useFilteredUtxos = (
     utxos: Utxo[] = [],

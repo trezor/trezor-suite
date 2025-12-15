@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { CustomBackend } from '@suite-common/wallet-types';
 import type { TimerId } from '@trezor/type-utils';
 

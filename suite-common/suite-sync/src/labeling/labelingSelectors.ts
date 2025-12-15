@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountKey, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { type BottomSheetModal } from '@gorhom/bottom-sheet';
 
 export const useBottomSheetModal = () => {
     const bottomSheetRef = useRef<BottomSheetModal>(null);

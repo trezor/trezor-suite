@@ -6,8 +6,8 @@ import { selectTradingExchangePreselectedQuote } from '@suite-common/trading';
 import { AsyncButton, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    StackNavigationProps,
-    TradingStackParamList,
+    type StackNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 

@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    DeviceRootState,
+    type AccountsRootState,
+    type DeviceRootState,
     selectAccountNetworkType,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { useTranslate } from '@suite-native/intl';
 

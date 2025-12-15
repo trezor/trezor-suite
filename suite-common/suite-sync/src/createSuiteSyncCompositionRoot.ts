@@ -1,18 +1,18 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
-import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type CreateSuiteStorageDep, type CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import {
     selectAllDeviceOwners,
     selectSuiteSyncOwnerForDeviceStaticId,
 } from '@suite-common/wallet-core';
-import { StaticSessionId } from '@trezor/connect';
+import { type StaticSessionId } from '@trezor/connect';
 
 import { createSuiteSyncStorageRepositoryFactory } from './SuiteSyncStorageRepository';
 import {
-    EnsureSuiteSyncOwnerDeps,
+    type EnsureSuiteSyncOwnerDeps,
     createEnsureSuiteSyncOwnerKeys,
 } from './device/ensureSuiteSyncOwnerKeys';
 import { createSubscribeLabeling } from './labeling/subscribeLabeling';

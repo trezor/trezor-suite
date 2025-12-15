@@ -3,13 +3,13 @@ import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import {
-    AccountKey,
+    type AccountKey,
     type FiatRatesResult,
-    RateTypeWithoutHistoric,
-    TickerId,
-    TickerResult,
-    Timestamp,
-    WalletAccountTransaction,
+    type RateTypeWithoutHistoric,
+    type TickerId,
+    type TickerResult,
+    type Timestamp,
+    type WalletAccountTransaction,
     asTimestamp,
     toTokenAddress,
 } from '@suite-common/wallet-types';
@@ -19,7 +19,7 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { TimerId, exhaustive } from '@trezor/type-utils';
+import { type TimerId, exhaustive } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';

@@ -1,18 +1,18 @@
 import {
-    Evolu,
+    type Evolu,
     NonEmptyString100,
     NonEmptyString1000,
-    QueryRows,
+    type QueryRows,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
-import { AccountLabel, AccountLabelsStore } from '@suite-common/suite-sync-storage';
-import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
+import { type AccountLabel, type AccountLabelsStore } from '@suite-common/suite-sync-storage';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { UnwrapQuery } from '../evoluUtils';
+import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AccountLabelId = id('AccountLabelId');

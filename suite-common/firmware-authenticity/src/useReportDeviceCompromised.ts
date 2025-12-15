@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectFirmwareUpdateSource } from '@suite-common/firmware';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

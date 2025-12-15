@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { Box, Card, type InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
@@ -12,7 +12,7 @@ import {
     selectIsStakePendingByAccountKey,
     selectTotalStakePendingByAccountKey,
 } from '@suite-native/staking';
-import { NativeStakingRootState } from '@suite-native/staking/src/types';
+import { type NativeStakingRootState } from '@suite-native/staking/src/types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type StakePendingCardProps = {

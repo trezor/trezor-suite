@@ -1,6 +1,6 @@
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
-import { Badge, BadgeVariant } from './Badge';
+import { Badge, type BadgeVariant } from './Badge';
 import { BoxSkeleton } from './Skeleton/BoxSkeleton';
 
 export type PriceChangeBadgeProps = {

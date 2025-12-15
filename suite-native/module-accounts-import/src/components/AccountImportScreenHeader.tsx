@@ -1,6 +1,6 @@
 import { Translation } from '@suite-native/intl';
 import {
-    CloseActionType,
+    type CloseActionType,
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';

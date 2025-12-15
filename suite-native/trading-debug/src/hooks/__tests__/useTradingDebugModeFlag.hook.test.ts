@@ -1,5 +1,5 @@
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { useTradingDebugModeFlag } from '../useTradingDebugModeFlag';
 

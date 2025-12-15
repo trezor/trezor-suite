@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
+import { type FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
 import { nativeFirmwareActions } from '../nativeFirmwareSlice';

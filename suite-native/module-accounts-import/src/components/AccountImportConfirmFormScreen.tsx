@@ -5,29 +5,29 @@ import { useNavigation } from '@react-navigation/core';
 import { FlashList } from '@shopify/flash-list';
 
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     selectFilterKnownTokens,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
+    type AccountsRootState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
-    AccountsImportStackParamList,
-    AccountsImportStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type AccountsImportStackParamList,
+    type AccountsImportStackRoutes,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { AccountInfo, TokenInfo } from '@trezor/connect';
+import { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { useShowImportError } from '../useShowImportError';

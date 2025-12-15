@@ -1,6 +1,6 @@
 import {
-    CompilableTransactionMessage,
-    TransactionMessageWithBlockhashLifetime,
+    type CompilableTransactionMessage,
+    type TransactionMessageWithBlockhashLifetime,
     compileTransaction,
 } from '@solana/kit';
 
@@ -10,15 +10,15 @@ import {
     WALLET_SDK_SOURCE,
 } from '@suite-common/wallet-constants';
 import {
-    PrepareClaimSolTxParams,
-    PrepareStakeSolTxParams,
-    PrepareStakeSolTxResponse,
-    PriorityFees,
+    type PrepareClaimSolTxParams,
+    type PrepareStakeSolTxParams,
+    type PrepareStakeSolTxResponse,
+    type PriorityFees,
 } from '@suite-common/wallet-types';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
-import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
+import { type Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
-import { SolanaTx } from '../types';
+import { type SolanaTx } from '../types';
 import { claim, createTransactionShimCommon, stake, unstake } from './transactionUtils';
 
 export const transformTx = (

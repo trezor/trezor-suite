@@ -1,4 +1,4 @@
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { useShowReviewCancellationAlert } from '../useShowReviewCancellationAlert';
 

@@ -1,6 +1,6 @@
-import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import { type CryptoId, type ExchangeProviderInfo, type ExchangeTrade, type SellFiatTrade } from 'invity-api';
 
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';

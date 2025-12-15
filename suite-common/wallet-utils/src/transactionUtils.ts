@@ -1,33 +1,33 @@
 import { addDays, startOfMonth } from 'date-fns';
 import { fromWei, toWei } from 'web3-utils';
 
-import { AccountLabels } from '@suite-common/metadata-types';
-import { SignOperator } from '@suite-common/suite-types';
-import { NetworkType } from '@suite-common/wallet-config';
+import { type AccountLabels } from '@suite-common/metadata-types';
+import { type SignOperator } from '@suite-common/suite-types';
+import { type NetworkType } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountKey,
-    ChainedTransactions,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
-    PrecomposedTransactionFinalBumpFeeRbf,
-    PrecomposedTransactionFinalCancelRbf,
-    RatesByTimestamps,
-    RbfTransactionParamsBitcoin,
-    RbfTransactionParamsEthereum,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type Account,
+    type AccountKey,
+    type ChainedTransactions,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinal,
+    type PrecomposedTransactionFinalBumpFeeRbf,
+    type PrecomposedTransactionFinalCancelRbf,
+    type RatesByTimestamps,
+    type RbfTransactionParamsBitcoin,
+    type RbfTransactionParamsEthereum,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
-    AccountAddress,
-    AccountTransaction,
-    InternalTransfer,
-    TokenInfo,
-    TokenTransfer,
+    type AccountAddress,
+    type AccountTransaction,
+    type InternalTransfer,
+    type TokenInfo,
+    type TokenTransfer,
 } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { type Branded } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 

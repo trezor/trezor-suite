@@ -5,7 +5,7 @@ import {
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
-import { useListDataFilter } from '@suite-native/trading-atoms';
+import { type useListDataFilter } from '@suite-native/trading-atoms';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';

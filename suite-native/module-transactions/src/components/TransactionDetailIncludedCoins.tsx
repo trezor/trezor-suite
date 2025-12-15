@@ -1,4 +1,4 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
     Box,
@@ -9,7 +9,7 @@ import {
     useBottomSheetModal,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles';
 
 import { TransactionDetailListItem } from './TransactionDetailListItem';

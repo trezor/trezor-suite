@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { HStack, Text } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';

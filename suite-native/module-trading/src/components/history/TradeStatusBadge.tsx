@@ -1,7 +1,7 @@
-import { TradingTransactionStatus } from '@suite-common/trading';
-import { Badge, BadgeVariant } from '@suite-native/atoms';
+import { type TradingTransactionStatus } from '@suite-common/trading';
+import { Badge, type BadgeVariant } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { exhaustive } from '@trezor/type-utils';
 

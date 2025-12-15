@@ -1,27 +1,27 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
 import {
-    Action,
-    GuideArticle,
-    GuideCategory,
-    GuideNode,
-    MessageSystem,
-    TrezorDevice,
+    type Action,
+    type GuideArticle,
+    type GuideCategory,
+    type GuideNode,
+    type MessageSystem,
+    type TrezorDevice,
 } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
-    Account,
-    BlockchainNetworks,
-    FeeInfo,
-    WalletAccountTransaction,
+    type Account,
+    type BlockchainNetworks,
+    type FeeInfo,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    AccountUtxo,
-    Device,
-    DeviceUniquePath,
-    Features,
+    type AccountUtxo,
+    type Device,
+    type DeviceUniquePath,
+    type Features,
     FirmwareType,
-    TrezorConnect,
+    type TrezorConnect,
     asDeviceUniquePath,
 } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

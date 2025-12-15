@@ -1,4 +1,4 @@
-import { NetworkType } from '@suite-common/wallet-config';
+import { type NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Box, TextButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

@@ -5,13 +5,13 @@ import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import {
-    ExplorerState,
-    TransactionsRootState,
+    type ExplorerState,
+    type TransactionsRootState,
     selectExplorer,
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -21,11 +21,11 @@ import { useOpenLink } from '@suite-native/link';
 import {
     Screen,
     ScreenHeader,
-    StackProps,
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
+    type StackProps,
+    type TransactionDetailStackParamList,
+    type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
+import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 
 import { TransactionDetailData } from '../components/TransactionDetailData';

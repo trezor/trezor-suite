@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
-import { LayoutChangeEvent, Pressable, TextInput, TextInputProps } from 'react-native';
+import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
 
 import { BoxSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

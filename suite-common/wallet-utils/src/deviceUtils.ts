@@ -1,6 +1,6 @@
-import { TrezorDevice, TrezorDeviceWithState } from '@suite-common/suite-types';
+import { type TrezorDevice, type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
-import { Device, StaticSessionId } from '@trezor/connect';
+import { type Device, type StaticSessionId } from '@trezor/connect';
 
 export const parseDeviceStaticSessionId = (deviceStaticSessionId: StaticSessionId) => {
     const [walletDescriptor, deviceId] = deviceStaticSessionId.split('@');

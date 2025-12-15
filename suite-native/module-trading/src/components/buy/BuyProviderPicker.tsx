@@ -4,7 +4,7 @@ import type { BuyTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState as TradingRootStateCommon,
+    type TradingRootState as TradingRootStateCommon,
     selectTradingBuyIsLoading,
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
@@ -15,7 +15,7 @@ import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
-    TradingRootState,
+    type TradingRootState,
     selectBuyQuotesByPaymentMethodNative,
 } from '@suite-native/trading-state';
 

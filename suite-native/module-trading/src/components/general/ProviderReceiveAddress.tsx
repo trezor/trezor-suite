@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     isExchangeTrade,
     selectTradingExchangeAccountKey,
     selectTradingProviderByNameAndTradeType,
     selectTradingSellAccountKey,
 } from '@suite-common/trading';
-import { AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountNetworkType } from '@suite-common/wallet-core';
 import { Text, VStack } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';

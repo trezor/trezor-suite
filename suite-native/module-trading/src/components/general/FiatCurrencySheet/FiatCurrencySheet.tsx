@@ -4,7 +4,7 @@ import type { FiatCurrencyCode } from 'invity-api';
 
 import { Translation, useTranslate } from '@suite-native/intl';
 import { BottomSheetSectionList, SearchableSheetHeader } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem } from '@suite-native/trading-types';
+import { type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { FiatCurrencyListEmptyComponent } from './FiatCurrencyListEmptyComponent';
 import { FiatCurrencyListItem } from './FiatCurrencyListItem';

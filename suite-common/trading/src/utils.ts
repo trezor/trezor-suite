@@ -1,13 +1,13 @@
 import {
-    BuyTrade,
-    BuyTradeFinalStatus,
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    ExchangeTradeFinalStatus,
-    SellFiatTrade,
-    SellProviderInfo,
-    SellTradeFinalStatus,
+    type BuyTrade,
+    type BuyTradeFinalStatus,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type ExchangeTradeFinalStatus,
+    type SellFiatTrade,
+    type SellProviderInfo,
+    type SellTradeFinalStatus,
 } from 'invity-api';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -31,19 +31,19 @@ import {
 } from './constants';
 import { regional } from './regional';
 import {
-    TradingCountryCode,
-    TradingExchangeType,
-    TradingParsedCryptoIdProps,
-    TradingPaymentMethodListProps,
-    TradingPaymentMethodProps,
-    TradingProviderInfo,
-    TradingSellType,
-    TradingTradeBuySellMapProps,
-    TradingTradeBuySellType,
-    TradingTradeMapProps,
-    TradingTradeStatusType,
-    TradingTradeType,
-    TradingType,
+    type TradingCountryCode,
+    type TradingExchangeType,
+    type TradingParsedCryptoIdProps,
+    type TradingPaymentMethodListProps,
+    type TradingPaymentMethodProps,
+    type TradingProviderInfo,
+    type TradingSellType,
+    type TradingTradeBuySellMapProps,
+    type TradingTradeBuySellType,
+    type TradingTradeMapProps,
+    type TradingTradeStatusType,
+    type TradingTradeType,
+    type TradingType,
 } from './types';
 
 type NetworkAndContractAddress = {

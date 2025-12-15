@@ -5,11 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import {
-    DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { ERRORS } from '@trezor/connect';
+import { type ERRORS } from '@trezor/connect';
 
 import { checkBackupThunk } from '../checkBackupThunks';
 

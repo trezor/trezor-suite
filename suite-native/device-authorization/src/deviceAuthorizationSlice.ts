@@ -1,8 +1,8 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import {
-    DeviceRootState,
-    DiscoveryRootState,
+    type DeviceRootState,
+    type DiscoveryRootState,
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';

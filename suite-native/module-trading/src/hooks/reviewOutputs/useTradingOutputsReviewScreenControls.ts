@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { sendFormActions } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/device';
 import type {
     AppTabsParamList,
@@ -21,8 +21,8 @@ import {
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
-import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
-import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
+import { type TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import { type UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
     TradingStackParamList,

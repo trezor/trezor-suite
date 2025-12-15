@@ -1,7 +1,7 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccount, ethAccount } from '../__fixtures__/accounts';
-import { TokensRootState, selectAccountTokenInfo } from '../tokensSelectors';
+import { type TokensRootState, selectAccountTokenInfo } from '../tokensSelectors';
 
 describe('tokensSelectors', () => {
     const getState = () =>

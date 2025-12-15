@@ -1,6 +1,6 @@
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -10,7 +10,7 @@ import {
     getBtcAccount,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyFlow } from '../useBuyFlow';
 import { useBuyForm } from '../useBuyForm';

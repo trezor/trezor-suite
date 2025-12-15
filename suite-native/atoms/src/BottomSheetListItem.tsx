@@ -1,7 +1,7 @@
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { OrderedListIcon, OrderedListIconProps } from './OrderedListIcon';
+import { OrderedListIcon, type OrderedListIconProps } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 

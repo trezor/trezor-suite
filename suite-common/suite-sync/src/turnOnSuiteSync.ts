@@ -1,6 +1,6 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { TurnOnSuiteSync, TurnOnSuiteSyncForWallet } from '@suite-common/suite-sync-types';
+import { type TurnOnSuiteSync, type TurnOnSuiteSyncForWallet } from '@suite-common/suite-sync-types';
 import { selectDevices } from '@suite-common/wallet-core';
 
 import { suiteSyncActions } from './suiteSyncActions';

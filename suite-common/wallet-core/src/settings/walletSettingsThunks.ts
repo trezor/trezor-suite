@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { changeNetworks, setAutoForgetDeviceData } from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';

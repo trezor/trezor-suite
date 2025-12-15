@@ -4,7 +4,7 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 
 import {
-    DiscoveryRootState,
+    type DiscoveryRootState,
     cancelDiscoveryThunk,
     selectDiscoveryByDevicePath,
     selectSelectedDevice,

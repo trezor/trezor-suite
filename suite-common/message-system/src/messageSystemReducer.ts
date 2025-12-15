@@ -1,9 +1,9 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { type AnyAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { messageSystemActions } from './messageSystemActions';
-import { MessageState, MessageSystemState } from './messageSystemTypes';
+import { type MessageState, type MessageSystemState } from './messageSystemTypes';
 
 const initialState: MessageSystemState = {
     config: null,

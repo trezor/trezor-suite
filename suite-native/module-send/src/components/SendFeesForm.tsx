@@ -4,24 +4,24 @@ import { useSelector } from 'react-redux';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useNavigation } from '@react-navigation/native';
 
-import { SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import {
     FeesContent,
     FeesFooter,
-    NativeSendRootState,
-    NativeSupportedFeeLevel,
+    type NativeSendRootState,
+    type NativeSupportedFeeLevel,
     useFeesManagement,
 } from '@suite-native/transaction-management';
 

@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
-import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
+import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
@@ -19,7 +19,7 @@ import { SendFormLabelEditable } from '@suite-native/labeling';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 import { AddressChecksumMessage } from './AddressChecksumMessage';
 

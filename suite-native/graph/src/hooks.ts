@@ -3,36 +3,36 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 import { captureException } from '@sentry/react-native';
-import { WritableAtom, useSetAtom } from 'jotai';
+import { type WritableAtom, useSetAtom } from 'jotai';
 
 import {
-    AccountItem,
-    CommonUseGraphParams,
-    FiatGraphPoint,
+    type AccountItem,
+    type CommonUseGraphParams,
+    type FiatGraphPoint,
     useGetTimeFrameForHistoryHours,
     useGraphForAccounts,
 } from '@suite-common/graph';
 import { useSelectorDeepComparison } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    BlockchainRootState,
+    type AccountsRootState,
+    type BlockchainRootState,
     selectAccountByKey,
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { type BaseCurrencyAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { timeSwitchItems } from './components/TimeSwitch';
 import { selectPortfolioGraphAccountItems } from './selectors';
 import {
-    GraphSliceRootState,
+    type GraphSliceRootState,
     selectAccountGraphTimeframe,
     selectPortfolioGraphTimeframe,
     setAccountGraphTimeframe,
     setPortfolioGraphTimeframe,
 } from './slice';
-import { TimeframeHoursValue } from './types';
+import { type TimeframeHoursValue } from './types';
 import { omitErrorMessageSensitiveData } from './utils';
 
 const useWatchTimeframeChangeForAnalytics = (

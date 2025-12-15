@@ -1,12 +1,12 @@
 import { Image } from 'expo-image';
 
 import { networkIcons } from '@suite-common/icons';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { CryptoIconSize } from './CryptoIcon';
+import { type CryptoIconSize } from './CryptoIcon';
 
 export interface NetworkIconProps {
     symbol: NetworkSymbol;

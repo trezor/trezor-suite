@@ -10,12 +10,12 @@ import { useFirmware } from '@suite-native/firmware';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 type NavigationProps = StackToStackCompositeNavigationProps<

@@ -1,6 +1,6 @@
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
     renderWithStoreProviderAsync,

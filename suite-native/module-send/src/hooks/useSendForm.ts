@@ -9,10 +9,10 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    FeesRootState,
-    SendRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type FeesRootState,
+    type SendRootState,
+    type WalletSettingsRootState,
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
@@ -22,17 +22,17 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits, getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import {
-    FeeLevelsMaxAmount,
+    type FeeLevelsMaxAmount,
     calculateFeeLevelsMaxAmountThunk,
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
@@ -40,7 +40,7 @@ import {
 import { useDebounce } from '@trezor/react-utils';
 
 import { useUtxoSelection } from './useUtxoSelection';
-import { SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
+import { type SendOutputsFormValues, sendOutputsFormValidationSchema } from '../sendOutputsFormSchema';
 import { constructFormDraft } from '../utils';
 
 const getDefaultValues = ({

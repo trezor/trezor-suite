@@ -2,8 +2,8 @@ import type { FiatCurrencyCode, SellCryptoPaymentMethod, SellFiatTrade } from 'i
 
 import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TradingCountryCode,
-    TradingPaymentMethodProps,
+    type TradingCountryCode,
+    type TradingPaymentMethodProps,
     getBestRatedQuote,
     getTradingQuotesByPaymentMethod,
     nonSanctionedRegional,
@@ -12,11 +12,11 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { getCurrencyLabel } from '@suite-native/trading-atoms';
-import { FiatCurrencyItem, SellFormValues } from '@suite-native/trading-types';
+import { type FiatCurrencyItem, type SellFormValues } from '@suite-native/trading-types';
 
 import { selectTradingResidenceCountry } from './residenceSelectors';
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';

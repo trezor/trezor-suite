@@ -2,7 +2,7 @@ import { useDerivedValue, withSpring } from 'react-native-reanimated';
 
 import { Circle, Group } from '@shopify/react-native-skia';
 
-import { EventComponentProps } from './LineGraphProps';
+import { type EventComponentProps } from './LineGraphProps';
 
 const EVENT_SIZE = 4;
 const ACTIVE_EVENT_SIZE = 7;

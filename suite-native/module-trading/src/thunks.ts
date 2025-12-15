@@ -2,9 +2,9 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    TradingExchangeType,
-    TradingSellType,
-    TradingSignAndPushSendFormTransactionProps,
+    type TradingExchangeType,
+    type TradingSellType,
+    type TradingSignAndPushSendFormTransactionProps,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
@@ -14,7 +14,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import {
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
@@ -25,17 +25,17 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    FeeInfo,
-    PrecomposedTransactionFinal,
+    type Account,
+    type FeeInfo,
+    type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import {
-    NativeSupportedFeeLevel,
-    UpdateSelectedFeeLevelThunkParams,
+    type NativeSupportedFeeLevel,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
     transactionManagementActions,
 } from '@suite-native/transaction-management';

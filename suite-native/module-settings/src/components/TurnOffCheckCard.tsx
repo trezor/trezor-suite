@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Button, CardWithIconLayout, HStack, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { useToast } from '@suite-native/toasts';

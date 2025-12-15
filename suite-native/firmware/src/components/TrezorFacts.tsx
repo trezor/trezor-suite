@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Animated, { FadeIn, FadeInUp, FadeOut, FadeOutDown } from 'react-native-reanimated';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles';
 
 import { firmwareTitlesWrapperStyle } from './FirmwareInstallationProgressTitles';

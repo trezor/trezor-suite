@@ -1,5 +1,4 @@
-import type { DeviceUniquePath } from '@trezor/connect';
-import { BundleProgress, StaticSessionId } from '@trezor/connect';
+import type { BundleProgress, DeviceUniquePath, StaticSessionId } from '@trezor/connect';
 
 type CommonDiscoveryStatus = {
     isAddingHiddenWallet?: boolean; // to control visibility of special loader

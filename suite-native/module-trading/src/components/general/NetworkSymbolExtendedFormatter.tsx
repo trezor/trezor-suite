@@ -1,4 +1,4 @@
-import { Text, TextProps } from '@suite-native/atoms';
+import { Text, type TextProps } from '@suite-native/atoms';
 
 export type CoinSymbolProps = {
     symbol: string;

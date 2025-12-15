@@ -1,4 +1,4 @@
-import { AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { type AddressLabel, type OutputLabel } from '@suite-common/suite-sync-storage';
 
 import { suiteSyncToBip329 } from '../suiteSyncToBip329';
 

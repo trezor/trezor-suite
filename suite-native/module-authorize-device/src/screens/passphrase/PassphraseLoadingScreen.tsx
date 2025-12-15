@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
+import { Spinner, type SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';

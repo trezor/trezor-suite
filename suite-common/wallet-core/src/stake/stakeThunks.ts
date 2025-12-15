@@ -1,16 +1,16 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import {
-    SupportedCardanoNetworkSymbols,
-    SupportedEthereumNetworkSymbol,
-    SupportedSolanaNetworkSymbols,
+    type SupportedCardanoNetworkSymbols,
+    type SupportedEthereumNetworkSymbol,
+    type SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 import {
     isSupportedAdaStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isTestnet,
 } from '@suite-common/wallet-utils';
-import { TimerId } from '@trezor/type-utils';
+import { type TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -21,16 +21,16 @@ import {
 } from './stakeConstants';
 import { selectEverstakeData } from './stakeSelectors';
 import {
-    CardanoValidatorStats,
+    type CardanoValidatorStats,
     EVERSTAKE_ASSET_ENDPOINT_TYPES,
     EVERSTAKE_ENDPOINT_TYPES,
     EverstakeAssetEndpointType,
     EverstakeEndpointType,
-    EverstakeRewardsEndpointType,
-    EverstakeStakingInfo,
-    StakeRewardsByAccount,
-    TotalStakeRewardsByAccount,
-    ValidatorsQueue,
+    type EverstakeRewardsEndpointType,
+    type EverstakeStakingInfo,
+    type StakeRewardsByAccount,
+    type TotalStakeRewardsByAccount,
+    type ValidatorsQueue,
 } from './stakeTypes';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
 

@@ -2,11 +2,11 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    BackupType,
+    type BackupType,
     LANGUAGES,
-    Locale,
-    SuiteSyncOwner,
-    TrezorDevice,
+    type Locale,
+    type SuiteSyncOwner,
+    type TrezorDevice,
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -20,7 +20,7 @@ import {
     getStatus,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
-import { Device, DeviceState, StaticSessionId } from '@trezor/connect';
+import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersion,
@@ -34,7 +34,7 @@ import {
     DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD,
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
-import { DeviceRootState } from './deviceReducer';
+import { type DeviceRootState } from './deviceReducer';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 

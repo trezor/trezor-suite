@@ -14,11 +14,11 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { selectHasPassphraseMismatchError } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 

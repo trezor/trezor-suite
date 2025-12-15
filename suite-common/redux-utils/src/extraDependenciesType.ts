@@ -1,29 +1,29 @@
 import {
-    ActionCreatorWithPayload,
-    ActionCreatorWithPreparedPayload,
-    ActionCreatorWithoutPayload,
+    type ActionCreatorWithPayload,
+    type ActionCreatorWithPreparedPayload,
+    type ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
-import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { type MetadataAddPayload } from '@suite-common/metadata-types';
+import { type PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
+import { type SuiteSync } from '@suite-common/suite-sync-types';
 import {
-    ReportSecurityCheckProps,
-    Route,
-    TrezorDevice,
-    UserContextPayload,
+    type ReportSecurityCheckProps,
+    type Route,
+    type TrezorDevice,
+    type UserContextPayload,
 } from '@suite-common/suite-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type AddressDisplayOptions, type SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
-    BlockchainBlock,
-    BluetoothDeviceId,
-    ConnectSettings,
-    Manifest,
-    StaticSessionId,
+    type BlockchainBlock,
+    type BluetoothDeviceId,
+    type ConnectSettings,
+    type Manifest,
+    type StaticSessionId,
 } from '@trezor/connect';
 
-import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
+import { type ActionType, type SuiteCompatibleSelector, type SuiteCompatibleThunk } from './types';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

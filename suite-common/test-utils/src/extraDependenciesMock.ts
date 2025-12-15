@@ -1,9 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
-    EncryptableBranded,
-    EncryptedHex,
-    PlatformEncryption,
+    type EncryptableBranded,
+    type EncryptedHex,
+    type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import {
@@ -12,15 +12,15 @@ import {
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
-import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import {
-    ReportSecurityCheckProps,
-    Route,
+    type ReportSecurityCheckProps,
+    type Route,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';
-import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';

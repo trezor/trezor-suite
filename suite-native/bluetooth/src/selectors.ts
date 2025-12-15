@@ -7,7 +7,7 @@ import {
 } from '@suite-common/bluetooth';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
-import { NativeBluetoothRootState } from './bluetoothSlice';
+import { type NativeBluetoothRootState } from './bluetoothSlice';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeBluetoothRootState>();
 

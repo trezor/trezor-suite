@@ -1,4 +1,4 @@
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 
 import { residenceActions, residenceReducer } from '../residenceSlice';
 

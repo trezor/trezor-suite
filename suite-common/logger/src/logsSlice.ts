@@ -1,4 +1,4 @@
-import { AnyAction, createSlice } from '@reduxjs/toolkit';
+import { type AnyAction, createSlice } from '@reduxjs/toolkit';
 
 export type LogEntry = { datetime: string; type: any; payload?: Record<any, any> };
 

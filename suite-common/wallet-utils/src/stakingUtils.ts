@@ -1,10 +1,10 @@
 import {
-    NetworkSymbol,
-    NetworkType,
+    type NetworkSymbol,
+    type NetworkType,
     STAKING_SYMBOLS,
     STAKING_TYPES,
-    StakingNetworkSymbol,
-    StakingNetworkType,
+    type StakingNetworkSymbol,
+    type StakingNetworkType,
 } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
@@ -27,10 +27,10 @@ import {
     UNSTAKING_ETH_PERIOD,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
-    PrecomposedLevels,
-    StakingPoolExtended,
-    WalletAccountTransaction,
+    type Account,
+    type PrecomposedLevels,
+    type StakingPoolExtended,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';

@@ -1,6 +1,6 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     initStore,
     renderWithStoreProviderAsync,
     userEvent,

@@ -1,13 +1,13 @@
-import { TradingType } from '@suite-common/trading';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type TradingType } from '@suite-common/trading';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
     ScreenHeader,
-    StackProps,
-    TradingStackParamList,
-    TradingStackRoutes,
+    type StackProps,
+    type TradingStackParamList,
+    type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { ReviewOutputItemList } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -18,7 +18,7 @@ import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import type { UseTradingTransactionReturnProps } from '../hooks/general/useTradingTransaction';
 import { useDelayedReviewOutputListDisplayFlag } from '../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
 import {
-    UseTradingOutputsReviewScreenControlsProps,
+    type UseTradingOutputsReviewScreenControlsProps,
     useTradingOutputsReviewScreenControls,
 } from '../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
 import { useSellFlow } from '../hooks/sell/useSellFlow';

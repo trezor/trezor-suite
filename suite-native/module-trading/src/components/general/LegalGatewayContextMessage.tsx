@@ -1,5 +1,5 @@
 import { Context } from '@suite-common/message-system';
-import { ContextMessage, ContextMessageProps } from '@suite-native/message-system';
+import { ContextMessage, type ContextMessageProps } from '@suite-native/message-system';
 
 export type LegalGatewayContextMessageProps = Omit<ContextMessageProps, 'context'>;
 

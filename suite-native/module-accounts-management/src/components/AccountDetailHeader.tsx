@@ -2,23 +2,23 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    DeviceRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type DeviceRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectAccountFormattedBalance,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { BaseCurrencyAmount } from '@suite-common/wallet-utils';
+import { type AccountKey, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount } from '@suite-common/wallet-utils';
 import { DiscreetTextTrigger, VStack } from '@suite-native/atoms';
 import { GraphBaseCurrencyBalance } from '@suite-native/graph';
 import { selectIsHistoryEnabledAccountByAccountKey } from '@suite-native/graph/src/selectors';
 import {
-    TokensRootState,
+    type TokensRootState,
     selectAccountTokenBalance,
     selectAccountTokenSymbol,
 } from '@suite-native/tokens';

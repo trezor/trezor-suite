@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { selectThpStep } from '@suite-common/thp';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
-    StackToTabCompositeProps,
+    type RootStackParamList,
+    type StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 

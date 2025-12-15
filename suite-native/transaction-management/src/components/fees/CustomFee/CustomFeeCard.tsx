@@ -2,8 +2,8 @@ import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { getNetworkType } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';

@@ -1,4 +1,4 @@
-import { TradingExchangeType, TradingSellType } from '@suite-common/trading';
+import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 

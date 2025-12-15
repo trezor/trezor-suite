@@ -6,10 +6,10 @@ import {
     selectTradingExchangeProviders,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import {
     FeatureFlag,
-    FeatureFlagsRootState,
+    type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import {
@@ -18,7 +18,7 @@ import {
 } from '@suite-native/trading-atoms';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     createMemoizedSelector,
     createMemoizedSelectorWithAccounts,
 } from '../reducers';

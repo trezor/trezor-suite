@@ -4,7 +4,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-    PassphraseFormValues,
+    type PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';

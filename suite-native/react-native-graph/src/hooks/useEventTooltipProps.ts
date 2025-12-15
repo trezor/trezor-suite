@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventTooltipComponentProps, GraphEventWithCords } from '../LineGraphProps';
+import { type EventTooltipComponentProps, type GraphEventWithCords } from '../LineGraphProps';
 
 /**
  * Returns props for tooltip of active graph event.

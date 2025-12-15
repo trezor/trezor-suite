@@ -2,7 +2,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Form } from '@suite-native/forms';
-import { PreloadedState, act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { useAddressValidationAlerts } from '../useAddressValidationAlerts';

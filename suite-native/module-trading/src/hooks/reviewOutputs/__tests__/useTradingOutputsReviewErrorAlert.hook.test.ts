@@ -1,6 +1,6 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

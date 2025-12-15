@@ -1,15 +1,15 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { type PayloadAction } from '@reduxjs/toolkit';
 
 import {
-    BluetoothState,
+    type BluetoothState,
     prepareBluetoothReducerCreator,
     prepareInitialState,
 } from '@suite-common/bluetooth';
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { FirmwareDisconnect, UI_REQUEST } from '@trezor/connect';
+import { type FirmwareDisconnect, UI_REQUEST } from '@trezor/connect';
 import { bluetoothManager } from '@trezor/transport-native-bluetooth';
 
-import { BluetoothDevice, BluetoothPermissionStatus } from './types';
+import { type BluetoothDevice, type BluetoothPermissionStatus } from './types';
 
 export type NativeBluetoothState = BluetoothState<BluetoothDevice> & {
     permissionStatus: BluetoothPermissionStatus;

@@ -1,15 +1,15 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
-    FormState,
-    GeneralPrecomposedTransactionFinal,
-    SendFormDraftKey,
+    type FormState,
+    type GeneralPrecomposedTransactionFinal,
+    type SendFormDraftKey,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { cloneObject } from '@trezor/utils';
 
 import { sendFormActions } from './sendFormActions';
-import { SerializedTx } from './sendFormTypes';
+import { type SerializedTx } from './sendFormTypes';
 import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {

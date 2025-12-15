@@ -3,9 +3,9 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    PushTransactionError,
-    SignTransactionError,
-    SignTransactionTimeoutError,
+    type PushTransactionError,
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
     deviceActions,
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
@@ -17,21 +17,21 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
-    Account,
-    AccountKey,
-    GeneralPrecomposedTransactionFinal,
-    TokenAddress,
+    type Account,
+    type AccountKey,
+    type GeneralPrecomposedTransactionFinal,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
-    UpdateSelectedFeeLevelThunkParams,
+    type UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
-import { BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Success } from '@trezor/connect';
+import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { type Success } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './constants';
 

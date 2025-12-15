@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import {
     DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
 

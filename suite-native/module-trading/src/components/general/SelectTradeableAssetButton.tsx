@@ -1,7 +1,7 @@
-import { Button, ButtonColorScheme, buttonSchemeToColorsMap } from '@suite-native/atoms';
+import { Button, type ButtonColorScheme, buttonSchemeToColorsMap } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { TradeableAssetButton } from './TradeableAssetButton';
 

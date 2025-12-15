@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { prepareBluetoothReducerCreator } from '@suite-common/bluetooth';
-import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import { type BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 

@@ -2,9 +2,9 @@ import { Keyboard } from 'react-native';
 
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { TradeableAssetSheet, TradeableAssetsSheetProps } from '../TradeableAssetSheet';
+import { TradeableAssetSheet, type TradeableAssetsSheetProps } from '../TradeableAssetSheet';
 
 describe('TradeableAssetSheet', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];

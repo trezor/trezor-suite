@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Easing, SharedValue, useDerivedValue, withTiming } from 'react-native-reanimated';
+import { Easing, type SharedValue, useDerivedValue, withTiming } from 'react-native-reanimated';
 
 import { Group, Image, Skia, mix, rect, useImage } from '@shopify/react-native-skia';
 

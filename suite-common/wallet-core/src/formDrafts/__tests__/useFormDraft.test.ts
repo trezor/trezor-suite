@@ -1,4 +1,4 @@
-import { FormDraftRootState } from '../formDraftSlice';
+import { type FormDraftRootState } from '../formDraftSlice';
 import { useFormDraft } from '../useFormDraft';
 
 const mockDispatch = jest.fn();

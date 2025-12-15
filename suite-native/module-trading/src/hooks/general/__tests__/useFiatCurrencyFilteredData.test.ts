@@ -1,5 +1,5 @@
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
-import { FiatCurrencyItem } from '@suite-native/trading-types';
+import { type FiatCurrencyItem } from '@suite-native/trading-types';
 
 import { useFiatCurrencyFilteredData } from '../useFiatCurrencyFilteredData';
 

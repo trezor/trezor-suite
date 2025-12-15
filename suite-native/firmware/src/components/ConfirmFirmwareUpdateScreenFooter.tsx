@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';

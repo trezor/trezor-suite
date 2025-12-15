@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { type LayoutChangeEvent } from 'react-native';
 import Animated, {
     FadeIn,
     FadeOut,

@@ -1,20 +1,20 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EncryptedHex } from '@suite-common/platform-encryption';
+import { type EncryptedHex } from '@suite-common/platform-encryption';
 import {
-    AcquiredDevice,
-    ButtonRequest,
-    DelegatedIdentityKey,
-    SuiteSyncOwner,
-    ThpSuiteCredentials,
-    TrezorDevice,
+    type AcquiredDevice,
+    type ButtonRequest,
+    type DelegatedIdentityKey,
+    type SuiteSyncOwner,
+    type ThpSuiteCredentials,
+    type TrezorDevice,
 } from '@suite-common/suite-types';
 import {
     DEVICE,
-    DecodedTrezorPushNotification,
-    Device,
-    DeviceState,
-    StaticSessionId,
+    type DecodedTrezorPushNotification,
+    type Device,
+    type DeviceState,
+    type StaticSessionId,
 } from '@trezor/connect';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';

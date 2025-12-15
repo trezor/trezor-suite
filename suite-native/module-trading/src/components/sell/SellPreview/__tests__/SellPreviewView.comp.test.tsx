@@ -1,8 +1,8 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { BANK_ACCOUNT_ITEM_TEST_ID } from '../BankAccount/SellBankAccountItem';
-import { SellPreviewView, SellPreviewViewProps } from '../SellPreviewView';
+import { SellPreviewView, type SellPreviewViewProps } from '../SellPreviewView';
 
 describe('SellPreviewView', () => {
     const getSellTradeWithBankAccounts = () => ({

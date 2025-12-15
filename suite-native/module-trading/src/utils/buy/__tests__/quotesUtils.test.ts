@@ -7,7 +7,7 @@ import {
     coins,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { getPaymentMethodFromBuyForm, tradingBuyFormToTradingBuyFormProps } from '../quotesUtils';

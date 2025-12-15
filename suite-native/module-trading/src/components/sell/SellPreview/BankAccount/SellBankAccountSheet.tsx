@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 
-import { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import type { BankAccount } from 'invity-api';
 
 import { BottomSheetModal, Card, VStack } from '@suite-native/atoms';

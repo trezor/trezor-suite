@@ -8,7 +8,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { Account, FormOptions, FormState, FormStateTrading } from '@suite-common/wallet-types';
+import { type Account, type FormOptions, type FormState, type FormStateTrading } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     isApprovalFlowSupported,

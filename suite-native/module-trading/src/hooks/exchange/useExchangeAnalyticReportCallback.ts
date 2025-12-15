@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     cryptoIdToNetwork,
     selectTradingCoinInfoByCryptoId,
     selectTradingExchangeSelectedQuote,
@@ -12,8 +12,8 @@ import {
 } from '@suite-common/trading';
 import {
     EventType,
-    TradingExchangeAction,
-    TradingExchangeStep,
+    type TradingExchangeAction,
+    type TradingExchangeStep,
     analytics,
 } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';

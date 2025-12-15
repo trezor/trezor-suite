@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
 import {
-    TradingRootState,
+    type TradingRootState,
     selectIsTradingFavouriteAsset,
     tradingActions,
 } from '@suite-native/trading-state';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { AssetListItem } from '../AssetListItem';
 import { FavouriteIcon } from './FavouriteIcon';

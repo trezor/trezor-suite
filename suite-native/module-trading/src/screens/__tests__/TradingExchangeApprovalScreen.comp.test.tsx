@@ -1,12 +1,12 @@
-import { RouteProp } from '@react-navigation/native';
+import { type RouteProp } from '@react-navigation/native';
 
 import {
     selectTradingExchangePreselectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { type TradingStackParamList, type TradingStackRoutes } from '@suite-native/navigation';
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,

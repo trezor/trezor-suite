@@ -1,4 +1,4 @@
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { useRequestDelayedNavigationToOutputsReview } from '../useRequestDelayedNavigationToOutputsReview';

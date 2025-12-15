@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    DevUtilsStackParamList,
+    type DevUtilsStackParamList,
     DevUtilsStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

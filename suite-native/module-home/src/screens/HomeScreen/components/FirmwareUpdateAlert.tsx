@@ -21,9 +21,9 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

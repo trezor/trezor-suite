@@ -6,9 +6,9 @@ import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constant
 import { selectThpStep } from '@suite-common/thp';
 import { selectDeviceModel, selectDeviceUnavailableCapabilities } from '@suite-common/wallet-core';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite-native/settings';
 

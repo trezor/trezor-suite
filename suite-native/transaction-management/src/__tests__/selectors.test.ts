@@ -1,4 +1,4 @@
-import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 import {
     selectCustomFeeLevel,
@@ -6,8 +6,8 @@ import {
     selectFeeLevels,
     selectIsTransactionAlreadySigned,
 } from '../selectors';
-import { NativeSendRootState } from '../sendFormSlice';
-import { NativeSupportedFeeLevel } from '../types';
+import { type NativeSendRootState } from '../sendFormSlice';
+import { type NativeSupportedFeeLevel } from '../types';
 
 const createMockState = (
     overrides: Partial<NativeSendRootState['wallet']['send']> = {},

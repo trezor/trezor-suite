@@ -1,7 +1,7 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { ExchangePreviewView, ExchangePreviewViewProps } from '../ExchangePreviewView';
+import { ExchangePreviewView, type ExchangePreviewViewProps } from '../ExchangePreviewView';
 
 describe('ExchangePreviewView', () => {
     const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) => {

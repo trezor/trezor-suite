@@ -1,8 +1,8 @@
 import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
-import { BaseCurrencyAmount, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type BaseCurrencyAmount, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, Radio, Text } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';

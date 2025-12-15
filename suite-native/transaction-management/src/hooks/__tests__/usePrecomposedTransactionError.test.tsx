@@ -1,10 +1,10 @@
 import { Text } from 'react-native';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { renderHookWithBasicProvider, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
-    UsePrecomposedTransactionErrorProps,
+    type UsePrecomposedTransactionErrorProps,
     usePrecomposedTransactionError,
 } from '../usePrecomposedTransactionError';
 

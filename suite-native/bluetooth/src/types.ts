@@ -1,6 +1,6 @@
-import { BluetoothManufacturerData } from '@suite-common/bluetooth';
-import { BluetoothDeviceId } from '@trezor/connect';
-import { BluetoothDevice as TransportBluetoothDevice } from '@trezor/transport-native-bluetooth';
+import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
+import { type BluetoothDeviceId } from '@trezor/connect';
+import { type BluetoothDevice as TransportBluetoothDevice } from '@trezor/transport-native-bluetooth';
 
 export type BluetoothPermissionStatus =
     | 'unavailable'

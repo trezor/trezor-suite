@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { FirmwareType } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';

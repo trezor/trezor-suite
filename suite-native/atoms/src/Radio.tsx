@@ -1,7 +1,7 @@
-import { PressableProps, View } from 'react-native';
+import { type PressableProps, View } from 'react-native';
 
-import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { type Color } from '@trezor/theme';
 
 import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';

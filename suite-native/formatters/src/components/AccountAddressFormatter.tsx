@@ -1,12 +1,12 @@
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import { Text, TextProps } from '@suite-native/atoms';
+import { type AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
+import { Text, type TextProps } from '@suite-native/atoms';
 import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 
 type AccountAddressFormatterProps = FormatterProps<AccountKey> & TextProps;
 

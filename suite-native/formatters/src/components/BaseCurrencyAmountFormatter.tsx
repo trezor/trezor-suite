@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
-import { TextProps } from '@suite-native/atoms';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BaseCurrencyAmount, isTestnet } from '@suite-common/wallet-utils';
+import { type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { EmptyAmountText } from './EmptyAmountText';

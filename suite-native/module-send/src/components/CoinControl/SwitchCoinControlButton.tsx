@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
-    SendStackParamList,
+    type RootStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 import { useUtxoSelection } from '../../hooks/useUtxoSelection';

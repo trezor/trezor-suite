@@ -10,12 +10,12 @@ import {
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FiatRatesItem } from './graphDataFetching';
+import { type FiatRatesItem } from './graphDataFetching';
 import {
-    AccountHistoryBalancePoint,
-    AccountWithBalanceHistory,
-    FiatGraphPoint,
-    FiatGraphPointWithCryptoBalance,
+    type AccountHistoryBalancePoint,
+    type AccountWithBalanceHistory,
+    type FiatGraphPoint,
+    type FiatGraphPointWithCryptoBalance,
 } from './types';
 
 type GetDataStepInMinutesParams = {

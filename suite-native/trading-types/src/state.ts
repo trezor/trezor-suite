@@ -1,13 +1,13 @@
 import type { CryptoId } from 'invity-api';
 
 import {
-    TradingBuyState as CommonTradingBuyState,
-    TradingExchangeState as CommonTradingExchangeState,
-    TradingSellState as CommonTradingSellState,
-    TradingState as CommonTradingState,
-    InvityServerEnvironment,
-    TradingCountryCode,
-    TradingType,
+    type TradingBuyState as CommonTradingBuyState,
+    type TradingExchangeState as CommonTradingExchangeState,
+    type TradingSellState as CommonTradingSellState,
+    type TradingState as CommonTradingState,
+    type InvityServerEnvironment,
+    type TradingCountryCode,
+    type TradingType,
 } from '@suite-common/trading';
 
 export interface TradingBuyState extends CommonTradingBuyState {}

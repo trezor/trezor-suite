@@ -1,6 +1,6 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -13,7 +13,7 @@ import {
     thpActions,
 } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     getAddressType,
     getDerivationType,
@@ -23,12 +23,12 @@ import {
     shouldDeviceBeRemembered,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
-    Address,
-    CardanoAddress,
-    Response as ConnectResponse,
+    type Address,
+    type CardanoAddress,
+    type Response as ConnectResponse,
     DEVICE,
-    Device,
-    Unsuccessful,
+    type Device,
+    type Unsuccessful,
 } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { getEnvironment } from '@trezor/env-utils';

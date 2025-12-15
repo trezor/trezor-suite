@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { type SharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedBox, IconButton, VStack } from '@suite-native/atoms';

@@ -1,9 +1,9 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
-    SubscribeLabeling,
-    SubscriptionStorageDep,
-    SuiteSyncStorageRepositoryDep,
+    type SubscribeLabeling,
+    type SubscriptionStorageDep,
+    type SuiteSyncStorageRepositoryDep,
 } from '@suite-common/suite-sync-types';
 
 import { clearAllLabels, labelingActions } from './labelingActions';

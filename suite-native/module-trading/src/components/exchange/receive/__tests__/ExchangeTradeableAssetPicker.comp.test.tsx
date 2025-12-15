@@ -1,4 +1,4 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
+import { type EnhancedStore } from '@reduxjs/toolkit';
 
 import { Form } from '@suite-native/forms';
 import {
@@ -7,7 +7,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';

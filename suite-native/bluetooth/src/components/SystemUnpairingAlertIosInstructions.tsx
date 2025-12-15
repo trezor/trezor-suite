@@ -1,5 +1,5 @@
 import { BottomSheetListItem, Box, Text, VStack } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 type SystemUnpairingAlertIosInstructionsProps = {
     translationKey: TxKeyPath;

@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { deviceAccessMutex } from './DeviceAccessMutex';
 import { DEVICE_ACCESS_ERROR } from './constants';
-import { DeviceAccessResponse } from './types';
+import { type DeviceAccessResponse } from './types';
 
 /**
  * Puts the callback to the end of the queue and waits for its turn to execute.

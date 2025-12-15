@@ -1,12 +1,12 @@
 import { EventType, analytics } from '@suite-native/analytics';
-import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
+import { CardStepper, type CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    DeviceSuspicionCause,
-    StackProps,
+    type DeviceSuspicionCause,
+    type StackProps,
 } from '@suite-native/navigation';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 

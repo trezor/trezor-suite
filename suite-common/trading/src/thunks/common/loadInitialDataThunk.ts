@@ -14,7 +14,7 @@ import {
     selectTradingLoadingAndTimestamp,
     selectTradingSellInfo,
 } from '../../selectors/tradingSelectors';
-import { TradingType } from '../../types';
+import { type TradingType } from '../../types';
 import { loadBuyInfoThunk } from '../buy/loadBuyInfoThunk';
 import { loadExchangeInfoThunk } from '../exchange/loadExchangeInfoThunk';
 import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';

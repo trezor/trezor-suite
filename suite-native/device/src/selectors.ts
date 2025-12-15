@@ -7,17 +7,17 @@ import {
 } from '@suite-common/firmware-authenticity';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    AccountsRootState,
-    DeviceRootState,
-    DiscoveryRootState,
-    FiatRatesRootState,
+    type AccountsRootState,
+    type DeviceRootState,
+    type DiscoveryRootState,
+    type FiatRatesRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
-    WalletSettingsRootState,
+    type WalletSettingsRootState,
     getAccountsByDeviceState,
     selectAccounts,
     selectAccountsByDeviceState,
@@ -41,17 +41,17 @@ import {
     selectSelectedDevice,
     selectSelectedDeviceAuthenticity,
 } from '@suite-common/wallet-core';
-import { Account, RatesByKey } from '@suite-common/wallet-types';
+import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import {
-    BaseCurrencyAmount,
+    type BaseCurrencyAmount,
     asBaseCurrencyAmount,
     getAccountFiatBalance,
 } from '@suite-common/wallet-utils';
-import { DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { NativeFirmwareRootState } from '@suite-native/firmware';
+import { type DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type NativeFirmwareRootState } from '@suite-native/firmware';
 import {
-    SettingsSliceRootState,
+    type SettingsSliceRootState,
     selectIsDeviceAuthenticityCheckEnabled,
 } from '@suite-native/settings';
 import { doesCoinSupportStaking } from '@suite-native/staking';

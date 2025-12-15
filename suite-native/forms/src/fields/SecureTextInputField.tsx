@@ -1,10 +1,10 @@
 import { forwardRef, useState } from 'react';
 import { Pressable } from 'react-native';
 
-import { InputType } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { type InputType } from '@suite-native/atoms';
+import { Icon, type IconName } from '@suite-native/icons';
 
-import { FieldProps, TextInputField } from './TextInputField';
+import { type FieldProps, TextInputField } from './TextInputField';
 
 type ToggleSecureTextIconProps = {
     onPress: () => void;

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsList,
-    OnSelectAccount,
+    type OnSelectAccount,
     SearchableAccountsListHeader,
 } from '@suite-native/accounts';
 import { Box } from '@suite-native/atoms';
@@ -12,10 +12,10 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 export const AccountsScreen = () => {

@@ -5,7 +5,7 @@ import type { BuyTrade, BuyTradeResponse, FormResponse } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState,
+    type TradingRootState,
     buyThunks,
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
@@ -13,15 +13,15 @@ import {
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
-    StackToStackCompositeNavigationProps,
-    TradingStackParamList,
+    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
 
 import { clearBuyFormQuoteData } from './useBuyForm';

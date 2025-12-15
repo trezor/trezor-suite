@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import type { CryptoId } from 'invity-api';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     isCryptoIdForNativeToken,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
-import { NetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { type NetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';

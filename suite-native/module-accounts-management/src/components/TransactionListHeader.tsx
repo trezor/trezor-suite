@@ -4,27 +4,27 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectAccountByKey,
     selectIsPortfolioTrackerDevice,
     selectIsTestnetAccount,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
-import { FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
-import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { selectIsNetworkSendFlowEnabled } from '../selectors';

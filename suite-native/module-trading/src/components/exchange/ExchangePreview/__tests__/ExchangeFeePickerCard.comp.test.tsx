@@ -1,7 +1,7 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
-import { ExchangeFeePickerCard, ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
+import { ExchangeFeePickerCard, type ExchangeFeePickerCardProps } from '../ExchangeFeePickerCard';
 
 describe('ExchangeFeePickerCard', () => {
     const renderExchangeFeePickerCard = (

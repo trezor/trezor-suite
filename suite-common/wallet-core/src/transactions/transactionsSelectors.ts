@@ -1,10 +1,10 @@
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     getIsPhishingTransaction,
 } from '@suite-common/token-definitions';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
-import { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getConfirmations,
     isCardanoStakingTx,
@@ -15,11 +15,11 @@ import {
     isUnstakeTx,
 } from '@suite-common/wallet-utils';
 
-import { TransactionsRootState } from './transactionsReducer';
-import { AccountsRootState } from '../accounts/accountsReducer';
+import { type TransactionsRootState } from './transactionsReducer';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import {
-    BlockchainRootState,
+    type BlockchainRootState,
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
 import { isAccountStakingActive } from '../stake/stakeUtils';

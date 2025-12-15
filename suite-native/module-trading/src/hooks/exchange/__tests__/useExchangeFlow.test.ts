@@ -1,8 +1,8 @@
 import { tradingExchangeActions } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

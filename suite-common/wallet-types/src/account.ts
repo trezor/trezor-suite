@@ -1,13 +1,13 @@
-import { AccountEntityKeys } from '@suite-common/metadata-types';
-import { AccountType, BackendType, Bip43Path, NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountEntityKeys } from '@suite-common/metadata-types';
+import { type AccountType, type BackendType, type Bip43Path, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AddressAlias,
-    ContractInfo,
-    StakingPool,
+    type AddressAlias,
+    type ContractInfo,
+    type StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
-import { SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
-import { AccountInfo, PROTO, StaticSessionId, TokenInfo } from '@trezor/connect';
-import { Branded } from '@trezor/type-utils';
+import { type SolanaStakingAccount } from '@trezor/blockchain-link-types/src/solana';
+import { type AccountInfo, type PROTO, type StaticSessionId, type TokenInfo } from '@trezor/connect';
+import { type Branded } from '@trezor/type-utils';
 
 export type MetadataItem = string;
 export type XpubAddress = string;

@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
+import { EventType, type SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';

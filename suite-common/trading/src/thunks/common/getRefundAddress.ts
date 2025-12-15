@@ -1,9 +1,9 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
-import { TradingSendRejectedProps } from '../../types';
+import { type TradingSendRejectedProps } from '../../types';
 import { getUnusedAddressFromAccount } from '../../utils';
 
 type GetRefundAddressProps = {

@@ -1,4 +1,4 @@
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 
 export const tradingCountriesWhitelistSet = new Set<TradingCountryCode>([
     'AU', // Australia

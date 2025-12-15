@@ -1,4 +1,4 @@
-import { FiatGraphPoint } from '@suite-common/graph';
+import { type FiatGraphPoint } from '@suite-common/graph';
 
 import { getExtremaFromGraphPoints, omitErrorMessageSensitiveData } from '../utils';
 

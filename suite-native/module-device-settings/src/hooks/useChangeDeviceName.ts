@@ -7,9 +7,9 @@ import { EventTypeShared, analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
-    DeviceNameStackParamList,
+    type DeviceNameStackParamList,
     DeviceNameStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 

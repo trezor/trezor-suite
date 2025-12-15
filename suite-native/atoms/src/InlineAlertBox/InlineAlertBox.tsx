@@ -1,17 +1,17 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { BoxProps } from '../Box';
+import { type BoxProps } from '../Box';
 import { Text } from '../Text';
 import {
-    InlineAlertBoxStyles,
-    InlineAlertBoxVariant,
+    type InlineAlertBoxStyles,
+    type InlineAlertBoxVariant,
     variantToColorMap,
     variantToIconName,
 } from './presets';
-import { Button, ButtonProps } from '../Button/Button';
+import { Button, type ButtonProps } from '../Button/Button';
 import { HStack } from '../Stack';
 
 const alertWrapperStyle = prepareNativeStyle<

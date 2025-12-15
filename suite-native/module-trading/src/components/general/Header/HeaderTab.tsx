@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { Button } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
 type HeaderTabProps = {
     icon: IconName;

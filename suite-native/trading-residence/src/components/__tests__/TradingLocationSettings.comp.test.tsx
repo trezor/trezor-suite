@@ -1,7 +1,7 @@
 import { Text } from '@suite-native/atoms';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { TradingLocationSettings, TradingLocationSettingsProps } from '../TradingLocationSettings';
+import { TradingLocationSettings, type TradingLocationSettingsProps } from '../TradingLocationSettings';
 
 describe('TradingLocationSettings', () => {
     let store: TestStore;

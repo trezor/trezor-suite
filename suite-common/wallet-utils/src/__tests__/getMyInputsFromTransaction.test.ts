@@ -1,5 +1,5 @@
 import {
-    GetMyInputsFromTransactionParams,
+    type GetMyInputsFromTransactionParams,
     getMyInputsFromTransaction,
 } from '../getMyInputsFromTransaction';
 

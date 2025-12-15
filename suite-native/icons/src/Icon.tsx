@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Platform, Text as RNText, TextProps } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import { Platform, Text as RNText, type TextProps } from 'react-native';
+import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 // @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
@@ -8,7 +8,7 @@ import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
 import codepoints from '@suite-common/icons/iconFontsMobile/TrezorSuiteIcons.json';
 import { useNativeStyles } from '@trezor/styles';
-import { CSSColor, Color, Colors } from '@trezor/theme';
+import { type CSSColor, type Color, type Colors } from '@trezor/theme';
 
 export type IconColor = Color | CSSColor;
 export type AnimatedIconColor = Color | CSSColor | SharedValue<CSSColor>;

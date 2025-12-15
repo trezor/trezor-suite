@@ -1,7 +1,7 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { DEFAULT_LOCALE, LocaleCode } from './languages';
-import { SupportedLocaleCode, isOfficiallySupportedLanguage } from './types';
+import { DEFAULT_LOCALE, type LocaleCode } from './languages';
+import { type SupportedLocaleCode, isOfficiallySupportedLanguage } from './types';
 import { findClosestOfficiallySupportedLanguageLocale } from './utils';
 
 export type AppLocaleOption = SupportedLocaleCode | 'system';

@@ -1,6 +1,6 @@
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
-import { AccountListFooter, AccountsListFooterProps } from '../AccountListFooter';
+import { AccountListFooter, type AccountsListFooterProps } from '../AccountListFooter';
 
 describe('AccountListFooter', () => {
     const renderAccountsListFooter = (props: Partial<AccountsListFooterProps>) =>

@@ -1,18 +1,18 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TradingType } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { type TradingType } from '@suite-common/trading';
+import { type Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import { BottomSheetSectionList } from '@suite-native/trading-atoms';
 import {
-    CombinedSelectorsRootState,
+    type CombinedSelectorsRootState,
     selectAccountsWithTokensToSellSectionCondensedListByTradingType,
 } from '@suite-native/trading-state';
-import { MyAssetRow, TradeableAsset } from '@suite-native/trading-types';
+import { type MyAssetRow, type TradeableAsset } from '@suite-native/trading-types';
 
 import { MyAssetListEmptyComponent } from './MyAssetListEmptyComponent';
-import { MyAssetListItem, MyAssetListItemProps } from './MyAssetListItem';
+import { MyAssetListItem, type MyAssetListItemProps } from './MyAssetListItem';
 import { MyAssetListSectionHeader } from './MyAssetListSectionHeader';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { MyAssetsDisabledListItem } from './MyAssetsDisabledListItem';

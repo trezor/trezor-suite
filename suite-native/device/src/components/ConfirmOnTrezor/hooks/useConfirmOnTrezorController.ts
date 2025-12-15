@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { BottomSheetControlProps } from './useConfirmOnTrezorSheet';
+import { type BottomSheetControlProps } from './useConfirmOnTrezorSheet';
 
 export const useConfirmOnTrezorController = () => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);

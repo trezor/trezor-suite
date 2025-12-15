@@ -1,16 +1,16 @@
 import {
-    CTAAction,
-    Category,
-    Condition,
-    CountryCode,
-    FirmwareVariant,
-    Model,
-    PairingMethod,
-    Variant,
-    Vendor,
+    type CTAAction,
+    type Category,
+    type Condition,
+    type CountryCode,
+    type FirmwareVariant,
+    type Model,
+    type PairingMethod,
+    type Variant,
+    type Vendor,
 } from '@suite-common/suite-types';
 
-import { Context, ExperimentId, Feature } from './messageSystemTypes';
+import { type Context, ExperimentId, Feature } from './messageSystemTypes';
 import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
 import schema from '../schema/config.schema.v1.json';
 

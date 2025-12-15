@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { TradingCountryOption } from '@suite-common/trading';
+import { type TradingCountryOption } from '@suite-common/trading';
 import { residenceActions } from '@suite-native/trading-state';
 
 export type CountryFormWatch = (key: 'country') => TradingCountryOption | undefined;

@@ -1,14 +1,14 @@
 import { isRejected } from '@reduxjs/toolkit';
 import {
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTradeSigned,
-    SellFiatTradeSigned,
-    SellProviderInfo,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTradeSigned,
+    type SellFiatTradeSigned,
+    type SellProviderInfo,
 } from 'invity-api';
 
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 

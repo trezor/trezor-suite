@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { TradingCountryCode } from '@suite-common/trading';
+import { type TradingCountryCode } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
 
 export const TRADING_RESIDENCE = 'tradingResidence';

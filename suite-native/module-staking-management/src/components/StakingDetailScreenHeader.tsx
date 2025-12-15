@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
+import { type RootStackParamList, type RootStackRoutes, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const headerStyle = prepareNativeStyle(utils => ({

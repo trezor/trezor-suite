@@ -6,7 +6,7 @@ import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

@@ -1,4 +1,4 @@
-import { AccountType, NetworkType } from '@suite-common/wallet-config';
+import { type AccountType, type NetworkType } from '@suite-common/wallet-config';
 
 export const ACCOUNTS_MODULE_PREFIX = '@common/wallet-core/accounts';
 

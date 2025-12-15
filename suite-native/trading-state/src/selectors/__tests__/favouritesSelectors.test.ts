@@ -2,9 +2,9 @@ import type { CryptoId } from 'invity-api';
 
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { btcAsset } from '@suite-native/trading-fixtures';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
-import { TradingState, tradingActions, tradingSlice } from '../../reducers';
+import { type TradingState, tradingActions, tradingSlice } from '../../reducers';
 import {
     selectIsTradingFavouriteAsset,
     selectTradingFavouriteAssets,

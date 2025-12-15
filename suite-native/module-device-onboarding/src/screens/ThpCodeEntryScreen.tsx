@@ -3,9 +3,9 @@ import { useSelector } from 'react-redux';
 
 import { selectThpStep } from '@suite-common/thp';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { ThpCodeEntryScreenContent } from '@suite-native/thp';
 

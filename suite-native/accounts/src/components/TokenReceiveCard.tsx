@@ -1,16 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
+    type AccountsRootState,
     selectAccountLabel,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Badge, Box, ErrorMessage, Text, VStack } from '@suite-native/atoms';
 import { TokenAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TokenReceiveCardProps = {

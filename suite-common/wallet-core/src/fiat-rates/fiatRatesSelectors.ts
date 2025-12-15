@@ -1,21 +1,21 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
 import {
-    TokenDefinitionsRootState,
+    type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
-    Account,
-    AccountKey,
-    CryptoBaseCurrencyPair,
-    Rate,
-    RateTypeWithoutHistoric,
-    RatesByKey,
-    RatesByTimestamps,
-    TickerId,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
+    type Account,
+    type AccountKey,
+    type CryptoBaseCurrencyPair,
+    type Rate,
+    type RateTypeWithoutHistoric,
+    type RatesByKey,
+    type RatesByTimestamps,
+    type TickerId,
+    type Timestamp,
+    type TokenAddress,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKey,
@@ -27,10 +27,10 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
-import { FiatRatesRootState } from './fiatRatesTypes';
-import { AccountsRootState } from '../accounts/accountsReducer';
+import { type FiatRatesRootState } from './fiatRatesTypes';
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
-import { TransactionsRootState } from '../transactions/transactionsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducer';
 import { selectTransactions } from '../transactions/transactionsSelectors';
 
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>

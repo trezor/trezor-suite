@@ -1,15 +1,15 @@
 import { useFieldArray } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Card, Text, VStack } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { RecipientInputs } from './RecipientInputs';
-import { SendOutputsFormValues } from '../sendOutputsFormSchema';
+import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 
 type SendOutputFieldsProps = {

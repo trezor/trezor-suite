@@ -7,12 +7,12 @@ import { selectHasBitcoinOnlyFirmware, selectIsAnyNetworkEnabled } from '@suite-
 import {
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<

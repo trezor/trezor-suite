@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useActiveColorScheme } from '@suite-native/theme';
-import { ThemeColorVariant } from '@trezor/theme';
+import { type ThemeColorVariant } from '@trezor/theme';
 
 import { TrezorAnimation } from './TrezorAnimation';
 import { useMutedVideoPlayer } from '../hooks/useMutedVideoPlayer';

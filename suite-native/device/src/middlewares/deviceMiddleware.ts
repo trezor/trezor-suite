@@ -1,4 +1,4 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { type AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';

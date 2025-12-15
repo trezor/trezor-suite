@@ -1,7 +1,7 @@
 import { EventType, analytics } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
     renderHookWithStoreProviderAsync,
@@ -14,7 +14,7 @@ import {
     buyQuotes,
     getInitializedTradingStateWithQuotes,
 } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyProviderPicker } from '../BuyProviderPicker';

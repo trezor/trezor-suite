@@ -1,7 +1,7 @@
 import { createReducer, isAnyOf } from '@reduxjs/toolkit';
 
 import { notificationsActions } from './notificationsActions';
-import { NotificationsState } from './types';
+import { type NotificationsState } from './types';
 
 const initialState: NotificationsState = [];
 

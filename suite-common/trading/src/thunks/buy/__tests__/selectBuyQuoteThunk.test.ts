@@ -1,23 +1,23 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import {
-    BuyCryptoPaymentMethod,
-    BuyTradeQuoteRequest,
-    BuyTradeResponse,
-    CryptoId,
-    FiatCurrenciesProps,
-    FiatCurrencyCode,
+    type BuyCryptoPaymentMethod,
+    type BuyTradeQuoteRequest,
+    type BuyTradeResponse,
+    type CryptoId,
+    type FiatCurrenciesProps,
+    type FiatCurrencyCode,
 } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
-import { BuyInfo, TradingBuyState } from '../../../reducers/buyReducer';
+import { type BuyInfo, type TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { TradingCountryCode } from '../../../types';
+import { type TradingCountryCode } from '../../../types';
 import { buyThunks } from '../index';
-import { SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
+import { type SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 

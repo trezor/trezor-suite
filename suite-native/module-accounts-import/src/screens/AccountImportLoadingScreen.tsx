@@ -2,16 +2,16 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { SpinnerLoadingState } from '@suite-native/atoms';
+import { type SpinnerLoadingState } from '@suite-native/atoms';
 import {
-    AccountsImportStackParamList,
+    type AccountsImportStackParamList,
     AccountsImportStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { AccountInfo } from '@trezor/connect';
+import { type AccountInfo } from '@trezor/connect';
 
 import { getAccountInfoThunk } from '../accountsImportThunks';
 import { AccountImportLoader } from '../components/AccountImportLoader';

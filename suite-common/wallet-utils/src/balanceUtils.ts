@@ -1,4 +1,4 @@
-import { Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/suite-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { localizeNumber } from './localizeNumberUtils';

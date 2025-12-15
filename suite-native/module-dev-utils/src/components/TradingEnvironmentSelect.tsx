@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { InvityServerEnvironment, invityAPI } from '@suite-common/trading';
-import { Select, SelectItemType } from '@suite-native/atoms';
+import { type InvityServerEnvironment, invityAPI } from '@suite-common/trading';
+import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectTradingEnvironment, tradingActions } from '@suite-native/trading-state';
 
 const tradingEnvironmentItems: SelectItemType<InvityServerEnvironment>[] = Object.keys(

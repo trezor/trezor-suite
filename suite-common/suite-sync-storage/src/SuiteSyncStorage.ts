@@ -1,9 +1,9 @@
-import { SuiteSyncOwner } from '@suite-common/suite-types/';
+import { type SuiteSyncOwner } from '@suite-common/suite-types/';
 
-import { AccountLabelsStore } from './labeling/AccountLabelsStore';
-import { AddressLabelsStore } from './labeling/AddressLabelsStore';
-import { OutputLabelsStore } from './labeling/OutputLabelsStore';
-import { WalletLabelsStore } from './labeling/WalletLabelsStore';
+import { type AccountLabelsStore } from './labeling/AccountLabelsStore';
+import { type AddressLabelsStore } from './labeling/AddressLabelsStore';
+import { type OutputLabelsStore } from './labeling/OutputLabelsStore';
+import { type WalletLabelsStore } from './labeling/WalletLabelsStore';
 
 /**
  * This is a **Stateful** service, that represents a Store for one Owner (for example Wallet).

@@ -2,10 +2,10 @@ import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import {
-    TradingProviderInfo,
-    TradingRootState,
-    TradingTradeType,
-    TradingType,
+    type TradingProviderInfo,
+    type TradingRootState,
+    type TradingTradeType,
+    type TradingType,
     isBuyTrade,
     isSellFiatTrade,
     selectTradingProviderByNameAndTradeType,

@@ -1,5 +1,5 @@
 import {
-    PreloadedState,
+    type PreloadedState,
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';

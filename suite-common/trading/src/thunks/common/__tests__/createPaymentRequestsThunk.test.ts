@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId, ExchangeTradeSigned } from 'invity-api';
+import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import { PROTO } from '@trezor/connect';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
+import { type PROTO } from '@trezor/connect';
 
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';

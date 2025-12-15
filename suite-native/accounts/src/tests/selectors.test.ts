@@ -1,4 +1,4 @@
-import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 
 import { getAccountListSections, selectFreshAccountAddress } from '../selectors';
 import {

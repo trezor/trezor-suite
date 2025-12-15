@@ -4,16 +4,16 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import {
     type AccountType,
     type Bip43Path,
-    Network,
+    type Network,
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
-import { Account, AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
-import { DeviceState, StaticSessionId } from '@trezor/connect';
+import { type DeviceState, type StaticSessionId } from '@trezor/connect';
 
 import { formattedAccountTypeMap } from './accountsConstants';
-import { AccountsRootState } from './accountsReducer';
-import { DeviceRootState } from '../device/deviceReducer';
+import { type AccountsRootState } from './accountsReducer';
+import { type DeviceRootState } from '../device/deviceReducer';
 import { selectSelectedDevice } from '../device/deviceSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<

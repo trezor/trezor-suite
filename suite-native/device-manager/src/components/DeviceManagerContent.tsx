@@ -4,7 +4,7 @@ import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceThunk,

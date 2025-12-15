@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { SiteScanResponse, TransactionScanResponse } from '@blockaid/client/resources';
 import type { JsonRpcScanParams } from '@blockaid/client/resources/evm';
 
-import { ConnectPopupCall } from '@suite-common/connect-popup';
+import { type ConnectPopupCall } from '@suite-common/connect-popup';
 import { getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import type { EthereumSignTransaction, EthereumSignTypedData } from '@trezor/connect';
 

@@ -1,4 +1,4 @@
-import { ReactNode, memo } from 'react';
+import { type ReactNode, memo } from 'react';
 import Animated from 'react-native-reanimated';
 
 import type { ExchangeTrade } from 'invity-api';

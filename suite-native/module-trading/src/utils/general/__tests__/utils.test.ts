@@ -1,7 +1,7 @@
 import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 
 import type { TradingTransaction, TradingType } from '@suite-common/trading';
-import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
+import { type FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';

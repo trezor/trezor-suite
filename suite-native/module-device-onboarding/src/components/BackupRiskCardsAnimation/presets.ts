@@ -1,6 +1,6 @@
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type TxKeyPath } from '@suite-native/intl';
+import { type Color } from '@trezor/theme';
 
 export type TileVariant = 'lost' | 'damaged' | 'stolen';
 

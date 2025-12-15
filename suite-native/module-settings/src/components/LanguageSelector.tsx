@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Select, SelectItemType } from '@suite-native/atoms';
+import { Select, type SelectItemType } from '@suite-native/atoms';
 import {
-    AppLocaleOption,
+    type AppLocaleOption,
     LANGUAGES,
     Translation,
     selectAppLocaleCode,

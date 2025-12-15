@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { TradingType } from '@suite-common/trading';
+import { type TradingType } from '@suite-common/trading';
 import {
     CountryOfResidencePicker,
     type CountryOfResidencePickerProps,

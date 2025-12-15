@@ -5,19 +5,19 @@ import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered, sendFormActions } from '@suite-common/wallet-core';
-import { GeneralPrecomposedTransactionFinal, TokenAddress } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedTransactionFinal, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    SendStackParamList,
+    type SendStackParamList,
     SendStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { signTransactionNativeThunk } from '@suite-native/send';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
     useShowReviewCancellationAlert,
 } from '@suite-native/transaction-management';

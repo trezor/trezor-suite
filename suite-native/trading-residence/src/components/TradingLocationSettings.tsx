@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { CountryChangeContextCheck } from '@suite-native/analytics';
+import { type CountryChangeContextCheck } from '@suite-native/analytics';
 import { Box, Card, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 

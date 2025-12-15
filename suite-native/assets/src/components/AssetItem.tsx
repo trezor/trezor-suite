@@ -13,21 +13,21 @@ import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-nativ
 import { CryptoIconWithPercentage, Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
+    type AppTabsParamList,
+    type AppTabsRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    TabToStackCompositeNavigationProp,
+    type TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
 import {
-    NativeStakingRootState,
+    type NativeStakingRootState,
     selectHasAnyDeviceAccountsWithStaking,
 } from '@suite-native/staking';
-import { TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
+import { type TokensRootState, selectHasDeviceAnyTokensForNetwork } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import {
-    AssetsRootState,
+    type AssetsRootState,
     selectAssetCryptoValue,
     selectAssetFiatValue,
     selectAssetFiatValuePercentage,

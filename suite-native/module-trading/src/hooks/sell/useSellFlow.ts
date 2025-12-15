@@ -11,9 +11,9 @@ import {
     sellUtils,
 } from '@suite-common/trading';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 

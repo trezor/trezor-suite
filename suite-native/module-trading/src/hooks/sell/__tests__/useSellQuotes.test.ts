@@ -1,7 +1,7 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingSellActions } from '@suite-common/trading';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -13,7 +13,7 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { SellFormValues } from '@suite-native/trading-types';
+import { type SellFormValues } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';
 import { useSellQuotes } from '../useSellQuotes';

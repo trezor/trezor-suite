@@ -1,8 +1,8 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
-import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
+import { type InvityServerEnvironment, type TradingType, prepareTradingReducer } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { tradingInitialState } from '@suite-native/trading-consts';
 

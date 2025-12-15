@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    TradingRootState as TradingRootStateCommon,
+    type TradingRootState as TradingRootStateCommon,
     selectTradingProviderByNameAndTradeType,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';

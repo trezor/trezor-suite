@@ -1,6 +1,6 @@
-import { IconName } from '@suite-native/icons';
-import { TxKeyPath } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { type IconName } from '@suite-native/icons';
+import { type TxKeyPath } from '@suite-native/intl';
+import { type Color } from '@trezor/theme';
 
 export const WALLET_BACKUP_RECAP_STEPS = 4;
 

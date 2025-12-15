@@ -1,6 +1,6 @@
 import { getWeakRandomId } from '@trezor/utils';
 
-import { ExperimentId } from '../messageSystemTypes';
+import { type ExperimentId } from '../messageSystemTypes';
 
 // getWeakRandomId is also used for generating instanceId
 export const getArrayOfInstanceIds = (count: number) =>

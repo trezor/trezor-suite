@@ -1,7 +1,7 @@
 import Localization, { type Locale } from 'expo-localization';
 
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

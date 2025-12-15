@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState, type DeviceRootState } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { useTranslate } from '@suite-native/intl';
-import { SectionListData } from '@suite-native/trading-atoms';
+import { type SectionListData } from '@suite-native/trading-atoms';
 import { selectVisibleDeviceAccountsByNetworkSymbolSorted } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import { type ReceiveAccount } from '@suite-native/trading-types';
 
 export type ReceiveAccountsListMode = 'account' | 'address';
 

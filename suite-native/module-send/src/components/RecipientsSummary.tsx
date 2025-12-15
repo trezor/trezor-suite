@@ -1,18 +1,18 @@
 import { useSelector } from 'react-redux';
 
 import {
-    AccountsRootState,
-    SendRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type SendRootState,
+    type WalletSettingsRootState,
     selectAccountNetworkSymbol,
     selectIsAmountInSats,
     selectSendFormDraftOutputsByAccountKey,
 } from '@suite-common/wallet-core';
 import {
-    AccountKey,
-    GeneralPrecomposedTransaction,
-    Output,
-    TokenAddress,
+    type AccountKey,
+    type GeneralPrecomposedTransaction,
+    type Output,
+    type TokenAddress,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { Card, HStack, Text, VStack } from '@suite-native/atoms';

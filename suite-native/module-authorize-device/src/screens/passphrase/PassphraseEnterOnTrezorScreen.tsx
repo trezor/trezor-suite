@@ -14,10 +14,10 @@ import {
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
-    StackToStackCompositeNavigationProps,
+    type RootStackParamList,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

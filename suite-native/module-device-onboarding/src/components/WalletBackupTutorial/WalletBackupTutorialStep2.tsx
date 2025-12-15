@@ -3,7 +3,7 @@ import { Translation } from '@suite-native/intl';
 
 import { BackupRiskCardsAnimation } from '../BackupRiskCardsAnimation';
 import { WalletBackupTutorialStep } from './WalletBackupTutorialStep';
-import { WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
+import { type WalletBackupTutorialNumberedStepProps } from './WalletBackupTutorialStep1';
 
 export const WalletBackupTutorialStep2 = ({
     currentStepIndex,

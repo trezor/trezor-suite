@@ -1,7 +1,7 @@
 import { UI } from '@trezor/connect';
 
 import {
-    DeviceAuthorizationState,
+    type DeviceAuthorizationState,
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
 } from '../deviceAuthorizationSlice';

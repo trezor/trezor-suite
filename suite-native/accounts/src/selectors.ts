@@ -2,18 +2,18 @@ import { A, pipe } from '@mobily/ts-belt';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
-    SimpleTokenStructure,
-    TokenDefinitionsRootState,
+    type SimpleTokenStructure,
+    type TokenDefinitionsRootState,
     filterKnownTokens,
     getSimpleCoinDefinitionsByNetwork,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    DeviceRootState,
-    FiatRatesRootState,
-    TransactionsRootState,
-    WalletSettingsRootState,
+    type AccountsRootState,
+    type DeviceRootState,
+    type FiatRatesRootState,
+    type TransactionsRootState,
+    type WalletSettingsRootState,
     selectAccountByKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -22,7 +22,7 @@ import {
     selectPendingAccountAddresses,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, TokenInfoBranded } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenInfoBranded } from '@suite-common/wallet-types';
 import {
     BASE_CURRENCY_ZERO,
     getAccountFiatBalance,
@@ -34,7 +34,7 @@ import {
 import { doesCoinSupportStaking } from '@suite-native/staking';
 import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 
-import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
+import { type AccountSelectBottomSheetSection, type GroupedByTypeAccounts } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterSendAvailableAccounts,

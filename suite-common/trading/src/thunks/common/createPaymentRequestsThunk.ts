@@ -1,14 +1,14 @@
 import {
-    CreateTradeSignatureRequestExchange,
-    CreateTradeSignatureRequestSell,
-    ExchangeTradeSigned,
-    PaymentRequestOutput,
-    SellFiatTradeSigned,
+    type CreateTradeSignatureRequestExchange,
+    type CreateTradeSignatureRequestSell,
+    type ExchangeTradeSigned,
+    type PaymentRequestOutput,
+    type SellFiatTradeSigned,
 } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
+import TrezorConnect, { type PROTO } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getNonce } from './getNonce';
@@ -24,7 +24,7 @@ import {
     selectTradingSellSelectedQuote,
     selectTradingVerifiedAddress,
 } from '../../selectors/tradingSelectors';
-import { TradingSendRejectedProps, TradingTradeSellExchangeType } from '../../types';
+import { type TradingSendRejectedProps, type TradingTradeSellExchangeType } from '../../types';
 import {
     tradingExchangeCreatePaymentRequest,
     tradingGetCoinSlip44,

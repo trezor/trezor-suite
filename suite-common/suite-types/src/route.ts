@@ -1,5 +1,5 @@
-import { routes } from '@suite-common/suite-config';
-import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
+import { type routes } from '@suite-common/suite-config';
+import { type ArrayElement, type ConstWithOptionalFields } from '@trezor/type-utils';
 
 type RouteKeys =
     | keyof ArrayElement<typeof routes>

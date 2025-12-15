@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import {
-    AccountsRootState,
-    DeviceRootState,
+    type AccountsRootState,
+    type DeviceRootState,
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
-import { ReceiveStackParamList, ReceiveStackRoutes, Screen } from '@suite-native/navigation';
+import { type ReceiveStackParamList, type ReceiveStackRoutes, Screen } from '@suite-native/navigation';
 import { getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

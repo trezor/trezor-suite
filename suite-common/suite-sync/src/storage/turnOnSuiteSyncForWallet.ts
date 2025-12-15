@@ -1,9 +1,9 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import {
-    RefreshSuiteSyncKeys,
-    SubscribeLabeling,
-    TurnOnSuiteSyncForWallet,
+    type RefreshSuiteSyncKeys,
+    type SubscribeLabeling,
+    type TurnOnSuiteSyncForWallet,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDeviceByStaticSessionId, selectDevices } from '@suite-common/wallet-core';

@@ -1,8 +1,8 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Network, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import { BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/blockchainEstimateFee';
+import TrezorConnect, { type FeeLevel } from '@trezor/connect';
+import { type BlockchainEstimatedFeeLevel } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 import { isNative } from '@trezor/env-utils';
 import { BigNumber } from '@trezor/utils';
 

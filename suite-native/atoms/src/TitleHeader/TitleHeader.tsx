@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
-import { NativeSpacing, NativeTypographyStyle } from '@trezor/theme';
+import { type NativeSpacing, type NativeTypographyStyle } from '@trezor/theme';
 
 import { VStack } from '../Stack';
-import { Text, TextProps } from '../Text';
+import { Text, type TextProps } from '../Text';
 
 export type TitleHeaderProps = {
     title?: ReactNode;

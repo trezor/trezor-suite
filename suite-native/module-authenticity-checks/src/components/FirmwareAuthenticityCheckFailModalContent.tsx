@@ -15,10 +15,10 @@ import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls';

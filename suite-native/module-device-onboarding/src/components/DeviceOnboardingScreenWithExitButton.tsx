@@ -1,12 +1,12 @@
-import React, { ComponentProps, ReactElement, ReactNode } from 'react';
+import React, { type ComponentProps, type ReactElement, type ReactNode } from 'react';
 
 import { Box } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { type Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
     ScreenHeader,
-    ScreenProps,
+    type ScreenProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

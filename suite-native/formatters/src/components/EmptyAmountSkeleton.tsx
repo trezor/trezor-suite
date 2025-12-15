@@ -1,7 +1,7 @@
 import { BoxSkeleton, HStack } from '@suite-native/atoms';
 import { getWindowWidth } from '@trezor/env-utils';
 import { useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 
 import { EmptyAmountText } from './EmptyAmountText';
 

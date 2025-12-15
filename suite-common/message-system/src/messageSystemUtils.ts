@@ -2,22 +2,21 @@ import * as semver from 'semver';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { CountryCode } from '@suite-common/geolocation';
-import { Localization } from '@suite-common/suite-types';
-import type {
-    Action,
-    Category,
-    Condition,
-    Device,
-    Duration,
-    Environment,
-    Experiments,
-    Message,
-    MessageSystem,
-    Settings,
-    Transport,
-    TrezorDevice,
-    TrezorHostProtocolTHPProperties,
-    Version,
+import { type Action ,
+    type Category,
+    type Condition,
+    type Device,
+    type Duration,
+    type Environment,
+    type Experiments,
+    type Localization,
+    type Message,
+    type MessageSystem,
+    type Settings,
+    type Transport,
+    type TrezorDevice,
+    type TrezorHostProtocolTHPProperties,
+    type Version,
 } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TransportInfo } from '@trezor/connect';
@@ -27,7 +26,7 @@ import {
     getFirmwareVersion,
 } from '@trezor/device-utils';
 import {
-    Environment as EnvironmentType,
+    type Environment as EnvironmentType,
     getBrowserName,
     getBrowserVersion,
     getCommitHash,
@@ -38,7 +37,7 @@ import {
 import { exhaustive } from '@trezor/type-utils';
 
 import { getCachedOsVersion } from './cachedEnvData';
-import { ValidMessagesPayload } from './messageSystemActions';
+import { type ValidMessagesPayload } from './messageSystemActions';
 
 export const categorizeMessages = (messages: Message[]): ValidMessagesPayload => {
     const validMessages: ValidMessagesPayload = {

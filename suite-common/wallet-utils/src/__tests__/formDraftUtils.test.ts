@@ -1,5 +1,5 @@
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
-import { FormDraftWithSendKeyPrefix } from '@suite-common/wallet-types';
+import { type FormDraftWithSendKeyPrefix } from '@suite-common/wallet-types';
 
 import { getFormDraftKey, isFormDraftKeyPrefix } from '../formDraftUtils';
 

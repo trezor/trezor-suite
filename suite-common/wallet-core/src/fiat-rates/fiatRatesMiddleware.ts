@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { isNative } from '@trezor/env-utils';
 
 import {

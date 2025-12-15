@@ -1,14 +1,14 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
 import { Box } from '@suite-native/atoms';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TabBarItem } from './TabBarItem';
 import { AppTabsRoutes } from '../routes';
-import { TabsOptions } from '../types';
+import { type TabsOptions } from '../types';
 
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;

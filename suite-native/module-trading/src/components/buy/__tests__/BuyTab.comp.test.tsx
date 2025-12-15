@@ -1,5 +1,5 @@
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     renderWithStoreProviderAsync,
     screen,

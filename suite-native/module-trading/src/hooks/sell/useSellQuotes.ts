@@ -1,20 +1,20 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { type RefObject, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import {
-    HandleSellRequestThunkProps,
+    type HandleSellRequestThunkProps,
     cryptoIdToNetwork,
     selectTradingSellIsLoading,
     selectValidTradingSellQuotes,
     sellThunks,
 } from '@suite-common/trading';
-import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
+import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { useFormState } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { sellActions } from '@suite-native/trading-state';
-import { AbortablePromise, SellFormType } from '@suite-native/trading-types';
-import { Timer, useDebounce } from '@trezor/react-utils';
+import { type AbortablePromise, type SellFormType } from '@suite-native/trading-types';
+import { type Timer, useDebounce } from '@trezor/react-utils';
 
 import { tradingSellFormToTradingSellFormProps } from '../../utils/sell/quotesUtils';
 import { useQuotesInvalidator } from '../general/useQuotesInvalidator';

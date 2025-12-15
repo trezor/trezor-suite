@@ -8,7 +8,7 @@ import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
-    BluetoothDevice as TransportBluetoothDevice,
+    type BluetoothDevice as TransportBluetoothDevice,
     bluetoothManager,
 } from '@trezor/transport-native-bluetooth';
 

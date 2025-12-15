@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { AccountsRootState, selectBaseCurrency } from '@suite-common/wallet-core';
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
+import { type AccountsRootState, selectBaseCurrency } from '@suite-common/wallet-core';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
-    NativeAccountsRootState,
+    type NativeAccountsRootState,
     selectAccountFiatBalance,
     selectAccountTokenFiatBalance,
 } from '@suite-native/accounts';

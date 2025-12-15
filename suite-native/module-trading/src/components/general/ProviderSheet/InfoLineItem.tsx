@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
-import { Color } from '@trezor/theme';
+import { Icon, type IconName } from '@suite-native/icons';
+import { type Color } from '@trezor/theme';
 
 type InfoLineItemProps = {
     iconName: IconName;

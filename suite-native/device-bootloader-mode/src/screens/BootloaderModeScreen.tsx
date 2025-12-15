@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
+import { type CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
@@ -9,12 +9,12 @@ import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
-    WipeDeviceStackParamList,
+    type WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,

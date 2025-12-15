@@ -1,6 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 
-import { TxKeyPath } from './types';
+import { type TxKeyPath } from './types';
 
 type TranslationProps = Omit<React.ComponentProps<typeof FormattedMessage>, 'defaultMessage'> & {
     id: TxKeyPath;

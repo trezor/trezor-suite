@@ -1,8 +1,8 @@
-import { FormState, TokenAddress } from '@suite-common/wallet-types';
-import { Utxo } from '@trezor/blockchain-link-types';
-import { FeeLevel } from '@trezor/connect';
+import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { type Utxo } from '@trezor/blockchain-link-types';
+import { type FeeLevel } from '@trezor/connect';
 
-import { SendOutputFieldName, SendOutputsFormValues } from './sendOutputsFormSchema';
+import { type SendOutputFieldName, type SendOutputsFormValues } from './sendOutputsFormSchema';
 
 export const getOutputFieldName = <TField extends SendOutputFieldName>(
     index: number,

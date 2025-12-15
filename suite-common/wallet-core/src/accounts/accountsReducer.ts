@@ -2,7 +2,7 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networks } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { accountEqualTo, enhanceHistory } from '@suite-common/wallet-utils';
 
 import { accountsActions } from './accountsActions';

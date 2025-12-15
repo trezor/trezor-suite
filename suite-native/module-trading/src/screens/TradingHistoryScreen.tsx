@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import {
-    TradingRootStateWithDeviceAndAccounts,
-    TradingTransaction,
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingTransaction,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
 import { Translation } from '@suite-native/intl';

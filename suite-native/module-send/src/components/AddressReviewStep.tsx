@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
-import { LayoutChangeEvent, View } from 'react-native';
+import { type ReactNode } from 'react';
+import { type LayoutChangeEvent, View } from 'react-native';
 
 import {
     Box,
     Card,
     HStack,
     OrderedListIcon,
-    OrderedListIconProps,
+    type OrderedListIconProps,
     Text,
 } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type AddressReviewStepProps = {

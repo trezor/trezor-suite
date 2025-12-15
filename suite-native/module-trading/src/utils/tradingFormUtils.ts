@@ -11,8 +11,8 @@ import {
     isExchangeTrade,
     isSellFiatTrade,
 } from '@suite-common/trading';
-import { FormState, FormStateTrading } from '@suite-common/wallet-types';
-import { FeeLevel } from '@trezor/connect';
+import { type FormState, type FormStateTrading } from '@suite-common/wallet-types';
+import { type FeeLevel } from '@trezor/connect';
 
 interface CreateFormStateForSendFormParams {
     quote: ExchangeTrade | SellFiatTrade;

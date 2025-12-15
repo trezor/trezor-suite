@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { ButtonRequest, FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { type ButtonRequest, type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES, selectIsThpInProgress, selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DEVICE, type Device, DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
+import { DEVICE, type Device, type DeviceButtonRequestPayload, FirmwareType, UI } from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareVersion,
@@ -15,7 +15,7 @@ import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';
 import { selectFirmware, selectSwitchFirmwareType } from '../firmwareReducer';
-import { FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
+import { type FirmwareUpdateProps, firmwareUpdate as firmwareUpdateThunk } from '../firmwareThunks';
 
 /*
 There are three firmware update flows, depending on current firmware version:

@@ -1,6 +1,6 @@
 import {
-    AppOwner,
-    Owner,
+    type AppOwner,
+    type Owner,
     OwnerEncryptionKey,
     OwnerIdBytes,
     OwnerSecret,

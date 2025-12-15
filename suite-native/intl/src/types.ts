@@ -1,5 +1,5 @@
 import { LANGUAGES } from './languages';
-import { messages } from './messages';
+import { type messages } from './messages';
 
 export type Translations = typeof messages;
 

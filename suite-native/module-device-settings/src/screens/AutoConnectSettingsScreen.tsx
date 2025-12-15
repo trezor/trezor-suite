@@ -10,11 +10,11 @@ import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms'
 import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     DynamicScreenHeader,
     Screen,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useThpAutoconnectActions } from '@suite-native/thp';
 import { useToast } from '@suite-native/toasts';

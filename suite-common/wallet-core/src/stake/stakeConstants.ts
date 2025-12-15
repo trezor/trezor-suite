@@ -1,7 +1,7 @@
 import {
-    SupportedCardanoNetworkSymbols,
-    SupportedEthereumNetworkSymbol,
-    SupportedSolanaNetworkSymbols,
+    type SupportedCardanoNetworkSymbols,
+    type SupportedEthereumNetworkSymbol,
+    type SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 
 export const EVERSTAKE_ENDPOINT_PREFIX: Record<

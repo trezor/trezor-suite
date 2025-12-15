@@ -4,17 +4,17 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/core';
 
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
     selectDeviceDefaultBackupType,
     selectIsDeviceInitialized,
 } from '@suite-common/wallet-core';
 import {
-    DeviceOnboardingStackParamList,
-    DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackRoutes,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,

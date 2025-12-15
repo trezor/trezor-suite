@@ -1,9 +1,9 @@
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { QuotesCategory } from '@suite-native/trading-types';
+import { type QuotesCategory } from '@suite-native/trading-types';
 
 import {
     ProviderSheetSectionHeader,
-    ProviderSheetSectionHeaderProps,
+    type ProviderSheetSectionHeaderProps,
 } from '../ProviderSheetSectionHeader';
 
 describe('ProviderSheetSectionHeader', () => {

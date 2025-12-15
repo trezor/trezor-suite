@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     cryptoIdToNetworkAndContractAddress,
     selectTradingCoinSymbolByCryptoId,
     selectTradingProviderByNameAndTradeType,
@@ -16,11 +16,11 @@ import { CryptoIcon, Icon, NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
-    StackToStackCompositeScreenProps,
-    TradingStackParamList,
+    type StackToStackCompositeNavigationProps,
+    type StackToStackCompositeScreenProps,
+    type TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { ProviderLogo, TradeInfoHeader, TradeInfoRow } from '@suite-native/trading-atoms';

@@ -1,21 +1,21 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
+import { type AcquiredDevice, type AuthorizedDevice, type TrezorDevice } from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import { type Bip43Path, type TrezorConnectBackendType } from '@suite-common/wallet-config';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import TrezorConnect, {
-    AccountInfo,
-    BundleProgress,
-    DeviceState,
-    DeviceUniquePath,
-    StaticSessionId,
+    type AccountInfo,
+    type BundleProgress,
+    type DeviceState,
+    type DeviceUniquePath,
+    type StaticSessionId,
     UI,
 } from '@trezor/connect';
-import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
+import { type DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
+import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,

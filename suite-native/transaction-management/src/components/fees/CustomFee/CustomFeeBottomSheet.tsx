@@ -1,11 +1,11 @@
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     HStack,
     InlineAlertBox,
     Text,
@@ -16,7 +16,7 @@ import { FormSubmitButton, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeInputs } from './CustomFeeInputs';
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 
 type CustomFeeBottomSheetProps = {
     onClose: () => void;

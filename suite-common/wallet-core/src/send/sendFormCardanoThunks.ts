@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
-    PrecomposedLevelsCardano,
-    PrecomposedTransactionCardano,
+    type PrecomposedLevelsCardano,
+    type PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import {
     formatMaxOutputAmount,
@@ -14,14 +14,14 @@ import {
     isTestnet,
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO, PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
-    ComposeFeeLevelsError,
-    ComposeTransactionThunkArguments,
-    SignTransactionError,
-    SignTransactionThunkArguments,
+    type ComposeFeeLevelsError,
+    type ComposeTransactionThunkArguments,
+    type SignTransactionError,
+    type SignTransactionThunkArguments,
 } from './sendFormTypes';
 
 export const composeCardanoTransactionFeeLevelsThunk = createThunk<

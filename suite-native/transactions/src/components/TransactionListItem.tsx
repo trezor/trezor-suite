@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
-    AccountsRootState,
-    TransactionsRootState,
+    type AccountsRootState,
+    type TransactionsRootState,
     selectIsPhishingTransaction,
     selectIsTestnetAccount,
 } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 import { Box } from '@suite-native/atoms';
 import {
     CryptoAmountFormatter,
@@ -15,7 +15,7 @@ import {
     EmptyAmountText,
     SignValueFormatter,
 } from '@suite-native/formatters';
-import { WalletAccountTransaction } from '@suite-native/tokens';
+import { type WalletAccountTransaction } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TokenTransferListItem } from './TokenTransferListItem';

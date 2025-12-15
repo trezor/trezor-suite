@@ -1,6 +1,6 @@
-import { CTA, Localization } from '@suite-common/suite-types';
+import { type CTA, type Localization } from '@suite-common/suite-types';
 import { Link } from '@suite-native/link';
-import { TypographyStyle } from '@trezor/theme';
+import { type TypographyStyle } from '@trezor/theme';
 
 type MessageLinkProps = {
     messageCTA?: CTA;

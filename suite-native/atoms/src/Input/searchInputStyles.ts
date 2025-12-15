@@ -1,6 +1,6 @@
 import { prepareNativeStyle } from '@trezor/styles';
 
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 
 type InputStyleProps = {
     isFocused: boolean;

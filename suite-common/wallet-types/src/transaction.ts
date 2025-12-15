@@ -1,26 +1,26 @@
-import { TranslationKey } from '@suite-common/intl-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
-import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type TranslationKey } from '@suite-common/intl-types';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import {
-    AccountAddress,
-    AccountTransaction,
-    AccountUtxo,
-    ComposeOutput,
-    FeeLevel,
-    PROTO,
-    PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
-    PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
-    PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
-    PrecomposeResultError as PrecomposedTransactionConnectResponseError,
-    PrecomposeResultFinal as PrecomposedTransactionConnectResponseFinal,
-    PrecomposeResultNonFinal as PrecomposedTransactionConnectResponseNonFinal,
-    StaticSessionId,
-    TokenInfo,
+    type AccountAddress,
+    type AccountTransaction,
+    type AccountUtxo,
+    type ComposeOutput,
+    type FeeLevel,
+    type PROTO,
+    type PrecomposedTransactionErrorCardano as PrecomposedTransactionCardanoConnectResponseError,
+    type PrecomposedTransactionFinalCardano as PrecomposedTransactionCardanoConnectResponseFinal,
+    type PrecomposedTransactionNonFinalCardano as PrecomposedTransactionCardanoConnectResponseNonFinal,
+    type PrecomposeResultError as PrecomposedTransactionConnectResponseError,
+    type PrecomposeResultFinal as PrecomposedTransactionConnectResponseFinal,
+    type PrecomposeResultNonFinal as PrecomposedTransactionConnectResponseNonFinal,
+    type StaticSessionId,
+    type TokenInfo,
 } from '@trezor/connect';
-import { RequiredKey } from '@trezor/type-utils';
+import { type RequiredKey } from '@trezor/type-utils';
 
-import { Account } from './account';
-import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
+import { type Account } from './account';
+import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
 

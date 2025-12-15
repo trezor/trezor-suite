@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { StatusBar } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { type SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box, IconButton } from '@suite-native/atoms';

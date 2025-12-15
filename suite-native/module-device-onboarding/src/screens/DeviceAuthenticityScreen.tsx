@@ -2,11 +2,11 @@ import { useCallback, useEffect } from 'react';
 
 import { ContinueOnTrezorScreenContent, useDeviceAuthenticityCheck } from '@suite-native/device';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
 

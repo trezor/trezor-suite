@@ -1,12 +1,12 @@
-import { ReactNode } from 'react';
-import { PressableProps } from 'react-native';
+import { type ReactNode } from 'react';
+import { type PressableProps } from 'react-native';
 
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { Box } from '../Box';
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
+import { InlineAlertBox, type InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
 import { Loader } from '../Loader';
 import { PressableOpacity } from '../Pressable';
 import { RoundedIcon } from '../RoundedIcon';

@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    FiatRatesRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 
 import { convertTokenValueToDecimal } from '../utils';

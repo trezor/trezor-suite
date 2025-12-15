@@ -1,10 +1,10 @@
 import { A, S, pipe } from '@mobily/ts-belt';
-import { RequireAllOrNone } from 'type-fest';
+import { type RequireAllOrNone } from 'type-fest';
 
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { DevicePaginationActivePage } from './types';
+import { type DevicePaginationActivePage } from './types';
 
 const T1B1_SCREEN_LINE_LENGTH = 21;
 const LEGACY_SEGWIT_ADDRESS_LENGTH = 34;

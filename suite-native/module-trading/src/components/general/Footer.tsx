@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import type { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
 import {
-    TradingRootState,
-    TradingType,
+    type TradingRootState,
+    type TradingType,
     selectTradingBuyInfo,
     selectTradingBuySelectedQuote,
     selectTradingExchangeInfo,

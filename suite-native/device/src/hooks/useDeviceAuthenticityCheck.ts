@@ -4,23 +4,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    StoredAuthenticateDeviceResult,
+    type StoredAuthenticateDeviceResult,
     deviceAuthenticityActions,
     isDeviceAuthenticityValid,
 } from '@suite-common/device-authenticity';
 import {
     Feature,
-    MessageSystemRootState,
+    type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
+import { type DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
-import TrezorConnect, { AuthenticateDeviceResult, Response } from '@trezor/connect';
+import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
 type RawResult = Awaited<Response<AuthenticateDeviceResult>>;

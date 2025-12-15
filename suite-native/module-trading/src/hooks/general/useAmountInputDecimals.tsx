@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokensRootState, selectAccountTokenDecimals } from '@suite-native/tokens';
 
 export const useAmountInputDecimals = (
     account?: Account,

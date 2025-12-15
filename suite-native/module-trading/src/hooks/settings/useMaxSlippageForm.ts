@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectTradingMaxSlippagePercentage } from '@suite-common/trading';
 import { useForm } from '@suite-native/forms';
-import { MaxSlippageFormType, MaxSlippageFormValues } from '@suite-native/trading-types';
+import { type MaxSlippageFormType, type MaxSlippageFormValues } from '@suite-native/trading-types';
 
 import { maxSlippageFormValidationSchema } from '../../utils/settings/maxSlippageFormValidationSchema';
 

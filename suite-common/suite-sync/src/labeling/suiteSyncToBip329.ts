@@ -1,5 +1,5 @@
-import { Bip329Label } from '@suite-common/metadata-types';
-import { AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { type Bip329Label } from '@suite-common/metadata-types';
+import { type AddressLabel, type OutputLabel } from '@suite-common/suite-sync-storage';
 
 type SuiteSyncToBip329Params = {
     outputLabels: OutputLabel[];

@@ -7,9 +7,9 @@ import { selectIsDeviceFirmwareSupported } from '@suite-native/device';
 import { ConfirmFirmwareUpdateScreenFooter, FirmwareVersionCard } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceOnboardingStackParamList,
+    type DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { updateOnboardingAnalyticsAtom } from '../../atoms';

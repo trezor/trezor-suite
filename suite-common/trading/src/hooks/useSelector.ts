@@ -1,4 +1,4 @@
-import { TypedUseSelectorHook, shallowEqual, useSelector as useReduxSelector } from 'react-redux';
+import { type TypedUseSelectorHook, shallowEqual, useSelector as useReduxSelector } from 'react-redux';
 
 import type { TradingRootState } from '../reducers/tradingCommonReducer';
 

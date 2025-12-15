@@ -22,11 +22,11 @@ import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';

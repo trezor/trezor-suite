@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectPrecomposedSendForm, selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 
 const TRANSACTION_MANAGEMENT_PREFIX = '@suite-native/transaction-management';

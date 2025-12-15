@@ -1,24 +1,24 @@
-import { ReactNode, useMemo } from 'react';
+import { type ReactNode, useMemo } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { TransactionsRootState } from '@suite-common/wallet-core';
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { type TransactionsRootState } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { AccountAddressFormatter } from '@suite-native/formatters';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
-    TransactionDetailStackParamList,
-    TransactionDetailStackRoutes,
+    type TransactionDetailStackParamList,
+    type TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { VinVoutAddress, selectTransactionAddresses } from '@suite-native/transactions';
+import { type VinVoutAddress, selectTransactionAddresses } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from '../components/ChangeAddressesHeader';

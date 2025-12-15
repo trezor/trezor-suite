@@ -1,8 +1,8 @@
-import { ExchangeTrade } from 'invity-api';
+import { type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { invityAPI } from '../../invityAPI';

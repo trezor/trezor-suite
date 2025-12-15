@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    TransactionDetailStackParamList,
+    type TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

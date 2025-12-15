@@ -1,5 +1,5 @@
-import { Protocol } from '@suite-common/suite-constants';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { type Protocol } from '@suite-common/suite-constants';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 type GetNetworkSymbolForProtocolFixture = {
     description: string;

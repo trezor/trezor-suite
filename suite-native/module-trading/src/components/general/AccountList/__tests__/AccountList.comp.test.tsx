@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    TestStore,
+    type TestStore,
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
@@ -12,11 +12,11 @@ import {
     selectExchangeSelectedReceiveAccount,
     tradingInitialState,
 } from '@suite-native/trading-state';
-import { ReceiveAccount } from '@suite-native/trading-types';
-import { Address } from '@trezor/blockchain-link-types';
-import { StaticSessionId } from '@trezor/connect';
+import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type Address } from '@trezor/blockchain-link-types';
+import { type StaticSessionId } from '@trezor/connect';
 
-import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
+import { AccountList, type AccountsListProps, keyExtractor } from '../AccountList';
 
 const defaultPreloadedState = {
     device: {

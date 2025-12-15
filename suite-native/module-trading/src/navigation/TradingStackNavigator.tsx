@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    TradingStackParamList,
+    type TradingStackParamList,
     TradingStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

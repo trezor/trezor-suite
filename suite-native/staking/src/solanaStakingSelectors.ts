@@ -1,8 +1,8 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    AccountsRootState,
-    StakeRootState,
+    type AccountsRootState,
+    type StakeRootState,
     selectAccountByKey,
     selectDeviceAccounts,
     selectPoolStatsApyData,
@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeStakingRootState } from './types';
+import { type NativeStakingRootState } from './types';
 
 export const createMemoizedSelector = createWeakMapSelector.withTypes<NativeStakingRootState>();
 

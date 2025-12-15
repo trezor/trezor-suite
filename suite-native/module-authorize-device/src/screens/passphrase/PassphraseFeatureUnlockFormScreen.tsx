@@ -4,11 +4,11 @@ import { IconButton, ScreenHeaderWrapper, Text, VStack } from '@suite-native/ato
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';

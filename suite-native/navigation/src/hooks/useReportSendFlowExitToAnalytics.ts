@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { AnalyticsSendFlowStep, EventType, analytics } from '@suite-native/analytics';
+import { type AnalyticsSendFlowStep, EventType, analytics } from '@suite-native/analytics';
 
 import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
 

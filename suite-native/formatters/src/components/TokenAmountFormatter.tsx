@@ -1,8 +1,8 @@
 import { useFormatters } from '@suite-common/formatters';
-import { TokenSymbol } from '@suite-common/wallet-types';
-import { TextProps } from '@suite-native/atoms';
+import { type TokenSymbol } from '@suite-common/wallet-types';
+import { type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { convertTokenValueToDecimal } from '../utils';
 

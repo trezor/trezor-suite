@@ -2,7 +2,7 @@ import { selectIsFirmwareInstallationRunning } from '@suite-common/firmware/src/
 import { createThunk } from '@suite-common/redux-utils';
 import { getIsThpDevice } from '@suite-common/suite-utils';
 import { acquireDevice, selectDevices } from '@suite-common/wallet-core';
-import { Device } from '@trezor/connect';
+import { type Device } from '@trezor/connect';
 
 import { THP_PREFIX } from './thpActions';
 

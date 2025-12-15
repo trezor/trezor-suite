@@ -6,11 +6,11 @@ import { Button, Card, Image, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
-    HomeStackParamList,
-    HomeStackRoutes,
-    RootStackParamList,
+    type HomeStackParamList,
+    type HomeStackRoutes,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToTabCompositeNavigationProp,
+    type StackToTabCompositeNavigationProp,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

@@ -1,13 +1,13 @@
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 import { Pressable } from 'react-native';
-import { TextInput } from 'react-native-gesture-handler';
+import { type TextInput } from 'react-native-gesture-handler';
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
 import { useNativeStyles } from '@trezor/styles';
 
 import { Box } from '../Box';
-import { SurfaceElevation } from '../types';
+import { type SurfaceElevation } from '../types';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';

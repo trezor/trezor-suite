@@ -1,7 +1,7 @@
 import { type ActionReducerMapBuilder, type EnhancedStore, createReducer } from '@reduxjs/toolkit';
 import type { ThunkDispatch } from 'redux-thunk';
 
-import { ExtraDependenciesForReducer } from './extraDependenciesType';
+import { type ExtraDependenciesForReducer } from './extraDependenciesType';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 type NotFunction<T> = T extends Function ? never : T;

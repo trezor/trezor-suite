@@ -1,6 +1,6 @@
 import { fromUnixTime } from 'date-fns';
 
-import { FiatRatesItem } from '../graphDataFetching';
+import { type FiatRatesItem } from '../graphDataFetching';
 import {
     findOldestBalanceMovementTimestamp,
     getDataStepInMinutes,
@@ -8,9 +8,9 @@ import {
     mergeMultipleFiatBalanceHistories,
 } from '../graphUtils';
 import {
-    AccountHistoryBalancePoint,
-    AccountWithBalanceHistory,
-    FiatGraphPointWithCryptoBalance,
+    type AccountHistoryBalancePoint,
+    type AccountWithBalanceHistory,
+    type FiatGraphPointWithCryptoBalance,
 } from '../types';
 
 describe(getDataStepInMinutes.name, () => {

@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type AccountType,
     type Bip43Path,
@@ -15,38 +15,38 @@ import {
     networks,
 } from '@suite-common/wallet-config';
 import {
-    Account,
-    AccountDescriptor,
-    AccountKey,
-    FailedAccount,
-    GeneralPrecomposedTransactionFinal,
-    PrecomposedTransactionFinal,
-    RatesByKey,
-    ReceiveInfo,
-    SuccessfulAccount,
-    TokenAddress,
+    type Account,
+    type AccountDescriptor,
+    type AccountKey,
+    type FailedAccount,
+    type GeneralPrecomposedTransactionFinal,
+    type PrecomposedTransactionFinal,
+    type RatesByKey,
+    type ReceiveInfo,
+    type SuccessfulAccount,
+    type TokenAddress,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
-    AccountAddress,
-    AccountAddresses,
-    AccountInfo,
-    AccountTransaction,
-    AccountUtxo,
-    DeviceState,
-    PrecomposedTransactionFinalCardano,
-    StaticSessionId,
-    TokenInfo,
-    TokenTransfer,
+    type AccountAddress,
+    type AccountAddresses,
+    type AccountInfo,
+    type AccountTransaction,
+    type AccountUtxo,
+    type DeviceState,
+    type PrecomposedTransactionFinalCardano,
+    type StaticSessionId,
+    type TokenInfo,
+    type TokenTransfer,
 } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
-import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
+import { BigNumber, type BigNumberValue } from '@trezor/utils/src/bigNumber';
 
 import { getAccountDecimals } from './amountUtils';
-import { BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from './baseCurrency';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';

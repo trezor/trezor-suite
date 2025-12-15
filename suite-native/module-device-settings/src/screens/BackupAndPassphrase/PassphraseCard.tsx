@@ -9,9 +9,9 @@ import {
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    BackupAndPassphraseParamList,
+    type BackupAndPassphraseParamList,
     BackupAndPassphraseStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';

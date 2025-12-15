@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useMemo, useRef, useState } from 'react';
+import { type ReactNode, createContext, useMemo, useRef, useState } from 'react';
 
 import {
     DarkTheme,
@@ -13,7 +13,7 @@ import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
-import { RootStackParamList } from '../navigators';
+import { type RootStackParamList } from '../navigators';
 
 export const IsNavigationReadyContext = createContext(false);
 

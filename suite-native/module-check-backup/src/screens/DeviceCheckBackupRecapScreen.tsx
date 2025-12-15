@@ -1,11 +1,11 @@
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    DeviceCheckBackupStackParamList,
-    DeviceCheckBackupStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceCheckBackupStackParamList,
+    type DeviceCheckBackupStackRoutes,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackToStackCompositeScreenProps,
+    type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { SwipeableWalkthroughStepHeader } from '@suite-native/swipeable-walkthrough';
 

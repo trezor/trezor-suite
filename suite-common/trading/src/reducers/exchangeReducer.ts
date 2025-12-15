@@ -1,15 +1,15 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
-    CryptoId,
-    ExchangeProviderInfo,
-    ExchangeTrade,
-    ExchangeTradeQuoteRequest,
+    type CryptoId,
+    type ExchangeProviderInfo,
+    type ExchangeTrade,
+    type ExchangeTradeQuoteRequest,
 } from 'invity-api';
 
-import { AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
-import { TradingExchangeAmountLimitProps, TradingExchangeStepType } from '../types';
+import { type TradingExchangeAmountLimitProps, type TradingExchangeStepType } from '../types';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;

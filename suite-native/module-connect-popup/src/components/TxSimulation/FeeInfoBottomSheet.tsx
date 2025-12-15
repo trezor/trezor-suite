@@ -1,12 +1,12 @@
 import { fromWei } from 'web3-utils';
 
-import { ConnectPopupCall } from '@suite-common/connect-popup';
+import { type ConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
-import { Network } from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/wallet-config';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
-    BottomSheetModalRef,
+    type BottomSheetModalRef,
     Card,
     HStack,
     Text,

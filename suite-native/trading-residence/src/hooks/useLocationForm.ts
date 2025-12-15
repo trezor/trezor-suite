@@ -5,7 +5,7 @@ import { nonSanctionedRegional } from '@suite-common/trading';
 import { useForm } from '@suite-native/forms';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
-import { TradingLocationFormValues } from '../types/tradingLocationForm';
+import { type TradingLocationFormValues } from '../types/tradingLocationForm';
 import { getPreferredCountryOption } from '../utils/getPreferredCountryOption';
 import { locationFormValidationSchema } from '../utils/locationFormValidationSchema';
 

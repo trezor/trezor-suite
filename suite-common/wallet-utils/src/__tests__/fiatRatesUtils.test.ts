@@ -1,4 +1,4 @@
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 
 import {
     getFiatRateKey,

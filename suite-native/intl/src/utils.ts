@@ -1,5 +1,5 @@
 import { DEFAULT_LOCALE, LANGUAGES } from './languages';
-import { SupportedLocaleCode } from './types';
+import { type SupportedLocaleCode } from './types';
 
 // flatten object to single level deep like { a: { b: { c: 1 } } } => { 'a.b.c': 1 }
 export const flatten = (obj: Record<string, any>, prefix = '') => {

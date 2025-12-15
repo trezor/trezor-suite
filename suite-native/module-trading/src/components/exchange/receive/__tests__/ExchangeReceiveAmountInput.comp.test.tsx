@@ -1,6 +1,6 @@
 import { Form } from '@suite-native/forms';
 import {
-    PreloadedState,
+    type PreloadedState,
     act,
     fireEvent,
     renderHookWithStoreProviderAsync,
@@ -11,12 +11,12 @@ import {
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormType } from '@suite-native/trading-types';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import {
     ExchangeReceiveAmountInput,
-    ExchangeReceiveAmountInputProps,
+    type ExchangeReceiveAmountInputProps,
 } from '../ExchangeReceiveAmountInput';
 
 describe('ExchangeReceiveAmountInput', () => {

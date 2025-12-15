@@ -2,10 +2,10 @@ import { CommonActions } from '@react-navigation/native';
 
 import {
     HomeStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 
 import { OnboardingButtons } from '../components/OnboardingButtons';

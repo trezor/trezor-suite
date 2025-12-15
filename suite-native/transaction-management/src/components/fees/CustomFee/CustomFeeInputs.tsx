@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { type FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
@@ -11,7 +11,7 @@ import { integerTransformer, useAmountInputTransformers } from '@suite-native/he
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 
-import { FeesFormValues } from '../../../feesFormSchema';
+import { type FeesFormValues } from '../../../feesFormSchema';
 
 export type CustomFeeInputsProps = {
     symbol: NetworkSymbol;

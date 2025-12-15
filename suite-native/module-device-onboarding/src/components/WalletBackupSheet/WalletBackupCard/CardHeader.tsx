@@ -1,7 +1,7 @@
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { Box, HStack, Radio, Text, TitleHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { Color } from '@trezor/theme';
+import { type Color } from '@trezor/theme';
 
 import { walletBackupSheetCopyByType } from '../presets';
 

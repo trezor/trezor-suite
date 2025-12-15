@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import {
@@ -9,7 +9,7 @@ import {
     Text,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { Icon, IconName } from '@suite-native/icons';
+import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

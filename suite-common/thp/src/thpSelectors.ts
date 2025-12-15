@@ -1,4 +1,4 @@
-import { ThpState } from './thpReducer';
+import { type ThpState } from './thpReducer';
 
 export type WithThpState = {
     thp: ThpState;

@@ -1,10 +1,10 @@
 import { A } from '@mobily/ts-belt';
 
 import {
-    AccountType,
-    Network,
-    NetworkSymbol,
-    NetworkType,
+    type AccountType,
+    type Network,
+    type NetworkSymbol,
+    type NetworkType,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';

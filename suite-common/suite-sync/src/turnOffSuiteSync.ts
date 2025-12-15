@@ -1,7 +1,7 @@
-import { Dispatch } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
-import { TurnOffSuiteSync, TurnOffSuiteSyncForWalletDep } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner } from '@suite-common/suite-types';
+import { type TurnOffSuiteSync, type TurnOffSuiteSyncForWalletDep } from '@suite-common/suite-sync-types';
+import { type SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';

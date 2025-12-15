@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { Card, HStack, OrderedListIcon, Radio, Text } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const cardStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({

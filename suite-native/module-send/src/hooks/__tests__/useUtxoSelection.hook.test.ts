@@ -2,7 +2,7 @@ import { useAtom } from 'jotai';
 
 import { renderHook } from '@suite-native/test-utils';
 
-import { SelectedUtxos } from '../../types';
+import { type SelectedUtxos } from '../../types';
 import { useUtxoSelection } from '../useUtxoSelection';
 
 const accountKey = 'testAccKey';

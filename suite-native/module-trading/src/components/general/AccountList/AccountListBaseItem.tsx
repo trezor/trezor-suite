@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
@@ -7,7 +7,7 @@ import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { ReceiveAccount } from '@suite-native/trading-types';
+import { type ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type AccountListBaseItemProps = {

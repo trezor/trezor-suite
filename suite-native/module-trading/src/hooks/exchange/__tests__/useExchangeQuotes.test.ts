@@ -4,8 +4,8 @@ import {
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
-    PreloadedState,
-    TestStore,
+    type PreloadedState,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
@@ -19,7 +19,7 @@ import {
     getInitializedTradingState,
     usdtAsset,
 } from '@suite-native/trading-fixtures';
-import { ExchangeFormValues } from '@suite-native/trading-types';
+import { type ExchangeFormValues } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
 import { useExchangeForm } from '../useExchangeForm';

@@ -1,5 +1,5 @@
-import { AcquiredDevice } from '@suite-common/suite-types';
-import { FirmwareHashCheckError, FirmwareRevisionCheckError } from '@trezor/connect';
+import { type AcquiredDevice } from '@suite-common/suite-types';
+import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
 import type { FilterPropertiesByType } from '@trezor/type-utils';
 
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';

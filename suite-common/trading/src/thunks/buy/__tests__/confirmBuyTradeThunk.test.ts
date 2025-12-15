@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { BuyTradeResponse } from 'invity-api';
+import { type BuyTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
-import { TradingBuyState } from '../../../reducers/buyReducer';
+import { type TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { buyThunks } from '../index';

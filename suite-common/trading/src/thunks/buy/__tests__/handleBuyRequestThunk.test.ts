@@ -1,5 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
-import { CryptoId } from 'invity-api';
+import { type CryptoId } from 'invity-api';
 
 import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -9,9 +9,9 @@ import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
-    HandleBuyRequestThunkProps,
-    TradingBuyFormProps,
-    TradingCryptoSelectItemProps,
+    type HandleBuyRequestThunkProps,
+    type TradingBuyFormProps,
+    type TradingCryptoSelectItemProps,
 } from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';

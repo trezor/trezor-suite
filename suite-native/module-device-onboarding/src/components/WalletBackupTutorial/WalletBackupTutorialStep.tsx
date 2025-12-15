@@ -1,6 +1,6 @@
 import {
     SwipeableWalkthroughStep,
-    SwipeableWalkthroughStepProps,
+    type SwipeableWalkthroughStepProps,
 } from '@suite-native/swipeable-walkthrough';
 
 import { WALLET_BACKUP_TUTORIAL_STEPS_COUNT } from '../../constants';

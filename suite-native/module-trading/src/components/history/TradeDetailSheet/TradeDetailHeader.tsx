@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import {
-    TradingRootState,
+    type TradingRootState,
     isFinalStatus,
     selectTradingTradeByOrderId,
 } from '@suite-common/trading';
@@ -10,7 +10,7 @@ import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { TradeDetailAlert } from './TradeDetailAlert';
-import { TradeStatusStep, getTradeStatusStep } from '../../../utils/general/utils';
+import { type TradeStatusStep, getTradeStatusStep } from '../../../utils/general/utils';
 import { TradeStatusBadge } from '../TradeStatusBadge';
 
 type TradeDetailHeaderProps = {

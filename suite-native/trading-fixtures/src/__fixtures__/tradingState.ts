@@ -1,14 +1,14 @@
 import type { Coins, CryptoId, FiatCurrenciesProps, FiatCurrencyCode, Platforms } from 'invity-api';
 
 import {
-    TradingBuyState,
-    TradingExchangeState,
-    TradingPaymentMethodListProps,
-    TradingSellState,
-    TradingType,
+    type TradingBuyState,
+    type TradingExchangeState,
+    type TradingPaymentMethodListProps,
+    type TradingSellState,
+    type TradingType,
 } from '@suite-common/trading';
 import { tradingInitialState } from '@suite-native/trading-consts';
-import { TradingState } from '@suite-native/trading-types';
+import { type TradingState } from '@suite-native/trading-types';
 
 import { buyCexdirect, buyInvity, buyMercuryo } from './buyProviders';
 import { buyQuotes } from './buyQuotes';

@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
-    BaseCurrencyAmount,
+    type BaseCurrencyAmount,
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     fromBaseCurrencyToCryptoUnit,

@@ -1,9 +1,9 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { networks } from '@suite-common/wallet-config';
 
-import { DeviceRootState } from '../../device/deviceReducer';
-import { AccountsRootState } from '../accountsReducer';
+import { type DeviceRootState } from '../../device/deviceReducer';
+import { type AccountsRootState } from '../accountsReducer';
 import {
     selectAddressByNetworkAndPath,
     selectVisibleDeviceAccountsMap,

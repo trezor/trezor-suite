@@ -5,10 +5,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import { invariant } from '@suite-common/suite-utils';
 import { cryptoIdToSymbol } from '@suite-common/trading';
-import { NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkDisplaySymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
 import { CryptoIcon, Icon } from '@suite-native/icons';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { hexToRgba } from '@trezor/utils';
 

@@ -14,10 +14,10 @@ import {
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import {
-    OnboardingStackParamList,
+    type OnboardingStackParamList,
     OnboardingStackRoutes,
     Screen,
-    StackProps,
+    type StackProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';

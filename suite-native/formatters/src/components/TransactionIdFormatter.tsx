@@ -1,7 +1,7 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Text, TextProps } from '@suite-native/atoms';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Text, type TextProps } from '@suite-native/atoms';
 
-import { FormatterProps } from '../types';
+import { type FormatterProps } from '../types';
 
 type TransactionIdFormatterProps = FormatterProps<WalletAccountTransaction['txid']> & TextProps;
 

@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { invariant } from '@suite-common/suite-utils';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
-import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
+import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { Badge } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
-import { TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TradingRootState, selectAmountInBaseFiatCurrency } from '@suite-native/trading-state';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useConvertFormValueToBaseUnit } from '../../../hooks/general/useConvertFormValueToBaseUnit';

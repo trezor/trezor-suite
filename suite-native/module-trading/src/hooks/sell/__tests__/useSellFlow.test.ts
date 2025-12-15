@@ -2,7 +2,7 @@ import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,

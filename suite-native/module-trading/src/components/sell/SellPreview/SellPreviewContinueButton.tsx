@@ -6,7 +6,7 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { parseCryptoId } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {

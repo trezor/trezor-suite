@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // is imported only here and nowhere else, so it is treated as a submodule of @suite-native/module-device-settings.
 import { DeviceCheckBackupStackNavigator } from '@suite-native/module-check-backup';
 import {
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';

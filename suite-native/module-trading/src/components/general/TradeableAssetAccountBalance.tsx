@@ -2,13 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { isSendingEvmNativeToken } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, TokenAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
-import { TradeableAsset } from '@suite-native/trading-types';
+import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
+import { type TradeableAsset } from '@suite-native/trading-types';
 
 export type TradeableAssetAccountBalanceProps = {
     account?: Account;

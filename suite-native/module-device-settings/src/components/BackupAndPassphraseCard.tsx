@@ -6,9 +6,9 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     BackupAndPassphraseStackRoutes,
-    DeviceSettingsStackParamList,
+    type DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { DeviceSettingsItemCard } from './DeviceSettingsItemCard';

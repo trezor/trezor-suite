@@ -1,17 +1,17 @@
 import { bech32 } from 'bech32';
 
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
     FIVE_BINARIES_POOLS,
 } from '@suite-common/wallet-constants';
 import {
-    Account,
-    CardanoPoolInfo,
-    StakeType,
-    SupportedCardanoNetworkSymbols,
-    WalletAccountTransaction,
+    type Account,
+    type CardanoPoolInfo,
+    type StakeType,
+    type SupportedCardanoNetworkSymbols,
+    type WalletAccountTransaction,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { BigNumber, isArrayMember } from '@trezor/utils';

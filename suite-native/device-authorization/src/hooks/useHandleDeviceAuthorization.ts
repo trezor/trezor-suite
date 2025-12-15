@@ -4,16 +4,16 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    DiscoveryRootState,
+    type DiscoveryRootState,
     selectDiscoveryByDevicePath,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import {
-    AuthorizeDeviceStackParamList,
+    type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
     useLastRouteName,
 } from '@suite-native/navigation';
 

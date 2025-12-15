@@ -1,4 +1,4 @@
-import { AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
+import { type AnimatedProps, FadeIn, FadeOutDown } from 'react-native-reanimated';
 
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';

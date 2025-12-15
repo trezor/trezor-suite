@@ -5,16 +5,16 @@ import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade, FormResponse } from 'invity-api';
 
 import {
-    TradingSendRejectedProps,
+    type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import {
-    RootStackParamList,
+    type RootStackParamList,
     RootStackRoutes,
-    StackNavigationProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 

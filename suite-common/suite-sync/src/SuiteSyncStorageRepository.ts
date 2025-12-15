@@ -1,6 +1,6 @@
-import { CreateSuiteStorageDep, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
-import { SuiteSyncStorageRepository } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwner, SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { type CreateSuiteStorageDep, type SuiteSyncStorage } from '@suite-common/suite-sync-storage';
+import { type SuiteSyncStorageRepository } from '@suite-common/suite-sync-types';
+import { type SuiteSyncOwner, type SuiteSyncOwnerId } from '@suite-common/suite-types';
 
 export type CreateSuiteSyncStorageRepositoryFactoryDeps = CreateSuiteStorageDep & {
     defaultRelayUrl: string;

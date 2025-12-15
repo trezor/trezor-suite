@@ -6,9 +6,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorWrapper, useConfirmOnTrezorController } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { type SendStackParamList, SendStackRoutes, type StackProps } from '@suite-native/navigation';
 import {
-    TransactionReviewOutputsState,
+    type TransactionReviewOutputsState,
     selectIsDestinationTagOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';

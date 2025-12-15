@@ -1,6 +1,6 @@
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { BackupType } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import {
     deviceActions,
     processEntropyCheckResultThunk,
@@ -9,7 +9,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
+import TrezorConnect, { PROTO, type SuccessWithDevice, type Unsuccessful } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';

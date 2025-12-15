@@ -1,11 +1,11 @@
 import { yup } from '@suite-common/validators';
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type FeeInfo } from '@suite-common/wallet-types';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
 import type { UseFormReturn } from '@suite-native/forms';
 import { BigNumber } from '@trezor/utils';
 
-import { NativeSupportedFeeLevel } from './types';
+import { type NativeSupportedFeeLevel } from './types';
 import { getFeeDecimals } from './utils';
 
 export type FeesFormContext = {

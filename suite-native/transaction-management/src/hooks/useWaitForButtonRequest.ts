@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
+import { type DeviceRootState, selectDeviceButtonRequestsCodes } from '@suite-common/wallet-core';
 
 export const useWaitForButtonRequest = (onButtonRequest: () => void) => {
     const [waitingForButtonRequests, setWaitingForButtonRequests] = useState(false);

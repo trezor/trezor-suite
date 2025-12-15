@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@suite-native/analytics';
 
-import { NativeSupportedFeeLevel, UpdateSelectedFeeLevelThunkParams } from '../../types';
+import { type NativeSupportedFeeLevel, type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeeSelectionParams = {
     accountKey: AccountKey;

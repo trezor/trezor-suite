@@ -7,12 +7,12 @@ import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Translation } from '@suite-native/intl';
 import {
-    DevUtilsStackParamList,
+    type DevUtilsStackParamList,
     DevUtilsStackRoutes,
     DynamicScreenHeader,
-    RootStackParamList,
+    type RootStackParamList,
     Screen,
-    StackToStackCompositeNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
 import { clearStorage } from '@suite-native/storage';

@@ -5,7 +5,7 @@ import {
     renderWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { btcAsset, getBtcAccount } from '@suite-native/trading-fixtures';
-import { BuyFormType } from '@suite-native/trading-types';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import {

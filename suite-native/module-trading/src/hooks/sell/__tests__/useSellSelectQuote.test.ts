@@ -1,12 +1,12 @@
 import { tradingSellActions } from '@suite-common/trading';
 import {
-    TestStore,
+    type TestStore,
     act,
     initStore,
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
-import { SellFormType } from '@suite-native/trading-types';
+import { type SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../useSellForm';
 import { useSellSelectQuote } from '../useSellSelectQuote';

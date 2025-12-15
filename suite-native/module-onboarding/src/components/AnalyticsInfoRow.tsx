@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { IconListItem, Text, VStack } from '@suite-native/atoms';
-import { IconName } from '@suite-native/icons';
+import { type IconName } from '@suite-native/icons';
 
 type AnalyticsInfoRowProps = {
     iconName: IconName;

@@ -1,11 +1,11 @@
-import { AccountBalanceHistory } from '@trezor/blockchain-link';
+import { type AccountBalanceHistory } from '@trezor/blockchain-link';
 
 import {
     formatBalanceMovementEventsAmounts,
     groupBalanceMovementEvents,
     mergeGroups,
 } from '../graphBalanceEvents';
-import { BalanceMovementEvent, GroupedBalanceMovementEvent } from '../types';
+import { type BalanceMovementEvent, type GroupedBalanceMovementEvent } from '../types';
 
 describe('formatBalanceMovementEventsAmounts', () => {
     it('should calculate received and sent values for each balance movement', () => {

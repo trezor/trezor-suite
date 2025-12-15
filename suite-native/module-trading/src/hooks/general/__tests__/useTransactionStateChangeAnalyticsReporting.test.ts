@@ -1,4 +1,4 @@
-import { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 import { renderHook } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';

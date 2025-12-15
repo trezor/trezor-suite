@@ -1,9 +1,9 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { type PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import {
     ExchangeToAccountTradePreviewCard,
-    ExchangeToAccountTradePreviewCardProps,
+    type ExchangeToAccountTradePreviewCardProps,
 } from '../ExchangeToAccountTradePreviewCard';
 
 describe('ExchangeToAccountTradePreviewCard', () => {

@@ -1,14 +1,14 @@
-import { TrezorDevice } from '@suite-common/suite-types';
-import { Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    Account,
-    ExcludedUtxos,
-    FeeInfo,
-    FormState,
-    PrecomposedTransactionFinal,
-    WalletAccountTransaction,
+    type Account,
+    type ExcludedUtxos,
+    type FeeInfo,
+    type FormState,
+    type PrecomposedTransactionFinal,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { ERRORS as CONNECT_ERRORS, PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
+import { type ERRORS as CONNECT_ERRORS, type PROTO, type TokenInfo, type Unsuccessful } from '@trezor/connect';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 

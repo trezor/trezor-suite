@@ -1,5 +1,5 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { Explorer, NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import { type Explorer, type NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import { getParsedExplorerUrls } from '@suite-common/wallet-config/src/getExplorerUrls';
 
 import { explorerActions } from './explorerActions';

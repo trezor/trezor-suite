@@ -1,5 +1,5 @@
-import { SubscriptionName, SubscriptionStorage } from '@suite-common/suite-sync-types';
-import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { type SubscriptionName, type SubscriptionStorage } from '@suite-common/suite-sync-types';
+import { type SuiteSyncOwnerId } from '@suite-common/suite-types';
 import { typedObjectValues } from '@trezor/utils';
 
 export const createSubscriptionStorage = (): SubscriptionStorage => {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { TradingTransaction } from '@suite-common/trading';
+import { type TradingTransaction } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
 
 import { getTradeStatusStep } from '../../utils/general/utils';

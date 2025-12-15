@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { ScreenHeader, ScreenHeaderProps } from '@suite-native/navigation';
+import { ScreenHeader, type ScreenHeaderProps } from '@suite-native/navigation';
 
 import { ConfirmOnTrezorIndicator } from './ConfirmOnTrezorIndicator';
 

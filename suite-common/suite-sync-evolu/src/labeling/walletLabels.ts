@@ -1,16 +1,16 @@
 import {
-    Evolu,
+    type Evolu,
     NonEmptyString1000,
-    QueryRows,
+    type QueryRows,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
-import { WalletLabel, WalletLabelsStore } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { type WalletLabel, type WalletLabelsStore } from '@suite-common/suite-sync-storage';
+import { type WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
-import { UnwrapQuery } from '../evoluUtils';
+import { type UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');

@@ -3,11 +3,11 @@ import { View } from 'react-native';
 
 import {
     Badge,
-    BadgeVariant,
+    type BadgeVariant,
     Box,
     Button,
-    ButtonColorScheme,
-    ButtonSize,
+    type ButtonColorScheme,
+    type ButtonSize,
     CheckBox,
     Divider,
     HStack,
@@ -15,7 +15,7 @@ import {
     IconButton,
     InlineAlertBox,
     Input,
-    InputType,
+    type InputType,
     InputWrapper,
     NumPadButton,
     PriceChangeBadge,
@@ -24,7 +24,7 @@ import {
     Switch,
     Text,
     TextButton,
-    TextButtonVariant,
+    type TextButtonVariant,
     VStack,
 } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
@@ -33,7 +33,7 @@ import { CryptoIcon, Icon } from '@suite-native/icons';
 import { Link } from '@suite-native/link';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { NativeTypographyStyle } from '@trezor/theme';
+import { type NativeTypographyStyle } from '@trezor/theme';
 import { TREZOR_URL } from '@trezor/urls';
 
 const inputStackStyle = prepareNativeStyle(utils => ({
