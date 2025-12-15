@@ -3,11 +3,11 @@ import type { AccountKey, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 
-import type { LabelingState } from './labelingReducer';
+import type { SuiteSyncDataState } from './labelingReducer';
 import { findAccountLabel, findAddressLabel, findOutputLabel } from './selectorUtils';
 
 export type WithLabelingState = {
-    labeling: LabelingState;
+    labeling: SuiteSyncDataState;
 };
 
 type SelectWalletLabelParams = {
@@ -25,7 +25,7 @@ export const selectWalletLabel = ({
 
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    return state.labeling.walletsLabels[walletDescriptor]?.walletLabel ?? null;
+    return state.labeling.wallets[walletDescriptor]?.wallet ?? null;
 };
 
 type SelectAccountLabelsParams = {
@@ -39,7 +39,7 @@ export const selectAccountLabels = ({
 }: SelectAccountLabelsParams) => {
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    return state.labeling.walletsLabels[walletDescriptor]?.accountLabels ?? [];
+    return state.labeling.wallets[walletDescriptor]?.accounts ?? [];
 };
 
 type SelectAccountLabelParams = {
@@ -59,7 +59,7 @@ export const selectAccountLabel = ({
 
     const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-    const walletLabelState = state.labeling.walletsLabels[walletDescriptor];
+    const walletLabelState = state.labeling.wallets[walletDescriptor];
 
     if (walletLabelState === undefined) {
         return null;
@@ -67,7 +67,7 @@ export const selectAccountLabel = ({
 
     return (
         findAccountLabel({
-            accountLabels: walletLabelState.accountLabels,
+            accountLabels: walletLabelState.accounts,
             networkSymbol,
             accountDescriptor,
         })?.label ?? null
@@ -85,7 +85,7 @@ export const selectAddressLabels = ({
 }: SelectAddressLabelsParams) => {
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    return state.labeling.walletsLabels[walletDescriptor]?.addressLabels ?? [];
+    return state.labeling.wallets[walletDescriptor]?.addresses ?? [];
 };
 
 type SelectAddressLabelsByAccountParams = {
@@ -135,7 +135,7 @@ export const selectOutputLabels = (
 ) => {
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    return state.labeling.walletsLabels[walletDescriptor]?.outputLabels ?? [];
+    return state.labeling.wallets[walletDescriptor]?.outputs ?? [];
 };
 
 type SelectOutputLabelsByAccountParams = {

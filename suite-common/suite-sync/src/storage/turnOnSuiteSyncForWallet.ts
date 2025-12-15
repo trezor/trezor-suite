@@ -2,7 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import {
     RefreshSuiteSyncKeysDep,
-    SubscribeLabeling,
+    SubscribeData,
     TurnOnSuiteSyncForWallet,
 } from '@suite-common/suite-sync-types';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
@@ -14,7 +14,7 @@ import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 export type TurnOnSuiteSyncForWalletDeps = {
     dispatch: Dispatch;
     getState: () => any;
-    subscribeLabeling: SubscribeLabeling;
+    subscribeData: SubscribeData;
 } & RefreshSuiteSyncKeysDep;
 
 export const createTurnOnSuiteSyncForWallet =
@@ -29,5 +29,5 @@ export const createTurnOnSuiteSyncForWallet =
             return ok();
         }
 
-        return await deps.subscribeLabeling({ deviceStaticSessionId });
+        return await deps.subscribeData({ deviceStaticSessionId });
     };

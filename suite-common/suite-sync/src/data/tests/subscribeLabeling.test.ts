@@ -1,9 +1,9 @@
 import {
-    Account,
-    AddressLabel,
-    OutputLabel,
+    SuiteSyncAccount,
+    SuiteSyncAddress,
+    SuiteSyncOutput,
     SuiteSyncStorage,
-    WalletLabel,
+    SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
@@ -12,15 +12,15 @@ import { err, ok } from '@trezor/type-utils';
 import { mockNotExpected } from '../../../tests/utils';
 import { RefreshSuiteKeysUnavailable } from '../../refreshSuiteSyncKeys';
 import { createSubscriptionStorage } from '../../storage/subscriptionStorage';
-import { createSubscribeLabeling } from '../subscribeLabeling';
+import { createSubscribeToRedux } from '../subscribeLabeling';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
 type StorageSubscriptions = {
-    accountLabels: ((payload: Account) => void)[];
-    addressLabels: ((payload: AddressLabel) => void)[];
-    outputLabels: ((payload: OutputLabel) => void)[];
-    walletLabels: ((payload: WalletLabel) => void)[];
+    accountLabels: ((payload: SuiteSyncAccount) => void)[];
+    addressLabels: ((payload: SuiteSyncAddress) => void)[];
+    outputLabels: ((payload: SuiteSyncOutput) => void)[];
+    walletLabels: ((payload: SuiteSyncWallet) => void)[];
 };
 
 const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): SuiteSyncStorage => ({
@@ -60,9 +60,9 @@ const createSuiteSyncStorageMock = (subscriptions?: StorageSubscriptions): Suite
     updateRelayUrl: mockNotExpected('updateRelayUrl'),
 });
 
-describe(createSubscribeLabeling.name, () => {
+describe(createSubscribeToRedux.name, () => {
     it('fails when storage is not available', async () => {
-        const subscribeLabeling = createSubscribeLabeling({
+        const subscribeLabeling = createSubscribeToRedux({
             dispatch: () => {},
             ensureStorage: () => Promise.resolve(err(RefreshSuiteKeysUnavailable())),
             subscriptionStorage: createSubscriptionStorage(),
@@ -75,7 +75,7 @@ describe(createSubscribeLabeling.name, () => {
 
     it('subscribes labeling', async () => {
         const storage = createSuiteSyncStorageMock();
-        const subscribeLabeling = createSubscribeLabeling({
+        const subscribeLabeling = createSubscribeToRedux({
             dispatch: () => {},
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
@@ -101,7 +101,7 @@ describe(createSubscribeLabeling.name, () => {
 
         const actions: any[] = [];
         const storage = createSuiteSyncStorageMock(subscriptions);
-        const subscribeLabeling = createSubscribeLabeling({
+        const subscribeLabeling = createSubscribeToRedux({
             dispatch: (action: any) => actions.push(action),
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),

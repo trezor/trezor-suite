@@ -11,7 +11,7 @@ export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export type { RefreshSuiteKeysUnavailableType } from './refreshSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
 export type {
-    SubscriptionName,
+    TableName,
     SubscriptionStorageDep,
     SubscriptionStorage,
     SubscriptionStorageParams,
@@ -35,7 +35,7 @@ export type {
     UpdateAddressLabelDep,
     UpdateAddressLabelParams,
 } from './labeling/updateAddressLabel';
-export type { SubscribeLabeling } from './labeling/subscribeLabeling';
+export type { SubscribeData } from './labeling/subscribeData';
 export type { UpdateOutputLabelDep, UpdateOutputLabel } from './labeling/updateOutputLabel';
 export type {
     UpdateWalletLabel,

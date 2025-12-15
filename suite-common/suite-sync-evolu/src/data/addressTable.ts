@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AddressLabel, AddressTable } from '@suite-common/suite-sync-storage';
+import { AddressTable, SuiteSyncAddress } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 
@@ -33,7 +33,7 @@ export const AddressLabelSchema = {
 export class AddressEvoluTable implements AddressTable {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
-    update = ({ address, label, accountDescriptor, networkSymbol }: AddressLabel) => {
+    update = ({ address, label, accountDescriptor, networkSymbol }: SuiteSyncAddress) => {
         const idResult = createAddressEvoluId(address);
 
         if (!idResult.ok) {
@@ -59,7 +59,7 @@ export class AddressEvoluTable implements AddressTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('address').selectAll());
 
-    subscribe = (onChange: (payload: AddressLabel) => void) => {
+    subscribe = (onChange: (payload: SuiteSyncAddress) => void) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

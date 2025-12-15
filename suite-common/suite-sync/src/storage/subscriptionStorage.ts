@@ -1,8 +1,8 @@
-import { StorageId, SubscriptionName, SubscriptionStorage } from '@suite-common/suite-sync-types';
+import { StorageId, SubscriptionStorage, TableName } from '@suite-common/suite-sync-types';
 import { typedObjectValues } from '@trezor/utils';
 
 export const createSubscriptionStorage = (): SubscriptionStorage => {
-    const storage: Record<StorageId, Partial<Record<SubscriptionName, () => void>>> = {};
+    const storage: Record<StorageId, Partial<Record<TableName, () => void>>> = {};
 
     return {
         add: ({ unsubscribe, storageId, name }) => {

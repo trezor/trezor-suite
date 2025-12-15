@@ -8,7 +8,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { OutputLabel, OutputTable } from '@suite-common/suite-sync-storage';
+import { OutputTable, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 
@@ -35,7 +35,7 @@ export const OutputLabelSchema = {
 export class OutputEvoluTable implements OutputTable {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
-    update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: OutputLabel) => {
+    update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
         const idResult = createOutputEvoluId(txId, outputIndex);
 
         if (!idResult.ok) {
@@ -62,7 +62,7 @@ export class OutputEvoluTable implements OutputTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('output').selectAll());
 
-    subscribe = (onChange: (payload: OutputLabel) => void) => {
+    subscribe = (onChange: (payload: SuiteSyncOutput) => void) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

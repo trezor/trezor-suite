@@ -2,7 +2,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { SuiteSyncTable } from '../SuiteSyncTable';
 
-export type OutputLabel = {
+export type SuiteSyncOutput = {
     txId: string;
     outputIndex: number;
     label: string | null;
@@ -10,4 +10,4 @@ export type OutputLabel = {
     networkSymbol: NetworkSymbol;
 };
 
-export type OutputTable = SuiteSyncTable<OutputLabel>;
+export type OutputTable = SuiteSyncTable<SuiteSyncOutput>;

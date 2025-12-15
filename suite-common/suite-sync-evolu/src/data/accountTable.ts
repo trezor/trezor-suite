@@ -3,12 +3,13 @@ import {
     NonEmptyString100,
     NonEmptyString1000,
     QueryRows,
+    SqliteBoolean,
     createIdFromString,
     id,
     nullOr,
 } from '@evolu/common';
 
-import { Account, AccountTable } from '@suite-common/suite-sync-storage';
+import { AccountTable, SuiteSyncAccount } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
@@ -29,13 +30,14 @@ export const AccountSchema = {
         accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
         networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
         label: nullOr(NonEmptyString1000),
+        isHidden: SqliteBoolean,
     },
 };
 
 export class EvoluAccountTable implements AccountTable {
     constructor(private evolu: Evolu<typeof AccountSchema>) {}
 
-    update = ({ networkSymbol, accountDescriptor, label }: Account) => {
+    update = ({ networkSymbol, accountDescriptor, label }: SuiteSyncAccount) => {
         const idResult = createAccountEvoluId(accountDescriptor, networkSymbol);
 
         if (!idResult.ok) {
@@ -44,11 +46,12 @@ export class EvoluAccountTable implements AccountTable {
             return;
         }
 
-        const result = this.evolu.upsert('account', {
+        const result = this.evolu.update('account', {
             id: idResult.value,
             accountDescriptor,
             networkSymbol,
             label: normalizeLabel(label),
+            isHidden: 1, // SQLite does not support bool
         });
 
         if (!result.ok) {
@@ -60,26 +63,26 @@ export class EvoluAccountTable implements AccountTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('account').selectAll());
 
-    subscribe = (onChange: (payload: Account) => void) => {
+    subscribe = (onChange: (payload: SuiteSyncAccount) => void) => {
         const query = this.getQuery();
 
-        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
-            for (const label of labels) {
-                if (label.accountDescriptor === null || label.networkSymbol === null) {
+        const process = (accounts: QueryRows<UnwrapQuery<typeof query>>) => {
+            for (const account of accounts) {
+                if (account.accountDescriptor === null || account.networkSymbol === null) {
                     continue;
                 }
 
                 onChange({
-                    accountDescriptor: asAccountDescriptor(label.accountDescriptor),
-                    networkSymbol: asNetworkSymbol(label.networkSymbol),
-                    label: label.label,
+                    accountDescriptor: asAccountDescriptor(account.accountDescriptor),
+                    networkSymbol: asNetworkSymbol(account.networkSymbol),
+                    label: account.label,
+                    isHidden: account.isHidden === 1, // SQLite does not support bool
                 });
             }
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {
-            const deviceLabels = this.evolu.getQueryRows(query);
-            process(deviceLabels);
+            process(this.evolu.getQueryRows(query));
         });
         this.evolu.loadQuery(query).then(process);
 

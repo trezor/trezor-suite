@@ -8,7 +8,7 @@ type SubscribeLabelingParams = {
     deviceStaticSessionId: StaticSessionId;
 };
 
-export type SubscribeLabeling = (
+export type SubscribeData = (
     params: SubscribeLabelingParams,
 ) => Promise<
     Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>

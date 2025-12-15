@@ -12,7 +12,7 @@ export { CreateSuiteSyncOwnerError } from './Owner';
  * This is the place where SuiteSync declares what Entities (tables)
  * stores.
  */
-export type { AddressTable, AddressLabel } from './data/AddressTable';
-export type { OutputTable, OutputLabel } from './data/OutputTable';
-export type { WalletTable, WalletLabel } from './data/WalletTable';
-export type { AccountTable, Account } from './data/AccountTable';
+export type { AddressTable, SuiteSyncAddress } from './data/AddressTable';
+export type { OutputTable, SuiteSyncOutput } from './data/OutputTable';
+export type { WalletTable, SuiteSyncWallet } from './data/WalletTable';
+export type { AccountTable, SuiteSyncAccount } from './data/AccountTable';

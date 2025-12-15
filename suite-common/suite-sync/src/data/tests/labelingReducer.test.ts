@@ -12,7 +12,7 @@ import {
     setOutputLabel,
     setWalletLabel,
 } from '../labelingActions';
-import { LabelingState, labelingReducer } from '../labelingReducer';
+import { SuiteSyncDataState, labelingReducer } from '../labelingReducer';
 import {
     selectAccountLabel,
     selectAccountLabels,
@@ -23,8 +23,8 @@ import {
     selectWalletLabel,
 } from '../labelingSelectors';
 
-const initialState: LabelingState = {
-    walletsLabels: {},
+const initialState: SuiteSyncDataState = {
+    wallets: {},
 };
 
 const walletDescriptor = asWalletDescriptor('mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q');
@@ -46,8 +46,8 @@ describe('labelingReducer', () => {
     });
 
     it('updates wallet label (existing wallet state)', () => {
-        const preloaded: LabelingState = {
-            walletsLabels: {
+        const preloaded: SuiteSyncDataState = {
+            wallets: {
                 [walletDescriptor]: {
                     walletLabel: 'Old Label',
                     accountLabels: [],
@@ -334,19 +334,19 @@ describe('labelingReducer', () => {
     });
 
     it('clears all labels for a wallet (remove whole entry)', () => {
-        const preloaded: LabelingState = {
-            walletsLabels: {},
+        const preloaded: SuiteSyncDataState = {
+            wallets: {},
         };
-        preloaded.walletsLabels[walletDescriptor] = {
-            walletLabel: 'To be removed',
-            accountLabels: [
+        preloaded.wallets[walletDescriptor] = {
+            wallet: 'To be removed',
+            accounts: [
                 {
                     accountDescriptor: asAccountDescriptor('acc-desc-1'),
                     networkSymbol: 'btc',
                     label: 'Account',
                 },
             ],
-            addressLabels: [
+            addresses: [
                 {
                     address: 'tb1qexampleaddressxyz',
                     label: 'Address',
@@ -354,7 +354,7 @@ describe('labelingReducer', () => {
                     networkSymbol: 'btc',
                 },
             ],
-            outputLabels: [
+            outputs: [
                 {
                     txId: 'deadbeefcafebabe',
                     outputIndex: 0,

@@ -6,9 +6,9 @@ import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-t
 export const LABELING_PREFIX = '@suite/labeling';
 
 /** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
-export const setWalletLabel = createAction(
-    `${LABELING_PREFIX}/set-device-label`,
-    (payload: { walletDescriptor: WalletDescriptor; label: string | null }) => ({ payload }),
+export const setEntity = createAction(
+    `${LABELING_PREFIX}/set-entity`,
+    (payload: { entity: any; tableName: string }) => ({ payload }),
 );
 
 /** @deprecated This shall be used **ONLY ONCE** in Evolu Subscribe Query. */
@@ -58,9 +58,5 @@ export const clearAllLabels = createAction(
 );
 
 export const labelingActions = {
-    setWalletLabel,
-    setAccountLabel,
-    setAddressLabel,
-    setOutputLabel,
-    clearAllLabels,
+    setEntity,
 };

@@ -1,9 +1,9 @@
-import { Account, AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { SuiteSyncAccount, SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 
 type FindAccountLabelParams = {
-    accountLabels: Account[];
+    accountLabels: SuiteSyncAccount[];
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
 };
@@ -18,7 +18,7 @@ export const findAccountLabel = ({
     );
 
 type FindAddressLabelParams = {
-    addressLabels: AddressLabel[];
+    addressLabels: SuiteSyncAddress[];
     address: string;
 };
 
@@ -26,7 +26,7 @@ export const findAddressLabel = ({ addressLabels, address }: FindAddressLabelPar
     addressLabels.find(it => it.address === address);
 
 type FindOutputLabelParams = {
-    outputLabels: OutputLabel[];
+    outputLabels: SuiteSyncOutput[];
     txId: string;
     outputIndex: number;
 };

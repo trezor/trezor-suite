@@ -7,7 +7,7 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { WalletLabel, WalletTable } from '@suite-common/suite-sync-storage';
+import { SuiteSyncWallet, WalletTable } from '@suite-common/suite-sync-storage';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
@@ -34,7 +34,7 @@ export class EvoluWalletTable implements WalletTable {
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('wallet').selectAll());
 
-    update = ({ walletDescriptor, label }: WalletLabel) => {
+    update = ({ walletDescriptor, label }: SuiteSyncWallet) => {
         const idResult = createWalletLabelId(walletDescriptor);
 
         if (!idResult.ok) {
@@ -56,7 +56,7 @@ export class EvoluWalletTable implements WalletTable {
         }
     };
 
-    subscribe = (onChange: (payload: WalletLabel) => void) => {
+    subscribe = (onChange: (payload: SuiteSyncWallet) => void) => {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {

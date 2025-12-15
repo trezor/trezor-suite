@@ -11,12 +11,12 @@ import {
 } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
+import { createSubscribeToRedux } from './data/subscribeLabeling';
+import { createUpdateAccountLabel } from './data/updateAccountLabel';
+import { createUpdateAddressLabel } from './data/updateAddressLabel';
+import { createUpdateOutputLabel } from './data/updateOutputLabel';
+import { createUpdateWalletLabel } from './data/updateWalletLabel';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { createSubscribeLabeling } from './labeling/subscribeLabeling';
-import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
-import { createUpdateAddressLabel } from './labeling/updateAddressLabel';
-import { createUpdateOutputLabel } from './labeling/updateOutputLabel';
-import { createUpdateWalletLabel } from './labeling/updateWalletLabel';
 import { createEnsureSuiteSyncOwner } from './owner/ensureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/loadSuiteSyncOwnerFromState';
 import {
@@ -89,7 +89,7 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    const subscribeLabeling = createSubscribeLabeling({
+    const subscribeLabeling = createSubscribeToRedux({
         subscriptionStorage,
         dispatch: deps.dispatch,
         ensureStorage,
@@ -99,7 +99,7 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeLabeling,
+        subscribeData: subscribeLabeling,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
