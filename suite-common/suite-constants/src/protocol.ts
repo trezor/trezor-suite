@@ -47,7 +47,6 @@ export type Protocol =
     | 'thod'
     | 'txrp'
     | 'txlm'
-    | 'tada'
     | 'dsol';
 
 export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
@@ -72,7 +71,6 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     tsep: ['tsep'],
     thod: ['thod'],
     txrp: ['txrp'],
-    tada: ['tada'],
     dsol: ['dsol'],
     xlm: ['stellar', 'xlm'],
     txlm: ['txlm'],

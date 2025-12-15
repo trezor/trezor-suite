@@ -282,7 +282,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
                         path: addressPath,
                     },
                     protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(account.symbol),
+                    networkId: getNetworkId(),
                     derivationType: getDerivationType(account.accountType),
                     chunkify: isCardanoAddressChunked,
                 });

@@ -169,7 +169,7 @@ export const signCardanoSendFormTransactionThunk = createThunk<
             tagCborSets: true,
             testnet: isTestnet(symbol),
             protocolMagic: getProtocolMagic(symbol),
-            networkId: getNetworkId(symbol),
+            networkId: getNetworkId(),
             fee: precomposedTransaction.fee,
             ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),

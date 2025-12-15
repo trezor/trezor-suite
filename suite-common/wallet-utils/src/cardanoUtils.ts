@@ -38,8 +38,7 @@ export const getProtocolMagic = (accountSymbol: Account['symbol']) =>
 
 export const getAddressType = () => PROTO.CardanoAddressType.BASE;
 
-export const getNetworkId = (accountSymbol: Account['symbol']) =>
-    accountSymbol === 'ada' ? CARDANO.NETWORK_IDS.mainnet : CARDANO.NETWORK_IDS.testnet;
+export const getNetworkId = () => CARDANO.NETWORK_IDS.mainnet;
 
 export const getNetworkName = (accountSymbol: string): 'preview' | 'mainnet' =>
     accountSymbol.toLowerCase() === 'ada' ? 'mainnet' : 'preview';

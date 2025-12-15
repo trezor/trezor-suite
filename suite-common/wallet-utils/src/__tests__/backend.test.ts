@@ -5,7 +5,6 @@ describe('backend utils', () => {
         expect(getDefaultBackendType('btc')).toBe('blockbook');
         expect(getDefaultBackendType('ltc')).toBe('blockbook');
         expect(getDefaultBackendType('ada')).toBe('blockfrost');
-        expect(getDefaultBackendType('tada')).toBe('blockfrost');
     });
 
     test('isTrezorConnectBackendType', () => {

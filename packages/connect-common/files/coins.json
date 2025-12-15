@@ -2731,7 +2731,7 @@
             }
         },
         {
-            "blockchain_link": { "type": "blockfrost", "url": ["wss://tada1.trezor.io"] },
+            "blockchain_link": null,
             "curve": "ed25519",
             "decimals": 6,
             "is_testnet": false,

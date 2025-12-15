@@ -18,8 +18,7 @@ export const getContractAddressForNetworkSymbol = (
         case 'sol':
         case 'dsol':
             return contractAddress;
-        case 'ada':
-        case 'tada': {
+        case 'ada': {
             const { policyId } = parseAsset(contractAddress);
 
             return policyId.toLowerCase();

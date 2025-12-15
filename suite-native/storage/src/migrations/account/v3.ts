@@ -31,7 +31,6 @@ type NetworkSymbol =
     | 'thod'
     | 'txrp'
     | 'ada'
-    | 'tada'
     | 'sol'
     | 'dsol';
 

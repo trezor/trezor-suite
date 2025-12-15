@@ -18,7 +18,7 @@ describe('utils', () => {
             },
         );
 
-        it.each(['ada', 'sol', 'xrp', 'xlm', 'dsol', 'tada', 'txrp', 'txlm'])(
+        it.each(['ada', 'sol', 'xrp', 'xlm', 'dsol', 'txrp', 'txlm'])(
             'should return null for other network type: %s',
             symbol => {
                 expect(getFeeDecimals({ symbol: symbol as NetworkSymbol })).toBeNull();

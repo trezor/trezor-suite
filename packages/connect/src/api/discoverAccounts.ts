@@ -36,12 +36,12 @@ type Request = AdditionalParams & {
     skip: number;
 };
 
-type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' | 'tada' }>;
+type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' }>;
 
 type CardanoRequest = Request & { account: CardanoTypeItem };
 
 const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
-    account.symbol === 'ada' || account.symbol === 'tada';
+    account.symbol === 'ada';
 
 const isCardanoRequest = (request: Request): request is CardanoRequest =>
     isCardano(request.account);

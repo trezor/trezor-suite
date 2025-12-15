@@ -10,7 +10,8 @@ export type LegacyNetworkSymbol =
     | 'nmc'
     | 'vtc'
     | 'btg'
-    | 'xmr';
+    | 'xmr'
+    | 'tada';
 
 export const NETWORK_ICONS = {
     ada: require('../images/networks/ada.svg'),

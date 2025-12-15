@@ -10,7 +10,8 @@ export type LegacyNetworkSymbol =
     | 'nmc'
     | 'vtc'
     | 'btg'
-    | 'xmr';
+    | 'xmr'
+    | 'tada';
 
 export const COINS: Record<NetworkSymbol | LegacyNetworkSymbol, string> = {
     ada: require('../images/coins/ada.svg'),

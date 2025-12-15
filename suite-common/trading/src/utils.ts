@@ -135,13 +135,12 @@ export const getUnusedAddressFromAccount = (account: Account) => {
 
 export const mapTestnetSymbol = (
     symbol: NetworkSymbol,
-): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm' | 'tada'> => {
+): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm'> => {
     if (symbol === 'test') return 'btc';
     if (symbol === 'tsep') return 'eth';
     if (symbol === 'thod') return 'eth';
     if (symbol === 'txrp') return 'xrp';
     if (symbol === 'txlm') return 'xlm';
-    if (symbol === 'tada') return 'ada';
 
     return symbol;
 };

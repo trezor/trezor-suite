@@ -822,7 +822,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         });
 
         await updateAll(transaction, 'txs', tx => {
-            if (['ada', 'tada'].includes(tx.tx.symbol)) {
+            if (tx.tx.symbol === 'ada') {
                 tx.tx.tokens = tx.tx.tokens?.map(token => {
                     const { policyId } = parseAsset(token.contract);
 

@@ -364,7 +364,7 @@ export const signTransaction =
             testnet: isTestnet(account.symbol),
             fee: txPlan.fee,
             protocolMagic: getProtocolMagic(account.symbol),
-            networkId: getNetworkId(account.symbol),
+            networkId: getNetworkId(),
             derivationType: getDerivationType(account.accountType),
             tagCborSets: true,
             ttl: txPlan.ttl?.toString(),

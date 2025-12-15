@@ -25,7 +25,6 @@ export type NetworkSymbol =
     | 'thod'
     | 'txrp'
     | 'txlm'
-    | 'tada'
     | 'dsol';
 
 export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
