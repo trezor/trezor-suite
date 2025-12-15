@@ -6,6 +6,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 export const CardanoOutdatedStakingBanner = () => {
     const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export const CardanoOutdatedStakingBanner = () => {
                 </Banner.Button>
             }
         >
-            <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy }} />
+            <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy: formatApyValue(apy) }} />
         </Banner>
     );
 };

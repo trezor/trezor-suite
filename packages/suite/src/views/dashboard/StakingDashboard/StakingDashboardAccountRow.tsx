@@ -16,7 +16,7 @@ import {
     getStakingLimitsByNetworkSymbol,
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
-import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
+import { Button, Column, Icon, Paragraph, Row, Table } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -24,8 +24,11 @@ import { BigNumber } from '@trezor/utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
+import { StakingDashboardRewardsAmount } from './StakingDashboardRewardsAmount';
 
 export const StakingDashboardAccountRow = ({ account }: { account: Account }) => {
     const dispatch = useDispatch();
@@ -153,7 +156,11 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             <Table.Cell>
                 <Row width="100%" alignItems="center" justifyContent="space-between">
                     <Column alignItems="flex-start">
-                        <H4>{formatCryptoAmount(isStakingActive ? currentRewards : '0', true)}</H4>
+                        <StakingDashboardRewardsAmount
+                            accountSymbol={account.symbol}
+                            rewards={isStakingActive ? currentRewards : '0'}
+                            apy={apy}
+                        />
 
                         {isStakingActive && (
                             <Paragraph typographyStyle="hint" variant="tertiary">
@@ -184,9 +191,14 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
         return (
             <Table.Cell>
                 <Column>
-                    <H4 variant="primary">{formatCryptoAmount(potentialRewards, true)}</H4>
+                    <StakingDashboardRewardsAmount
+                        accountSymbol={account.symbol}
+                        rewards={potentialRewards}
+                        apy={apy}
+                        variant="primary"
+                    />
 
-                    {!isCardanoNetworkType && (
+                    {!isCardanoNetworkType && apy && (
                         <Paragraph typographyStyle="hint" variant="tertiary">
                             <Translation
                                 id="TR_STAKING_DASHBOARD_IF_YOU_ADD"
@@ -210,9 +222,9 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
             <Table.Cell>
                 {state === 'staking-outdated-provider' ? (
-                    <Translation id="TR_STAKE_UNKNOWN_APY" />
+                    <Translation id="TR_STAKE_NOT_AVAILABLE" />
                 ) : (
-                    <>~{apy}%</>
+                    <ApyValue apy={apy} />
                 )}
             </Table.Cell>
 
@@ -322,7 +334,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
                             <Paragraph typographyStyle="body" variant="warning">
                                 <Translation
                                     id="TR_STAKING_DASHBOARD_OUTDATED_PROVIDER"
-                                    values={{ apy }}
+                                    values={{ apy: formatApyValue(apy) }}
                                 />
                             </Paragraph>
                         </Row>

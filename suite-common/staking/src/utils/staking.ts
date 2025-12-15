@@ -10,7 +10,7 @@ import { BigNumber } from '@trezor/utils';
 import { getEthereumStakingAddressByType } from './ethereumStaking';
 import { StakingTotalRewards } from '../types';
 
-export const calculateGains = (amount: string, apy: number, days: number) => {
+export const calculateGains = (amount: string, apy: number | null, days: number) => {
     const rewards = calculateRewards(amount, apy, days);
 
     return new BigNumber(rewards).toFixed(5, 1);

@@ -34,6 +34,7 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
@@ -160,7 +161,7 @@ export const EmptyStakingCard = () => {
                             <H3>
                                 <Translation
                                     id="TR_STAKING_CARD_TITLE"
-                                    values={{ apy, displaySymbol }}
+                                    values={{ apy: formatApyValue(apy), displaySymbol }}
                                 />
                             </H3>
                             <Paragraph variant="tertiary" maxWidth={700}>

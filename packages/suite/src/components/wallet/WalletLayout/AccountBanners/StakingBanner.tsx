@@ -21,6 +21,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
 type StakingBannerProps = {
     account: Account;
@@ -159,10 +160,11 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 <H4>
                     <Translation
                         id="TR_STAKING_BANNER_DETAIL_TITLE"
-                        values={{ apy, displaySymbol }}
+                        values={{ apy: formatApyValue(apy), displaySymbol }}
                     />
                 </H4>
-                <Paragraph typographyStyle="hint">
+
+                <Paragraph variant="tertiary" typographyStyle="hint">
                     {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
                         <Translation
                             id="TR_STAKING_BANNER_DETAIL_TEXT_EMPTY"

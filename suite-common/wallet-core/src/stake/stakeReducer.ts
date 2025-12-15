@@ -102,23 +102,22 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.serializedTx;
         })
         .addCase(fetchEverstakeData.pending, (state, action) => {
-            const { symbol } = action.meta.arg;
+            const { symbol, endpointType } = action.meta.arg;
 
             if (!state.data[symbol]) {
-                state.data[symbol] = {
-                    poolStats: {
-                        error: false,
-                        isLoading: true,
-                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
-                    },
-                    validatorsQueue: {
-                        error: false,
-                        isLoading: true,
-                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                        data: {},
-                    },
+                state.data[symbol] = {};
+            }
+
+            if (!state.data[symbol]?.[endpointType]) {
+                state.data[symbol][endpointType] = {
+                    error: false,
+                    isLoading: true,
+                    lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                    data: {},
                 };
+            } else {
+                state.data[symbol][endpointType].isLoading = true;
+                state.data[symbol][endpointType].error = false;
             }
         })
         .addCase(fetchEverstakeData.fulfilled, (state, action) => {
@@ -152,6 +151,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         .addCase(fetchEverstakeStakingInfo.pending, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
 
+            if (!state.data[symbol]) {
+                state.data[symbol] = {};
+            }
+
             if (!state.data[symbol]?.[endpointType]) {
                 state.data[symbol] = {
                     ...state.data[symbol],
@@ -162,6 +165,9 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                         data: {},
                     },
                 };
+            } else {
+                state.data[symbol][endpointType].isLoading = true;
+                state.data[symbol][endpointType].error = false;
             }
         })
         .addCase(fetchEverstakeStakingInfo.fulfilled, (state, action) => {
