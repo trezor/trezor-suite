@@ -1,6 +1,4 @@
 import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
-import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
-import { logger } from 'redux-logger';
 
 import {
     ExtraDependencies,
@@ -46,8 +44,12 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     ];
 
     if (__DEV__) {
-        enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
+        // eslint-disable-next-line import/no-extraneous-dependencies
+        const { rozeniteDevToolsEnhancer } = require('@rozenite/redux-devtools-plugin');
+        enhancers.push(rozeniteDevToolsEnhancer());
+
         if (ENABLE_REDUX_LOGGER) {
+            const logger = require('redux-logger');
             middlewares.push(logger);
         }
     }
@@ -79,6 +81,7 @@ export const initStore = async (preloadedState?: PreloadedState) => {
                 )
                 .prepend(deviceConnectionMiddleware.middleware)
                 .concat(getMiddlewares(() => extra)),
+        devTools: false, // Rozenite DevTools will be used instead of default browser dev tools
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 

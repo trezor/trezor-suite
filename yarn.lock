@@ -13491,7 +13491,6 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
-    redux-devtools-expo-dev-plugin: "npm:2.0.0"
     redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
   languageName: unknown
@@ -40024,20 +40023,6 @@ __metadata:
     indent-string: "npm:^4.0.0"
     strip-indent: "npm:^3.0.0"
   checksum: 10/fa1ef20404a2d399235e83cc80bd55a956642e37dd197b4b612ba7327bf87fa32745aeb4a1634b2bab25467164ab4ed9c15be2c307923dd08b0fe7c52431ae6b
-  languageName: node
-  linkType: hard
-
-"redux-devtools-expo-dev-plugin@npm:2.0.0":
-  version: 2.0.0
-  resolution: "redux-devtools-expo-dev-plugin@npm:2.0.0"
-  dependencies:
-    "@redux-devtools/instrument": "npm:^2.2.0"
-    "@redux-devtools/utils": "npm:^3.1.1"
-    jsan: "npm:^3.1.14"
-  peerDependencies:
-    expo: ">=53"
-    redux: "*"
-  checksum: 10/00fe947bef2fbe1a54680ff67fd67f183dc54af59986544a3906c80215468429bd9d06e5791a9585d76c7ad6032cce2d2c3ca78421f400abf9c1f0af869cb0c1
   languageName: node
   linkType: hard
 
