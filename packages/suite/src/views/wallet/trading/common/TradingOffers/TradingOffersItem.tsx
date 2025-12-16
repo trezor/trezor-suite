@@ -5,7 +5,9 @@ import {
     TradingTradeMapProps,
     getTagAndInfoNote,
     sellUtils,
+    tradingBuyActions,
     tradingExchangeActions,
+    tradingSellActions,
 } from '@suite-common/trading';
 import { Badge, Button, Card, Row, Text } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -20,8 +22,6 @@ import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
     getSelectQuoteTyped,
-    isTradingBuyContext,
-    isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
@@ -117,27 +117,28 @@ export const TradingOffersItem = ({ quote }: TradingOffersItemProps) => {
 
     const selectQuote = getSelectQuoteTyped(context);
 
-    const { navigateToExchangeForm } = useTradingNavigation(account);
+    const { navigateToExchangeForm, navigateToBuyForm, navigateToSellForm } =
+        useTradingNavigation(account);
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
     const onSelectQuote = () => {
-        if (isTradingExchangeContext(context)) {
-            const trade = quote as ExchangeTrade;
-            dispatch(tradingExchangeActions.savePreselectedQuote(trade));
-            navigateToExchangeForm();
+        switch (context.type) {
+            case 'exchange':
+                dispatch(tradingExchangeActions.savePreselectedQuote(quote as ExchangeTrade));
+                navigateToExchangeForm();
+                break;
 
-            return;
+            case 'buy':
+                dispatch(tradingBuyActions.savePreselectedQuote(quote as BuyTrade));
+                navigateToBuyForm();
+                break;
+
+            case 'sell':
+                dispatch(tradingSellActions.savePreselectedQuote(quote as SellFiatTrade));
+                navigateToSellForm();
+                break;
         }
-
-        if (isTradingBuyContext(context)) {
-            const trade = quote as BuyTrade;
-            context.selectQuote(trade);
-
-            return;
-        }
-
-        selectQuote(quote);
     };
 
     const isSellVerificationRequired =
