@@ -26,6 +26,7 @@ export interface TradingBuyState {
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
+    preselectedQuote: BuyTrade | undefined;
     tradingAccountKey?: AccountKey;
     receiveAddress?: string;
     isLoading: boolean;
@@ -40,6 +41,7 @@ export const buyInitialState: TradingBuyState = {
     buyInfo: undefined,
     quotesRequest: undefined,
     selectedQuote: undefined,
+    preselectedQuote: undefined,
     quotes: [],
     tradingAccountKey: undefined,
     receiveAddress: undefined,
@@ -65,6 +67,9 @@ const tradingBuySlice = createSlice({
         },
         saveQuotes(state, action: PayloadAction<BuyTrade[]>) {
             state.quotes = action.payload;
+        },
+        savePreselectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
+            state.preselectedQuote = action.payload;
         },
         saveSelectedQuote(state, action: PayloadAction<BuyTrade | undefined>) {
             state.selectedQuote = action.payload;

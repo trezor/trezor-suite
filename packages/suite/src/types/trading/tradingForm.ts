@@ -135,6 +135,7 @@ export interface TradingBuyFormContextProps
     quotesRequest: BuyTradeQuoteRequest | undefined;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
+    preselectedQuote: BuyTrade | undefined;
     trade?: TradingTransactionBuy;
     verifiedAddress: TradingVerifiedAddress;
     // form - additional helpers for form
@@ -167,6 +168,7 @@ export interface TradingSellFormContextProps
     feeInfo: FeeInfo;
     quotes: SellFiatTrade[];
     selectedQuote?: SellFiatTrade;
+    preselectedQuote: SellFiatTrade | undefined;
     trade?: TradingTransactionSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
     // form - additional helpers for form

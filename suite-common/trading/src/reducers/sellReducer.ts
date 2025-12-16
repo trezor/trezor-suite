@@ -18,6 +18,7 @@ export type TradingSellState = {
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[];
     selectedQuote: SellFiatTrade | undefined;
+    preselectedQuote: SellFiatTrade | undefined;
     isFromRedirect: boolean;
     // internal selected account key in trading section
     tradingAccountKey?: AccountKey;
@@ -33,6 +34,7 @@ export const sellInitialState: TradingSellState = {
     quotesRequest: undefined,
     quotes: [],
     selectedQuote: undefined,
+    preselectedQuote: undefined,
     transactionId: undefined,
     isFromRedirect: false,
     tradingAccountKey: undefined,
@@ -53,6 +55,9 @@ const tradingSellSlice = createSlice({
         },
         saveQuoteRequest(state, action: PayloadAction<SellFiatTradeQuoteRequest>) {
             state.quotesRequest = action.payload;
+        },
+        savePreselectedQuote(state, action: PayloadAction<SellFiatTrade | undefined>) {
+            state.preselectedQuote = action.payload;
         },
         saveQuotes(state, action: PayloadAction<SellFiatTrade[]>) {
             state.quotes = action.payload;

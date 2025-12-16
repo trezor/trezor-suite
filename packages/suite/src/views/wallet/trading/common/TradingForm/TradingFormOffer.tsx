@@ -100,9 +100,7 @@ export const TradingFormOffer = () => {
     const { cryptoIdToPlatformName } = useTradingUtils();
     const providers = getProvidersInfoProps(context);
     const bestScoredQuote = quotes?.[0];
-    const preselectedQuote = isTradingExchangeContext(context)
-        ? context.preselectedQuote
-        : undefined;
+    const { preselectedQuote } = context;
     const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
@@ -426,8 +424,8 @@ export const TradingFormOffer = () => {
                 ) : (
                     <TradingFormOfferItem
                         bestQuote={quote}
-                        isFormLoading={state.isFormLoading}
-                        isFormInvalid={state.isFormInvalid}
+                        isFormLoading={state.isFormLoading && !preselectedQuote}
+                        isFormInvalid={state.isFormInvalid && !preselectedQuote}
                         providers={providers}
                         amountIsEmpty={amountIsEmpty}
                         tradingType={context.type}
