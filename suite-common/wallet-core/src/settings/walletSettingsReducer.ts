@@ -5,7 +5,12 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
+import {
+    NetworkSymbol,
+    getNetwork,
+    getNetworkType,
+    networkSymbolCollection,
+} from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
@@ -133,6 +138,11 @@ export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
     enabledNetworks => enabledNetworks.includes('btc'),
+);
+
+export const selectIsAnyNonBitcoinLikeNetworkEnabled = createMemoizedSelector(
+    [selectEnabledNetworks],
+    enabledNetworks => enabledNetworks.some(network => getNetworkType(network) !== 'bitcoin'),
 );
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {

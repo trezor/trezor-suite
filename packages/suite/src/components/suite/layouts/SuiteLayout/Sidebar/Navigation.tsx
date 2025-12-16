@@ -3,7 +3,10 @@ import { FC, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
+import {
+    selectHasBitcoinOnlyFirmware,
+    selectIsAnyNonBitcoinLikeNetworkEnabled,
+} from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -44,6 +47,7 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
 
     const isDebug = useSelector(selectIsDebugModeActive);
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+    const hasNonBitcoinEnabled = useSelector(selectIsAnyNonBitcoinLikeNetworkEnabled);
 
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
@@ -54,7 +58,7 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
                     goToRoute: startRoute,
                     routes: [startRoute],
                 },
-                ...(isDebug && !isBtcOnly
+                ...(isDebug && !isBtcOnly && hasNonBitcoinEnabled
                     ? [
                           {
                               nameId: 'TR_EARN',
@@ -77,7 +81,7 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
                     'data-testid': '@suite/menu/settings',
                 },
             ],
-            [startRoute, isDebug, isBtcOnly],
+            [startRoute, isDebug, isBtcOnly, hasNonBitcoinEnabled],
         );
 
     return (

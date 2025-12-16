@@ -29,10 +29,7 @@ export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
 
     if (isInBlWithFwPresent) return 'bootloader';
     if (device.features?.initialized) return 'initialized';
-    if (device.features?.no_backup) return 'seedless';
-    if (device.type === 'unreadable') return 'unreadable';
-
-    return 'ok';
+    // removed branches that never executed in our codebase
 };
 
 export const deviceStatuses = [
@@ -64,6 +61,7 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (device.status === 'busy') {
         return 'device-busy';
     }
+
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
