@@ -4,6 +4,7 @@ import {
     act,
     renderWithStoreProviderAsync,
     userEvent,
+    waitFor,
 } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
@@ -78,6 +79,7 @@ describe('TradingSellPreviewScreen', () => {
 
         await renderTradingSellPreviewScreen(preloadedState);
 
+        await waitFor(() => expect(mockDoBankAccountVerificationCheck).toHaveBeenCalled());
         expect(mockDoBankAccountVerificationCheck).toHaveBeenCalledTimes(1);
     });
 
@@ -146,6 +148,7 @@ describe('TradingSellPreviewScreen', () => {
 
         await renderTradingSellPreviewScreen(preloadedState);
 
+        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
     });
 
@@ -161,6 +164,7 @@ describe('TradingSellPreviewScreen', () => {
 
         await renderTradingSellPreviewScreen(preloadedState);
 
+        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
     });
 
@@ -192,6 +196,7 @@ describe('TradingSellPreviewScreen', () => {
 
         await renderTradingSellPreviewScreen(preloadedState);
 
+        await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
         // Should be called exactly once for this orderId
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
     });
@@ -210,6 +215,7 @@ describe('TradingSellPreviewScreen', () => {
         const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
         await userEvent.press(getByText('Continue'));
 
+        await waitFor(() => expect(mockRetryDoSellTrade).toHaveBeenCalled());
         expect(mockRetryDoSellTrade).toHaveBeenCalledTimes(1);
     });
 });
