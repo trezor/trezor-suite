@@ -71,7 +71,7 @@ export const ConfirmValueModal = ({
     const modalContext = useSelector(state => state.modal.context);
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { accountLabel, addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
+    const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
@@ -142,10 +142,7 @@ export const ConfirmValueModal = ({
                         <Row gap={spacings.xxs}>
                             <CoinLogo size={14} symbol={account.symbol} />
                             <AccountLabel
-                                account={{
-                                    ...account,
-                                    accountLabel,
-                                }}
+                                account={account}
                                 accountTypeBadgeSize="small"
                                 showAccountTypeBadge
                             />
