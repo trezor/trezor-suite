@@ -37,8 +37,8 @@ const openBluetoothSettings = async () => {
         const flatpakPrefix = flatpak ? 'flatpak-spawn --host ' : '';
         const commands = {
             GNOME: 'gnome-control-center bluetooth',
-            KDE: 'systemsettings5 bluetooth',
-            PANTHEON: 'switchboard bluetooth',
+            KDE: 'systemsettings kcm_bluetooth',
+            PANTHEON: 'open settings://',
             BLUEMAN: 'blueman-manager',
         };
 
