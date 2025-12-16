@@ -32,6 +32,7 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
 
 const switchWrapperStyle = prepareNativeStyle(_ => ({
     flex: 1,
+    zIndex: 10,
 }));
 
 export const DeviceSwitch = () => {
