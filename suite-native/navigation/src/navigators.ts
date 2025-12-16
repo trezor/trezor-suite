@@ -24,6 +24,7 @@ import {
     DemoAccountQuestionnaireStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
+    DeviceAutoConnectStackRoutes,
     DeviceCheckBackupStackRoutes,
     DeviceNameStackRoutes,
     DeviceOnboardingStackRoutes,
@@ -232,6 +233,10 @@ export type DeviceSettingsStackParamList = {
     };
     [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
     [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAutoConnect]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
+    [DeviceSettingsStackRoutes.DeviceAutoConnectGuard]: undefined;
+    [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtection]: undefined;
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
@@ -242,9 +247,7 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.BackupAndPassphraseStack]: NavigatorScreenParams<BackupAndPassphraseParamList>;
-    [DeviceSettingsStackRoutes.AutoConnectSettings]: undefined;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
-    [DeviceSettingsStackRoutes.UnpairBluetoothDevice]: undefined;
 };
 
 export type FirmwareUpdateStackParamList = {
@@ -257,6 +260,11 @@ export type FirmwareUpdateStackParamList = {
 export type FirmwareLanguageStackParamList = {
     [FirmwareLanguageStackRoutes.DeviceConnectionGuard]: undefined;
     [FirmwareLanguageStackRoutes.ConfirmLanguageChange]: undefined;
+};
+
+export type DeviceAutoConnectStackParamList = {
+    [DeviceAutoConnectStackRoutes.DeviceConnectionGuard]: undefined;
+    [DeviceAutoConnectStackRoutes.ConfirmAutoConnect]: undefined;
 };
 
 export type DevicePinProtectionStackParamList = {

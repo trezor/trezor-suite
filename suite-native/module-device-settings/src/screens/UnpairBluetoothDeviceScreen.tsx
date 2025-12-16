@@ -2,7 +2,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button, VStack } from '@suite-native/atoms';
 import { useBluetoothDevice } from '@suite-native/bluetooth';
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -24,8 +23,6 @@ export const UnpairBluetoothDeviceScreen = () => {
 
     const { unpairBluetoothDevice } = useBluetoothDevice();
 
-    useDeviceConnectionGuard();
-
     const handleUnpairTrezor = async () => {
         navigation.navigate(DeviceSettingsStackRoutes.ContinueOnTrezor);
         await unpairBluetoothDevice({
@@ -46,7 +43,7 @@ export const UnpairBluetoothDeviceScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.bluetooth.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.bluetooth.description" />}
-                    closeActionType="close"
+                    closeActionType="back"
                 />
             }
         >

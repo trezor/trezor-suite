@@ -8,6 +8,7 @@ import {
 } from '@suite-native/device';
 import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import { Screen } from '@suite-native/navigation';
+import TrezorConnect from '@trezor/connect';
 
 type DeviceConnectionGuardScreenParams = {
     onCancel?: () => void;
@@ -30,3 +31,7 @@ export const DeviceConnectionGuardScreen = ({ onCancel }: DeviceConnectionGuardS
         </Screen>
     );
 };
+
+export const DeviceConnectionGuardScreenWithCancel = () => (
+    <DeviceConnectionGuardScreen onCancel={TrezorConnect.cancel} />
+);

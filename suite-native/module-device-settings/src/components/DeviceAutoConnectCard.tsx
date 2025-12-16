@@ -17,7 +17,7 @@ export const DeviceAutoConnectCard = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const onPress = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.AutoConnectSettings);
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceAutoConnect);
     };
 
     return (
