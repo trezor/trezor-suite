@@ -18,11 +18,11 @@
         "decode:sol:stake": "tsx ./e2e/scripts/decode-sol-staking-account.ts"
     },
     "devDependencies": {
-        "@currents/playwright": "^1.17.0",
-        "@playwright/browser-chromium": "^1.55.0",
-        "@playwright/browser-firefox": "^1.55.0",
-        "@playwright/browser-webkit": "^1.55.0",
-        "@playwright/test": "^1.55.0",
+        "@currents/playwright": "^1.19.0",
+        "@playwright/browser-chromium": "^1.57.0",
+        "@playwright/browser-firefox": "^1.57.0",
+        "@playwright/browser-webkit": "^1.57.0",
+        "@playwright/test": "^1.57.0",
         "@scure/bip39": "^1.5.1",
         "@solana-program/stake": "^0.5.0",
         "@solana/addresses": "^2.3.0",
