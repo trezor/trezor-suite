@@ -20,7 +20,6 @@ test.describe('Metadata - address labeling', { tag: ['@group=metadata', '@webOnl
         });
 
         await test.step('Add address label', async () => {
-            await metadataPage.address.clickEditLabel(metadataAddress);
             await metadataPage.address.fillLabelInput('meow address');
             await page.keyboard.press('Enter');
             await metadataPage.address.successIconIsVisible(metadataAddress);
