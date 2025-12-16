@@ -98,13 +98,6 @@ const setup = async ({
     const [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     log('beforeEach', 'waiting for analytics confirm button');
-    await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-        state: 'visible',
-        timeout: 40000,
-    });
-    log('beforeEach', 'clicking on analytics confirm button');
-    await popup.click("button[data-testid='@analytics/continue-button']");
-
     const popupClosedPromise = new Promise(resolve => {
         popup.on('close', () => resolve(undefined));
     });

@@ -16,9 +16,6 @@
             "path": "../blockchain-link-utils"
         },
         {
-            "path": "../connect-analytics"
-        },
-        {
             "path": "../connect-common"
         },
         {

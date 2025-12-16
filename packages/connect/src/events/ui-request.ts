@@ -1,7 +1,6 @@
 /*
  * messages to UI emitted as UI_EVENT
  */
-import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 import {
     DeviceModelInternal,
     FirmwareRelease,
@@ -215,7 +214,6 @@ export interface UiRequestConfirmation {
             className: string;
             label: string;
         };
-        analytics?: EventTypeDeviceSelected;
     };
 }
 

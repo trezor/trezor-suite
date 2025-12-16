@@ -31,8 +31,6 @@ export interface OriginBoundState {
 }
 
 export interface GlobalState {
-    tracking_enabled?: boolean;
-    tracking_id?: string;
     browser?: boolean;
 }
 

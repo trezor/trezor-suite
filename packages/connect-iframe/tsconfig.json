@@ -7,7 +7,6 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../connect" },
-        { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../bundler-security" },
         { "path": "../eslint" }

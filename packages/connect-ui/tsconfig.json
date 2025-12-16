@@ -4,7 +4,6 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect" },
-        { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },

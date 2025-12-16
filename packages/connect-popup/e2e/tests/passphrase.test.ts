@@ -102,16 +102,6 @@ test('input passphrase in popup and device accepts it', async () => {
     [popup] = await openPopup(context, explorerPage, isWebExtension);
     await popup.waitForLoadState('load');
 
-    log('waiting for analytics continue button');
-    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
-
-    if (isWebExtension) {
-        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
-        await popup.waitForTimeout(1000);
-    }
-    log('clicking on analytics continue button');
-    await waitAndClick(popup, ['@analytics/continue-button']);
-
     if (isWebExtension || isCoreInPopup) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
@@ -155,14 +145,6 @@ test('introduce passphrase in popup and device rejects it', async () => {
     [popup] = await openPopup(context, explorerPage, isWebExtension);
     await popup.waitForLoadState('load');
 
-    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
-
-    if (isWebExtension) {
-        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
-        await popup.waitForTimeout(1000);
-    }
-    await waitAndClick(popup, ['@analytics/continue-button']);
-
     if (isWebExtension || isCoreInPopup) {
         log('waiting for device list');
         await popup.waitForSelector('.select-device-list button.list');
@@ -200,10 +182,6 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
-
-    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
-
-    await waitAndClick(popup, ['@analytics/continue-button']);
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -250,10 +228,6 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
-
-    await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
-
-    await waitAndClick(popup, ['@analytics/continue-button']);
 
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -319,9 +293,6 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('waiting for popup');
     [popup] = await Promise.all([page.waitForEvent('popup')]);
-
-    log('waiting and click confirm analytics button');
-    await waitAndClick(popup, ['@analytics/continue-button']);
 
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);

@@ -2,14 +2,13 @@ import { JSX, ReactNode, useCallback, useEffect, useMemo, useState } from 'react
 
 import styled from 'styled-components';
 
-import { CoreRequestMessage, POPUP, UI } from '@trezor/connect';
+import { CoreRequestMessage, UI } from '@trezor/connect';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
 import { OriginBoundState, storage } from '@trezor/connect-common';
 import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 // views
 
-import { BottomRightFloatingBar } from './components/BottomRightFloatingBar';
 import { InfoPanel } from './components/InfoPanel';
 import { Loader } from './components/Loader';
 import {
@@ -21,7 +20,6 @@ import { GlobalStyle } from './support/GlobalStyle';
 import { IntlWrapper } from './support/IntlWrapper';
 import { ThemeWrapper } from './support/ThemeWrapper';
 import { State, getDefaultState } from './types';
-import { initAnalytics } from './utils/analytics';
 import { ConnectUIEventProps, reactEventBus } from './utils/eventBus';
 import { ErrorView } from './views/Error';
 import { Passphrase } from './views/Passphrase';
@@ -72,7 +70,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
 
     useEffect(() => {
         reactEventBus.dispatch({ type: 'connect-ui-rendered' });
-        initAnalytics();
 
         // subscribe to changes
         storage.on('changed', storageNextState => {
@@ -180,14 +177,6 @@ export const ConnectUI = ({ postMessage, clearLegacyView }: ConnectUIProps) => {
                                 {Component}
                             </div>
                         )}
-                        <BottomRightFloatingBar
-                            onAnalyticsConfirm={enabled => {
-                                postMessage({
-                                    type: POPUP.ANALYTICS_RESPONSE,
-                                    payload: { enabled },
-                                });
-                            }}
-                        />
                     </Layout>
                 </IntlWrapper>
             </ThemeWrapper>

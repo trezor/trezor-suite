@@ -26,7 +26,6 @@ import { config } from '@trezor/connect/src/data/config';
 import { LogWriter, initLog } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
-import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo, storage } from '@trezor/connect-common';
 
 import { isOriginWhitelisted, parseConnectSettings } from './connectSettings';
@@ -107,7 +106,6 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         core.handleMessage({ type: POPUP.HANDSHAKE });
 
         const transports = core.getActiveTransports();
-        const settings = DataManager.getSettings();
 
         postMessage(
             createPopupMessage(POPUP.HANDSHAKE, {
@@ -127,30 +125,6 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             );
         }
 
-        const { tracking_enabled, tracking_id } = storage.load();
-
-        analytics.init(tracking_enabled, {
-            instanceId: tracking_id,
-            commitId: process.env.COMMIT_HASH || '',
-            isDev: process.env.NODE_ENV === 'development',
-        });
-
-        analytics.report({
-            type: EventType.AppReady,
-            payload: {
-                version: settings?.version,
-                npmVersion: settings?.npmVersion,
-                origin: settings?.origin,
-                referrerAppName: settings?.manifest?.appName,
-                referrerApp: settings?.manifest?.appUrl,
-                referrerEmail: settings?.manifest?.email,
-                method: method?.name,
-                payload: method?.payload ? Object.keys(method.payload) : undefined,
-                transportTypes: transports?.map(t => t.type),
-                bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
-            },
-        });
-
         return;
     }
 
@@ -158,14 +132,6 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     if (data.type === POPUP.CLOSED) {
         if (_popupMessagePort instanceof MessagePort) {
             _popupMessagePort = undefined;
-        }
-    }
-
-    if (data.type === POPUP.ANALYTICS_RESPONSE) {
-        if (data.payload.enabled) {
-            analytics.enable();
-        } else {
-            analytics.disable();
         }
     }
 
