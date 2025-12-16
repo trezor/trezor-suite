@@ -40,3 +40,5 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+# Reassure output directory
+.reassure

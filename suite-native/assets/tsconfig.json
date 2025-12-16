@@ -19,6 +19,9 @@
             "path": "../../suite-common/wallet-core"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
@@ -29,7 +32,9 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../staking" },
+        { "path": "../state" },
         { "path": "../tokens" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ]
 }

@@ -7,3 +7,4 @@ export * from './StoreProviderForTests';
 
 export * from './renderBasic';
 export * from './renderWithStore';
+export * from './performance';

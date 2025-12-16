@@ -19,6 +19,7 @@ css-in-js-utils
 css-loader
 css-minimizer-webpack-plugin
 csstype
+danger
 date-fns
 fantasticon
 fela
@@ -67,6 +68,7 @@ react-select
 react-svg
 react-toastify
 recharts
+reassure
 sharp
 simple-git
 storybook

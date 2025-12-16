@@ -8,7 +8,7 @@ import {
     waitFor,
 } from '@testing-library/react-native';
 
-import type { PreloadedState } from '@suite-native/state';
+import { PreloadedState } from '@suite-native/state';
 
 import {
     STORE_WARMING_UP_MSG,
