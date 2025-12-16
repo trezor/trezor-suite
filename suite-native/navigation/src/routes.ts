@@ -80,17 +80,19 @@ export enum DeviceSettingsStackRoutes {
     DeviceFirmware = 'DeviceFirmware',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     FirmwareLanguageStack = 'FirmwareLanguageStack',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+    DeviceAutoConnect = 'DeviceAutoConnect',
+    DeviceAutoConnectStack = 'DeviceAutoConnectStack',
+    DeviceAutoConnectGuard = 'DeviceAutoConnectGuard',
+    UnpairBluetoothDevice = 'UnpairBluetoothDevice',
     DevicePinProtection = 'DevicePinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
     BackupAndPassphraseStack = 'BackupAndPassphraseStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
-    ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceStack = 'WipeDeviceStack',
     DeviceNameStack = 'DeviceNameStack',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
-    UnpairBluetoothDevice = 'UnpairBluetoothDevice',
-    AutoConnectSettings = 'AutoConnectSettings',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -111,6 +113,11 @@ export enum FirmwareUpdateStackRoutes {
 export enum FirmwareLanguageStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmLanguageChange = 'ConfirmLanguageChange',
+}
+
+export enum DeviceAutoConnectStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ConfirmAutoConnect = 'ConfirmAutoConnect',
 }
 
 export enum DeviceCheckBackupStackRoutes {

@@ -4,33 +4,33 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import {
-    FirmwareLanguageStackParamList,
-    FirmwareLanguageStackRoutes,
+    DeviceAutoConnectStackParamList,
+    DeviceAutoConnectStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceConnectionGuardScreenWithCancel } from '../screens/DeviceConnectionGuardScreen';
 
-const FirmwareLanguageStack = createNativeStackNavigator<FirmwareLanguageStackParamList>();
+const DeviceAutoConnectStack = createNativeStackNavigator<DeviceAutoConnectStackParamList>();
 
-export const FirmwareLanguageStackNavigator = () => {
+export const DeviceAutoConnectStackNavigator = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     return (
-        <FirmwareLanguageStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+        <DeviceAutoConnectStack.Navigator screenOptions={stackNavigationOptionsConfig}>
             {!isDeviceConnected && (
-                <FirmwareLanguageStack.Screen
-                    name={FirmwareLanguageStackRoutes.DeviceConnectionGuard}
+                <DeviceAutoConnectStack.Screen
+                    name={DeviceAutoConnectStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreenWithCancel}
                 />
             )}
             {isDeviceConnected && (
-                <FirmwareLanguageStack.Screen
-                    name={FirmwareLanguageStackRoutes.ConfirmLanguageChange}
+                <DeviceAutoConnectStack.Screen
+                    name={DeviceAutoConnectStackRoutes.ConfirmAutoConnect}
                     component={ContinueOnTrezorScreen}
                 />
             )}
-        </FirmwareLanguageStack.Navigator>
+        </DeviceAutoConnectStack.Navigator>
     );
 };
