@@ -8,6 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 const TRUNCATION_PLACEHOLDER = ' ... ';
+const REGEXP_ADDRESS = /^(0x)?((.{8}).*(.{8})$)/;
 
 const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): RuleSet<object> => {
     switch (deviceModelInternal) {
@@ -29,14 +30,13 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
 };
 
 const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
-    text-wrap: balance;
     letter-spacing: 0;
     word-break: ${({ $isChunked }) => ($isChunked ? 'normal' : 'break-all')};
 
     ${({ $device }) => $device && mapDeviceModelToFontStyle($device)}
 `;
 
-const addSpacing = (value: string) => value.match(/.{1,4}/g)?.join(' ') || value;
+const addSpacing = (value: string) => value?.match(/.{1,4}/g)?.join(' ') || value;
 
 export type AddressProps = {
     value: string;
@@ -59,20 +59,17 @@ export const Address = ({
     const isAddressChunked = isChunked ?? isChunkedSettings === 'chunked';
     const placeholder = isAddressChunked ? TRUNCATION_PLACEHOLDER : TRUNCATION_PLACEHOLDER.trim();
 
-    const [full, beginning, middle, end] = (value.match(/^(.{8})(.*)(.{8})$/) || []).map(part =>
-        isAddressChunked ? addSpacing(part) : part,
+    const [, prefix = '', rest, beginning, end] = (value.match(REGEXP_ADDRESS) || []).map(part =>
+        isAddressChunked && part ? addSpacing(part) : part,
     );
 
-    const formattedValue = isTruncated ? beginning + placeholder + end : full;
+    const formattedValue = prefix + (isTruncated ? beginning + placeholder + end : rest);
 
     const handleCopy = (e: React.ClipboardEvent) => {
         const selection = window.getSelection()?.toString();
 
         e.preventDefault();
-        e.clipboardData?.setData(
-            'text/plain',
-            selection?.replace(placeholder, middle).replace(/\s/g, '') ?? value,
-        );
+        e.clipboardData?.setData('text/plain', selection?.replace(/\s/g, '') ?? value);
     };
 
     return (
