@@ -158,6 +158,7 @@ describe('TrezorConnect passphrase', () => {
         });
 
         // use invalid state on default instance
+        TrezorConnect.on('ui-request_passphrase', passphraseHandler('wrong'));
         const invalidState = await TrezorConnect.getAddress({
             device: {
                 instance: 0,
@@ -169,6 +170,7 @@ describe('TrezorConnect passphrase', () => {
         expect(invalidState.payload).toMatchObject({
             error: 'Passphrase is incorrect',
         });
+        TrezorConnect.removeAllListeners('ui-request_passphrase');
     });
 
     it('Using multiple passphrases with device restart', async () => {
