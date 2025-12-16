@@ -10,7 +10,7 @@ import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { mockNotExpected } from '../../../tests/utils';
-import { RefreshSuiteKeysUnavailable } from '../../refreshSuiteSyncKeys';
+import { RefreshSuiteKeysUnavailable } from '../../createRefreshSuiteSync';
 import { createSubscriptionStorage } from '../../storage/subscriptionStorage';
 import { createSubscribeLabeling } from '../subscribeLabeling';
 
