@@ -1,5 +1,5 @@
-import { addressType, byteArray2hexStr, hexStr2byteArray, sha256x2 } from './crypto/utils';
 import { decode as base58decode } from './crypto/base58';
+import { addressType, byteArray2hexStr, hexStr2byteArray, sha256x2 } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 function decodeRaw(buffer: number[]): number[] | undefined {
@@ -15,10 +15,11 @@ function decodeRaw(buffer: number[]): number[] | undefined {
     ) {
         return undefined;
     }
+
     return payload;
 }
 
-const isValidAddress = function (
+function isValidAddress(
     address: string,
     _currency?: Currency,
     _networkType?: NetworkType,
@@ -27,11 +28,12 @@ const isValidAddress = function (
         const buffer = base58decode(address);
         const payload = decodeRaw(buffer);
         if (!payload) return false;
+
         return true;
-    } catch (e) {
+    } catch {
         return false;
     }
-};
+}
 
 function getAddressType(
     address: string,
@@ -41,10 +43,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

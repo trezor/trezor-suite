@@ -1,11 +1,12 @@
-import JsSHA from 'jssha/src/sha256';
-import Blake256 from './blake256';
-import { keccak256 } from './sha3';
-import Blake2B from './blake2b';
-import { decode as base58Decode } from './base58';
-import * as base32 from './base32';
 import BigNum from 'browserify-bignum';
 import groestl from 'groestl-hash-js';
+import JsSHA from 'jssha/src/sha256';
+
+import * as base32 from './base32';
+import { decode as base58Decode } from './base58';
+import Blake256 from './blake256';
+import Blake2B from './blake2b';
+import { keccak256 } from './sha3';
 export type { AddressType } from '../types';
 
 // Address types, compatible with Trezor
@@ -41,6 +42,7 @@ function hexChar2byte(char: string): number {
     if (char >= '0' && char <= '9') {
         return char.charCodeAt(0) - '0'.charCodeAt(0);
     }
+
     return 0;
 }
 
@@ -49,6 +51,7 @@ function byte2hexStr(byte: number): string {
     let str = '';
     str += hexByteMap.charAt(byte >> 4);
     str += hexByteMap.charAt(byte & 0x0f);
+
     return str;
 }
 
@@ -58,6 +61,7 @@ function byteArray2hexStr(byteArray: ArrayLike<number>): string {
         str += byte2hexStr(byteArray[i]);
     }
     str += byte2hexStr(byteArray[byteArray.length - 1]);
+
     return str;
 }
 
@@ -79,6 +83,7 @@ function hexStr2byteArray(str: string): number[] {
             }
         }
     }
+
     return byteArray;
 }
 
@@ -87,6 +92,7 @@ export function toHex(arrayOfBytes: ArrayLike<number>): string {
     for (let i = 0; i < arrayOfBytes.length; i++) {
         hex += numberToHex(arrayOfBytes[i], 1);
     }
+
     return hex;
 }
 
@@ -97,6 +103,7 @@ export function sha256(payload: string, format = 'HEX'): string {
         format,
     );
     sha.update(payload);
+
     return sha.getHash(format);
 }
 

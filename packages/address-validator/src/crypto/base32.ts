@@ -1,7 +1,7 @@
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
 export function b32encode(input: string): string {
-    let parts: string[] = [];
+    const parts: string[] = [];
     let quanta = Math.floor(input.length / 5);
     const leftover = input.length % 5;
 
@@ -59,12 +59,13 @@ export function b32decode(input: string): Uint8Array {
         for (let i = 0; i < 8; ++i) {
             v[i] = alphabet.indexOf(input[j * 8 + i]);
         }
-        let i = 0;
+        const i = 0;
         buffer[j * 5 + 0] = (v[i + 0] << 3) | (v[i + 1] >> 2);
         buffer[j * 5 + 1] = ((v[i + 1] & 0x3) << 6) | (v[i + 2] << 1) | (v[i + 3] >> 4);
         buffer[j * 5 + 2] = ((v[i + 3] & 0xf) << 4) | (v[i + 4] >> 1);
         buffer[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
         buffer[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | v[i + 7];
     }
+
     return buffer;
 }

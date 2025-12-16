@@ -1,3 +1,5 @@
+/* eslint-disable */
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -10,14 +12,14 @@
 /*jslint bitwise: true */
 'use strict';
 
-var ERROR = 'input is invalid type';
-var WINDOW = typeof window === 'object';
-var root = WINDOW ? window : {};
+const ERROR = 'input is invalid type';
+let WINDOW = typeof window === 'object';
+let root = WINDOW ? window : {};
 if (root.JS_SHA3_NO_WINDOW) {
     WINDOW = false;
 }
-var WEB_WORKER = !WINDOW && typeof self === 'object';
-var NODE_JS =
+const WEB_WORKER = !WINDOW && typeof self === 'object';
+const NODE_JS =
     !root.JS_SHA3_NO_NODE_JS &&
     typeof process === 'object' &&
     process.versions &&
@@ -27,24 +29,24 @@ if (NODE_JS) {
 } else if (WEB_WORKER) {
     root = self;
 }
-var ARRAY_BUFFER = !root.JS_SHA3_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
-var HEX_CHARS = '0123456789abcdef'.split('');
-var SHAKE_PADDING = [31, 7936, 2031616, 520093696];
-var CSHAKE_PADDING = [4, 1024, 262144, 67108864];
-var KECCAK_PADDING = [1, 256, 65536, 16777216];
-var PADDING = [6, 1536, 393216, 100663296];
-var SHIFT = [0, 8, 16, 24];
-var RC = [
+const ARRAY_BUFFER = !root.JS_SHA3_NO_ARRAY_BUFFER && typeof ArrayBuffer !== 'undefined';
+const HEX_CHARS = '0123456789abcdef'.split('');
+const SHAKE_PADDING = [31, 7936, 2031616, 520093696];
+const CSHAKE_PADDING = [4, 1024, 262144, 67108864];
+const KECCAK_PADDING = [1, 256, 65536, 16777216];
+const PADDING = [6, 1536, 393216, 100663296];
+const SHIFT = [0, 8, 16, 24];
+const RC = [
     1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649, 0, 2147516545,
     2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 2147483658, 0, 2147516555, 0, 139,
     2147483648, 32905, 2147483648, 32771, 2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0,
     2147483658, 2147483648, 2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424,
     2147483648,
 ];
-var BITS = [224, 256, 384, 512];
-var SHAKE_BITS = [128, 256];
-var OUTPUT_TYPES = ['hex', 'buffer', 'arrayBuffer', 'array', 'digest'];
-var CSHAKE_BYTEPAD = {
+const BITS = [224, 256, 384, 512];
+const SHAKE_BITS = [128, 256];
+const OUTPUT_TYPES = ['hex', 'buffer', 'arrayBuffer', 'array', 'digest'];
+const CSHAKE_BYTEPAD = {
     128: 168,
     256: 136,
 };
@@ -61,63 +63,66 @@ if (ARRAY_BUFFER && (root.JS_SHA3_NO_ARRAY_BUFFER_IS_VIEW || !ArrayBuffer.isView
     };
 }
 
-var createOutputMethod = function (bits, padding, outputType) {
+const createOutputMethod = function (bits, padding, outputType) {
     return function (message) {
         return new Keccak(bits, padding, bits).update(message)[outputType]();
     };
 };
 
-var createShakeOutputMethod = function (bits, padding, outputType) {
+const createShakeOutputMethod = function (bits, padding, outputType) {
     return function (message, outputBits) {
         return new Keccak(bits, padding, outputBits).update(message)[outputType]();
     };
 };
 
-var createCshakeOutputMethod = function (bits, padding, outputType) {
+const createCshakeOutputMethod = function (bits, padding, outputType) {
     return function (message, outputBits, n, s) {
         return methods['cshake' + bits].update(message, outputBits, n, s)[outputType]();
     };
 };
 
-var createKmacOutputMethod = function (bits, padding, outputType) {
+const createKmacOutputMethod = function (bits, padding, outputType) {
     return function (key, message, outputBits, s) {
         return methods['kmac' + bits].update(key, message, outputBits, s)[outputType]();
     };
 };
 
-var createOutputMethods = function (method, createMethod, bits, padding) {
-    for (var i = 0; i < OUTPUT_TYPES.length; ++i) {
-        var type = OUTPUT_TYPES[i];
+const createOutputMethods = function (method, createMethod, bits, padding) {
+    for (let i = 0; i < OUTPUT_TYPES.length; ++i) {
+        const type = OUTPUT_TYPES[i];
         method[type] = createMethod(bits, padding, type);
     }
+
     return method;
 };
 
-var createMethod = function (bits, padding) {
-    var method = createOutputMethod(bits, padding, 'hex');
+const createMethod = function (bits, padding) {
+    const method = createOutputMethod(bits, padding, 'hex');
     method.create = function () {
         return new Keccak(bits, padding, bits);
     };
     method.update = function (message) {
         return method.create().update(message);
     };
+
     return createOutputMethods(method, createOutputMethod, bits, padding);
 };
 
-var createShakeMethod = function (bits, padding) {
-    var method = createShakeOutputMethod(bits, padding, 'hex');
+const createShakeMethod = function (bits, padding) {
+    const method = createShakeOutputMethod(bits, padding, 'hex');
     method.create = function (outputBits) {
         return new Keccak(bits, padding, outputBits);
     };
     method.update = function (message, outputBits) {
         return method.create(outputBits).update(message);
     };
+
     return createOutputMethods(method, createShakeOutputMethod, bits, padding);
 };
 
-var createCshakeMethod = function (bits, padding) {
-    var w = CSHAKE_BYTEPAD[bits];
-    var method = createCshakeOutputMethod(bits, padding, 'hex');
+const createCshakeMethod = function (bits, padding) {
+    const w = CSHAKE_BYTEPAD[bits];
+    const method = createCshakeOutputMethod(bits, padding, 'hex');
     method.create = function (outputBits, n, s) {
         if (!n && !s) {
             return methods['shake' + bits].create(outputBits);
@@ -128,24 +133,26 @@ var createCshakeMethod = function (bits, padding) {
     method.update = function (message, outputBits, n, s) {
         return method.create(outputBits, n, s).update(message);
     };
+
     return createOutputMethods(method, createCshakeOutputMethod, bits, padding);
 };
 
-var createKmacMethod = function (bits, padding) {
-    var w = CSHAKE_BYTEPAD[bits];
-    var method = createKmacOutputMethod(bits, padding, 'hex');
+const createKmacMethod = function (bits, padding) {
+    const w = CSHAKE_BYTEPAD[bits];
+    const method = createKmacOutputMethod(bits, padding, 'hex');
     method.create = function (key, outputBits, s) {
         return new Kmac(bits, padding, outputBits).bytepad(['KMAC', s], w).bytepad([key], w);
     };
     method.update = function (key, message, outputBits, s) {
         return method.create(key, outputBits, s).update(message);
     };
+
     return createOutputMethods(method, createKmacOutputMethod, bits, padding);
 };
 
-var algorithms = [
-    { name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod: createMethod },
-    { name: 'sha3', padding: PADDING, bits: BITS, createMethod: createMethod },
+const algorithms = [
+    { name: 'keccak', padding: KECCAK_PADDING, bits: BITS, createMethod },
+    { name: 'sha3', padding: PADDING, bits: BITS, createMethod },
     { name: 'shake', padding: SHAKE_PADDING, bits: SHAKE_BITS, createMethod: createShakeMethod },
     { name: 'cshake', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createCshakeMethod },
     { name: 'kmac', padding: CSHAKE_PADDING, bits: SHAKE_BITS, createMethod: createKmacMethod },
@@ -154,15 +161,15 @@ var algorithms = [
 var methods = {},
     methodNames = [];
 
-for (var i = 0; i < algorithms.length; ++i) {
-    var algorithm = algorithms[i];
-    var bits = algorithm.bits;
-    for (var j = 0; j < bits.length; ++j) {
-        var methodName = algorithm.name + '_' + bits[j];
+for (let i = 0; i < algorithms.length; ++i) {
+    const algorithm = algorithms[i];
+    const { bits } = algorithm;
+    for (let j = 0; j < bits.length; ++j) {
+        const methodName = algorithm.name + '_' + bits[j];
         methodNames.push(methodName);
         methods[methodName] = algorithm.createMethod(bits[j], algorithm.padding);
         if (algorithm.name !== 'sha3') {
-            var newMethodName = algorithm.name + bits[j];
+            const newMethodName = algorithm.name + bits[j];
             methodNames.push(newMethodName);
             methods[newMethodName] = methods[methodName];
         }
@@ -183,7 +190,7 @@ function Keccak(bits, padding, outputBits) {
     this.outputBlocks = outputBits >> 5;
     this.extraBytes = (outputBits & 31) >> 3;
 
-    for (var i = 0; i < 50; ++i) {
+    for (let i = 0; i < 50; ++i) {
         this.s[i] = 0;
     }
 }
@@ -192,7 +199,7 @@ Keccak.prototype.update = function (message) {
     if (this.finalized) {
         return;
     }
-    var notString,
+    let notString,
         type = typeof message;
     if (type !== 'string') {
         if (type === 'object') {
@@ -210,12 +217,12 @@ Keccak.prototype.update = function (message) {
         }
         notString = true;
     }
-    var blocks = this.blocks,
-        byteCount = this.byteCount,
-        length = message.length,
-        blockCount = this.blockCount,
+    let { blocks } = this,
+        { byteCount } = this,
+        { length } = message,
+        { blockCount } = this,
         index = 0,
-        s = this.s,
+        { s } = this,
         i,
         code;
 
@@ -266,13 +273,14 @@ Keccak.prototype.update = function (message) {
             this.start = i;
         }
     }
+
     return this;
 };
 
 Keccak.prototype.encode = function (x, right) {
-    var o = x & 255,
+    let o = x & 255,
         n = 1;
-    var bytes = [o];
+    const bytes = [o];
     x = x >> 8;
     o = x & 255;
     while (o > 0) {
@@ -287,11 +295,12 @@ Keccak.prototype.encode = function (x, right) {
         bytes.unshift(n);
     }
     this.update(bytes);
+
     return bytes.length;
 };
 
 Keccak.prototype.encodeString = function (str) {
-    var notString,
+    let notString,
         type = typeof str;
     if (type !== 'string') {
         if (type === 'object') {
@@ -309,13 +318,13 @@ Keccak.prototype.encodeString = function (str) {
         }
         notString = true;
     }
-    var bytes = 0,
-        length = str.length;
+    let bytes = 0,
+        { length } = str;
     if (notString) {
         bytes = length;
     } else {
-        for (var i = 0; i < str.length; ++i) {
-            var code = str.charCodeAt(i);
+        for (let i = 0; i < str.length; ++i) {
+            let code = str.charCodeAt(i);
             if (code < 0x80) {
                 bytes += 1;
             } else if (code < 0x800) {
@@ -330,18 +339,20 @@ Keccak.prototype.encodeString = function (str) {
     }
     bytes += this.encode(bytes * 8);
     this.update(str);
+
     return bytes;
 };
 
 Keccak.prototype.bytepad = function (strs, w) {
-    var bytes = this.encode(w);
-    for (var i = 0; i < strs.length; ++i) {
+    let bytes = this.encode(w);
+    for (let i = 0; i < strs.length; ++i) {
         bytes += this.encodeString(strs[i]);
     }
-    var paddingBytes = w - (bytes % w);
-    var zeros = [];
+    const paddingBytes = w - (bytes % w);
+    const zeros = [];
     zeros.length = paddingBytes;
     this.update(zeros);
+
     return this;
 };
 
@@ -350,10 +361,10 @@ Keccak.prototype.finalize = function () {
         return;
     }
     this.finalized = true;
-    var blocks = this.blocks,
+    let { blocks } = this,
         i = this.lastByteIndex,
-        blockCount = this.blockCount,
-        s = this.s;
+        { blockCount } = this,
+        { s } = this;
     blocks[i >> 2] |= this.padding[i & 3];
     if (this.lastByteIndex === this.byteCount) {
         blocks[0] = blocks[blockCount];
@@ -371,13 +382,13 @@ Keccak.prototype.finalize = function () {
 Keccak.prototype.toString = Keccak.prototype.hex = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    let { blockCount } = this,
+        { s } = this,
+        { outputBlocks } = this,
+        { extraBytes } = this,
         i = 0,
         j = 0;
-    var hex = '',
+    let hex = '',
         block;
     while (j < outputBlocks) {
         for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
@@ -407,26 +418,27 @@ Keccak.prototype.toString = Keccak.prototype.hex = function () {
             hex += HEX_CHARS[(block >> 20) & 0x0f] + HEX_CHARS[(block >> 16) & 0x0f];
         }
     }
+
     return hex;
 };
 
 Keccak.prototype.arrayBuffer = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    let { blockCount } = this,
+        { s } = this,
+        { outputBlocks } = this,
+        { extraBytes } = this,
         i = 0,
         j = 0;
-    var bytes = this.outputBits >> 3;
-    var buffer;
+    const bytes = this.outputBits >> 3;
+    let buffer;
     if (extraBytes) {
         buffer = new ArrayBuffer((outputBlocks + 1) << 2);
     } else {
         buffer = new ArrayBuffer(bytes);
     }
-    var array = new Uint32Array(buffer);
+    const array = new Uint32Array(buffer);
     while (j < outputBlocks) {
         for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
             array[j] = s[i];
@@ -439,6 +451,7 @@ Keccak.prototype.arrayBuffer = function () {
         array[i] = s[i];
         buffer = buffer.slice(0, bytes);
     }
+
     return buffer;
 };
 
@@ -447,13 +460,13 @@ Keccak.prototype.buffer = Keccak.prototype.arrayBuffer;
 Keccak.prototype.digest = Keccak.prototype.array = function () {
     this.finalize();
 
-    var blockCount = this.blockCount,
-        s = this.s,
-        outputBlocks = this.outputBlocks,
-        extraBytes = this.extraBytes,
+    let { blockCount } = this,
+        { s } = this,
+        { outputBlocks } = this,
+        { extraBytes } = this,
         i = 0,
         j = 0;
-    var array = [],
+    let array = [],
         offset,
         block;
     while (j < outputBlocks) {
@@ -480,6 +493,7 @@ Keccak.prototype.digest = Keccak.prototype.array = function () {
             array[offset + 2] = (block >> 16) & 0xff;
         }
     }
+
     return array;
 };
 
@@ -491,11 +505,12 @@ Kmac.prototype = new Keccak();
 
 Kmac.prototype.finalize = function () {
     this.encode(this.outputBits, true);
+
     return Keccak.prototype.finalize.call(this);
 };
 
 var f = function (s) {
-    var h,
+    let h,
         l,
         n,
         c0,
@@ -738,5 +753,5 @@ var f = function (s) {
     }
 };
 
-export default methods;
-export const keccak256 = methods.keccak256;
+export { methods };
+export const { keccak256 } = methods;

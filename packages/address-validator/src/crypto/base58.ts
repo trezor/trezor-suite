@@ -15,7 +15,7 @@ const BASE = ALPHABET.length;
 export function decode(input: string): number[] {
     if (input.length === 0) return [];
 
-    let bytes: number[] = [0];
+    const bytes: number[] = [0];
     for (let i = 0; i < input.length; ++i) {
         const char = input[i];
         if (!(char in ALPHABET_MAP)) throw new Error('Non-base58 character');

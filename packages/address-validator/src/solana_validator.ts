@@ -1,5 +1,5 @@
-import { addressType } from './crypto/utils';
 import { decode as base58Decode } from './crypto/base58';
+import { addressType } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 function isValidAddress(
@@ -9,8 +9,9 @@ function isValidAddress(
 ): boolean {
     try {
         const decoded = base58Decode(address);
+
         return decoded.length === 32;
-    } catch (err) {
+    } catch {
         return false;
     }
 }
@@ -23,10 +24,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

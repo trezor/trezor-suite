@@ -1,6 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+    isValidAddress as BTCIsValidAddress,
+    getAddressType as BTCGetAddressType,
+} from './bitcoin_validator';
 import { addressType, base32 } from './crypto/utils';
-import BTCValidator from './bitcoin_validator';
 import type { AddressType, Currency, NetworkType } from './types';
+
+const BTCValidator = {
+    isValidAddress: BTCIsValidAddress,
+    getAddressType: BTCGetAddressType,
+};
 
 const GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
 const DEFAULT_NETWORK_TYPE: NetworkType = 'prod';
@@ -16,6 +25,7 @@ function polymod(values: number[]): number {
             }
         }
     }
+
     return chk;
 }
 
@@ -29,6 +39,7 @@ function hrpExpand(hrp: string): number[] {
     for (p = 0; p < hrp.length; ++p) {
         ret.push(hrp.charCodeAt(p) & 31);
     }
+
     return ret;
 }
 
@@ -71,7 +82,7 @@ function validateAddress(address: string, currency: Currency, networkType: Netwo
         if (verifyChecksum(prefix, Array.from(decoded))) {
             return false;
         }
-    } catch (e) {
+    } catch (_) {
         return false;
     }
 
@@ -93,10 +104,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

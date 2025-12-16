@@ -1,8 +1,10 @@
-import { addressType } from './crypto/utils';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { bech32 } from 'bech32';
 import cbor from 'cbor';
 import CRC from 'crc';
+
 import { decode as base58decode } from './crypto/base58';
-import { bech32 } from 'bech32';
+import { addressType } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const DEFAULT_NETWORK_TYPE: NetworkType = 'prod';
@@ -10,8 +12,9 @@ const DEFAULT_NETWORK_TYPE: NetworkType = 'prod';
 function getDecoded(address: string): unknown {
     try {
         const decoded = base58decode(address);
+
         return cbor.decode(new Uint8Array(decoded).buffer);
-    } catch (e) {
+    } catch (_) {
         return null;
     }
 }
@@ -55,7 +58,7 @@ function isValidBech32Address(
         ) {
             return false;
         }
-    } catch (err) {
+    } catch (_) {
         return false;
     }
 
@@ -78,10 +81,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

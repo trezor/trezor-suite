@@ -1,10 +1,10 @@
-import currencies from './currencies';
 import { addressType } from './crypto/utils';
+import currencies from './currencies';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const DEFAULT_CURRENCY_NAME = 'bitcoin';
 
-export function validate(
+function validate(
     address: string,
     currencyNameOrSymbol?: string,
     networkType?: NetworkType,
@@ -18,7 +18,7 @@ export function validate(
     throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
 }
 
-export function getAddressType(
+function getAddressType(
     address: string,
     currencyNameOrSymbol?: string,
     networkType?: NetworkType,
@@ -33,20 +33,12 @@ export function getAddressType(
     throw new Error('getAddressType not defined for currency: ' + currencyNameOrSymbol);
 }
 
-export function getCurrencies(): Currency[] {
+function getCurrencies(): Currency[] {
     return currencies.getAll();
 }
 
-export function findCurrency(symbol: string): Currency | null {
+function findCurrency(symbol: string): Currency | null {
     return currencies.getByNameOrSymbol(symbol) || null;
 }
 
-export { addressType };
-
-export default {
-    validate,
-    getAddressType,
-    getCurrencies,
-    findCurrency,
-    addressType,
-};
+export { validate, getAddressType, getCurrencies, findCurrency, addressType };

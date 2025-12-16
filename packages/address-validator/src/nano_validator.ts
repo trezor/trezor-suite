@@ -1,5 +1,6 @@
-import { addressType, blake2b, toHex } from './crypto/utils';
 import baseX from 'base-x';
+
+import { addressType, blake2b, toHex } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const ALLOWED_CHARS = '13456789abcdefghijkmnopqrstuwxyz';
@@ -7,18 +8,6 @@ const ALLOWED_CHARS = '13456789abcdefghijkmnopqrstuwxyz';
 const codec = baseX(ALLOWED_CHARS);
 // https://github.com/nanocurrency/raiblocks/wiki/Accounts,-Keys,-Seeds,-and-Wallet-Identifiers
 const regexp = new RegExp(`^(xrb|nano)_([${ALLOWED_CHARS}]{60})$`);
-
-function isValidAddress(
-    address: string,
-    _currency?: Currency,
-    _networkType?: NetworkType,
-): boolean {
-    if (regexp.test(address)) {
-        return verifyChecksum(address);
-    }
-
-    return false;
-}
 
 function verifyChecksum(address: string): boolean {
     const match = regexp.exec(address);
@@ -32,6 +21,18 @@ function verifyChecksum(address: string): boolean {
     return computedChecksum === checksum;
 }
 
+function isValidAddress(
+    address: string,
+    _currency?: Currency,
+    _networkType?: NetworkType,
+): boolean {
+    if (regexp.test(address)) {
+        return verifyChecksum(address);
+    }
+
+    return false;
+}
+
 function getAddressType(
     address: string,
     currency?: Currency,
@@ -40,11 +41,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    verifyChecksum,
-    getAddressType,
-};
+export { isValidAddress, verifyChecksum, getAddressType };

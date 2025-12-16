@@ -1,11 +1,13 @@
-import { addressType, blake2b } from './crypto/utils';
 import isEqual from 'lodash/isEqual';
+
+import { addressType, blake2b } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 function verifyChecksum(address: string): boolean {
     const checksumBytes = address.slice(0, 32 * 2);
     const check = address.slice(32 * 2, 38 * 2);
     const blakeHash = blake2b(checksumBytes, 32).slice(0, 6 * 2);
+
     return isEqual(blakeHash, check);
 }
 
@@ -29,11 +31,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    verifyChecksum,
-    getAddressType,
-};
+export { isValidAddress, verifyChecksum, getAddressType };

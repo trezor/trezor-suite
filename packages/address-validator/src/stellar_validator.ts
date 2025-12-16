@@ -1,6 +1,7 @@
-import { addressType, numberToHex, toHex } from './crypto/utils';
 import baseX from 'base-x';
 import crc from 'crc';
+
+import { addressType, numberToHex, toHex } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -12,6 +13,7 @@ const ed25519PublicKeyVersionByte = 6 << 3;
 function swap16(number: number): number {
     const lower = number & 0xff;
     const upper = (number >> 8) & 0xff;
+
     return (lower << 8) | upper;
 }
 
@@ -25,6 +27,7 @@ function verifyChecksum(address: string): boolean {
     const payload = bytes.slice(0, -2);
     const checksum = toHex(bytes.slice(-2));
     const computedChecksum = numberToHex(swap16(crc.crc16xmodem(payload)), 2);
+
     return computedChecksum === checksum;
 }
 
@@ -48,11 +51,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    verifyChecksum,
-    getAddressType,
-};
+export { isValidAddress, verifyChecksum, getAddressType };

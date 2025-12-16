@@ -25,10 +25,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

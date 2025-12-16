@@ -1,6 +1,14 @@
+import {
+    isValidAddress as BTCIsValidAddress,
+    getAddressType as BTCGetAddressType,
+} from './bitcoin_validator';
 import { addressType } from './crypto/utils';
-import BTCValidator from './bitcoin_validator';
 import type { AddressType, Currency, NetworkType } from './types';
+
+const BTCValidator = {
+    isValidAddress: BTCIsValidAddress,
+    getAddressType: BTCGetAddressType,
+};
 
 const regexp = new RegExp('^sys1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{39}$');
 
@@ -16,10 +24,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

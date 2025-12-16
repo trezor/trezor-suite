@@ -1,5 +1,6 @@
-import { addressType } from './crypto/utils';
 import { bech32 } from 'bech32';
+
+import { addressType } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const ALLOWED_CHARS = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
@@ -15,6 +16,7 @@ function isValidAddress(
 
 function verifyChecksum(address: string): boolean {
     const decoded = bech32.decode(address);
+
     return !!decoded && decoded.words.length === 32;
 }
 
@@ -26,11 +28,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    verifyChecksum,
-    getAddressType,
-};
+export { isValidAddress, verifyChecksum, getAddressType };

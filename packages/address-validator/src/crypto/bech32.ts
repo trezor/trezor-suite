@@ -29,6 +29,7 @@ function convertbits(
     } else if (bits >= frombits || ((acc << (tobits - bits)) & maxv) !== 0) {
         return null;
     }
+
     return ret;
 }
 
@@ -40,7 +41,7 @@ export function decode(
     let dec;
     try {
         dec = useBech32m ? bech32m.decode(addr) : bech32.decode(addr);
-    } catch (err) {
+    } catch {
         return null;
     }
     if (dec === null || dec.prefix !== hrp || dec.words.length < 1 || dec.words[0] > 16) {
@@ -50,6 +51,7 @@ export function decode(
     if (res === null || res.length < 2 || res.length > 40) {
         return null;
     }
+
     return { version: dec.words[0], program: res };
 }
 
@@ -66,5 +68,6 @@ export function encode(
     const encoded = useBech32m
         ? bech32m.encode(hrp, [version].concat(words))
         : bech32.encode(hrp, [version].concat(words));
+
     return decode(hrp, encoded, useBech32m) === null ? null : encoded;
 }

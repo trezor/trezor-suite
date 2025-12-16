@@ -1,31 +1,214 @@
-import XRPValidator from './ripple_validator';
-import ETHValidator from './ethereum_validator';
-import BTCValidator from './bitcoin_validator';
-import ADAValidator from './ada_validator';
-import XMRValidator from './monero_validator';
-import LokiValidator from './loki_validator';
-import NANOValidator from './nano_validator';
-import SCValidator from './siacoin_validator';
-import TRXValidator from './tron_validator';
-import NEMValidator from './nem_validator';
-import LSKValidator from './lisk_validator';
-import BCHValidator from './bch_validator';
-import XLMValidator from './stellar_validator';
-import EOSValidator from './eos_validator';
-import XTZValidator from './tezos_validator';
-import AEValidator from './ae_validator';
-import ARDRValidator from './ardr_validator';
-import ATOMValidator from './atom_validator';
-import HBARValidator from './hbar_validator';
-import ICXValidator from './icx_validator';
-import IOSTValidator from './iost_validator';
+import {
+    isValidAddress as ADAValidator_isValidAddress,
+    getAddressType as ADAValidator_getAddressType,
+} from './ada_validator';
+import {
+    isValidAddress as BCHValidator_isValidAddress,
+    getAddressType as BCHValidator_getAddressType,
+} from './bch_validator';
+import {
+    isValidAddress as XLMValidator_isValidAddress,
+    getAddressType as XLMValidator_getAddressType,
+} from './stellar_validator';
+import {
+    isValidAddress as EOSValidator_isValidAddress,
+    getAddressType as EOSValidator_getAddressType,
+} from './eos_validator';
+import {
+    isValidAddress as XTZValidator_isValidAddress,
+    getAddressType as XTZValidator_getAddressType,
+} from './tezos_validator';
+import {
+    isValidAddress as AEValidator_isValidAddress,
+    getAddressType as AEValidator_getAddressType,
+} from './ae_validator';
+import {
+    isValidAddress as ARDRValidator_isValidAddress,
+    getAddressType as ARDRValidator_getAddressType,
+} from './ardr_validator';
+import {
+    isValidAddress as ATOMValidator_isValidAddress,
+    getAddressType as ATOMValidator_getAddressType,
+} from './atom_validator';
+import {
+    isValidAddress as BTCValidator_isValidAddress,
+    getAddressType as BTCValidator_getAddressType,
+} from './bitcoin_validator';
+import {
+    isValidAddress as ETHValidator_isValidAddress,
+    getAddressType as ETHValidator_getAddressType,
+} from './ethereum_validator';
+import {
+    isValidAddress as HBARValidator_isValidAddress,
+    getAddressType as HBARValidator_getAddressType,
+} from './hbar_validator';
+import {
+    isValidAddress as ICXValidator_isValidAddress,
+    getAddressType as ICXValidator_getAddressType,
+} from './icx_validator';
+import {
+    isValidAddress as IOSTValidator_isValidAddress,
+    getAddressType as IOSTValidator_getAddressType,
+} from './iost_validator';
+import {
+    isValidAddress as LSKValidator_isValidAddress,
+    getAddressType as LSKValidator_getAddressType,
+} from './lisk_validator';
+import {
+    isValidAddress as LokiValidator_isValidAddress,
+    getAddressType as LokiValidator_getAddressType,
+} from './loki_validator';
+import {
+    isValidAddress as XMRValidator_isValidAddress,
+    getAddressType as XMRValidator_getAddressType,
+} from './monero_validator';
+import {
+    isValidAddress as NANOValidator_isValidAddress,
+    getAddressType as NANOValidator_getAddressType,
+} from './nano_validator';
+import {
+    isValidAddress as NEMValidator_isValidAddress,
+    getAddressType as NEMValidator_getAddressType,
+} from './nem_validator';
 // import IOTAValidator from './iota_validator';
-import STEEMValidator from './steem_validator';
-import SYSValidator from './sys_validator';
-import ZILValidator from './zil_validator';
-import NXTValidator from './nxt_validator';
-import SOLValidator from './solana_validator';
+import {
+    isValidAddress as NXTValidator_isValidAddress,
+    getAddressType as NXTValidator_getAddressType,
+} from './nxt_validator';
+import {
+    isValidAddress as XRPValidator_isValidAddress,
+    getAddressType as XRPValidator_getAddressType,
+} from './ripple_validator';
+import {
+    isValidAddress as SCValidator_isValidAddress,
+    getAddressType as SCValidator_getAddressType,
+} from './siacoin_validator';
+import {
+    isValidAddress as SOLValidator_isValidAddress,
+    getAddressType as SOLValidator_getAddressType,
+} from './solana_validator';
+import {
+    isValidAddress as STEEMValidator_isValidAddress,
+    getAddressType as STEEMValidator_getAddressType,
+} from './steem_validator';
+import {
+    isValidAddress as SYSValidator_isValidAddress,
+    getAddressType as SYSValidator_getAddressType,
+} from './sys_validator';
+import {
+    isValidAddress as TRXValidator_isValidAddress,
+    getAddressType as TRXValidator_getAddressType,
+} from './tron_validator';
 import type { Currency } from './types';
+import {
+    isValidAddress as ZILValidator_isValidAddress,
+    getAddressType as ZILValidator_getAddressType,
+} from './zil_validator';
+
+const ADAValidator = {
+    isValidAddress: ADAValidator_isValidAddress,
+    getAddressType: ADAValidator_getAddressType,
+};
+const BCHValidator = {
+    isValidAddress: BCHValidator_isValidAddress,
+    getAddressType: BCHValidator_getAddressType,
+};
+const XLMValidator = {
+    isValidAddress: XLMValidator_isValidAddress,
+    getAddressType: XLMValidator_getAddressType,
+};
+const EOSValidator = {
+    isValidAddress: EOSValidator_isValidAddress,
+    getAddressType: EOSValidator_getAddressType,
+};
+const XTZValidator = {
+    isValidAddress: XTZValidator_isValidAddress,
+    getAddressType: XTZValidator_getAddressType,
+};
+const AEValidator = {
+    isValidAddress: AEValidator_isValidAddress,
+    getAddressType: AEValidator_getAddressType,
+};
+const ARDRValidator = {
+    isValidAddress: ARDRValidator_isValidAddress,
+    getAddressType: ARDRValidator_getAddressType,
+};
+const ATOMValidator = {
+    isValidAddress: ATOMValidator_isValidAddress,
+    getAddressType: ATOMValidator_getAddressType,
+};
+const BTCValidator = {
+    isValidAddress: BTCValidator_isValidAddress,
+    getAddressType: BTCValidator_getAddressType,
+};
+const ETHValidator = {
+    isValidAddress: ETHValidator_isValidAddress,
+    getAddressType: ETHValidator_getAddressType,
+};
+const HBARValidator = {
+    isValidAddress: HBARValidator_isValidAddress,
+    getAddressType: HBARValidator_getAddressType,
+};
+const ICXValidator = {
+    isValidAddress: ICXValidator_isValidAddress,
+    getAddressType: ICXValidator_getAddressType,
+};
+const IOSTValidator = {
+    isValidAddress: IOSTValidator_isValidAddress,
+    getAddressType: IOSTValidator_getAddressType,
+};
+const LSKValidator = {
+    isValidAddress: LSKValidator_isValidAddress,
+    getAddressType: LSKValidator_getAddressType,
+};
+const LokiValidator = {
+    isValidAddress: LokiValidator_isValidAddress,
+    getAddressType: LokiValidator_getAddressType,
+};
+const XMRValidator = {
+    isValidAddress: XMRValidator_isValidAddress,
+    getAddressType: XMRValidator_getAddressType,
+};
+const NANOValidator = {
+    isValidAddress: NANOValidator_isValidAddress,
+    getAddressType: NANOValidator_getAddressType,
+};
+const NEMValidator = {
+    isValidAddress: NEMValidator_isValidAddress,
+    getAddressType: NEMValidator_getAddressType,
+};
+const NXTValidator = {
+    isValidAddress: NXTValidator_isValidAddress,
+    getAddressType: NXTValidator_getAddressType,
+};
+const XRPValidator = {
+    isValidAddress: XRPValidator_isValidAddress,
+    getAddressType: XRPValidator_getAddressType,
+};
+const SCValidator = {
+    isValidAddress: SCValidator_isValidAddress,
+    getAddressType: SCValidator_getAddressType,
+};
+const SOLValidator = {
+    isValidAddress: SOLValidator_isValidAddress,
+    getAddressType: SOLValidator_getAddressType,
+};
+const STEEMValidator = {
+    isValidAddress: STEEMValidator_isValidAddress,
+    getAddressType: STEEMValidator_getAddressType,
+};
+const SYSValidator = {
+    isValidAddress: SYSValidator_isValidAddress,
+    getAddressType: SYSValidator_getAddressType,
+};
+const TRXValidator = {
+    isValidAddress: TRXValidator_isValidAddress,
+    getAddressType: TRXValidator_getAddressType,
+};
+const ZILValidator = {
+    isValidAddress: ZILValidator_isValidAddress,
+    getAddressType: ZILValidator_getAddressType,
+};
 
 // defines P2PKH, P2SH and bech32 address types for standard (prod) and testnet networks
 const CURRENCIES: Currency[] = [
@@ -1502,18 +1685,19 @@ const CURRENCIES: Currency[] = [
 
 export function getByNameOrSymbol(currencyNameOrSymbol: string): Currency | undefined {
     const nameOrSymbol = currencyNameOrSymbol.toLowerCase();
-    return CURRENCIES.find(currency => {
-        return (
+
+    return CURRENCIES.find(
+        currency =>
             currency.name.toLowerCase() === nameOrSymbol ||
-            currency.symbol.toLowerCase() === nameOrSymbol
-        );
-    });
+            currency.symbol.toLowerCase() === nameOrSymbol,
+    );
 }
 
 export function getAll(): Currency[] {
     return CURRENCIES;
 }
 
+// eslint-disable-next-line import/no-default-export
 export default {
     getByNameOrSymbol,
     getAll,

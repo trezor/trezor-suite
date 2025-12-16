@@ -6,6 +6,7 @@ function isValidHBarAddress(address: string): boolean {
     if (split[0] !== '0' || split[1] !== '0') {
         return false;
     }
+
     return split[2].length <= 6 && /^\d+$/g.test(split[2]);
 }
 
@@ -25,10 +26,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

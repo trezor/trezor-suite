@@ -1,5 +1,5 @@
-import * as bech32 from './crypto/bech32';
 import { decode as decodeBase58 } from './crypto/base58';
+import * as bech32 from './crypto/bech32';
 import * as cryptoUtils from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
@@ -9,7 +9,7 @@ const DEFAULT_NETWORK_TYPE: NetworkType = 'prod';
 function getDecoded(address: string): number[] | null {
     try {
         return decodeBase58(address);
-    } catch (e) {
+    } catch {
         return null;
     }
 }
@@ -18,6 +18,7 @@ function getChecksum(hashFunction: Currency['hashFunction'], payload: string): s
     switch (hashFunction) {
         case 'blake256keccak256': {
             const blake = cryptoUtils.blake2b256(payload);
+
             return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
         }
         case 'blake256':
@@ -38,7 +39,7 @@ function getAddressVersion(address: string, currency?: Currency): string | null 
     const hashFunction = currencyConfig.hashFunction || 'sha256';
     const decoded = getDecoded(address);
     if (decoded) {
-        const length = decoded.length;
+        const { length } = decoded;
 
         if (length !== expectedLength) {
             return null;
@@ -72,11 +73,14 @@ function getOutputIndex(
     if (detectedAddressType) {
         const correctAddressTypes =
             currency.addressTypes[networkType] ||
-            Object.keys(currency.addressTypes).reduce<string[]>((all, key) => {
-                return all.concat(currency.addressTypes?.[key] ?? []);
-            }, []);
+            Object.keys(currency.addressTypes).reduce<string[]>(
+                (all, key) => all.concat(currency.addressTypes?.[key] ?? []),
+                [],
+            );
+
         return correctAddressTypes.indexOf(detectedAddressType);
     }
+
     return null;
 }
 
@@ -94,6 +98,7 @@ function isValidPayToScriptHashAddress(
     networkType: NetworkType,
 ): boolean {
     const index = getOutputIndex(address, currency, networkType);
+
     return index !== null && index > 0;
 }
 
@@ -106,8 +111,9 @@ function isValidPayToWitnessScriptHashAddress(
         const hrp = currency.segwitHrp?.[networkType];
         if (!hrp) return false;
         const decoded = bech32.decode(hrp, address);
+
         return !!decoded && decoded.version === 0 && decoded.program.length === 32;
-    } catch (err) {
+    } catch {
         return false;
     }
 }
@@ -123,7 +129,7 @@ function isValidPayToWitnessPublicKeyHashAddress(
         const decoded = bech32.decode(hrp, address);
 
         return !!decoded && decoded.version === 0 && decoded.program.length === 20;
-    } catch (err) {
+    } catch {
         return false;
     }
 }
@@ -138,8 +144,9 @@ function isValidPayToTaprootAddress(
         if (!hrp) return false;
 
         const decoded = bech32.decode(hrp, address, true);
+
         return !!decoded && decoded.version === 1 && decoded.program.length === 32;
-    } catch (err) {
+    } catch {
         return false;
     }
 }
@@ -161,6 +168,7 @@ function isValidSegwitAddress(
         if (ret.version === 0 || ret.program.length === 20 || ret.program.length === 32) {
             return false;
         }
+
         return address.toLowerCase() === bech32.encode(hrp, ret.version, ret.program, false);
     }
     ret = bech32.decode(hrp, address, true);
@@ -173,16 +181,7 @@ function isValidSegwitAddress(
     return false;
 }
 
-export function isValidAddress(
-    address: string,
-    currency: Currency,
-    networkType: NetworkType = DEFAULT_NETWORK_TYPE,
-): boolean {
-    const addrType = getAddressType(address, currency, networkType);
-    return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
-}
-
-export function getAddressType(
+function getAddressType(
     address: string,
     currency: Currency,
     networkType: NetworkType = DEFAULT_NETWORK_TYPE,
@@ -205,10 +204,45 @@ export function getAddressType(
     if (isValidSegwitAddress(address, currency, networkType)) {
         return addressType.WITNESS_UNKNOWN;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+function isValidAddress(
+    address: string,
+    currency: Currency,
+    networkType: NetworkType = DEFAULT_NETWORK_TYPE,
+): boolean {
+    const addrType = getAddressType(address, currency, networkType);
+
+    return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
+}
+
+function getAddressType(
+    address: string,
+    currency: Currency,
+    networkType: NetworkType = DEFAULT_NETWORK_TYPE,
+): AddressType | undefined {
+    if (isValidPayToPublicKeyHashAddress(address, currency, networkType)) {
+        return addressType.P2PKH;
+    }
+    if (isValidPayToScriptHashAddress(address, currency, networkType)) {
+        return addressType.P2SH;
+    }
+    if (isValidPayToWitnessScriptHashAddress(address, currency, networkType)) {
+        return addressType.P2WSH;
+    }
+    if (isValidPayToWitnessPublicKeyHashAddress(address, currency, networkType)) {
+        return addressType.P2WPKH;
+    }
+    if (isValidPayToTaprootAddress(address, currency, networkType)) {
+        return addressType.P2TR;
+    }
+    if (isValidSegwitAddress(address, currency, networkType)) {
+        return addressType.WITNESS_UNKNOWN;
+    }
+
+    return undefined;
+}
+
+export { isValidAddress, getAddressType };

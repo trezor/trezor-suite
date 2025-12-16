@@ -3,6 +3,7 @@ import type { AddressType, Currency, NetworkType } from './types';
 
 function isValidEOSAddress(_address: string, _currency?: Currency, _networkType?: NetworkType) {
     const regex = /^[a-z0-9]+$/g;
+
     return _address.search(regex) !== -1 && _address.length === 12;
 }
 
@@ -18,10 +19,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

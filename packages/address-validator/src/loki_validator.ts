@@ -1,5 +1,5 @@
-import { addressType, keccak256Checksum } from './crypto/utils';
 import cnBase58 from './crypto/cnBase58';
+import { addressType, keccak256Checksum } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const DEFAULT_NETWORK_TYPE: NetworkType = 'prod';
@@ -46,6 +46,7 @@ function hextobin(hex: string): Uint8Array | null {
     for (let i = 0; i < hex.length / 2; ++i) {
         res[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
     }
+
     return res;
 }
 
@@ -84,10 +85,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };

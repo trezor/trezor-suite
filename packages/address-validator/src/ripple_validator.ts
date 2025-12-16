@@ -1,5 +1,6 @@
-import { addressType, sha256Checksum, toHex } from './crypto/utils';
 import baseX from 'base-x';
+
+import { addressType, sha256Checksum, toHex } from './crypto/utils';
 import type { AddressType, Currency, NetworkType } from './types';
 
 const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
@@ -35,11 +36,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    verifyChecksum,
-    getAddressType,
-};
+export { isValidAddress, verifyChecksum, getAddressType };

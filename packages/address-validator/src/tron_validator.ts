@@ -12,7 +12,7 @@ function decodeBase58Address(base58String: string): number[] | false {
     let decoded: number[];
     try {
         decoded = base58(base58String);
-    } catch (e) {
+    } catch {
         return false;
     }
 
@@ -39,6 +39,7 @@ function decodeBase58Address(base58String: string): number[] | false {
 function getEnv(currency: Currency, networkType?: NetworkType): string | undefined {
     const env = networkType === 'testnet' ? 'testnet' : 'prod';
     const networks = currency.addressTypes?.[env];
+
     return networks ? networks[0] : undefined;
 }
 
@@ -58,6 +59,7 @@ function isValidAddress(
 
     // Convert address byte to hex string for comparison
     const addressPrefix = address[0].toString(16).padStart(2, '0');
+
     return prefix === addressPrefix;
 }
 
@@ -69,10 +71,8 @@ function getAddressType(
     if (isValidAddress(address, currency, networkType)) {
         return addressType.ADDRESS;
     }
+
     return undefined;
 }
 
-export default {
-    isValidAddress,
-    getAddressType,
-};
+export { isValidAddress, getAddressType };
