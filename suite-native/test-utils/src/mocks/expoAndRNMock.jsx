@@ -417,8 +417,6 @@ jest.mock('react-native-keyboard-controller', () =>
     require('react-native-keyboard-controller/jest'),
 );
 
-jest.mock('redux-devtools-expo-dev-plugin', () => () => next => next);
-
 jest.mock('@gorhom/bottom-sheet', () => {
     const { ScrollView } = require('react-native');
     const GorhomBottomSheetMock = require('@gorhom/bottom-sheet/mock');

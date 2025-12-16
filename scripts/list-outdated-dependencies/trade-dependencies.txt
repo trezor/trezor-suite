@@ -62,7 +62,6 @@ react-native-launch-arguments
 react-native-performance
 react-native-permissions
 react-native-restart
-redux-devtools-expo-dev-plugin
 rimraf
 tslib
 tsx
