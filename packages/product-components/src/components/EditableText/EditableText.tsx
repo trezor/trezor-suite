@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
-import styled, { css } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import { FrameProps, FramePropsKeys, Row, Text, Tooltip } from '@trezor/components';
 import { SpacingValuesNew, zIndices } from '@trezor/theme';
@@ -117,6 +117,7 @@ export const EditableText = ({
     flex,
     'data-testid': dataTestId,
 }: EditableTextProps) => {
+    const theme = useTheme();
     const [isEditable, setIsEditable] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [savingStatus, setSavingStatus] = useState<SavingStatus>('idle');
@@ -138,6 +139,7 @@ export const EditableText = ({
     const hasCustomValue = Boolean(
         currentValueTextContent && currentValueTextContent !== defaultValueTextContent,
     );
+    const isActive = isHovered || isEditable || savingStatus !== 'idle';
     const zIndex = isDisabled ? undefined : zIndices.labeling;
 
     useEffect(() => {
@@ -273,6 +275,7 @@ export const EditableText = ({
             }
 
             if (isEmpty) {
+                e.stopPropagation();
                 handleEdit();
             }
         },
@@ -384,13 +387,18 @@ export const EditableText = ({
                         $isEmpty={isEmpty}
                         $isEditable={isEditable}
                         $isDisabled={isDisabled}
-                        $isActive={isHovered || isEditable || savingStatus !== 'idle'}
+                        $isActive={isActive}
                         $hasDisplayValue={hasDisplayValue}
                     >
                         {children}
                     </EditableContainer>
                     {hasDisplayValue && (
-                        <Text ellipsisLineCount={1} as="div" pointerEvents="none">
+                        <Text
+                            ellipsisLineCount={1}
+                            as="div"
+                            pointerEvents="none"
+                            color={isActive ? theme.baseContentPrimary : undefined}
+                        >
                             {displayValue}
                         </Text>
                     )}

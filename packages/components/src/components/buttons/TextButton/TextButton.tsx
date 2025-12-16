@@ -77,8 +77,6 @@ const TextButtonContainer = styled.button<
     align-items: center;
     flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
     gap: ${spacingsPx.xs};
-    height: ${({ $size: size }) => (size === 'small' ? 22 : 26)}px;
-    padding: ${spacingsPx.xxs};
     border: 1px solid transparent;
     border-radius: ${borders.radii.xxs};
     background: none;
