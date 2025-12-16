@@ -53,7 +53,7 @@ describe('TradingExchangeApprovalScreen', () => {
             { store },
         );
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
 
         const preloadedState = {
@@ -62,7 +62,7 @@ describe('TradingExchangeApprovalScreen', () => {
             }),
         };
 
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
     });

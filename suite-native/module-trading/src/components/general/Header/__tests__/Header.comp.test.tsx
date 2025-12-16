@@ -181,7 +181,7 @@ describe('Header', () => {
     });
 
     it('should set state on tab button press', async () => {
-        const { store } = await initStore(
+        const { store } = initStore(
             getFFPreloadedState({
                 buyEnabled: true,
                 exchangeEnabled: true,
@@ -216,15 +216,13 @@ describe('Header', () => {
     describe('analytics', () => {
         let store: TestStore;
 
-        beforeEach(async () => {
-            store = (
-                await initStore(
-                    getFFPreloadedState({
-                        buyEnabled: true,
-                        exchangeEnabled: true,
-                        sellEnabled: true,
-                    }),
-                )
+        beforeEach(() => {
+            store = initStore(
+                getFFPreloadedState({
+                    buyEnabled: true,
+                    exchangeEnabled: true,
+                    sellEnabled: true,
+                }),
             ).store;
         });
 

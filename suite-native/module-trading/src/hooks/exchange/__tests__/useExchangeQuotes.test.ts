@@ -56,9 +56,7 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useExchangeQuotes', () => {
-    const getInitializedStore = async (
-        bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
-    ): Promise<TestStore> => {
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: getInitializedTradingState(),
@@ -69,7 +67,7 @@ describe('useExchangeQuotes', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseExchangeQuotes = (store: TestStore) =>

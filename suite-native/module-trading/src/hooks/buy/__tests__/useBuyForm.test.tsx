@@ -39,7 +39,7 @@ describe('useBuyForm', () => {
     const renderUseTradingBuyForm = (store: TestStore) =>
         renderHookWithStoreProviderAsync(() => useBuyForm(), { store });
 
-    const getInitializedStore = async (amountInSats = false) => {
+    const getInitializedStore = (amountInSats = false) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: getInitializedTradingState(),
@@ -57,7 +57,7 @@ describe('useBuyForm', () => {
         };
         preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1';
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const initFormAndQuotes = (form: BuyFormType, store: EnhancedStore) => {

@@ -4,16 +4,25 @@ import {
     PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
+import { EnsureMMKVKeyDep } from '@suite-native/storage';
 import { ok } from '@trezor/type-utils';
 
-export const createNativePlatformEncryption = (): PlatformEncryption => ({
-    encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
-        // Todo: implement / encrypt this with Mobile Keyring.
-        //       See: https://github.com/trezor/trezor-suite/issues/23282
-        Promise.resolve(ok(asEncryptedHex(value as T))),
+type NativePlatformEncryptionDeps = EnsureMMKVKeyDep;
 
-    decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
-        // Todo: implement / encrypt this with Mobile Keyring.
-        //       See: https://github.com/trezor/trezor-suite/issues/23282
-        Promise.resolve(ok(value as unknown as T)),
+export const createNativePlatformEncryption = (
+    deps: NativePlatformEncryptionDeps,
+): PlatformEncryption => ({
+    encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
+        const key = await deps.ensureMMKVKey();
+        console.log('___Do some ENCRYPT MAGIC with KEY', key);
+
+        return ok(asEncryptedHex(value as T));
+    },
+
+    decrypt: async <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) => {
+        const key = await deps.ensureMMKVKey();
+        console.log('___Do some DECRYPT MAGIC with KEY', key);
+
+        return Promise.resolve(ok(value as unknown as T));
+    },
 });

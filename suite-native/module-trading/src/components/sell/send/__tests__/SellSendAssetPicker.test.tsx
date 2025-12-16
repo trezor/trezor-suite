@@ -75,7 +75,7 @@ describe('SellSendAssetPicker', () => {
         });
 
     beforeEach(async () => {
-        store = (await initStore(getPreloadedState())).store;
+        store = initStore(getPreloadedState()).store;
         const { result } = await renderSellForm();
         form = result.current;
 

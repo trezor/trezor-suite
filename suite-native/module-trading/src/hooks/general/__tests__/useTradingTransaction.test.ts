@@ -64,7 +64,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 describe('useTradingTransaction', () => {
     const getMockAccounts = () => [getBtcAccount('btc1'), getBtcAccount('btc2')];
 
-    const getInitializedStore = async () => {
+    const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
 
         // Add the required account keys to the exchange state
@@ -80,7 +80,7 @@ describe('useTradingTransaction', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseTradingTransaction = ({ store }: { store: TestStore }) =>

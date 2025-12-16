@@ -5,9 +5,9 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import { createAsyncMigrate } from './createAsyncMigrate';
 import { MigrationsManifest } from './migrationTypes';
-import { initMmkvStorage } from './storage';
+import { MMKVStorage } from './mmkvStorage';
 
-export const preparePersistReducer = async <TReducerInitialState>({
+export const preparePersistReducer = <TReducerInitialState>({
     reducer,
     persistedKeys,
     key,
@@ -15,6 +15,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
     migrations,
     transforms,
     mergeLevel = 1,
+    storage,
 }: {
     reducer: Reducer<TReducerInitialState>;
     persistedKeys: Array<keyof TReducerInitialState>;
@@ -23,9 +24,8 @@ export const preparePersistReducer = async <TReducerInitialState>({
     migrations?: MigrationsManifest;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
+    storage: MMKVStorage;
 }) => {
-    const storage = await initMmkvStorage();
-
     const persistConfig = {
         key,
         storage,

@@ -47,7 +47,7 @@ describe('useWatchAllTrades', () => {
         });
     });
 
-    const getInitializedStore = async ({ trades = [] }: { trades?: any[] } = {}) => {
+    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: {
@@ -88,7 +88,7 @@ describe('useWatchAllTrades', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseWatchAllTrades = (store: TestStore) =>

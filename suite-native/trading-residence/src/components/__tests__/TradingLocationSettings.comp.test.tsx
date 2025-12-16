@@ -14,8 +14,8 @@ describe('TradingLocationSettings', () => {
     const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
         renderWithStoreProviderAsync(<TradingLocationSettings {...props} />, { store });
 
-    beforeEach(async () => {
-        store = (await initStore()).store;
+    beforeEach(() => {
+        store = initStore().store;
     });
 
     afterEach(() => {

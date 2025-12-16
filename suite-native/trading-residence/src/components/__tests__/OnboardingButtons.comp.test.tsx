@@ -21,8 +21,8 @@ describe('OnboardingButtons', () => {
             store,
         });
 
-    beforeEach(async () => {
-        store = (await initStore()).store;
+    beforeEach(() => {
+        store = initStore().store;
     });
 
     it('should render correctly', async () => {

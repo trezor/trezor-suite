@@ -32,8 +32,8 @@ describe('useQuotesInvalidator', () => {
             },
         });
 
-    beforeEach(async () => {
-        store = (await initStore()).store;
+    beforeEach(() => {
+        store = initStore().store;
     });
 
     it('should call debounce with empty method when form is not valid', async () => {

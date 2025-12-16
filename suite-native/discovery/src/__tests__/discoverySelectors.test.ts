@@ -33,9 +33,9 @@ describe('selectDiscoverySupportedNetworks', () => {
         },
     });
 
-    it('should be stable (return same reference for same inputs)', async () => {
+    it('should be stable (return same reference for same inputs)', () => {
         const state = createMockState();
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         const firstCall = selectDiscoverySupportedNetworks(store.getState());
         const secondCall = selectDiscoverySupportedNetworks(store.getState());
@@ -43,11 +43,11 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(firstCall).toBe(secondCall);
     });
 
-    it('should filter out testnet networks when testnets are disabled', async () => {
+    it('should filter out testnet networks when testnets are disabled', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -64,11 +64,11 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('eth');
     });
 
-    it('should include testnet networks when testnets are enabled', async () => {
+    it('should include testnet networks when testnets are enabled', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: true },
         });
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -85,11 +85,11 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('eth');
     });
 
-    it('should filter out debug-only networks when debug networks feature flag is disabled', async () => {
+    it('should filter out debug-only networks when debug networks feature flag is disabled', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: false },
         });
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -101,11 +101,11 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('eth');
     });
 
-    it('should include debug-only networks when debug networks feature flag is enabled', async () => {
+    it('should include debug-only networks when debug networks feature flag is enabled', () => {
         const state = createMockState({
             featureFlags: { areDebugOnlyNetworksEnabled: true },
         });
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         const result = selectDiscoverySupportedNetworks(store.getState());
         const networkSymbols = result.map(n => n.symbol);
@@ -116,11 +116,11 @@ describe('selectDiscoverySupportedNetworks', () => {
         expect(networkSymbols).toContain('eth');
     });
 
-    it('should respect forced testnet setting parameter', async () => {
+    it('should respect forced testnet setting parameter', () => {
         const state = createMockState({
             appSettings: { areTestnetsEnabled: false },
         });
-        const { store } = await initStore(state);
+        const { store } = initStore(state);
 
         // Force testnets enabled even though app setting is false
         const result = selectDiscoverySupportedNetworks(store.getState(), true);

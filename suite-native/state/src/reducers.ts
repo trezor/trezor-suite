@@ -41,6 +41,7 @@ import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
+    MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
     backfillPortfolioTrackerUnavailableCapabilities,
     bluetoothPersistTransform,
@@ -85,8 +86,10 @@ const walletSettingsReducer = prepareWalletSettingsReducer(extraDependencies);
 const bluetoothReducer = bluetoothSlice.prepareReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-export const prepareRootReducers = async () => {
-    const appSettingsPersistedReducer = await preparePersistReducer({
+type PrepareRootReducersDeps = MMKVStorageDep;
+
+export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
+    const appSettingsPersistedReducer = preparePersistReducer({
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
@@ -95,9 +98,10 @@ export const prepareRootReducers = async () => {
         // `areTestnetsEnabled` is a developer-only option and does not require migration.
         // To version 2: moved to initialMigrateAppSettingsAndDiscoveryConfig
         version: 3,
+        storage: deps.mmkvStorage,
     });
 
-    const tradingPersistedReducer = await preparePersistReducer({
+    const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
         persistedKeys: ['favouriteAssets', 'trades', 'settings', 'residence', 'tradingEnvironment'],
         key: 'trading',
@@ -112,9 +116,10 @@ export const prepareRootReducers = async () => {
                 };
             },
         },
+        storage: deps.mmkvStorage,
     });
 
-    const walletSettingsPersistedReducer = await preparePersistReducer({
+    const walletSettingsPersistedReducer = preparePersistReducer({
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
@@ -123,6 +128,7 @@ export const prepareRootReducers = async () => {
             1: initialMigrateAppSettingsAndDiscoveryConfig,
             2: migrateAutoEjectToWalletSettings,
         },
+        storage: deps.mmkvStorage,
     });
 
     const walletReducers = combineReducers({
@@ -140,7 +146,7 @@ export const prepareRootReducers = async () => {
         formDrafts: formDraftReducer,
     });
 
-    const walletPersistedReducer = await preparePersistReducer({
+    const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
@@ -171,16 +177,18 @@ export const prepareRootReducers = async () => {
         // This remains for backward compatibility. If any data was persisted under the 'wallet' key,
         // it is retrieved from storage and migrated. Subsequently, the 'wallet' key is cleared because
         // the data is now stored under the 'root' key.
+        storage: deps.mmkvStorage,
     });
 
-    const analyticsPersistedReducer = await preparePersistReducer({
+    const analyticsPersistedReducer = preparePersistReducer({
         reducer: analyticsReducer,
         persistedKeys: ['instanceId', 'enabled', 'confirmed'],
         key: 'analytics',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const devicePersistedReducer = await preparePersistReducer({
+    const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
         persistedKeys: ['devices', 'persistentDeviceData'],
         key: 'devices',
@@ -211,60 +219,68 @@ export const prepareRootReducers = async () => {
                 return { ...oldState, devices: migratedDevices };
             },
         },
+        storage: deps.mmkvStorage,
     });
 
-    const featureFlagsPersistedReducer = await preparePersistReducer({
+    const featureFlagsPersistedReducer = preparePersistReducer({
         reducer: featureFlagsReducer,
         persistedKeys: featureFlagsPersistedKeys,
         key: 'featureFlags',
         version: 2,
         // migration to v2 for IsDeviceConnectEnabled and IsBluetoothEnabled removed as obsolete
+        storage: deps.mmkvStorage,
     });
 
-    const bannerFlagsPersistedReducer = await preparePersistReducer({
+    const bannerFlagsPersistedReducer = preparePersistReducer({
         reducer: bannerFlagsReducer,
         persistedKeys: bannerFlagsPersistWhitelist,
         key: 'bannerFlags',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const messageSystemPersistedReducer = await preparePersistReducer({
+    const messageSystemPersistedReducer = preparePersistReducer({
         reducer: messageSystemReducer,
         persistedKeys: messageSystemPersistedWhitelist,
         key: 'messageSystem',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const bluetoothPersistedReducer = await preparePersistReducer({
+    const bluetoothPersistedReducer = preparePersistReducer({
         reducer: bluetoothReducer,
         persistedKeys: ['knownDevices'],
         key: 'bluetooth',
         version: 1,
         transforms: [bluetoothPersistTransform],
+        storage: deps.mmkvStorage,
     });
 
-    const connectPopupPersistedReducer = await preparePersistReducer({
+    const connectPopupPersistedReducer = preparePersistReducer({
         reducer: connectPopupReducer,
         persistedKeys: ['permissions'],
         key: 'connectPopup',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const firmwarePersistedReducer = await preparePersistReducer({
+    const firmwarePersistedReducer = preparePersistReducer({
         reducer: firmwareReducer,
         key: 'firmware',
         version: 1,
         persistedKeys: ['firmwareUpdateSource'],
+        storage: deps.mmkvStorage,
     });
 
-    const thpPersistedReducer = await preparePersistReducer({
+    const thpPersistedReducer = preparePersistReducer({
         reducer: thpReducer,
         persistedKeys: ['credentials'],
         key: 'thp',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const localePersistedReducer = await preparePersistReducer({
+    const localePersistedReducer = preparePersistReducer({
         reducer: localeReducer,
         persistedKeys: localePersistWhitelist,
         key: 'locale',
@@ -272,23 +288,26 @@ export const prepareRootReducers = async () => {
         migrations: {
             2: migrateLocaleTagToAppLocaleCode,
         },
+        storage: deps.mmkvStorage,
     });
 
-    const suiteSyncPersistedReducer = await preparePersistReducer({
+    const suiteSyncPersistedReducer = preparePersistReducer({
         reducer: suiteSyncReducer,
         persistedKeys: ['settings'],
         key: 'suiteSync',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const quotaManagerPersistedReducer = await preparePersistReducer({
+    const quotaManagerPersistedReducer = preparePersistReducer({
         reducer: suiteSyncQuotaManagerReducer,
         persistedKeys: ['baseUrl', 'enabled', 'registeredDevices', 'ownersAllowance'],
         key: 'suiteSyncQuotaManager',
         version: 1,
+        storage: deps.mmkvStorage,
     });
 
-    const rootReducer = await preparePersistReducer({
+    const rootReducer = preparePersistReducer({
         reducer: combineReducers({
             analytics: analyticsPersistedReducer,
             app: appReducer,
@@ -371,6 +390,7 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
         },
+        storage: deps.mmkvStorage,
     });
 
     return rootReducer;
