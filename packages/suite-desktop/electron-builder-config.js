@@ -33,6 +33,7 @@ module.exports = {
         '!node_modules/ajv/lib',
         '!node_modules/blake-hash/**/{build,src}',
         '!node_modules/usb/**/{libusb,libusb_config,src}',
+        '!node_modules/@trezor/**', // exclude @trezor/suite-desktop, which would recurse. Other @trezor packages are bundled by bundler.
     ],
     extraResources: [
         {
