@@ -43,14 +43,12 @@ export type To = string | Partial<Path>;
 
 export type LocationPushState = Record<string, unknown>;
 
-export type ExtraWithStoreFactory = (store: { getState: () => any; dispatch: any }) => {
+export type ExtraDependenciesServices = {
     services: {
         suiteSync: SuiteSync;
         platformEncryption: PlatformEncryption;
     };
 };
-
-export type ExtraWithStore = ReturnType<ExtraWithStoreFactory>;
 
 export type ExtraDependenciesStatic = {
     thunks: {
@@ -139,7 +137,7 @@ export type ExtraDependenciesStatic = {
     };
 };
 
-export type ExtraDependencies = ExtraDependenciesStatic & ExtraWithStore;
+export type ExtraDependencies = ExtraDependenciesStatic & ExtraDependenciesServices;
 
 export type ExtraDependenciesForReducer = Pick<
     ExtraDependencies,

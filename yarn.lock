@@ -10633,6 +10633,7 @@ __metadata:
   resolution: "@suite-common/platform-encryption-native@workspace:suite-native/platform-encryption-native"
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-native/storage": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft

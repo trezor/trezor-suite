@@ -15,6 +15,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
+import { createEnsureMMKVKey, createMMKVStorage } from '@suite-native/storage';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
@@ -60,9 +61,12 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
 export const initStore = async (preloadedState?: PreloadedState) => {
     let extra: ExtraDependencies | null = null as ExtraDependencies | null;
 
+    const ensureMMKVKey = createEnsureMMKVKey();
+    const mmkvStorage = createMMKVStorage({ ensureMMKVKey });
+
     const store = configureStore({
         preloadedState: preloadedState as FullPreloadedState,
-        reducer: await prepareRootReducers(),
+        reducer: await prepareRootReducers({ mmkvStorage }),
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 serializableCheck: false,
@@ -72,7 +76,7 @@ export const initStore = async (preloadedState?: PreloadedState) => {
                     createStoreWithExtraStoreMiddleware({
                         extraFactory: api => ({
                             ...extraDependencies,
-                            ...createNativeCompositionRoot(api),
+                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey }),
                         }),
                         onExtraCreated: initializedExtra => {
                             extra = initializedExtra;

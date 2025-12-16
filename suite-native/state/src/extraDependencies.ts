@@ -4,13 +4,14 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
+import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import type { EnsureMMKVKeyDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
@@ -34,10 +35,18 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-export const createNativeCompositionRoot: ExtraWithStoreFactory = store => {
-    const platformEncryption = createNativePlatformEncryption();
+type NativeAppDeps = {
+    getState: () => any;
+    dispatch: any;
+} & EnsureMMKVKeyDep;
+
+export const createNativeCompositionRoot = (deps: NativeAppDeps) => {
+    const platformEncryption = createNativePlatformEncryption({
+        ensureMMKVKey: deps.ensureMMKVKey,
+    });
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-        ...store,
+        dispatch: deps.dispatch,
+        getState: deps.getState,
         platformEncryption,
         trezorConnect: TrezorConnect,
     });
@@ -45,7 +54,8 @@ export const createNativeCompositionRoot: ExtraWithStoreFactory = store => {
     return {
         services: {
             suiteSync: createSuiteSyncNativeCompositionRoot({
-                ...store,
+                dispatch: deps.dispatch,
+                getState: deps.getState,
                 platformEncryption,
                 trezorConnect: TrezorConnect,
                 ensureDelegatedIdentityKey,
