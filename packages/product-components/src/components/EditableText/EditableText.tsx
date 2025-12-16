@@ -279,6 +279,25 @@ export const EditableText = ({
         [handleEdit, isEditable, isEmpty],
     );
 
+    const handlePaste = (e: React.ClipboardEvent<HTMLElement>) => {
+        e.preventDefault();
+
+        const text = e.clipboardData.getData('text/plain');
+        const selection = window.getSelection();
+
+        if (selection?.rangeCount && text) {
+            const range = selection.getRangeAt(0);
+
+            range.deleteContents();
+            range.insertNode(document.createTextNode(text));
+            range.collapse(false);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            setCurrentValueTextContent(valueRef.current?.textContent || '');
+        }
+    };
+
     useEffect(() => {
         if (!isEditable) return;
 
@@ -360,6 +379,7 @@ export const EditableText = ({
                         onInput={e => {
                             setCurrentValueTextContent(e.currentTarget.textContent || '');
                         }}
+                        onPaste={handlePaste}
                         $placeholder={placeholder}
                         $isEmpty={isEmpty}
                         $isEditable={isEditable}
