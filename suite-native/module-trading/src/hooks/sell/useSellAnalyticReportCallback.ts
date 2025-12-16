@@ -11,8 +11,11 @@ import {
 import { EventType, TradingSellAction, TradingSellStep, analytics } from '@suite-native/analytics';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
+import { TradingSellAnalyticReportCallback } from '../general/useTradingAnalyticReportCallback';
 
-export const useSellAnalyticReportCallback = (candidateQuote?: SellFiatTrade) => {
+export const useSellAnalyticReportCallback = (
+    candidateQuote?: SellFiatTrade,
+): TradingSellAnalyticReportCallback => {
     const persistedQuote = useSelector(selectTradingSellSelectedQuote);
     const quote = candidateQuote || persistedQuote;
 

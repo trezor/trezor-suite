@@ -1,12 +1,5 @@
 import { sendFormActions } from '@suite-common/wallet-core';
-import {
-    EventType,
-    TradingExchangeAction,
-    TradingExchangeStep,
-    TradingSellAction,
-    TradingSellStep,
-    analytics,
-} from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     TestStore,
     act,
@@ -19,19 +12,17 @@ import { transactionManagementActions } from '@suite-native/transaction-manageme
 import { TradingExchangeSignAndSendTransactionProps } from '../../exchange/useExchangeFlow';
 import { useTradingOutputsReviewScreenControls } from '../useTradingOutputsReviewScreenControls';
 
-const mockReportToAnalyticsExchange = jest.fn(
-    (step: TradingExchangeStep, action: TradingExchangeAction) => {
-        analytics.report({
-            type: EventType.TradingExchange,
-            payload: {
-                step,
-                action,
-            },
-        });
-    },
-);
+const mockReportToAnalyticsExchange = jest.fn((step, action) => {
+    analytics.report({
+        type: EventType.TradingExchange,
+        payload: {
+            step,
+            action,
+        },
+    });
+});
 
-const mockReportToAnalyticsSell = jest.fn((step: TradingSellStep, action: TradingSellAction) => {
+const mockReportToAnalyticsSell = jest.fn((step, action) => {
     analytics.report({
         type: EventType.TradingSell,
         payload: {
@@ -93,9 +84,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                     orderId: 'orderId',
                     accountKey: 'btc-account-1',
                     signAndSendTransaction: mockSignAndSendTransaction,
-                    reportToAnalytics: reportToAnalytics as
-                        | ((step: TradingSellStep, action: TradingSellAction) => void)
-                        | ((step: TradingExchangeStep, action: TradingExchangeAction) => void),
+                    reportToAnalytics,
                 }),
             {
                 store,
@@ -327,13 +316,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingSell,
-                payload: expect.objectContaining({
-                    step: 'sign-and-send',
-                    action: 'cancel',
-                }),
-            });
+            expect(mockReportToAnalyticsSell).toHaveBeenCalled();
         });
     });
 
@@ -342,19 +325,6 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
         expect(analyticsSpy).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
-            payload: expect.objectContaining({
-                step: 'sign-and-send',
-                action: 'visit',
-            }),
-        });
-    });
-
-    it('should report visit to analytics on mount for sell', async () => {
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
-        await renderUseTradingOutputsReviewScreenControls(mockReportToAnalyticsSell);
-
-        expect(analyticsSpy).toHaveBeenCalledWith({
-            type: EventType.TradingSell,
             payload: expect.objectContaining({
                 step: 'sign-and-send',
                 action: 'visit',

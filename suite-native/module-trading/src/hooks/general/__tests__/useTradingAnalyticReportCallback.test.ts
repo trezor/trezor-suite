@@ -86,7 +86,7 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should default to exchange analytics callback', async () => {
+        it('should return null action (no analytics)', async () => {
             const { result } = await renderHookWithStoreProviderAsync(
                 () => useTradingAnalyticReportCallback(undefined),
                 { preloadedState },
@@ -94,13 +94,7 @@ describe('useTradingAnalyticReportCallback', () => {
 
             result.current('fee-selection', 'visit');
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
-                payload: expect.objectContaining({
-                    step: 'fee-selection',
-                    action: 'visit',
-                }),
-            });
+            expect(analyticsSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -111,7 +105,7 @@ describe('useTradingAnalyticReportCallback', () => {
             };
         });
 
-        it('should default to exchange analytics callback', async () => {
+        it('should return null action (no analytics)', async () => {
             const { result } = await renderHookWithStoreProviderAsync(
                 () => useTradingAnalyticReportCallback('buy'),
                 { preloadedState },
@@ -119,13 +113,7 @@ describe('useTradingAnalyticReportCallback', () => {
 
             result.current('fee-selection', 'visit');
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingExchange,
-                payload: expect.objectContaining({
-                    step: 'fee-selection',
-                    action: 'visit',
-                }),
-            });
+            expect(analyticsSpy).not.toHaveBeenCalled();
         });
     });
 });

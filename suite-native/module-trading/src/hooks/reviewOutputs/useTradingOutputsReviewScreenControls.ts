@@ -5,12 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { sendFormActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
-import type {
-    TradingExchangeAction,
-    TradingExchangeStep,
-    TradingSellAction,
-    TradingSellStep,
-} from '@suite-native/analytics';
 import { useConfirmOnTrezorController } from '@suite-native/device';
 import type {
     AppTabsParamList,
@@ -27,6 +21,7 @@ import {
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import { TradingAnalyticReportCallback } from '../general/useTradingAnalyticReportCallback';
 import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
@@ -41,9 +36,7 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 > & {
     orderId: string;
     accountKey: AccountKey;
-    reportToAnalytics:
-        | ((step: TradingSellStep, action: TradingSellAction) => void)
-        | ((step: TradingExchangeStep, action: TradingExchangeAction) => void);
+    reportToAnalytics: TradingAnalyticReportCallback;
 };
 
 export const useTradingOutputsReviewScreenControls = ({

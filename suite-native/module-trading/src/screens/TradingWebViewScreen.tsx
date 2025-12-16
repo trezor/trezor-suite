@@ -52,10 +52,8 @@ export const TradingWebViewScreen = () => {
     const reportToAnalytics = useTradingAnalyticReportCallback(trade?.tradeType);
 
     useEffect(() => {
-        if (trade?.tradeType) {
-            reportToAnalytics('webview', 'visit');
-        }
-    }, [reportToAnalytics, trade?.tradeType]);
+        reportToAnalytics('webview', 'visit');
+    }, [reportToAnalytics]);
 
     useWatchTrade({
         accountKey: account?.key ?? undefined,

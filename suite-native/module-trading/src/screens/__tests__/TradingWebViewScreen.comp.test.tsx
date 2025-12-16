@@ -71,7 +71,7 @@ describe('TradingWebViewScreen', () => {
             };
         });
 
-        it('should report on mount for buy', async () => {
+        it('should report nothing on mount for buy', async () => {
             const preloadedState = { wallet: getWalletState({ tradeType: 'buy' }) };
             preloadedState.wallet.trading.trades = [
                 {
@@ -86,8 +86,15 @@ describe('TradingWebViewScreen', () => {
                 preloadedState,
             });
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(analyticsSpy).not.toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
+                payload: expect.objectContaining({
+                    step: 'webview',
+                    action: 'visit',
+                }),
+            });
+            expect(analyticsSpy).not.toHaveBeenCalledWith({
+                type: EventType.TradingSell,
                 payload: expect.objectContaining({
                     step: 'webview',
                     action: 'visit',
