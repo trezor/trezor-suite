@@ -143,7 +143,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
             await solanaFeePromise;
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
-            await tradingPage.compareButton.click();
+            await tradingPage.selectedOfferProvider.click();
         });
 
         await test.step('Check compared offers', async () => {
@@ -161,6 +161,7 @@ test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, 
         await test.step('Select second offer and check correct values are sent in trade request', async () => {
             const sellTradePromise = page.waitForRequest(invityEndpoint.sellTrade);
             await tradingPage.selectThisQuoteButton.nth(1).click();
+            await tradingPage.sellBestOfferButton.click();
             await expect.soft(sellTradePromise).toHavePayload(
                 {
                     // the second chosen offer via Bank Transfer that matches input criteria has index 3

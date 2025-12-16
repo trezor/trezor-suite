@@ -21,6 +21,7 @@ const OpenModalButton = styled.button`
     border: unset;
     background: unset;
     box-shadow: unset;
+    font-size: inherit;
 
     cursor: pointer;
 

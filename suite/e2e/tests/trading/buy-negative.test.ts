@@ -48,7 +48,7 @@ test.describe('Trading - Buy Negative scenarios', { tag: ['@group=trading', '@we
             await tradingPage.youPayFiatInput.fill('5000');
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.buyBestOfferButton).toBeDisabled();
-            await expect(tradingPage.compareButton).toBeHidden();
+            await expect(tradingPage.selectedOfferProvider).toBeHidden();
             await expect(page.getByTestId('trading-offer-found-none')).toBeVisible();
             await expect(tradingPage.selectThisQuoteButton).toBeHidden();
         });

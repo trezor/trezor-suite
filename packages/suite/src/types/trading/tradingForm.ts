@@ -143,6 +143,7 @@ export interface TradingBuyFormContextProps
         state: TradingFormStateProps;
     };
     tradingReceiveAddress: ReturnType<typeof useTradingReceiveAddress>;
+    isAmountEmpty: boolean;
 
     selectQuote: (quote: BuyTrade) => Promise<void>;
     confirmTrade: ({
@@ -176,6 +177,7 @@ export interface TradingSellFormContextProps
         state: TradingFormStateProps;
         helpers: TradingUseFormActionsReturnProps;
     };
+    isAmountEmpty: boolean;
     shouldSendInSats: boolean | undefined;
     changeFeeLevel: (level: FeeLevel['label']) => void;
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
@@ -225,6 +227,7 @@ export interface TradingExchangeFormContextProps
     receiveAccount?: Account;
     verifiedAddress: TradingVerifiedAddress;
     shouldSendInSats: boolean | undefined;
+    isAmountEmpty: boolean;
     setReceiveAccount: (account?: Account) => void;
     setAmountLimits: (limits?: CryptoAmountLimitProps) => void;
     composeRequest: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];

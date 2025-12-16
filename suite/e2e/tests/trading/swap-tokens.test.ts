@@ -12,9 +12,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesSolanaTokens[0].sendStringAmount!;
-const receiveAmount = localizeNumber(swapQuotesSolanaTokens[0].receiveStringAmount!);
-const provider = getCompanyNameFromList(swapQuotesSolanaTokens[0].exchange, 'swapList');
+const sendAmount = swapQuotesSolanaTokens[1].sendStringAmount!;
+const receiveAmount = localizeNumber(swapQuotesSolanaTokens[1].receiveStringAmount!);
+const provider = getCompanyNameFromList(swapQuotesSolanaTokens[1].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} USDC`;
 const { sendAddress, send: tetherMint, receive: usdcMint, receiveAddress } = swapTradeSolanaTokens;
@@ -99,7 +99,7 @@ test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, 
                 formattedReceiveAmount,
             );
             await expect(tradingPage.confirmationExchangeType).toHaveTranslation(
-                'TR_EXCHANGE_FIXED',
+                'TR_EXCHANGE_FLOAT',
             );
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });

@@ -17,9 +17,8 @@ import {
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
-import { Button, Column, Paragraph, Row, TextButton, Tooltip } from '@trezor/components';
+import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints, spacings } from '@trezor/theme';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Translation } from 'src/components/suite/Translation';
@@ -28,13 +27,13 @@ import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextM
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import {
     TradingExchangeApprovalType,
     TradingFormContextValues,
 } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
-    getProvidersInfoProps,
     getSelectQuoteTyped,
     getSelectedCryptoId,
     isTradingBuyContext,
@@ -46,18 +45,16 @@ import {
     tradingGetRoundedFiatAmount,
     tradingGetSectionActionLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
-import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 import { TradingFormApproval } from 'src/views/wallet/trading/common/TradingForm/TradingFormApproval';
 import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferCryptoAmount';
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
-import { TradingFormOfferItem } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferItem';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferOTC';
-import { TradingFormOffersSwitcher } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffersSwitcher';
 
 import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
+import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 
-const getSelectedQuote = (
+export const getSelectedQuote = (
     context: TradingFormContextValues<TradingType>,
     bestScoredQuote: TradingTradeType | undefined,
 ) => {
@@ -72,8 +69,8 @@ const getSelectedQuote = (
 
 export const TradingFormOffer = () => {
     const dispatch = useDispatch();
+    const { isTorEnabled } = useSelector(selectTorState);
 
-    const [isCompareLoading, setIsCompareLoading] = useState<boolean>(false);
     const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
     const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
     const [isManuallyApproved, setIsManuallyApproved] = useState(false);
@@ -83,7 +80,8 @@ export const TradingFormOffer = () => {
         account,
         type,
         quotes,
-        goToOffers,
+        isAmountEmpty,
+
         getValues,
         form: { state },
     } = context;
@@ -98,7 +96,7 @@ export const TradingFormOffer = () => {
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
     const { cryptoIdToPlatformName } = useTradingUtils();
-    const providers = getProvidersInfoProps(context);
+
     const bestScoredQuote = quotes?.[0];
     const { preselectedQuote } = context;
     const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
@@ -121,15 +119,6 @@ export const TradingFormOffer = () => {
     const network = selectedCryptoId ? cryptoIdToPlatformName(networkId) : undefined;
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
-
-    const showProviderAdjustedAmountTooltip =
-        !state.isFormLoading &&
-        isTradingSellContext(context) &&
-        context.quotesRequest?.cryptoStringAmount &&
-        bestScoredQuoteAmounts &&
-        !new BigNumber(context.quotesRequest.cryptoStringAmount).isEqualTo(
-            new BigNumber(bestScoredQuoteAmounts.receiveAmount),
-        );
 
     const [approvalType, setApprovalType] = useState<TradingExchangeApprovalType>('APPROVE');
     const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
@@ -207,11 +196,6 @@ export const TradingFormOffer = () => {
 
     const onContinueClick = () => {
         modalControls.open('accountModal');
-    };
-
-    const onCompareAllOffersClick = async () => {
-        setIsCompareLoading(true);
-        await goToOffers();
     };
 
     let amount: string = '0';
@@ -306,7 +290,8 @@ export const TradingFormOffer = () => {
         !!context.tradingReceiveAddress.receiveAddress;
 
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
-    const amountIsEmpty = new BigNumber(amount).isZero() || amount === '';
+
+    const noOffersWithTor = isTorEnabled && !quote && !isLoading;
 
     return (
         <Column gap={spacings.lg}>
@@ -353,85 +338,30 @@ export const TradingFormOffer = () => {
                     />
                 )}
             </Column>
-            <Column gap={spacings.xxs}>
-                {context.quotes.length > 1 && (
-                    <Row justifyContent="space-between">
-                        {showProviderAdjustedAmountTooltip ? (
-                            <Tooltip
-                                hasIcon
-                                placement="right"
-                                content={
-                                    <Translation
-                                        id="TR_SELL_PROVIDER_ADJUSTED_AMOUNT"
-                                        values={{
-                                            roundedAmountWithSymbol: (
-                                                <TradingCryptoAmount
-                                                    amount={bestScoredQuoteAmounts.receiveAmount}
-                                                    cryptoId={
-                                                        bestScoredQuoteAmounts.receiveCurrency as CryptoId
-                                                    }
-                                                />
-                                            ),
-                                        }}
-                                    />
-                                }
-                            >
-                                <Translation
-                                    id={
-                                        preselectedQuote
-                                            ? 'TR_TRADING_YOUR_SELECTED_OFFER'
-                                            : 'TR_TRADING_YOUR_BEST_OFFER'
-                                    }
-                                />
-                            </Tooltip>
-                        ) : (
-                            <Translation
-                                id={
-                                    preselectedQuote
-                                        ? 'TR_TRADING_YOUR_SELECTED_OFFER'
-                                        : 'TR_TRADING_YOUR_BEST_OFFER'
-                                }
-                            />
-                        )}
-                        <TextButton
-                            onClick={onCompareAllOffersClick}
-                            size="small"
-                            isDisabled={
-                                state.isLoadingOrInvalid ||
-                                isLoading ||
-                                isQuoteOutdated ||
-                                (!isTradingSellContext(context) &&
-                                    !isReceiveAddressSelected &&
-                                    !!quote)
+
+            {!quote && !state.isFormLoading && !state.isFormInvalid && (
+                <Card>
+                    <Paragraph
+                        typographyStyle="hint"
+                        variant="tertiary"
+                        align="center"
+                        margin={{ vertical: spacings.xs }}
+                        data-testid="trading-offer-found-none"
+                    >
+                        <Translation
+                            id={
+                                isAmountEmpty
+                                    ? 'TR_BUY_SELL_OFFERS_EMPTY'
+                                    : 'TR_TRADING_NO_OFFER_BUY_OR_SELL'
                             }
-                            isLoading={isCompareLoading}
-                            data-testid="@trading/form/compare-button"
-                            type="button"
-                        >
-                            <Translation id="TR_TRADING_COMPARE_OFFERS" />
-                        </TextButton>
-                    </Row>
-                )}
-                {isTradingExchangeContext(context) ? (
-                    <TradingFormOffersSwitcher
-                        context={context}
-                        isFormLoading={isLoading && !preselectedQuote}
-                        isFormInvalid={state.isFormInvalid && !preselectedQuote}
-                        providers={providers}
-                        amountIsEmpty={amountIsEmpty}
-                        tradingType={context.type}
-                    />
-                ) : (
-                    <TradingFormOfferItem
-                        bestQuote={quote}
-                        isFormLoading={state.isFormLoading && !preselectedQuote}
-                        isFormInvalid={state.isFormInvalid && !preselectedQuote}
-                        providers={providers}
-                        amountIsEmpty={amountIsEmpty}
-                        tradingType={context.type}
-                    />
-                )}
-            </Column>
+                        />
+                    </Paragraph>
+                </Card>
+            )}
+
+            {noOffersWithTor && (
+                <TradingUtilsTorWarning tradingType={context.type} noOffer={!quote} />
+            )}
 
             {!isTradingSellContext(context) && !isReceiveAddressSelected && quote ? (
                 <Button
@@ -469,19 +399,31 @@ export const TradingFormOffer = () => {
                             }}
                             size="large"
                             isDisabled={isButtonDisabled || isLoading}
-                            isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
+                            isLoading={
+                                areFeesLoading ||
+                                (preselectedQuote && state.isFormLoading) ||
+                                (state.isFormLoading &&
+                                    !isAmountEmpty &&
+                                    (type === 'sell' || isReceiveAddressSelected))
+                            }
                             data-testid={`@trading/form/${type}-button`}
                             minWidth={160}
                             width={isContentBelowBreakpoint ? undefined : '100%'}
                         >
-                            <Translation id={tradingGetSectionActionLabel(type)} />
+                            <Translation
+                                id={
+                                    state.isFormLoading &&
+                                    !isAmountEmpty &&
+                                    (type === 'sell' || isReceiveAddressSelected)
+                                        ? 'TR_TRADING_OFFER_LOOKING'
+                                        : tradingGetSectionActionLabel(type)
+                                }
+                            />
                         </Button>
                     )}
                 </>
             )}
-
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
-
             {isApproveModalOpen && (
                 <ApproveModal
                     onCancel={onCloseApproveModal}
@@ -489,7 +431,6 @@ export const TradingFormOffer = () => {
                     setIsWaitingForDevice={setIsWaitingForDevice}
                 />
             )}
-
             {isRevokeModalOpen && (
                 <RevokeModal
                     onCancel={onCloseRevokeModal}

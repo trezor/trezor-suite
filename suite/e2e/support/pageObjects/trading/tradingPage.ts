@@ -79,7 +79,7 @@ export class TradingPage {
     readonly paymentMethodOption = (method: PaymentMethods) =>
         this.page.getByTestId(`@trading/form/payment-method-select/option/${method}`);
     readonly buyOffersPage: Locator;
-    readonly compareButton: Locator;
+    readonly selectedOfferProvider: Locator;
     readonly quotes: Locator;
     readonly quoteOfProvider = (provider: string) =>
         this.page.getByTestId(`@trading/offers/quote-${provider}`);
@@ -194,7 +194,7 @@ export class TradingPage {
             '@trading/form/payment-method-select/input',
         );
         this.buyOffersPage = this.page.getByTestId('@trading/buy-offers');
-        this.compareButton = this.page.getByTestId('@trading/form/compare-button');
+        this.selectedOfferProvider = this.page.getByTestId('@trading/selected-offer-provider');
         this.quotes = this.page.getByTestId('@trading/offers/quote');
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');

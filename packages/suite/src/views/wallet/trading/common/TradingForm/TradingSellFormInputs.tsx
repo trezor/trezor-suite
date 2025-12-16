@@ -24,6 +24,7 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
@@ -104,6 +105,10 @@ export const TradingSellFormInputs = () => {
             <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+            </Column>
+            <TradingSelectedOfferProvider />
+            <Divider margin={0} />
+            <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
                 <TradingFormFeesDisclamer />
             </Column>
         </Card>

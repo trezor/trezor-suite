@@ -194,6 +194,7 @@ export const useTradingExchangeForm = ({
 
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues = !!output?.amount && !!values.receiveCryptoSelect;
+    const isAmountEmpty = output?.amount === '';
     const noProviders = Object.keys(exchangeInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !exchangeInfo?.providerInfos;
     const isFormLoading = isInitialDataLoading || formState.isSubmitting || isLoading;
@@ -880,6 +881,7 @@ export const useTradingExchangeForm = ({
         verifiedAddress,
         shouldSendInSats,
         trade,
+        isAmountEmpty,
         setReceiveAccount,
         composeRequest,
         composedTransactionInfo,

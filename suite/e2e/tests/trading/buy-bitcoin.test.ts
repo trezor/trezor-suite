@@ -40,7 +40,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
             });
             await expect(tradingPage.bestOfferAmount).toHaveText(bestBuyCryptoAmount);
             await expect(tradingPage.quoteProvider).toHaveText(bestBuyProvider);
-            await tradingPage.compareButton.click();
+            await tradingPage.selectedOfferProvider.click();
         });
 
         await test.step('Check compared offers', async () => {
@@ -69,6 +69,7 @@ test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () =
         await test.step('Select second offer', async () => {
             const tradeRequestPromise = page.waitForRequest(invityEndpoint.buyTrade);
             await tradingPage.selectThisQuoteButton.nth(1).click();
+            await tradingPage.buyBestOfferButton.click();
             await expect(tradeRequestPromise).toHavePayload(
                 { trade: { ...buyQuotesBTCUpdate[5], receiveAddress } },
                 { omit: ['returnUrl', 'trade.orderId', 'trade.paymentId'] },
