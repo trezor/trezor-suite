@@ -24,7 +24,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         await next(action);
 
         const nextState = getState();
-        if (nextState.router.app !== 'wallet' && nextState.router.app !== 'dashboard')
+        if (
+            nextState.router.app !== 'wallet' &&
+            nextState.router.app !== 'dashboard' &&
+            nextState.router.app !== 'earn'
+        )
             return action;
 
         const device = selectSelectedDevice(nextState);

@@ -3,10 +3,11 @@ import { FC, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Route } from '@suite-common/suite-types';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/wallet-core';
 import { type SpacingPxValues, spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
+import { selectIsDebugModeActive, selectIsInitialRun } from 'src/selectors/suite/suiteSelectors';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
@@ -41,6 +42,9 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
+    const isDebug = useSelector(selectIsDebugModeActive);
+    const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+
     const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> =
         useMemo(
             () => [
@@ -50,6 +54,16 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
                     goToRoute: startRoute,
                     routes: [startRoute],
                 },
+                ...(isDebug && !isBtcOnly
+                    ? [
+                          {
+                              nameId: 'TR_EARN',
+                              icon: 'piggyBank',
+                              goToRoute: 'suite-earn',
+                              routes: ['suite-earn'],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: 'bell',
@@ -63,7 +77,7 @@ export const Navigation = ({ children, margin = spacingsPx.xs }: NavigationProps
                     'data-testid': '@suite/menu/settings',
                 },
             ],
-            [startRoute],
+            [startRoute, isDebug, isBtcOnly],
         );
 
     return (

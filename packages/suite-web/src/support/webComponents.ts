@@ -8,6 +8,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ Dashboard }) => ({ default: Dashboard }),
         ),
     ),
+    'suite-earn': lazy(() =>
+        import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
+            default: Earn,
+        })),
+    ),
     'suite-connect-popup': lazy(() =>
         import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
             ({ ConnectPopup }) => ({ default: ConnectPopup }),

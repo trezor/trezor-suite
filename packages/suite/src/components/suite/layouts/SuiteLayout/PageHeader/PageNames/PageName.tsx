@@ -20,6 +20,14 @@ export const PageName = () => {
         return <SettingsName />;
     }
 
+    if (currentRoute?.includes('earn')) {
+        return (
+            <BasicName>
+                <Translation id="TR_EARN" />
+            </BasicName>
+        );
+    }
+
     if (selectedAccount && isAccountTabPage) {
         return <AccountName selectedAccount={selectedAccount} />;
     }
