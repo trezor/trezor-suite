@@ -22,7 +22,7 @@
         "lodash": "^4.17.15"
     },
     "devDependencies": {
-        "@types/crc": "^3.8.0",
-        "@trezor/eslint": "workspace:*"
+        "@trezor/eslint": "workspace:*",
+        "@types/crc": "^3.8.0"
     }
 }
