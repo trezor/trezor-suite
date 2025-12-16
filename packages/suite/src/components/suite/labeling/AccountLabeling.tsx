@@ -5,7 +5,6 @@ import { BadgeProps } from '@trezor/components';
 
 import { AccountLabel } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { Account as WalletAccount } from 'src/types/wallet';
 
 import { WalletLabeling } from './WalletLabeling';
@@ -26,16 +25,11 @@ export const AccountLabeling = ({
 
     const accounts = !Array.isArray(account) ? [account] : account;
 
-    const labels = useSelector(state => selectLabelingDataForAccount(state, accounts[0].key));
-
     if (accounts.length < 1) return null;
 
     const accountLabel = (
         <AccountLabel
-            account={{
-                ...accounts[0],
-                accountLabel: labels.accountLabel,
-            }}
+            account={accounts[0]}
             showAccountTypeBadge={showAccountTypeBadge}
             accountTypeBadgeSize={accountTypeBadgeSize}
         />

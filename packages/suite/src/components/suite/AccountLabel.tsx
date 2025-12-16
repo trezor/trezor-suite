@@ -1,7 +1,10 @@
+import { selectAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { BadgeSize, Row, Text } from '@trezor/components';
 
-import { useDefaultAccountLabel } from 'src/hooks/suite';
+import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 
 import { AccountTypeBadge } from './AccountTypeBadge';
 
@@ -17,15 +20,27 @@ export const AccountLabel = ({
     account,
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
-    const { symbol, accountType, index, path, networkType, accountLabel } = account;
+    const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+    const suiteSyncAccountLabel = useSelector(state =>
+        selectAccountLabel({
+            state,
+            walletDescriptor,
+            accountKey: account.key,
+        }),
+    );
+    const { accountLabel: legacyAccountLabel } = useSelector(state =>
+        selectLabelingDataForAccount(state, account.key),
+    );
+    const { symbol, accountType, index, path, networkType } = account;
+    const accountLabel =
+        suiteSyncAccountLabel ||
+        legacyAccountLabel ||
+        account.accountLabel ||
+        getDefaultAccountLabel({ accountType, symbol, index });
 
     return (
-        <Row gap={12} overflow="hidden">
-            <Text ellipsisLineCount={1}>
-                {accountLabel
-                    ? accountLabel
-                    : getDefaultAccountLabel({ accountType, symbol, index })}
-            </Text>
+        <Row gap={12} overflow="hidden" maxWidth="100%">
+            <Text ellipsisLineCount={1}>{accountLabel}</Text>
             {showAccountTypeBadge && (
                 <AccountTypeBadge
                     accountType={accountType}
