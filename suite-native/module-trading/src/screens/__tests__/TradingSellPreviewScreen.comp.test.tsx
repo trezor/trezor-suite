@@ -1,5 +1,10 @@
 import type { TradingTransactionSell } from '@suite-common/trading';
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import {
+    PreloadedState,
+    act,
+    renderWithStoreProviderAsync,
+    userEvent,
+} from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
@@ -37,8 +42,15 @@ jest.mock('../../hooks/general/useWatchTrade', () => ({
 }));
 
 describe('TradingSellPreviewScreen', () => {
-    const renderTradingSellPreviewScreen = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<TradingSellPreviewScreen />, { preloadedState });
+    const renderTradingSellPreviewScreen = async (preloadedState?: PreloadedState) => {
+        const result = await renderWithStoreProviderAsync(<TradingSellPreviewScreen />, {
+            preloadedState,
+        });
+        // wait for async useEffects callbacks to (hopefully) finish
+        await act(() => Promise.resolve());
+
+        return result;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
