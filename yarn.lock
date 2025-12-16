@@ -11060,7 +11060,7 @@ __metadata:
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.66.1"
     react-redux: "npm:^9.2.0"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -11110,7 +11110,7 @@ __metadata:
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.66.1"
     web3-eth-abi: "npm:^4.4.1"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -11845,7 +11845,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.4"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -12297,7 +12297,7 @@ __metadata:
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -12579,7 +12579,7 @@ __metadata:
     react-native-reanimated: "npm:~4.1.5"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 
@@ -14866,7 +14866,7 @@ __metadata:
     styled-components: "npm:^6.1.19"
     stylelint: "npm:^16.14.1"
     stylelint-config-standard: "npm:^38.0.0"
-    web3-utils: "npm:^4.3.1"
+    web3-utils: "npm:^4.3.2"
   languageName: unknown
   linkType: soft
 

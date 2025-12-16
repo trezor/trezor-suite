@@ -58,7 +58,7 @@
         "react-native-reanimated": "~4.1.5",
         "react-native-svg": "15.14.0",
         "react-redux": "9.2.0",
-        "web3-utils": "^4.3.1"
+        "web3-utils": "^4.3.2"
     },
     "devDependencies": {
         "@suite-native/test-utils": "workspace:*"
