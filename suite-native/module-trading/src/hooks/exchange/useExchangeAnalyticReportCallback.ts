@@ -18,7 +18,7 @@ import {
 } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
-import { TradingExchangeAnalyticReportCallback } from '../general/useTradingAnalyticReportCallback';
+import { TradingExchangeAnalyticReportCallback } from '../general/tradingAnalyticReportCallbackTypes';
 
 const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
     const { send, receive, exchange } = quote || {};

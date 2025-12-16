@@ -21,7 +21,7 @@ import {
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
-import { TradingAnalyticReportCallback } from '../general/useTradingAnalyticReportCallback';
+import { TradingAnalyticReportCallback } from '../general/tradingAnalyticReportCallbackTypes';
 import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<

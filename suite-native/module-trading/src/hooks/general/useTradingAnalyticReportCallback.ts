@@ -1,30 +1,17 @@
 import { TradingType } from '@suite-common/trading';
-import type {
-    TradingExchangeAction,
-    TradingExchangeStep,
-    TradingSellAction,
-    TradingSellStep,
-} from '@suite-native/analytics';
 
+import type {
+    TradingAnalyticReportCallback,
+    VoidCallback,
+} from './tradingAnalyticReportCallbackTypes';
 import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
 import { useSellAnalyticReportCallback } from '../sell/useSellAnalyticReportCallback';
 
-export type TradingSellAnalyticReportCallback = (
-    step: TradingSellStep,
-    action: TradingSellAction,
-) => void;
-
-export type TradingExchangeAnalyticReportCallback = (
-    step: TradingExchangeStep,
-    action: TradingExchangeAction,
-) => void;
-
-type VoidCallback = () => void;
-
-export type TradingAnalyticReportCallback =
-    | TradingSellAnalyticReportCallback
-    | TradingExchangeAnalyticReportCallback
-    | VoidCallback;
+export type {
+    TradingAnalyticReportCallback,
+    TradingExchangeAnalyticReportCallback,
+    TradingSellAnalyticReportCallback,
+} from './tradingAnalyticReportCallbackTypes';
 
 const nullAction: VoidCallback = () => {};
 
