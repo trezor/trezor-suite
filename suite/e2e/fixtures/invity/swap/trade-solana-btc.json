@@ -5,15 +5,15 @@
     "quoteId": "5d7e2530-cb13-4fd1-80d7-aec23fcb67d4",
     "status": "CONFIRM",
     "statusUrl": "https://mocked.partner.site/orders/1061e2d760262e1de932",
-    "exchange": "sideshiftfr",
+    "exchange": "sideshift",
     "send": "solana",
     "receive": "bitcoin",
     "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
     "sendStringAmount": "0.05",
-    "receiveStringAmount": "0.00008533",
+    "receiveStringAmount": "0.00008613",
     "fee": "INCLUDED",
     "min": 0.01,
     "max": 348.4522911,
-    "rate": 0.0017066,
+    "rate": 0.001722656335,
     "rateIdentificator": "3a36f454-95c1-4cfb-a0e1-82e77f274829"
 }

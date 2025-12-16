@@ -31,9 +31,9 @@ const transactionStates = [
 ];
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesSolanaBTC[1].sendStringAmount;
-const receiveAmount = localizeNumber(swapQuotesSolanaBTC[1].receiveStringAmount);
-const provider = getCompanyNameFromList(swapQuotesSolanaBTC[1].exchange, 'swapList');
+const sendAmount = swapQuotesSolanaBTC[0].sendStringAmount;
+const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0].receiveStringAmount);
+const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
@@ -188,7 +188,7 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 formattedReceiveAmount,
             );
             await expect(tradingPage.confirmationExchangeType).toHaveTranslation(
-                'TR_EXCHANGE_FIXED',
+                'TR_EXCHANGE_FLOAT',
             );
             await expect(tradingPage.confirmationProvider).toHaveText(provider);
         });

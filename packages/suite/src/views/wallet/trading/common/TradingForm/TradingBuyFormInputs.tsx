@@ -10,7 +10,7 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { Card, Column, Row } from '@trezor/components';
+import { Card, Column, Divider, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
@@ -25,6 +25,7 @@ import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/T
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputAssetPicker,
     TradingFormInputAssetPickerProps,
@@ -126,10 +127,22 @@ export const TradingBuyFormInputs = () => {
                 </Column>
             </Card>
 
-            <Card>
+            <Card paddingType="none">
                 <Column gap={spacings.lg}>
-                    <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
-                    <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+                    <Column
+                        gap={spacings.lg}
+                        padding={{ vertical: spacings.md, horizontal: spacings.lg }}
+                    >
+                        <TradingFormInputPaymentMethod label="TR_TRADING_PAYMENT_METHOD" />
+                        <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
+                    </Column>
+                </Column>
+                <TradingSelectedOfferProvider />
+                <Divider margin={0} />
+                <Column
+                    gap={spacings.lg}
+                    padding={{ vertical: spacings.md, horizontal: spacings.lg }}
+                >
                     <TradingFormFeesDisclamer />
                 </Column>
             </Card>

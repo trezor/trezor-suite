@@ -24,7 +24,14 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
         form: {
             state: { isFormLoading, isFormInvalid },
         },
+        getValues,
+        type,
     } = useTradingFormContext<TradingTradeBuySellType>();
+
+    const amountIsEmpty =
+        type === 'buy'
+            ? !getValues().fiatInput && !getValues().cryptoInput
+            : getValues().outputs[0].amount === '';
 
     const getEmptyMethodsLabel = () => {
         if (isFormInvalid || (quotes && quotes.length === 0)) {
@@ -58,7 +65,7 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
                     data-testid="@trading/form/payment-method-select"
                     isClearable={false}
                     isDisabled={isFormInvalid}
-                    isLoading={isFormLoading}
+                    isLoading={isFormLoading && !amountIsEmpty}
                 />
             )}
         />

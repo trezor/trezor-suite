@@ -35,6 +35,7 @@ import {
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
@@ -169,6 +170,7 @@ export const TradingExchangeFormInputs = () => {
                 changeFeeLevel={changeFeeLevel}
                 padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
             />
+            <TradingSelectedOfferProvider />
             <Divider margin={0} />
 
             <Column gap={spacings.lg} padding={{ vertical: spacings.lg, horizontal: spacings.lg }}>

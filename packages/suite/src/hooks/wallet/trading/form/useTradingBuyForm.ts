@@ -123,6 +123,8 @@ export const useTradingBuyForm = ({
         !isFromRedirect && isNotFormPage ? draftUpdated : null,
     );
 
+    const isAmountEmpty = !values.fiatInput && !values.cryptoInput;
+
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'buy',
         cryptoId: values.cryptoSelect?.id,
@@ -447,6 +449,7 @@ export const useTradingBuyForm = ({
         preselectedQuote,
         selectedQuote,
         tradingReceiveAddress,
+        isAmountEmpty,
         selectQuote,
         confirmTrade,
         goToOffers,
