@@ -228,6 +228,7 @@ export type AddCoinAccountStackParamList = {
 
 export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceSettings]: undefined;
+    [DeviceSettingsStackRoutes.DeviceNameStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceFirmware]: {
         closeActionType: CloseActionType;
     };
@@ -244,10 +245,16 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceSettingsStackRoutes.DeviceNameStack]: NavigatorScreenParams<DeviceNameStackParamList>;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
     [DeviceSettingsStackRoutes.BackupAndPassphraseStack]: NavigatorScreenParams<BackupAndPassphraseParamList>;
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
+};
+
+export type DeviceNameStackParamList = {
+    [DeviceNameStackRoutes.DeviceConnectionGuard]: undefined;
+    [DeviceNameStackRoutes.DeviceName]: undefined;
+    [DeviceNameStackRoutes.ContinueOnTrezor]: undefined;
+    [DeviceNameStackRoutes.DeviceNameLoadingScreen]: undefined;
 };
 
 export type FirmwareUpdateStackParamList = {
@@ -280,12 +287,6 @@ export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
     [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
     [WipeDeviceStackRoutes.FactoryReset]: undefined;
-};
-
-export type DeviceNameStackParamList = {
-    [DeviceNameStackRoutes.DeviceName]: undefined;
-    [DeviceNameStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceNameStackRoutes.DeviceNameLoadingScreen]: undefined;
 };
 
 export type BackupAndPassphraseParamList = {
