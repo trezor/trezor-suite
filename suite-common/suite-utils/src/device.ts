@@ -14,24 +14,6 @@ import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
 import { isArrayMember } from '@trezor/utils';
 
-/**
- * Used in the Welcome step in Onboarding
- * Status 'ok' or 'initialized' is what we expect, 'bootloader', 'seedless' and 'unreadable' are no go
- *
- * @param {(TrezorDevice | undefined)} device
- * @returns
- */
-export const getConnectedDeviceStatus = (device: TrezorDevice | undefined) => {
-    if (!device) return null;
-
-    const isInBlWithFwPresent =
-        device.mode === 'bootloader' && device.features?.firmware_present === true;
-
-    if (isInBlWithFwPresent) return 'bootloader';
-    if (device.features?.initialized) return 'initialized';
-    // removed branches that never executed in our codebase
-};
-
 export const deviceStatuses = [
     'acquired',
     'unacquired',
@@ -61,7 +43,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
     if (device.status === 'busy') {
         return 'device-busy';
     }
-
     if (device.type === 'acquired') {
         if (!device.connected) {
             return 'disconnected';
