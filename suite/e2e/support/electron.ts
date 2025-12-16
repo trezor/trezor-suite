@@ -58,8 +58,6 @@ const buildArgs = (params: LaunchSuiteParams) => {
 
     if (params.bridgeDaemon) {
         args.push('--bridge-daemon-show-ui');
-    } else {
-        args.push('--bridge-legacy', '--bridge-test');
     }
 
     if (params.exposeConnectWs) {
