@@ -2,75 +2,80 @@ import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-test.describe(
-    'Metadata - cancel metadata on device',
-    { tag: ['@group=metadata', '@webOnly'] },
-    () => {
-        test.use({
-            emulatorSetupConf: {
-                mnemonic: 'mnemonic_all',
-                passphrase_protection: true,
-            },
-        });
-        test.beforeEach(async ({ metadataMock }) => {
-            await metadataMock.start(MetadataProvider.DROPBOX);
-        });
+test.describe('Metadata lifecycle', { tag: ['@group=metadata', '@webOnly'] }, () => {
+    test.use({
+        emulatorSetupConf: {
+            mnemonic: 'mnemonic_all',
+            passphrase_protection: true,
+        },
+    });
+    test.beforeEach(async ({ metadataMock, onboardingPage }) => {
+        await metadataMock.start(MetadataProvider.DROPBOX);
+        await onboardingPage.completeOnboarding();
+    });
 
-        //TODO: Update and enable once metadata reimplemented or bug #19740 is resolved
-        test.skip('user cancels metadata on device, choice is respected on subsequent runs but only for the cancelled wallet', async ({
-            page,
-            onboardingPage,
-            dashboardPage,
-            settingsPage,
-            metadataPage,
-            walletPage,
-            devicePrompt,
-            trezorUserEnvLink,
-        }) => {
-            await onboardingPage.completeOnboarding();
+    test('Choice persistence and reset behavior', async ({
+        page,
+        dashboardPage,
+        settingsPage,
+        metadataPage,
+        walletPage,
+        devicePrompt,
+        trezorUserEnvLink,
+    }) => {
+        await settingsPage.navigateTo('application');
+        await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
 
-            await settingsPage.navigateTo('application');
-            expect(settingsPage.metadataSelectInput).toBe('off');
-
-            // Navigate to account and hover over add label button
-            await page.getByTestId('@suite/menu/suite-index').click();
+        await test.step('Decline labeling', async () => {
             await walletPage.openAccount();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressNo();
+            await devicePrompt.confirmOnDevicePromptIsHidden();
+        });
 
-            // Reload app, cancel metadata again, and remember device
-            await page.reload();
-            await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
-            await trezorUserEnvLink.pressNo();
-
-            await page.discoveryShouldFinish();
-
-            await page.reload();
-
-            // Add another wallet, enable labeling on the new device
-            await page.getByTestId('@menu/switch-device').click();
+        await test.step('add another wallet, enable labeling on the new device', async () => {
+            await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addUnusedHiddenWallet('abc');
-
-            await expect(page.getByTestId('@passphrase/input')).toBeHidden();
+            await expect(dashboardPage.passphraseInput).toBeHidden();
+            await walletPage.openAccount();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
             await trezorUserEnvLink.pressYes();
-
-            // Close connect to data provider modal
             await devicePrompt.closeModal();
+        });
 
-            // Forget device and reload
-            await page.getByTestId('@menu/switch-device').click();
+        await test.step('forget device and reload', async () => {
+            await dashboardPage.deviceSwitchingOpenButton.click();
+            await dashboardPage.walletAtIndexEjectButton(0).click();
+            await dashboardPage.confirmDeviceEjectButton.click();
+            await dashboardPage.walletAtIndexEjectButton(0).click();
+            await dashboardPage.confirmDeviceEjectButton.click();
+            await dashboardPage.addStandardWalletButton.click();
+            await page.discoveryShouldFinish();
+        });
 
-            await page.getByTestId('@switch-device/wallet-on-index/0/eject-button').click();
-            await page.getByTestId('@switch-device/eject').click();
-            await page.getByTestId('@switch-device/wallet-on-index/0/eject-button').click();
-            await page.getByTestId('@switch-device/eject').click();
-            await page.reload();
-
-            // Enable labeling dialogue appears again
+        await test.step('enable labeling on standard Wallet', async () => {
+            await walletPage.openAccount();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
             await trezorUserEnvLink.pressNo();
+            await devicePrompt.confirmOnDevicePromptIsHidden();
         });
-    },
-);
+
+        await test.step('disable metadata in settings', async () => {
+            await settingsPage.navigateTo('application');
+            await page.selectDropdownOptionWithRetry(
+                settingsPage.metadataSelectInput,
+                settingsPage.metadataSelectInputOption('off'),
+            );
+            await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
+        });
+
+        await test.step('verify labeling can be re-enabled', async () => {
+            await walletPage.openAccount();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+            await devicePrompt.confirmOnDevicePromptIsShown();
+        });
+    });
+});

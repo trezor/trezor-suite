@@ -26,6 +26,7 @@ test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () =
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText('Bitcoin #1');
 
+            await expect(page.getByTestId('@spinner')).toBeHidden({ timeout: 15_000 });
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.passThroughInitMetadata(MetadataProvider.DROPBOX);
         });
