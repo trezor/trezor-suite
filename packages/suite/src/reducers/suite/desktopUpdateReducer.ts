@@ -114,4 +114,7 @@ const desktopUpdateReducer = (
 
 export const selectDesktopUpdate = (state: DesktopUpdateRootState) => state.desktopUpdate;
 
+export const selectDesktopUpdateEnabled = (state: DesktopUpdateRootState) =>
+    state.desktopUpdate.enabled;
+
 export default desktopUpdateReducer;

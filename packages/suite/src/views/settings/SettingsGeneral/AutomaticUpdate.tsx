@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 import { Switch } from '@trezor/components';
-import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { selectDesktopUpdateEnabled } from 'src/reducers/suite/desktopUpdateReducer';
 
 import { useSelector } from '../../../hooks/suite';
 
@@ -16,11 +16,12 @@ const PositionedSwitch = styled.div`
 `;
 
 export const AutomaticUpdate = () => {
+    const isUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
     const isAutomaticUpdateEnabled = useSelector(
         state => state.desktopUpdate.isAutomaticUpdateEnabled,
     );
 
-    if (!isDesktop()) {
+    if (!isUpdateEnabled) {
         return null;
     }
 

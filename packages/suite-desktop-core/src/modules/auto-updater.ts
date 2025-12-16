@@ -12,11 +12,11 @@ import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
+import { ModuleInit, mainThreadEmitter } from './module';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { getSignatureFile, verifySignature } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app, ipcMain } from '../typed-electron';
-import { ModuleInit, mainThreadEmitter } from './module';
 
 const defaultFeedURL = {
     // This should correspond with the value in electron-builder-config.js file.
@@ -42,6 +42,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     if (isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && disableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via command line parameter');
+
+        return;
+    }
+
+    if (process.env.SNAP_NAME || process.env.FLATPAK_ID) {
+        logger.info(SERVICE_NAME, 'Disabled - native store');
 
         return;
     }
