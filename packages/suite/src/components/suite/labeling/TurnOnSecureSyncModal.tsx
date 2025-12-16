@@ -1,4 +1,4 @@
-import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
+import { Card, IconCircle, List, Modal, Paragraph } from '@trezor/components';
 
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 
@@ -23,6 +23,7 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
             heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
             description={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION" />}
             onCancel={onClose}
+            size="small"
             bottomContent={
                 <>
                     <Modal.Button onClick={onSwitch}>
@@ -34,19 +35,33 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
                 </>
             }
         >
-            <Card>
-                <List
-                    bulletGap={0}
-                    gap={0}
-                    bulletComponent={<Icon name="dot" variant="tertiary" size={32} />}
-                >
-                    <List.Item>
-                        <Paragraph variant="tertiary">
+            <Card paddingType="large">
+                <List gap={16} variant="tertiary">
+                    <List.Item
+                        bulletComponent={
+                            <IconCircle
+                                name="cloudX"
+                                hasBorder={false}
+                                paddingType="medium"
+                                size={40}
+                            />
+                        }
+                    >
+                        <Paragraph>
                             <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY" />
                         </Paragraph>
                     </List.Item>
-                    <List.Item>
-                        <Paragraph variant="tertiary">
+                    <List.Item
+                        bulletComponent={
+                            <IconCircle
+                                name="desktopTower"
+                                hasBorder={false}
+                                paddingType="medium"
+                                size={40}
+                            />
+                        }
+                    >
+                        <Paragraph>
                             <Translation id="TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES" />
                         </Paragraph>
                     </List.Item>

@@ -73,6 +73,11 @@ export const LocktimeBlockHeight = ({ rightContent }: LocktimeBlockHeightProps) 
                     </Text>
                 </Row>
             }
+            labelLeft={
+                <Text typographyStyle="hint">
+                    <Translation id="LOCKTIME_DESCRIPTION" />
+                </Text>
+            }
             rightContent={rightContent}
             data-testid="locktime-blockheight-input"
         />
