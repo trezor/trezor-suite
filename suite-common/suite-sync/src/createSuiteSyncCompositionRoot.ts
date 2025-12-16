@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
+import { createRefreshSuiteSync } from './createRefreshSuiteSync';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createSubscribeLabeling } from './labeling/subscribeLabeling';
 import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
@@ -24,7 +25,6 @@ import {
     createRetrieveSuiteSyncOwner,
 } from './owner/retrieveSuiteSyncOwner';
 import { createSaveSuiteSyncOwner } from './owner/saveSuiteSyncOwner';
-import { createRefreshSuiteSync } from './refreshSuiteSyncKeys';
 import { createChangeRelayUrl } from './relay/changeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/ensureStorage';
@@ -55,6 +55,12 @@ export const createSuiteSyncCompositionRoot = (
     const findSuiteSyncOwnerForDeviceStaticId = (deviceStaticId: StaticSessionId) =>
         selectSuiteSyncOwnerForDeviceStaticId(deps.getState(), deviceStaticId);
 
+    const loadSuiteSyncOwnerFromState = createLoadSuiteSyncOwnerFromState({
+        dispatch: deps.dispatch,
+        platformEncryption: deps.platformEncryption,
+        getDeviceSuiteSyncOwner: findSuiteSyncOwnerForDeviceStaticId,
+    });
+
     const ensureSuiteSyncOwner = createEnsureSuiteSyncOwner({
         saveSuiteSyncOwner: createSaveSuiteSyncOwner({
             dispatch: deps.dispatch,
@@ -64,17 +70,14 @@ export const createSuiteSyncCompositionRoot = (
             trezorConnect: deps.trezorConnect,
             createSuiteSyncOwner: deps.createSuiteSyncOwner,
         }),
-        loadSuiteSyncOwnerFromState: createLoadSuiteSyncOwnerFromState({
-            dispatch: deps.dispatch,
-            platformEncryption: deps.platformEncryption,
-            getDeviceSuiteSyncOwner: findSuiteSyncOwnerForDeviceStaticId,
-        }),
+        loadSuiteSyncOwnerFromState,
     });
 
     const refreshSuiteSyncKeys = createRefreshSuiteSync({
         dispatch: deps.dispatch,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwner,
+        loadSuiteSyncOwnerFromState,
     });
 
     const getDeviceForStaticSessionId: GetDeviceForStaticSessionId = deviceStaticId =>

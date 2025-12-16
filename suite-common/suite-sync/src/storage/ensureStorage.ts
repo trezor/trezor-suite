@@ -9,8 +9,8 @@ import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
+import { RefreshSuiteKeysUnavailable } from '../createRefreshSuiteSync';
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
-import { RefreshSuiteKeysUnavailable } from '../refreshSuiteSyncKeys';
 
 export type EnsureStorageDeps = {
     defaultRelayUrl: string;

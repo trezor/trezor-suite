@@ -11,6 +11,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
+import { LoadSuiteSyncOwnerFromStateDep } from './owner/loadSuiteSyncOwnerFromState';
+
 /**
  * Device is not connected or device is in a state/configuration, that does not
  * support Suite Sync.
@@ -22,16 +24,27 @@ export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailableType =
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
 } & EnsureSuiteSyncOwnerDep &
+    LoadSuiteSyncOwnerFromStateDep &
     EnsureDelegatedIdentityKeyDep;
 
 export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
     async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
+        if (!device || !isTrezorDeviceWithState(device)) {
+            return err(RefreshSuiteKeysUnavailable());
+        }
+
+        const owner = await deps.loadSuiteSyncOwnerFromState({
+            deviceStaticId: device.state.staticSessionId,
+        });
+
+        if (owner !== null) {
+            return ok(owner);
+        }
+
         if (
-            device === undefined ||
             !device.connected || // disconnected device cannot resolve Evolu-Keys
-            device.mode !== 'normal' || // bootloader,
-            !isTrezorDeviceWithState(device)
+            device.mode !== 'normal' // bootloader
         ) {
             return err(RefreshSuiteKeysUnavailable());
         }
