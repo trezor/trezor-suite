@@ -8,7 +8,7 @@ import {
     swapQuotesTetherBTC,
     swapTradeTetherBTC,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -18,7 +18,7 @@ const provider = getCompanyNameFromList(swapQuotesTetherBTC[2].exchange, 'swapLi
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, send: tetherMint, receiveAddress } = swapTradeTetherBTC;
-const formattedSendAddress = formatAddress(sendAddress);
+const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap token to coin', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });

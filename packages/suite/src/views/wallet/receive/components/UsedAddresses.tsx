@@ -36,7 +36,6 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
     const fresh = !addr.transfers;
-    const address = addr.address.substring(0, 20);
     const isDisabled = locked || isReceiveDisabled;
 
     return (
@@ -48,7 +47,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                             ...metadataPayload,
                         }}
                         deviceStaticSessionId={account.deviceState}
-                        displayValue={<Address value={address} isTruncated />}
+                        displayValue={<Address value={addr.address} isTruncated />}
                         placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
                         margin={{ vertical: 4 }}
                         minHeight={28}

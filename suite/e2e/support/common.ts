@@ -66,6 +66,21 @@ export const isEqualWithOmit = (param: { object1: any; object2: any; mask: strin
 
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
 
+const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
+
+const formatEvmAddress = (address: string) => {
+    if (!address.startsWith('0x')) {
+        return formatAddress(address);
+    }
+
+    const spacedBody = splitStringEveryNCharacters(address.slice(2), 4).join(' ');
+
+    return spacedBody ? `0x${spacedBody}` : address;
+};
+
+export const formatAddressWithNewlines = (address: string) =>
+    formatEvmAddress(address).replace(REGEXP_ADDRESS_CHUNKS, '$1\n');
+
 // This function is used to override automatic fixtures that we want to skip in specific tests.
 /* eslint-disable react-hooks/rules-of-hooks */
 export async function skipFixture({}, use: (r: void) => Promise<void>) {

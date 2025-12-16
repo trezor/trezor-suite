@@ -98,8 +98,6 @@ export const FreshAddress = ({
 
     if (!account) return null;
 
-    const addressValue = firstFreshAddress?.address?.substring(0, 20);
-
     // On coinjoin account, disallow to reveal more than the first receive address until it is used,
     // because discovery of coinjoin account relies on assumption that user uses his first address first.
     const coinjoinDisallowReveal =
@@ -150,8 +148,8 @@ export const FreshAddress = ({
                     flex="1"
                 >
                     <Text typographyStyle="titleMedium">
-                        {addressValue ? (
-                            <Address value={addressValue} isTruncated />
+                        {firstFreshAddress?.address ? (
+                            <Address value={firstFreshAddress.address} isTruncated />
                         ) : (
                             <Translation id="RECEIVE_ADDRESS_UNAVAILABLE" />
                         )}

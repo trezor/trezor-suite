@@ -8,7 +8,7 @@ import {
     sellTradeSolana,
     sellWatchSolana,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -22,7 +22,7 @@ const providerAddress = sellWatchSolana.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} SOL`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
-const formattedAddress = formatAddress(sellWatchSolana.destinationAddress);
+const formattedAddress = formatAddressWithNewlines(sellWatchSolana.destinationAddress);
 
 test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({

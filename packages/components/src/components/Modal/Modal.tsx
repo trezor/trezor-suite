@@ -97,7 +97,7 @@ const InnerModalBase = ({
     });
 
     return (
-        <Box maxWidth="95%" maxHeight="90vh" width={mapModalSizeToWidth(size)} height={height}>
+        <Box maxWidth="95%" maxHeight="85vh" width={mapModalSizeToWidth(size)} height={height}>
             <Container $elevation={elevation} data-testid={dataTest} id={MODAL_CONTENT_ID}>
                 <Column height="100%">
                     {hasHeader && (

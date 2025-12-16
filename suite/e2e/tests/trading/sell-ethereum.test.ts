@@ -7,7 +7,7 @@ import {
     sellTradeEthereum,
     sellWatchEthereum,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -18,7 +18,7 @@ const providerAddress = sellWatchEthereum.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} ETH`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeEthereum.trade;
-const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
+const formattedAddress = formatAddressWithNewlines(sellWatchEthereum.destinationAddress);
 // Fees
 const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';

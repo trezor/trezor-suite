@@ -70,6 +70,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             label={<Translation id="TR_ADDRESS" />}
             validateOnDevice={validateAddress}
             value={value}
+            isAddress={true}
             data-testid="@metadata/copy-address-button"
             {...props}
         />

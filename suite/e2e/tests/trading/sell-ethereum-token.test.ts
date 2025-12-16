@@ -7,7 +7,7 @@ import {
     sellTradeEthereumToken,
     sellWatchEthereum,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -18,7 +18,7 @@ const providerAddress = sellWatchEthereum.destinationAddress;
 const formattedCryptoAmount = `${cryptoAmount} USDC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeEthereumToken.trade;
-const formattedAddress = formatAddress(sellWatchEthereum.destinationAddress);
+const formattedAddress = formatAddressWithNewlines(sellWatchEthereum.destinationAddress);
 
 test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({

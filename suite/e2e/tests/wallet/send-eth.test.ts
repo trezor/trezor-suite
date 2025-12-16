@@ -2,7 +2,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import messages from '@trezor/suite/src//support/messages';
 import { BigNumber } from '@trezor/utils';
 
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import {
     splitStringByDisplayLimit,
@@ -10,7 +10,7 @@ import {
 } from '../../support/testExtends/customMatchers';
 
 const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
-const formattedSendAddress = formatAddress(sendAddress);
+const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 const sendAmount = '0.008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const gasLimit = '26000';
@@ -67,6 +67,7 @@ test.describe('Send Eth', { tag: ['@group=wallet'] }, () => {
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt).toDisplayOnEmulator({
                 header: { title: 'Address', subtitle: 'Recipient' },
+                // TODO: Use evmTetragrams when FW supports it
                 body: [transformAddress(sendAddress)],
                 footer: 'Tap to continue',
             });
