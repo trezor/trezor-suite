@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import addressValidator from '@trezor/address-validator';
+import * as addressValidator from '@trezor/address-validator';
 import { Button, Column, Input, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 

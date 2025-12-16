@@ -10,7 +10,7 @@ import {
     selectDeviceUnavailableCapabilities,
 } from '@suite-common/wallet-core';
 import { Account, SelectedAccountStatus } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
+import * as addressValidator from '@trezor/address-validator';
 import { exhaustive } from '@trezor/type-utils';
 
 import { BuyInfo, TradingBuyState } from '../reducers/buyReducer';

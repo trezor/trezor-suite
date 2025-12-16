@@ -4,7 +4,7 @@ import { toChecksumAddress } from 'web3-utils';
 
 import { getTestnetSymbols } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
-import addressValidator from '@trezor/address-validator';
+import * as addressValidator from '@trezor/address-validator';
 import { AccountInfo } from '@trezor/blockchain-link-types';
 
 const getNetworkType = (symbol: Account['symbol'], address: string) => {
