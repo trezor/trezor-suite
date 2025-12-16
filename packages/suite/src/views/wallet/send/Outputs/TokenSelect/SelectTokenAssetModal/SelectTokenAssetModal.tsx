@@ -52,6 +52,7 @@ export function SelectTokenAssetModal({
     const dataEnabled = getDefaultValue('options', []).includes('transactionData');
 
     const amountInputName = `outputs.${outputId}.amount` as const;
+    const fiatInputName = `outputs.${outputId}.fiat` as const;
     const currencyInputName = `outputs.${outputId}.currency` as const;
 
     const currencyValue = watch(currencyInputName);
@@ -77,10 +78,13 @@ export function SelectTokenAssetModal({
 
         resetDraft();
 
-        setValue(tokenInputName, newlySelectedToken?.contract || account.symbol, {
+        setValue(tokenInputName, newlySelectedToken?.contract || null, {
             shouldDirty: true,
         });
         setValue(amountInputName, '', {
+            shouldDirty: true,
+        });
+        setValue(fiatInputName, '', {
             shouldDirty: true,
         });
 
