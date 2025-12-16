@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     Button,
@@ -146,8 +145,7 @@ const SecurityCheckContent = ({
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
     const dispatch = useDispatch();
 
-    const deviceStatus = getConnectedDeviceStatus(device);
-    const initialized = deviceStatus === 'initialized';
+    const initialized = !!device?.features?.initialized;
     const isRecoveryInProgress = recovery.status === 'in-progress';
     const isFirmwareInstalled = device?.firmware !== 'none';
     const secondaryButtonText = isFirmwareInstalled ? 'TR_I_HAVE_NOT_USED_IT' : 'TR_I_HAVE_DOUBTS';
