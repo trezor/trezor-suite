@@ -61,7 +61,7 @@ jest.mock('../../hooks/sell/useSellFlow', () => ({
     useSellFlow: () => mockUseSellFlowFn(),
 }));
 
-const mockUseTradingOutputsReviewScreenControls = jest.fn(() => ({
+const mockUseTradingOutputsReviewScreenControls = jest.fn((_: any) => ({
     isTransactionAlreadySigned: false,
     isConsentRequested: false,
     resolveConsent: jest.fn(),
@@ -69,7 +69,8 @@ const mockUseTradingOutputsReviewScreenControls = jest.fn(() => ({
 }));
 
 jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () => ({
-    useTradingOutputsReviewScreenControls: () => mockUseTradingOutputsReviewScreenControls(),
+    useTradingOutputsReviewScreenControls: (args: any) =>
+        mockUseTradingOutputsReviewScreenControls(args),
 }));
 
 jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
