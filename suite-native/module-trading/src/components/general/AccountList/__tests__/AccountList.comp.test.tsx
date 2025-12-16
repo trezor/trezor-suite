@@ -5,6 +5,7 @@ import {
     fireEvent,
     initStore,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { accounts } from '@suite-native/trading-fixtures';
 import {
@@ -93,6 +94,10 @@ describe('AccountList', () => {
     };
 
     describe('renderItem', () => {
+        afterEach(() => {
+            screen.unmount();
+        });
+
         it('should display all accounts for given symbol', async () => {
             const { getByText } = await renderComponent({
                 symbol: 'btc',
@@ -118,6 +123,10 @@ describe('AccountList', () => {
     });
 
     describe('onItemSelect', () => {
+        afterEach(() => {
+            screen.unmount();
+        });
+
         it('should call onSetPickerMode when account is selected in account mode', async () => {
             (useNavigation as jest.Mock).mockReturnValue({ popToTop });
 
@@ -223,6 +232,10 @@ describe('AccountList', () => {
     });
 
     describe('footer', () => {
+        afterEach(() => {
+            screen.unmount();
+        });
+
         it('should display footer with "Add new" button in "account" mode', async () => {
             const { getByText } = await renderComponent({
                 symbol: 'btc',

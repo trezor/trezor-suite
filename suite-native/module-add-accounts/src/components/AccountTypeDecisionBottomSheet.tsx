@@ -48,12 +48,13 @@ export const AccountTypeDecisionBottomSheet = ({
                         id="moduleAddAccounts.accountTypeDecisionBottomSheet.description"
                         values={{
                             type: _ => (
-                                <Text color="textDefault" variant="highlight">
+                                <Text key="type-name" color="textDefault" variant="highlight">
                                     {typeName}
                                 </Text>
                             ),
                             moreLink: chunks => (
                                 <Link
+                                    key="multiple-accounts-support-link"
                                     href={TREZOR_SUPPORT_MULTIPLE_ACCOUNTS}
                                     label={chunks}
                                     isUnderlined
