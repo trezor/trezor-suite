@@ -62,11 +62,7 @@ const buildTokenOptions = (
         tokens: [],
     };
 
-    tokens.shownWithBalance.forEach(token =>
-        result.tokens.push(createTokenOption(token, symbol, true)),
-    );
-
-    // this represents native currency
+    // this represents the native token
     result.tokens.push({
         ticker: symbol,
         symbol,
@@ -75,6 +71,10 @@ const buildTokenOptions = (
         contractAddress: null,
         height: ITEM_HEIGHT,
     });
+
+    tokens.shownWithBalance.forEach(token =>
+        result.tokens.push(createTokenOption(token, symbol, true)),
+    );
 
     tokens.hiddenWithBalance.forEach(token =>
         result.hidden.push(createTokenOption(token, symbol, true)),
