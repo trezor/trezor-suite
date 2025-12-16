@@ -85,10 +85,10 @@ runs:
       run: |
         echo "::group::Install PW Dependencies"
         echo "Installing Playwright dependencies"
-        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }} 1>/dev/null
+        yarn workspaces focus @trezor/suite-e2e ${{ inputs.workspace-dependencies }}
         if [[ "${{ inputs.project }}" == "web" ]]; then
           echo "Installing conditional Web dependencies"
-          npx playwright install --with-deps 1>/dev/null
+          npx playwright install --with-deps
         fi
         # Playwright runtime may indirectly import the built config, and that would crash if message-system is not built
         echo "Building message-system-sign-config"
