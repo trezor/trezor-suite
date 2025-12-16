@@ -1,7 +1,9 @@
 import { Alert, Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { selectAnalyticsInstanceId } from '@suite-common/analytics';
 import { Button, Card, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';
@@ -36,6 +38,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const DevUtilsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const copyToClipboard = useCopyToClipboard();
+    const instanceId = useSelector(selectAnalyticsInstanceId);
     const versionString = `${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`;
 
     const handleCopyVersion = () => {
@@ -57,11 +60,9 @@ export const DevUtilsScreen = () => {
                         <Pressable onPress={handleCopyVersion}>
                             <TitleHeader title="Build version" subtitle={versionString} />
                         </Pressable>
-                        {isDevelopOrDebugEnv() && (
-                            <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
-                                See Component Demo
-                            </Button>
-                        )}
+                        <Pressable onPress={handleCopyVersion}>
+                            <TitleHeader title="Instance ID" subtitle={instanceId} />
+                        </Pressable>
                     </VStack>
                 </Card>
                 <FeatureFlags />
@@ -104,6 +105,11 @@ export const DevUtilsScreen = () => {
                     </VStack>
                 </Card>
                 <SuiteSyncRelaySettings />
+                {isDevelopOrDebugEnv() && (
+                    <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
+                        See Component Demo
+                    </Button>
+                )}
             </VStack>
         </Screen>
     );
