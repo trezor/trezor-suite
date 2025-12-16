@@ -10,6 +10,10 @@ import { encryptedStorage } from '@suite-native/storage';
 
 export const useRozenitePlugins = () => {
     usePerformanceMonitorDevTools();
-    useMMKVDevTools({ storages: [encryptedStorage] });
+    useMMKVDevTools({
+        storages: {
+            'encrypted-storage': encryptedStorage,
+        },
+    });
     useNetworkActivityDevTools();
 };
