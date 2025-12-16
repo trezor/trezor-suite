@@ -71,6 +71,11 @@ export const LocktimeDatetime = ({ rightContent }: LocktimeDatetimeProps) => {
                     </Text>
                 </Row>
             }
+            labelLeft={
+                <Text typographyStyle="hint">
+                    <Translation id="LOCKTIME_DESCRIPTION" />
+                </Text>
+            }
             placeholder="DD/MM/YYYY HH:MM"
             rightContent={rightContent}
             innerRef={inputRef}
