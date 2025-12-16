@@ -4,6 +4,7 @@ import {
     renderHookWithBasicProvider,
     renderHookWithStoreProviderAsync,
     renderWithBasicProvider,
+    screen,
     userEvent,
 } from '@suite-native/test-utils';
 import { useListDataFilter } from '@suite-native/trading-atoms';
@@ -27,6 +28,11 @@ jest.mock('@suite-native/trading-atoms', () => ({
 describe('CountryOfResidencePicker', () => {
     beforeEach(() => {
         mockUseListDataFilter = jest.requireActual('@suite-native/trading-atoms').useListDataFilter;
+    });
+
+    afterEach(() => {
+        // make sure component is unmounted (FlashList otherwise might try to do some magic)
+        screen.unmount();
     });
 
     const renderCountryOfResidencePicker = async (

@@ -1,5 +1,10 @@
 import { Text } from '@suite-native/atoms';
-import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    TestStore,
+    initStore,
+    renderWithStoreProviderAsync,
+    screen,
+} from '@suite-native/test-utils';
 
 import { TradingLocationSettings, TradingLocationSettingsProps } from '../TradingLocationSettings';
 
@@ -11,6 +16,11 @@ describe('TradingLocationSettings', () => {
 
     beforeEach(async () => {
         store = (await initStore()).store;
+    });
+
+    afterEach(() => {
+        // make sure component is unmounted (FlashList otherwise might try to do some magic)
+        screen.unmount();
     });
 
     it('should render all components', async () => {
