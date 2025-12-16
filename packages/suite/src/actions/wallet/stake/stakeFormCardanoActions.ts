@@ -30,7 +30,6 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    drepBech32ToKeyHashHex,
     getAddressParameters,
     getDelegationCertificates,
     getDerivationType,
@@ -41,6 +40,7 @@ import {
     getVotingCertificates,
     isTestnet,
     networkAmountToSmallestUnit,
+    parseDrepBech32,
     selectBestCardanoPool,
     subunitsToUnits,
     validateCardanoDrep,
@@ -138,11 +138,7 @@ export const prepareTxPlan = async (
             ? votingDelegation.drepId
             : CARDANO_EVERSTAKE_DREP.bech32;
 
-        const hex = drepBech32ToKeyHashHex(drepBech32);
-        const dRep = {
-            type: PROTO.CardanoDRepType.KEY_HASH,
-            hex,
-        };
+        const dRep = parseDrepBech32(drepBech32);
         certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
