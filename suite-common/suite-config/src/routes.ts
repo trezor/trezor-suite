@@ -24,6 +24,11 @@ export const routes = [
         params: dashboardParams,
     },
     {
+        name: 'suite-earn',
+        pattern: '/earn',
+        app: 'earn',
+    },
+    {
         name: 'suite-version',
         pattern: '/version',
         app: 'version',

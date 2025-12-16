@@ -62,7 +62,11 @@ const useCryptoCurrentRate = (symbol: NetworkSymbol) => {
     return currentRate?.rate;
 };
 
-export const StakingDashboard = () => {
+interface StakingDashboardProps {
+    collapsible?: boolean;
+}
+
+export const StakingDashboard = ({ collapsible = true }: StakingDashboardProps) => {
     const dispatch = useDispatch();
 
     const collapsed = useSelector(state => state.suite.stakingDashboardCollapsed);
@@ -187,6 +191,7 @@ export const StakingDashboard = () => {
     const stakingAccountsNotActivated = ethNotActivated && solNotActivated && adaNotActivated;
 
     const onCollapseChange = (collapsed: boolean) => {
+        if (!collapsible) return;
         dispatch(setStakingDashboardCollapsed(collapsed));
     };
 
@@ -204,8 +209,8 @@ export const StakingDashboard = () => {
                     </>
                 }
                 subheading={<Translation id="TR_STAKING_DASHBOARD_TEXT" />}
-                collapsible
-                defaultCollapsed={collapsed}
+                collapsible={collapsible}
+                defaultCollapsed={collapsible ? collapsed : false}
                 onCollapseChange={onCollapseChange}
                 ref={anchorRef}
             >

@@ -4849,6 +4849,10 @@ export default defineMessages({
         id: 'TR_DASHBOARD',
         defaultMessage: 'Dashboard',
     },
+    TR_EARN: {
+        id: 'TR_EARN',
+        defaultMessage: 'Earn',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
