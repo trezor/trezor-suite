@@ -1,5 +1,5 @@
 const { addressType } = require('./crypto/utils');
-var cbor = require('cbor-js');
+var cbor = require('cbor');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
 var { bech32 } = require('bech32');
@@ -18,7 +18,6 @@ function getDecoded(address) {
 
 function isValidLegacyAddress(address) {
     var decoded = getDecoded(address);
-
     if (!decoded || (!Array.isArray(decoded) && decoded.length != 2)) {
         return false;
     }
@@ -28,9 +27,8 @@ function isValidLegacyAddress(address) {
     if (typeof validCrc != 'number') {
         return false;
     }
-
     // get crc of the payload
-    var crc = CRC.crc32(tagged);
+    var crc = CRC.crc32(tagged.value);
 
     return crc == validCrc;
 }
