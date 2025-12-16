@@ -11,10 +11,11 @@ test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
     test.describe.configure({ mode: 'serial' });
 
-    test.beforeAll(async ({ trezorUserEnvLink }) => {
+    test.beforeAll(async ({ trezorUserEnvLink, onboardingPage }) => {
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnvLink.connect();
         await trezorUserEnvLink.stopBridge();
+        await onboardingPage.verifySuiteIsLoaded();
     });
 
     test('App in daemon mode spawns node-bridge', async ({ request }, testInfo) => {
