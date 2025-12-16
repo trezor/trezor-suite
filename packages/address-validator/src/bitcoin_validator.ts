@@ -218,31 +218,4 @@ function isValidAddress(
     return addrType !== undefined && addrType !== addressType.WITNESS_UNKNOWN;
 }
 
-function getAddressType(
-    address: string,
-    currency: Currency,
-    networkType: NetworkType = DEFAULT_NETWORK_TYPE,
-): AddressType | undefined {
-    if (isValidPayToPublicKeyHashAddress(address, currency, networkType)) {
-        return addressType.P2PKH;
-    }
-    if (isValidPayToScriptHashAddress(address, currency, networkType)) {
-        return addressType.P2SH;
-    }
-    if (isValidPayToWitnessScriptHashAddress(address, currency, networkType)) {
-        return addressType.P2WSH;
-    }
-    if (isValidPayToWitnessPublicKeyHashAddress(address, currency, networkType)) {
-        return addressType.P2WPKH;
-    }
-    if (isValidPayToTaprootAddress(address, currency, networkType)) {
-        return addressType.P2TR;
-    }
-    if (isValidSegwitAddress(address, currency, networkType)) {
-        return addressType.WITNESS_UNKNOWN;
-    }
-
-    return undefined;
-}
-
 export { isValidAddress, getAddressType };
