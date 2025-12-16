@@ -11,7 +11,7 @@ import messages from '@trezor/suite/src//support/messages';
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
 
-type LineFormats = 'fourTetragrams' | 'fullLine';
+type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
 
 const DISPLAY_CHAR_LIMIT = 18;
 const STRING_UP_TO_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT}}`, 'g');
@@ -61,6 +61,22 @@ const addNewlinesToAddress = (address: string, regex: RegExp, newLineFormat: str
         .trim()
         .split(' ');
 
+const formatEvmAddress = (address: string) => {
+    if (!address.startsWith('0x')) {
+        return formatAddress(address);
+    }
+
+    const tetragrams = address.slice(2).match(/.{1,4}/g);
+
+    if (!tetragrams) {
+        return address;
+    }
+
+    const [firstTetragram, ...rest] = tetragrams;
+
+    return ['0x' + firstTetragram, ...rest].join(' ');
+};
+
 export const transformAddress = (address: string, lineFormat: LineFormats = 'fourTetragrams') => {
     // Address is split to lines on Display so it can fit. There are different formats:
     // 1. Four tetragrams of address:
@@ -76,6 +92,10 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
 
     if (lineFormat === 'fourTetragrams') {
         return addNewlinesToAddress(formatAddress(address), fourTetragramsOfAddress, ' \n');
+    }
+
+    if (lineFormat === 'evmTetragrams') {
+        return addNewlinesToAddress(formatEvmAddress(address), fourTetragramsOfAddress, ' \n');
     }
 
     if (lineFormat === 'fullLine') {

@@ -106,8 +106,7 @@ const StyledText = styled.span<StyledTextProps>`
     ${({ $breakAll }) =>
         $breakAll &&
         css`
-            word-break: break-all;
-            overflow-wrap: anywhere;
+            overflow-wrap: break-word;
         `}
 
     ${withTextProps}

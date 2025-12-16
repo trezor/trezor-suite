@@ -8,7 +8,7 @@ import {
     swapQuotesSolanaTokens,
     swapTradeSolanaTokens,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -18,7 +18,7 @@ const provider = getCompanyNameFromList(swapQuotesSolanaTokens[0].exchange, 'swa
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} USDC`;
 const { sendAddress, send: tetherMint, receive: usdcMint, receiveAddress } = swapTradeSolanaTokens;
-const formattedSendAddress = formatAddress(sendAddress);
+const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });

@@ -50,6 +50,7 @@ export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & 
     label?: ReactNode;
     validateOnDevice: () => ThunkAction;
     value: string;
+    isAddress?: boolean;
 };
 
 export const ConfirmValueModal = ({
@@ -61,6 +62,7 @@ export const ConfirmValueModal = ({
     isValueChunked,
     onCancel,
     validateOnDevice,
+    isAddress = false,
     value,
 }: ConfirmValueModalProps) => {
     const [isCopied, setIsCopied] = useState(false);
@@ -193,36 +195,39 @@ export const ConfirmValueModal = ({
                                 <QrCode value={value} />
                             </Box>
                             <Column gap={12} alignItems="flex-start">
-                                {account ? (
-                                    <Labeling
-                                        deviceStaticSessionId={account.deviceState}
-                                        isDisabled={isMetadataBlockedByDeviceCall}
-                                        displayValue={
-                                            <Text typographyStyle="highlight">
-                                                <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
-                                            </Text>
-                                        }
-                                        placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
-                                        leftAddon={
-                                            addressLabel ? undefined : (
-                                                <Icon name="tag" size={16} variant="tertiary" />
-                                            )
-                                        }
-                                        payload={{
-                                            type: 'addressLabel',
-                                            entityKey: account.key,
-                                            defaultValue: value,
-                                            networkSymbol: account.symbol,
-                                            accountDescriptor: account.descriptor,
-                                            value: addressLabel,
-                                        }}
-                                        maxWidth={255}
-                                    >
-                                        {addressLabel}
-                                    </Labeling>
-                                ) : (
-                                    label
-                                )}
+                                {isAddress &&
+                                    (account ? (
+                                        <Labeling
+                                            deviceStaticSessionId={account.deviceState}
+                                            isDisabled={isMetadataBlockedByDeviceCall}
+                                            displayValue={
+                                                <Text typographyStyle="highlight">
+                                                    <Translation id="TR_LABELING_ADD_ADDRESS_LABEL" />
+                                                </Text>
+                                            }
+                                            placeholder={translationString(
+                                                'TR_LABELING_ADDRESS_LABEL',
+                                            )}
+                                            leftAddon={
+                                                addressLabel ? undefined : (
+                                                    <Icon name="tag" size={16} variant="tertiary" />
+                                                )
+                                            }
+                                            payload={{
+                                                type: 'addressLabel',
+                                                entityKey: account.key,
+                                                defaultValue: value,
+                                                networkSymbol: account.symbol,
+                                                accountDescriptor: account.descriptor,
+                                                value: addressLabel,
+                                            }}
+                                            maxWidth={255}
+                                        >
+                                            {addressLabel}
+                                        </Labeling>
+                                    ) : (
+                                        label
+                                    ))}
                                 <Address
                                     value={value}
                                     data-testid="@modal/output-value"
@@ -249,54 +254,56 @@ export const ConfirmValueModal = ({
                             </Column>
                         </Row>
                     </Card>
-                    <Card>
-                        <Row gap={spacings.lg}>
-                            <IconCircle
-                                hasBorder={false}
-                                variant="info"
-                                size={32}
-                                name="warningFilled"
-                            />
-                            <H3>
-                                <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
-                            </H3>
-                        </Row>
-                        <BulletList
-                            isOrdered
-                            margin={{ top: spacings.xxxl }}
-                            gap={spacings.xl}
-                            titleGap={spacings.zero}
-                            bulletGap={spacings.lg}
-                        >
-                            <BulletList.Item
-                                title={
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
-                                }
+                    {isAddress && (
+                        <Card>
+                            <Row gap={spacings.lg}>
+                                <IconCircle
+                                    hasBorder={false}
+                                    variant="info"
+                                    size={32}
+                                    name="warningFilled"
+                                />
+                                <H3>
+                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_HEADING" />
+                                </H3>
+                            </Row>
+                            <BulletList
+                                isOrdered
+                                margin={{ top: spacings.xxxl }}
+                                gap={spacings.xl}
+                                titleGap={spacings.zero}
+                                bulletGap={spacings.lg}
                             >
-                                <Paragraph variant="tertiary" textWrap="pretty">
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
-                                </Paragraph>
-                            </BulletList.Item>
-                            <BulletList.Item
-                                title={
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
-                                }
-                            >
-                                <Paragraph variant="tertiary" textWrap="pretty">
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
-                                </Paragraph>
-                            </BulletList.Item>
-                            <BulletList.Item
-                                title={
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
-                                }
-                            >
-                                <Paragraph variant="tertiary" textWrap="pretty">
-                                    <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
-                                </Paragraph>
-                            </BulletList.Item>
-                        </BulletList>
-                    </Card>
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_HEADING" />
+                                    }
+                                >
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_1_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_HEADING" />
+                                    }
+                                >
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_2_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                                <BulletList.Item
+                                    title={
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING" />
+                                    }
+                                >
+                                    <Paragraph variant="tertiary" textWrap="pretty">
+                                        <Translation id="TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_DESCRIPTION" />
+                                    </Paragraph>
+                                </BulletList.Item>
+                            </BulletList>
+                        </Card>
+                    )}
                 </Column>
             </Modal.ModalBase>
         </Modal.Backdrop>

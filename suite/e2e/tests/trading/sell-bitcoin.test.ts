@@ -8,7 +8,7 @@ import {
     sellTradeBTC,
     sellWatchBTC,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
@@ -20,7 +20,7 @@ const providerPaymentId = sellWatchBTC.destinationPaymentExtraId;
 const formattedCryptoAmount = `${cryptoAmount} BTC`;
 const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
-const formattedAddress = formatAddress(sellWatchBTC.destinationAddress);
+const formattedAddress = formatAddressWithNewlines(sellWatchBTC.destinationAddress);
 
 test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });

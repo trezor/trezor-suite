@@ -9,7 +9,7 @@ import {
     swapQuotesSolanaBTC,
     swapTradeSolanaBTC,
 } from '../../fixtures/invity';
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
@@ -37,7 +37,7 @@ const provider = getCompanyNameFromList(swapQuotesSolanaBTC[1].exchange, 'swapLi
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
-const formattedSendAddress = formatAddress(sendAddress);
+const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });

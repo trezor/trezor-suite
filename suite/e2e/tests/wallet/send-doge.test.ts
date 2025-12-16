@@ -1,6 +1,6 @@
 import { localizeNumber } from '@suite-common/wallet-utils';
 
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
@@ -59,7 +59,7 @@ test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
             await expect(devicePrompt.outputValueOf('total')).toContainText(`${totalAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('fee')).toContainText(`${feeAmount} DOGE`);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
-                formatAddress(recipientAddress),
+                formatAddressWithNewlines(recipientAddress),
             );
             // await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();

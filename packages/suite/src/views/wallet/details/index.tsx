@@ -189,7 +189,6 @@ const Details = () => {
                                 data-testid="@wallets/details/export-label-bip329"
                                 onClick={handleExportBip329}
                                 isLoading={locked}
-                                size="small"
                                 minWidth={140}
                             >
                                 <Translation id="TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON" />

@@ -1,12 +1,12 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
-const FORMATTED_ADDRESS = formatAddress(RECIPIENT_ADDRESS);
+const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
 const SOL_DECIMALS = 9;
 
