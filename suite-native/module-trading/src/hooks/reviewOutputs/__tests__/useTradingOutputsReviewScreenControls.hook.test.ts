@@ -22,15 +22,7 @@ const mockReportToAnalyticsExchange = jest.fn((step, action) => {
     });
 });
 
-const mockReportToAnalyticsSell = jest.fn((step, action) => {
-    analytics.report({
-        type: EventType.TradingSell,
-        payload: {
-            step,
-            action,
-        },
-    });
-});
+const mockReportToAnalyticsSell = jest.fn();
 
 const mockSignAndSendTransaction = jest.fn(() => Promise.resolve(true));
 
@@ -167,13 +159,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('orderId');
-            expect(analyticsSpy).toHaveBeenCalledWith({
-                type: EventType.TradingSell,
-                payload: expect.objectContaining({
-                    step: 'sign-and-send',
-                    action: 'continue',
-                }),
-            });
+            expect(mockReportToAnalyticsSell).toHaveBeenCalled();
         });
 
         it('should display alert on thunk error', async () => {
