@@ -41,7 +41,7 @@ export const InfoSegments = ({
             margin={margin}
             variant={variant}
         >
-            <Row gap={gap}>
+            <Row gap={gap} flexWrap="wrap">
                 {validChildren.map((child, index) => (
                     <Fragment key={`${id}-${index}`}>
                         {child}

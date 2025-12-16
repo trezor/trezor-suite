@@ -18,7 +18,7 @@ import {
 } from '../styles';
 import { InputState } from '../types';
 
-export const allowedTextareaFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedTextareaFrameProps = ['margin', 'flex'] as const satisfies FramePropsKeys[];
 
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedTextareaFrameProps)[number]>;
 
