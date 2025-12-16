@@ -13773,16 +13773,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-analytics@workspace:*, @trezor/connect-analytics@workspace:packages/connect-analytics":
-  version: 0.0.0-use.local
-  resolution: "@trezor/connect-analytics@workspace:packages/connect-analytics"
-  dependencies:
-    "@trezor/analytics": "workspace:*"
-  peerDependencies:
-    tslib: ^2.6.2
-  languageName: unknown
-  linkType: soft
-
 "@trezor/connect-cli@workspace:packages/connect-cli":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
@@ -13912,7 +13902,6 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.28.5"
     "@trezor/bundler-security": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/jest": "npm:29.5.12"
@@ -13982,7 +13971,6 @@ __metadata:
     "@playwright/test": "npm:^1.55.0"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-iframe": "workspace:*"
     "@trezor/connect-ui": "workspace:*"
@@ -14031,7 +14019,6 @@ __metadata:
   dependencies:
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -14133,7 +14120,6 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
-    "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-authenticity": "workspace:*"

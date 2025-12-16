@@ -119,13 +119,6 @@ filteredFixtures.forEach(f => {
         await popup.waitForLoadState('load');
         log(f.url, 'popup promise resolved');
 
-        log(f.url, 'waiting for confirm analytics');
-        await popup.waitForSelector("button[data-testid='@analytics/continue-button']", {
-            state: 'visible',
-            timeout: 40000,
-        });
-        await popup.click("button[data-testid='@analytics/continue-button']");
-
         if (isWebExtension || isCoreInPopup) {
             log(f.url, 'waiting for select device');
             await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });

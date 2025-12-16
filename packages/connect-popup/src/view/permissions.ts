@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/view/permissions.js
 
 import { UI, UiRequestPermission, createUiResponse } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/connect-analytics';
 
 import { container, createTooltip, getState, postMessage, showView } from './common';
 
@@ -98,11 +97,6 @@ export const initPermissionsView = (payload: UiRequestPermission['payload']) => 
             }),
         );
         showView('loader');
-
-        analytics.report({
-            type: EventType.SettingsPermissions,
-            payload: { duration: rememberCheckbox.checked ? 'lifetime' : 'session' },
-        });
     };
 
     cancelButton.onclick = () => {

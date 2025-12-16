@@ -13,12 +13,10 @@
 /packages/analytics @tomasklim
 /packages/suite-analytics @tomasklim
 
-/packages/connect-analytics/src/constants.ts @kolomaznikt
 /suite-common/analytics/src/events/shared/constants.ts @kolomaznikt
 /suite-common/analytics/src/events/suite/constants.ts @kolomaznikt
 /suite-common/analytics/src/events/suite-native/constants.ts @kolomaznikt
 
-/packages/connect-analytics/src/types @kolomaznikt
 /suite-common/analytics/src/events/shared/types.ts @kolomaznikt
 /suite-common/analytics/src/events/suite/types.ts @kolomaznikt
 /suite-common/analytics/src/events/suite-native/types.ts @kolomaznikt
@@ -115,4 +113,3 @@
 /suite/e2e @HajekOndrej @Vere-Grey
 
 /packages/e2e-utils @HajekOndrej @Vere-Grey
-

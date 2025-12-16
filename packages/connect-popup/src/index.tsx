@@ -23,7 +23,6 @@ import {
 } from '@trezor/connect/src/exports';
 import { LogWriter, initLog, setLogWriter } from '@trezor/connect/src/utils/debug';
 import { isConnectOutdated } from '@trezor/connect/src/utils/versionCheck';
-import { EventType, analytics } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
@@ -209,10 +208,6 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
                     detail: 'response-event-error',
                     message: 'error' in data.payload ? String(data.payload.error) : 'Unknown error',
                 });
-                analytics.report({
-                    type: EventType.ViewChangeError,
-                    payload: { code: code || 'Code missing' },
-                });
         }
     }
 };
@@ -267,17 +262,6 @@ const handleMessageInIframeMode = (
 
     const message = parseMessage<CoreEventMessage>(data);
 
-    analytics.report({ type: EventType.ViewChange, payload: { nextView: message.type } });
-
-    if (
-        message?.payload &&
-        typeof message.payload === 'object' &&
-        'analytics' in message.payload &&
-        message.payload.analytics
-    ) {
-        analytics.report(message.payload.analytics);
-    }
-
     handleUIAffectingMessage(message);
 };
 
@@ -320,24 +304,6 @@ const handleMessageInCoreMode = (
                 info: method.info,
             });
             reactEventBus.dispatch({ type: 'state-update', payload: getState() });
-
-            const { settings } = getState();
-            const transports = core.getActiveTransports();
-            analytics.report({
-                type: EventType.AppReady,
-                payload: {
-                    version: settings?.version,
-                    npmVersion: settings?.npmVersion,
-                    origin: settings?.origin,
-                    referrerAppName: settings?.manifest?.appName,
-                    referrerApp: settings?.manifest?.appUrl,
-                    referrerEmail: settings?.manifest?.email,
-                    method: method?.name,
-                    payload: method?.payload ? Object.keys(method.payload) : undefined,
-                    transportTypes: transports?.map(t => t.type),
-                    bridgeVersion: transports?.find(t => t.type === 'BridgeTransport')?.version,
-                },
-            });
         });
     }
 

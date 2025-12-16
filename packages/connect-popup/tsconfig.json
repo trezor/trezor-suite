@@ -8,7 +8,6 @@
     "references": [
         { "path": "../components" },
         { "path": "../connect" },
-        { "path": "../connect-analytics" },
         { "path": "../connect-common" },
         { "path": "../connect-iframe" },
         { "path": "../connect-ui" },

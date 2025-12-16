@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Divider, variables } from '@trezor/components';
 import { CoreRequestMessage, UI, UiEvent } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/connect-analytics';
 import { spacingsPx } from '@trezor/theme';
 
 import { PassphraseTypeCard } from '../components/Passphrase/PassphraseTypeCard';
@@ -45,13 +44,6 @@ export const Passphrase = (props: PassphraseProps) => {
                 passphraseOnDevice,
                 // see PassphrasePromptResponse type
                 save: true,
-            },
-        });
-
-        analytics.report({
-            type: EventType.WalletType,
-            payload: {
-                type: value ? 'hidden' : 'standard',
             },
         });
     };

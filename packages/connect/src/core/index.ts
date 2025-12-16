@@ -11,7 +11,6 @@ import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { DataManager } from '../data/DataManager';
-import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
 import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
@@ -287,12 +286,9 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
             // request confirmation view
             sendCoreMessage(
-                enhanceMessageWithAnalytics(
-                    createUiMessage(UI.REQUEST_CONFIRMATION, {
-                        view: 'no-backup',
-                    }),
-                    { device: device.toMessageObject() },
-                ),
+                createUiMessage(UI.REQUEST_CONFIRMATION, {
+                    view: 'no-backup',
+                }),
             );
 
             // wait for user action
@@ -328,12 +324,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
 
             // request confirmation view
-            sendCoreMessage(
-                enhanceMessageWithAnalytics(
-                    createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation),
-                    { device: device.toMessageObject() },
-                ),
-            );
+            sendCoreMessage(createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation));
 
             // wait for user action
             const confirmed = await uiPromise.promise.then(({ payload }) => payload);
