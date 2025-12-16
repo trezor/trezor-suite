@@ -14,6 +14,7 @@ import {
     WalletAccountTransaction,
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
+import { PROTO } from '@trezor/connect';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
@@ -114,10 +115,12 @@ export const selectBestCardanoPool = (pools?: CardanoPoolInfo[]) => {
 export const validateCardanoDrep = (drepId: string): boolean => {
     try {
         const { prefix, words } = bech32.decode(drepId);
-        if (prefix !== 'drep') return false;
+        if (prefix !== 'drep' && prefix !== 'drep_script') return false;
 
         const bytes = bech32.fromWords(words);
         if (bytes.length !== 28 && bytes.length !== 29) return false;
+
+        if (prefix === 'drep_script' && bytes.length !== 28) return false;
 
         return true;
     } catch {
@@ -125,20 +128,48 @@ export const validateCardanoDrep = (drepId: string): boolean => {
     }
 };
 
-export const drepBech32ToKeyHashHex = (drepId: string): string => {
+// https://cips.cardano.org/cip/CIP-0129
+const parseDrepCip129 = (bytes: number[]) => {
+    const header = bytes[0];
+    const hex = Buffer.from(bytes.slice(1)).toString('hex');
+
+    switch (header) {
+        case 0x22:
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
+        case 0x23:
+            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
+        default:
+            throw new Error(`Unsupported DRep id CIP-129 header: ${header}`);
+    }
+};
+
+// https://cips.cardano.org/cip/CIP-0105#drep-keys-1
+// Legacy
+const parseDrepCip105 = (bytes: number[], prefix: string) => {
+    const hex = Buffer.from(bytes).toString('hex');
+
+    switch (prefix) {
+        case 'drep':
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
+        case 'drep_script':
+            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
+        default:
+            throw new Error(`Unsupported DRep id CIP-105 prefix: ${prefix}`);
+    }
+};
+
+export const parseDrepBech32 = (drepId: string): { type: PROTO.CardanoDRepType; hex: string } => {
     if (!validateCardanoDrep(drepId)) throw new Error('Not a DRep bech32');
 
-    const { words } = bech32.decode(drepId);
+    const { words, prefix } = bech32.decode(drepId);
     const bytes = bech32.fromWords(words);
 
-    // 29-byte hash strip the tag
-    if (bytes.length === 29 && bytes[0] === 0x22) {
-        return Buffer.from(bytes.slice(1)).toString('hex');
+    if (bytes.length === 28) {
+        return parseDrepCip105(bytes, prefix);
     }
 
-    // 28-byte hash
-    if (bytes.length === 28) {
-        return Buffer.from(bytes).toString('hex');
+    if (bytes.length === 29) {
+        return parseDrepCip129(bytes);
     }
 
     throw new Error(`Unsupported DRep payload length: ${bytes.length}`);
