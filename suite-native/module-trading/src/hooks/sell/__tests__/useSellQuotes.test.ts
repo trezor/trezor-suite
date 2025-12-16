@@ -236,7 +236,7 @@ describe('useSellQuotes', () => {
     it('should clear quotes when data in form becomes invalid', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseSellQuotes(store);
+        const { result, unmount } = await renderUseSellQuotes(store);
 
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
@@ -262,6 +262,9 @@ describe('useSellQuotes', () => {
             type: 'tradingSell/clearQuotesAndQuotesRequest',
         });
         expect(store.getState().wallet.trading.sell.quotes).toEqual([]);
+
+        // unmount hook to avoid unintentional rerenders
+        unmount();
     });
 
     it('should not clear quotes when error is from quote', async () => {

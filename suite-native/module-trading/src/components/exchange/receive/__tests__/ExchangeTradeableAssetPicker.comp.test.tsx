@@ -5,6 +5,7 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { ExchangeFormType } from '@suite-native/trading-types';
@@ -40,6 +41,10 @@ describe('ExchangeTradeableAssetPicker', () => {
     beforeEach(async () => {
         store = (await initPreloadedStore(FirmwareType.Universal)).store;
         form = await renderFormHook();
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render "Select asset" button with caret', async () => {

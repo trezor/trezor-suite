@@ -6,6 +6,7 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
@@ -39,6 +40,10 @@ describe('BuyTradeableAssetPicker', () => {
             </Form>,
             { store },
         );
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     describe('with regular firmware', () => {
         beforeEach(async () => {

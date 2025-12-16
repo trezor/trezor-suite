@@ -58,6 +58,7 @@ describe('useExchangeFlow', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     describe('confirmTrade', () => {
