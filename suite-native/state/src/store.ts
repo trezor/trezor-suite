@@ -1,4 +1,4 @@
-import { Middleware, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
+import { Middleware, MiddlewareAPI, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 
 import {
     ExtraDependencies,
@@ -15,6 +15,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
+import { createEnsureMMKVKey, createMMKVStorage } from '@suite-native/storage';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
@@ -57,12 +58,26 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     return middlewares;
 };
 
-export const initStore = async (preloadedState?: PreloadedState) => {
-    let extra: ExtraDependencies | null = null as ExtraDependencies | null;
+export const initStore = (preloadedState?: PreloadedState) => {
+    let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
+        typeof extraFactory
+    > | null;
+
+    const ensureMMKVKey = createEnsureMMKVKey();
+    const mmkvStorage = createMMKVStorage({ ensureMMKVKey });
+
+    const extraFactory = (api: MiddlewareAPI) => ({
+        ...extraDependencies,
+        services: createNativeCompositionRoot({
+            ...api,
+            ensureMMKVKey,
+            mmkvStorage,
+        }),
+    });
 
     const store = configureStore({
         preloadedState: preloadedState as FullPreloadedState,
-        reducer: await prepareRootReducers(),
+        reducer: prepareRootReducers({ mmkvStorage }),
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 serializableCheck: false,
@@ -70,11 +85,8 @@ export const initStore = async (preloadedState?: PreloadedState) => {
             })
                 .prepend(
                     createStoreWithExtraStoreMiddleware({
-                        extraFactory: api => ({
-                            ...extraDependencies,
-                            services: createNativeCompositionRoot(api),
-                        }),
-                        onExtraCreated: initializedExtra => {
+                        extraFactory,
+                        onExtraCreated: (initializedExtra: ReturnType<typeof extraFactory>) => {
                             extra = initializedExtra;
                         },
                     }),

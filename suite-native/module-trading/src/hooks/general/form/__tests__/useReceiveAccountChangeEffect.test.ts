@@ -20,9 +20,9 @@ describe('useReceiveAccountChangeEffect', () => {
             { store },
         );
 
-    beforeEach(async () => {
+    beforeEach(() => {
         const preloadState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        store = (await initStore(preloadState)).store;
+        store = initStore(preloadState).store;
         setValue = jest.fn();
     });
 

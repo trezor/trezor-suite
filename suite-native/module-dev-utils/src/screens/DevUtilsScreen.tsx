@@ -18,6 +18,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
+import { useNativeServices } from '@suite-native/services';
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 
@@ -41,6 +42,7 @@ export const DevUtilsScreen = () => {
     const copyToClipboard = useCopyToClipboard();
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const versionString = `${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash() || 'N/A in debug build'}`;
+    const { getMMKVStorage } = useNativeServices();
 
     const handleCopyVersion = () => {
         copyToClipboard(versionString);
@@ -98,7 +100,14 @@ export const DevUtilsScreen = () => {
                         >
                             Throw Sentry error
                         </Button>
-                        <Button colorScheme="redBold" onPress={clearStorage}>
+                        <Button
+                            colorScheme="redBold"
+                            onPress={() => {
+                                getMMKVStorage().then(mmkv => {
+                                    clearStorage({ mmkvInstance: mmkv });
+                                });
+                            }}
+                        >
                             💥 Wipe all data
                         </Button>
                     </VStack>

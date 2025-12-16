@@ -15,7 +15,7 @@ describe('MaxSlippageForm', () => {
         });
 
     it('should render value based on store', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { getByTestId, getByText, queryByText } = await renderMaxSlippageForm({}, store);
 
         expect(getByTestId(SLIPPAGE_INPUT_TEST_ID)).toHaveDisplayValue('1');
@@ -24,7 +24,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should display validation error on invalid value', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { getByTestId, getByText } = await renderMaxSlippageForm({}, store);
 
         await userEvent.type(getByTestId(SLIPPAGE_INPUT_TEST_ID), '999');
@@ -34,7 +34,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should save slippage to store and call onSubmit', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const onSubmit = jest.fn();
         const { getByTestId, getByText } = await renderMaxSlippageForm({ onSubmit }, store);
         const input = getByTestId(SLIPPAGE_INPUT_TEST_ID);
@@ -48,7 +48,7 @@ describe('MaxSlippageForm', () => {
     });
 
     it('should transform value to valid number', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { getByTestId } = await renderMaxSlippageForm({}, store);
         const input = getByTestId(SLIPPAGE_INPUT_TEST_ID);
 

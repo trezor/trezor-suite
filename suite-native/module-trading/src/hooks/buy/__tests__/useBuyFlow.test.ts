@@ -33,7 +33,7 @@ describe('useBuyFlow', () => {
     let buyForm: BuyFormType;
     let store: TestStore;
 
-    const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
+    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
         const preloadedState: PreloadedState = {
             wallet: { trading: getInitializedTradingStateWithQuotes() },
         };
@@ -41,7 +41,7 @@ describe('useBuyFlow', () => {
             preloadedState.wallet!.trading!.buy!.isLoading = isLoading;
         }
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderBuyForm = () => renderHookWithStoreProviderAsync(() => useBuyForm(), { store });

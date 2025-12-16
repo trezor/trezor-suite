@@ -23,8 +23,8 @@ import { StoreProvider, selectIsAppReady } from '@suite-native/state';
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
 import { StylesProvider } from './StylesProvider';
+import { InitRosenitePlugin } from './devtools/InitRoseniteDevTools';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
-import { useRozenitePlugins } from './hooks/useRozenitePlugins';
 import { applicationInit, postOnboardingInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
@@ -55,12 +55,6 @@ let isApplicationInitDispatched = false;
 let isPostOnboardingInitDispatched = false;
 
 const AppComponent = () => {
-    if (__DEV__) {
-        // react hooks can be conditionally called with __DEV__ statement (Metro takes care of it)
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        useRozenitePlugins();
-    }
-
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
@@ -93,6 +87,7 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
+            {__DEV__ && <InitRosenitePlugin />}
             <BannersRenderer />
             <BottomSheetModalProvider>
                 <Freeze freeze={isBiometricsOverlayVisible}>

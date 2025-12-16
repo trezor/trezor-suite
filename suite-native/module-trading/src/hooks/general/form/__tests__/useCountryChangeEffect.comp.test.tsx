@@ -10,8 +10,8 @@ describe('useCountryChangeEffect', () => {
     const renderUseCountryChangeEffect = (watch: CountryFormWatch) =>
         renderHookWithStoreProviderAsync(() => useCountryChangeEffect(watch), { store });
 
-    beforeEach(async () => {
-        store = (await initStore()).store;
+    beforeEach(() => {
+        store = initStore().store;
     });
 
     it('should do nothing on mount', async () => {

@@ -2,8 +2,9 @@ import { PersistedState, getStoredState } from 'redux-persist';
 
 import { WalletSettings } from '@suite-common/wallet-types';
 
+import { createEnsureMMKVKey } from '../../ensureMMKVKey';
 import { isPersistedState } from '../../migrationTypes';
-import { initMmkvStorage } from '../../storage';
+import { createMMKVStorage } from '../../mmkvStorage';
 
 type MigratedState = Partial<WalletSettings> & PersistedState;
 
@@ -14,9 +15,12 @@ export const migrateAutoEjectToWalletSettings = async (
         return oldState as MigratedState;
     }
 
+    const ensureMMKVKey = await createEnsureMMKVKey();
+    const storage = await createMMKVStorage({ ensureMMKVKey });
+
     const devicesState = await getStoredState({
         key: 'devices',
-        storage: await initMmkvStorage(),
+        storage,
     });
 
     if (!devicesState || !('isDeviceAutoEjectEnabled' in devicesState)) {

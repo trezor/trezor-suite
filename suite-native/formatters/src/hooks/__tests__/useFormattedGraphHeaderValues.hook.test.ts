@@ -11,12 +11,10 @@ import { useFormattedGraphHeaderValues } from '../useFormattedGraphHeaderValues'
 
 let store: TestStore;
 
-const setNewStoreMockup = async (preloadedState: PreloadedState) => {
-    store = (
-        await initStore({
-            ...preloadedState,
-        })
-    ).store;
+const setNewStoreMockup = (preloadedState: PreloadedState) => {
+    store = initStore({
+        ...preloadedState,
+    }).store;
 };
 
 describe(useFormattedGraphHeaderValues.name, () => {
@@ -30,7 +28,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('should parse balance amount correctly with valid input - english locale + USD', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'usd' } },
         });
@@ -43,7 +41,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses balance amount correctly with valid input - english locale + CZK', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
@@ -56,7 +54,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses balance amount correctly with valid input - czech locale + CZK', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'cs-CZ' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
@@ -69,7 +67,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses balance amount correctly with valid input and no decimal part', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'eur' } },
         });
@@ -82,7 +80,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses balance amount correctly with valid input and only decimal part', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'czk' } },
         });
@@ -95,7 +93,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('handles BTC BaseCurrency correctly', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
@@ -108,7 +106,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('rounds BTC Crypto value correctly', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.BITCOIN } },
         });
@@ -121,7 +119,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses satoshis value correctly - english locale', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'en-US' },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });
@@ -134,7 +132,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
     });
 
     it('parses satoshis value correctly - spanish locale', async () => {
-        await setNewStoreMockup({
+        setNewStoreMockup({
             locale: { appLocaleCode: 'es-ES' as SupportedLocaleCode },
             wallet: { settings: { localCurrency: 'btc', bitcoinAmountUnit: AmountUnit.SATOSHI } },
         });

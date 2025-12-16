@@ -74,11 +74,11 @@ describe('AccountList', () => {
 
     let store: TestStore;
 
-    const renderComponent = async (
+    const renderComponent = (
         props: Partial<AccountsListProps>,
         preloadedState = defaultPreloadedState,
     ) => {
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
 
         return renderWithStoreProviderAsync(
             <AccountList

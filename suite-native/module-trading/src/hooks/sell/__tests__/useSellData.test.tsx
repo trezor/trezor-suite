@@ -16,7 +16,7 @@ jest.mock('../../../utils/general/utils', () => ({
 }));
 
 describe('useSellData', () => {
-    const getInitializedStore = async (tradingAccountKey: string | undefined) => {
+    const getInitializedStore = (tradingAccountKey: string | undefined) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: getInitializedTradingState('sell'),
@@ -29,7 +29,7 @@ describe('useSellData', () => {
         };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = tradingAccountKey;
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseSellData = (reloadRequestOrdinalInitialValue: number = 0, store?: TestStore) =>

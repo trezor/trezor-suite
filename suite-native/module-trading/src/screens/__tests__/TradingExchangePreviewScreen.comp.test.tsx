@@ -109,13 +109,13 @@ describe('TradingExchangePreviewScreen', () => {
         );
     };
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
         mockTxnErrorString = null;
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         const preloadedState = createPreloadedState();
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
     });
 
     afterEach(() => {
@@ -271,7 +271,7 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const preloadedState = createPreloadedState(quoteWithError);
-            const testStore = (await initStore(preloadedState)).store;
+            const testStore = initStore(preloadedState).store;
             const { getByText } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(getByText('Quote error message')).toBeOnTheScreen();
@@ -286,7 +286,7 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const preloadedState = createPreloadedState(quoteWithoutError);
-            const testStore = (await initStore(preloadedState)).store;
+            const testStore = initStore(preloadedState).store;
             const { queryByText } = await renderTradingExchangePreviewScreen(false, testStore);
 
             expect(queryByText('Transaction error occurred')).toBeNull();
@@ -302,7 +302,7 @@ describe('TradingExchangePreviewScreen', () => {
             };
 
             const preloadedState = createPreloadedState(quoteWithError);
-            const testStore = (await initStore(preloadedState)).store;
+            const testStore = initStore(preloadedState).store;
             const { getByText, queryByText } = await renderTradingExchangePreviewScreen(
                 false,
                 testStore,

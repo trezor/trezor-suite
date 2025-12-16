@@ -33,7 +33,7 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set buy active when only buy is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
-        const { store } = await initStore();
+        const { store } = initStore();
 
         await renderUseActiveTradingTypeReaction(store);
 
@@ -42,7 +42,7 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set exchange active when only exchange is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['exchange']);
-        const { store } = await initStore();
+        const { store } = initStore();
 
         await renderUseActiveTradingTypeReaction(store);
 
@@ -51,22 +51,22 @@ describe('useActiveTradingTypeReaction', () => {
 
     it('should set sell active when only sell is allowed', async () => {
         castedSelectEnabledTradingTypes.mockReturnValue(['sell']);
-        const { store } = await initStore();
+        const { store } = initStore();
 
         await renderUseActiveTradingTypeReaction(store);
 
         expect(selectActiveTradingType(store.getState())).toBe('sell');
     });
 
-    it('should render with undefined navigation params', async () => {
+    it('should render with undefined navigation params', () => {
         (mockUseRouteParams as any) = undefined;
-        const { store } = await initStore();
+        const { store } = initStore();
 
         expect(() => renderUseActiveTradingTypeReaction(store)).not.toThrow();
     });
 
     it('should clear activeTradingType on unmount', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { unmount } = await renderUseActiveTradingTypeReaction(store);
 
         unmount();
@@ -77,7 +77,7 @@ describe('useActiveTradingTypeReaction', () => {
     describe('with trading type specified by navigation params', () => {
         it('should set buy active when buy is specified', async () => {
             mockUseRouteParams.tradingType = 'buy';
-            const { store } = await initStore();
+            const { store } = initStore();
 
             await renderUseActiveTradingTypeReaction(store);
 
@@ -86,7 +86,7 @@ describe('useActiveTradingTypeReaction', () => {
 
         it('should set exchange active when exchange is specified', async () => {
             mockUseRouteParams.tradingType = 'exchange';
-            const { store } = await initStore();
+            const { store } = initStore();
 
             await renderUseActiveTradingTypeReaction(store);
 
@@ -95,7 +95,7 @@ describe('useActiveTradingTypeReaction', () => {
 
         it('should set sell active when sell is specified', async () => {
             mockUseRouteParams.tradingType = 'sell';
-            const { store } = await initStore();
+            const { store } = initStore();
 
             await renderUseActiveTradingTypeReaction(store);
 
@@ -105,7 +105,7 @@ describe('useActiveTradingTypeReaction', () => {
         it('should fallback to buy when navigating to exchange but exchange is disabled', async () => {
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
             mockUseRouteParams.tradingType = 'exchange';
-            const { store } = await initStore();
+            const { store } = initStore();
 
             await renderUseActiveTradingTypeReaction(store);
 
@@ -115,7 +115,7 @@ describe('useActiveTradingTypeReaction', () => {
         it('should fallback to buy when navigating to sell but sell is disabled', async () => {
             mockUseRouteParams.tradingType = 'sell';
             castedSelectEnabledTradingTypes.mockReturnValue(['buy']);
-            const { store } = await initStore();
+            const { store } = initStore();
 
             await renderUseActiveTradingTypeReaction(store);
 

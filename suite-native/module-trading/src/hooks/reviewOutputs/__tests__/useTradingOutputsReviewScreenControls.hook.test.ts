@@ -67,9 +67,9 @@ describe('useTradingOutputsReviewScreenControls', () => {
             },
         );
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) })).store;
+        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
     });
 
     it('should return confirmOnTrezorRef', async () => {

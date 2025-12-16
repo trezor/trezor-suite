@@ -107,8 +107,8 @@ describe('FeeOption', () => {
         );
     };
 
-    beforeEach(async () => {
-        store = (await initStore(getPreloadedState())).store;
+    beforeEach(() => {
+        store = initStore(getPreloadedState()).store;
 
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');

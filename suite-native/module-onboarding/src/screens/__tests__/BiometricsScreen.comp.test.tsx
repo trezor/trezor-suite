@@ -44,13 +44,11 @@ describe('BiometricsScreen', () => {
     });
 
     it('should redirect to TradingLocation screen on Skip press when isTradingResidenceCheckEnabled is set to true', async () => {
-        store = (
-            await initStore({
-                featureFlags: {
-                    isTradingResidenceCheckEnabled: true,
-                },
-            })
-        ).store;
+        store = initStore({
+            featureFlags: {
+                isTradingResidenceCheckEnabled: true,
+            },
+        }).store;
         const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));
@@ -59,13 +57,11 @@ describe('BiometricsScreen', () => {
     });
 
     it('should redirect to Home screen on Skip press when isTradingResidenceCheckEnabled is set to false', async () => {
-        store = (
-            await initStore({
-                featureFlags: {
-                    isTradingResidenceCheckEnabled: false,
-                },
-            })
-        ).store;
+        store = initStore({
+            featureFlags: {
+                isTradingResidenceCheckEnabled: false,
+            },
+        }).store;
         const { getByText } = await renderBiometricsScreen();
 
         await userEvent.press(getByText('Not now'));

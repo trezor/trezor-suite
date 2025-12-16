@@ -29,7 +29,7 @@ describe('useExchangeForm', () => {
     const renderUseExchangeForm = () =>
         renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
 
-    const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
@@ -40,7 +40,7 @@ describe('useExchangeForm', () => {
             } as FeatureFlagsRootState['featureFlags'],
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     beforeEach(async () => {

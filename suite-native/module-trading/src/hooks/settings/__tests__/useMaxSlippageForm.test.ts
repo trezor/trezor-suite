@@ -12,7 +12,7 @@ describe('useMaxSlippageForm', () => {
         renderHookWithStoreProviderAsync(() => useMaxSlippageForm(), { store });
 
     it('should have default value from store', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { result } = await renderUseMaxSlippageForm(store);
 
         expect(result.current.getValues()).toEqual({
@@ -23,7 +23,7 @@ describe('useMaxSlippageForm', () => {
     it.each<string>(['-1', '0', '0.009', '50.1', '55', '', 'invalid_number'])(
         'should error validation for value %s',
         async slippage => {
-            const { store } = await initStore();
+            const { store } = initStore();
             const { result } = await renderUseMaxSlippageForm(store);
 
             await act(async () => {
@@ -39,7 +39,7 @@ describe('useMaxSlippageForm', () => {
     );
 
     it.each(['0.01', '1', '12.34', '50'])('should pass validation for value %s', async slippage => {
-        const { store } = await initStore();
+        const { store } = initStore();
         const { result } = await renderUseMaxSlippageForm(store);
 
         act(() => {

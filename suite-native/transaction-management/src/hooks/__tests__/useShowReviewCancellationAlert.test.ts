@@ -23,9 +23,9 @@ describe('useShowReviewCancellationAlert', () => {
     const renderUseShowReviewCancellationAlert = () =>
         renderHookWithStoreProviderAsync(() => useShowReviewCancellationAlert(), { store });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         mockShowAlert.mockClear();
-        store = (await initStore()).store;
+        store = initStore().store;
     });
 
     it('should return stable callback', async () => {

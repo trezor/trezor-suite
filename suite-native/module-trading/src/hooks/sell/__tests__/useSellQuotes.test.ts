@@ -46,7 +46,7 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('useSellQuotes', () => {
-    const getInitializedStore = async () => {
+    const getInitializedStore = () => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({
                 tradeType: 'sell',
@@ -54,7 +54,7 @@ describe('useSellQuotes', () => {
         };
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'btc-account-1';
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseSellQuotes = (store: TestStore) =>
