@@ -6,6 +6,7 @@ import { useDevice, useSelector } from '../../../../../../../hooks/suite';
 import {
     DesktopUpdateState,
     UpdateState,
+    selectDesktopUpdate,
 } from '../../../../../../../reducers/suite/desktopUpdateReducer';
 
 type UpdateStatusData = {
@@ -70,7 +71,7 @@ const getDeviceStatus = ({
 
 export const useUpdateStatus = (): UpdateStatusData => {
     const { device } = useDevice();
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
+    const desktopUpdate = useSelector(selectDesktopUpdate);
 
     const isDeviceDisconnected = device?.connected !== true;
 
