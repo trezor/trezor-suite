@@ -61,6 +61,10 @@ export const DeviceSettingsStackNavigator = () => {
             />
             <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <DeviceSettingsStack.Screen
+                    name={DeviceSettingsStackRoutes.DeviceNameStack}
+                    component={DeviceNameStackNavigator}
+                />
+                <DeviceSettingsStack.Screen
                     name={DeviceSettingsStackRoutes.FirmwareUpdateStack}
                     component={FirmwareUpdateStackNavigator}
                 />
@@ -98,10 +102,6 @@ export const DeviceSettingsStackNavigator = () => {
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.WipeDeviceStack}
                 component={WipeDeviceStackNavigator}
-            />
-            <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceNameStack}
-                component={DeviceNameStackNavigator}
             />
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.BackupAndPassphraseStack}

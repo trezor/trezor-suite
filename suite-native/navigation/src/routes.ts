@@ -77,6 +77,7 @@ export enum AccountsImportStackRoutes {
 
 export enum DeviceSettingsStackRoutes {
     DeviceSettings = 'DeviceSettings',
+    DeviceNameStack = 'DeviceNameStack',
     DeviceFirmware = 'DeviceFirmware',
     FirmwareUpdateStack = 'FirmwareUpdateStack',
     FirmwareLanguageStack = 'FirmwareLanguageStack',
@@ -91,8 +92,14 @@ export enum DeviceSettingsStackRoutes {
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     WipeDeviceStack = 'WipeDeviceStack',
-    DeviceNameStack = 'DeviceNameStack',
     DeviceCheckBackupStack = 'DeviceCheckBackupStack',
+}
+
+export enum DeviceNameStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    DeviceName = 'DeviceName',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+    DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
 export enum DevicePinProtectionStackRoutes {
@@ -140,12 +147,6 @@ export enum WipeDeviceStackRoutes {
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
     FactoryReset = 'FactoryReset',
-}
-
-export enum DeviceNameStackRoutes {
-    DeviceName = 'DeviceName',
-    ContinueOnTrezor = 'ContinueOnTrezor',
-    DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
 export enum BackupAndPassphraseStackRoutes {
