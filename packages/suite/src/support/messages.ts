@@ -4533,6 +4533,11 @@ export default defineMessages({
         id: 'TR_DEACTIVATE_TOKEN_BALANCE_WARNING',
         defaultMessage: 'To deactivate this token, transfer its remaining balance.',
     },
+    TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS: {
+        id: 'TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS',
+        defaultMessage:
+            'Insufficient funds. You need {required} to cover the reserve and network fee, but only {available} is available.',
+    },
     TR_ASSET_CODE: {
         id: 'TR_ASSET_CODE',
         defaultMessage: 'Asset code',
