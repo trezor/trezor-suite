@@ -475,6 +475,8 @@ export class TrezordNode {
 
                     try {
                         const ui = await fs.readFile(
+                            // todo: using npx tsx ./packages/transport-bridge/src/bin.ts
+                            // will serve only the unbuilt template from src/ui folder instead from dist/ui folder
                             path.join(__dirname, this.assetPrefix, 'ui/index.html'),
                             'utf-8',
                         );
