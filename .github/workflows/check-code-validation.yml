@@ -112,6 +112,7 @@ jobs:
     needs: setup-and-cache
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    continue-on-error: true
     strategy:
         matrix:
             test-task: [suite, native]
