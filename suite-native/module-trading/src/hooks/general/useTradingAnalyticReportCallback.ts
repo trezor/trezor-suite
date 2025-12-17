@@ -1,19 +1,22 @@
 import { TradingType } from '@suite-common/trading';
 
-import type {
-    TradingAnalyticReportCallback,
-    VoidCallback,
-} from './tradingAnalyticReportCallbackTypes';
-import { useExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
-import { useSellAnalyticReportCallback } from '../sell/useSellAnalyticReportCallback';
+import {
+    type TradingExchangeAnalyticReportCallback,
+    useExchangeAnalyticReportCallback,
+} from '../exchange/useExchangeAnalyticReportCallback';
+import {
+    type TradingSellAnalyticReportCallback,
+    useSellAnalyticReportCallback,
+} from '../sell/useSellAnalyticReportCallback';
 
-export type {
-    TradingAnalyticReportCallback,
-    TradingExchangeAnalyticReportCallback,
-    TradingSellAnalyticReportCallback,
-} from './tradingAnalyticReportCallbackTypes';
+type NullAnalyticsReportAction = (_step: unknown, _action: unknown) => void;
 
-const nullAction: VoidCallback = () => {};
+export type TradingAnalyticReportCallback =
+    | TradingSellAnalyticReportCallback
+    | TradingExchangeAnalyticReportCallback
+    | NullAnalyticsReportAction;
+
+const nullAction = () => {};
 
 export const useTradingAnalyticReportCallback = (
     tradingType?: TradingType,

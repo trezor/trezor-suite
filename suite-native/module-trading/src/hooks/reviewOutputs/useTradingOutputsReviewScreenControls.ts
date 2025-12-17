@@ -20,9 +20,10 @@ import {
 } from '@suite-native/transaction-management';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
-import { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
-import { TradingAnalyticReportCallback } from '../general/tradingAnalyticReportCallbackTypes';
-import { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
+import type { TradingExchangeAnalyticReportCallback } from '../exchange/useExchangeAnalyticReportCallback';
+import type { TradingExchangeSignAndSendTransactionProps } from '../exchange/useExchangeFlow';
+import type { UseTradingTransactionReturnProps } from '../general/useTradingTransaction';
+import type { TradingSellAnalyticReportCallback } from '../sell/useSellAnalyticReportCallback';
 
 type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
     TradingStackParamList,
@@ -36,7 +37,7 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 > & {
     orderId: string;
     accountKey: AccountKey;
-    reportToAnalytics: TradingAnalyticReportCallback;
+    reportToAnalytics: TradingExchangeAnalyticReportCallback | TradingSellAnalyticReportCallback;
 };
 
 export const useTradingOutputsReviewScreenControls = ({
