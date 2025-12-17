@@ -2,13 +2,13 @@ import { WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     selectAccounts,
     selectIsMevProtectionEnabled,
-    selectIsMevProtectionFeatureEnabled,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
@@ -222,8 +222,7 @@ const ethereumRequestThunk = createThunk<
             const txData = getMevProtectedTxData(
                 account.symbol,
                 typedSignPayload.serializedTx,
-                isMevProtectionEnabled,
-                isMevProtectionFeatureEnabled,
+                isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             );
 
             const pushResponse = await TrezorConnect.pushTransaction({

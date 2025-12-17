@@ -4,7 +4,6 @@
     "references": [
         { "path": "../bluetooth" },
         { "path": "../fiat-services" },
-        { "path": "../message-system" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },
         { "path": "../suite-constants" },

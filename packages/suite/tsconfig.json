@@ -55,6 +55,7 @@
         {
             "path": "../../suite-common/metadata-types"
         },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/platform-encryption"
         },

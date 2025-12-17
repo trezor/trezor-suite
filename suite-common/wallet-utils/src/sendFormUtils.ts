@@ -701,19 +701,12 @@ export const getMevProtectedTxData = (
     symbol: NetworkSymbol,
     hex: string,
     isMevProtectionEnabled: boolean,
-    isMevProtectionFeatureEnabled: boolean,
 ) => {
-    if (!isMevProtectionFeatureEnabled) {
-        return hex;
-    }
-
+    if (!isMevProtectionEnabled) return hex;
     const isMevSupported = getNetwork(symbol).features.includes('mev-protection');
+    if (!isMevSupported) return hex;
 
-    if (!isMevSupported) {
-        return hex;
-    }
-
-    return isMevProtectionEnabled ? hex : { hex, disableAlternativeRPC: true };
+    return { hex, disableAlternativeRPC: true };
 };
 
 export const isExchangeTradingForm = (

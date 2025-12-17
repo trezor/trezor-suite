@@ -82,8 +82,6 @@ import { selectSelectedDevice } from '../device/deviceSelectors';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinAmountUnit,
-    selectIsMevProtectionEnabled,
-    selectIsMevProtectionFeatureEnabled,
     selectIsNetworkReserveEnabled,
 } from '../settings/walletSettingsReducer';
 import {
@@ -307,12 +305,12 @@ const synchronizeSentTransactionThunk = createThunk(
 
 export const pushSendFormTransactionThunk = createThunk<
     Success<{ txid: string }>,
-    { selectedAccount: Account },
+    { selectedAccount: Account; isMevProtectionEnabled: boolean },
     { rejectValue: PushTransactionError }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
-        { selectedAccount },
+        { selectedAccount, isMevProtectionEnabled },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
@@ -323,8 +321,6 @@ export const pushSendFormTransactionThunk = createThunk<
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectSelectedDevice(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
-        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
         if (!serializedTx || !precomposedTransaction)
             return rejectWithValue({
@@ -336,7 +332,6 @@ export const pushSendFormTransactionThunk = createThunk<
             serializedTx.symbol,
             serializedTx.tx,
             isMevProtectionEnabled,
-            isMevProtectionFeatureEnabled,
         );
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
@@ -452,17 +447,18 @@ export const pushSendFormTransactionThunk = createThunk<
 export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
     async (
-        payload: { tx: string; symbol: NetworkSymbol; identity?: string },
-        { dispatch, getState, fulfillWithValue, rejectWithValue },
+        payload: {
+            tx: string;
+            symbol: NetworkSymbol;
+            identity?: string;
+            isMevProtectionEnabled: boolean;
+        },
+        { dispatch, fulfillWithValue, rejectWithValue },
     ) => {
-        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
-        const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
-
         const txData = getMevProtectedTxData(
             payload.symbol,
             payload.tx,
-            isMevProtectionEnabled,
-            isMevProtectionFeatureEnabled,
+            payload.isMevProtectionEnabled,
         );
 
         const sentTx = await TrezorConnect.pushTransaction({

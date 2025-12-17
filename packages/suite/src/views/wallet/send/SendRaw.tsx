@@ -1,6 +1,11 @@
 import { useForm } from 'react-hook-form';
 
-import { pushSendFormRawTransactionThunk, sendFormActions } from '@suite-common/wallet-core';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import {
+    pushSendFormRawTransactionThunk,
+    selectIsMevProtectionEnabled,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -8,7 +13,7 @@ import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
@@ -46,12 +51,15 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
     const cancel = () => dispatch(sendFormActions.sendRaw(false));
 
+    const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
+    const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
     const send = async () => {
         const result = await dispatch(
             pushSendFormRawTransactionThunk({
                 tx: inputValue,
                 symbol: account.symbol,
                 identity: tryGetAccountIdentity(account),
+                isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             }),
         ).unwrap();
 

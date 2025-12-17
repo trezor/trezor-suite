@@ -5,6 +5,7 @@
     "references": [
         { "path": "../analytics" },
         { "path": "../connect-popup" },
+        { "path": "../mev" },
         { "path": "../redux-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },

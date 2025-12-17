@@ -1,5 +1,6 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     TradingExchangeType,
@@ -21,6 +22,7 @@ import {
     formDraftActions,
     pushSendFormTransactionThunk,
     selectDeepCopyOfFormDraft,
+    selectIsMevProtectionEnabled,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -289,7 +291,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         }: TradingSignAndPushSendFormTransactionProps & {
             waitForPushApprovalPromise: () => Promise<boolean>;
         },
-        { dispatch, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const signResult = await dispatch(
             signTradingTransactionThunk({
@@ -311,10 +313,11 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             return rejectWithValue('Push approval not received');
         }
 
+        const isMevProtectionEnabled =
+            selectIsMevProtectionEnabled(getState()) &&
+            selectIsMevProtectionFeatureEnabled(getState());
         const pushResult = await dispatch(
-            pushSendFormTransactionThunk({
-                selectedAccount,
-            }),
+            pushSendFormTransactionThunk({ selectedAccount, isMevProtectionEnabled }),
         );
 
         if (isRejected(pushResult)) {

@@ -11,6 +11,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/redux-utils"
         },

@@ -10589,6 +10589,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/mev@workspace:*, @suite-common/mev@workspace:suite-common/mev":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/mev@workspace:suite-common/mev"
+  dependencies:
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/platform-encryption-native@workspace:*, @suite-common/platform-encryption-native@workspace:suite-native/platform-encryption-native":
   version: 0.0.0-use.local
   resolution: "@suite-common/platform-encryption-native@workspace:suite-native/platform-encryption-native"
@@ -10971,7 +10982,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -11059,6 +11069,7 @@ __metadata:
     "@reown/walletkit": "npm:^1.2.8"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
+    "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12530,6 +12541,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -12610,6 +12622,7 @@ __metadata:
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -12846,6 +12859,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -14701,6 +14715,7 @@ __metadata:
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/mev": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"

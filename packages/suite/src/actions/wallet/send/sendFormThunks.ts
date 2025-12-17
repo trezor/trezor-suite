@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { MetadataAddPayload } from '@suite-common/metadata-types';
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
@@ -9,6 +10,7 @@ import {
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
+    selectIsMevProtectionEnabled,
     selectPrecomposedSendForm,
     selectSelectedDevice,
     selectSendFormDrafts,
@@ -281,11 +283,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
               )
             : null;
 
+        const isMevProtectionEnabled =
+            selectIsMevProtectionEnabled(getState()) &&
+            selectIsMevProtectionFeatureEnabled(getState());
+
         // push tx to the network
         const pushResponse = await dispatch(
-            pushSendFormTransactionThunk({
-                selectedAccount,
-            }),
+            pushSendFormTransactionThunk({ selectedAccount, isMevProtectionEnabled }),
         );
 
         if (isRejected(pushResponse)) {

@@ -1,3 +1,4 @@
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -5,7 +6,6 @@ import {
     addFakePendingCardanoTxThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
-    selectIsMevProtectionFeatureEnabled,
     selectSelectedDevice,
     stakeActions,
     syncAccountsWithBlockchainThunk,
@@ -97,8 +97,7 @@ const pushTransaction =
         const txData = getMevProtectedTxData(
             serializedTx.symbol,
             serializedTx.tx,
-            isMevProtectionEnabled,
-            isMevProtectionFeatureEnabled,
+            isMevProtectionEnabled && isMevProtectionFeatureEnabled,
         );
 
         const sentTx = await TrezorConnect.pushTransaction({
