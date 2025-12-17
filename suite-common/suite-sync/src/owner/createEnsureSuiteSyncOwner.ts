@@ -1,9 +1,9 @@
 import { EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { LoadSuiteSyncOwnerFromStateDep } from './loadSuiteSyncOwnerFromState';
-import { RetrieveSuiteSyncOwnerKeysDep } from './retrieveSuiteSyncOwner';
-import { SaveSuiteSyncOwnerDep } from './saveSuiteSyncOwner';
+import { LoadSuiteSyncOwnerFromStateDep } from './createLoadSuiteSyncOwnerFromState';
+import { RetrieveSuiteSyncOwnerKeysDep } from './createRetrieveSuiteSyncOwner';
+import { SaveSuiteSyncOwnerDep } from './createSaveSuiteSyncOwner';
 
 export type CreateEnsureSuiteSyncOwnerDeps = RetrieveSuiteSyncOwnerKeysDep &
     LoadSuiteSyncOwnerFromStateDep &
