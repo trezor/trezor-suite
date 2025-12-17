@@ -13,9 +13,11 @@ export type FirmwareCheckType =
     | 'Firmware revision'
     | 'Firmware version';
 
-export type ReportSecurityCheckProps = {
+type ReportSecurityCheckProps = {
     level: 'error' | 'warning';
     checkType: FirmwareCheckType;
     contextData: Record<string, any>;
     payload?: unknown;
 };
+// platform-specific implementation passed via dependency injection
+export type ReportSecurityCheck = (props: ReportSecurityCheckProps) => void;

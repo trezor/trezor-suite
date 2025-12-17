@@ -11,6 +11,7 @@ import {
 import { useDetectDeviceError } from '@suite-native/device/src/hooks/useDetectDeviceError';
 import { useHandleDeviceAuthorization } from '@suite-native/device-authorization';
 import { useConnectPopupNavigation } from '@suite-native/module-connect-popup';
+import { reportSecurityCheck } from '@suite-native/sentry';
 
 /**
  * @description This hook is used to initialize all the hooks,
@@ -25,7 +26,7 @@ export const useGlobalHooks = () => {
 
     useDetectDeviceError();
     useHandleDeviceAuthorization();
-    useReportDeviceCompromised({ device });
+    useReportDeviceCompromised({ device, reportSecurityCheck });
     useRenderDeviceDangerBanner();
     useDeviceCompromisedNotification();
 

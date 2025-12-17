@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/core';
 
 import { allowReportTag } from '@suite-common/sentry';
-import { ReportSecurityCheckProps } from '@suite-common/suite-types';
+import { ReportSecurityCheck } from '@suite-common/suite-types';
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -42,12 +42,12 @@ export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) 
     });
 };
 
-export const reportSecurityCheck = ({
+export const reportSecurityCheck: ReportSecurityCheck = ({
     level,
     checkType,
     contextData,
     payload,
-}: ReportSecurityCheckProps) => {
+}) => {
     const levelDescription = level === 'error' ? 'failed' : 'warning';
     const payloadLabel = `${checkType} check ${levelDescription}!`;
     console.warn(payloadLabel, contextData, payload);

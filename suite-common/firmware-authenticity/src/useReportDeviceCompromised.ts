@@ -1,20 +1,22 @@
 import { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { selectFirmwareUpdateSource } from '@suite-common/firmware';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { ReportSecurityCheck, TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
 
-import { reportSecurityCheckThunk } from './reportSecurityCheckThunk';
 import { hashCheckErrorScenarios, revisionCheckErrorScenarios } from './scenariosConfig';
 
-// to avoid unnecessary wallet-core import
-type CommonProps = { device: TrezorDevice | undefined };
+// to avoid unnecessary wallet-core import, and to facilitate platform-specific dependency injection
+type CommonProps = {
+    device: TrezorDevice | undefined;
+    reportSecurityCheck: ReportSecurityCheck;
+};
 
-const useCommonData = ({ device }: CommonProps) => {
+const useCommonData = ({ device }: Pick<CommonProps, 'device'>) => {
     const model = device?.features?.internal_model;
     const revision = device?.features?.revision;
     const version = getFirmwareVersion(device);
@@ -26,8 +28,7 @@ const useCommonData = ({ device }: CommonProps) => {
     );
 };
 
-const useReportRevisionCheck = ({ device }: CommonProps) => {
-    const dispatch = useDispatch();
+const useReportRevisionCheck = ({ device, reportSecurityCheck }: CommonProps) => {
     const commonData = useCommonData({ device });
     const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
@@ -46,20 +47,17 @@ const useReportRevisionCheck = ({ device }: CommonProps) => {
 
     useEffect(() => {
         if (shouldReport) {
-            dispatch(
-                reportSecurityCheckThunk({
-                    level: 'error',
-                    checkType: 'Firmware revision',
-                    contextData: { ...commonData, errorType },
-                    payload: errorPayload,
-                }),
-            );
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware revision',
+                contextData: { ...commonData, errorType },
+                payload: errorPayload,
+            });
         }
-    }, [dispatch, commonData, errorType, errorPayload, shouldReport]);
+    }, [reportSecurityCheck, commonData, errorType, errorPayload, shouldReport]);
 };
 
-const useReportHashCheck = ({ device }: CommonProps) => {
-    const dispatch = useDispatch();
+const useReportHashCheck = ({ device, reportSecurityCheck }: CommonProps) => {
     const commonData = useCommonData({ device });
     const firmwareSource = useSelector(selectFirmwareUpdateSource);
 
@@ -81,40 +79,35 @@ const useReportHashCheck = ({ device }: CommonProps) => {
                 isArrayMember(errorType, FIRMWARE.HASH_CHECK_RETRIABLE_ERRORS) &&
                 (attemptCount ?? 0) < FIRMWARE.HASH_CHECK_MAX_ATTEMPTS;
             if (willBeRetried) return;
-
-            dispatch(
-                reportSecurityCheckThunk({
-                    level: 'error',
-                    checkType: 'Firmware hash',
-                    contextData: { ...commonData, errorType, attemptCount },
-                    payload: errorPayload,
-                }),
-            );
+            reportSecurityCheck({
+                level: 'error',
+                checkType: 'Firmware hash',
+                contextData: { ...commonData, errorType, attemptCount },
+                payload: errorPayload,
+            });
         }
-    }, [dispatch, commonData, errorType, errorPayload, attemptCount, shouldReport]);
+    }, [reportSecurityCheck, commonData, errorType, errorPayload, attemptCount, shouldReport]);
 
     // success bears warning if it needed retries, so we report the previous error payload, see Device.ts in connect
     const isHashCheckSuccess = hashCheck && hashCheck.success;
     const warningPayload = isHashCheckSuccess ? hashCheck.warningPayload : null;
     useEffect(() => {
         if (warningPayload) {
-            dispatch(
-                reportSecurityCheckThunk({
-                    level: 'warning',
-                    checkType: 'Firmware hash',
-                    contextData: commonData,
-                    payload: warningPayload,
-                }),
-            );
+            reportSecurityCheck({
+                level: 'warning',
+                checkType: 'Firmware hash',
+                contextData: commonData,
+                payload: warningPayload,
+            });
         }
-    }, [dispatch, commonData, warningPayload]);
+    }, [reportSecurityCheck, commonData, warningPayload]);
 };
 
 /**
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
  */
-export const useReportDeviceCompromised = ({ device }: CommonProps) => {
-    useReportRevisionCheck({ device });
-    useReportHashCheck({ device });
+export const useReportDeviceCompromised = (props: CommonProps) => {
+    useReportRevisionCheck(props);
+    useReportHashCheck(props);
 };

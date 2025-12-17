@@ -7,12 +7,7 @@ import {
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSync } from '@suite-common/suite-sync-types';
-import {
-    ReportSecurityCheckProps,
-    Route,
-    TrezorDevice,
-    UserContextPayload,
-} from '@suite-common/suite-types';
+import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
 import {
@@ -125,7 +120,6 @@ export type ExtraDependenciesStatic = {
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
-        reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
     };
     routerServices: {
         getLocation: () => {

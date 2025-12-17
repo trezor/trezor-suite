@@ -38,7 +38,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
@@ -266,7 +265,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
     utils: {
         saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
-        reportSecurityCheck,
     },
     routerServices: createRouterServices(createMemoryHistory()),
 };

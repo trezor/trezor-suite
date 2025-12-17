@@ -10,7 +10,6 @@ import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDepende
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
-import { reportSecurityCheck } from '@suite-native/sentry';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
@@ -100,7 +99,6 @@ export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraD
                 appUrl: '@trezor/suite',
             },
         },
-        reportSecurityCheck,
     } as Partial<ExtraDependenciesStatic['utils']>,
 } as OneLevelPartial<ExtraDependenciesStatic>) as ExtraDependenciesStatic;
 

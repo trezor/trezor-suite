@@ -17,6 +17,7 @@ import {
 } from 'src/constants/suite/device';
 import { selectIsEntropyCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
+import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -167,11 +168,17 @@ export const resetDevice =
 
         if (isEntropyCheckEnabled) {
             if (simulatedFailResult) {
-                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
+                dispatch(
+                    processEntropyCheckResultThunk({
+                        device,
+                        result: simulatedFailResult,
+                        reportSecurityCheck,
+                    }),
+                );
 
                 return simulatedFailResult;
             }
-            dispatch(processEntropyCheckResultThunk({ device, result }));
+            dispatch(processEntropyCheckResultThunk({ device, result, reportSecurityCheck }));
         }
 
         return result;

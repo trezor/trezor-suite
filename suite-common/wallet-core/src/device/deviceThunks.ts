@@ -1,6 +1,6 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
+import { AcquiredDevice, ReportSecurityCheck, TrezorDevice } from '@suite-common/suite-types';
 import {
     getDeviceInstances,
     getFirstDeviceInstance,
@@ -550,18 +550,19 @@ export const wipeDeviceThunk = createThunk(
 type FailEntropyCheckParams = {
     device: AcquiredDevice;
     error: Unsuccessful['payload'];
+    reportSecurityCheck: ReportSecurityCheck;
 };
 
 const failEntropyCheckThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/failEntropyCheckThunk`,
-    ({ device, error }: FailEntropyCheckParams, { dispatch, extra }) => {
+    ({ device, error, reportSecurityCheck }: FailEntropyCheckParams, { dispatch }) => {
         const contextData = {
             model: device?.features?.internal_model,
             revision: device?.features?.revision,
             version: getFirmwareVersion(device),
             vendor: device?.features?.fw_vendor,
         };
-        extra.utils.reportSecurityCheck({
+        reportSecurityCheck({
             level: 'error',
             checkType: 'Entropy',
             contextData,
@@ -577,17 +578,23 @@ const failEntropyCheckThunk = createThunk(
 type ProcessEntropyCheckResultThunkParams = {
     device: AcquiredDevice;
     result: Awaited<ReturnType<typeof TrezorConnect.resetDevice>>;
+    reportSecurityCheck: ReportSecurityCheck;
 };
 
 export const processEntropyCheckResultThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/processEntropyCheckResultThunk`,
-    ({ device, result }: ProcessEntropyCheckResultThunkParams, { dispatch }) => {
+    (
+        { device, result, reportSecurityCheck }: ProcessEntropyCheckResultThunkParams,
+        { dispatch },
+    ) => {
         if (result.success) {
             dispatch(deviceActions.setEntropyCheckResult({ deviceId: device.id, success: true }));
         } else {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
             if (result.payload.code === 'Failure_EntropyCheck') {
-                dispatch(failEntropyCheckThunk({ device, error: result.payload }));
+                dispatch(
+                    failEntropyCheckThunk({ device, error: result.payload, reportSecurityCheck }),
+                );
             }
         }
     },

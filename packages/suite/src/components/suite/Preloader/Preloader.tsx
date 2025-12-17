@@ -14,6 +14,7 @@ import {
     selectPrerequisite,
 } from 'src/selectors/suite/suiteSelectors';
 import type { AppState } from 'src/types/suite';
+import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { Onboarding } from 'src/views/onboarding';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
@@ -53,7 +54,7 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     const { device } = useDevice();
-    useReportDeviceCompromised({ device });
+    useReportDeviceCompromised({ device, reportSecurityCheck });
     useDeviceCompromisedNotification();
 
     const dispatch = useDispatch();

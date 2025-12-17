@@ -10,6 +10,7 @@ import {
     selectSimulatedEntropyCheckFail,
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect, { PROTO, SuccessWithDevice, Unsuccessful } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -128,11 +129,17 @@ export const createAndBackupWalletThunk = createThunk<
         const result = deviceResponse.payload;
         if (isEntropyCheckEnabled) {
             if (simulatedFailResult) {
-                dispatch(processEntropyCheckResultThunk({ device, result: simulatedFailResult }));
+                dispatch(
+                    processEntropyCheckResultThunk({
+                        device,
+                        result: simulatedFailResult,
+                        reportSecurityCheck,
+                    }),
+                );
 
                 return fulfillWithValue(simulatedFailResult);
             }
-            dispatch(processEntropyCheckResultThunk({ device, result }));
+            dispatch(processEntropyCheckResultThunk({ device, result, reportSecurityCheck }));
         }
 
         return fulfillWithValue(result);
