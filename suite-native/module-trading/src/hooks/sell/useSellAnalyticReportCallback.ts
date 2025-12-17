@@ -8,7 +8,12 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
-import { EventType, TradingSellAction, TradingSellStep, analytics } from '@suite-native/analytics';
+import {
+    EventType,
+    TradingSellAction,
+    TradingSellStep,
+    useLegacyAnalytics,
+} from '@suite-native/analytics';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
 
@@ -20,6 +25,7 @@ export type TradingSellAnalyticReportCallback = (
 export const useSellAnalyticReportCallback = (
     candidateQuote?: SellFiatTrade,
 ): TradingSellAnalyticReportCallback => {
+    const legacyAnalytics = useLegacyAnalytics();
     const persistedQuote = useSelector(selectTradingSellSelectedQuote);
     const quote = candidateQuote || persistedQuote;
 
@@ -34,7 +40,7 @@ export const useSellAnalyticReportCallback = (
 
     return useCallback(
         (step: TradingSellStep, action: TradingSellAction) => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingSell,
                 payload: {
                     step,
@@ -43,6 +49,6 @@ export const useSellAnalyticReportCallback = (
                 },
             });
         },
-        [quoteAnalyticsData],
+        [legacyAnalytics, quoteAnalyticsData],
     );
 };

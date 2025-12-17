@@ -17,7 +17,6 @@ import {
     Row,
     Text,
 } from '@trezor/components';
-import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -26,6 +25,7 @@ import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface StakingDetails {
     id: number;
@@ -100,6 +100,7 @@ interface StakeInANutshellModalProps {
 }
 
 export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
@@ -119,7 +120,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
         onCancel();
         dispatch(openModal({ type: 'everstake', flow }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
@@ -132,7 +133,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
     const onCancelClick = () => {
         onCancel();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',

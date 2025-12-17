@@ -3,13 +3,13 @@ import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
-import { analytics } from '@trezor/suite-analytics';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 interface StakeButtonProps {
@@ -31,7 +31,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -68,7 +68,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
             handleSubmit(onSubmit)();
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',

@@ -10,7 +10,8 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
@@ -33,7 +34,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -50,13 +51,19 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
         if (symbol && isAddressValid(qrCodeData, symbol)) {
-            analytics.report({ type: EventType.SendAddressFilled, payload: { method: 'qr' } });
+            legacyAnalytics.report({
+                type: EventType.SendAddressFilled,
+                payload: { method: 'qr' },
+            });
         }
     };
 
     const handleChangeValue = (newValue: string) => {
         if (symbol && isAddressValid(newValue, symbol)) {
-            analytics.report({ type: EventType.SendAddressFilled, payload: { method: 'manual' } });
+            legacyAnalytics.report({
+                type: EventType.SendAddressFilled,
+                payload: { method: 'manual' },
+            });
             checkSolAssociatedTokenAddress({
                 value: newValue,
                 symbol,

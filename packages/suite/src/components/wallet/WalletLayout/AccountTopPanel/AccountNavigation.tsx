@@ -1,16 +1,18 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
+    const analytics = useAnalytics();
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
@@ -55,10 +57,10 @@ export const AccountNavigation = () => {
 
                 analytics.report({
                     type: EventType.StakingNavigate,
-                    payload: {
-                        action: 'navigate',
-                        from: 'account/navigation',
-                        networkSymbol: network?.symbol,
+                    attributes: {
+                        action: { value: 'navigate' },
+                        from: { value: 'account/navigation' },
+                        networkSymbol: network ? { value: network.symbol } : undefined,
                     },
                 });
             },

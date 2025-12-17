@@ -1,17 +1,19 @@
 import { FormattedList } from 'react-intl';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const MevProtection = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 
@@ -24,7 +26,7 @@ export const MevProtection = () => {
 
         dispatch(setMevProtection(nextIsMevProtectionEnabled));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralMevProtection,
             payload: { value: nextIsMevProtectionEnabled },
         });

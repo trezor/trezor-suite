@@ -1,13 +1,14 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAddressDisplayType } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const options = [
     {
@@ -23,9 +24,9 @@ const options = [
 export const AddressDisplay = () => {
     const selectedAddressDisplay = useSelector(state => state.suite.settings.addressDisplayType);
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const onChange = (value: AddressDisplayOptions) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralAddressDisplayType,
             payload: {
                 addressDisplayType: value,

@@ -12,7 +12,8 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -86,6 +87,7 @@ const TransactionListHeaderContent = ({
 
 export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
+        const legacyAnalytics = useLegacyAnalytics();
         const navigation = useNavigation<NavigationProp>();
 
         const account = useSelector((state: AccountsRootState) =>
@@ -111,7 +113,7 @@ export const TransactionListHeader = memo(
         if (!account) return null;
 
         const handleReceive = () => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.ReceiveFlowEntered,
                 payload: {
                     location: 'accountDetail',
@@ -131,7 +133,7 @@ export const TransactionListHeader = memo(
         };
 
         const handleSend = () => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SendFlowEntered,
                 payload: {
                     location: 'accountDetail',

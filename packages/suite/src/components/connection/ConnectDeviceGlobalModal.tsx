@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import {
@@ -22,13 +23,13 @@ import {
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { getLargeModelImagePath } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import {
     selectIsManualPairingRequired,
     selectIsUnpairingDevice,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
@@ -216,6 +217,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
 );
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
@@ -249,7 +251,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return (
             <CantSeeTrezorModal
                 onClose={() => {
-                    analytics.report({
+                    legacyAnalytics.report({
                         type: EventType.DeviceConnectionHintModal,
                         payload: {
                             option: 'close',

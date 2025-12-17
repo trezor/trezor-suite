@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ThemeColorVariant } from '@trezor/theme';
 
@@ -9,6 +9,7 @@ import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
@@ -52,6 +53,7 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const theme = useSelector(state => state.suite.settings.theme);
     const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
     const dispatch = useDispatch();
@@ -65,7 +67,7 @@ export const Theme = () => {
         const themeValue = value === 'standard' ? 'light' : value;
 
         const platformTheme = getOsTheme();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralChangeTheme,
             payload: {
                 platformTheme,

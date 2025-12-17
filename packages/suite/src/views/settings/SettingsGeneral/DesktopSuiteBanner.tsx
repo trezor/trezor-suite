@@ -3,15 +3,16 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useExternalLink } from '../../../hooks/suite';
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
@@ -54,6 +55,7 @@ const OSIcons = styled.div`
 `;
 
 export const DesktopSuiteBanner = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();
@@ -106,7 +108,7 @@ export const DesktopSuiteBanner = () => {
                                 intent="brand"
                                 href={href}
                                 onClick={() =>
-                                    analytics.report({
+                                    legacyAnalytics.report({
                                         type: EventType.GetDesktopApp,
                                     })
                                 }

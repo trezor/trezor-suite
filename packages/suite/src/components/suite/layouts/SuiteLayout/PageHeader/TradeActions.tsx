@@ -1,10 +1,10 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { breakpoints } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -13,12 +13,14 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
     const device = useSelector(selectSelectedDevice);
@@ -27,14 +29,14 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (currentRouteName === 'suite-index') {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.DashboardActions,
                 payload: { type: routeName },
             });
         }
 
         if (isAccountTabPage && account?.symbol) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: account?.symbol, action: routeName },
             });
@@ -48,7 +50,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             preserveParams: true,
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
@@ -72,7 +74,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             preserveParams: false,
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

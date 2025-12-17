@@ -11,7 +11,8 @@ import {
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -105,13 +106,13 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
     const dispatch = useDispatch();
     const prevSendCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevReceiveCryptoId = useRef<CryptoId | undefined>(undefined);
-
+    const legacyAnalytics = useLegacyAnalytics();
     useEffect(() => {
         const { unsubscribe } = watch(({ sendAsset, receiveAsset }, { name }) => {
             switch (name) {
                 case 'sendAsset':
                     if (sendAsset?.cryptoId !== prevSendCryptoId.current) {
-                        analytics.report({
+                        legacyAnalytics.report({
                             type: EventType.TradingParameterChanged,
                             payload: {
                                 type: 'exchange',
@@ -127,7 +128,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
 
                 case 'receiveAsset':
                     if (receiveAsset?.cryptoId !== prevReceiveCryptoId.current) {
-                        analytics.report({
+                        legacyAnalytics.report({
                             type: EventType.TradingParameterChanged,
                             payload: {
                                 type: 'exchange',
@@ -148,7 +149,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
         });
 
         return unsubscribe;
-    }, [setValue, watch, dispatch]);
+    }, [setValue, watch, dispatch, legacyAnalytics]);
 };
 
 const useValidations = (

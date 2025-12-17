@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import {
     useIsBiometricsEnabled,
@@ -18,7 +19,7 @@ export const useBiometricsSettings = () => {
     const { setIsUserAuthenticated } = useIsUserAuthenticated();
     const { isBiometricsOptionEnabled, setIsBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { setIsBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const toggleBiometricsOption = useCallback(async (): Promise<BiometricsToggleResult> => {
         const isBiometricsAvailable = await getIsBiometricsFeatureAvailable();
 
@@ -48,7 +49,7 @@ export const useBiometricsSettings = () => {
         if (isBiometricsOptionEnabled) {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.BiometricsChange,
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
@@ -58,7 +59,7 @@ export const useBiometricsSettings = () => {
 
         setIsUserAuthenticated(true);
         setIsBiometricsOptionEnabled(true);
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.BiometricsChange,
             payload: { enabled: true, origin: 'settingsToggle' },
         });
@@ -66,6 +67,7 @@ export const useBiometricsSettings = () => {
         return 'enabled';
     }, [
         isBiometricsOptionEnabled,
+        legacyAnalytics,
         setIsBiometricsOptionEnabled,
         setIsBiometricsOverlayVisible,
         setIsUserAuthenticated,

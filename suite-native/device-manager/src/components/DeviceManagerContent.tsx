@@ -14,7 +14,8 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     AnimatedVStack,
@@ -53,7 +54,7 @@ const deviceButtonsStyle = prepareNativeStyle(utils => ({
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
@@ -74,7 +75,7 @@ export const DeviceManagerContent = () => {
         setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceManagerClick,
             payload: {
                 action:

@@ -11,7 +11,8 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { TradingRootState } from '@suite-native/trading-state';
 
 import { useReloadTimer } from './useReloadTimer';
@@ -36,6 +37,7 @@ export const shouldRefreshTrade = (trade: TradingTransaction | undefined) =>
 
 export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseWatchTradeProps) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -57,13 +59,13 @@ export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseW
             previousStatus.current = currentStatus;
 
             if (trade && currentStatus) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingStatus,
                     payload: { type: trade.tradeType, status: currentStatus },
                 });
             }
         }
-    }, [trade, account, previousStatus]);
+    }, [trade, account, previousStatus, legacyAnalytics]);
 
     useEffect(() => {
         if (trade && account && (!hasRefreshed || shouldReload) && shouldRefresh) {

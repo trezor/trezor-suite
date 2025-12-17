@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TradingBuyFormProps,
@@ -9,9 +10,9 @@ import {
 } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type TradingBuyUseHandleChangeProps = {
     formValues: TradingBuyFormProps;
@@ -39,7 +40,7 @@ export const useTradingBuyHandleChange = ({
 }: TradingBuyUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleChange = useCallback(async () => {
         if (previousPromise.current) {
             previousPromise.current.abort('Request was replaced by another one.');
@@ -59,7 +60,7 @@ export const useTradingBuyHandleChange = ({
         try {
             const quotes = await promise.unwrap();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingReceivedQuotes,
                 payload: {
                     type: 'buy',
@@ -87,7 +88,7 @@ export const useTradingBuyHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
-    }, [dispatch, formValues, network, timer, shouldSendInSats, setValue]);
+    }, [dispatch, formValues, network, timer, shouldSendInSats, legacyAnalytics, setValue]);
 
     // cleanup signal
     useEffect(

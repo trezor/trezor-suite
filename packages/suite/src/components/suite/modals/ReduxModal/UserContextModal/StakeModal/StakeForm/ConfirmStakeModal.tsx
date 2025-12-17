@@ -7,7 +7,6 @@ import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
-import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_ADA_STAKING,
@@ -19,6 +18,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
@@ -39,6 +39,7 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
@@ -52,7 +53,7 @@ export const ConfirmStakeModal = ({
         onCancel();
         dispatch(openModal({ type: 'stake', flow }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
@@ -65,7 +66,7 @@ export const ConfirmStakeModal = ({
     const onClick = () => {
         onConfirm();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',

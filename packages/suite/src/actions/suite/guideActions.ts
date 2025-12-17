@@ -1,5 +1,4 @@
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { Dispatch } from 'src/types/suite';
 
@@ -13,15 +12,9 @@ export type GuideAction =
     | { type: typeof GUIDE.UNSET_NODE }
     | { type: typeof GUIDE.OPEN_NODE; payload: GuideNode };
 
-export const open = (): GuideAction => {
-    analytics.report({
-        type: EventType.MenuGuide,
-    });
-
-    return {
-        type: GUIDE.OPEN,
-    };
-};
+export const open = (): GuideAction => ({
+    type: GUIDE.OPEN,
+});
 
 export const close = (): GuideAction => ({
     type: GUIDE.CLOSE,

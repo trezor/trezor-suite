@@ -1,16 +1,17 @@
 import { JSX } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 
@@ -59,7 +60,7 @@ interface DisplayRotationProps {
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const isSupported =
         device?.features !== undefined &&
         DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);
@@ -86,7 +87,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                         size="small"
                         onChange={(value: DisplayRotationType) => {
                             dispatch(applySettings({ display_rotation: value }));
-                            analytics.report({
+                            legacyAnalytics.report({
                                 type: EventType.SettingsDeviceChangeOrientation,
                                 payload: {
                                     value: PROTO.Enum_DisplayRotation[value],

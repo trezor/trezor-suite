@@ -2,6 +2,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 import { type History, createMemoryHistory } from 'history';
 
+import {
+    DesktopAnalyticsDep,
+    DesktopLegacyAnalyticsDep,
+    createAnalytics,
+    createLegacyAnalytics,
+} from '@suite/analytics';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
@@ -83,7 +89,7 @@ type SuiteAppDeps = {
     dispatch: any;
 };
 
-export type SuiteServices = CommonServices;
+export type SuiteServices = CommonServices & DesktopAnalyticsDep & DesktopLegacyAnalyticsDep;
 
 export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
@@ -106,6 +112,8 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices =>
             ensureDelegatedIdentityKey,
         }),
         platformEncryption,
+        legacyAnalytics: createLegacyAnalytics(),
+        analytics: createAnalytics(),
     };
 };
 

@@ -10,6 +10,7 @@ import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Analytics } from '@trezor/analytics';
 import { err, ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';
@@ -92,7 +93,26 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-export const extraDependenciesMock: ExtraDependencies = {
+const analyticsMock: Analytics<any> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+};
+
+const legacyAnalyticsMock: Analytics<any> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+};
+
+// TODO split extra dependencies mock for native/desktop as they mock different type (native services vs suite services)
+// issue is caused by analytics and legacyAnalytics being different in native/desktop
+// issue: https://github.com/trezor/trezor-suite/issues/24261
+export const extraDependenciesMock = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
@@ -103,6 +123,8 @@ export const extraDependenciesMock: ExtraDependencies = {
     services: {
         suiteSync: suiteSyncMock,
         platformEncryption: platformEncryptionMock,
+        legacyAnalytics: legacyAnalyticsMock,
+        analytics: analyticsMock,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(
@@ -187,4 +209,4 @@ export const extraDependenciesMock: ExtraDependencies = {
         navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
         listen: (_: {}) => () => {},
     },
-};
+} satisfies ExtraDependencies;

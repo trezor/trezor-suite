@@ -1,13 +1,14 @@
 import { MouseEventHandler } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -16,12 +17,13 @@ type EjectConfirmationProps = {
 };
 
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
 
     const handleEject = () => {
         dispatch(deviceActions.forgetDevice({ device: instance }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SwitchDeviceEject,
         });
     };

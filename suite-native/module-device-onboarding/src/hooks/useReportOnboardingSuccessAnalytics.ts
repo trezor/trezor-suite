@@ -9,7 +9,8 @@ import {
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
 
@@ -18,9 +19,10 @@ export const useReportOnboardingSuccessAnalytics = () => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
     const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
+    const legacyAnalytics = useLegacyAnalytics();
 
-    const reportOnboardingSuccessAnalytics = useCallback(() => {
-        analytics.report({
+    return useCallback(() => {
+        legacyAnalytics.report({
             type: EventType.DeviceSetupCompleted,
             payload: {
                 deviceModel,
@@ -33,7 +35,11 @@ export const useReportOnboardingSuccessAnalytics = () => {
                 ...onboardingAnalytics,
             },
         });
-    }, [deviceModel, isDeviceBackupRequired, isDeviceProtectedByPin, onboardingAnalytics]);
-
-    return reportOnboardingSuccessAnalytics;
+    }, [
+        deviceModel,
+        isDeviceBackupRequired,
+        isDeviceProtectedByPin,
+        legacyAnalytics,
+        onboardingAnalytics,
+    ]);
 };

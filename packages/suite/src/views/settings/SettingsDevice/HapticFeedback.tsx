@@ -1,11 +1,12 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 
@@ -16,7 +17,7 @@ interface DeviceLabelProps {
 export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Haptic');
 
     if (!isSupportedDevice) {
@@ -29,7 +30,7 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
         const result = await dispatch(applySettings({ haptic_feedback: !hapticEnabled }));
 
         if (result?.success) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SettingsDeviceChangeHapticFeedback,
                 payload: { value: !hapticEnabled },
             });

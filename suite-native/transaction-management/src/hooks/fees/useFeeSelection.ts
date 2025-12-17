@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { UpdateSelectedFeeLevelThunkParams } from '../../types';
 
@@ -27,7 +28,7 @@ export const useFeeSelection = ({
     formDraftKey,
 }: UseFeeSelectionParams) => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleFeeLevelChange = useCallback(
         (
             feeLevel: FeeLevelLabel,
@@ -38,7 +39,10 @@ export const useFeeSelection = ({
                 customMaxPriorityFeePerGas,
             }: CustomFeeParams = {},
         ) => {
-            analytics.report({ type: EventType.SendFeeLevelChanged, payload: { value: feeLevel } });
+            legacyAnalytics.report({
+                type: EventType.SendFeeLevelChanged,
+                payload: { value: feeLevel },
+            });
 
             let thunkParams: UpdateSelectedFeeLevelThunkParams;
             if (feeLevel === 'custom') {
@@ -63,7 +67,7 @@ export const useFeeSelection = ({
 
             dispatch(updateThunk(thunkParams));
         },
-        [dispatch, updateThunk, formDraftKey, accountKey, tokenContract],
+        [legacyAnalytics, dispatch, updateThunk, accountKey, tokenContract, formDraftKey],
     );
 
     const handleCustomFeeSet = useCallback(

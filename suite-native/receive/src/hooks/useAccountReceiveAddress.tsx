@@ -14,7 +14,8 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
@@ -27,7 +28,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
@@ -128,7 +129,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {
             if (symbol) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.CreateReceiveAddressShowAddress,
                     payload: { assetSymbol: symbol },
                 });
@@ -144,13 +145,19 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
             if (wasVerificationSuccessful) {
-                analytics.report({ type: EventType.ConfirmedReceiveAdress });
+                legacyAnalytics.report({ type: EventType.ConfirmedReceiveAddress });
                 setIsReceiveApproved(true);
             } else {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, symbol, verifyAddressOnDevice]);
+    }, [
+        isDeviceInViewOnlyMode,
+        isPortfolioTrackerDevice,
+        legacyAnalytics,
+        symbol,
+        verifyAddressOnDevice,
+    ]);
 
     return {
         address: freshAddress?.address,

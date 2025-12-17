@@ -1,3 +1,5 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
     composeStakingTransaction,
@@ -46,7 +48,6 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, PROTO } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Dispatch, GetState } from 'src/types/suite';
@@ -297,7 +298,7 @@ export const composeTransaction =
 
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { selectedAccount, stake } = getState().wallet;
         const cardanoPools = selectCardanoPoolsInfo(getState());
         if (!selectedAccount || !selectedAccount.account) return;
@@ -368,7 +369,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.TransactionCancel,
                 payload: {
                     txType: 'stake',

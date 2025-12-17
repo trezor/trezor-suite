@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { getStakingDataForNetwork, isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -13,8 +13,10 @@ import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const ClaimCard = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || ''),
@@ -55,7 +57,7 @@ export const ClaimCard = () => {
         if (!isClaimingDisabled) {
             dispatch(openModal({ type: 'claim' }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingClaim,
                 payload: {
                     action: 'continue',

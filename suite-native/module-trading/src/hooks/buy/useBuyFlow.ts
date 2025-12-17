@@ -11,7 +11,8 @@ import {
     selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -38,16 +39,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-const reportTradeConfirmation = () => {
-    analytics.report({
-        type: EventType.TradingConfirmTrade,
-        payload: {
-            type: 'buy',
-        },
-    });
-};
-
 export const useBuyFlow = (form: BuyFormType) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = form.watch([
@@ -71,6 +64,15 @@ export const useBuyFlow = (form: BuyFormType) => {
         quote: candidateQuote,
         coinInfo,
     });
+
+    const reportTradeConfirmation = () => {
+        legacyAnalytics.report({
+            type: EventType.TradingConfirmTrade,
+            payload: {
+                type: 'buy',
+            },
+        });
+    };
 
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
@@ -136,7 +138,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingBuy,
             payload: {
                 step: 'buy-form',
@@ -148,7 +150,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingBuy,
                 payload: {
                     step: 'account-selection',

@@ -429,6 +429,7 @@ describe('useSendForm hook', () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
                 const store = initStore(f.store);
                 const callback: TestCallback = {};
+
                 const { unmount } = renderWithProviders(
                     store,
                     extraDependenciesMock.services,

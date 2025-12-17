@@ -1,12 +1,13 @@
+import { EventType } from '@suite-common/analytics-types';
 import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';
 import { useSelector } from 'src/hooks/suite';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
 
@@ -17,6 +18,7 @@ type BluetoothConnectionModalProps = {
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
+    const analytics = useAnalytics();
     const { handlePairingCancel, onReScanClick, selectedDevice } =
         useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);
@@ -24,9 +26,9 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
     const handleClose = () => {
         if (selectedDevice) {
             analytics.report({
-                type: EventTypeShared.DeviceConnectionDeviceFound,
-                payload: {
-                    option: 'close',
+                type: EventType.DeviceConnectionDeviceFound,
+                attributes: {
+                    option: { value: 'close' },
                 },
             });
         }

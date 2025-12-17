@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { BaseCurrency, BaseCurrencyCode, baseCurrencies } from '@trezor/blockchain-link-types';
@@ -19,10 +20,10 @@ const fiatCurrencyItems = typedObjectValues(baseCurrencies).map(transformFiatCur
 export const CurrencySelector = () => {
     const selectedFiatCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleSelectCurrency = (baseCurrencyCode: BaseCurrencyCode) => {
         dispatch(setBaseCurrency(baseCurrencyCode));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsChangeCurrency,
             payload: { localCurrency: baseCurrencyCode },
         });

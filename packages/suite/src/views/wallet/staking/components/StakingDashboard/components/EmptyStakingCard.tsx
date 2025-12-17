@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
@@ -24,7 +25,6 @@ import {
     Row,
     Tooltip,
 } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -34,10 +34,12 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
 export const EmptyStakingCard = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
@@ -138,7 +140,7 @@ export const EmptyStakingCard = () => {
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake-in-a-nutshell', flow: StakingFlow.Stake }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingStake,
                 payload: {
                     action: 'continue',

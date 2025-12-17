@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
@@ -13,7 +14,6 @@ import {
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -21,12 +21,14 @@ import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type StakingBannerProps = {
     account: Account;
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
     const { stakeEthBannerClosed, stakeSolBannerClosed, stakeCardanoBannerClosed } =
@@ -79,10 +81,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
         analytics.report({
             type: EventType.StakingNavigate,
-            payload: {
-                action: 'cancel',
-                from: 'account/banner',
-                networkSymbol: account.symbol,
+            attributes: {
+                action: { value: 'cancel' },
+                from: { value: 'account/banner' },
+                networkSymbol: { value: account.symbol },
             },
         });
     };
@@ -92,10 +94,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
         analytics.report({
             type: EventType.StakingNavigate,
-            payload: {
-                action: 'navigate',
-                from: 'account/banner',
-                networkSymbol: account.symbol,
+            attributes: {
+                action: { value: 'navigate' },
+                from: { value: 'account/banner' },
+                networkSymbol: { value: account.symbol },
             },
         });
     };

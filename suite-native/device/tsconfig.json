@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics-types"
+        },
+        {
             "path": "../../suite-common/bluetooth"
         },
         {
@@ -54,6 +57,7 @@
         { "path": "../staking" },
         { "path": "../theme" },
         { "path": "../toasts" },
+        { "path": "../../packages/analytics" },
         {
             "path": "../../packages/blockchain-link-types"
         },

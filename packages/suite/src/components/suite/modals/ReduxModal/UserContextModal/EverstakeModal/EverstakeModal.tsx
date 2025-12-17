@@ -9,13 +9,13 @@ import {
 } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
-import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { VotingDelegations } from './VotingDelegations';
 
@@ -26,6 +26,7 @@ interface EverstakeModalProps {
 
 export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
     const isStakingActive = useSelector(state =>
@@ -47,7 +48,7 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
         onCancel();
         dispatch(openModal({ type: 'stake', flow }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
@@ -61,7 +62,7 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     const onCancelClick = () => {
         onCancel();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',

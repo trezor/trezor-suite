@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Analytics } from '../analytics';
+import { QueuedAnalytics } from '../analytics';
 import { encodeDataToQueryString, getRandomId } from '../utils';
 import { fixtures } from './fixtures/encodeDataToQueryString';
 
@@ -32,7 +32,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app });
+        const analytics = new QueuedAnalytics({ version: '1.18', app });
 
         analytics.init(false, { environment, isDev, instanceId, sessionId, commitId });
 
@@ -82,7 +82,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app });
+        const analytics = new QueuedAnalytics({ version: '1.18', app });
 
         analytics.init(true, { isDev, instanceId, sessionId, commitId });
 
@@ -108,7 +108,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app });
+        const analytics = new QueuedAnalytics({ version: '1.18', app });
         analytics.init(false, {
             environment,
             isDev,
@@ -147,7 +147,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app, useQueue: true });
+        const analytics = new QueuedAnalytics({ version: '1.18', app, useQueue: true });
         analytics.init(undefined, {
             environment,
             isDev,
@@ -189,7 +189,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app, useQueue: true });
+        const analytics = new QueuedAnalytics({ version: '1.18', app, useQueue: true });
         analytics.init(false, {
             environment,
             isDev,
@@ -233,7 +233,7 @@ describe('analytics', () => {
         const sessionId = getRandomId();
         const commitId = 'abc';
 
-        const analytics = new Analytics({ version: '1.18', app, useQueue: true });
+        const analytics = new QueuedAnalytics({ version: '1.18', app, useQueue: true });
         analytics.init(true, {
             environment,
             isDev,

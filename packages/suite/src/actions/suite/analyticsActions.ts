@@ -3,6 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
@@ -10,29 +11,34 @@ import {
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import type { Dispatch, GetState } from 'src/types/suite';
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
-export const enableAnalyticsThunk = () => (dispatch: Dispatch) => {
-    analytics.report({ type: EventType.SettingsAnalytics, payload: { value: true } });
-    allowSentryReport(true);
+export const enableAnalyticsThunk =
+    () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+            type: EventType.SettingsAnalytics,
+            payload: { value: true },
+        });
+        allowSentryReport(true);
 
-    dispatch(analyticsActions.enableAnalytics());
-};
+        dispatch(analyticsActions.enableAnalytics());
+    };
 
-export const disableAnalyticsThunk = () => (dispatch: Dispatch) => {
-    analytics.report(
-        { type: EventType.SettingsAnalytics, payload: { value: false } },
-        { force: true },
-    );
-    allowSentryReport(false);
+export const disableAnalyticsThunk =
+    () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report(
+            { type: EventType.SettingsAnalytics, payload: { value: false } },
+            { force: true },
+        );
+        allowSentryReport(false);
 
-    dispatch(analyticsActions.disableAnalytics());
-};
+        dispatch(analyticsActions.disableAnalytics());
+    };
 
 /**
  * Init analytics, should be always run on application start (see suiteMiddleware). It:
@@ -40,7 +46,7 @@ export const disableAnalyticsThunk = () => (dispatch: Dispatch) => {
  * - set sentry user id
  * @param state - tracking state loaded from storage
  */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
+export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     const sessionId = getTrackingRandomId();
     // if instanceId does not exist yet (was not loaded from storage), create a new one
     const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
@@ -48,7 +54,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState) => {
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-    analytics.init(hasUserAllowedTracking, {
+    extra.services.legacyAnalytics.init(hasUserAllowedTracking, {
         instanceId,
         sessionId,
         environment: getEnvironment(),

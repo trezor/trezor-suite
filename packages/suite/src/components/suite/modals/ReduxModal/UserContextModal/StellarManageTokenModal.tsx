@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -14,7 +15,6 @@ import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -23,6 +23,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type StellarManageTokenModalProps =
     | {
@@ -40,6 +41,7 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
     const dispatch = useDispatch();
@@ -182,7 +184,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         }),
                     );
 
-                    analytics.report({
+                    legacyAnalytics.report({
                         type: EventType.AddToken,
                         payload: {
                             networkSymbol: account.symbol,
@@ -197,7 +199,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         }),
                     );
                 } else {
-                    analytics.report({
+                    legacyAnalytics.report({
                         type: EventType.RemoveToken,
                         payload: {
                             networkSymbol: account.symbol,

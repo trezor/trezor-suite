@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;
@@ -13,10 +14,10 @@ interface ChangePinProps {
 
 export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleClick = () => {
         dispatch(changePin({ remove: false }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceChangePin,
         });
     };

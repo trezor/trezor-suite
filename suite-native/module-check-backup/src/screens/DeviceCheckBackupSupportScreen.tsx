@@ -2,7 +2,8 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -14,16 +15,17 @@ const SUPPORT_URL = `${TREZOR_SUPPORT_RECOVERY_ISSUES_URL}#open-chat`;
 
 export const DeviceCheckBackupSupportScreen = () => {
     const openLink = useOpenLink();
+    const legacyAnalytics = useLegacyAnalytics();
     const handleSupportButtonPress = () => {
         openLink(SUPPORT_URL);
     };
 
     useFocusEffect(
         useCallback(() => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.DeviceSettingsCheckBackupSupport,
             });
-        }, []),
+        }, [legacyAnalytics]),
     );
 
     return (

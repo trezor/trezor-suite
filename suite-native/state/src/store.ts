@@ -38,7 +38,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,
-        thpMiddleware,
+        thpMiddleware(getExtra),
         prepareTradingMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),
         prepareSuiteSyncMiddleware(getExtra),
@@ -101,7 +101,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
 
     return {
         ...castedStore,
-        services: castedStore.extra.services,
+        services: castedStore.extra.services, // @TODO as NativeServices?
     };
 };
 

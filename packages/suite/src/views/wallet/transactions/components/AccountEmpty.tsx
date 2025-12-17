@@ -1,14 +1,15 @@
 import { Translation } from '@suite/intl';
+import { EventType } from '@suite/analytics';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 interface AccountEmptyProps {
@@ -17,6 +18,7 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
 
@@ -25,7 +27,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.AccountsEmptyAccountReceive,
             payload: {
                 symbol: account.symbol,
@@ -35,7 +37,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const handleNavigateToBuyPage = () => {
         dispatch(goto('wallet-trading-buy', { preserveParams: true }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

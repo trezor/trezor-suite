@@ -1,19 +1,21 @@
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const BioAuthSettings = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const {
         isBioAuthEnabled,
         isBioAuthAvailable,
@@ -24,7 +26,7 @@ export const BioAuthSettings = () => {
 
     const onChange = (nextBioAuthEnabledValue: boolean) => {
         requestBioAuthChange();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralBioAuth,
             payload: {
                 value: nextBioAuthEnabledValue,

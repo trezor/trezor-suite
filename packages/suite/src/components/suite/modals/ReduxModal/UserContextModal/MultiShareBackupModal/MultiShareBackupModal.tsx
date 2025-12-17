@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
     HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
@@ -14,6 +14,7 @@ import {
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
@@ -30,6 +31,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =
@@ -42,7 +44,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const learnMoreClicked = () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsMultiShareBackup,
             payload: { action: 'learn-more' },
         });
@@ -50,7 +52,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const handleCancel = () => {
         if (step !== 'done') {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SettingsMultiShareBackup,
                 payload: { action: 'close-modal' },
             });
@@ -125,7 +127,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                         setStep('backup-seed');
                         TrezorConnect.backupDevice().then(response => {
                             if (response.success) {
-                                analytics.report({
+                                legacyAnalytics.report({
                                     type: EventType.SettingsMultiShareBackup,
                                     payload: { action: 'done' },
                                 });

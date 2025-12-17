@@ -1,15 +1,16 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectDevices, selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const AutoEjectConfirmationModal = ({
     onCancel,
@@ -45,6 +46,7 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
     const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -60,7 +62,7 @@ export const AutoEject = () => {
             }),
         );
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralAutoEject,
             payload: {
                 value: !isAutoEjectEnabled,

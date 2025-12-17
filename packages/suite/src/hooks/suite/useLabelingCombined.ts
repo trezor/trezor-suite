@@ -1,3 +1,4 @@
+import { EventType } from '@suite/analytics';
 import {
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncDebugEnabled,
@@ -7,12 +8,12 @@ import {
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as metadataThunks from 'src/actions/suite/metadataThunks';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
@@ -28,6 +29,7 @@ type UseLabelingCombinedParams = {
  * `useSuiteSync` from `@suite-common/suite-sync`.
  */
 export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
 
@@ -63,7 +65,7 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         // Enabling Evolu implicitly disables Legacy Labeling
         if (legacyMetadataState.enabled) legacyDisableIfNeeded();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
                 provider: 'evolu',

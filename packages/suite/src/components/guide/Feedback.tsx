@@ -2,6 +2,7 @@ import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     FeedbackCategory,
@@ -11,12 +12,12 @@ import {
     sendFeedbackAction,
 } from '@suite-common/feedback';
 import { Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
@@ -56,6 +57,7 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const router = useSelector(state => state.router);
     const [description, setDescription] = useState('');
@@ -134,11 +136,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
             );
         }
         dispatch(setView('GUIDE_DEFAULT'));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, dispatch, type, description, category, rating]);
+    }, [device, type, dispatch, legacyAnalytics, description, category, rating]);
 
     return (
         <GuideViewWrapper>

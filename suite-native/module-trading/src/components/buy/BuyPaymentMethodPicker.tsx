@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import type { BuyTrade } from 'invity-api';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
@@ -56,6 +57,7 @@ const BuyPaymentMethodPickerRight = ({
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
+    const legacyAnalytics = useLegacyAnalytics();
     const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);
@@ -79,7 +81,7 @@ export const BuyPaymentMethodPicker = () => {
 
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'buy',

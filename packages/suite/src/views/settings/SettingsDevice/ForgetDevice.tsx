@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -9,16 +10,16 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
-
+    const legacyAnalytics = useLegacyAnalytics();
     if (!selectedDevice) {
         return null;
     }
@@ -37,7 +38,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
         });
 
-        analytics.report({ type: EventType.SwitchDeviceForget });
+        legacyAnalytics.report({ type: EventType.SwitchDeviceForget });
         onCancel?.();
     };
 

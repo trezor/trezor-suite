@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     selectRememberedHiddenWalletsCount,
@@ -9,7 +10,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
@@ -22,6 +22,7 @@ import { QrCode } from 'src/components/suite';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
@@ -67,6 +68,7 @@ const StoreBadgeWithQr = ({
 }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+    const legacyAnalytics = useLegacyAnalytics();
 
     return (
         <Tooltip
@@ -107,7 +109,7 @@ const StoreBadgeWithQr = ({
                 <StoreBadge
                     url={url}
                     onClick={() =>
-                        analytics.report({
+                        legacyAnalytics.report({
                             type: EventType.GetMobileApp,
                             payload: {
                                 platform: analyticsPayload,
@@ -151,6 +153,7 @@ const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
 };
 
 const ReferralButton = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -165,7 +168,7 @@ const ReferralButton = () => {
             iconLeft="usersFilled"
             size="small"
             onClick={() => {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.ReferralButton,
                     payload: { hasAtLeastOneRememberedWallet },
                 });
@@ -177,6 +180,7 @@ const ReferralButton = () => {
 };
 
 export const DashboardFooter = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
 
@@ -210,7 +214,7 @@ export const DashboardFooter = () => {
                             priority="secondary"
                             size="small"
                             onClick={() =>
-                                analytics.report({
+                                legacyAnalytics.report({
                                     type: EventType.GetDesktopApp,
                                 })
                             }

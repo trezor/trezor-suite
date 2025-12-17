@@ -1,6 +1,6 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setOnionLinks } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -8,16 +8,17 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorOnionLinks } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleChange = () => {
         dispatch(setOnionLinks(!torOnionLinks));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsTorOnionLinks,
             payload: {
                 value: !torOnionLinks,

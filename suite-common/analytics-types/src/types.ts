@@ -1,6 +1,7 @@
 import { EventType } from './constants';
 
-export type SuiteSharedAnalyticsEvent =
+/** @deprecated use `AnalyticsSharedEvents` */
+export type SuiteSharedLegacyAnalyticsEvents =
     | {
           type: EventType.WalletConnectInit;
       }
@@ -67,12 +68,6 @@ export type SuiteSharedAnalyticsEvent =
               origin: string;
               method: string;
               error: string;
-          };
-      }
-    | {
-          type: EventType.DeviceConnectionDeviceFound;
-          payload: {
-              option: 'connect' | 'close';
           };
       }
     | {

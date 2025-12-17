@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,6 +19,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
@@ -31,6 +32,7 @@ interface ClaimModalModalProps {
 const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
+    const legacyAnalytics = useLegacyAnalytics();
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -105,7 +107,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
         handleSubmit(signTx)();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'continue',
@@ -118,7 +120,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     const onCancelClick = () => {
         onCancel?.();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'cancel',

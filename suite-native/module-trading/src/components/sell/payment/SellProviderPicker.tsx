@@ -9,7 +9,8 @@ import {
     selectTradingSellIsLoading,
     selectTradingSellProviders,
 } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
@@ -59,6 +60,7 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
 
 export const SellProviderPicker = () => {
     const { translate } = useTranslate();
+    const legacyAnalytics = useLegacyAnalytics();
     const form = useSellFormContext();
     const providers = useSelector(selectTradingSellProviders);
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -80,7 +82,7 @@ export const SellProviderPicker = () => {
         if (isLoading) return;
 
         showSheet();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'sell',
@@ -93,7 +95,7 @@ export const SellProviderPicker = () => {
 
         if (selectedValue?.exchange === quote.exchange) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'sell',
