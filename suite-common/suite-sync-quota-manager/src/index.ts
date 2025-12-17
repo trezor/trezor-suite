@@ -16,6 +16,7 @@ export {
     quotaManagerDeviceFetched,
     quotaManagerFetchError,
     suiteSyncQuotaManagerActions,
+    eraseFetchedDataDebug,
 } from './quotaManagerActions';
 
 /**
