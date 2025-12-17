@@ -1,3 +1,4 @@
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -17,7 +18,7 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { TradingState } from '@suite-native/trading-types';
+import { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
 
 import { buyActions } from '../buySlice';
 import { exchangeActions } from '../exchangeSlice';
@@ -48,6 +49,7 @@ describe('tradingSlice', () => {
                     tradingEnvironment: 'production',
                     isAmountInputActive: false,
                     activeTradingType: undefined,
+                    providerConfirmationStatus: 'inactive',
                 }),
             );
         });
@@ -430,6 +432,216 @@ describe('tradingSlice', () => {
                     },
                 }),
             );
+        });
+    });
+
+    describe('providerConfirmationStatus', () => {
+        let actions: PayloadAction<ProviderConfirmationStatus>[];
+
+        describe('and status inactive', () => {
+            it('should set status to [window_opened]', () => {
+                actions = [tradingActions.setProviderConfirmationStatus('window_opened')];
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe('window_opened');
+            });
+
+            it.each<ProviderConfirmationStatus>([
+                'window_closed_incomplete',
+                'window_closed_with_success',
+                'confirmation_success',
+                'confirmation_failed',
+            ])('should not allow to set status to [%s]', invalidStatus => {
+                actions = [tradingActions.setProviderConfirmationStatus(invalidStatus)];
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe('inactive');
+            });
+        });
+
+        describe('and status is "window_opened"', () => {
+            beforeEach(() => {
+                actions = [tradingActions.setProviderConfirmationStatus('window_opened')];
+            });
+
+            it.each<ProviderConfirmationStatus>([
+                'window_closed_incomplete',
+                'window_closed_with_success',
+                'inactive',
+            ])('should set status to [%s]', newStatus => {
+                actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe(newStatus);
+            });
+
+            it.each<ProviderConfirmationStatus>(['confirmation_success', 'confirmation_failed'])(
+                'should not allow to set status to [%s]',
+                invalidStatus => {
+                    actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
+
+                    const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                    expect(state.providerConfirmationStatus).toBe('window_opened');
+                },
+            );
+        });
+
+        describe('and status is "window_closed_incomplete"', () => {
+            beforeEach(() => {
+                actions = [
+                    tradingActions.setProviderConfirmationStatus('window_opened'),
+                    tradingActions.setProviderConfirmationStatus('window_closed_incomplete'),
+                ];
+            });
+
+            it.each<ProviderConfirmationStatus>([
+                'window_closed_with_success',
+                'confirmation_failed',
+                'inactive',
+            ])('should set status to [%s]', newStatus => {
+                actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe(newStatus);
+            });
+
+            it.each<ProviderConfirmationStatus>(['confirmation_success', 'window_opened'])(
+                'should not allow to set status to [%s]',
+                invalidStatus => {
+                    actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
+
+                    const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                    expect(state.providerConfirmationStatus).toBe('window_closed_incomplete');
+                },
+            );
+        });
+
+        describe('and status is "window_closed_with_success"', () => {
+            beforeEach(() => {
+                actions = [
+                    tradingActions.setProviderConfirmationStatus('window_opened'),
+                    tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
+                ];
+            });
+
+            it.each<ProviderConfirmationStatus>([
+                'confirmation_success',
+                'confirmation_failed',
+                'inactive',
+            ])('should set status to [%s]', newStatus => {
+                actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe(newStatus);
+            });
+
+            it.each<ProviderConfirmationStatus>(['window_opened', 'window_closed_incomplete'])(
+                'should not allow to set status to [%s]',
+                invalidStatus => {
+                    actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
+
+                    const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                    expect(state.providerConfirmationStatus).toBe('window_closed_with_success');
+                },
+            );
+        });
+
+        describe('and status is "confirmation_failed"', () => {
+            beforeEach(() => {
+                actions = [
+                    tradingActions.setProviderConfirmationStatus('window_opened'),
+                    tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
+                    tradingActions.setProviderConfirmationStatus('confirmation_failed'),
+                ];
+            });
+
+            it.each<ProviderConfirmationStatus>(['confirmation_success', 'inactive'])(
+                'should set status to [%s]',
+                newStatus => {
+                    actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
+
+                    const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                    expect(state.providerConfirmationStatus).toBe(newStatus);
+                },
+            );
+
+            it.each<ProviderConfirmationStatus>([
+                'window_opened',
+                'window_closed_incomplete',
+                'window_closed_with_success',
+            ])('should not allow to set status to [%s]', invalidStatus => {
+                actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe('confirmation_failed');
+            });
+        });
+
+        describe('and status is "confirmation_success"', () => {
+            beforeEach(() => {
+                actions = [
+                    tradingActions.setProviderConfirmationStatus('window_opened'),
+                    tradingActions.setProviderConfirmationStatus('window_closed_with_success'),
+                    tradingActions.setProviderConfirmationStatus('confirmation_success'),
+                ];
+            });
+
+            it.each<ProviderConfirmationStatus>(['inactive'])(
+                'should set status to [%s]',
+                newStatus => {
+                    actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
+
+                    const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                    expect(state.providerConfirmationStatus).toBe(newStatus);
+                },
+            );
+
+            it.each<ProviderConfirmationStatus>([
+                'window_opened',
+                'window_closed_incomplete',
+                'window_closed_with_success',
+                'confirmation_failed',
+            ])('should not allow to set status to [%s]', invalidStatus => {
+                actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
+
+                const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+                expect(state.providerConfirmationStatus).toBe('confirmation_success');
+            });
+        });
+
+        describe('and with invalid status', () => {
+            it.each<ProviderConfirmationStatus>([
+                'window_opened',
+                'window_closed_incomplete',
+                'window_closed_with_success',
+                'confirmation_failed',
+                'confirmation_success',
+                'inactive',
+            ])('should not allow to set status to [%s]', newStatus => {
+                const prevState: TradingState = {
+                    ...tradingInitialState,
+                    providerConfirmationStatus: 'INVALID_STATUS' as ProviderConfirmationStatus,
+                };
+
+                const state = tradingReducer(
+                    prevState,
+                    tradingActions.setProviderConfirmationStatus(newStatus),
+                );
+
+                expect(state.providerConfirmationStatus).toBe(newStatus);
+            });
         });
     });
 });

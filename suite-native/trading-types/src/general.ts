@@ -91,3 +91,11 @@ export type TradingFormContext = Partial<TradingAmountLimitProps> & {
     sendSymbol: string | undefined;
     balance: string | undefined;
 };
+
+export type ProviderConfirmationStatus =
+    | 'inactive'
+    | 'window_opened'
+    | 'window_closed_incomplete'
+    | 'window_closed_with_success'
+    | 'confirmation_success'
+    | 'confirmation_failed';
