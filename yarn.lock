@@ -7044,30 +7044,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-chromium@npm:1.55.0":
-  version: 1.55.0
-  resolution: "@playwright/browser-chromium@npm:1.55.0"
-  dependencies:
-    playwright-core: "npm:1.55.0"
-  checksum: 10/f3ac956c97aff1592752dd764f86046617f0e00dbbf1aa401984acab7624fd4317a23f52739e6d50dc0e65e8f55a8fc9c5226701ede004020daa806dfe028c6b
-  languageName: node
-  linkType: hard
-
 "@playwright/browser-chromium@npm:^1.57.0":
   version: 1.57.0
   resolution: "@playwright/browser-chromium@npm:1.57.0"
   dependencies:
     playwright-core: "npm:1.57.0"
   checksum: 10/eb605949dfee0a023984c496cf108c634139f5353079c92473c8f5aab8e6e4bdadc2aaaf155224a40b33d2e0bea63b36ad0712f599fe4a91c1ae5af7885dd9ef
-  languageName: node
-  linkType: hard
-
-"@playwright/browser-firefox@npm:1.55.0":
-  version: 1.55.0
-  resolution: "@playwright/browser-firefox@npm:1.55.0"
-  dependencies:
-    playwright-core: "npm:1.55.0"
-  checksum: 10/19243c3510984574831c9a1247b645d647b0bf2dd17c01410607631c3b6c7fe590c223ead4e6fa399bfd2a2c188d1897cae50ffcd1114cf6f149cc111d87e3e1
   languageName: node
   linkType: hard
 
@@ -7080,32 +7062,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/browser-webkit@npm:1.55.0":
-  version: 1.55.0
-  resolution: "@playwright/browser-webkit@npm:1.55.0"
-  dependencies:
-    playwright-core: "npm:1.55.0"
-  checksum: 10/53f874cc46b5e22a92c02806738f374dd7133c3740251be09b9b9d3a858c2aaa5015b68b0ca0c6430213c63c77679e87f257434e77fc9deefb408a9c5930b2c6
-  languageName: node
-  linkType: hard
-
 "@playwright/browser-webkit@npm:^1.57.0":
   version: 1.57.0
   resolution: "@playwright/browser-webkit@npm:1.57.0"
   dependencies:
     playwright-core: "npm:1.57.0"
   checksum: 10/dcbe3f90c1184919b894a743b1024de2cecdd2504de204b05d9c56a25810b864082cc84301284cbecbaddb16475a386c396baa0e12d552dbda045e34400d3634
-  languageName: node
-  linkType: hard
-
-"@playwright/test@npm:1.55.0":
-  version: 1.55.0
-  resolution: "@playwright/test@npm:1.55.0"
-  dependencies:
-    playwright: "npm:1.55.0"
-  bin:
-    playwright: cli.js
-  checksum: 10/bfaede669b0583ee6ec48bfe9ff531cac58da1b83031907d5d0fd71c33bab6766669a23359e401066d97c8e8fa76566900f71be7b290d12213ebb3530a82afbb
   languageName: node
   linkType: hard
 
@@ -14004,10 +13966,10 @@ __metadata:
   dependencies:
     "@babel/preset-react": "npm:^7.28.5"
     "@babel/preset-typescript": "npm:^7.28.5"
-    "@playwright/browser-chromium": "npm:1.55.0"
-    "@playwright/browser-firefox": "npm:1.55.0"
-    "@playwright/browser-webkit": "npm:1.55.0"
-    "@playwright/test": "npm:1.55.0"
+    "@playwright/browser-chromium": "npm:^1.57.0"
+    "@playwright/browser-firefox": "npm:^1.57.0"
+    "@playwright/browser-webkit": "npm:^1.57.0"
+    "@playwright/test": "npm:^1.57.0"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -37153,36 +37115,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.55.0":
-  version: 1.55.0
-  resolution: "playwright-core@npm:1.55.0"
-  bin:
-    playwright-core: cli.js
-  checksum: 10/843376a8e2c1100d3f0625b2c85a69dc4418a0b268bdc7da6cf28252f6dc50c299c734f090a67c7f36cfa9140dacf5b95e817664e69642bcbaf06eea4d216c35
-  languageName: node
-  linkType: hard
-
 "playwright-core@npm:1.57.0":
   version: 1.57.0
   resolution: "playwright-core@npm:1.57.0"
   bin:
     playwright-core: cli.js
   checksum: 10/ec066602f0196f036006caee14a30d0a57533a76673bb9a0c609ef56e21decf018f0e8d402ba2fb18251393be6a1c9e193c83266f1670fe50838c5340e220de0
-  languageName: node
-  linkType: hard
-
-"playwright@npm:1.55.0":
-  version: 1.55.0
-  resolution: "playwright@npm:1.55.0"
-  dependencies:
-    fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.55.0"
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    playwright: cli.js
-  checksum: 10/df02529693923b9b671822dac8a2ac8a8471c9142a05e14a24f8d0038a7dcf705712363991a070fc927466bbbe70e485145cf7a77882613822f56960afc4b892
   languageName: node
   linkType: hard
 
