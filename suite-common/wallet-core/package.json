@@ -14,7 +14,6 @@
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/bluetooth": "workspace:*",
-        "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",

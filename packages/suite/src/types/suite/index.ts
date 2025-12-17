@@ -3,7 +3,6 @@ import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
 import { analyticsActions } from '@suite-common/analytics';
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -79,9 +78,6 @@ type AnalyticsAction = ReturnType<(typeof analyticsActions)[keyof typeof analyti
 type FirmwareAction = ReturnType<(typeof firmwareActions)[keyof typeof firmwareActions]>;
 type DeviceAction = ReturnType<(typeof deviceActions)[keyof typeof deviceActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
-type DeviceAuthenticityAction = ReturnType<
-    (typeof deviceAuthenticityActions)[keyof typeof deviceAuthenticityActions]
->;
 type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoothActions]>;
 type BluetoothActionDesktop = ReturnType<
     (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
@@ -111,7 +107,6 @@ export type Action =
     | DesktopUpdateAction
     | DeviceAction
     | DeviceActionDesktop
-    | DeviceAuthenticityAction
     | DiscoveryAction
     | FeeAction
     | FirmwareAction
@@ -137,8 +132,6 @@ export type Action =
     | TrezorConnectEvents
     | WalletAction
     | WindowAction
-    | BioAuthAction
-    | FeeAction
     | GlobalSendReceiveAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;

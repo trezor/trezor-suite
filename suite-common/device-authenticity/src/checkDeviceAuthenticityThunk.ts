@@ -1,11 +1,13 @@
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
+import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
-import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
-import { StoredAuthenticateDeviceResult } from './types';
 import { isDeviceAuthenticityValid } from './utils';
+
+const ACTION_PREFIX = '@device-authenticity';
 
 type CheckDeviceAuthenticityThunkParams = {
     allowDebugKeys: boolean;
@@ -46,7 +48,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
                   { valid: false, error: result.payload.error }
                 : // or internal error (then skip the check by storing undefined)
                   undefined;
-            dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
 
             return rejectWithValue(storedResult);
         }
@@ -71,7 +73,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
                 }),
             );
 
-            dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
 
             return rejectWithValue(storedResult);
         }
@@ -80,7 +82,7 @@ export const checkDeviceAuthenticityThunk = createThunk<
         if (!skipSuccessToast) {
             dispatch(notificationsActions.addToast({ type: 'device-authenticity-success' }));
         }
-        dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+        dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
 
         return fulfillWithValue(storedResult);
     },
