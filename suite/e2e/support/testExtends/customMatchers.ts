@@ -1,4 +1,3 @@
-/* eslint-disable playwright/no-standalone-expect */
 import { createIntl, createIntlCache } from 'react-intl';
 
 import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
