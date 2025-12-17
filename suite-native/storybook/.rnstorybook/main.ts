@@ -5,5 +5,4 @@ const main: StorybookConfig = {
     addons: ['@storybook/addon-ondevice-controls'],
 };
 
-// eslint-disable-next-line import/no-default-export
 export default main;
