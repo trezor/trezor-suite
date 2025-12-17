@@ -1,11 +1,11 @@
+import { Route } from '@suite-common/suite-types';
+
 import {
-    findRouteByName,
-    getApp,
+    RouteParams,
     getAppWithParams,
     getPrefixedURL,
     getRoute,
-    getTopLevelRoute,
-    stripPrefixedPathname,
+    getRouteHash,
     stripPrefixedURL,
 } from '../router';
 
@@ -14,26 +14,6 @@ const OLD_ENV = { ...process.env };
 describe('router', () => {
     afterEach(() => {
         process.env = OLD_ENV;
-    });
-
-    describe('getApp', () => {
-        it('should return string indicating the current app', () => {
-            expect(getApp('/accounts')).toEqual('wallet');
-            expect(getApp('/accounts/')).toEqual('wallet');
-            expect(getApp('/onboarding')).toEqual('onboarding');
-            expect(getApp('/onboarding/')).toEqual('onboarding');
-            expect(getApp('/unknown-route/')).toEqual('unknown');
-        });
-    });
-
-    describe('getApp with ASSET_PREFIX', () => {
-        it('should return string indicating the current app', () => {
-            process.env.ASSET_PREFIX = '/next';
-            expect(getApp('/next/accounts/')).toEqual('wallet');
-            expect(getApp('/next/accounts/receive/#/btc/0')).toEqual('wallet');
-            expect(getApp('/next/onboarding/')).toEqual('onboarding');
-            expect(getApp('/unknown-route/')).toEqual('unknown');
-        });
     });
 
     describe('getPrefixedURL', () => {
@@ -54,50 +34,50 @@ describe('router', () => {
 
     describe('getRoute', () => {
         it('should return the route for given name', () => {
+            const test = (name: Route['name'], params?: RouteParams) => {
+                const route = getRoute(name);
+                const hash = getRouteHash(route, params);
+
+                return `${route?.pattern ?? '/'}${hash ? `#${hash}` : ''}`;
+            };
+
             // @ts-expect-error: invalid params
-            expect(getRoute('unknown-route')).toEqual('/');
-            expect(getRoute('wallet-index')).toEqual('/accounts');
+            expect(test('unknown-route')).toEqual('/');
+            expect(test('wallet-index')).toEqual('/accounts');
             // tests below with intentionally mixed # params
             expect(
-                getRoute('wallet-index', {
+                test('wallet-index', {
                     symbol: 'btc',
                     accountIndex: 0,
                     accountType: 'legacy',
                 }),
             ).toEqual('/accounts#/btc/0/legacy');
             expect(
-                getRoute('wallet-index', {
+                test('wallet-index', {
                     accountIndex: 0,
                     accountType: 'segwit',
                     symbol: 'btc',
                 }),
             ).toEqual('/accounts#/btc/0/segwit');
             expect(
-                getRoute('wallet-index', {
+                test('wallet-index', {
                     accountType: 'normal',
                     symbol: 'btc',
                     accountIndex: 0,
                 }),
             ).toEqual('/accounts#/btc/0/normal');
             expect(
-                getRoute('wallet-index', {
+                test('wallet-index', {
                     accountIndex: 1,
                     symbol: 'btc',
                 }),
             ).toEqual('/accounts#/btc/1');
             // route shouldn't have params
             expect(
-                getRoute('onboarding-index', {
+                test('onboarding-index', {
                     symbol: 'btc',
                 }),
             ).toEqual('/onboarding');
-        });
-    });
-
-    describe('stripPrefixedPathname', () => {
-        it('should strip params delimited by a hashtag from the URL', () => {
-            expect(stripPrefixedPathname('/accounts/send/#/btc/0')).toEqual('/accounts/send');
-            expect(stripPrefixedPathname('/accounts/send/#/42')).toEqual('/accounts/send');
         });
     });
 
@@ -124,7 +104,7 @@ describe('router', () => {
                     accountIndex: 0,
                     accountType: 'normal',
                 },
-                route: findRouteByName('wallet-index'),
+                route: getRoute('wallet-index'),
             };
             expect(getAppWithParams('/accounts/#/btc/0/normal')).toEqual(resp);
             expect(getAppWithParams('/accounts/#/btc/1/segwit')).toEqual({
@@ -162,7 +142,7 @@ describe('router', () => {
             expect(getAppWithParams('/accounts')).toEqual({
                 ...resp,
                 params: undefined,
-                route: findRouteByName('wallet-index'),
+                route: getRoute('wallet-index'),
             });
         });
 
@@ -170,13 +150,13 @@ describe('router', () => {
             expect(getAppWithParams('/')).toEqual({
                 app: 'dashboard',
                 params: undefined,
-                route: findRouteByName('suite-index'),
+                route: getRoute('suite-index'),
             });
 
             expect(getAppWithParams('/onboarding/')).toEqual({
                 app: 'onboarding',
                 params: undefined,
-                route: findRouteByName('onboarding-index'),
+                route: getRoute('onboarding-index'),
             });
 
             expect(getAppWithParams('/unknown-route/')).toEqual({
@@ -184,26 +164,6 @@ describe('router', () => {
                 params: undefined,
                 route: undefined,
             });
-        });
-    });
-
-    describe('getTopLevelRoute', () => {
-        it('should return value if url is a nested page', () => {
-            process.env.ASSET_PREFIX = undefined;
-            expect(getTopLevelRoute('/')).toEqual(undefined);
-            expect(getTopLevelRoute('/accounts')).toEqual(undefined);
-            expect(getTopLevelRoute('/accounts/receive')).toEqual('/accounts');
-            expect(getTopLevelRoute('dummy-data-without-slash')).toEqual(undefined);
-            // @ts-expect-error: intentional invalid param type
-            expect(getTopLevelRoute(1)).toEqual(undefined);
-        });
-
-        it('should return value if url is a nested page (with prefix)', () => {
-            const prefix = '/test/asset/prefix';
-            process.env.ASSET_PREFIX = prefix;
-            expect(getTopLevelRoute(`${prefix}/`)).toEqual(undefined);
-            expect(getTopLevelRoute(`${prefix}/accounts`)).toEqual(undefined);
-            expect(getTopLevelRoute(`${prefix}/accounts/receive`)).toEqual(`${prefix}/accounts`);
         });
     });
 });
