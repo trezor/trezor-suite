@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -38,9 +38,15 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         isBluetoothMode,
         toggleShouldPairAgain,
         toggleShowHints,
+        onReScanClick,
         notConnectedKnownDevices,
         notConnectedNearbyDevices,
     } = useConnectionGlobalModalContext();
+
+    // when this modal is displayed, scanning should start again in case it stopped due to timeout, so that user can act on the additional instructions
+    useEffect(() => {
+        onReScanClick();
+    }, [onReScanClick]);
 
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
 
