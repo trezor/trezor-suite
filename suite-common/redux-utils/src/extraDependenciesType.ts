@@ -33,6 +33,8 @@ type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
+// NOTE: this is basically a bit stricter Path from history package (file://./../../../node_modules/history/index.d.ts),
+// but it is satisfied by window.location as well
 type Path = {
     pathname: string;
     search: string;
@@ -40,6 +42,16 @@ type Path = {
 };
 
 export type To = string | Partial<Path>;
+
+// This is a Listener from history package
+type Listener = (_: { location: Path; action: 'PUSH' | 'POP' | 'REPLACE' }) => void;
+
+export type RouterServices = {
+    getLocation: () => Path;
+    navigate: (to: To, state?: LocationPushState) => void;
+    // calling .listen(listener) returns a cleanup function
+    listen: (listener: Listener) => () => void;
+};
 
 export type LocationPushState = Record<string, unknown>;
 
@@ -123,16 +135,7 @@ export type ExtraDependenciesStatic = {
         connectInitSettings: ConnectInitSettings;
         reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
     };
-    routerServices: {
-        getLocation: () => {
-            // NOTE: this type is satisfied by the history from history package, it is not window.location
-            // but window.location does satisfies it, we can extend it depending of needs of using history object
-            pathname: string;
-            hash: string;
-            search: string;
-        };
-        navigate: (to: To, state?: LocationPushState) => void;
-    };
+    routerServices: RouterServices;
 };
 
 export type ExtraDependencies = ExtraDependenciesStatic & { services: CommonServices };
