@@ -15,7 +15,6 @@
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
-        "@suite-common/message-system": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

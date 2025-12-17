@@ -1,24 +1,11 @@
 import { A } from '@mobily/ts-belt';
 
-// TODO: currently, message-system index mustn't be imported directly, else @suite-common/suite-sync:type-check will fail
-// That's because tsconfig.json in local-first-storage "infects" its upstream packages with exactOptionalPropertyTypes (it shouldn't).
-// Probably caused by circular deps?
-import { selectIsFeatureEnabled } from '@suite-common/message-system/src/messageSystemSelectors';
-import {
-    Feature,
-    MessageSystemRootState,
-} from '@suite-common/message-system/src/messageSystemTypes';
 import {
     createReducerWithExtraDeps,
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import {
-    NetworkSymbol,
-    getNetwork,
-    networkSymbolCollection,
-    networksCollection,
-} from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetwork, networkSymbolCollection } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
@@ -35,9 +22,7 @@ export type WalletSettingsRootState = {
     };
 };
 
-export const createMemoizedSelector = createWeakMapSelector.withTypes<
-    WalletSettingsRootState & MessageSystemRootState
->();
+export const createMemoizedSelector = createWeakMapSelector.withTypes<WalletSettingsRootState>();
 
 const initialState: WalletSettingsState = {
     localCurrency: 'usd',
@@ -180,24 +165,9 @@ export const selectIsBaseCurrencyInSats = (state: WalletSettingsRootState) => {
 export const selectIsNetworkReserveEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.networkReserve;
 
+// Selects the primitive value in walletSettings, see @suite-common/mev for the derived selectors
 export const selectIsMevProtectionEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.mevProtection;
-
-export const selectIsMevProtectionFeatureEnabled = (state: MessageSystemRootState) =>
-    selectIsFeatureEnabled(state, Feature.mevProtection, true);
-
-const MEV_PROTECTION_SUPPORTED_NETWORK_SYMBOLS = networksCollection
-    .filter(network => network.features.includes('mev-protection'))
-    .map(network => network.symbol);
-
-export const selectIsMevProtectionSettingsVisible = createMemoizedSelector(
-    [selectIsMevProtectionFeatureEnabled, selectEnabledNetworks],
-    (isFeatureEnabled, enabledNetworks) =>
-        isFeatureEnabled &&
-        enabledNetworks.some(enabledNetwork =>
-            MEV_PROTECTION_SUPPORTED_NETWORK_SYMBOLS.includes(enabledNetwork),
-        ),
-);
 
 export const selectIsNetworkReserveSettingsVisible = createMemoizedSelector(
     [selectEnabledNetworks],

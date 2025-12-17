@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     PushTransactionError,
@@ -10,6 +11,7 @@ import {
     enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectAccountByKey,
+    selectIsMevProtectionEnabled,
     selectSelectedDevice,
     selectSendFormDraftByKey,
     selectSendFormDrafts,
@@ -182,7 +184,12 @@ export const sendTransactionThunk = createThunk<
         { selectedAccount, wasAppLeftDuringReview, tokenContract },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        const sendResponse = await dispatch(pushSendFormTransactionThunk({ selectedAccount }));
+        const isMevProtectionEnabled =
+            selectIsMevProtectionEnabled(getState()) &&
+            selectIsMevProtectionFeatureEnabled(getState());
+        const sendResponse = await dispatch(
+            pushSendFormTransactionThunk({ selectedAccount, isMevProtectionEnabled }),
+        );
 
         if (sendResponse.payload === undefined) {
             return rejectWithValue({

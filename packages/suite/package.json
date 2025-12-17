@@ -45,6 +45,7 @@
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
+        "@suite-common/mev": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/sentry": "workspace:*",

@@ -3,6 +3,7 @@ import { FormattedList } from 'react-intl';
 
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeType,
@@ -13,10 +14,7 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { networksCollection } from '@suite-common/wallet-config';
-import {
-    selectIsMevProtectionEnabled,
-    selectIsMevProtectionFeatureEnabled,
-} from '@suite-common/wallet-core';
+import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, InfoItem, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';

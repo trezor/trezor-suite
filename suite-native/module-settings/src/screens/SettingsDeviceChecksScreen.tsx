@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsMevProtectionSettingsVisible } from '@suite-common/wallet-core';
+import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';

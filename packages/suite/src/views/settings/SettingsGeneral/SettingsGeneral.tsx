@@ -1,8 +1,8 @@
 import { Context } from '@suite-common/message-system';
+import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
-    selectIsMevProtectionSettingsVisible,
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
