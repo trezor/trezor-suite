@@ -33,6 +33,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
+import { getPrefixedURL, stripPrefixedURL } from 'src/utils/suite/router';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
@@ -61,8 +62,18 @@ const connectInitSettings = {
 };
 
 export const createRouterServices = (history: History): RouterServices => ({
-    getLocation: () => history.location,
-    navigate: (to, state) => history.push(to, state),
+    getLocation: () => {
+        const { location } = history;
+
+        return { ...location, pathname: stripPrefixedURL(location.pathname) };
+    },
+    navigate: (to, state) =>
+        history.push(
+            typeof to === 'string'
+                ? getPrefixedURL(to)
+                : { ...to, pathname: to.pathname && getPrefixedURL(to.pathname) },
+            state,
+        ),
     listen: listener => history.listen(listener),
 });
 

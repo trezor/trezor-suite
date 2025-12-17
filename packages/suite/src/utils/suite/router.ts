@@ -32,7 +32,7 @@ export const stripPrefixedURL = (url: string) => {
 
 // Strips params delimited by a hashtag from the URL
 export const stripPrefixedPathname = (url: string) => {
-    const [pathname] = stripPrefixedURL(url).split('#');
+    const [pathname] = url.split('#');
 
     return pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 };
@@ -52,7 +52,7 @@ export const getApp = (url: string) => {
 };
 
 const validateWalletParams = (url: string): CommonWalletParams => {
-    const [, hash] = stripPrefixedURL(url).split('#');
+    const [, hash] = url.split('#');
     if (!hash) return;
     const [symbol, index, rawAccountType] = hash.split('/').filter(p => p.length > 0);
     if (!index) return;
@@ -90,7 +90,7 @@ const modalAppParamsDefaultValues: ModalAppParams = {
 };
 
 const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams => {
-    const [, hash] = stripPrefixedURL(url).split('#');
+    const [, hash] = url.split('#');
     const splitted = hash?.split('/').filter(p => p.length > 0);
     if (!splitted || splitted.length === 0) return modalAppParamsDefaultValues;
 
@@ -124,10 +124,9 @@ export function parseDashboardParams(params: unknown): DashboardParams | undefin
 }
 
 const validateDashboardParams = (url: string): DashboardParams | undefined => {
-    const stripped = stripPrefixedURL(url);
-    const hashIndex = stripped.indexOf('#');
+    const hashIndex = url.indexOf('#');
 
-    const hash = hashIndex >= 0 ? stripped.slice(hashIndex + 1) : '';
+    const hash = hashIndex >= 0 ? url.slice(hashIndex + 1) : '';
     const [modal, networkSymbol] = hash.split('/').filter(Boolean);
 
     if (modal === undefined) {
@@ -228,7 +227,7 @@ export const getTopLevelRoute = (url: string) => {
     const split = clean.split('/');
     split.splice(0, 1);
     if (split.length > 1) {
-        return getPrefixedURL(`/${split[0]}`);
+        return `/${split[0]}`;
     }
 };
 
