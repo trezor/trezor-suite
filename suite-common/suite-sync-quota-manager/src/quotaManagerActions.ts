@@ -31,9 +31,12 @@ export const quotaManagerDeviceFetched = createAction(
     }),
 );
 
+export const eraseFetchedDataDebug = createAction(`${QUOTA_MANAGER_PREFIX}/eraseFetchedData`);
+
 export const suiteSyncQuotaManagerActions = {
     updateQuotaManagerBaseUrl,
     quotaManagerFetchError,
     quotaManagerDeviceFetched,
     quotaManagerEnabledUpdated,
+    eraseFetchedDataDebug,
 };

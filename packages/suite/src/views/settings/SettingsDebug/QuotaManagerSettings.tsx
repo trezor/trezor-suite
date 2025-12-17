@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import {
+    eraseFetchedDataDebug,
     quotaManagerEnabledUpdated,
     selectAssignedOwnerIds,
     selectIsQuotaManagerEnabled,
@@ -22,10 +23,11 @@ export const QuotaManagerSettings = () => {
     const assignedOwnerIds = useSelector(selectAssignedOwnerIds);
     const isQuotaManagerEnabled = useSelector(selectIsQuotaManagerEnabled);
     const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
-    const [isLoading, setIsLoading] = useState(false);
+
+    const [isUpdateUrlLoading, setIsUpdateUrlLoading] = useState(false);
 
     const onQuotaManagerBaseUrlSave = () => {
-        setIsLoading(true);
+        setIsUpdateUrlLoading(true);
         dispatch(
             updateQuotaManagerBaseUrl({
                 baseUrl: quotaManagerUrl,
@@ -34,9 +36,11 @@ export const QuotaManagerSettings = () => {
 
         // fake ui loading delay
         setTimeout(() => {
-            setIsLoading(false);
+            setIsUpdateUrlLoading(false);
         }, 300);
     };
+
+    const onEraseFetchedData = () => dispatch(eraseFetchedDataDebug());
 
     const toggleIsQuotaManagerEnabled = () => {
         dispatch(quotaManagerEnabledUpdated({ isEnabled: !isQuotaManagerEnabled }));
@@ -61,14 +65,14 @@ export const QuotaManagerSettings = () => {
                 <ActionColumn>
                     <Column gap={spacings.xxs}>
                         <Input
-                            disabled={isLoading}
+                            disabled={isUpdateUrlLoading}
                             value={quotaManagerUrl}
                             onChange={e => setQuotaManagerUrl(e.target.value)}
                             rightContent={
                                 <Button
                                     onClick={onQuotaManagerBaseUrlSave}
                                     size="small"
-                                    isLoading={isLoading}
+                                    isLoading={isUpdateUrlLoading}
                                 >
                                     Save
                                 </Button>
@@ -117,6 +121,11 @@ export const QuotaManagerSettings = () => {
                         )}
                     </Column>
                 </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <Button onClick={onEraseFetchedData} intent="critical">
+                    Erase fetched data
+                </Button>
             </SectionItem>
         </SettingsSection>
     );

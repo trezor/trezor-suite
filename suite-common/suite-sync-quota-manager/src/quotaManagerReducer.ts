@@ -1,6 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
+    eraseFetchedDataDebug,
     quotaManagerDeviceFetched,
     quotaManagerEnabledUpdated,
     updateQuotaManagerBaseUrl,
@@ -28,6 +29,10 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
         builder
             .addCase(updateQuotaManagerBaseUrl, (state, { payload }) => {
                 state.baseUrl = payload.baseUrl;
+            })
+            .addCase(eraseFetchedDataDebug, state => {
+                state.registeredDevices = [];
+                state.ownersAllowance = [];
             })
             .addCase(quotaManagerEnabledUpdated, (state, { payload }) => {
                 state.enabled = payload.isEnabled;
