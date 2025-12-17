@@ -1,8 +1,9 @@
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { type History, createMemoryHistory } from 'history';
+import { createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
+import { RouterServices } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -37,13 +38,16 @@ import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 
-const MainDesktop = ({ history }: { history: History }) => {
+const MainDesktop = ({ routerServices }: { routerServices: RouterServices }) => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupDesktop();
 
     return (
-        <Main history={history} trafficLightOffset={<TrafficLightDraggableWindowHeader />}>
+        <Main
+            routerServices={routerServices}
+            trafficLightOffset={<TrafficLightDraggableWindowHeader />}
+        >
             <GlobalStyle />
             <DesktopUpdater />
             <Metadata />
@@ -70,9 +74,10 @@ export const init = async (container: HTMLElement) => {
     const memoryHistory = createMemoryHistory();
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
+    const routerServices = createRouterServices(memoryHistory);
     const { store, services } = initStore(preloadAction, {
         statePatch,
-        additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
+        additionalExtraDeps: { routerServices },
     });
 
     // Expose Redux store for Playwright/e2e tests
@@ -141,7 +146,7 @@ export const init = async (container: HTMLElement) => {
     root.render(
         <SuiteServicesProvider services={services}>
             <ReduxProvider store={store}>
-                <MainDesktop history={memoryHistory} />
+                <MainDesktop routerServices={routerServices} />
             </ReduxProvider>
         </SuiteServicesProvider>,
     );

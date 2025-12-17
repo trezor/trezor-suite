@@ -3,8 +3,10 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { History, createBrowserHistory } from 'history';
+import { createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
+
+import { RouterServices } from '@suite-common/redux-utils';
 
 import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
@@ -21,14 +23,14 @@ import { initSentry } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
 
-const MainWeb = ({ history }: { history: History }) => {
+const MainWeb = ({ routerServices }: { routerServices: RouterServices }) => {
     usePlaywright();
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupWeb();
 
     return (
-        <Main history={history}>
+        <Main routerServices={routerServices}>
             <Metadata />
             <ToastContainer />
             <Preloader>
@@ -52,16 +54,15 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
+    const routerServices = createRouterServices(browserHistory);
     const { store, services } = initStore(preloadAction, {
-        additionalExtraDeps: {
-            routerServices: createRouterServices(browserHistory),
-        },
+        additionalExtraDeps: { routerServices },
     });
 
     root.render(
         <SuiteServicesProvider services={services}>
             <ReduxProvider store={store}>
-                <MainWeb history={browserHistory} />
+                <MainWeb routerServices={routerServices} />
             </ReduxProvider>
         </SuiteServicesProvider>,
     );

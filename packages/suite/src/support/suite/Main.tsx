@@ -1,8 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
-import { type History } from 'history';
-
 import { FormatterProvider } from '@suite-common/formatters';
+import { RouterServices } from '@suite-common/redux-utils';
 
 import { useFormattersConfig } from 'src/hooks/suite';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -18,11 +17,11 @@ import { RouterHandler } from './RouterHandler';
 import { useConnectPopupModals } from './useConnectPopupModals';
 
 export const Main = ({
-    history,
+    routerServices,
     trafficLightOffset,
     children,
 }: {
-    history: History;
+    routerServices: RouterServices;
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
 }) => {
@@ -41,7 +40,7 @@ export const Main = ({
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
-                        <RouterHandler history={history} />
+                        <RouterHandler routerServices={routerServices} />
                         <ConnectedIntlProvider>
                             <FormatterProvider config={formattersConfig}>
                                 {children}
