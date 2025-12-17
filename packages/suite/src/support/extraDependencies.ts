@@ -7,12 +7,7 @@ import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-web
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
-    CommonServices,
-    ExtraDependenciesStatic,
-    LocationPushState,
-    To,
-} from '@suite-common/redux-utils';
+import { CommonServices, ExtraDependenciesStatic, RouterServices } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -65,9 +60,10 @@ const connectInitSettings = {
     firmwareHashCheckTimeouts: FW_HASH_CHECK_DEFAULT_TIMEOUTS,
 };
 
-export const createRouterServices = (history: History) => ({
+export const createRouterServices = (history: History): RouterServices => ({
     getLocation: () => history.location,
-    navigate: (to: To, state?: LocationPushState) => history.push(to, state),
+    navigate: (to, state) => history.push(to, state),
+    listen: listener => history.listen(listener),
 });
 
 type SuiteAppDeps = {
