@@ -6,13 +6,18 @@ import { useMMKVDevTools } from '@rozenite/mmkv-plugin';
 import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';
 import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
 
-import { encryptedStorage } from '@suite-native/storage';
+import { createEnsureMMKVKey, createMMKVStorage } from '@suite-native/storage';
 
 export const useRozenitePlugins = () => {
+    const ensureMMKVKey = createEnsureMMKVKey();
+    const storage = createMMKVStorage({
+        ensureMMKVKey,
+    });
+
     usePerformanceMonitorDevTools();
     useMMKVDevTools({
         storages: {
-            'encrypted-storage': encryptedStorage,
+            'encrypted-storage': storage,
         },
     });
     useNetworkActivityDevTools();
