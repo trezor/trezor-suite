@@ -29,6 +29,7 @@ import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
     getFirstFreshAddress,
+    isCardanoStakingActive,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { doesCoinSupportStaking } from '@suite-native/staking';
@@ -131,8 +132,11 @@ export const getAccountListSections = (
 
     const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
     const hasAnyKnownTokens = canHasTokens && !!tokens.length;
+
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
-    const hasStaking = doesCoinSupportStaking(account.symbol) && stakingBalance !== '0';
+
+    const hasStakingBalance = stakingBalance !== '0' || isCardanoStakingActive(account);
+    const hasStaking = doesCoinSupportStaking(account.symbol) && hasStakingBalance;
 
     if (canHasTokens) {
         sections.push({

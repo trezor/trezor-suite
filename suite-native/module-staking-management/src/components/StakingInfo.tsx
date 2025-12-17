@@ -4,6 +4,7 @@ import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SUITE_URL } from '@trezor/urls';
 
+import { CardanoStakingInfoBanner } from './CardanoStakingInfoBanner';
 import { StakeClaimableCard } from './StakeClaimableCard';
 import { StakePendingCard } from './StakePendingCard';
 import { StakingBalancesOverviewCard } from './StakingBalancesOverviewCard';
@@ -38,6 +39,8 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
             <StakePendingCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
 
             <StakeClaimableCard accountKey={accountKey} handleToggleBottomSheet={openModal} />
+
+            <CardanoStakingInfoBanner accountKey={accountKey} />
 
             <StakingBalancesOverviewCard
                 accountKey={accountKey}

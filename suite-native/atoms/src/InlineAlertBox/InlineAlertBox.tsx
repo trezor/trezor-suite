@@ -4,6 +4,8 @@ import { Icon, IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { BoxProps } from '../Box';
+import { Button, ButtonProps } from '../Button/Button';
+import { HStack } from '../Stack';
 import { Text } from '../Text';
 import {
     InlineAlertBoxStyles,
@@ -11,8 +13,6 @@ import {
     variantToColorMap,
     variantToIconName,
 } from './presets';
-import { Button, ButtonProps } from '../Button/Button';
-import { HStack } from '../Stack';
 
 const alertWrapperStyle = prepareNativeStyle<
     Omit<InlineAlertBoxStyles, 'buttonColorScheme'> & { isButtonVisible: boolean }
