@@ -168,6 +168,7 @@ export const networks = {
             'nfts',
             'coin-definitions',
             'nft-definitions',
+            'mev-protection',
             'eip1559',
             'graph',
         ],
