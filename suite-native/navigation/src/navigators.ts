@@ -400,7 +400,7 @@ export type TradingStackParamList = {
     [TradingStackRoutes.TradingSellPreview]: undefined;
     [TradingStackRoutes.TradingFees]: {
         accountKey: AccountKey;
-        tradingType: TradingType;
+        tradingType: Exclude<TradingType, 'buy'>;
     };
     [TradingStackRoutes.TradingSellOutputsReview]: {
         accountKey: AccountKey;

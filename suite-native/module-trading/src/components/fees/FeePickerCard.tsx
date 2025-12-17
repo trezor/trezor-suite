@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { TradingType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
+import {
+    TradingExchangeType,
+    TradingSellType,
+    selectTradingComposedTransactionInfo,
+} from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 import { AnimatedCard } from '@suite-native/atoms';
@@ -22,7 +26,7 @@ type FeePickerCardProps = {
     trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
     symbol: NetworkSymbol;
-    tradingType: TradingType;
+    tradingType: TradingSellType | TradingExchangeType;
 };
 
 export const FeePickerCard = ({ trade, accountKey, symbol, tradingType }: FeePickerCardProps) => {
