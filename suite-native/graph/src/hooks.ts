@@ -22,7 +22,8 @@ import {
 } from '@suite-common/wallet-core';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { timeSwitchItems } from './components/TimeSwitch';
 import { selectPortfolioGraphAccountItems } from './selectors';
@@ -41,7 +42,7 @@ const useWatchTimeframeChangeForAnalytics = (
     symbol?: NetworkSymbol,
 ) => {
     const isFirstRender = useRef(true);
-
+    const legacyAnalytics = useLegacyAnalytics();
     useEffect(() => {
         if (isFirstRender.current) {
             // Do not report default value on first render.
@@ -58,18 +59,18 @@ const useWatchTimeframeChangeForAnalytics = (
             if (symbol) {
                 // TODO: Report tokenSymbol and tokenAddress if displaying ERC20 token account graph.
                 // related to issue: https://github.com/trezor/trezor-suite/issues/7839
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.AssetDetailTimeframeChange,
                     payload: { timeframe: timeframeKey, assetSymbol: symbol },
                 });
             } else {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.WatchPortfolioTimeframeChange,
                     payload: { timeframe: timeframeKey },
                 });
             }
         }
-    }, [timeframeHours, symbol, isFirstRender]);
+    }, [timeframeHours, symbol, isFirstRender, legacyAnalytics]);
 };
 
 const checkAndReportGraphError = (error: Error | null) => {

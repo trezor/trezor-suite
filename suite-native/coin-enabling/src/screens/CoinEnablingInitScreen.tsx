@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
@@ -30,6 +31,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 
@@ -50,7 +52,7 @@ export const CoinEnablingInitScreen = () => {
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.CoinEnablingInitState,
             payload: { enabledNetworks: values.enabledCoins },
         });

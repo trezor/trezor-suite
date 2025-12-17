@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-analytics",
+    "name": "@suite/analytics",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,6 +10,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/analytics": "workspace:*"
+        "@suite-common/analytics-types": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/analytics": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }

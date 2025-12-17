@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -7,7 +8,6 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { Dropdown, Note, Text } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -15,6 +15,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
@@ -26,6 +27,7 @@ export interface ExportActionProps {
 export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {
@@ -47,7 +49,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                 return;
             }
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsTransactionsExport,
                 payload: {
                     format: type,
@@ -87,13 +89,14 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         },
         [
             isExportRunning,
+            legacyAnalytics,
             account,
             dispatch,
-            translationString,
-            getAccountTitle,
             accountLabel,
+            getAccountTitle,
             searchQuery,
             accountMetadata,
+            translationString,
         ],
     );
 

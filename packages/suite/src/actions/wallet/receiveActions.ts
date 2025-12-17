@@ -1,8 +1,9 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { RECEIVE } from 'src/actions/wallet/constants';
@@ -40,7 +41,8 @@ export const openAddressModal =
     };
 
 export const showAddress =
-    (path: string, address: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (path: string, address: string) =>
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const device = selectSelectedDevice(getState());
         const { account } = getState().wallet.selectedAccount;
 
@@ -63,7 +65,7 @@ export const showAddress =
                 }),
             );
 
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.CreateReceiveAddressShowAddress,
                 payload: {
                     assetSymbol: account.symbol,
@@ -76,7 +78,7 @@ export const showAddress =
 
         dispatch(modalActions.preserve());
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.CreateReceiveAddressShowAddress,
             payload: {
                 assetSymbol: account.symbol,
@@ -95,7 +97,7 @@ export const showAddress =
             // show second part of the "confirm address" modal
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.CreateReceiveAddressConfirmOnTrezor,
                 payload: { assetSymbol: account.symbol },
             });

@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     BottomSheetModal,
     Box,
@@ -20,11 +21,12 @@ import { SecuritySealImages } from './SecuritySealImages';
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
+    const legacyAnalytics = useLegacyAnalytics();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {
         openModal();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupInfo,
             payload: {
                 location: 'securitySeal',

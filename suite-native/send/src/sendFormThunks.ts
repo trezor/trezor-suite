@@ -25,7 +25,7 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType, getTypedNativeLegacyAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
@@ -182,7 +182,7 @@ export const sendTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
     async (
         { selectedAccount, wasAppLeftDuringReview, tokenContract },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const isMevProtectionEnabled =
             selectIsMevProtectionEnabled(getState()) &&
@@ -218,7 +218,7 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            analytics.report({
+            getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.SendTransactionDispatched,
                 payload: {
                     symbol: selectedAccount.symbol,

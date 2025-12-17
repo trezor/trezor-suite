@@ -1,0 +1,14 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/analytics-types"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        { "path": "../../packages/analytics" },
+        { "path": "../../packages/device-utils" }
+    ]
+}

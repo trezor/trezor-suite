@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 
+import { EventType } from '@suite/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_EXCHANGE_FORM_DEX,
@@ -42,7 +43,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { useCurrentRef } from '@trezor/react-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
@@ -58,6 +58,7 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -75,6 +76,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 export const useTradingExchangeForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
+    const legacyAnalytics = useLegacyAnalytics();
     const type = 'exchange';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
@@ -284,7 +286,7 @@ export const useTradingExchangeForm = ({
 
         switch (pageType) {
             case 'form': {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingExchange,
                     payload: {
                         action: 'continue',
@@ -307,7 +309,7 @@ export const useTradingExchangeForm = ({
                 break;
             }
             case 'offers': {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingExchange,
                     payload: {
                         action: 'continue',
@@ -345,7 +347,7 @@ export const useTradingExchangeForm = ({
             );
 
             const triggerAnalyticsTradeConfirmation = () => {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingConfirmTrade,
                     payload: { action: type },
                 });
@@ -367,11 +369,12 @@ export const useTradingExchangeForm = ({
             };
         },
         [
-            account,
-            composed,
-            quotesRequest,
-            selectedFee,
             selectedQuote?.quoteId,
+            quotesRequest,
+            account,
+            selectedFee,
+            composed,
+            legacyAnalytics,
             dispatch,
             navigateToExchangeDetail,
         ],
@@ -488,7 +491,7 @@ export const useTradingExchangeForm = ({
 
         navigateToExchangeOffers();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'exchange',

@@ -11,7 +11,11 @@ import {
 } from '@suite-common/message-system';
 import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
+import {
+    DeviceAuthenticityCheckResult,
+    EventType,
+    useLegacyAnalytics,
+} from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
@@ -36,7 +40,7 @@ export const useDeviceAuthenticityCheck = () => {
     const isTropicRemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckTropic),
     );
-
+    const legacyAnalytics = useLegacyAnalytics();
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(
@@ -45,7 +49,7 @@ export const useDeviceAuthenticityCheck = () => {
             error?: string,
             payload?: StoredAuthenticateDeviceResult,
         ) => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.DeviceSettingsAuthenticityCheck,
                 payload: { result },
             });
@@ -66,7 +70,7 @@ export const useDeviceAuthenticityCheck = () => {
                 });
             }
         },
-        [],
+        [legacyAnalytics],
     );
 
     const createStoredResult = useCallback(

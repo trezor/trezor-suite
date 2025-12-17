@@ -1,3 +1,4 @@
+import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@suite/analytics';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
@@ -20,7 +21,6 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
 import { UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';

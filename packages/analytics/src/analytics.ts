@@ -7,7 +7,15 @@ import type {
 } from './types';
 import { encodeDataToQueryString, getRandomId, getUrl, reportEvent } from './utils';
 
-export class Analytics<T extends AnalyticsEvent> {
+export interface Analytics<T extends AnalyticsEvent> {
+    init: (enabled: boolean | undefined, options: InitOptions) => void;
+    enable: () => void;
+    disable: () => void;
+    isEnabled: () => boolean;
+    report: (data: T, config?: ReportConfig) => void;
+}
+
+export class QueuedAnalytics<T extends AnalyticsEvent> implements Analytics<T> {
     private enabled?: boolean;
 
     private useQueue = false;

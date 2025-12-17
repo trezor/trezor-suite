@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { EventType, TransactionCreatedEvent } from '@suite/analytics';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -9,10 +10,10 @@ import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-u
 import { StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
-import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
 
 import { Translation } from 'src/components/suite/Translation';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { getTxType } from '../utils';
 
@@ -54,6 +55,7 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
@@ -70,7 +72,7 @@ export const TransactionReviewModalBottomContent = ({
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEvent['payload']['action']) =>
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TransactionCreated,
             payload: {
                 action,
@@ -106,7 +108,7 @@ export const TransactionReviewModalBottomContent = ({
             );
 
             if (stakeType) {
-                return analytics.report({
+                return legacyAnalytics.report({
                     type: EventType.StakingConfirm,
                     payload: { action: stakeType, networkSymbol: symbol },
                 });

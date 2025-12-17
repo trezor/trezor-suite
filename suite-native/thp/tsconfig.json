@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics-types"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/thp" },
@@ -10,7 +13,6 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
-        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../../packages/connect" },

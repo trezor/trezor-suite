@@ -1,6 +1,6 @@
+import { EventType } from '@suite/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import { EventType } from '@trezor/suite-analytics';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';

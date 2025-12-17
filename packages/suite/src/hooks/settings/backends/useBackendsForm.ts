@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import { BackendType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { BackendSettings } from '@suite-common/wallet-types';
 import { isElectrumUrl } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { isUrlWithQuery } from '@trezor/utils';
 
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 export type BackendOption = BackendType | 'default';
@@ -108,6 +109,7 @@ const getStoredState = (
 });
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
@@ -230,7 +232,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         dispatch(blockchainActions.setBackend({ symbol, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsCoinsBackend,
             payload: {
                 symbol,

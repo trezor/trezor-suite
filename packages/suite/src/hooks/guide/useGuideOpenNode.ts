@@ -1,11 +1,13 @@
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useGuide } from 'src/hooks/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getNodeById } from 'src/utils/suite/guide';
 
 export const useGuideOpenNode = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { isGuideOpen, openGuide } = useGuide();
 
     const indexNode = useSelector(state => state.guide.indexNode);
@@ -30,7 +32,7 @@ export const useGuideOpenNode = () => {
             openGuide();
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideTooltipLinkNavigation,
             payload: {
                 id: node.id,

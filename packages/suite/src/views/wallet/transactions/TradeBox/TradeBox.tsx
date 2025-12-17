@@ -1,3 +1,4 @@
+import { EventType } from '@suite/analytics';
 import { Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -6,7 +7,6 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CoinLogo } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -15,6 +15,7 @@ import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
@@ -27,7 +28,8 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
-
+    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
     const isStakeNetwork = hasNetworkFeatures(account, 'staking');
@@ -58,7 +60,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 case 'buy':
                 case 'sell':
                 case 'exchange': {
-                    analytics.report({
+                    legacyAnalytics.report({
                         type: EventType.TradingNavigate,
                         payload: {
                             action: 'navigate',
@@ -73,10 +75,10 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 case 'stake': {
                     analytics.report({
                         type: EventType.StakingNavigate,
-                        payload: {
-                            action: 'navigate',
-                            from: 'account/tradebox',
-                            networkSymbol: account.symbol,
+                        attributes: {
+                            action: { value: 'navigate' },
+                            from: { value: 'account/tradebox' },
+                            networkSymbol: { value: account.symbol },
                         },
                     });
 

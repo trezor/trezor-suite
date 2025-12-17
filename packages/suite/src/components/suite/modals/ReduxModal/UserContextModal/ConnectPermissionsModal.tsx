@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite-common/analytics-types';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Card, Checkbox, Column, Icon, List, Modal, Row, Text } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
@@ -12,11 +12,12 @@ import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop'
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const [isRemembered, setIsRemembered] = useState(false);
-
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
@@ -33,8 +34,8 @@ export const ConnectPermissionsModal = () => {
             dispatch(connectPopupActions.rememberAppPermissions(rememberPayload));
         }
         dispatch(connectPopupActions.approvePermissions());
-        analytics.report({
-            type: EventTypeShared.ConnectPopupPermissions,
+        legacyAnalytics.report({
+            type: EventType.ConnectPopupPermissions,
             payload: {
                 method,
                 origin: source.origin,
@@ -45,8 +46,8 @@ export const ConnectPermissionsModal = () => {
     const onCancel = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
-        analytics.report({
-            type: EventTypeShared.ConnectPopupPermissions,
+        legacyAnalytics.report({
+            type: EventType.ConnectPopupPermissions,
             payload: {
                 method,
                 origin: source.origin,

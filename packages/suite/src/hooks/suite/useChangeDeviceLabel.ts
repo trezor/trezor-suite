@@ -2,14 +2,15 @@ import { UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { EventType } from '@suite-common/analytics-types';
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { TranslationFunction } from './useTranslation';
 
@@ -41,6 +42,7 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
@@ -59,8 +61,8 @@ export const useChangeDeviceLabel = (): {
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));
-        analytics.report({
-            type: EventTypeShared.SettingsDeviceChangeLabel,
+        legacyAnalytics.report({
+            type: EventType.SettingsDeviceChangeLabel,
         });
     });
 

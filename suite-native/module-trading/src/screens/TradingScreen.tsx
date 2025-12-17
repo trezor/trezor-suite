@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
@@ -29,16 +30,16 @@ const TradingScreenContent = () => {
     const navigation = useNavigation<NavigationProps>();
     const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
-
+    const legacyAnalytics = useLegacyAnalytics();
     useEffect(() => {
         if (tradeToBeOpened) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingSuccess,
                 payload: { type: tradeToBeOpened.tradeType },
             });
             navigation.navigate(TradingStackRoutes.TradingHistory);
         }
-    }, [tradeToBeOpened, navigation]);
+    }, [tradeToBeOpened, navigation, legacyAnalytics]);
 
     if (!activeTradingType) {
         return null;

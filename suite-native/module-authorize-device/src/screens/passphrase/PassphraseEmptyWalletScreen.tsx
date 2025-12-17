@@ -6,7 +6,8 @@ import {
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     Box,
     Button,
@@ -32,7 +33,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);
@@ -49,7 +50,7 @@ export const PassphraseEmptyWalletScreen = () => {
             );
             dispatch(runDiscoveryThunk(device));
         }
-        analytics.report({ type: EventType.PassphraseTryAgain });
+        legacyAnalytics.report({ type: EventType.PassphraseTryAgain });
     };
 
     return (

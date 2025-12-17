@@ -1,6 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
@@ -25,7 +26,6 @@ import {
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
 import { PROTO, Unsuccessful } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { getSynchronize } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -204,7 +204,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             selectedAccount,
             paymentRequests,
         }: SignAndPushSendFormTransactionThunkParams,
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
         if (!device || !selectedAccount) return;
@@ -222,7 +222,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SendInitialised,
             payload: {
                 assetSymbol: selectedAccount.symbol,
@@ -238,7 +238,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SendConfirmerOnDevice,
             payload: {
                 assetSymbol: selectedAccount.symbol,

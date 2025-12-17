@@ -1,5 +1,5 @@
+import { EventType } from '@suite/analytics';
 import { Switch, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
@@ -8,6 +8,7 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface PassphraseProps {
     isDeviceLocked: boolean;
@@ -16,12 +17,12 @@ interface PassphraseProps {
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {
         dispatch(applySettings({ use_passphrase: !passphraseProtection }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceChangePassphraseProtection,
             payload: {
                 use_passphrase: !passphraseProtection,

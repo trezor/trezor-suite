@@ -1,6 +1,6 @@
 import { JSX, useCallback, useEffect } from 'react';
 
-import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
+import { AppUpdateEventStatus, EventType } from '@suite/analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
@@ -18,6 +18,7 @@ import {
 } from 'src/actions/suite/desktopUpdateActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState, selectDesktopUpdate } from 'src/reducers/suite/desktopUpdateReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getAppUpdatePayload } from 'src/utils/suite/analytics';
 
 import { Available } from './DesktopUpdater/Available';
@@ -34,14 +35,14 @@ const alwaysOpenStates = [
     // Allow to open Early Access model even after updater error (when desktopUpdate.latest is undefined).
     UpdateState.EarlyAccessDisable,
     UpdateState.EarlyAccessEnable,
-    // JustUpdatd is also always open, because closing it advances the state
+    // JustUpdated is also always open, because closing it advances the state
     UpdateState.JustUpdated,
 ] satisfies UpdateState[];
 
 export const DesktopUpdater = () => {
     const dispatch = useDispatch();
     const desktopUpdate = useSelector(selectDesktopUpdate);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const desktopUpdateState = desktopUpdate.state;
 
     useEffect(() => {
@@ -82,11 +83,12 @@ export const DesktopUpdater = () => {
             earlyAccessProgram: desktopUpdate.allowPrerelease,
             updateInfo: desktopUpdate.latest,
         });
-        analytics.report({
+
+        legacyAnalytics.report({
             type: EventType.AppUpdate,
             payload,
         });
-    }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest]);
+    }, [dispatch, desktopUpdate.allowPrerelease, desktopUpdate.latest, legacyAnalytics]);
 
     const hideVersionInfoModal = () => {
         dispatch(setIsVersionInfoModalVisible(false));

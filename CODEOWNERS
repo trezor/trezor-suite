@@ -10,16 +10,22 @@
 /scripts/list-outdated-dependencies/wallet-dependencies.txt @tomasklim
 /scripts @karliatto
 
-/packages/analytics @tomasklim
-/packages/suite-analytics @tomasklim
 
-/suite-common/analytics/src/events/shared/constants.ts @kolomaznikt
-/suite-common/analytics/src/events/suite/constants.ts @kolomaznikt
-/suite-common/analytics/src/events/suite-native/constants.ts @kolomaznikt
+/packages/analytics @jvaclavik
+/suite/analytics @jvaclavik
+/suite/analytics/src/events @kolomaznikt
+/suite/analytics/src/constants.ts @kolomaznikt
+/suite/analytics/src/types.ts @kolomaznikt
 
-/suite-common/analytics/src/events/shared/types.ts @kolomaznikt
-/suite-common/analytics/src/events/suite/types.ts @kolomaznikt
-/suite-common/analytics/src/events/suite-native/types.ts @kolomaznikt
+/suite-common/analytics @jvaclavik
+/suite-common/analytics/src/sharedEvents/events @kolomaznikt
+/suite-common/analytics/src/sharedEvents/events/constants.ts @kolomaznikt
+/suite-common/analytics/src/sharedEvents/events/types.ts @kolomaznikt
+
+/suite-native/analytics @jvaclavik
+/suite-native/analytics/src/events @kolomaznikt
+/suite-native/analytics/src/constants.ts @kolomaznikt
+/suite-native/analytics/src/types.ts @kolomaznikt
 
 /packages/blockchain-link @mroz22 @marekrjpolak
 

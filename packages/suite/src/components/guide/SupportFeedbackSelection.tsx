@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Icon, Image, Link, Paragraph } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, transitions, typography } from '@trezor/theme';
 import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
@@ -14,6 +14,7 @@ import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guid
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`
     & + & {
@@ -84,6 +85,7 @@ const LabelHeadline = styled.strong`
 `;
 
 export const SupportFeedbackSelection = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -102,14 +104,14 @@ export const SupportFeedbackSelection = () => {
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
     const handleBugButtonClick = () => {
         dispatch(setView('FEEDBACK_BUG'));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'bug' },
         });
     };
     const handleFeedbackButtonClick = () => {
         dispatch(setView('FEEDBACK_SUGGESTION'));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'suggestion' },
         });

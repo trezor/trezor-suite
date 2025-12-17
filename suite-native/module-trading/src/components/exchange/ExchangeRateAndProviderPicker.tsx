@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
@@ -15,7 +16,7 @@ import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 export const ExchangeRateAndProviderPicker = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const quotes = useSelector(selectGroupedExchangeQuotes);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const form = useExchangeFormContext();
 
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
@@ -31,7 +32,7 @@ export const ExchangeRateAndProviderPicker = () => {
         }
 
         showSheet();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'exchange',
@@ -46,7 +47,7 @@ export const ExchangeRateAndProviderPicker = () => {
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'exchange',

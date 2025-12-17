@@ -1,7 +1,8 @@
+import { EventType, OnboardingAnalytics, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice, startDiscoveryThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { EventType, OnboardingAnalytics, analytics } from '@trezor/suite-analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import { stepCategories } from 'src/config/onboarding/steps';
@@ -98,7 +99,7 @@ const resetOnboarding = (): OnboardingAction => ({
     type: ONBOARDING.RESET_ONBOARDING,
 });
 
-const goToSuite = () => (dispatch: Dispatch, getState: GetState) => {
+const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     const device = selectSelectedDevice(getState());
     const onboardingAnalytics = selectOnboardingAnalytics(getState());
     // Clear modals that might block navigation. They aren't relevant anyway, as there is no <ModalSwitcher /> in onboarding.
@@ -124,7 +125,7 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState) => {
         };
         delete payload.startTime;
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.DeviceSetupCompleted,
             payload,
         });

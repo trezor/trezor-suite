@@ -1,4 +1,8 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import {
+    EventType,
+    SuiteNativeLegacyAnalyticsEvents,
+    useLegacyAnalytics,
+} from '@suite-native/analytics';
 import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -8,60 +12,63 @@ import {
     DeviceSuspicionCause,
     StackProps,
 } from '@suite-native/navigation';
+import { Analytics } from '@trezor/analytics';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 import { SecuritySealDescription } from '../components/SecuritySealDescription';
 
-const cardStepperContentMap = {
-    1: {
-        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
-        secondaryButtonParameter: 'untrustedReseller',
-        description: (
-            <Translation
-                id="moduleDeviceOnboarding.securityCheckScreen.step1.description"
-                values={{
-                    link: linkChunk => (
-                        <Link
-                            href={TREZOR_RESELLERS_URL}
-                            onPress={() => {
-                                analytics.report({
-                                    type: EventType.DeviceSetupInfo,
-                                    payload: {
-                                        location: 'untrustedReseller',
-                                    },
-                                });
-                            }}
-                            label={linkChunk}
-                            isUnderlined
-                            textVariant="highlight"
-                            textColor="backgroundSecondaryDefault"
-                        />
-                    ),
-                }}
-            />
-        ),
-        icon: 'seal',
-    },
-    2: {
-        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.header" />,
-        description: <SecuritySealDescription />,
-        icon: 'selectionSlash',
-        secondaryButtonParameter: 'securitySeal',
-    },
-    3: {
-        header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.header" />,
-        description: (
-            <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.description" />
-        ),
-        icon: 'package',
-        secondaryButtonParameter: 'packaging',
-    },
-} as const satisfies CardStepperMap<DeviceSuspicionCause>;
+const cardStepperContentMap = (legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>) =>
+    ({
+        1: {
+            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step1.header" />,
+            secondaryButtonParameter: 'untrustedReseller',
+            description: (
+                <Translation
+                    id="moduleDeviceOnboarding.securityCheckScreen.step1.description"
+                    values={{
+                        link: linkChunk => (
+                            <Link
+                                href={TREZOR_RESELLERS_URL}
+                                onPress={() => {
+                                    legacyAnalytics.report({
+                                        type: EventType.DeviceSetupInfo,
+                                        payload: {
+                                            location: 'untrustedReseller',
+                                        },
+                                    });
+                                }}
+                                label={linkChunk}
+                                isUnderlined
+                                textVariant="highlight"
+                                textColor="backgroundSecondaryDefault"
+                            />
+                        ),
+                    }}
+                />
+            ),
+            icon: 'seal',
+        },
+        2: {
+            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step2.header" />,
+            description: <SecuritySealDescription />,
+            icon: 'selectionSlash',
+            secondaryButtonParameter: 'securitySeal',
+        },
+        3: {
+            header: <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.header" />,
+            description: (
+                <Translation id="moduleDeviceOnboarding.securityCheckScreen.step3.description" />
+            ),
+            icon: 'package',
+            secondaryButtonParameter: 'packaging',
+        },
+    }) as const satisfies CardStepperMap<DeviceSuspicionCause>;
 
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const handleFinishStepper = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInfo);
     };
@@ -72,7 +79,7 @@ export const SecurityCheckScreen = ({
         navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause: id,
         });
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: id,
@@ -97,7 +104,7 @@ export const SecurityCheckScreen = ({
                     }
                     primaryButtonText={<Translation id="generic.buttons.yes" />}
                     onPressSecondaryButton={handlePressSecondaryButton}
-                    stepToContentMap={cardStepperContentMap}
+                    stepToContentMap={cardStepperContentMap(legacyAnalytics)}
                 />
             </VStack>
         </DeviceOnboardingScreenWithExitButton>

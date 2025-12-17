@@ -1,7 +1,9 @@
 import { useCallback, useRef } from 'react';
 
+import { useTheme } from 'styled-components';
+
+import { EventType } from '@suite/analytics';
 import { Divider, Link, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -16,6 +18,7 @@ import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
@@ -30,6 +33,7 @@ type GlobalReceiveModalProps = {
 const LIST_HEIGHT = 385;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
@@ -82,7 +86,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 }),
                             );
 
-                            analytics.report({
+                            legacyAnalytics.report({
                                 type: EventType.DashboardReceiveModalOptions,
                                 payload: {
                                     option: 'addAccount',

@@ -3,6 +3,7 @@ import {
     DevToolsEnhancerOptions,
     Dispatch,
     Middleware,
+    MiddlewareAPI,
     Reducer,
     combineReducers,
     configureStore,
@@ -142,7 +143,15 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
               )
             : preloadedState;
 
-    let extra: ExtraDependencies | null = null as ExtraDependencies | null;
+    const extraFactory = (api: MiddlewareAPI) => ({
+        ...extraDependencies,
+        ...(options.additionalExtraDeps || {}),
+        services: createSuiteCompositionRoot(api),
+    });
+
+    let extra: ReturnType<typeof extraFactory> | null = null as ReturnType<
+        typeof extraFactory
+    > | null;
 
     const store = configureStore({
         reducer: rootReducer as Reducer<AppState, InferredAction, PreloadedState>,
@@ -161,12 +170,8 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
             })
                 .prepend(
                     createStoreWithExtraStoreMiddleware({
-                        extraFactory: api => ({
-                            ...extraDependencies,
-                            ...(options.additionalExtraDeps || {}),
-                            services: createSuiteCompositionRoot(api),
-                        }),
-                        onExtraCreated: initializedExtra => {
+                        extraFactory,
+                        onExtraCreated: (initializedExtra: ReturnType<typeof extraFactory>) => {
                             extra = initializedExtra;
                         },
                     }),

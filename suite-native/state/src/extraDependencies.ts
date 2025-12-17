@@ -4,10 +4,16 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import { type ExtraDependencies, ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    type NativeAnalyticsDep,
+    type NativeLegacyAnalyticsDep,
+    createAnalytics,
+    createLegacyAnalytics,
+} from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -42,7 +48,9 @@ type NativeAppDeps = {
 } & EnsureEncryptionKeyDep &
     MMKVStorageDep;
 
-export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
+export const createNativeCompositionRoot = (
+    deps: NativeAppDeps,
+): NativeServices & NativeAnalyticsDep & NativeLegacyAnalyticsDep => {
     const platformEncryption = createNativePlatformEncryption({
         ensureEncryptionKey: deps.ensureEncryptionKey,
     });
@@ -63,55 +71,61 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         }),
         platformEncryption,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
+        legacyAnalytics: createLegacyAnalytics(),
+        analytics: createAnalytics(),
     };
 };
 
-export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(extraDependenciesMock, {
-    selectors: {
-        selectTokenDefinitionsEnabledNetworks,
-        selectDevice: selectSelectedDevice,
-        selectDebugSettings: () => ({
-            transports,
-        }),
-        selectTradingEnvironment,
-        // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
-        //  and without defining the selector, it would use extraDependenciesMock value there
-        selectSelectedAccount: () => ({
-            status: 'none',
-            loader: undefined,
-            account: undefined,
-            network: undefined,
-            params: undefined,
-        }),
-        selectThpSettings: state => ({
-            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
-            hostName: Platform.OS === 'ios' ? Device.modelName : Device.deviceName,
-            pairingMethods: ['CodeEntry', 'NFC'],
-            knownCredentials: state.thp?.credentials,
-        }),
-        selectIsSuiteSyncEnabled,
-    } as Partial<ExtraDependenciesStatic['selectors']>,
-    thunks: {
-        forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-    } as Partial<ExtraDependenciesStatic['thunks']>,
-    actions: {} as Partial<ExtraDependenciesStatic['actions']>,
-    actionTypes: {} as Partial<ExtraDependenciesStatic['actionTypes']>,
-    reducers: {} as Partial<ExtraDependenciesStatic['reducers']>,
-    utils: {
-        connectInitSettings: {
-            lazyLoad: false,
-            transportReconnect: false,
-            debug: false,
-            env: 'react-native',
-            popup: false,
-            manifest: {
-                email: 'info@trezor.io',
-                appName: 'Trezor Suite',
-                appUrl: '@trezor/suite',
+// @TODO test code (extraDependenciesMock) shouldn't be used in production!
+export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(
+    extraDependenciesMock as ExtraDependencies,
+    {
+        selectors: {
+            selectTokenDefinitionsEnabledNetworks,
+            selectDevice: selectSelectedDevice,
+            selectDebugSettings: () => ({
+                transports,
+            }),
+            selectTradingEnvironment,
+            // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
+            //  and without defining the selector, it would use extraDependenciesMock value there
+            selectSelectedAccount: () => ({
+                status: 'none',
+                loader: undefined,
+                account: undefined,
+                network: undefined,
+                params: undefined,
+            }),
+            selectThpSettings: state => ({
+                // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
+                hostName: Platform.OS === 'ios' ? Device.modelName : Device.deviceName,
+                pairingMethods: ['CodeEntry', 'NFC'],
+                knownCredentials: state.thp?.credentials,
+            }),
+            selectIsSuiteSyncEnabled,
+        } as Partial<ExtraDependenciesStatic['selectors']>,
+        thunks: {
+            forgetBluetoothDevice: forgetBluetoothDeviceThunk,
+        } as Partial<ExtraDependenciesStatic['thunks']>,
+        actions: {} as Partial<ExtraDependenciesStatic['actions']>,
+        actionTypes: {} as Partial<ExtraDependenciesStatic['actionTypes']>,
+        reducers: {} as Partial<ExtraDependenciesStatic['reducers']>,
+        utils: {
+            connectInitSettings: {
+                lazyLoad: false,
+                transportReconnect: false,
+                debug: false,
+                env: 'react-native',
+                popup: false,
+                manifest: {
+                    email: 'info@trezor.io',
+                    appName: 'Trezor Suite',
+                    appUrl: '@trezor/suite',
+                },
             },
-        },
-        reportSecurityCheck,
-    } as Partial<ExtraDependenciesStatic['utils']>,
-} as OneLevelPartial<ExtraDependenciesStatic>) as ExtraDependenciesStatic;
+            reportSecurityCheck,
+        } as Partial<ExtraDependenciesStatic['utils']>,
+    } as OneLevelPartial<ExtraDependenciesStatic>,
+) as ExtraDependenciesStatic;
 
 type OneLevelPartial<T extends object> = Record<keyof T, Partial<T[keyof T]>>;

@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -12,6 +13,7 @@ import {
 } from '@suite-native/navigation';
 
 export const DemoAccountQuestionnaireIntroScreen = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -21,7 +23,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
         >();
 
     const handleContinue = () => {
-        analytics.report({ type: EventType.DemoAccountQuestionnaireStart }, { force: true });
+        legacyAnalytics.report({ type: EventType.DemoAccountQuestionnaireStart }, { force: true });
         navigation.navigate(DemoAccountQuestionnaireStackRoutes.Reason);
     };
 

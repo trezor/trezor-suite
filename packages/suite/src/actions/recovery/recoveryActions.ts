@@ -1,7 +1,8 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { RECOVERY } from 'src/actions/recovery/constants';
@@ -55,45 +56,49 @@ const submit = (word: string) => () => {
     TrezorConnect.uiResponse({ type: UI.RECEIVE_WORD, payload: word });
 };
 
-const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
-    const { advancedRecovery, wordsCount } = getState().recovery;
-    const device = selectSelectedDevice(getState());
+const checkSeed =
+    () => async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+        const { advancedRecovery, wordsCount } = getState().recovery;
+        const device = selectSelectedDevice(getState());
 
-    if (!device?.features) return;
+        if (!device?.features) return;
 
-    dispatch(setError(undefined));
+        dispatch(setError(undefined));
 
-    if (device.features.internal_model === DeviceModelInternal.T1B1) {
-        dispatch(setStatus('waiting-for-confirmation'));
-    } else {
-        dispatch(setStatus('in-progress'));
-    }
+        if (device.features.internal_model === DeviceModelInternal.T1B1) {
+            dispatch(setStatus('waiting-for-confirmation'));
+        } else {
+            dispatch(setStatus('in-progress'));
+        }
 
-    const response = await TrezorConnect.recoveryDevice({
-        type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
-        input_method: advancedRecovery
-            ? PROTO.RecoveryDeviceInputMethod.Matrix
-            : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
-        word_count: wordsCount,
-        enforce_wordlist: true,
-        device: {
-            path: device.path,
-        },
-    });
-
-    if (!response.success) {
-        dispatch(setError(response.payload.error));
-        analytics.report({
-            type: EventType.SettingsDeviceCheckSeed,
-            status: 'error',
-            error: response.payload.code,
+        const response = await TrezorConnect.recoveryDevice({
+            type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
+            input_method: advancedRecovery
+                ? PROTO.RecoveryDeviceInputMethod.Matrix
+                : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
+            word_count: wordsCount,
+            enforce_wordlist: true,
+            device: {
+                path: device.path,
+            },
         });
-    } else {
-        analytics.report({ type: EventType.SettingsDeviceCheckSeed, status: 'finished' });
-    }
 
-    dispatch(setStatus('finished'));
-};
+        if (!response.success) {
+            dispatch(setError(response.payload.error));
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+                type: EventType.SettingsDeviceCheckSeed,
+                status: 'error',
+                error: response.payload.code,
+            });
+        } else {
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+                type: EventType.SettingsDeviceCheckSeed,
+                status: 'finished',
+            });
+        }
+
+        dispatch(setStatus('finished'));
+    };
 
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;

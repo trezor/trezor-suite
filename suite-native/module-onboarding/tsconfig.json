@@ -2,6 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/analytics-types"
+        },
         { "path": "../analytics" },
         { "path": "../app-init" },
         { "path": "../atoms" },
@@ -13,6 +16,7 @@
         { "path": "../settings" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
+        { "path": "../../packages/analytics" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
