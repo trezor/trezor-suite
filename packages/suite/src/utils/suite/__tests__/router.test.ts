@@ -6,6 +6,7 @@ import {
     getRoute,
     getTopLevelRoute,
     stripPrefixedPathname,
+    stripPrefixedURL,
 } from '../router';
 
 const OLD_ENV = { ...process.env };
@@ -97,6 +98,20 @@ describe('router', () => {
         it('should strip params delimited by a hashtag from the URL', () => {
             expect(stripPrefixedPathname('/accounts/send/#/btc/0')).toEqual('/accounts/send');
             expect(stripPrefixedPathname('/accounts/send/#/42')).toEqual('/accounts/send');
+        });
+    });
+
+    describe('stripPrefixedUrl', () => {
+        it('should strip prefix from the URL', () => {
+            const prefix = '/test/asset/prefix';
+            process.env.ASSET_PREFIX = prefix;
+            expect(stripPrefixedURL(`${prefix}/accounts/send/#/btc/0`)).toEqual(
+                `/accounts/send/#/btc/0`,
+            );
+            process.env.ASSET_PREFIX = '';
+            expect(stripPrefixedURL(`${prefix}/accounts/send/#/btc/0`)).toEqual(
+                `${prefix}/accounts/send/#/btc/0`,
+            );
         });
     });
 

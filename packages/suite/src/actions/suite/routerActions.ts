@@ -18,7 +18,6 @@ import {
     findRouteByName,
     getAppWithParams,
     getBackgroundRoute,
-    getPrefixedURL,
     getRoute,
 } from 'src/utils/suite/router';
 
@@ -128,7 +127,7 @@ export const goto =
 
         if (!unlocked) return;
 
-        const urlBase = getPrefixedURL(getRoute(routeName, params));
+        const urlBase = getRoute(routeName, params);
 
         if (urlBase === state.router.url) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
@@ -182,7 +181,7 @@ export const closeModalApp =
         const location = extra.routerServices.getLocation();
 
         if (!preserveParams && location.hash.length > 0) {
-            extra.routerServices.navigate(getPrefixedURL(location.pathname));
+            extra.routerServices.navigate(location.pathname);
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
             dispatch(
