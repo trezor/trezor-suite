@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import stringify from 'json-stable-stringify';
 import path from 'path';
+import { URL } from 'url';
 
 import {
     HttpServer,
@@ -80,7 +81,7 @@ const validateProtocolMessageBody =
     };
 
 const COMPATIBILITY_PORT = 21325;
-const ADDRESS = 'http://127.0.0.1';
+const ADDRESS = new URL('http://127.0.0.1');
 
 export class TrezordNode {
     version = '3.1.0';
@@ -220,13 +221,13 @@ export class TrezordNode {
         const primaryApp = new HttpServer({
             ports: [this.requestedPort],
             logger: this.logger,
-            address: ADDRESS.replace('http://', ''),
+            address: ADDRESS.hostname,
         });
 
         const compatibilityApp = new HttpServer({
             ports: [COMPATIBILITY_PORT],
             logger: this.logger,
-            address: ADDRESS.replace('http://', ''),
+            address: ADDRESS.hostname,
         });
 
         const bindHandlers = (app: HttpServer<any>) => {
@@ -237,7 +238,7 @@ export class TrezordNode {
                         !req.headers.origin &&
                         req.headers.host &&
                         [
-                            `${ADDRESS}:${app.getServerAddress().port}`,
+                            `${ADDRESS.hostname}:${app.getServerAddress().port}`,
                             `localhost:${app.getServerAddress().port}`,
                         ].includes(req.headers.host)
                     ) {
@@ -461,7 +462,7 @@ export class TrezordNode {
             app.get('/', [
                 (_req, res) => {
                     res.writeHead(301, {
-                        Location: `${ADDRESS}:${app.getServerAddress().port}/status`,
+                        Location: `${ADDRESS.origin}:${app.getServerAddress().port}/status`,
                     });
                     res.end();
                 },
@@ -492,7 +493,7 @@ export class TrezordNode {
                     const signal = this.createAbortSignal(res);
                     await this.core.enumerate({ signal });
                     const props = {
-                        intro: `To download full logs go to ${ADDRESS}:${app.getServerAddress().port}/logs`,
+                        intro: `To download full logs go to ${ADDRESS.origin}:${app.getServerAddress().port}/logs`,
                         version: this.version,
                         bundledVersion: this.bundledVersion,
                         devices: this.descriptors,
@@ -569,7 +570,7 @@ export class TrezordNode {
     }
 
     public async status() {
-        const running = await fetch(`${ADDRESS}:${this.port ?? this.requestedPort}/`)
+        const running = await fetch(`${ADDRESS.origin}:${this.port ?? this.requestedPort}/`)
             .then(resp => resp.ok)
             .catch(() => false);
 
