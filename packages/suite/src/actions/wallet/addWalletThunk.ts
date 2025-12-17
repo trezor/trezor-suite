@@ -1,7 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { DEVICE_MODULE_PREFIX } from '@suite-common/wallet-core';
 
-import { getBackgroundRoute } from 'src/utils/suite/router';
+import { findRoute } from 'src/utils/suite/router';
 
 import { goto } from '../suite/routerActions';
 
@@ -12,7 +12,8 @@ export const redirectAfterWalletSelectedThunk = createThunk<
 >(
     `${DEVICE_MODULE_PREFIX}/redirectAfterWalletSelectedThunk`,
     async (options, { dispatch, extra }) => {
-        const backgroundRoute = getBackgroundRoute(extra);
+        const location = extra.routerServices.getLocation();
+        const backgroundRoute = findRoute(location.pathname);
 
         // NOTE: the URL is being static when you switch device like /btc/4/norma
         // when you switch to other device (wallet), there might not be /btc/4, but just /btc/1
@@ -41,12 +42,6 @@ export const redirectAfterWalletSelectedThunk = createThunk<
 export const openSwitchDeviceDialog = createThunk<void, void, void>(
     `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
     (_, { dispatch }) => {
-        dispatch(
-            goto('suite-switch-device', {
-                params: {
-                    cancelable: true,
-                },
-            }),
-        );
+        dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
     },
 );

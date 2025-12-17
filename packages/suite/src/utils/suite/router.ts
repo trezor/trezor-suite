@@ -1,4 +1,3 @@
-import { ExtraDependencies } from '@suite-common/redux-utils';
 import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
@@ -30,25 +29,11 @@ export const stripPrefixedURL = (url: string) => {
     return url;
 };
 
-// Strips params delimited by a hashtag from the URL
-export const stripPrefixedPathname = (url: string) => {
-    const [pathname] = url.split('#');
-
-    return pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
-};
-
 export const findRoute = (url: string) => {
-    const clean = stripPrefixedPathname(url);
+    const [pathname] = url.split('#');
+    const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 
     return routes.find(r => r.pattern === clean);
-};
-
-export const findRouteByName = (name: Route['name']) => routes.find(r => r.name === name);
-
-export const getApp = (url: string) => {
-    const route = findRoute(url);
-
-    return route ? route.app : 'unknown';
 };
 
 const validateWalletParams = (url: string): CommonWalletParams => {
@@ -194,49 +179,9 @@ export type RouteParams = {
         DashboardParams)[K];
 };
 
-export const getRoute = (name: Route['name'], params?: RouteParams) => {
-    const route = findRouteByName(name);
-    if (!route) return '/';
-    const order = route.params;
-    if (params && order) {
-        const paramsString = Object.entries(params)
-            // sort by order defined in routes
-            .sort((a, b) => {
-                const aIndex = order.findIndex((o: string) => o === a[0]);
-                const bIndex = order.findIndex((o: string) => o === b[0]);
+export const getRoute = (name: Route['name']) => routes.find(r => r.name === name);
 
-                return aIndex - bIndex;
-            })
-            .reduce((val, curr) => {
-                const exists = order.findIndex((o: string) => o === curr[0]);
-                if (exists < 0) return val;
-
-                return `${val}/${curr[1]}`;
-            }, '');
-
-        return paramsString.length > 0 ? `${route.pattern}#${paramsString}` : route.pattern;
-    }
-
-    return route.pattern;
-};
-
-// Used in @suite-native routerActions
-export const getTopLevelRoute = (url: string) => {
-    if (typeof url !== 'string') return;
-    const clean = stripPrefixedPathname(url);
-    const split = clean.split('/');
-    split.splice(0, 1);
-    if (split.length > 1) {
-        return `/${split[0]}`;
-    }
-};
-
-/**
- * Used only in application modal.
- * Returns Route of application beneath the application modal. (real Router value)
- */
-export const getBackgroundRoute = (extra: ExtraDependencies) => {
-    const location = extra.routerServices.getLocation();
-
-    return findRoute(location.pathname + location.hash);
-};
+export const getRouteHash = (route?: Route, params?: RouteParams) =>
+    params &&
+    route?.params &&
+    ['', ...route.params.filter(p => p in params).map(p => params[p])].join('/');

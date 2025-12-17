@@ -15,10 +15,9 @@ import { Dispatch, GetState } from 'src/types/suite';
 import {
     RouteParams,
     findRoute,
-    findRouteByName,
     getAppWithParams,
-    getBackgroundRoute,
     getRoute,
+    getRouteHash,
 } from 'src/utils/suite/router';
 
 export type NonLeadingHashString = string & Branded<'NonLeadingHashString'>;
@@ -127,7 +126,11 @@ export const goto =
 
         if (!unlocked) return;
 
-        const urlBase = getRoute(routeName, params);
+        const route = getRoute(routeName);
+        const newHash = getRouteHash(route, params);
+        const pathname = route?.pattern || '/';
+        const hash = preserveParams ? state.router.hash : newHash ? `#${newHash}` : '';
+        const urlBase = `${pathname}${hash}`;
 
         if (urlBase === state.router.url) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
@@ -140,8 +143,6 @@ export const goto =
         }
         const location = extra.routerServices.getLocation();
         const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
-
-        const route = findRouteByName(routeName);
 
         dispatch(onLocationChange(newUrl, anchor));
         if (route?.isForegroundApp) {
@@ -170,15 +171,14 @@ export const closeModalApp =
     (dispatch: Dispatch, _: GetState, extra: ExtraDependencies) => {
         dispatch(suiteActions.lockRouter(false));
 
-        const route = getBackgroundRoute(extra);
+        const location = extra.routerServices.getLocation();
+        const route = findRoute(location.pathname);
 
         // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
         // so we need a fallback to suite-index
         if (route && route.isForegroundApp) {
             return dispatch(goto('suite-index'));
         }
-
-        const location = extra.routerServices.getLocation();
 
         if (!preserveParams && location.hash.length > 0) {
             extra.routerServices.navigate(location.pathname);
@@ -200,9 +200,7 @@ export const initialRedirection = createThunk(
     '@suite/initial-redirection',
     (_, { dispatch, getState, extra }) => {
         const location = extra.routerServices.getLocation();
-        const route = findRoute(
-            `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
-        );
+        const route = findRoute(location.pathname);
 
         const { initialRun } = getState().suite.flags;
         // only do initial redirection of route is valid
