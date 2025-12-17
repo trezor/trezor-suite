@@ -88,8 +88,8 @@ const thpReducer = prepareThpReducer(extraDependencies);
 
 type PrepareRootReducersDeps = MMKVStorageDep;
 
-export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
-    const appSettingsPersistedReducer = await preparePersistReducer({
+export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
+    const appSettingsPersistedReducer = preparePersistReducer({
         reducer: appSettingsReducer,
         persistedKeys: appSettingsPersistWhitelist,
         key: 'appSettings',
@@ -101,7 +101,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const tradingPersistedReducer = await preparePersistReducer({
+    const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
         persistedKeys: ['favouriteAssets', 'trades', 'settings', 'residence', 'tradingEnvironment'],
         key: 'trading',
@@ -119,7 +119,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const walletSettingsPersistedReducer = await preparePersistReducer({
+    const walletSettingsPersistedReducer = preparePersistReducer({
         reducer: walletSettingsReducer,
         persistedKeys: walletSettingsPersistedWhitelist,
         key: 'walletSettings',
@@ -146,7 +146,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         formDrafts: formDraftReducer,
     });
 
-    const walletPersistedReducer = await preparePersistReducer({
+    const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
         persistedKeys: ['accounts', 'transactions'],
         key: 'wallet',
@@ -180,7 +180,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const analyticsPersistedReducer = await preparePersistReducer({
+    const analyticsPersistedReducer = preparePersistReducer({
         reducer: analyticsReducer,
         persistedKeys: ['instanceId', 'enabled', 'confirmed'],
         key: 'analytics',
@@ -188,7 +188,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const devicePersistedReducer = await preparePersistReducer({
+    const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
         persistedKeys: ['devices', 'persistentDeviceData'],
         key: 'devices',
@@ -222,7 +222,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const featureFlagsPersistedReducer = await preparePersistReducer({
+    const featureFlagsPersistedReducer = preparePersistReducer({
         reducer: featureFlagsReducer,
         persistedKeys: featureFlagsPersistedKeys,
         key: 'featureFlags',
@@ -231,7 +231,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const bannerFlagsPersistedReducer = await preparePersistReducer({
+    const bannerFlagsPersistedReducer = preparePersistReducer({
         reducer: bannerFlagsReducer,
         persistedKeys: bannerFlagsPersistWhitelist,
         key: 'bannerFlags',
@@ -239,7 +239,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const messageSystemPersistedReducer = await preparePersistReducer({
+    const messageSystemPersistedReducer = preparePersistReducer({
         reducer: messageSystemReducer,
         persistedKeys: messageSystemPersistedWhitelist,
         key: 'messageSystem',
@@ -247,7 +247,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const bluetoothPersistedReducer = await preparePersistReducer({
+    const bluetoothPersistedReducer = preparePersistReducer({
         reducer: bluetoothReducer,
         persistedKeys: ['knownDevices'],
         key: 'bluetooth',
@@ -256,7 +256,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const connectPopupPersistedReducer = await preparePersistReducer({
+    const connectPopupPersistedReducer = preparePersistReducer({
         reducer: connectPopupReducer,
         persistedKeys: ['permissions'],
         key: 'connectPopup',
@@ -264,7 +264,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const firmwarePersistedReducer = await preparePersistReducer({
+    const firmwarePersistedReducer = preparePersistReducer({
         reducer: firmwareReducer,
         key: 'firmware',
         version: 1,
@@ -272,7 +272,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const thpPersistedReducer = await preparePersistReducer({
+    const thpPersistedReducer = preparePersistReducer({
         reducer: thpReducer,
         persistedKeys: ['credentials', 'staticKey'],
         key: 'thp',
@@ -280,7 +280,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const localePersistedReducer = await preparePersistReducer({
+    const localePersistedReducer = preparePersistReducer({
         reducer: localeReducer,
         persistedKeys: localePersistWhitelist,
         key: 'locale',
@@ -291,7 +291,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const suiteSyncPersistedReducer = await preparePersistReducer({
+    const suiteSyncPersistedReducer = preparePersistReducer({
         reducer: suiteSyncReducer,
         persistedKeys: ['settings'],
         key: 'suiteSync',
@@ -299,7 +299,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const quotaManagerPersistedReducer = await preparePersistReducer({
+    const quotaManagerPersistedReducer = preparePersistReducer({
         reducer: suiteSyncQuotaManagerReducer,
         persistedKeys: ['baseUrl', 'enabled', 'registeredDevices', 'ownersAllowance'],
         key: 'suiteSyncQuotaManager',
@@ -307,7 +307,7 @@ export const prepareRootReducers = async (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
-    const rootReducer = await preparePersistReducer({
+    const rootReducer = preparePersistReducer({
         reducer: combineReducers({
             analytics: analyticsPersistedReducer,
             app: appReducer,

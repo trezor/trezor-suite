@@ -58,7 +58,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
     return middlewares;
 };
 
-export const initStore = async (preloadedState?: PreloadedState) => {
+export const initStore = (preloadedState?: PreloadedState) => {
     let extra: ExtraDependencies | null = null as ExtraDependencies | null;
 
     const ensureMMKVKey = createEnsureMMKVKey();
@@ -66,7 +66,7 @@ export const initStore = async (preloadedState?: PreloadedState) => {
 
     const store = configureStore({
         preloadedState: preloadedState as FullPreloadedState,
-        reducer: await prepareRootReducers({ mmkvStorage }),
+        reducer: prepareRootReducers({ mmkvStorage }),
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 serializableCheck: false,
