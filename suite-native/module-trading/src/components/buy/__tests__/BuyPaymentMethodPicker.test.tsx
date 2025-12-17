@@ -80,7 +80,7 @@ describe('BuyPaymentMethodPicker', () => {
         });
 
         it('should display sheet even while quotes are fetched', async () => {
-            const { store } = await initStore();
+            const { store } = initStore();
             store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
             const { getByText } = await renderPaymentMethodPicker(undefined, store);
 

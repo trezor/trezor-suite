@@ -47,7 +47,7 @@ describe('useExchangeSelectQuote', () => {
     let exchangeForm: ExchangeFormType;
     let store: TestStore;
 
-    const getInitializedStore = async ({ isLoading }: { isLoading?: boolean }) => {
+    const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
         const btcAccount = getBtcAccount('btc-account-key');
         const ethAccount = getEthAccount('eth-account-key');
 
@@ -64,7 +64,7 @@ describe('useExchangeSelectQuote', () => {
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderExchangeForm = () =>

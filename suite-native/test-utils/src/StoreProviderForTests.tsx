@@ -45,8 +45,8 @@ export const StoreProviderForTests = ({
             return;
         }
 
-        const initStoreAsync = async () => {
-            const { store: freshStore } = await initStore(preloadedState);
+        const initStoreAsync = () => {
+            const { store: freshStore } = initStore(preloadedState);
             setStore(freshStore);
         };
 

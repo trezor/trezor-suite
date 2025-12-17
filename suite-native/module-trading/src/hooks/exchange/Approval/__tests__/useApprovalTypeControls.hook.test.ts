@@ -27,13 +27,13 @@ describe('useApprovalTypeControls', () => {
             { store },
         );
 
-    beforeEach(async () => {
+    beforeEach(() => {
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
             }),
         };
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(exchangeQuotes[0]));
     });
 

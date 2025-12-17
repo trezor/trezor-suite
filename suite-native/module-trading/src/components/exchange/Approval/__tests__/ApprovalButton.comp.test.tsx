@@ -30,7 +30,7 @@ describe('ApprovalButton', () => {
 
     const renderApprovalButton = () => renderWithStoreProviderAsync(<ApprovalButton />, { store });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
         mockConfirmTrade.mockResolvedValue(true);
 
@@ -40,7 +40,7 @@ describe('ApprovalButton', () => {
             }),
         };
         preloadedState!.wallet!.trading!.exchange!.preselectedQuote = exchangeQuotes[0];
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
     });
 
     it('should render continue button', async () => {

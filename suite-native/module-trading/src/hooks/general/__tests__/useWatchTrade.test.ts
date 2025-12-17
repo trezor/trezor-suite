@@ -48,7 +48,7 @@ describe('useWatchTrade', () => {
         });
     });
 
-    const getInitializedStore = async ({
+    const getInitializedStore = ({
         trades = [],
         accounts = [],
     }: { trades?: any[]; accounts?: any[] } = {}) => {
@@ -79,7 +79,7 @@ describe('useWatchTrade', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseWatchTrade = (

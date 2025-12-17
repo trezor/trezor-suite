@@ -19,7 +19,7 @@ describe('useGeolocationCountryCode', () => {
         renderHookWithStoreProviderAsync(() => useGeolocationCountryCode(), { store });
 
     it('should call geolocation thunk on mount', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
 
         await renderUseGeolocationCountryCode(store);
 
@@ -27,7 +27,7 @@ describe('useGeolocationCountryCode', () => {
     });
 
     it('should not call geolocation thunk if country code is already known', async () => {
-        const { store } = await initStore();
+        const { store } = initStore();
         store.dispatch(geolocationActions.setCountryCode('CZ'));
 
         await renderUseGeolocationCountryCode(store);

@@ -18,7 +18,7 @@ describe('LimitPicker', () => {
 
     const renderLimitPicker = () => renderWithStoreProviderAsync(<LimitPicker />, { store });
 
-    beforeEach(async () => {
+    beforeEach(() => {
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
@@ -27,7 +27,7 @@ describe('LimitPicker', () => {
 
         preloadedState!.wallet!.trading.exchange.preselectedQuote = exchangeQuotes[0];
 
-        store = (await initStore(preloadedState)).store;
+        store = initStore(preloadedState).store;
     });
 
     it('should render Unlimited when no limit is specified', async () => {

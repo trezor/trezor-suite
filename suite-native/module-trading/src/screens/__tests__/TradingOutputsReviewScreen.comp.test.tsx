@@ -110,9 +110,9 @@ const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams
 describe('TradingSellOutputsReviewScreen', () => {
     let store: TestStore;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
+        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
         mockNavigation.navigate.mockClear();
         mockNavigation.goBack.mockClear();
         mockNavigation.popToTop.mockClear();
@@ -142,9 +142,9 @@ describe('TradingSellOutputsReviewScreen', () => {
 describe('TradingExchangeOutputsReviewScreen', () => {
     let store: TestStore;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'exchange' }) })).store;
+        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
         mockNavigation.navigate.mockClear();
         mockNavigation.goBack.mockClear();
         mockNavigation.popToTop.mockClear();

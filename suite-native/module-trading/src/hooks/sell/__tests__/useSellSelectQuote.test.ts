@@ -28,7 +28,7 @@ describe('useSellSelectQuote', () => {
         renderHookWithStoreProviderAsync(() => useSellSelectQuote(sellForm), { store });
 
     beforeEach(async () => {
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
+        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
 
         const { result } = await renderSellForm();
         sellForm = result.current;

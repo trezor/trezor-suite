@@ -65,7 +65,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should select account by key from state', async () => {
-        const { store } = await initStore(createMockState());
+        const { store } = initStore(createMockState());
         const { result } = await renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(false);
@@ -78,7 +78,7 @@ describe('useFeesFetching', () => {
 
     it('should handle loading state correctly', async () => {
         mockSelectAreFeesLoading.mockReturnValue(true);
-        const { store } = await initStore(createMockState());
+        const { store } = initStore(createMockState());
         const { result } = await renderUseFeesFetching({ store, networkSymbol: 'btc' });
 
         expect(result.current.areFeesLoading).toBe(true);
@@ -90,7 +90,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should handle refetch disabled correctly', async () => {
-        const { store } = await initStore(createMockState());
+        const { store } = initStore(createMockState());
         const { result } = await renderUseFeesFetching({
             store,
             networkSymbol: 'btc',
@@ -106,7 +106,7 @@ describe('useFeesFetching', () => {
     });
 
     it('should handle undefined networkSymbol gracefully', async () => {
-        const { store } = await initStore(createMockState());
+        const { store } = initStore(createMockState());
         const { result } = await renderUseFeesFetching({
             store,
             networkSymbol: undefined,

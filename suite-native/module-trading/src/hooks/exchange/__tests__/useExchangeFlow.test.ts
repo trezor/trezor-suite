@@ -35,7 +35,7 @@ jest.mock('@suite-common/trading', () => ({
 describe('useExchangeFlow', () => {
     const getMockAccounts = () => [getBtcAccount('btc1'), getBtcAccount('btc2')];
 
-    const getInitializedStore = async () => {
+    const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
         // Add the required account keys to the exchange state
         tradingState.exchange.tradingAccountKey = 'btc1';
@@ -50,7 +50,7 @@ describe('useExchangeFlow', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseExchangeFlow = ({ store }: { store: TestStore }) =>
@@ -178,7 +178,7 @@ describe('useExchangeFlow', () => {
                 },
             };
 
-            const { store } = await initStore(preloadedState);
+            const { store } = initStore(preloadedState);
             const { result } = await renderUseExchangeFlow({ store });
 
             const mockTrade = {

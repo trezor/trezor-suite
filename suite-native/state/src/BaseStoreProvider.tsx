@@ -20,10 +20,10 @@ export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProvide
     const [store, setStore] = useState<StoreWithExtra | null>(null);
     const [storePersistor, setStorePersistor] = useState<Persistor | null>(null);
 
-    const initStoreAsync = useCallback(async () => {
+    const initStoreAsync = useCallback(() => {
         initStoreCalledRef.current = true;
         try {
-            const freshStore = await initStore(preloadedState);
+            const freshStore = initStore(preloadedState);
             const freshPersistor = persistStore(freshStore.store);
             setStore(freshStore);
             setStorePersistor(freshPersistor);

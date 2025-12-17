@@ -31,12 +31,12 @@ describe('useSellForm', () => {
     const renderUseSellForm = () =>
         renderHookWithStoreProviderAsync(() => useSellForm(), { store });
 
-    const getInitializedStore = async (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
+    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
             wallet: getWalletState({ tradeType: 'sell', bitcoinAmountUnit }),
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     beforeEach(async () => {

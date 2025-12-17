@@ -68,8 +68,8 @@ describe('useSellFlow', () => {
     const renderUseSellFlow = () =>
         renderHookWithStoreProviderAsync(() => useSellFlow(), { store });
 
-    beforeEach(async () => {
-        store = (await initStore({ wallet: getWalletState({ tradeType: 'sell' }) })).store;
+    beforeEach(() => {
+        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
 
         capturedHandleTradeArgs = null;
         mockNavigation.navigate.mockClear();

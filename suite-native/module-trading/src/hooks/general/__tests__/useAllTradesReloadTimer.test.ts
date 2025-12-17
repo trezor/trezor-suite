@@ -40,7 +40,7 @@ describe('useAllTradesReloadTimer', () => {
         });
     });
 
-    const getInitializedStore = async ({ trades = [] }: { trades?: any[] } = {}) => {
+    const getInitializedStore = ({ trades = [] }: { trades?: any[] } = {}) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: {
@@ -81,7 +81,7 @@ describe('useAllTradesReloadTimer', () => {
             },
         };
 
-        return (await initStore(preloadedState)).store;
+        return initStore(preloadedState).store;
     };
 
     const renderUseAllTradesReloadTimer = (store: TestStore) =>
