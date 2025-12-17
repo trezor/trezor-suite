@@ -1,10 +1,7 @@
 import { Account } from '@suite-common/wallet-types';
-import { RoundedIcon } from '@suite-native/atoms';
-import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
-import { Translation } from '@suite-native/intl';
-import { useNativeStyles } from '@trezor/styles';
 
-import { AccountsListItemBase } from './AccountsListItemBase';
+import { AdaAccountsListStakingItem } from './AdaAccountsListStakingItem';
+import { DefaultAccountsListStakingItem } from './DefaultAccountsListStakingItem';
 
 type AccountsListStakingItemProps = {
     account: Account;
@@ -16,42 +13,12 @@ type AccountsListStakingItemProps = {
     isLast?: boolean;
 };
 
-export const AccountsListStakingItem = ({
-    account,
-    stakingCryptoBalance,
-    isLast,
-    ...props
-}: AccountsListStakingItemProps) => {
-    const { utils } = useNativeStyles();
+export const AccountsListStakingItem = (props: AccountsListStakingItemProps) => {
+    const { account } = props;
 
-    return (
-        <AccountsListItemBase
-            {...props}
-            isLast={isLast}
-            showDivider={!isLast}
-            icon={
-                <RoundedIcon
-                    name="piggyBankFilled"
-                    color="iconSubdued"
-                    containerSize={utils.spacings.sp32}
-                />
-            }
-            title={<Translation id="accountList.staking" />}
-            mainValue={
-                <CryptoToFiatAmountFormatter
-                    value={stakingCryptoBalance}
-                    symbol={account.symbol}
-                    isBalance
-                />
-            }
-            secondaryValue={
-                <CryptoAmountFormatter
-                    value={stakingCryptoBalance}
-                    symbol={account.symbol}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                />
-            }
-        />
-    );
+    if (account.symbol === 'ada') {
+        return <AdaAccountsListStakingItem {...props} />;
+    }
+
+    return <DefaultAccountsListStakingItem {...props} />;
 };

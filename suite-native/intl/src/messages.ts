@@ -2232,11 +2232,21 @@ export const messages = {
             title: 'Staking',
         },
         staked: 'Staked',
+        stakedAutomatically: 'Staked automatically',
+        fullBalance: 'Full balance',
         rewards: 'Rewards',
         rewardsPerEpoch: 'Next estimated reward',
         apy: 'Annual percentage yield',
         stakingCanBeManaged: 'Staking can be currently managed only in',
         trezorDesktop: 'Trezor Suite for desktop or web.',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accesible while earning rewards.',
+        infoBanner: {
+            providerReducingRewards:
+                'Your current provider is reducing ADA rewards. Update your provider on desktop and earn {apy}% APY.',
+            updateToNewProvider: `Update to our new provider, Everstake, and earn ~{apy}% APY. Your ADA with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.`,
+        },
+        notAvailable: 'Not available',
+        notAvailableShort: 'N/A',
         stakePendingCard: {
             totalStakePending: 'Total stake pending',
             addingToStakingPool: 'Adding to staking pool',

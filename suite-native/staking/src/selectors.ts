@@ -1,6 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
+    selectAdaAccountHasStaked,
     selectPoolStatsApyData,
     selectSolAccountHasStaked,
 } from '@suite-common/wallet-core';
@@ -11,6 +12,12 @@ import {
 } from '@suite-common/wallet-utils';
 import { exhaustive } from '@trezor/type-utils';
 
+import {
+    selectCardanoRewardsBalanceByAccountKey,
+    selectCardanoStakedBalanceByAccountKey,
+    selectCardanoTotalStakePendingByAccountKey,
+    selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
+} from './cardanoStakingSelectors';
 import {
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
@@ -53,6 +60,8 @@ export const selectDeviceAccountsWithStaking = (
         case 'dsol':
         case 'sol':
             return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, 'sol');
+        case 'ada':
+            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, 'ada');
         default:
             return exhaustive(symbol);
     }
@@ -78,6 +87,8 @@ export const getAccountCryptoBalanceWithStaking = (account: Account | null) => {
         case 'dsol':
         case 'sol':
             return getSolanaCryptoBalanceWithStaking(account);
+        case 'ada':
+            return account.formattedBalance;
         default:
             return exhaustive(account.symbol);
     }
@@ -108,6 +119,8 @@ export const selectAccountHasStaking = (state: NativeStakingRootState, accountKe
         case 'dsol':
         case 'sol':
             return selectSolAccountHasStaked(state, accountKey);
+        case 'ada':
+            return selectAdaAccountHasStaked(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -131,6 +144,8 @@ export const selectIsStakePendingByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaIsStakePendingByAccountKey(state, accountKey);
+        case 'ada':
+            return false;
         default:
             return exhaustive(symbol);
     }
@@ -154,6 +169,8 @@ export const selectIsStakeConfirmingByAccountKey = (
         case 'dsol':
         case 'sol':
             return false; // there are no pending txns for solana staking;
+        case 'ada':
+            return false;
         default:
             return exhaustive(symbol);
     }
@@ -187,6 +204,8 @@ export const selectStakedBalanceByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaStakedBalanceByAccountKey(state, accountKey);
+        case 'ada':
+            return selectCardanoStakedBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -211,6 +230,8 @@ export const selectRewardsBalanceByAccountKey = (
         case 'sol':
             // on solana we show rewards per one epoch
             return selectExpectedRewardsForEpoch(state, accountKey);
+        case 'ada':
+            return selectCardanoRewardsBalanceByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -234,6 +255,8 @@ export const selectTotalStakePendingByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaTotalStakePendingByAccountKey(state, accountKey);
+        case 'ada':
+            return selectCardanoTotalStakePendingByAccountKey(state, accountKey);
         default:
             return exhaustive(symbol);
     }
@@ -257,6 +280,8 @@ export const selectClaimableAmountByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaClaimableAmountByAccountKey(state, accountKey);
+        case 'ada':
+            return '0';
         default:
             return exhaustive(symbol);
     }
@@ -280,6 +305,8 @@ export const selectCanClaimByAccountKey = (
         case 'dsol':
         case 'sol':
             return selectSolanaCanClaimByAccountKey(state, accountKey);
+        case 'ada':
+            return false;
         default:
             return exhaustive(symbol);
     }
