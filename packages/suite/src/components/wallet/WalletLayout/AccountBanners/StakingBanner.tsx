@@ -22,7 +22,7 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
@@ -89,7 +89,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 }
         }
 
-        analytics.report({
+        reportAnalytics({
             type: EventType.StakingNavigate,
             payload: {
                 action: 'cancel',
@@ -102,7 +102,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const goToStakingTab = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
 
-        analytics.report({
+        reportAnalytics({
             type: EventType.StakingNavigate,
             payload: {
                 action: 'navigate',

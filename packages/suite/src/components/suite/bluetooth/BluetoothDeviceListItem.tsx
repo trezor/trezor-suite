@@ -8,7 +8,7 @@ import {
 } from '@suite-common/bluetooth';
 import { Button, Row } from '@trezor/components';
 import { BluetoothDeviceId } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { EventTypeShared, reportAnalytics } from '@trezor/suite-analytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
@@ -83,7 +83,7 @@ const ActionButton = ({
     const isLoading = connectionStatus?.component === 'loader';
 
     const handleOnClick = () => {
-        analytics.report({
+        reportAnalytics({
             type: EventTypeShared.DeviceConnectionDeviceFound,
             payload: {
                 option: 'connect',

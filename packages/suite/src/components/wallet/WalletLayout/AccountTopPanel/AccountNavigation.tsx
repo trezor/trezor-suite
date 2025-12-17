@@ -1,6 +1,6 @@
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 
 import { Translation } from 'src/components/suite/Translation';
 import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
@@ -53,7 +53,7 @@ export const AccountNavigation = () => {
             callback: () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
 
-                analytics.report({
+                reportAnalytics({
                     type: EventType.StakingNavigate,
                     payload: {
                         action: 'navigate',

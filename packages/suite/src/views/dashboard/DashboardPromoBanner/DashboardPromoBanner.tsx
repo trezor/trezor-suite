@@ -5,7 +5,7 @@ import { Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -45,7 +45,7 @@ export const DashboardPromoBanner = () => {
     const deviceIsNotT3W1 = getDeviceInternalModel(selectedDevice) !== DeviceModelInternal.T3W1;
 
     const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
-        analytics.report({
+        reportAnalytics({
             type: EventType.DashboardBanner,
             payload: {
                 action: 'close',
@@ -56,7 +56,7 @@ export const DashboardPromoBanner = () => {
     };
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
-        analytics.report({
+        reportAnalytics({
             type: EventType.DashboardBanner,
             payload: {
                 action: 'cta',

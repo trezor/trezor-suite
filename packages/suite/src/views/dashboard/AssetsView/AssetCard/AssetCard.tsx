@@ -19,7 +19,7 @@ import {
     Text,
 } from '@trezor/components';
 import { TokenInfo } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, analytics, reportAnalytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import {
@@ -130,7 +130,7 @@ export const AssetCard = ({
         );
 
     const onStakeButtonClick = () => {
-        analytics.report({
+        reportAnalytics({
             type: EventType.StakingNavigate,
             payload: {
                 action: 'navigate',

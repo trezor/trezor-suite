@@ -6,7 +6,7 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Button, Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { CoinLogo } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, analytics, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -71,7 +71,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                     break;
                 }
                 case 'stake': {
-                    analytics.report({
+                    reportAnalytics({
                         type: EventType.StakingNavigate,
                         payload: {
                             action: 'navigate',
