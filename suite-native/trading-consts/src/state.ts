@@ -14,4 +14,5 @@ export const tradingInitialState: TradingState = {
     tradeOrderIdToBeOpened: undefined,
     isAmountInputActive: false,
     activeTradingType: undefined,
+    providerConfirmationStatus: 'inactive',
 };

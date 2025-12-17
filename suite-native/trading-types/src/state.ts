@@ -10,6 +10,8 @@ import {
     TradingType,
 } from '@suite-common/trading';
 
+import { ProviderConfirmationStatus } from './general';
+
 export interface TradingBuyState extends CommonTradingBuyState {}
 
 export interface TradingExchangeState extends CommonTradingExchangeState {}
@@ -39,6 +41,7 @@ export interface TradingState extends CommonTradingState {
     tradeOrderIdToBeOpened: string | undefined;
     isAmountInputActive: boolean;
     activeTradingType: TradingType | undefined;
+    providerConfirmationStatus: ProviderConfirmationStatus;
 }
 
 export type TradingRootState = {

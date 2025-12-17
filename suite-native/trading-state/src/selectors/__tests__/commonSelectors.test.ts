@@ -43,6 +43,7 @@ import {
     selectTradeToBeOpened,
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
+    selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from '../commonSelectors';
 
@@ -1271,6 +1272,22 @@ describe('commonSelectors', () => {
                     undefined,
                 ),
             ).toBeUndefined();
+        });
+    });
+
+    describe('selectTradingProviderConfirmationStatus', () => {
+        it('should return correct confirmation status for provider', () => {
+            const state = {
+                wallet: {
+                    trading: {
+                        providerConfirmationStatus: 'window_closed_with_success',
+                    },
+                },
+            } as TradingRootState;
+
+            const result = selectTradingProviderConfirmationStatus(state);
+
+            expect(result).toBe('window_closed_with_success');
         });
     });
 });

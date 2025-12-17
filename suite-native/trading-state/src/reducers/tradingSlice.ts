@@ -1,15 +1,34 @@
-import { PayloadAction, isAnyOf } from '@reduxjs/toolkit';
+import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
 import { deviceActions } from '@suite-common/wallet-core';
 import { tradingInitialState } from '@suite-native/trading-consts';
+import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
 import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
 import { TRADING_RESIDENCE, residenceReducer } from './residenceSlice';
 import { TRADING_SELL, sellActions, sellReducer } from './sellSlice';
+
+const providerConfirmationStatusTransitions: Record<
+    ProviderConfirmationStatus,
+    ProviderConfirmationStatus[]
+> = {
+    // inactive is the initial state, providerConfirmationStatus becomes inactive when transaction prview is closed
+    inactive: ['window_opened'],
+    // window_opened is set when the webview is opened
+    window_opened: ['window_closed_incomplete', 'window_closed_with_success', 'inactive'],
+    // window_closed_incomplete is set when the webview is closed manually by the user before completing the confirmation
+    window_closed_incomplete: ['window_closed_with_success', 'confirmation_failed', 'inactive'],
+    // window_closed_with_success is set when the webview is closed after successful confirmation
+    window_closed_with_success: ['confirmation_success', 'confirmation_failed', 'inactive'],
+    // confirmation_failed is set if we do not know transaction status after 30 seconds after webview is close
+    confirmation_failed: ['confirmation_success', 'inactive'],
+    // confirmation_success is set when provider confirms transaction
+    confirmation_success: ['inactive'],
+};
 
 export const tradingSlice = createSliceWithExtraDeps({
     name: 'trading',
@@ -42,6 +61,21 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearActiveTradingType: state => {
             state.activeTradingType = undefined;
+        },
+        setProviderConfirmationStatus: (
+            state,
+            { payload: newStatus }: PayloadAction<ProviderConfirmationStatus>,
+        ) => {
+            const currentStatus = state.providerConfirmationStatus;
+
+            if (
+                // this case should never happen, but allows to recover from an invalid state
+                !Object.hasOwn(providerConfirmationStatusTransitions, currentStatus) ||
+                // allow only valid transitions, ignore rest
+                providerConfirmationStatusTransitions[currentStatus].includes(newStatus)
+            ) {
+                state.providerConfirmationStatus = newStatus;
+            }
         },
     },
     extraReducers: (builder, extra) => {
