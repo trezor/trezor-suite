@@ -1,6 +1,7 @@
 import { DeviceMetadata } from '@suite-common/metadata-types';
 import { EncryptedHex } from '@suite-common/platform-encryption';
 import {
+    AuthenticateDeviceResult,
     DeviceButtonRequest,
     DeviceEvent,
     DeviceState,
@@ -10,6 +11,7 @@ import {
     StaticSessionId,
     UnknownDevice as UnknownDeviceBase,
     UnreadableDevice as UnreadableDeviceBase,
+    Unsuccessful,
 } from '@trezor/connect';
 import { VersionArray } from '@trezor/device-utils';
 import { Branded, UnionSubset } from '@trezor/type-utils';
@@ -142,3 +144,15 @@ export type TrezorDeviceWithState = AcquiredDevice & {
     id: string;
     state: NonNullable<AcquiredDevice['state']> & { staticSessionId: StaticSessionId };
 };
+
+type ConnectAuthenticateDeviceResultPayload = AuthenticateDeviceResult | Unsuccessful['payload'];
+/**
+ * Processed result of TrezorConnect.authenticateDevice call that we may store in the Redux state.
+ * We want to:
+ * 1. keep both successful response as well as error payload from the TrezorConnect call itself .
+ * 2. evaluate overall check validity, because Connect only returns result for each secure element vendor
+ *    (e.g. optiga & tropic) and it is up to Suite to decide which results to use.
+ */
+export type StoredAuthenticateDeviceResult =
+    | (ConnectAuthenticateDeviceResultPayload & { valid: boolean })
+    | undefined;

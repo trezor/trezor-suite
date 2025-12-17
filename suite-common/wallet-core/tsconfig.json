@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../bluetooth" },
-        { "path": "../device-authenticity" },
         { "path": "../fiat-services" },
         { "path": "../message-system" },
         { "path": "../platform-encryption" },

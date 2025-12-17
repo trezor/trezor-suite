@@ -1,7 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
 import { analyticsActions } from '@suite-common/analytics';
-import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
 import {
     WALLET_SETTINGS,
     accountsActions,
@@ -126,7 +125,7 @@ const sentryMiddleware =
                 });
                 break;
             }
-            case deviceAuthenticityActions.result.type: {
+            case deviceActions.setDeviceAuthenticityResult.type: {
                 const { result } = action.payload;
                 if (!result) return;
 

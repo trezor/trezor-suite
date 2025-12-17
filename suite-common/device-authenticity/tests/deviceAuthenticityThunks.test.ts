@@ -1,7 +1,8 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { TrezorDevice } from '@suite-common/suite-types';
+import type { StoredAuthenticateDeviceResult, TrezorDevice } from '@suite-common/suite-types';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
+import { deviceActions } from '@suite-common/wallet-core';
 import type {
     AuthenticateDeviceResult,
     Response,
@@ -9,9 +10,7 @@ import type {
     Unsuccessful,
 } from '@trezor/connect';
 
-import type { StoredAuthenticateDeviceResult } from '../src';
-import { deviceAuthenticityActions } from '../src/deviceAuthenticityActions';
-import { checkDeviceAuthenticityThunk } from '../src/deviceAuthenticityThunks';
+import { checkDeviceAuthenticityThunk } from '../src/checkDeviceAuthenticityThunk';
 
 const initStore = (device?: TrezorDevice) =>
     configureMockStore({
@@ -158,7 +157,7 @@ describe('Check device authenticity', () => {
             }
             // thunk is expected to fail fast if there is no device, and not emit a result, which is always bound to device
             if (f.device) {
-                expectedActions.push(deviceAuthenticityActions.result.type);
+                expectedActions.push(deviceActions.setDeviceAuthenticityResult.type);
             }
             if (f.expectedFulfilled) {
                 expectedActions.push(checkDeviceAuthenticityThunk.fulfilled.type);

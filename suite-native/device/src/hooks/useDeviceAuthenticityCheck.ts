@@ -3,17 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    StoredAuthenticateDeviceResult,
-    deviceAuthenticityActions,
-    isDeviceAuthenticityValid,
-} from '@suite-common/device-authenticity';
+import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
     Feature,
     MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
+import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceAuthenticityCheckResult, EventType, analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
@@ -152,7 +149,7 @@ export const useDeviceAuthenticityCheck = () => {
             }
 
             // Clear previous result
-            dispatch(deviceAuthenticityActions.result({ device, result: undefined }));
+            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: undefined }));
 
             const deviceAccessResponse = await requestPrioritizedDeviceAccess({
                 deviceCallback: () =>
@@ -179,7 +176,7 @@ export const useDeviceAuthenticityCheck = () => {
 
             const storedResult: StoredAuthenticateDeviceResult = createStoredResult(result);
 
-            dispatch(deviceAuthenticityActions.result({ device, result: storedResult }));
+            dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: storedResult }));
 
             if (storedResult?.valid === false) {
                 handleFailure();

@@ -1,14 +1,11 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import {
-    StoredAuthenticateDeviceResult,
-    deviceAuthenticityActions,
-} from '@suite-common/device-authenticity';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
     AcquiredDevice,
     ButtonRequest,
     PersistentDeviceData,
+    StoredAuthenticateDeviceResult,
     TrezorDevice,
 } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -667,7 +664,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
             .addCase(deviceActions.updateSelectedDevice, (state, { payload }) => {
                 state.selectedDevice = payload;
             })
-            .addCase(deviceAuthenticityActions.result, (state, { payload }) => {
+            .addCase(deviceActions.setDeviceAuthenticityResult, (state, { payload }) => {
                 setDeviceAuthenticity(state, payload.device, payload.result);
             })
             .addCase(deviceActions.dismissFirmwareAuthenticityCheck, (state, { payload }) => {

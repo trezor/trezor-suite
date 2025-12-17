@@ -5,6 +5,7 @@ import {
     AcquiredDevice,
     ButtonRequest,
     DelegatedIdentityKey,
+    StoredAuthenticateDeviceResult,
     SuiteSyncOwnerSerialized,
     ThpSuiteCredentials,
     TrezorDevice,
@@ -175,6 +176,13 @@ const setDiscovered = createAction(
     }),
 );
 
+const setDeviceAuthenticityResult = createAction(
+    `${DEVICE_MODULE_PREFIX}/setDeviceAuthenticityResult`,
+    (payload: { device: TrezorDevice; result: StoredAuthenticateDeviceResult }) => ({
+        payload,
+    }),
+);
+
 // Use in tests only! See deviceReducer for the property definition.
 const setSimulatedEntropyCheckFail = createAction(
     `${DEVICE_MODULE_PREFIX}/setSimulatedEntropyCheckFail`,
@@ -206,5 +214,6 @@ export const deviceActions = {
     setSuiteSyncOwner,
     setDiscovered,
     devicePushNotification,
+    setDeviceAuthenticityResult,
     setSimulatedEntropyCheckFail,
 };
