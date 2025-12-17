@@ -9,6 +9,9 @@
         "../suite/src/components/suite/BioAuthGuard"
     ],
     "references": [
+        {
+            "path": "../../suite-common/redux-utils"
+        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-types"
