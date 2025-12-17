@@ -8,7 +8,7 @@ import {
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
 import { Account, AccountKey } from '@suite-common/wallet-types';
-import { isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
+import { isCardanoStakingActive, isTestnet, isUtxoBased } from '@suite-common/wallet-utils';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { formattedAccountTypeMap } from './accountsConstants';
@@ -292,6 +292,10 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
 
     return !!account.misc.solStakingAccounts?.length;
 });
+
+export const selectAdaAccountHasStaked = createMemoizedSelector([selectAccountByKey], account =>
+    isCardanoStakingActive(account),
+);
 
 export const selectAddressByNetworkAndPath = createMemoizedSelector(
     [

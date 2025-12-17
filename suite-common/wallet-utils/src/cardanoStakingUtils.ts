@@ -39,6 +39,14 @@ export const getCardanoStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
         return acc;
     }, [] as SupportedCardanoNetworkSymbols[]);
 
+export const isCardanoStakingActive = (account: Account | null) => {
+    if (!account?.misc || account.networkType !== 'cardano') return false;
+
+    const { isActive } = account.misc.staking;
+
+    return isActive;
+};
+
 const getAccountPoolId = (account?: Account) => {
     if (!account) return null;
     if (account.networkType !== 'cardano') return null;

@@ -1,6 +1,7 @@
 import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
+    isCardanoStakingActive,
     isPending,
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
@@ -15,9 +16,7 @@ export const isAccountStakingActive = (
     if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
 
     if (account.networkType === 'cardano') {
-        const { isActive } = account.misc.staking;
-
-        return isActive;
+        return isCardanoStakingActive(account);
     }
 
     const {
