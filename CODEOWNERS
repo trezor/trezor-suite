@@ -21,6 +21,10 @@
 /suite-common/analytics/src/events/suite/types.ts @kolomaznikt
 /suite-common/analytics/src/events/suite-native/types.ts @kolomaznikt
 
+/suite-common/analytics/src/events/shared/data @kolomaznikt
+/suite-common/analytics/src/events/suite/data @kolomaznikt
+/suite-common/analytics/src/events/suite-native/data @kolomaznikt
+
 /packages/blockchain-link @mroz22 @marekrjpolak
 
 /packages/blockchain-link-utils @marekrjpolak

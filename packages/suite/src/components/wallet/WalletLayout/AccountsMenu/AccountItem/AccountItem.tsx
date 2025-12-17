@@ -1,6 +1,6 @@
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -72,7 +72,7 @@ export const AccountItem = ({
         });
 
         if (type === 'staking') {
-            analytics.report({
+            reportAnalytics({
                 type: EventType.StakingNavigate,
                 payload: {
                     action: 'navigate',

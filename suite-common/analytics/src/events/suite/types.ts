@@ -4,6 +4,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
 
+/** @deprecated */
 export type SuiteAnalyticsEventSuiteReady = {
     type: EventType.SuiteReady;
     payload: {
@@ -43,6 +44,7 @@ export type SuiteAnalyticsEventSuiteReady = {
     };
 };
 
+/** @deprecated */
 export type TransactionCreatedEvent = {
     type: EventType.TransactionCreated;
     payload: {
@@ -62,6 +64,7 @@ export type TransactionCreatedEvent = {
     };
 };
 
+/** @deprecated */
 export type SuiteAnalyticsEvent =
     | SuiteAnalyticsEventSuiteReady
     | {
@@ -442,25 +445,6 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.StakingNavigate;
-          payload: {
-              action: 'navigate' | 'cancel';
-              from:
-                  | 'sidebar'
-                  | 'account/navigation'
-                  | 'account/banner'
-                  | 'account/tradebox'
-                  | 'dashboard/assets'
-                  | 'dashboard/staking-dashboard/staking-outdated-provider'
-                  | 'dashboard/staking-dashboard/staking-max'
-                  | 'dashboard/staking-dashboard/staked-but-insufficient-funds'
-                  | 'dashboard/staking-dashboard/staking-active'
-                  | 'dashboard/staking-dashboard/insufficient-funds'
-                  | 'dashboard/staking-dashboard/staking-inactive';
-              networkSymbol?: string;
-          };
-      }
-    | {
           type: EventType.StakingStake;
           payload: {
               action: 'continue' | 'cancel';
@@ -804,13 +788,6 @@ export type SuiteAnalyticsEvent =
           type: EventType.GetMobileApp;
           payload: {
               platform: 'ios' | 'android';
-          };
-      }
-    | {
-          type: EventType.DashboardBanner;
-          payload: {
-              bannerType: string | null;
-              action: 'cta' | 'close';
           };
       }
     | {

@@ -11,7 +11,7 @@ import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, analytics, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -101,7 +101,7 @@ export const AssetRow = memo(
         );
 
         const onStakeButtonClick = () => {
-            analytics.report({
+            reportAnalytics({
                 type: EventType.StakingNavigate,
                 payload: {
                     action: 'navigate',

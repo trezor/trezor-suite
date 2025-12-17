@@ -1,3 +1,4 @@
+// @TODO
 export enum AppUpdateEventStatus {
     Available = 'available',
     Download = 'download',
@@ -8,6 +9,7 @@ export enum AppUpdateEventStatus {
     Error = 'error',
 }
 
+/** @deprecated */
 export enum EventType {
     SuiteReady = 'suite-ready',
     RouterLocationChange = 'router/location-change',

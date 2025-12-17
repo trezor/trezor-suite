@@ -17,7 +17,7 @@ import {
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType, analytics, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -127,7 +127,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             }),
         );
 
-        analytics.report({
+        reportAnalytics({
             type: EventType.StakingNavigate,
             payload: {
                 action: 'navigate',

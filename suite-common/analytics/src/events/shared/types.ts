@@ -70,12 +70,6 @@ export type SuiteSharedAnalyticsEvent =
           };
       }
     | {
-          type: EventType.DeviceConnectionDeviceFound;
-          payload: {
-              option: 'connect' | 'close';
-          };
-      }
-    | {
           type: EventType.DeviceConnectionDevicePaired;
       }
     | {

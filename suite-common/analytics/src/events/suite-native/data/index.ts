@@ -1,0 +1,1 @@
+export { assetDetail } from './assetDetail';

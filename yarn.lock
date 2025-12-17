@@ -10299,6 +10299,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
@@ -14435,6 +14436,7 @@ __metadata:
   resolution: "@trezor/suite-analytics@workspace:packages/suite-analytics"
   dependencies:
     "@suite-common/analytics": "workspace:*"
+    "@trezor/analytics": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -8,7 +8,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "generate-docs": "tsx generateDocs.ts"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
@@ -22,6 +23,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "react": "19.1.0"
     }
 }

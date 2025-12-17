@@ -78,14 +78,6 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
-          type: EventType.AssetDetail;
-          payload: {
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenAddress?: TokenAddress;
-          };
-      }
-    | {
           type: EventType.AssetDetailTimeframeChange;
           payload: {
               timeframe: string;
