@@ -95,7 +95,6 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
                                 <FeeRate
                                     feeRate={isEip1559(fee) ? fee.maxFeePerGas : fee.feePerUnit}
                                     networkType={networkType}
-                                    symbol={symbol}
                                 />
                             </span>
                         }

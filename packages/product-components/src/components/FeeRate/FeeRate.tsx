@@ -1,25 +1,24 @@
-import { NetworkSymbol, NetworkType, hasNetworkSettlementLayer } from '@suite-common/wallet-config';
+import { NetworkType } from '@suite-common/wallet-config';
+import { EVM_FEE_RATE_DECIMALS } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 type FeeRateProps = {
     feeRate?: string | BigNumber;
     networkType: NetworkType;
-    symbol: NetworkSymbol;
     preserveDecimals?: boolean;
 };
 
-export const FeeRate = ({ feeRate, networkType, symbol, preserveDecimals }: FeeRateProps) => {
+export const FeeRate = ({ feeRate, networkType, preserveDecimals }: FeeRateProps) => {
     if (!feeRate) return null;
 
     const fee = (() => {
         switch (networkType) {
             case 'ethereum': {
-                const decimals = hasNetworkSettlementLayer(symbol) ? 4 : 2;
-                const multiplier = Math.pow(10, decimals);
+                const multiplier = Math.pow(10, EVM_FEE_RATE_DECIMALS);
                 const value = Math.ceil(Number(feeRate) * multiplier) / multiplier;
 
-                return preserveDecimals ? feeRate.toString() : value.toFixed(decimals);
+                return preserveDecimals ? feeRate.toString() : value.toFixed(EVM_FEE_RATE_DECIMALS);
             }
             case 'bitcoin': {
                 const feeBn = typeof feeRate === 'string' ? new BigNumber(feeRate) : feeRate;

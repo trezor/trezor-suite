@@ -30,16 +30,16 @@ const getFeeRate = (tx: WalletAccountTransaction, networkType: NetworkType) => {
     if (!rbf) return null;
 
     if (rbf.type === 'bitcoin' && rbf.feeRate !== undefined) {
-        return <FeeRate feeRate={rbf.feeRate} networkType={networkType} symbol={tx.symbol} />;
+        return <FeeRate feeRate={rbf.feeRate} networkType={networkType} />;
     }
 
     if (rbf.type === 'ethereum') {
         const { gasPrice, maxFeePerGas } = rbf;
 
         return isEip1559(rbf) ? (
-            <FeeRate feeRate={maxFeePerGas} networkType={networkType} symbol={tx.symbol} />
+            <FeeRate feeRate={maxFeePerGas} networkType={networkType} />
         ) : (
-            <FeeRate feeRate={gasPrice} networkType={networkType} symbol={tx.symbol} />
+            <FeeRate feeRate={gasPrice} networkType={networkType} />
         );
     }
 

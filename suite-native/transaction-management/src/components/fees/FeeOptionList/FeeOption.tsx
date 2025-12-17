@@ -8,13 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
-    type NetworkSymbol,
-    type NetworkType,
-    getNetworkType,
-    hasNetworkSettlementLayer,
-} from '@suite-common/wallet-config';
-import {
+    EVM_FEE_RATE_DECIMALS,
     FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
@@ -70,23 +66,20 @@ const getFeePerUnit = ({
     feeLevel,
     transactionBytes,
     backendFeePerUnit = '0',
-    symbol,
 }: {
     networkType: NetworkType;
     feeLevel: GeneralPrecomposedTransaction;
     transactionBytes: number;
     backendFeePerUnit: string;
-    symbol: NetworkSymbol;
 }): string => {
     if (!isFinalPrecomposedTransaction(feeLevel)) {
         return backendFeePerUnit;
     }
 
     if (networkType === 'ethereum') {
-        const decimals = hasNetworkSettlementLayer(symbol) ? 4 : 2;
         const value = Number(isEip1559(feeLevel) ? feeLevel.maxFeePerGas : feeLevel.feePerByte);
 
-        return value.toFixed(decimals);
+        return value.toFixed(EVM_FEE_RATE_DECIMALS);
     }
 
     if (networkType === 'bitcoin') {
@@ -157,7 +150,6 @@ export const FeeOption = ({
         feeLevel,
         transactionBytes,
         backendFeePerUnit: backendFeePerUnit ?? '0',
-        symbol,
     });
 
     const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
