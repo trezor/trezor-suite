@@ -33,8 +33,6 @@ const openBluetoothSettings = async () => {
         // Electron modifies the value of XDG_CURRENT_DESKTOP
         const xdg =
             process.env.ORIGINAL_XDG_CURRENT_DESKTOP || process.env.XDG_CURRENT_DESKTOP || '';
-        const flatpak = process.env.FLATPAK_ID ?? process.env.FLATPAK_APP_ID;
-        const flatpakPrefix = flatpak ? 'flatpak-spawn --host ' : '';
         const commands = {
             GNOME: 'gnome-control-center bluetooth',
             KDE: 'systemsettings kcm_bluetooth',
@@ -48,14 +46,14 @@ const openBluetoothSettings = async () => {
         const cmd = xdgMatch?.[1];
         const env = { XDG_CURRENT_DESKTOP: xdg };
         if (cmd) {
-            const result = await openSettings(`${flatpakPrefix}${cmd}`, env);
+            const result = await openSettings(cmd, env);
             if (result.success) {
                 return result;
             }
         }
 
         // fallback to blueman
-        return openSettings(`${flatpakPrefix}${commands.BLUEMAN}`, env);
+        return openSettings(commands.BLUEMAN, env);
     }
 
     if (isMacOs()) {
