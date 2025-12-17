@@ -12,7 +12,7 @@ import { fetchAndUpdateAccountThunk, selectRawNetworkFeeInfo } from '@suite-comm
 import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
-import { Button, Column, Modal, Row, Text } from '@trezor/components';
+import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -101,6 +101,27 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
         return levels;
     }, [feeInfo.levels, feePerUnit, selectedFee]);
+
+    const composedTx = composedLevels[selectedFee || 'normal'];
+    const currentFee = composedTx?.type === 'final' ? composedTx.fee : '0';
+
+    // Check if balance is sufficient for activation (need fee + BASE_RESERVE for new trustline)
+    const insufficientBalanceInfo = useMemo(() => {
+        if (mode !== 'activate' || !account) {
+            return null;
+        }
+        const availableBalance = BigNumber(account.availableBalance);
+        const requiredAmount = BigNumber(currentFee).plus(BASE_INFO.BASE_RESERVE);
+
+        if (availableBalance.lt(requiredAmount)) {
+            return {
+                required: formatNetworkAmount(requiredAmount.toString(), symbol, true),
+                available: formatNetworkAmount(availableBalance.toString(), symbol, true),
+            };
+        }
+
+        return null;
+    }, [mode, account, currentFee, symbol]);
 
     if (!account) {
         return null;
@@ -228,7 +249,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 <Row gap={spacings.xs}>
                     <Button
                         onClick={handleSubmit(handleSubmitTrustline)}
-                        isDisabled={isProcessing}
+                        isDisabled={isProcessing || !!insufficientBalanceInfo}
                         isLoading={isProcessing}
                         intent="brand"
                     >
@@ -272,6 +293,18 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         composedLevels={composedLevels}
                         changeFeeLevel={changeFeeLevel}
                     />
+
+                    {insufficientBalanceInfo && (
+                        <Banner intent="warning" icon="warning">
+                            <Translation
+                                id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
+                                values={{
+                                    required: insufficientBalanceInfo.required,
+                                    available: insufficientBalanceInfo.available,
+                                }}
+                            />
+                        </Banner>
+                    )}
                 </Column>
             </FormProvider>
         </Modal>
