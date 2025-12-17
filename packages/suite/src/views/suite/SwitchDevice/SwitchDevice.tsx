@@ -1,18 +1,20 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
 import { Box, Button, Column } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
@@ -31,7 +33,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
             dispatch(setConnectionMode('bluetooth'));
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceConnectionConnectButton,
             payload: {
                 option: 'dropdown',

@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { TradingExchangeFormProps, exchangeThunks } from '@suite-common/trading';
 import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type TradingExchangeUseHandleChangeProps = {
     formValues: TradingExchangeFormProps;
@@ -36,6 +37,7 @@ export const useTradingExchangeHandleChange = ({
     setIsScheduledQuotesRefresh,
 }: TradingExchangeUseHandleChangeProps) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const previousPromise = useRef<PromiseType>(null);
 
     const handleChange = useCallback(async () => {
@@ -60,7 +62,7 @@ export const useTradingExchangeHandleChange = ({
         try {
             const quotes = await promise.unwrap();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingReceivedQuotes,
                 payload: {
                     type: 'exchange',
@@ -73,14 +75,15 @@ export const useTradingExchangeHandleChange = ({
 
         setIsScheduledQuotesRefresh?.(false);
     }, [
+        setApprovalInitiated,
         dispatch,
         formValues,
         network,
         timer,
         shouldSendInSats,
         composeRequestCallback,
-        setApprovalInitiated,
         setIsScheduledQuotesRefresh,
+        legacyAnalytics,
     ]);
 
     // cleanup signal

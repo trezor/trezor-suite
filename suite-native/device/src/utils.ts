@@ -10,7 +10,8 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDevicePinProtected,
 } from '@suite-common/suite-utils';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
+import { Analytics } from '@trezor/analytics';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -68,8 +69,11 @@ export const getIsDeviceSetupSupported = (model: DeviceModelInternal) => {
     }
 };
 
-export const reportDeviceConnectionAnalytics = (device: TrezorDevice) => {
-    analytics.report({
+export const reportDeviceConnectionAnalytics = (
+    device: TrezorDevice,
+    legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>,
+) => {
+    legacyAnalytics.report({
         type: EventType.ConnectDevice,
         payload: {
             mode: getDeviceMode(device),

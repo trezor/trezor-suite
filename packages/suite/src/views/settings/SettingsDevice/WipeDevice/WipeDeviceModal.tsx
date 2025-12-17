@@ -2,23 +2,25 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { EventType } from '@suite-common/analytics-types';
 import { Translation } from '@suite/intl';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import { CheckItem } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouterApp } from 'src/reducers/suite/routerReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
 };
 
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,8 +36,8 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
         const response = await dispatch(wipeDeviceThunk());
 
         if (isFulfilled(response)) {
-            analytics.report({
-                type: EventTypeShared.SettingsDeviceWipe,
+            legacyAnalytics.report({
+                type: EventType.SettingsDeviceWipe,
             });
             if (appRoute === 'settings') {
                 // redirect to the index to close the settings and show initial device setup

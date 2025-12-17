@@ -1,21 +1,23 @@
 import { isRejected } from '@reduxjs/toolkit';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { removeThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Switch } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;
 }
 
 export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
 
     const { device } = useDevice();
@@ -45,7 +47,7 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
             dispatch(startThpAutoconnectThunk({ device }));
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceChangeThpAutoconnect,
             payload: {
                 action: isAutoconnectOn ? 'disable-autoconnect' : 'enable-autoconnect',

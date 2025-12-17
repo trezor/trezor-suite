@@ -6,11 +6,30 @@
             "path": "../../suite-common/analytics"
         },
         {
+            "path": "../../suite-common/analytics-types"
+        },
+        {
             "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        { "path": "../../suite-common/trading" },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
         },
         { "path": "../config" },
         { "path": "../sentry" },
+        { "path": "../services" },
         { "path": "../../packages/analytics" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" }
     ]
 }

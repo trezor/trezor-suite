@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
@@ -18,19 +19,20 @@ import {
     isCardanoStakedOutsideEverstake,
 } from '@suite-common/wallet-utils';
 import { Button, Column, H4, Icon, Paragraph, Row, Table } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';
 
 export const StakingDashboardAccountRow = ({ account }: { account: Account }) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-
+    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const displaySymbol = getDisplaySymbol(account.symbol);
     const isCardanoNetworkType = account.networkType === 'cardano';
@@ -104,7 +106,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             }),
         );
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
@@ -129,10 +131,10 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
         analytics.report({
             type: EventType.StakingNavigate,
-            payload: {
-                action: 'navigate',
-                from: `dashboard/staking-dashboard/${state}`,
-                networkSymbol: account.symbol,
+            attributes: {
+                action: { value: 'navigate' },
+                from: { value: `dashboard/staking-dashboard/${state}` },
+                networkSymbol: { value: account.symbol },
             },
         });
     };

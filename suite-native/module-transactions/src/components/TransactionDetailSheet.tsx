@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     BottomSheetModal,
     Box,
@@ -71,10 +72,11 @@ export const TransactionDetailSheet = ({
     children,
     sheetName,
 }: TransactionDetailSheetProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const openSheet = () => {
-        analytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
+        legacyAnalytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
         openModal();
     };
 

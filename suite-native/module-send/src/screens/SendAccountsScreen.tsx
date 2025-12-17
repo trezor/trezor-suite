@@ -1,5 +1,6 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -14,9 +15,9 @@ export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SendFlowEntered,
             payload: {
                 location: 'dashboard',

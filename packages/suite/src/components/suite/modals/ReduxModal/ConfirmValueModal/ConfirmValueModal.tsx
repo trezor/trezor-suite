@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
@@ -27,7 +28,6 @@ import {
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -39,6 +39,7 @@ import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -74,7 +75,7 @@ export const ConfirmValueModal = ({
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
         deviceStaticSessionId: account?.deviceState,
     });
@@ -94,7 +95,7 @@ export const ConfirmValueModal = ({
         const result = copyToClipboard(value);
 
         if (account) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.CreateReceiveAddressCopyAddress,
                 payload: { assetSymbol: account.symbol },
             });

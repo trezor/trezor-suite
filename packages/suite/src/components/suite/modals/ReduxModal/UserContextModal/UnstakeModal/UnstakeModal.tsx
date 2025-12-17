@@ -1,13 +1,14 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { UnstakeButton } from './UnstakeForm/UnstakeButton';
 import { UnstakeForm } from './UnstakeForm/UnstakeForm';
@@ -18,6 +19,7 @@ interface UnstakeModalModalProps {
 }
 
 export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { account } = selectedAccount;
 
     const unstakeContextValues = useUnstakeForm({ selectedAccount });
@@ -26,7 +28,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     const onCancelClick = () => {
         onCancel?.();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.StakingUnstake,
             payload: {
                 action: 'cancel',

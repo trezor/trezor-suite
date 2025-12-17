@@ -5,10 +5,10 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { analyticsActions } from './analyticsActions';
 
 export type AnalyticsState = {
-    sessionId?: string;
-    instanceId?: string;
-    enabled?: boolean;
-    confirmed?: boolean;
+    sessionId?: string | undefined;
+    instanceId?: string | undefined;
+    enabled?: boolean | undefined;
+    confirmed?: boolean | undefined;
 };
 
 type AnalyticsRootState = {

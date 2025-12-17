@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -20,7 +21,6 @@ import {
 import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
@@ -37,6 +37,7 @@ import { InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
@@ -71,6 +72,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
+    const legacyAnalytics = useLegacyAnalytics();
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -122,7 +124,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         const protocol = getProtocolInfo(uri);
 
         if (protocol) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SendQrScan,
                 payload: {
                     scheme: protocol.scheme,
@@ -179,7 +181,15 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         } else {
             dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
         }
-    }, [amountInputName, composeTransaction, dispatch, inputName, setValue, symbol]);
+    }, [
+        amountInputName,
+        composeTransaction,
+        dispatch,
+        inputName,
+        legacyAnalytics,
+        setValue,
+        symbol,
+    ]);
 
     if (device?.state?.staticSessionId === undefined) {
         return;

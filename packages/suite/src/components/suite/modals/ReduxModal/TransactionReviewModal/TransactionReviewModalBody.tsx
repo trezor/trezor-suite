@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { SendState, StakeState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import {
@@ -8,12 +9,12 @@ import {
     isRbfBumpFeeTransaction,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
@@ -37,6 +38,7 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const [isSending, setIsSending] = useState(false);
@@ -96,12 +98,12 @@ export const TransactionReviewModalBody = ({
 
             tryAgainSignTx();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TransactionRetry,
                 payload: { url: redactRouterUrl(url) },
             });
         },
-        [tryAgainSignTx, url],
+        [tryAgainSignTx, url, legacyAnalytics],
     );
 
     if (!device) return null;

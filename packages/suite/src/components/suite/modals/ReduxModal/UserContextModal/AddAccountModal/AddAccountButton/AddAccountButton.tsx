@@ -1,12 +1,13 @@
 import { useCallback } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 import { AddButton } from './AddButton';
@@ -70,6 +71,7 @@ const AddDefaultAccountButton = ({
 }: AddAccountButtonProps) => {
     const defaultAccount = scopedAccounts.at(-1);
     const device = useSelector(selectSelectedDevice);
+    const legacyAnalytics = useLegacyAnalytics();
 
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
@@ -83,7 +85,7 @@ const AddDefaultAccountButton = ({
                 setCoinFilter([]);
             }
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsNewAccount,
                 payload: {
                     type: defaultAccount.accountType,
@@ -99,8 +101,9 @@ const AddDefaultAccountButton = ({
         onEnableAccount,
         setSearchString,
         coinFilter,
-        onAddNewAccount,
+        legacyAnalytics,
         setCoinFilter,
+        onAddNewAccount,
     ]);
 
     const unavailableCapability = selectedAccount?.accountType

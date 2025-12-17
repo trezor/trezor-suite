@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     DefinitionType,
@@ -38,7 +39,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { AssetLogo } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
@@ -67,6 +67,7 @@ import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { formatTokenSymbol, getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
@@ -90,6 +91,7 @@ export const TokenRow = ({
     isUnverifiedTable,
     isCollapsed,
 }: TokenRowProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { isBelowTablet } = useLayoutSize();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
@@ -114,7 +116,7 @@ export const TokenRow = ({
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: network.symbol, action: routeName },
             });
@@ -186,7 +188,7 @@ export const TokenRow = ({
             ...{ preserveParams: type !== 'exchange' },
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

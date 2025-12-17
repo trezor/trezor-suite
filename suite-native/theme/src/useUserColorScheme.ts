@@ -1,19 +1,19 @@
 import { useAtom } from 'jotai';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
 import { ThemeColorVariant } from '@trezor/theme';
-
 export type AppColorScheme = ThemeColorVariant | 'system';
 
 const userColorSchemeAtom = atomWithUnecryptedStorage<AppColorScheme>('colorScheme', 'system');
 
 export const useUserColorScheme = () => {
     const [userColorScheme, setUserColorScheme] = useAtom(userColorSchemeAtom);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleSetUserColorScheme = (colorScheme: AppColorScheme) => {
         setUserColorScheme(colorScheme);
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsChangeTheme,
             payload: { theme: colorScheme },
         });

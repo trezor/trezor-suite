@@ -1,10 +1,10 @@
 import { useEffect, useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
 import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
@@ -18,10 +18,10 @@ import {
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
-
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
 };
@@ -34,6 +34,7 @@ const commonCableTips = [
 ];
 
 export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const {
         isBluetoothMode,
         toggleShouldPairAgain,
@@ -77,7 +78,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                             intent="neutral"
                             priority="secondary"
                             onClick={() => {
-                                analytics.report({
+                                legacyAnalytics.report({
                                     type: EventType.DeviceConnectionHintModal,
                                     payload: {
                                         option: 'notWorking',

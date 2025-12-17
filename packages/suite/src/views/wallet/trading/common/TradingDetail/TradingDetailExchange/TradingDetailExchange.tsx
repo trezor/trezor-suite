@@ -4,6 +4,7 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
@@ -11,12 +12,12 @@ import {
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
@@ -54,6 +55,7 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 };
 
 export const TradingDetailExchange = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
     const dispatch = useDispatch();
@@ -85,14 +87,14 @@ export const TradingDetailExchange = () => {
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingStatus,
             payload: {
                 type: 'exchange',
                 status: tradeStatusStep,
             },
         });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep, legacyAnalytics]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades

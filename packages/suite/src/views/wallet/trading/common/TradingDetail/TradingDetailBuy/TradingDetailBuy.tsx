@@ -4,15 +4,16 @@ import { usePrevious } from 'react-use';
 import { BuyTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { type TradingBuyType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
@@ -46,6 +47,7 @@ const getTradeStatusStep = (tradeStatus?: BuyTradeStatus) => {
 };
 
 export const TradingDetailBuy = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const accounts = useSelector(selectAccounts);
     const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
@@ -80,14 +82,14 @@ export const TradingDetailBuy = () => {
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingStatus,
             payload: {
                 type: 'buy',
                 status: tradeStatusStep,
             },
         });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep, legacyAnalytics]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades

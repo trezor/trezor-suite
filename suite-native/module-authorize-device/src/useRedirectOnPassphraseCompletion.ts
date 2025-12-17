@@ -9,7 +9,8 @@ import {
     selectDiscoveryByDevicePath,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     selectHasPassphraseError,
     selectHasVerificationCancelledError,
@@ -23,7 +24,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const passphraseDiscoveryCompleted = useSelector(selectPassphraseDiscoveryCompleted);
     const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const store = useStore();
     const navigateToInitialScreen = useNavigateToInitialScreen();
@@ -40,7 +41,7 @@ export const useRedirectOnPassphraseCompletion = () => {
                 device?.path,
             );
             if (discovery) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.PassphraseFlowFinished,
                     payload: { isEmptyWallet: !discovery.hasLoadedAnyNonEmptyAccount },
                 });
@@ -52,6 +53,7 @@ export const useRedirectOnPassphraseCompletion = () => {
         navigateToInitialScreen,
         store,
         device?.path,
+        legacyAnalytics,
     ]);
 
     useEffect(() => {
@@ -63,12 +65,19 @@ export const useRedirectOnPassphraseCompletion = () => {
     useEffect(() => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
         if (hasVerificationCancelledError && device) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.PassphraseExit,
                 payload: { screen: route.name },
             });
             dispatch(cancelDiscoveryThunk(device));
             navigateToInitialScreen();
         }
-    }, [dispatch, hasVerificationCancelledError, navigateToInitialScreen, route.name, device]);
+    }, [
+        dispatch,
+        hasVerificationCancelledError,
+        navigateToInitialScreen,
+        route.name,
+        device,
+        legacyAnalytics,
+    ]);
 };

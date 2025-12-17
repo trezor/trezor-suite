@@ -31,6 +31,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../analytics" },
         { "path": "../intl" },
         {
             "path": "../../packages/blockchain-link-types"
@@ -40,9 +41,6 @@
         { "path": "../../packages/eslint" },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/suite" },
-        {
-            "path": "../../packages/suite-analytics"
-        },
         { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/transport" },

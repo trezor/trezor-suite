@@ -1,9 +1,9 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Protocol } from '@suite-common/suite-constants';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import * as walletConnectActions from '@suite-common/walletconnect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import {
     SUITE_ANCHOR_DEEPLINK_PREFIX,
     SUITE_BRIDGE_DEEPLINK,
@@ -52,7 +52,7 @@ export const handleProtocolRequest =
         const protocol = getProtocolInfo(uri);
 
         if (protocol) {
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.AppUriHandler,
                 payload: {
                     scheme: protocol.scheme,

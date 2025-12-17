@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
@@ -26,13 +27,13 @@ import {
     isRbfCancelTransaction,
 } from '@suite-common/wallet-utils';
 import { Modal, Row } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { Deferred } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
@@ -102,6 +103,7 @@ export const TransactionReviewModalBodyInner = ({
     setIsSending,
     hasTxExpired,
 }: TransactionReviewModalBodyInnerProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const { symbol, networkType } = account;
@@ -211,7 +213,7 @@ export const TransactionReviewModalBodyInner = ({
     const handleDetailsClick = () => {
         setAreDetailsVisible(areVisible => {
             if (!areVisible) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.SendDetailOpened,
                     payload: {
                         assetSymbol: symbol,

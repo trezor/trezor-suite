@@ -1,7 +1,8 @@
 import { LayoutChangeEvent, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -39,7 +40,7 @@ const animationWrapperStyle = prepareNativeStyle(() => ({
 
 export const PassphraseFormScreen = () => {
     const { applyStyle } = useNativeStyles();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { translate } = useTranslate();
 
     const openLink = useOpenLink();
@@ -59,7 +60,7 @@ export const PassphraseFormScreen = () => {
     const handleAnimation = () => (cardHeight.value = 0);
 
     const handleOpenLink = () => {
-        analytics.report({ type: EventType.PassphraseArticleOpened });
+        legacyAnalytics.report({ type: EventType.PassphraseArticleOpened });
         openLink(HELP_CENTER_PASSPHRASE_URL);
     };
 

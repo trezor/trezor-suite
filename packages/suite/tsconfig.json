@@ -15,6 +15,9 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/analytics-types"
+        },
         { "path": "../../suite-common/assets" },
         {
             "path": "../../suite-common/bluetooth"
@@ -123,6 +126,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
+        { "path": "../../suite/analytics" },
         {
             "path": "../../suite/idb-migration-utils"
         },
@@ -152,7 +156,6 @@
         { "path": "../protobuf" },
         { "path": "../react-utils" },
         { "path": "../styles" },
-        { "path": "../suite-analytics" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },

@@ -31,6 +31,7 @@
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
+        "@suite-native/services": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@suite-native/tokens": "workspace:*",

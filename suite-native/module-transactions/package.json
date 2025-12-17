@@ -31,6 +31,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/services": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/connect": "workspace:*",

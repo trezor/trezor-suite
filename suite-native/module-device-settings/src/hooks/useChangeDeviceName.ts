@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventType } from '@suite-common/analytics-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventTypeShared, analytics } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -26,7 +27,7 @@ export const useChangeDeviceName = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const device = useSelector(selectSelectedDevice);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const form = useForm({
         validation: deviceNameFormValidationSchema(translate),
         defaultValues: {
@@ -72,8 +73,8 @@ export const useChangeDeviceName = () => {
 
         navigation.navigate(DeviceNameStackRoutes.DeviceNameLoadingScreen);
 
-        analytics.report({
-            type: EventTypeShared.SettingsDeviceChangeLabel,
+        legacyAnalytics.report({
+            type: EventType.SettingsDeviceChangeLabel,
         });
     });
 

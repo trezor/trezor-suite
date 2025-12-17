@@ -1,6 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { DemoAccountQuestionnaireLinkKey, EventType, analytics } from '@suite-native/analytics';
+import {
+    DemoAccountQuestionnaireLinkKey,
+    EventType,
+    useLegacyAnalytics,
+} from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -56,9 +60,9 @@ type NavigationProp = StackNavigationProps<
 export const DemoAccountQuestionnaireSuccessScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleOpenUrl = (recommendation: Recommendation) => {
-        analytics.report(
+        legacyAnalytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireLinks,
                 payload: {
@@ -72,7 +76,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
     };
 
     const handleBackToDashboard = () => {
-        analytics.report(
+        legacyAnalytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireLinks,
                 payload: {

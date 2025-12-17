@@ -1,14 +1,21 @@
 import { Translation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
+import styled from 'styled-components';
+
+import { EventType } from '@suite/analytics';
+import { Text } from '@trezor/components';
+import { transitions } from '@trezor/theme';
 import { Row, Text, TextButton } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 export const HeaderBreadcrumb = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const language = useSelector(selectLanguage);
     const indexNode = useSelector(state => state.guide.indexNode);
     const currentNode = useSelector(state => state.guide.currentNode);
@@ -39,7 +46,7 @@ export const HeaderBreadcrumb = () => {
 
     const navigateToCategory = (node: GuideCategory) => {
         dispatch(openNode(node));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',
@@ -50,7 +57,7 @@ export const HeaderBreadcrumb = () => {
 
     const navigateToGuideDashboard = () => {
         dispatch(setView('GUIDE_DEFAULT'));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',

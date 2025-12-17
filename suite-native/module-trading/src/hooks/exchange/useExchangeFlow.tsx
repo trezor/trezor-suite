@@ -10,7 +10,8 @@ import {
     selectTradingExchangePreselectedQuote,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -36,7 +37,7 @@ export type TradingExchangeSignAndSendTransactionProps = {
 
 export const useExchangeFlow = () => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
@@ -82,7 +83,7 @@ export const useExchangeFlow = () => {
             });
 
             const triggerAnalyticsTradeConfirmation = () => {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingConfirmTrade,
                     payload: {
                         type: 'exchange',
@@ -99,7 +100,7 @@ export const useExchangeFlow = () => {
                 processResponseData,
             };
         },
-        [handleWebview, quote],
+        [handleWebview, legacyAnalytics, quote],
     );
 
     const {

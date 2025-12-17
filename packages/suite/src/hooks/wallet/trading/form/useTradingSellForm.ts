@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { EventType } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -28,7 +29,6 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { isChanged } from '@trezor/utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -47,6 +47,7 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
@@ -58,6 +59,7 @@ export const useTradingSellForm = ({
     selectedAccount,
     pageType = 'form',
 }: UseTradingFormProps): TradingSellFormContextProps => {
+    const legacyAnalytics = useLegacyAnalytics();
     const type = 'sell';
     const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
@@ -291,7 +293,7 @@ export const useTradingSellForm = ({
         dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
         navigateToSellOffers();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'sell',
@@ -306,7 +308,7 @@ export const useTradingSellForm = ({
 
         switch (pageType) {
             case 'form': {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingSell,
                     payload: {
                         action: 'continue',
@@ -326,7 +328,7 @@ export const useTradingSellForm = ({
                 break;
             }
             case 'offers': {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.TradingSell,
                     payload: {
                         action: 'continue',
@@ -372,7 +374,7 @@ export const useTradingSellForm = ({
         const { returnUrl, processResponseData } = commonFunctions;
 
         const triggerAnalyticsTradeConfirmation = () => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingConfirmTrade,
                 payload: { action: type },
             });

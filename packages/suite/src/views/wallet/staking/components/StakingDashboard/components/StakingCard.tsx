@@ -1,3 +1,4 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
@@ -26,7 +27,6 @@ import {
     SkeletonRectangle,
     Tooltip,
 } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -34,6 +34,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
@@ -93,6 +94,7 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { isBelowLaptop } = useLayoutSize();
 
     const selectedStakingTotalRewards = useSelector(state =>
@@ -163,7 +165,7 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake', flow: StakingFlow.Stake }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingStake,
                 payload: {
                     action: 'continue',
@@ -178,7 +180,7 @@ export const StakingCard = ({
         if (canClaimRewards) {
             dispatch(openModal({ type: 'claim' }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingClaim,
                 payload: {
                     action: 'continue',
@@ -193,7 +195,7 @@ export const StakingCard = ({
         if (!isUnstakingDisabled) {
             dispatch(openModal({ type: 'unstake' }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingUnstake,
                 payload: {
                     action: 'continue',

@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { Switch } from '@trezor/components';
-import { analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -17,6 +17,7 @@ const PositionedSwitch = styled.div`
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
+    const legacyAnalytics = useLegacyAnalytics();
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Analytics}>
@@ -31,9 +32,9 @@ export const Analytics = () => {
                         isChecked={isAnalyticsEnabled}
                         onChange={() => {
                             if (isAnalyticsEnabled) {
-                                analytics.disable();
+                                legacyAnalytics.disable();
                             } else {
-                                analytics.enable();
+                                legacyAnalytics.enable();
                             }
                         }}
                     />

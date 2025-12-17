@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -9,11 +10,11 @@ import {
 } from '@suite-common/wallet-core';
 import { getInputState, isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
@@ -36,7 +37,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     });
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const inputValue = watch(INPUT_NAME);
     const error = errors[INPUT_NAME];
     const inputState = getInputState(error);
@@ -65,7 +66,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
         if (result) {
             setValue(INPUT_NAME, '');
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SendRawTransaction,
                 payload: {
                     networkSymbol: account.symbol,

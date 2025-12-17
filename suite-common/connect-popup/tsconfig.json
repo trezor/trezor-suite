@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../analytics" },
+        { "path": "../analytics-types" },
         { "path": "../redux-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },

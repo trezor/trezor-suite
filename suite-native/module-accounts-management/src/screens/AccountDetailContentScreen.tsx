@@ -2,7 +2,8 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useAnalytics } from '@suite-native/services';
 import { Screen } from '@suite-native/navigation';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
@@ -20,6 +21,7 @@ export const AccountDetailContentScreen = ({
     account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
+    const analytics = useAnalytics();
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),
     );
@@ -28,14 +30,14 @@ export const AccountDetailContentScreen = ({
         if (account) {
             analytics.report({
                 type: EventType.AssetDetail,
-                payload: {
-                    assetSymbol: account.symbol,
-                    tokenSymbol: token?.symbol,
-                    tokenAddress: token?.contract,
+                attributes: {
+                    assetSymbol: { value: account.symbol },
+                    tokenSymbol: token ? { value: token?.symbol } : undefined,
+                    tokenAddress: token ? { value: token?.contract } : undefined,
                 },
             });
         }
-    }, [account, token?.symbol, token?.contract]);
+    }, [account, token?.symbol, token?.contract, analytics, token]);
 
     const listHeaderComponent = useMemo(
         () => <TransactionListHeader accountKey={account.key} tokenContract={tokenContract} />,

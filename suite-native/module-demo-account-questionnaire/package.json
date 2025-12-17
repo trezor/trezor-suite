@@ -19,6 +19,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/services": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.1.0",

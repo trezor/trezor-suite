@@ -1,10 +1,11 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { cloneObject } from '@trezor/utils';
 
 import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
@@ -561,7 +562,7 @@ export const addMetadata =
  */
 export const init =
     (force: boolean, deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         let device = deviceStateArg
             ? selectDeviceByStaticSessionId(getState(), deviceStateArg)
             : selectSelectedDevice(getState());
@@ -630,7 +631,7 @@ export const init =
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
-                analytics.report({
+                getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                     type: EventType.SettingsGeneralLabelingProvider,
                     payload: {
                         provider: 'closed',

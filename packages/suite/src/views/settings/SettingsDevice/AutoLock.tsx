@@ -1,14 +1,15 @@
 import type { Locale } from 'date-fns';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {
@@ -32,7 +33,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const locale = useLocales();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {
@@ -48,7 +49,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
         const value = option.value * 1000;
 
         dispatch(applySettings({ auto_lock_delay_ms: value }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceUpdateAutoLock,
             payload: {
                 value,

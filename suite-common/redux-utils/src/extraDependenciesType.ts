@@ -4,6 +4,10 @@ import {
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import type {
+    AnalyticsSharedEvents,
+    SuiteSharedLegacyAnalyticsEvents,
+} from '@suite-common/analytics-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSync } from '@suite-common/suite-sync-types';
@@ -15,6 +19,7 @@ import {
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { Analytics } from '@trezor/analytics';
 import {
     BlockchainBlock,
     BluetoothDeviceId,
@@ -60,6 +65,8 @@ export type LocationPushState = Record<string, unknown>;
 export type CommonServices = {
     suiteSync: SuiteSync;
     platformEncryption: PlatformEncryption;
+    analytics: Analytics<AnalyticsSharedEvents>;
+    legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
 };
 
 export type ExtraDependenciesStatic = {

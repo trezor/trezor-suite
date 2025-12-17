@@ -4,7 +4,8 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
@@ -64,6 +65,7 @@ const SellReceiveMethodPickerRight = ({
 
 export const SellReceiveMethodPicker = () => {
     const { translate } = useTranslate();
+    const legacyAnalytics = useLegacyAnalytics();
     const { applyStyle } = useNativeStyles();
     const form = useSellFormContext();
     const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
@@ -88,7 +90,7 @@ export const SellReceiveMethodPicker = () => {
 
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'sell',

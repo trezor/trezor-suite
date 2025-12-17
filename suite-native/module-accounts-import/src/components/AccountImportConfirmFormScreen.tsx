@@ -16,7 +16,8 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -51,6 +52,7 @@ export const AccountImportConfirmFormScreen = ({
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);
@@ -82,7 +84,7 @@ export const AccountImportConfirmFormScreen = ({
                 }),
             ).unwrap();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AssetsSync,
                 payload: {
                     assetSymbol: symbol,

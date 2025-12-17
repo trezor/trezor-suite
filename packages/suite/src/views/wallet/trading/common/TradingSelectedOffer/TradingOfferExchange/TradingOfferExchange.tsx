@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -9,11 +10,11 @@ import {
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -29,7 +30,7 @@ export const TradingOfferExchange = ({
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(
@@ -55,7 +56,7 @@ export const TradingOfferExchange = ({
     const confirmAndSend = async () => {
         const result = await sendTransaction();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchange,
             payload: {
                 action: result ? 'continue' : 'cancel',

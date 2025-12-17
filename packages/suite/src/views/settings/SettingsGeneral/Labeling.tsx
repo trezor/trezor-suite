@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
@@ -21,13 +21,14 @@ import { useDevice, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
     const { suiteSync } = useSuiteServices();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
@@ -82,7 +83,7 @@ export const Labeling = () => {
                 exhaustive(value);
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
                 value: value === 'secure-sync' ? 'evolu' : value,

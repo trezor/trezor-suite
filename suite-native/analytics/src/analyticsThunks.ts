@@ -5,19 +5,21 @@ import {
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
-import { EventType, analytics } from '@suite-common/analytics/src/events/suite-native';
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
+import { EventType } from './constants';
+import { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
+
 const ACTION_PREFIX = '@suite-native/analytics';
 
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
-    (_, { dispatch }) => {
-        analytics.report({
+    (_, { dispatch, extra }) => {
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
@@ -28,8 +30,8 @@ export const enableAnalyticsThunk = createThunk(
 
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
-    (_, { dispatch }) => {
-        analytics.report(
+    (_, { dispatch, extra }) => {
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
@@ -40,7 +42,7 @@ export const disableAnalyticsThunk = createThunk(
 
 export const initAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/init`,
-    (_, { dispatch, getState }) => {
+    (_, { dispatch, getState, extra }) => {
         const sessionId = getTrackingRandomId();
         const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
         const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
@@ -48,7 +50,7 @@ export const initAnalyticsThunk = createThunk(
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-        analytics.init(hasUserAllowedTracking, {
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).init(hasUserAllowedTracking, {
             instanceId,
             sessionId,
             environment: 'mobile',

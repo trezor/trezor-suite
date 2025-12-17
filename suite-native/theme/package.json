@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@suite-native/analytics": "workspace:*",
+        "@suite-native/services": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.15.0",

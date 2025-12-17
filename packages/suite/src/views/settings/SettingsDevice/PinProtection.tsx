@@ -1,12 +1,13 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;
@@ -15,12 +16,13 @@ interface PinProtectionProps {
 export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
+    const legacyAnalytics = useLegacyAnalytics();
 
     const pinProtection = device?.features?.pin_protection ?? null;
 
     const handleChange = () => {
         dispatch(changePin({ remove: !!pinProtection }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceChangePinProtection,
             payload: {
                 remove: pinProtection,

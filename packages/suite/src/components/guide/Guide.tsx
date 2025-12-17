@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Column, Divider, Icon } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, transitions, typography, zIndices } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -16,6 +16,7 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};
@@ -64,10 +65,10 @@ export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
     const indexNode = useSelector(state => state.guide.indexNode);
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleFeedbackButtonClick = () => {
         dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'overview' },
         });

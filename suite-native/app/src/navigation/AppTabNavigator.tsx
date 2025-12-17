@@ -2,7 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
+import { EventType, useLegacyAnalytics } from '@suite-native/services';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
@@ -15,11 +17,12 @@ import { rootTabsOptions } from './routes';
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const handleTradeTabPress = () => {
         // Buy is the default tab when navigating to the Trading stack
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

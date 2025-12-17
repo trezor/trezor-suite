@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -22,7 +23,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
@@ -32,6 +32,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 
@@ -51,6 +52,7 @@ type RevokeModalProps = {
 };
 
 export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const context = useTradingFormContext<TradingExchangeType>();
     const {
         form: {
@@ -79,7 +81,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     }
 
     const confirmAndSend = async () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'revoke-modal',
@@ -103,7 +105,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         const { receiveAddress } = tradingReceiveAddress;
         if (!receiveAddress) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'revoke-modal',
@@ -119,7 +121,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     };
 
     const onClose = (isSubmitting?: boolean) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'revoke-modal',

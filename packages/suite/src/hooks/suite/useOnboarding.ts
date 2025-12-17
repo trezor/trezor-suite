@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
+import { OnboardingAnalytics } from '@suite/analytics';
 import { BackupType } from '@suite-common/suite-types';
 import { UI } from '@trezor/connect';
-import { OnboardingAnalytics } from '@trezor/suite-analytics';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';

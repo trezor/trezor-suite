@@ -1,5 +1,7 @@
 import { toWei } from 'web3-utils';
 
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
     prepareClaimEthTx,
@@ -29,7 +31,6 @@ import {
 } from '@suite-common/wallet-types';
 import { calculateTotalGasCost, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -110,7 +111,7 @@ export const composeTransaction =
 
 export const signTransaction =
     (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { selectedAccount } = getState().wallet;
         const device = selectSelectedDevice(getState());
         if (
@@ -216,7 +217,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.TransactionCancel,
                 payload: {
                     txType: 'stake',

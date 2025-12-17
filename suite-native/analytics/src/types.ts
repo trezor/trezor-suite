@@ -1,3 +1,4 @@
+import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -27,7 +28,9 @@ export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
 export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
-export type SuiteNativeAnalyticsEvent =
+/** @deprecated use `AnalyticsNativeEvents` */
+export type SuiteNativeLegacyAnalyticsEvents =
+    | SuiteSharedLegacyAnalyticsEvents
     | {
           type: EventType.AppReady;
           payload: {
@@ -75,14 +78,6 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.WatchPortfolioTimeframeChange;
           payload: {
               timeframe: string;
-          };
-      }
-    | {
-          type: EventType.AssetDetail;
-          payload: {
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenAddress?: TokenAddress;
           };
       }
     | {
@@ -167,7 +162,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.BiometricsChange;
           payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
       }
-    | { type: EventType.ConfirmedReceiveAdress }
+    | { type: EventType.ConfirmedReceiveAddress }
     | { type: EventType.EmptyDashboardClick; payload: { action: 'syncCoins' | 'connectDevice' } }
     | {
           type: EventType.DeviceManagerClick;

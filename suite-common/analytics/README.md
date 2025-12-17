@@ -4,10 +4,11 @@ This is the shared analytics package for Trezor Suite, containing all event type
 
 Depending on your environment, you can choose one of the following packages, each with its own set of events:
 
-| Package                   | Environment     | Events Defined In                                        |
-| ------------------------- | --------------- | -------------------------------------------------------- |
-| `@suite-common/analytics` | `@suite-common` | [`./src/events/shared`](./src/events/shared/)            |
-| `@trezor/suite-analytics` | `@trezor/suite` | [`./src/events/suite`](./src/events/suite)               |
+// @TODO
+| Package | Environment | Events Defined In |
+|---------------------------| --------------- | -------------------------------------------------------- |
+| `@suite-common/analytics` | `@suite-common` | [`./src/events/shared`](./src/events/shared/) |
+| `@suite/analytics` | `@trezor/suite` | [`./src/events/suite`](./src/events/suite) |
 | `@suite-native/analytics` | `@suite-native` | [`./src/events/suite-native`](./src/events/suite-native) |
 
 More details can be found in the [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.
@@ -36,9 +37,9 @@ Navigation between pages is not required to be tracked as it is tracked automati
 
 ## Type declaration
 
-All events and their properties should be declared in [src/events/suite/types.ts](./src/events/suite/types.ts) (or in the corresponding directory for other environments).
+All events and their properties should be declared in [src/events/suite/types.ts](../../packages/suite-analytics/src/types.ts) (or in the corresponding directory for other environments).
 Event types should be declared in the `EventType` enum in [src/events/suite/constants.ts](./src/events/suite/constants.ts).
-Supplementary types can be declared in [src/events/suite/definitions.ts](./src/events/suite/definitions.ts).
+Supplementary types can be declared in [src/events/suite/definitions.ts](../../packages/suite-analytics/src/definitions.ts).
 
 ## Reporting in code
 
@@ -46,7 +47,7 @@ To report an event, import `analytics` from the package based on your environmen
 
 ```
 // Desktop/web
-import { analytics } from '@trezor/suite-analytics';
+import { analytics } from '@suite/analytics';
 // Suite Native
 import { analytics } from '@suite-native/analytics';
 // Suite Common
@@ -66,6 +67,8 @@ analytics.init(enabled, {
 ```
 
 After that, you can use `report` method anywhere in your project scope.
+
+// @TODO fix docs
 
 ```
 analytics.report({

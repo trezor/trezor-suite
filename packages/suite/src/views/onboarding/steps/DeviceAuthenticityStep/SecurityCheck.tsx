@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
@@ -18,7 +19,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { breakpoints, spacings } from '@trezor/theme';
 import {
     TREZOR_RESELLERS_URL,
@@ -37,6 +37,7 @@ import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceComprom
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
@@ -128,6 +129,7 @@ const SecurityCheckContent = ({
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
 }: SecurityCheckContentProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { isBelowTablet } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectSelectedDevice);
@@ -167,7 +169,7 @@ const SecurityCheckContent = ({
     };
 
     const handleSetupButtonClick = () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupStarted,
             payload: {
                 deviceModel,

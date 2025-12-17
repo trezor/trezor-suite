@@ -1,7 +1,8 @@
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Device } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
@@ -105,7 +106,7 @@ type DisconnectProviderParams = {
 
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch) => {
+    async (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -135,7 +136,7 @@ export const disconnectProvider =
                 payload: { dataType, clientId: undefined },
             });
 
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.SettingsGeneralLabelingProvider,
                 payload: {
                     provider: '',
@@ -239,7 +240,7 @@ type ConnectProviderParams = {
 
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const providerInstance = createProviderInstance(
             type,
             {},
@@ -276,7 +277,7 @@ export const connectProvider =
             },
         });
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
                 provider: providerDetails.payload.type,

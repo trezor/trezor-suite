@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -22,6 +23,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ReceiveAccountsScreen = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
@@ -29,7 +31,7 @@ export const ReceiveAccountsScreen = () => {
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
     const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.ReceiveFlowEntered,
             payload: {
                 location: 'dashboard',

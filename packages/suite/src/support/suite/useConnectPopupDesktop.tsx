@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { EventType } from '@suite-common/analytics-types';
 import {
     connectPopupCallThunk,
     connectPopupCancelThunk,
@@ -9,14 +10,15 @@ import {
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { CallMethodKeys } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const popupCall = useSelector(selectConnectPopupCall);
     const initialized = useRef(false);
 
@@ -58,8 +60,8 @@ export const useConnectPopupDesktop = () => {
 
                     desktopApi.connectPopupReady();
 
-                    analytics.report({
-                        type: EventTypeShared.ConnectPopupInit,
+                    legacyAnalytics.report({
+                        type: EventType.ConnectPopupInit,
                     });
                 }
             }
@@ -73,7 +75,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch]);
+    }, [dispatch, legacyAnalytics]);
 
     // App focus control
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);

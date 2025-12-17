@@ -1,14 +1,15 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {
@@ -23,6 +24,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
+    const legacyAnalytics = useLegacyAnalytics();
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -99,7 +101,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             dispatch(addToken(account, tokenInfo));
             onCancel();
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AddToken,
                 payload: {
                     networkSymbol: account.symbol,

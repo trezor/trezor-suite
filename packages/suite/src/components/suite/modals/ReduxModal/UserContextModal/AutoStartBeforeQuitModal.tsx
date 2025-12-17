@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
@@ -23,7 +25,7 @@ export const AutoStartBeforeQuitModal = () => {
     ) => {
         desktopApi.appAutoStartPopupResponse(action);
         dispatch(modalActions.onCancel());
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.AutostartModal,
             payload: {
                 action,

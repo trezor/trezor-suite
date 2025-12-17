@@ -32,8 +32,6 @@ jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
     }),
 );
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
-
 // use real package
 jest.unmock('dropbox');
 // use fetch mock (used in Dropbox constructor, requesting to https://api.dropboxapi.com/)
