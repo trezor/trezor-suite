@@ -11,7 +11,11 @@ import {
 import { EventType, TradingSellAction, TradingSellStep, analytics } from '@suite-native/analytics';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
-import { TradingSellAnalyticReportCallback } from '../general/tradingAnalyticReportCallbackTypes';
+
+export type TradingSellAnalyticReportCallback = (
+    step: TradingSellStep,
+    action: TradingSellAction,
+) => void;
 
 export const useSellAnalyticReportCallback = (
     candidateQuote?: SellFiatTrade,
