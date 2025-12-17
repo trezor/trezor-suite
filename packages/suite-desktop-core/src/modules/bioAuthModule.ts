@@ -147,7 +147,11 @@ class BioAuthWindows extends BioAuth {
     isAvailable() {
         if (!this.winHello) throw new Error('WinHelloManager is not initialized');
 
-        return this.winHello.isHelloAvailable();
+        try {
+            return this.winHello.isHelloAvailable();
+        } catch {
+            return Promise.resolve(false);
+        }
     }
 
     validate(message?: string) {
