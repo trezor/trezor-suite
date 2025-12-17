@@ -11,7 +11,7 @@ import {
     RetrieveSuiteSyncOwnerDeps,
     RetrieveSuiteSyncOwnerParams,
     createRetrieveSuiteSyncOwner,
-} from '../retrieveSuiteSyncOwner';
+} from '../createRetrieveSuiteSyncOwner';
 
 const device: RetrieveSuiteSyncOwnerParams['device'] = {
     instance: 0,

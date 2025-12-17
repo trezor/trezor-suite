@@ -4,7 +4,7 @@ import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { StaticSessionId } from '@trezor/connect';
 
 import { mockNotExpected } from '../../../tests/utils';
-import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../changeRelayUrl';
+import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 

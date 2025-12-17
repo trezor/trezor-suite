@@ -11,8 +11,8 @@ import {
 import { ok } from '@trezor/type-utils';
 
 import { mockNotExpected } from '../../tests/utils';
-import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSync';
-import { LoadSuiteSyncOwnerFromState } from '../owner/loadSuiteSyncOwnerFromState';
+import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSyncKeys';
+import { LoadSuiteSyncOwnerFromState } from '../owner/createLoadSuiteSyncOwnerFromState';
 
 const createMockDeps = () =>
     ({

@@ -16,18 +16,18 @@ import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
-import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
-import { createUpdateAddressLabel } from './labeling/updateAddressLabel';
-import { createUpdateOutputLabel } from './labeling/updateOutputLabel';
-import { createUpdateWalletLabel } from './labeling/updateWalletLabel';
-import { createEnsureSuiteSyncOwner } from './owner/ensureSuiteSyncOwner';
-import { createLoadSuiteSyncOwnerFromState } from './owner/loadSuiteSyncOwnerFromState';
+import { createUpdateAccountLabel } from './labeling/createUpdateAccountLabel';
+import { createUpdateAddressLabel } from './labeling/createUpdateAddressLabel';
+import { createUpdateOutputLabel } from './labeling/createUpdateOutputLabel';
+import { createUpdateWalletLabel } from './labeling/createUpdateWalletLabel';
+import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
+import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
     RetrieveSuiteSyncOwnerDeps,
     createRetrieveSuiteSyncOwner,
-} from './owner/retrieveSuiteSyncOwner';
-import { createSaveSuiteSyncOwner } from './owner/saveSuiteSyncOwner';
-import { createChangeRelayUrl } from './relay/changeRelayUrl';
+} from './owner/createRetrieveSuiteSyncOwner';
+import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
+import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/createEnsureStorage';
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
