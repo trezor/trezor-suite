@@ -1,7 +1,7 @@
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
 import { mockNotExpected } from '../../../tests/utils';
-import { asStorageId, createSuiteSyncStorageRepository } from '../suiteSyncStorageRepository';
+import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyncStorageRepository';
 
 const storageId1 = asStorageId('1');
 const storage: SuiteSyncStorage = {
