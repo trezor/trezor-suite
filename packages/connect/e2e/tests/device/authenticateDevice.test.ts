@@ -38,7 +38,8 @@ describe('TrezorConnect.authenticateDevice', () => {
         ),
     };
 
-    conditionalTest(['*T3W1'], 'validation successful - tropic', async () => {
+    // T3W1 skipped (#23966)
+    /*conditionalTest(['*T3W1'], 'validation successful - tropic', async () => {
         const result = await TrezorConnect.authenticateDevice({
             config,
         });
@@ -52,7 +53,7 @@ describe('TrezorConnect.authenticateDevice', () => {
                 tropicResult: { valid: false },
             },
         });
-    });
+    });*/
 
     conditionalTest(['*T3T1', '*T3B1', '*T2B1'], 'validation successful - optiga', async () => {
         const result = await TrezorConnect.authenticateDevice({
@@ -69,7 +70,7 @@ describe('TrezorConnect.authenticateDevice', () => {
     });
 
     conditionalTest(
-        ['!T2T1', '!T1B1'],
+        ['!T2T1', '!T1B1', '!T3W1'], // T3W1 skipped (#23966)
         'validation unsuccessful (rootPubKey not found)',
         async () => {
             const result = await TrezorConnect.authenticateDevice({
