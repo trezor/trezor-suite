@@ -1,10 +1,17 @@
-import React from 'react';
-
 import type { Preview } from '@storybook/react-native';
 
-import { Box } from '@suite-native/atoms';
+import { themeDecorator } from '../themeDecorator';
 
 const preview: Preview = {
+    argTypes: {
+        theme: {
+            options: ['standard', 'dark'],
+            control: { type: 'radio' },
+        },
+    },
+    args: {
+        theme: 'standard',
+    },
     parameters: {
         controls: {
             matchers: {
@@ -13,14 +20,7 @@ const preview: Preview = {
             },
         },
     },
-    decorators: [
-        Story => (
-            <Box paddingTop="sp64" flex={1} alignItems="center">
-                <Story />
-            </Box>
-        ),
-    ],
+    decorators: [themeDecorator],
 };
 
-// eslint-disable-next-line import/no-default-export
 export default preview;

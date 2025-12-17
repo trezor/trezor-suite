@@ -1,0 +1,52 @@
+import type { StorybookConfig } from '@storybook/react-native-web-vite';
+import { createRequire } from 'module';
+import path from 'path';
+import { InlineConfig, mergeConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+
+const require = createRequire(import.meta.url);
+
+const main: StorybookConfig = {
+    stories: ['../../**/stories/**/*.stories.?(ts|tsx|js|jsx)'],
+    staticDirs: ['../../../suite-common/icons/iconFontsMobile', '../../../packages/theme/fonts'],
+    framework: {
+        name: '@storybook/react-native-web-vite',
+        options: {
+            pluginReactOptions: {
+                babel: {
+                    configFile: false,
+                    plugins: [
+                        ['@babel/plugin-transform-class-static-block'],
+                        ['react-native-worklets/plugin'],
+                    ],
+                },
+            },
+        },
+    },
+
+    viteFinal(config) {
+        const myConfig: InlineConfig = {
+            resolve: {
+                alias: {
+                    // fixes Skia for web
+                    // see: https://github.com/Shopify/react-native-skia/discussions/2420#discussioncomment-12972538
+                    'react-native/Libraries/Image/AssetRegistry': path.resolve(
+                        path.dirname('.'),
+                        '..',
+                        '..',
+                        'node_modules',
+                        'react-native-web/dist/modules/AssetRegistry',
+                    ),
+                    '@trezor/address-validator': require.resolve(
+                        './mocks/address-validator.mock.ts',
+                    ),
+                },
+            },
+            plugins: [nodePolyfills()],
+        };
+
+        return mergeConfig(config, myConfig);
+    },
+};
+
+export default main;

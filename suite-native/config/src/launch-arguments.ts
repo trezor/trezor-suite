@@ -1,20 +1,4 @@
-import { LaunchArguments } from 'react-native-launch-arguments';
-
-export type LaunchArguments = {
-    detoxURLBlacklistRegex?: string;
-    DTXDisableMainRunLoopSync?: boolean;
-    isCardanoSendEnabled?: boolean;
-    isDebugKeysAllowed?: boolean;
-    isTradingBuyEnabled?: boolean;
-    isTradingExchangeEnabled?: boolean;
-    isTradingSellEnabled?: boolean;
-    areDebugOnlyNetworksEnabled?: boolean;
-    areExperimentalOnlyNetworksEnabled?: boolean;
-    preloadedState?: string; // stringified object
-    isFirmwareUpdateEnabled?: boolean;
-    areTradingExchangeDexesEnabled?: boolean;
-    isTradingResidenceCheckEnabled?: boolean;
-    isTradingDebugEnabled?: boolean;
-};
-
-export const launchArguments = LaunchArguments.value<LaunchArguments>();
+// The launch arguments should be used only in the E2E tests.
+// see launch-arguments.e2e.ts.
+import { LaunchArguments } from './types';
+export const launchArguments = {} as LaunchArguments;

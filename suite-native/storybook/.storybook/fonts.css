@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'TTSatoshi-Medium';
+    src: url('/TTSatoshi-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TTSatoshi-DemiBold';
+    src: url('/TTSatoshi-DemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TrezorSuiteIcons';
+    src: url('/TrezorSuiteIcons.ttf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}

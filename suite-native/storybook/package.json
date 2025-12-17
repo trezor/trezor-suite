@@ -8,15 +8,31 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest",
-        "type-check": "yarn g:tsc --build"
+        "test:unit": "yarn g:jest --passWithNoTests",
+        "type-check": "yarn g:tsc --build",
+        "storybook:generate": "sb-rn-get-stories",
+        "storybook:web": "storybook dev -p 6006",
+        "storybook:web:build": "yarn storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
+        "@lottiefiles/dotlottie-react": "^0.17.8",
+        "@react-native-community/datetimepicker": "^8.5.0",
+        "@react-native-community/slider": "^5.1.1",
         "@storybook/addon-ondevice-controls": "^10.0.7",
+        "@storybook/react": "10.1.0",
         "@storybook/react-native": "^10.0.7",
+        "@storybook/react-native-web-vite": "^10.1.0",
+        "@trezor/eslint": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "babel-plugin-react-native-web": "^0.19.10",
         "react": "19.1.0",
         "react-dom": "19.1.0",
+        "react-native": "0.81.4",
         "react-native-mmkv": "~4.0.0",
-        "storybook": "^10.1.0"
+        "react-native-web": "^0.21.0",
+        "storybook": "^10.1.0",
+        "vite": "^7.0.6",
+        "vite-plugin-node-polyfills": "^0.24.0"
     }
 }
