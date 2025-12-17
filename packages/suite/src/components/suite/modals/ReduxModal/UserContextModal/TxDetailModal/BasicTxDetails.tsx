@@ -158,7 +158,6 @@ export const BasicTxDetails = ({
                         <FeeRate
                             feeRate={tx?.feeRate ? tx.feeRate : getFeeRate(tx)}
                             networkType="bitcoin"
-                            symbol={network.symbol}
                         />
                     </Item>
                 )}
@@ -201,7 +200,6 @@ export const BasicTxDetails = ({
                                 <FeeRate
                                     feeRate={fromWei(tx.ethereumSpecific?.gasPrice || 0, 'gwei')}
                                     networkType="ethereum"
-                                    symbol={network.symbol}
                                     preserveDecimals
                                 />
                             ) : (
@@ -221,7 +219,6 @@ export const BasicTxDetails = ({
                                             'gwei',
                                         )}
                                         networkType="ethereum"
-                                        symbol={network.symbol}
                                         preserveDecimals
                                     />
                                 </Item>
@@ -237,7 +234,6 @@ export const BasicTxDetails = ({
                                                 'gwei',
                                             )}
                                             networkType="ethereum"
-                                            symbol={network.symbol}
                                             preserveDecimals
                                         />
                                     ) : (
@@ -255,7 +251,6 @@ export const BasicTxDetails = ({
                                             'gwei',
                                         )}
                                         networkType="ethereum"
-                                        symbol={network.symbol}
                                         preserveDecimals
                                     />
                                 </Item>

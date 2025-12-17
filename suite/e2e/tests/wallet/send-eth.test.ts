@@ -15,10 +15,10 @@ const sendAmount = '0.008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';
-const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(2, BigNumber.ROUND_UP);
+const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(4, BigNumber.ROUND_UP);
 const maxPriorityFeePerGas = '1.375641927';
 const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalPlaces(
-    2,
+    4,
     BigNumber.ROUND_UP,
 );
 

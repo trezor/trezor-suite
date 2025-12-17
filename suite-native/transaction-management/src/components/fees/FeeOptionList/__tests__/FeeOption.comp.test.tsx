@@ -211,7 +211,7 @@ describe('FeeOption', () => {
                 transactionBytes: 250,
             });
 
-            expect(getByText('10.00 Gwei')).toBeTruthy();
+            expect(getByText('10.0000 Gwei')).toBeTruthy();
         });
     });
 });

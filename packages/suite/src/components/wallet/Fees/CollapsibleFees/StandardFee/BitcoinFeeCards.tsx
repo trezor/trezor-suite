@@ -75,11 +75,7 @@ export const BitcoinFeeCards = ({ feeOptions }: BitcoinFeeCardsProps) => {
                         }
                         bottomRightChild={
                             <span data-testid={`@fee-card/${fee.value}-rate`}>
-                                <FeeRate
-                                    feeRate={fee.feePerUnit}
-                                    networkType={networkType}
-                                    symbol={networkSymbol}
-                                />
+                                <FeeRate feeRate={fee.feePerUnit} networkType={networkType} />
                             </span>
                         }
                     />

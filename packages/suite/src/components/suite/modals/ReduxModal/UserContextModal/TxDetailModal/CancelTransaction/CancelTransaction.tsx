@@ -70,11 +70,7 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                         <Row gap={spacings.md}>
                             <Translation id="TR_CANCEL_TX_FEE" />
                             <Text variant="tertiary">
-                                <FeeRate
-                                    feeRate={feePerByte}
-                                    networkType={networkType}
-                                    symbol={tx.symbol}
-                                />
+                                <FeeRate feeRate={feePerByte} networkType={networkType} />
                             </Text>
                         </Row>
                     }

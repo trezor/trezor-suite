@@ -31,7 +31,7 @@ const getCurrentFeeRateLabel = (feeInfo: FeeInfo) => {
 };
 
 export const CurrentFee = () => {
-    const { feeInfo, networkType, networkSymbol } = useFeesContext();
+    const { feeInfo, networkType } = useFeesContext();
     const currentFeeRate = getCurrentFeeRate(feeInfo);
     const currentFeeRateLabel = getCurrentFeeRateLabel(feeInfo);
 
@@ -43,11 +43,7 @@ export const CurrentFee = () => {
             <Text variant="default" typographyStyle="hint">
                 <Row alignItems="center" gap={spacings.xxs}>
                     <Text>
-                        <FeeRate
-                            feeRate={currentFeeRate}
-                            networkType={networkType}
-                            symbol={networkSymbol}
-                        />
+                        <FeeRate feeRate={currentFeeRate} networkType={networkType} />
                     </Text>
                     <Icon
                         name={networkType === 'ethereum' ? 'gasPump' : 'receipt'}

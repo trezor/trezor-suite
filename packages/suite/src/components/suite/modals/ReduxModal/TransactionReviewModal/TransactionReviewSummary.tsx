@@ -114,11 +114,7 @@ export const TransactionReviewSummary = ({
                                     <Translation id="TR_GAS_PRICE" />
                                 )}
                                 {': '}
-                                <FeeRate
-                                    feeRate={fee}
-                                    networkType={network.networkType}
-                                    symbol={symbol}
-                                />
+                                <FeeRate feeRate={fee} networkType={network.networkType} />
                             </Note>
                             {hasEip1559MaxPriorityFee(tx) ? (
                                 <Note data-testid="@modal/ethereum/priority-fee" iconName="gasPump">
@@ -128,7 +124,6 @@ export const TransactionReviewSummary = ({
                                     <FeeRate
                                         feeRate={tx.maxPriorityFeePerGas}
                                         networkType={network.networkType}
-                                        symbol={symbol}
                                     />
                                 </Note>
                             ) : undefined}
@@ -137,11 +132,7 @@ export const TransactionReviewSummary = ({
 
                     {!['ethereum', 'solana'].includes(networkType) && (
                         <Note iconName="receipt">
-                            <FeeRate
-                                feeRate={fee}
-                                networkType={network.networkType}
-                                symbol={symbol}
-                            />
+                            <FeeRate feeRate={fee} networkType={network.networkType} />
                         </Note>
                     )}
 
@@ -192,7 +183,6 @@ export const TransactionReviewSummary = ({
                                 decimals: -6,
                             })}
                             networkType={network.networkType}
-                            symbol={symbol}
                         />
                         /CU
                     </Note>
