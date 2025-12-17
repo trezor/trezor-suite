@@ -11,9 +11,11 @@ import {
 } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
-import { createRefreshSuiteSync } from './createRefreshSuiteSync';
+import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
+import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
+import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { createSubscribeLabeling } from './labeling/subscribeLabeling';
+import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
 import { createUpdateAccountLabel } from './labeling/updateAccountLabel';
 import { createUpdateAddressLabel } from './labeling/updateAddressLabel';
 import { createUpdateOutputLabel } from './labeling/updateOutputLabel';
@@ -27,14 +29,12 @@ import {
 import { createSaveSuiteSyncOwner } from './owner/saveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/changeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
-import { createEnsureStorage } from './storage/ensureStorage';
-import { createSubscriptionStorage } from './storage/subscriptionStorage';
-import { createSuiteSyncStorageRepository } from './storage/suiteSyncStorageRepository';
-import { createTurnOffSuiteSyncForWallet } from './storage/turnOffSuiteSyncForWallet';
-import { createTurnOnSuiteSyncForWallet } from './storage/turnOnSuiteSyncForWallet';
+import { createEnsureStorage } from './storage/createEnsureStorage';
+import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
+import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
+import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
+import { createTurnOnSuiteSyncForWallet } from './storage/createTurnOnSuiteSyncForWallet';
 import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
-import { createTurnOffSuiteSync } from './turnOffSuiteSync';
-import { createTurnOnSuiteSync } from './turnOnSuiteSync';
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;

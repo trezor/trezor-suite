@@ -9,7 +9,7 @@ import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
-import { RefreshSuiteKeysUnavailable } from '../createRefreshSuiteSync';
+import { RefreshSuiteKeysUnavailable } from '../createRefreshSuiteSyncKeys';
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 
 export type EnsureStorageDeps = {
@@ -24,7 +24,7 @@ export type EnsureStorageParams = {
     deviceStaticSessionId: StaticSessionId;
 };
 
-export type EnsureStorage = (
+export type CreateEnsureStorage = (
     params: EnsureStorageParams,
 ) => Promise<
     Result<
@@ -34,12 +34,12 @@ export type EnsureStorage = (
 >;
 
 export type EnsureStorageDep = {
-    ensureStorage: EnsureStorage;
+    ensureStorage: CreateEnsureStorage;
 };
 
 export const createEnsureStorage =
-    (deps: EnsureStorageDeps): EnsureStorage =>
-    async ({ deviceStaticSessionId }): ReturnType<EnsureStorage> => {
+    (deps: EnsureStorageDeps): CreateEnsureStorage =>
+    async ({ deviceStaticSessionId }): ReturnType<CreateEnsureStorage> => {
         const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
 
         const storage = deps.suiteSyncStorageRepository.get(storageId);

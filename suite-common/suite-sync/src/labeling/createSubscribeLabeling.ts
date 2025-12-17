@@ -5,8 +5,8 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 
 import { clearAllLabels, labelingActions } from './labelingActions';
+import { EnsureStorageDep } from '../storage/createEnsureStorage';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
-import { EnsureStorageDep } from '../storage/ensureStorage';
 
 export type CreateSubscribeLabelingDeps = EnsureStorageDep &
     SubscriptionStorageDep & {

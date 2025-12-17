@@ -1,5 +1,5 @@
-import { createSubscriptionStorage } from '../subscriptionStorage';
-import { asStorageId } from '../suiteSyncStorageRepository';
+import { createSubscriptionStorage } from '../createSubscriptionStorage';
+import { asStorageId } from '../createSuiteSyncStorageRepository';
 
 const storageId1 = asStorageId('1');
 const storageId2 = asStorageId('2');

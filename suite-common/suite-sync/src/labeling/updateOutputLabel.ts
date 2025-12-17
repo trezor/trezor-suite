@@ -1,7 +1,7 @@
 import { UpdateOutputLabel } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureStorageDep } from '../storage/ensureStorage';
+import { EnsureStorageDep } from '../storage/createEnsureStorage';
 
 export type UpdateOutputLabelDeps = EnsureStorageDep;
 

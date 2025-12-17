@@ -2,7 +2,7 @@ import { UpdateAccountLabel } from '@suite-common/suite-sync-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureStorageDep } from '../storage/ensureStorage';
+import { EnsureStorageDep } from '../storage/createEnsureStorage';
 
 export type UpdateAccountLabelDeps = EnsureStorageDep;
 

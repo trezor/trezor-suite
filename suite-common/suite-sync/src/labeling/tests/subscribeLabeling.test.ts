@@ -10,9 +10,9 @@ import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { mockNotExpected } from '../../../tests/utils';
-import { RefreshSuiteKeysUnavailable } from '../../createRefreshSuiteSync';
-import { createSubscriptionStorage } from '../../storage/subscriptionStorage';
-import { createSubscribeLabeling } from '../subscribeLabeling';
+import { RefreshSuiteKeysUnavailable } from '../../createRefreshSuiteSyncKeys';
+import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';
+import { createSubscribeLabeling } from '../createSubscribeLabeling';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
