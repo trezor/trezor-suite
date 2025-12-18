@@ -16519,6 +16519,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10/8e4202766a65877efcf5d5a41b7dd458480b36195e580a3b1085ad21e948bc417d55d6f8af1fd2a7ad008015d4117d5fdfe432731157da3c68678487174e4ba3
+  languageName: node
+  linkType: hard
+
 "@types/unist@npm:*, @types/unist@npm:^3.0.0":
   version: 3.0.1
   resolution: "@types/unist@npm:3.0.1"
@@ -22179,7 +22186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3@npm:^7.4.0, d3@npm:^7.8.2, d3@npm:^7.9.0":
+"d3@npm:^7.4.0, d3@npm:^7.9.0":
   version: 7.9.0
   resolution: "d3@npm:7.9.0"
   dependencies:
@@ -22237,13 +22244,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dagre-d3-es@npm:7.0.10":
-  version: 7.0.10
-  resolution: "dagre-d3-es@npm:7.0.10"
+"dagre-d3-es@npm:7.0.13":
+  version: 7.0.13
+  resolution: "dagre-d3-es@npm:7.0.13"
   dependencies:
-    d3: "npm:^7.8.2"
+    d3: "npm:^7.9.0"
     lodash-es: "npm:^4.17.21"
-  checksum: 10/09f56dd337cc7d0620d50f20913308d5e8aaffafb0b188a69b0d8ff87915599586224694be3f8d93bd8c383858d358c0140493a11a0df2508de959a4658952c2
+  checksum: 10/f6dbd373b85cc9fbcb23fba996656a0336ba48bc46f1e6d31c582418a5086caf230a4e8178b90acd7b1d14b090cbba2db50dc64484d67cf9c8856a4a2fe30cf0
   languageName: node
   linkType: hard
 
@@ -23135,10 +23142,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:^3.0.5 <3.1.7":
-  version: 3.1.6
-  resolution: "dompurify@npm:3.1.6"
-  checksum: 10/036844bc9b717b172ba27f5863b56f950289a05d8eebfb702d6953bbf80bd021e480ce4217bd084567186f2d0ada13358ce5556963492cfe402d774e8667f120
+"dompurify@npm:^3.2.4":
+  version: 3.3.0
+  resolution: "dompurify@npm:3.3.0"
+  dependencies:
+    "@types/trusted-types": "npm:^2.0.7"
+  dependenciesMeta:
+    "@types/trusted-types":
+      optional: true
+  checksum: 10/d8782b10a0454344476936c91038d06c9450b3e3ada2ceb8f722525e6b54e64d847939b9f35bf385facd4139f0a2eaf7f5553efce351f8e9295620570875f002
   languageName: node
   linkType: hard
 
@@ -33009,8 +33021,8 @@ __metadata:
   linkType: hard
 
 "mermaid@npm:^10.2.2":
-  version: 10.9.3
-  resolution: "mermaid@npm:10.9.3"
+  version: 10.9.5
+  resolution: "mermaid@npm:10.9.5"
   dependencies:
     "@braintree/sanitize-url": "npm:^6.0.1"
     "@types/d3-scale": "npm:^4.0.3"
@@ -33019,9 +33031,9 @@ __metadata:
     cytoscape-cose-bilkent: "npm:^4.1.0"
     d3: "npm:^7.4.0"
     d3-sankey: "npm:^0.12.3"
-    dagre-d3-es: "npm:7.0.10"
+    dagre-d3-es: "npm:7.0.13"
     dayjs: "npm:^1.11.7"
-    dompurify: "npm:^3.0.5 <3.1.7"
+    dompurify: "npm:^3.2.4"
     elkjs: "npm:^0.9.0"
     katex: "npm:^0.16.9"
     khroma: "npm:^2.0.0"
@@ -33032,7 +33044,7 @@ __metadata:
     ts-dedent: "npm:^2.2.0"
     uuid: "npm:^9.0.0"
     web-worker: "npm:^1.2.0"
-  checksum: 10/ca6ed9e6a24a7d8777ea9f145d7dc5b66e2070cfb7afa39b77532ebe6ebf6e7a1e9ae617ccc9b47ca493d862a27487ea13f841ccd1184107e4ac689d4b3d4c38
+  checksum: 10/823a4855cc3b7c81114989eb456a776653e91a3857c88d33098275ce9fbc5cd91b1a0718f2b05643e868d2f69b5deead76ad85a7e1e6654de7f5e3031fab49bb
   languageName: node
   linkType: hard
 
