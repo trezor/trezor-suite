@@ -18,5 +18,8 @@ npm install @trezor/connect-web@"$1" --save
 
 cat package.json
 
-echo "const TrezorConnect = require('@trezor/connect')" >./index.js
-node index.js
+printf "const TrezorConnect = require('@trezor/connect');\nconst { cloneObject } = require('@trezor/utils');" >./index.cjs
+printf "import TrezorConnect from '@trezor/connect';\nimport { cloneObject } from '@trezor/utils';" >./index.mjs
+printf "\nconsole.log('typeof TrezorConnect: '+typeof TrezorConnect);\nconsole.log('typeof cloneObject: '+typeof cloneObject);" | tee -a index.cjs index.mjs >/dev/null
+node index.cjs
+node index.mjs
