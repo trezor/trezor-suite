@@ -3103,6 +3103,14 @@
                 }
             }
         },
+        "DebugLinkSetLogFilter": {
+            "fields": {
+                "filter": {
+                    "type": "string",
+                    "id": 1
+                }
+            }
+        },
         "DefinitionType": {
             "values": {
                 "ETHEREUM_NETWORK": 0,
@@ -4419,6 +4427,10 @@
                     "type": "uint32",
                     "id": 4
                 },
+                "build_version": {
+                    "type": "uint32",
+                    "id": 61
+                },
                 "bootloader_mode": {
                     "type": "bool",
                     "id": 5
@@ -4494,6 +4506,10 @@
                 "fw_patch": {
                     "type": "uint32",
                     "id": 24
+                },
+                "fw_build": {
+                    "type": "uint32",
+                    "id": 62
                 },
                 "fw_vendor": {
                     "type": "string",
@@ -8007,6 +8023,7 @@
                 "DebugLinkGcInfo": 9010,
                 "DebugLinkGetPairingInfo": 9011,
                 "DebugLinkPairingInfo": 9012,
+                "DebugLinkSetLogFilter": 9013,
                 "EthereumGetPublicKey": 450,
                 "EthereumPublicKey": 451,
                 "EthereumGetAddress": 56,

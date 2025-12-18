@@ -1593,6 +1593,14 @@ export const DebugLinkGcInfo = Type.Object(
     { $id: 'DebugLinkGcInfo' },
 );
 
+export type DebugLinkSetLogFilter = Static<typeof DebugLinkSetLogFilter>;
+export const DebugLinkSetLogFilter = Type.Object(
+    {
+        filter: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkSetLogFilter' },
+);
+
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
     ETHEREUM_TOKEN = 1,
@@ -2392,6 +2400,7 @@ export const Features = Type.Object(
         major_version: Type.Number(),
         minor_version: Type.Number(),
         patch_version: Type.Number(),
+        build_version: Type.Optional(Type.Number()),
         bootloader_mode: Type.Union([Type.Boolean(), Type.Null()]),
         device_id: Type.Union([Type.String(), Type.Null()]),
         pin_protection: Type.Union([Type.Boolean(), Type.Null()]),
@@ -2411,6 +2420,7 @@ export const Features = Type.Object(
         fw_major: Type.Union([Type.Number(), Type.Null()]),
         fw_minor: Type.Union([Type.Number(), Type.Null()]),
         fw_patch: Type.Union([Type.Number(), Type.Null()]),
+        fw_build: Type.Optional(Type.Number()),
         fw_vendor: Type.Union([Type.String(), Type.Null()]),
         unfinished_backup: Type.Union([Type.Boolean(), Type.Null()]),
         no_backup: Type.Union([Type.Boolean(), Type.Null()]),
@@ -4248,6 +4258,7 @@ export const MessageType = Type.Object(
         DebugLinkGetGcInfo,
         DebugLinkGcInfoItem,
         DebugLinkGcInfo,
+        DebugLinkSetLogFilter,
         EthereumNetworkInfo,
         EthereumTokenInfo,
         SolanaTokenInfo,
