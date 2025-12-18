@@ -21,7 +21,7 @@ const Section = styled.div<{ $selected?: boolean; $isSidebarCollapsed?: boolean 
     display: flex;
     flex-direction: column;
     position: relative;
-    border-radius: ${borders.radii.md};
+    border-radius: ${borders.radii.sm};
 
     outline: 1px solid
         ${({ theme, $selected }) => ($selected ? theme.borderElevation0 : 'transparent')};
@@ -84,8 +84,6 @@ export const AccountItemsGroup = ({
                             (routeName === 'wallet-staking' && !showStaking))
                     }
                     formattedBalance={account.formattedBalance}
-                    isGroup
-                    isGroupSelected={selected}
                     dataTestKey={dataTestKey}
                     onClick={onItemClick}
                 />
@@ -96,8 +94,6 @@ export const AccountItemsGroup = ({
                         type="staking"
                         isSelected={selected && routeName === 'wallet-staking'}
                         formattedBalance={stakingBalance ?? '0'}
-                        isGroup
-                        isGroupSelected={selected}
                         dataTestKey={`${dataTestKey}/staking`}
                         onClick={onItemClick}
                     />
@@ -109,8 +105,6 @@ export const AccountItemsGroup = ({
                         type="tokens"
                         isSelected={selected && tokensRoutes.includes(routeName || '')}
                         formattedBalance={account.formattedBalance}
-                        isGroup
-                        isGroupSelected={selected}
                         customFiatValue={tokensFiatBalance}
                         tokens={tokens}
                         dataTestKey={`${dataTestKey}/tokens`}

@@ -1,7 +1,6 @@
 import { TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { AssetLogo, CoinLogo, shouldShowNetworkIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { AssetDetails } from '../AssetDetails';
 import { ItemClickableContainer } from '../ItemClickableContainer';
@@ -21,7 +20,7 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
         >
             <Row
                 data-testid={`${dataTestId}/${asset.id}`}
-                gap={spacings.sm}
+                gap={12}
                 overflow="hidden"
                 maxWidth="100%"
             >

@@ -51,6 +51,7 @@ export const TradingFormInputAssetPicker = memo(function TradingFormInputAssetPi
             />
             {modal.open && (
                 <AssetPickerModal
+                    heading={inputLabel}
                     closeModal={modal.closeModal}
                     dataTestId={dataTestId}
                     onAssetSelect={onAssetSelect}

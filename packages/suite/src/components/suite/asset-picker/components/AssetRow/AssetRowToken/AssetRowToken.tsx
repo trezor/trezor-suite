@@ -2,7 +2,6 @@ import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { AssetLogo, shouldShowNetworkIcon } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
@@ -26,7 +25,7 @@ export function AssetRowToken({ token, account, dataTestId, onClick }: AssetRowT
         >
             <Row
                 data-testid={`${dataTestId}/${account.symbol}/${token.symbol}`}
-                gap={spacings.sm}
+                gap={12}
                 overflow="hidden"
             >
                 <AssetLogo

@@ -1,4 +1,4 @@
-import { Box, Row } from '@trezor/components';
+import { GhostContainer, Row } from '@trezor/components';
 
 import { ASSET_ROW_HEIGHT } from '../../constants';
 
@@ -9,22 +9,18 @@ type ItemClickableContainerProps = {
 
 export function ItemClickableContainer({ children, onClick }: ItemClickableContainerProps) {
     return (
-        <Box
-            borderRadius={10}
+        <GhostContainer
             width="100%"
             height={ASSET_ROW_HEIGHT - 8}
-            padding={8}
+            padding={{ left: 8, vertical: 8, right: 12 }}
             onClick={e => {
                 e.stopPropagation();
                 onClick();
             }}
-            as="button"
-            cursor="pointer"
-            backgroundColorOnInteraction="stateFillElementGhostHovered"
         >
             <Row justifyContent="space-between" gap={12} height="100%">
                 {children}
             </Row>
-        </Box>
+        </GhostContainer>
     );
 }

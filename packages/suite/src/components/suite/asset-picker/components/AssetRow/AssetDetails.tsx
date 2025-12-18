@@ -1,13 +1,6 @@
-import styled from 'styled-components';
-
 import { NetworkSymbol, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { hasOwn } from '@trezor/utils';
-
-const BadgeWrapper = styled.div`
-    flex: none;
-`;
 
 type AssetDetailsProps = {
     name: string;
@@ -28,18 +21,14 @@ export function AssetDetails({ name, symbol, ...props }: AssetDetailsProps) {
 
     return (
         <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-            <Text typographyStyle="body" ellipsisLineCount={1}>
+            <Text typographyStyle="body" ellipsisLineCount={1} maxWidth="100%">
                 {name}
             </Text>
-            <Row gap={spacings.xs} alignItems="center">
+            <Row gap={8} alignItems="center">
                 <Text typographyStyle="hint" variant="tertiary">
                     {getDisplaySymbol(symbol)}
                 </Text>
-                {badge !== name && (
-                    <BadgeWrapper>
-                        <Badge size="small">{badge}</Badge>
-                    </BadgeWrapper>
-                )}
+                {badge !== name && <Badge size="small">{badge}</Badge>}
             </Row>
         </Column>
     );

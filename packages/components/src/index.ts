@@ -34,6 +34,10 @@ export {
     CollapsibleBox,
     type CollapsibleBoxProps,
 } from './components/CollapsibleBox/CollapsibleBox';
+export {
+    GhostContainer,
+    type GhostContainerProps,
+} from './components/GhostContainer/GhostContainer';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
 export * from './components/ElevationContext/ElevationContext';
