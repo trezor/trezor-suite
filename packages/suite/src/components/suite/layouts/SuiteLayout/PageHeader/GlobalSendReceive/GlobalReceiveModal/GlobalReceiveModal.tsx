@@ -29,7 +29,7 @@ type GlobalReceiveModalProps = {
     onSubmit: (account: Account, type: AccountItemType, filledSearch: boolean) => void;
 };
 
-const LIST_HEIGHT = 500;
+const LIST_HEIGHT = 385;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const { device } = useDevice();

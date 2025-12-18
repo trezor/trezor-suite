@@ -32,11 +32,13 @@ export function AssetRowReceiveToAccount({
             <Row data-testid={dataTestId} gap={spacings.sm} alignItems="center" overflow="hidden">
                 <CoinLogo symbol={account.symbol} size={40} type="token" />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-                    <AccountLabel
-                        account={account}
-                        accountTypeBadgeSize="medium"
-                        showAccountTypeBadge={true}
-                    />
+                    <Text typographyStyle="body" as="div" maxWidth="100%">
+                        <AccountLabel
+                            account={account}
+                            accountTypeBadgeSize="medium"
+                            showAccountTypeBadge={true}
+                        />
+                    </Text>
                     {supportsTokens && (
                         <Text typographyStyle="hint" variant="tertiary">
                             <Translation id="TR_INCLUDING_TOKENS" />

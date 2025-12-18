@@ -50,7 +50,7 @@ type ExclusiveColorOrVariant =
     | { variant?: TextVariant; color?: undefined }
     | {
           variant?: undefined;
-          /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
+          // TODO: Type to color tokens
           color?: string;
       };
 

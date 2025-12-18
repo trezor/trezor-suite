@@ -39,8 +39,8 @@ const UnderlinedBlock = styled(NextGenerationTextBlock)`
 `;
 
 const Title = () => {
-    const theme = useTheme();
     const { isBelowLaptop } = useLayoutSize();
+    const theme = useTheme();
 
     return (
         <Text
@@ -60,8 +60,8 @@ const Title = () => {
 };
 
 const Description = () => {
-    const theme = useTheme();
     const { isBelowDesktop } = useLayoutSize();
+    const theme = useTheme();
 
     return (
         <Text
@@ -91,14 +91,13 @@ type TrezorExpertBannerProps = {
 
 export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExpertBannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
-    const theme = useTheme();
 
     return (
         <AnimatedWrapper isVisible={isVisible} flagToHide="showTEXDashboardPromoBanner">
             <Box
                 height={213}
                 padding={{ horizontal: 24 }}
-                backgroundColor={theme.baseFillSurfaceBrandDark}
+                backgroundColor="baseFillSurfaceBrandDark"
             >
                 <Row
                     height="100%"

@@ -9,7 +9,7 @@ import {
 import { Box, Button, Column, Divider, Image, Row, Tooltip } from '@trezor/components';
 import { isWeb } from '@trezor/env-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { paletteV2, spacings } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 import {
     SUITE_MOBILE_APP_STORE,
     SUITE_MOBILE_PLAY_STORE,
@@ -86,7 +86,7 @@ const StoreBadgeWithQr = ({
                         height={140}
                         width={140}
                         padding={4}
-                        backgroundColor={paletteV2.globalWhiteAlpha1000}
+                        backgroundColor="baseFillElementContrast"
                         borderRadius={6}
                     >
                         <QrCode value={url} />

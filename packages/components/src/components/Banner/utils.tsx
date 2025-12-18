@@ -5,7 +5,7 @@ import { CSSColor, Color } from '@trezor/theme';
 import { BannerIntent } from './types';
 import { IconName } from '../Icon/Icon';
 
-export const mapIntentToBackgroundColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {
+export const mapIntentToBackgroundColor = (intent: BannerIntent): Color => {
     const colorMap: Record<BannerIntent, Color> = {
         brand: 'backgroundPrimarySubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
@@ -14,7 +14,7 @@ export const mapIntentToBackgroundColor = (intent: BannerIntent, theme: DefaultT
         neutral: 'backgroundNeutralSubtleOnElevation0',
     };
 
-    return theme[colorMap[intent]];
+    return colorMap[intent];
 };
 
 export const mapIntentToTextColor = (intent: BannerIntent, theme: DefaultTheme): CSSColor => {

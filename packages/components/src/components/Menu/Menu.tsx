@@ -64,7 +64,7 @@ const MenuItem = ({
 }: MenuItemComponentProps) => (
     <Box
         cursor={isDisabled ? 'default' : 'pointer'}
-        hasBackground={isKeyboardSelected}
+        backgroundColor={isKeyboardSelected ? 'stateFillElementGhostHovered' : undefined}
         borderRadius={borders.radii.xs}
         data-testid={dataTest}
         as="li"

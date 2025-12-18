@@ -41,6 +41,7 @@ type BadgeContainerProps = {
     $intent: BadgeIntent;
 } & TransientProps<AllowedFrameProps>;
 
+// TODO: Replace with Box component
 const Container = styled.div<BadgeContainerProps>`
     display: inline-flex;
     border-radius: ${borders.radii.full};

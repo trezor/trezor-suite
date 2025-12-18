@@ -2,7 +2,13 @@ import React from 'react';
 
 import styled, { DefaultTheme, css } from 'styled-components';
 
-import { Elevation, SpacingValues, SpacingValuesNew, mapElevationToBorder } from '@trezor/theme';
+import {
+    Color,
+    Elevation,
+    SpacingValues,
+    SpacingValuesNew,
+    mapElevationToBorder,
+} from '@trezor/theme';
 
 import {
     FlexAlignItems,
@@ -52,7 +58,7 @@ export const withDivider = ({
     $rowGap: SpacingValues | SpacingValuesNew;
     $columnGap: SpacingValues | SpacingValuesNew;
     $direction: FlexDirection;
-    $dividerColor?: string;
+    $dividerColor?: Color;
     $elevation: Elevation;
 }) => css`
     & > * {
@@ -70,14 +76,14 @@ export const withDivider = ({
         height: 1px;
         width: 100%;
         left: 0;
-        border-top: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
+        border-top: 1px solid ${$dividerColor ? theme[$dividerColor] : mapElevationToBorder({ theme, $elevation })};`}
         ${$direction === 'row' &&
         `
         top: 0;
         height: 100%;
         width: 1px;
         left: -${$columnGap / 2}px;
-        border-left: 1px solid ${$dividerColor ? $dividerColor : mapElevationToBorder({ theme, $elevation })};`}
+        border-left: 1px solid ${$dividerColor ? theme[$dividerColor] : mapElevationToBorder({ theme, $elevation })};`}
     }
 `;
 
@@ -93,7 +99,7 @@ type ContainerProps = TransientProps<AllowedFrameProps> & {
     $order?: number;
     $isReversed: boolean;
     $hasDivider: boolean;
-    $dividerColor?: string;
+    $dividerColor?: Color;
     $elevation: Elevation;
 };
 
@@ -137,7 +143,7 @@ export type FlexProps = AllowedFrameProps & {
     order?: number;
     isReversed?: boolean;
     hasDivider?: boolean;
-    dividerColor?: string;
+    dividerColor?: Color;
     className?: string;
     onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
     onMouseEnter?: () => void;

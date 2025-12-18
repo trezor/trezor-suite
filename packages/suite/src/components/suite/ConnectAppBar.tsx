@@ -46,7 +46,7 @@ export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     return (
         <ConnectBarWrapper>
             <Box
-                hasBackground
+                backgroundColor="backgroundSurfaceElevation0"
                 padding={{
                     horizontal: spacings.xl,
                     vertical: spacings.md,

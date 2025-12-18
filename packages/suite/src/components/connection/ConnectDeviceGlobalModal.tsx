@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useTheme } from 'styled-components';
 
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import {
@@ -46,18 +45,14 @@ type DontSeeTrezorPillProps = {
     onClick: () => void;
 };
 
-const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => {
+const DontSeeTrezorPill = ({ onClick }: DontSeeTrezorPillProps) => (
     // A little hack so we can use the subtle variant of the button instead of creating a brand new variant for a single use case
-    const theme = useTheme();
-
-    return (
-        <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={10}>
-            <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary">
-                <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
-            </Button>
-        </Box>
-    );
-};
+    <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={10}>
+        <Button onClick={onClick} iconLeft="question" intent="info" priority="secondary">
+            <Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />
+        </Button>
+    </Box>
+);
 
 type ConnectModalContentProps = {
     children?: React.ReactNode;

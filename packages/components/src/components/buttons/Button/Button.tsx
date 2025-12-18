@@ -2,6 +2,8 @@ import { ButtonHTMLAttributes } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { borders, spacingsPx } from '@trezor/theme';
+
 import {
     FrameProps,
     FramePropsKeys,
@@ -52,6 +54,12 @@ const Container = styled.button<ButtonContainerProps>`
         mapPropsToCSS($intent, $priority, $isDisabled, $isInverse, theme)}
 
     ${withFrameProps}
+`;
+
+const ShortcutContainer = styled.div`
+    background-color: ${({ theme }) => addAlphaToHex(theme.baseFillElementNeutralDark, 0.09)};
+    border-radius: ${borders.radii.xxs};
+    padding: ${spacingsPx.xxs};
 `;
 
 type SelectedHTMLButtonProps = Pick<
@@ -162,19 +170,11 @@ export const Button = ({
                 {shortcut?.length && (
                     <Row gap={2}>
                         {shortcut.map((hotkey, index) => (
-                            <Box
-                                backgroundColor={addAlphaToHex(
-                                    theme.baseFillElementNeutralDark,
-                                    0.09,
-                                )}
-                                padding={{ horizontal: 4 }}
-                                borderRadius={4}
-                                key={index}
-                            >
+                            <ShortcutContainer key={index}>
                                 <Text typographyStyle="label" color={color} case="uppercase">
                                     {hotkey}
                                 </Text>
-                            </Box>
+                            </ShortcutContainer>
                         ))}
                     </Row>
                 )}

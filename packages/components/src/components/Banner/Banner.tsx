@@ -55,7 +55,7 @@ export const Banner = ({
     return (
         <Box
             as="section"
-            backgroundColor={mapIntentToBackgroundColor(intent, theme)}
+            backgroundColor={mapIntentToBackgroundColor(intent)}
             borderRadius={8}
             data-testid={dataTest}
             {...frameProps}

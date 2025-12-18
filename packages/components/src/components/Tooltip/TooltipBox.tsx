@@ -1,7 +1,5 @@
 import { ReactElement, ReactNode } from 'react';
 
-import { paletteV1 } from '@trezor/theme';
-
 import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
 import { Text } from '../typography/Text/Text';
@@ -25,7 +23,7 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
             maxWidth={tooltipMaxWidth}
             tabIndex={-1}
             borderRadius={TOOLTIP_BORDER_RADIUS}
-            backgroundColor={paletteV1.darkGray300}
+            backgroundColor="baseFillSurfaceModeless"
             padding={hasTitleOrAddon ? 12 : { vertical: 6, horizontal: 8 }}
         >
             <Column gap={12}>

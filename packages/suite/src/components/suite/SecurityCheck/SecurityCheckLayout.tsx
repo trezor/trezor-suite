@@ -36,7 +36,6 @@ export const SecurityCheckLayout = ({
 }: SecurityCheckLayoutProps) => {
     const device = useSelector(selectSelectedDevice);
     const { contentWidth } = useResponsiveContext();
-
     const model = getDeviceModel(device?.features?.internal_model);
     const isDeviceImageRotating = imageMode === 'ROTATE';
     const deviceUnitColor = getDeviceColorVariant(device);
@@ -62,7 +61,11 @@ export const SecurityCheckLayout = ({
     return (
         <Grid columns={isContentBelowTablet ? '1fr' : '260px 1fr'} gap={spacings.xl} width="100%">
             {model && (
-                <Box hasBackground borderRadius={borders.radii.sm} padding={spacings.xxl}>
+                <Box
+                    backgroundColor="backgroundSurfaceElevation1"
+                    borderRadius={borders.radii.sm}
+                    padding={spacings.xxl}
+                >
                     <Column height="100%" justifyContent="center" alignItems="center">
                         {isDeviceImageRotating ? (
                             <DeviceAnimation

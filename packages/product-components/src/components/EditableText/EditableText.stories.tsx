@@ -2,7 +2,6 @@ import { IntlProvider } from 'react-intl';
 
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
-import { useTheme } from 'styled-components';
 
 import { Badge, Box, Button, Column, Icon, Text, getFramePropsStory } from '@trezor/components';
 import { spacingsNew } from '@trezor/theme';
@@ -26,21 +25,17 @@ const meta: Meta<typeof EditableTextComponent> = {
 };
 export default meta;
 
-const StoryWrapper = ({ children }: { children: React.ReactNode }) => {
-    const theme = useTheme();
-
-    return (
-        <Box
-            width="100%"
-            maxWidth={400}
-            backgroundColor={theme.baseFillElementNeutralSoftest}
-            padding={{ horizontal: 24, top: 12, bottom: 20 }}
-            borderRadius={8}
-        >
-            {children}
-        </Box>
-    );
-};
+const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
+    <Box
+        width="100%"
+        maxWidth={400}
+        backgroundColor="baseFillElementNeutralSoftest"
+        padding={{ horizontal: 24, top: 12, bottom: 20 }}
+        borderRadius={8}
+    >
+        {children}
+    </Box>
+);
 
 export const EditableText: StoryObj<EditableTextProps> = {
     parameters: {

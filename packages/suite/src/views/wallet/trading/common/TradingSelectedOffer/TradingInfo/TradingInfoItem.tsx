@@ -1,5 +1,4 @@
 import { CryptoId } from 'invity-api';
-import { useTheme } from 'styled-components';
 
 import { ExperimentId } from '@suite-common/message-system';
 import { type TradingType, cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
@@ -36,7 +35,6 @@ export const TradingInfoItem = ({
     amount,
     receiveAddress,
 }: TradingInfoItemProps) => {
-    const theme = useTheme();
     const { translationString } = useTranslation();
 
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
@@ -80,7 +78,7 @@ export const TradingInfoItem = ({
                 borderWidth={borders.widths.medium}
                 borderRadius={borders.radii.sm}
                 padding={spacings.md}
-                backgroundColor={theme.backgroundSurfaceElevation2}
+                backgroundColor="backgroundSurfaceElevation2"
             >
                 <Row gap={spacings.xs} alignItems="center">
                     <TradingCoinLogo cryptoId={currency} size={24} />
