@@ -78,7 +78,7 @@ export class StakingSection {
         this.fiatInput = this.page.getByTestId('@staking/form/fiat-input');
         this.unstakeButton = this.page.getByTestId('@modal/staking/unstake-button');
         this.speedUpButton = this.page.getByTestId('@transaction-item/bump-fee-button');
-        this.pendingTransactionText = this.page.getByText('Pending transaction•1');
+        this.pendingTransactionText = this.page.getByTestId('@transaction-group/pending/count');
         this.stakeMoreButton = this.page.getByTestId('@account/staking/stake-more-button');
         this.startStakingButton = this.page.getByTestId(
             '@wallet/staking/empty-card/start-staking-button',
