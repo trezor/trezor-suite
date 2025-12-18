@@ -26,6 +26,7 @@ import { FeatureFlags } from '../components/FeatureFlags';
 import { FirmwareUpdateEnvironmentSelect } from '../components/FirmwareUpdateEnvironmentSelect';
 import { MessageSystemInfo } from '../components/MessageSystemInfo';
 import { RenderingUtils } from '../components/RenderingUtils';
+import { SuiteSyncQuotaManager } from '../components/SuiteSyncQuotaManager';
 import { SuiteSyncRelaySettings } from '../components/SuiteSyncRelaySettings';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 import { TradingDeeplinks } from '../components/TradingDeeplinks';
@@ -130,6 +131,7 @@ export const DevUtilsScreen = () => {
                     </VStack>
                 </Card>
                 <SuiteSyncRelaySettings />
+                <SuiteSyncQuotaManager />
                 {isDevelopOrDebugEnv() && (
                     <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                         See Component Demo

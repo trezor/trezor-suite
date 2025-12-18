@@ -18,6 +18,7 @@
         "@suite-common/firmware": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
+        "@suite-common/suite-sync-quota-manager": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-native/alerts": "workspace:*",
