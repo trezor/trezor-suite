@@ -1052,6 +1052,10 @@ export type DebugLinkGcInfo = {
     items: DebugLinkGcInfoItem[];
 };
 
+export type DebugLinkSetLogFilter = {
+    filter?: string;
+};
+
 export enum DefinitionType {
     ETHEREUM_NETWORK = 0,
     ETHEREUM_TOKEN = 1,
@@ -1560,6 +1564,7 @@ export type Features = {
     major_version: number;
     minor_version: number;
     patch_version: number;
+    build_version?: number;
     bootloader_mode: boolean | null;
     device_id: string | null;
     pin_protection: boolean | null;
@@ -1579,6 +1584,7 @@ export type Features = {
     fw_major: number | null;
     fw_minor: number | null;
     fw_patch: number | null;
+    fw_build?: number;
     fw_vendor: string | null;
     unfinished_backup: boolean | null;
     no_backup: boolean | null;
@@ -2775,6 +2781,7 @@ export type MessageType = {
     DebugLinkGetGcInfo: DebugLinkGetGcInfo;
     DebugLinkGcInfoItem: DebugLinkGcInfoItem;
     DebugLinkGcInfo: DebugLinkGcInfo;
+    DebugLinkSetLogFilter: DebugLinkSetLogFilter;
     EthereumNetworkInfo: EthereumNetworkInfo;
     EthereumTokenInfo: EthereumTokenInfo;
     SolanaTokenInfo: SolanaTokenInfo;
