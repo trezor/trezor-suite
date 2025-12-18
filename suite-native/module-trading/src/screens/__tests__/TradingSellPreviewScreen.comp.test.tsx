@@ -3,7 +3,6 @@ import {
     PreloadedState,
     act,
     renderWithStoreProviderAsync,
-    userEvent,
     waitFor,
 } from '@suite-native/test-utils';
 import { getSellTrade, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
@@ -199,23 +198,5 @@ describe('TradingSellPreviewScreen', () => {
         await waitFor(() => expect(mockFetchFeesAndCompose).toHaveBeenCalled());
         // Should be called exactly once for this orderId
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
-    });
-
-    it('should render continue button for submitted quote', async () => {
-        const preloadedState: PreloadedState = {
-            wallet: getWalletState({ tradeType: 'sell' }),
-        };
-        const submittedStateQuote = {
-            ...sellQuotes[0],
-            status: 'SUBMITTED' as const,
-            orderId: 'test_order_id_1',
-        };
-        preloadedState.wallet!.trading!.sell!.selectedQuote = submittedStateQuote;
-
-        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
-        await userEvent.press(getByText('Continue'));
-
-        await waitFor(() => expect(mockRetryDoSellTrade).toHaveBeenCalled());
-        expect(mockRetryDoSellTrade).toHaveBeenCalledTimes(1);
     });
 });

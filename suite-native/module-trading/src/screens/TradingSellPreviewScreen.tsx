@@ -25,19 +25,13 @@ import { clearTradingStateThunk } from '../thunks';
 
 export const TradingSellPreviewScreen = () => {
     const dispatch = useDispatch();
-    const {
-        txnErrorString,
-        doBankAccountVerificationCheck,
-        fetchFeesAndCompose,
-        retryDoSellTrade,
-    } = useSellFlow();
+    const { txnErrorString, doBankAccountVerificationCheck, fetchFeesAndCompose } = useSellFlow();
     const { trade } = useTradingDetailData<TradingSellType>('sell');
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const [shouldFetchFees, setShouldFetchFees] = useState(false);
 
     const currentQuote = trade?.data ? trade.data : selectedQuote;
     const isFinalized = isFinalStatus('sell', currentQuote?.status);
-    const isSubmitted = currentQuote?.status === 'SUBMITTED';
 
     const reportToAnalytics = useSellAnalyticReportCallback();
     useEffect(() => {
@@ -110,11 +104,6 @@ export const TradingSellPreviewScreen = () => {
                     isDisabled={!!errorString}
                     onSignTransactionNavigation={onSignTransactionNavigation}
                 />
-            )}
-            {isSubmitted && (
-                <AsyncButton onPress={retryDoSellTrade}>
-                    <Translation id="generic.buttons.continue" />
-                </AsyncButton>
             )}
             <Footer type="sell" />
         </Screen>
