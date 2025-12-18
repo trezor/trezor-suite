@@ -1,11 +1,11 @@
 import { type ReactNode, memo, useState } from 'react';
-import Animated from 'react-native-reanimated';
+import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellFormStep } from '@suite-common/trading';
-import { InlineAlertBox, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, InlineAlertBox } from '@suite-native/atoms';
 
 import { SellBankAccountPicker } from './BankAccount/SellBankAccountPicker';
 import { SellFeePickerCard } from './SellFeePickerCard';
@@ -36,7 +36,7 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
     };
 
     return (
-        <VStack spacing="sp20" paddingVertical="sp20">
+        <AnimatedVStack spacing="sp20" paddingVertical="sp20" layout={LinearTransition}>
             {isTxnError && (
                 <Animated.View>
                     <InlineAlertBox variant="critical" title={txnErrorString} />
@@ -55,6 +55,6 @@ export const SellPreviewView = memo(({ quote, txnErrorString }: SellPreviewViewP
                     onBankAccountSelect={handleBankAccountSelect}
                 />
             )}
-        </VStack>
+        </AnimatedVStack>
     );
 });

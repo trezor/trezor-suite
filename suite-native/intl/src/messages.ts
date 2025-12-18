@@ -2443,6 +2443,12 @@ export const messages = {
                 upTo30Seconds: 'This may take up to 30 seconds.',
                 startOver:
                     'If you didn’t finish all steps on the provider’s site, go back and start a new sell. Your funds are safe.',
+                cannotBeCompletedAlert: {
+                    title: 'Your sell couldn’t be completed',
+                    description:
+                        'We didn’t receive confirmation from the provider. Your funds are safe in your account.',
+                    button: 'Start a new sell',
+                },
             },
         },
         tradingExchangeApprovalScreen: {
