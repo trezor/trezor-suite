@@ -26,10 +26,20 @@ jobs:
         with:
           submodules: true
 
-      - run: ./packages/connect/e2e/test-npm-install.sh beta
-      - run: ./packages/connect/e2e/test-npm-install.sh latest
-      - run: ./packages/connect/e2e/test-yarn-install.sh beta
-      - run: ./packages/connect/e2e/test-yarn-install.sh latest
+      - name: Test npm install (beta)
+        run: ./packages/connect/e2e/test-npm-install.sh beta
+
+      - name: Test npm install (latest)
+        run: ./packages/connect/e2e/test-npm-install.sh latest
+        if: always()
+
+      - name: Test yarn install (beta)
+        run: ./packages/connect/e2e/test-yarn-install.sh beta
+        if: always()
+
+      - name: Test yarn install (latest)
+        run: ./packages/connect/e2e/test-yarn-install.sh latest
+        if: always()
 
   test-protobuf:
     runs-on: ubuntu-latest
