@@ -173,12 +173,6 @@ export const useSellFlow = () => {
         }
     }, [selectedQuote, sellInfo, doSellTrade]);
 
-    const retryDoSellTrade = useCallback(async () => {
-        if (selectedQuote) {
-            await doSellTrade(selectedQuote);
-        }
-    }, [selectedQuote, doSellTrade]);
-
     return {
         txnErrorString,
         composeRequest,
@@ -190,6 +184,5 @@ export const useSellFlow = () => {
         doSellTrade,
         confirmTrade,
         doBankAccountVerificationCheck,
-        retryDoSellTrade,
     };
 };
