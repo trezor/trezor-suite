@@ -4,8 +4,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
-import { Button, Column, Paragraph, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Column, Paragraph } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -50,7 +49,7 @@ export const AssetsListEmpty = ({
                 alignItems="center"
                 justifyContent="center"
                 height="auto"
-                margin={{ vertical: spacings.md }}
+                margin={{ vertical: 32 }}
             >
                 <Paragraph typographyStyle="body">
                     <Translation
@@ -59,22 +58,17 @@ export const AssetsListEmpty = ({
                     />
                 </Paragraph>
                 <Paragraph
+                    textWrap="balance"
                     typographyStyle="hint"
                     variant="tertiary"
                     align="center"
-                    maxWidth={400}
-                    margin={{
-                        top: spacings.xxxs,
-                        left: 'auto',
-                        right: 'auto',
-                    }}
+                    maxWidth={320}
                 >
                     <Translation id="TR_ACCOUNT_SEARCH_ACTIVATE_NETWORK_DESC" />
                 </Paragraph>
-
                 <Button
                     onClick={openActivateNetworkModal}
-                    margin={{ top: spacings.md }}
+                    margin={{ top: 32 }}
                     isLoading={isDiscoveryRunning}
                     intent="neutral"
                     priority="secondary"
@@ -86,23 +80,19 @@ export const AssetsListEmpty = ({
     }
 
     return (
-        <Column alignItems="center" justifyContent="center" height={height}>
-            <Text typographyStyle="body">
+        <Column alignItems="center" justifyContent="center" gap={4} height={height}>
+            <Paragraph typographyStyle="body">
                 <Translation id={heading} />
-            </Text>
+            </Paragraph>
             {description && (
                 <Paragraph
+                    textWrap="balance"
                     align="center"
-                    maxWidth={280}
-                    margin={{
-                        top: spacings.xxxs,
-                        left: 'auto',
-                        right: 'auto',
-                    }}
+                    maxWidth={320}
+                    variant="tertiary"
+                    typographyStyle="hint"
                 >
-                    <Text variant="tertiary" typographyStyle="hint">
-                        <Translation id={description} />
-                    </Text>
+                    <Translation id={description} />
                 </Paragraph>
             )}
         </Column>

@@ -112,7 +112,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
     if (mode === 'deactivate' && tokenBalance && !BigNumber(tokenBalance).isZero()) {
         return (
             <Modal
-                size="small"
+                width={600}
                 onCancel={onCancel}
                 heading={<Translation id="TR_CANT_DEACTIVATE_TOKEN_WITH_BALANCE" />}
                 bottomContent={
@@ -221,7 +221,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
 
     return (
         <Modal
-            size="small"
+            width={600}
             onCancel={onCancel}
             heading={<Translation id={headingId} values={{ token: tokenCode }} />}
             bottomContent={

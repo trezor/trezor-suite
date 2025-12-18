@@ -16,7 +16,7 @@ export const ConnectLoadingModal = () => {
             <Modal.ModalBase
                 data-testid="@connect-popup-loading"
                 variant="primary"
-                size="small"
+                width={600}
                 heading={popupCall.methodInfo.methodTitle}
                 description={<ConnectCallSource />}
             >

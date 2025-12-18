@@ -324,5 +324,5 @@ export const TradingDCAModal = ({ device, onCancel }: TradingDCAModalProps) => {
         };
     };
 
-    return <Modal onCancel={onCancel} size="small" {...getModal()} />;
+    return <Modal onCancel={onCancel} width={600} {...getModal()} />;
 };

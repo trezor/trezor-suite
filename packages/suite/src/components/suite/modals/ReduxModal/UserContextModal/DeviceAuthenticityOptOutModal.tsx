@@ -25,7 +25,7 @@ export const DeviceAuthenticityOptOutModal = ({ onCancel }: DeviceAuthenticityOp
         <Modal
             onCancel={onCancel}
             iconName="shieldWarning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

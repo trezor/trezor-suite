@@ -184,7 +184,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
             <Modal.ModalBase
                 onCancel={isAbortable ? onClose : undefined}
                 data-testid="@firmware/reconnect-device"
-                size="tiny"
+                width={400}
                 bottomContent={
                     isRebootDone && (
                         <Modal.Button onClick={onSuccess} data-testid="@firmware/install-button">

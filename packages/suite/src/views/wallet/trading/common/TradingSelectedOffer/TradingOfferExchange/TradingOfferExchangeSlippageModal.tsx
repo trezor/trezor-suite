@@ -192,7 +192,7 @@ export const TradingOfferExchangeSlippageModal = ({
         <Modal
             heading={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}
             onCancel={onCloseModal}
-            size="small"
+            width={600}
             bottomContent={
                 <Modal.Button
                     isLoading={isFormLoading}

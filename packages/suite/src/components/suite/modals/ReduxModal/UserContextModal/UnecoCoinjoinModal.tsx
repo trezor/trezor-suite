@@ -44,7 +44,7 @@ export const UnecoCoinjoinModal = () => {
                     </Modal.Button>
                 </>
             }
-            size="small"
+            width={600}
             variant="warning"
             iconName="arrowsIn"
         >

@@ -33,7 +33,7 @@ export const BridgeUnavailable = () => {
         <Modal
             data-testid="@modal/bridge"
             iconName="appWindow"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={handleOpenSuite}>

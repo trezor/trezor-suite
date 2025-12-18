@@ -18,7 +18,7 @@ export const BluetoothManualPairingModal = ({ onCancel }: BluetoothManualPairing
     return (
         <Modal
             heading={<Translation id="TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING" />}
-            size="small"
+            width={600}
             onCancel={handleCancel}
             bottomContent={
                 <>

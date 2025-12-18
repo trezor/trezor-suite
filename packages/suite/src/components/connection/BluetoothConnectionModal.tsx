@@ -63,7 +63,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
                 onCancel={handleClose}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-                size="small"
+                width={600}
             >
                 <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onReScanClick} />
             </Modal>
@@ -75,7 +75,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
             onCancel={handleClose}
             heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
             description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-            size="small"
+            width={600}
         >
             <BluetoothScanningList />
         </Modal>

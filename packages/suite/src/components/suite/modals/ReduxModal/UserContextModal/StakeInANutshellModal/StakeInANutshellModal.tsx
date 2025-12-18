@@ -176,7 +176,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
     return (
         <Modal
             heading={<Translation id="TR_STAKE_STAKING_IN_A_NUTSHELL" />}
-            size="tiny"
+            width={400}
             onCancel={onCancelClick}
             bottomContent={
                 <Modal.Button

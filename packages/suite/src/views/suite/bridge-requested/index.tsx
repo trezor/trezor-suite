@@ -53,7 +53,7 @@ export const BridgeRequested = () => {
         return (
             <Modal
                 variant="warning"
-                size="small"
+                width={600}
                 heading={<Translation id="TR_TREZOR_CONNECT" />}
                 onBackClick={() => setConfirmGoToWallet(false)}
                 bottomContent={
@@ -83,7 +83,7 @@ export const BridgeRequested = () => {
         <Modal
             iconName="appWindow"
             variant="info"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

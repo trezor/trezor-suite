@@ -50,7 +50,7 @@ export const ConfirmActionModal = ({
                 deviceUnitColor={getDeviceColorVariant(device)}
                 onCancel={cancelable ? handleCancel : undefined}
             />
-            <Modal.ModalBase size="tiny">
+            <Modal.ModalBase width={400}>
                 <Column alignItems="center" gap={16}>
                     <DeviceConfirmImage device={device} />
                     <H2

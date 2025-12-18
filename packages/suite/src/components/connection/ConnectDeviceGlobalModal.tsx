@@ -281,7 +281,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 onCancel={onCancel}
                 heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
                 description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-                size="small"
+                width={600}
             >
                 <BluetoothDeviceList
                     deviceList={notConnectedKnownDevices}
@@ -308,7 +308,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
                 <DontSeeTrezorPill onClick={toggleShowHints} />
                 <Modal.ModalBase
                     data-testid="@suite/connection-modal"
-                    size="tiny"
+                    width={400}
                     onCancel={onCancel}
                     onBackClick={() => {
                         setIsModeSelected(false);
@@ -323,7 +323,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
 
     if (isDesktop() && !isModeSelected) {
         return (
-            <Modal data-testid="@suite/connection-modal" size="tiny" onCancel={onCancel}>
+            <Modal data-testid="@suite/connection-modal" width={400} onCancel={onCancel}>
                 <Column gap={16}>
                     <ViaBluetoothCard
                         onClick={() => {
@@ -350,7 +350,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <DontSeeTrezorPill onClick={toggleShowHints} />
             <Modal.ModalBase
                 data-testid="@suite/connection-modal"
-                size="tiny"
+                width={400}
                 onCancel={onCancel}
                 onBackClick={isDesktop() ? () => setIsModeSelected(false) : undefined}
             >

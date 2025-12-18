@@ -22,7 +22,7 @@ export const NoBackupModal = () => {
             onCancel={close}
             iconName="warning"
             variant="warning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={confirm} data-testid="@no-backup/take-risk-button">

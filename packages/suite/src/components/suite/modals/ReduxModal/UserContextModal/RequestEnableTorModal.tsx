@@ -39,7 +39,7 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
             onCancel={onCancel}
             onBackClick={onBackClick}
             heading={<Translation id="TR_TOR_ENABLE" />}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

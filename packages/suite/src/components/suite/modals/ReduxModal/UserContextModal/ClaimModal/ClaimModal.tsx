@@ -146,7 +146,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                     />
                 ) : undefined
             }
-            size="small"
+            width={600}
             onCancel={onCancelClick}
             bottomContent={
                 <>

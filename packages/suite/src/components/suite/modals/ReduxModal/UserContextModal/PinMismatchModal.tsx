@@ -21,7 +21,7 @@ export const PinMismatchModal = () => {
             }
             iconName="password"
             variant="warning"
-            size="small"
+            width={600}
         >
             <H3>
                 <Translation id="TR_PIN_MISMATCH_HEADING" />

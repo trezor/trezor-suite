@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { Modal, ModalSize } from '@trezor/components';
+import { Modal, ModalWidth } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -10,7 +10,7 @@ interface AssetsModalProps {
     heading: ExtendedMessageDescriptor;
     description?: ExtendedMessageDescriptor;
     onClose: () => void;
-    size?: ModalSize;
+    width?: ModalWidth;
     bottomContent?: ReactNode;
 }
 
@@ -19,7 +19,7 @@ export function AssetsModal({
     heading,
     description,
     onClose,
-    size = 'small',
+    width = 480,
     bottomContent,
 }: AssetsModalProps) {
     return (
@@ -27,8 +27,7 @@ export function AssetsModal({
             heading={<Translation {...heading} />}
             description={description ? <Translation {...description} /> : undefined}
             onCancel={onClose}
-            size={size}
-            height="unset"
+            width={width}
             padding={{ horizontal: 0, top: 16 }}
             bottomContent={bottomContent}
         >

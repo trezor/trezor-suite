@@ -75,7 +75,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 heading={<Translation id="TR_RECONNECT_HEADER" />}
                 onCancel={onCancel}
                 data-testid="@recovery/no-device"
-                size="tiny"
+                width={400}
             >
                 <Image image="CONNECT_DEVICE" />
             </Modal>
@@ -243,16 +243,16 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
         return hasError ? 'warning' : 'primary';
     };
 
-    const getSize = () => {
+    const getWidth = () => {
         switch (recovery.status) {
             case 'initial':
-                return 'medium';
+                return 680;
             case 'waiting-for-confirmation':
-                return 'tiny';
+                return 400;
             case 'in-progress':
-                return isT1B1 ? 'tiny' : 'small';
+                return isT1B1 ? 400 : 600;
             default:
-                return 'small';
+                return 600;
         }
     };
 
@@ -295,7 +295,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 onCancel={handleClose}
                 variant={getVariant()}
                 iconName={getIconName()}
-                size={getSize()}
+                width={getWidth()}
             >
                 {getStep()}
             </Modal.ModalBase>

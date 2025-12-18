@@ -70,7 +70,7 @@ export const MessageSystemExperiments = ({
 
     return (
         <Modal
-            size="huge"
+            width={960}
             onCancel={onCloseModal}
             heading={`Experiments (${allValidExperiments.length} active of ${experiments.length})`}
             bottomContent={<MessageSystemFormExperiment />}

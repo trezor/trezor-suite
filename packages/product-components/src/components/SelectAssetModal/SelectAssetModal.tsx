@@ -108,7 +108,7 @@ export const SelectAssetModal = ({
                 defaultMessage: 'Select a token',
             })}
             onCancel={onClose}
-            size="small"
+            width={600}
         >
             <Column gap={spacings.md}>
                 {searchInput}

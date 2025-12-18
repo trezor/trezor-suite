@@ -71,7 +71,7 @@ export const ImportTransactionModal = ({ onCancel, decision }: ImportTransaction
                     <Translation id="IMPORT_CSV" />
                 </Modal.Button>
             }
-            size="small"
+            width={600}
         >
             <Column gap={spacings.md}>
                 <CollapsibleBox

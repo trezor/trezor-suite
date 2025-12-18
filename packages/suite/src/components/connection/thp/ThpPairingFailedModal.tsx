@@ -29,7 +29,7 @@ export const ThpPairingFailedModal = () => {
             heading={<Translation id="TR_THP_ENTER_ONE_TIME_CODE" />}
             description={<Translation id="TR_THP_CHECK_TREZOR_FOR_CODE" />}
             data-testid="@modal/thp-paring-failed"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={handleRetry} isLoading={isLoading} intent="critical">

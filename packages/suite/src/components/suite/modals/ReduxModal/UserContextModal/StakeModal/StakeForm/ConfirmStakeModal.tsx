@@ -94,7 +94,7 @@ export const ConfirmStakeModal = ({
         <Modal
             heading={<Translation id="TR_STAKE_CONFIRM_ENTRY_PERIOD" />}
             onCancel={handleOnCancel}
-            size="small"
+            width={600}
             variant="warning"
             bottomContent={
                 <>

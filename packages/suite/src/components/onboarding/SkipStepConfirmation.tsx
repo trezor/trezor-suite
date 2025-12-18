@@ -59,7 +59,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
         <Modal
             heading={heading}
             onCancel={onCancel}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={onCancel}>

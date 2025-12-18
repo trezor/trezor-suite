@@ -60,7 +60,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             onCancel={handleCancel}
             variant="destructive"
             iconName="shieldWarning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

@@ -46,7 +46,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             onCancel={onCancel}
             heading={<Translation id="TR_FORGET_DEVICE_MODAL_HEADING" />}
             variant="warning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={handleConfirmClick}>

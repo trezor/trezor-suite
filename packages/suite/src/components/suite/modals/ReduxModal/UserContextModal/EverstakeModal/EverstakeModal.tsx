@@ -130,7 +130,7 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
                 />
             }
             onCancel={onCancelClick}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

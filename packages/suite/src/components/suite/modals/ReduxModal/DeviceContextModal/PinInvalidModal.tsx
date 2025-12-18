@@ -13,7 +13,7 @@ export const PinInvalidModal = ({ onCancel }: { onCancel: () => void }) => {
                 heading={<Translation id="TR_ENTERED_PIN_NOT_CORRECT" values={{ deviceLabel }} />}
                 onCancel={onCancel}
                 data-testid="@modal/pin"
-                size="tiny"
+                width={400}
                 bottomContent={
                     <>
                         <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">

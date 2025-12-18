@@ -90,7 +90,7 @@ export const SignMessageModal = ({
                 onCancel={onCancel}
             />
             <Modal.ModalBase
-                size="small"
+                width={600}
                 heading={
                     isEip712 ? (
                         <Translation id="TR_SIGN_EIP712_TYPED_DATA" />

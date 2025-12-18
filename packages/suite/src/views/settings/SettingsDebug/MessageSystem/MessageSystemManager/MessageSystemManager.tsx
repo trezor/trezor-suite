@@ -60,7 +60,7 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
 
     return (
         <Modal
-            size="huge"
+            width={960}
             onCancel={onCloseModal}
             heading={`Messages (${allValidMessages.length} active of ${actions.length})`}
             bottomContent={<MessageSystemFormMessage />}

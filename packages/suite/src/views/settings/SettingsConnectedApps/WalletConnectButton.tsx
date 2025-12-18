@@ -48,7 +48,7 @@ export const WalletConnectButton = ({ handleOpened }: WalletConnectButtonProps) 
                         heading={<Translation id="TR_WALLETCONNECT_ADD_CONNECTION" />}
                         description={<Translation id="TR_WALLETCONNECT_ADD_CONNECTION_DESC" />}
                         onCancel={onCancel}
-                        size="small"
+                        width={600}
                         bottomContent={
                             <>
                                 <Modal.Button

@@ -50,7 +50,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModal
     return (
         <StakeFormContext.Provider value={stakeContextValues}>
             <Modal
-                size="huge"
+                width={960}
                 heading={
                     <Translation
                         id={

@@ -39,7 +39,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     return (
         <UnstakeFormContext.Provider value={unstakeContextValues}>
             <Modal
-                size="huge"
+                width={960}
                 heading={
                     <Translation
                         id="TR_STAKE_UNSTAKE_TOKEN"

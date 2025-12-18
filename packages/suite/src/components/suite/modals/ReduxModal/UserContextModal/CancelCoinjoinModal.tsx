@@ -25,7 +25,7 @@ export const CancelCoinjoinModal = ({ onClose }: CancelCoinjoinModalProps) => {
             onCancel={onClose}
             variant="warning"
             iconName="arrowsIn"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

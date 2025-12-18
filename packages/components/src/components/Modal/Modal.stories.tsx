@@ -3,7 +3,7 @@ import { JSX } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import { action } from 'storybook/actions';
 
-import { modalSizes, modalVariants } from './types';
+import { modalVariants, modalWidths } from './types';
 import {
     Modal as ModalComponent,
     ModalProps,
@@ -67,11 +67,11 @@ export const Modal: StoryObj<ModalProps> = {
             },
             options: [...modalVariants, undefined],
         },
-        size: {
+        width: {
             control: {
                 type: 'select',
             },
-            options: modalSizes,
+            options: modalWidths,
         },
         heading: {
             control: 'text',

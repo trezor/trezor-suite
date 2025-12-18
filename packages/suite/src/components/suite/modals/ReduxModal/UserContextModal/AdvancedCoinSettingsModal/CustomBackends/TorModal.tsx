@@ -35,7 +35,7 @@ export const TorModal = ({ onResult }: TorModalProps) => {
                     </Modal.Button>
                 </>
             }
-            size="small"
+            width={600}
             iconName="torBrowser"
         >
             <H3>

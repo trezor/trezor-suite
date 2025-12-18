@@ -53,7 +53,7 @@ export const TxDetailModalBase = ({
         <Modal
             onCancel={onCancel}
             heading={heading}
-            size="large"
+            width={760}
             bottomContent={bottomContent}
             onBackClick={onBackClick}
             // Disable shadow bottom to make `Fees` component fully visible

@@ -70,7 +70,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
         return (
             <Modal
                 onCancel={onClose}
-                size="tiny"
+                width={400}
                 bottomContent={
                     allowPairAgain && (
                         <Modal.Button
@@ -120,7 +120,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
 
     return (
         <Modal
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={toggleShowHints}>

@@ -293,7 +293,7 @@ export const TxSimulationModal = () => {
     return (
         <ConnectModalBackdrop canSwitchDevice>
             <Modal.ModalBase
-                size="small"
+                width={600}
                 heading={
                     popupCall?.state === 'tx-simulation' &&
                     popupCall?.method === 'ethereumSignTypedData' ? (

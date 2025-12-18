@@ -286,7 +286,7 @@ export const TransactionReviewModalBodyInner = ({
                         />
                     )
                 }
-                size="small"
+                width={600}
             >
                 <TransactionReviewModalContent
                     account={account}
