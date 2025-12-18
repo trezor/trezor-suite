@@ -31,6 +31,7 @@ uuid = "1.6.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 dbus = {version = "0.9.7", features = ["vendored"]}
+dbus-crossroads="0.5.3"
 dbus-tokio = "0.7.6"
 bluez-async = "0.8.0"
 

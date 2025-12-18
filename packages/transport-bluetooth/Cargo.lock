@@ -272,6 +272,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "dbus-crossroads"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64bff0bd181fba667660276c6b7ebdc50cff37ce593e7adf9e734f89c8f444e8"
+dependencies = [
+ "dbus",
+]
+
+[[package]]
 name = "dbus-tokio"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1218,6 +1227,7 @@ dependencies = [
  "btleplug",
  "dashmap 6.1.0",
  "dbus",
+ "dbus-crossroads",
  "dbus-tokio",
  "futures",
  "http-body-util",

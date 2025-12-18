@@ -1,4 +1,5 @@
 use crate::server::{
+    bluez::agent::create_agent,
     device::DeviceConnectionStatus,
     platform::{ConnectDeviceContext, PlatformDevice, PlatformError},
     types::{AbortProcess, ChannelMessage, NotificationEvent},
@@ -219,38 +220,52 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
         manager,
         params,
         broadcast,
-    } = ctx;
+    } = ctx.clone();
     let device = manager.get_device_or_die(params.id).await?;
 
     info!("pair_with_timeout start");
 
-    dispatch_status(
-        manager.clone(),
-        device.clone(),
-        DeviceConnectionStatus::Pairing { pin: None },
-    )
-    .await;
+    // Registering custom Agent doesn't have to work by default.
+    // it may require some tweaking of the user groups and permissions
+    let (agent_ready, agent_stop) = create_agent(ctx.clone());
+    let agent_enabled = match tokio::time::timeout(Duration::from_secs(3), agent_ready).await {
+        Ok(Ok(_)) => true,
+        _ => false, // Ok(Err(_)) or Err(_)
+    };
 
     let (cancel_task, mut is_cancel_finished) = watch_abort(device.get_id(), broadcast.clone());
 
-    // if system bluetooth UI window is closed/unavailable
-    // Pairing Request capability is set to `NoInputNoOutput`. Trezor expects `DisplayYesNo`
-    // this leads to org.bluez.Error.AuthenticationFailed error
-    // try to open system UI. consider moving this to suite (UI)
-    manager
-        .dispatch_notification(NotificationEvent::OpenBluetoothSettings {
-            id: device.get_id(),
-        })
+    if !agent_enabled {
+        let _ = agent_stop.send(());
+
+        info!("Agent not registered");
+        // if system_settings/bluetooth UI window is closed/unavailable
+        // Pairing Request capability will be set to `NoInputNoOutput`. Trezor expects `DisplayYesNo`
+        // this leads to org.bluez.Error.AuthenticationFailed error
+        // request client to open system UI.
+
+        dispatch_status(
+            manager.clone(),
+            device.clone(),
+            DeviceConnectionStatus::Pairing { pin: None },
+        )
         .await;
 
-    sleep(Duration::from_millis(1000)).await;
+        manager
+            .dispatch_notification(NotificationEvent::OpenBluetoothSettings {
+                id: device.get_id(),
+            })
+            .await;
 
-    if is_cancel_finished.try_recv().is_ok() {
-        // task was aborted
-        // DeviceDisconnected was called by the host as response to OpenBluetoothSettings event
-        dispatch_status(manager, device, DeviceConnectionStatus::Disconnected).await;
+        sleep(Duration::from_millis(1000)).await;
 
-        return Err("BluetoothSettingsMissing".to_string())?;
+        if is_cancel_finished.try_recv().is_ok() {
+            // task was aborted
+            // DeviceDisconnected was called by the host as response to OpenBluetoothSettings event
+            dispatch_status(manager, device, DeviceConnectionStatus::Disconnected).await;
+
+            return Err("BluetoothSettingsMissing".to_string())?;
+        }
     }
 
     // watch "Paired" props
@@ -298,6 +313,7 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
             conn.abort();
             if let Ok(Some(err)) = response {
                 info!("pair_with_timeout props_task error: {err:?}");
+                let _ = agent_stop.send(());
                 dispatch_status(manager, device, DeviceConnectionStatus::PairingError{ error: err.to_string() }).await;
                 return Err(err)?;
             }
@@ -308,12 +324,14 @@ async fn pair_with_timeout(ctx: ConnectDeviceContext) -> Result<(), PlatformErro
             conn.abort();
             if let Ok(Some(err)) = response {
                 info!("pair_with_timeout pairing_task error: {err:?}");
+                let _ = agent_stop.send(());
                 dispatch_status(manager, device, DeviceConnectionStatus::PairingError{ error: err.to_string() }).await;
                 return Err(err)?;
             }
         },
     };
 
+    let _ = agent_stop.send(());
     dispatch_status(manager, device, DeviceConnectionStatus::Paired).await;
 
     Ok(())
