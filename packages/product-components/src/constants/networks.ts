@@ -3,7 +3,6 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 // These coins are not supported in Suite, but exist in Trezor Connect
 export type LegacyNetworkSymbol =
     | 'eos'
-    | 'nem'
     | 'xtz'
     | 'dash'
     | 'dgb'
@@ -39,7 +38,6 @@ export const NETWORK_ICONS = {
     xrp: require('../images/networks/xrp.svg'),
     zec: require('../images/networks/zec.svg'),
     eos: require('../images/networks/eos.svg'),
-    nem: require('../images/networks/nem.svg'),
     xlm: require('../images/networks/xlm.svg'),
     xtz: require('../images/networks/xtz.svg'),
     dash: require('../images/networks/dash.svg'),

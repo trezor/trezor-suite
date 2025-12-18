@@ -110,7 +110,7 @@ export type MiscNetworkInfo = Static<typeof MiscNetworkInfo>;
 export const MiscNetworkInfo = Type.Intersect([
     Common,
     Type.Object({
-        type: Type.Union([Type.Literal('misc'), Type.Literal('nem')]),
+        type: Type.Literal('misc'),
         curve: Type.String(),
         network: Type.Optional(Type.Undefined()),
     }),

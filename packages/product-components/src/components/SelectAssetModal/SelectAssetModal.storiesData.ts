@@ -208,16 +208,6 @@ export const selectAssetModalOptions: (
         symbol: 'xlm',
     },
     {
-        type: 'currency',
-        value: 'nem',
-        label: 'XEM',
-        cryptoName: 'NEM',
-        coingeckoId: 'nem',
-        contractAddress: null,
-        ticker: 'XEM',
-        symbol: 'nem',
-    },
-    {
         type: 'group',
         label: 'TR_TRADING_NETWORK_TOKENS',
         coingeckoId: 'ethereum',

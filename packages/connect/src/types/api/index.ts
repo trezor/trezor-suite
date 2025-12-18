@@ -64,8 +64,6 @@ import { moneroGetAddress } from './moneroGetAddress';
 import { moneroGetWatchKey } from './moneroGetWatchKey';
 import { moneroKeyImageSync } from './moneroKeyImageSync';
 import { moneroSignTransaction } from './moneroSignTransaction';
-import { nemGetAddress } from './nemGetAddress';
-import { nemSignTransaction } from './nemSignTransaction';
 import { off } from './off';
 import { on } from './on';
 import { pushTransaction } from './pushTransaction';
@@ -298,12 +296,6 @@ export interface TrezorConnect {
     moneroKeyImageSync: typeof moneroKeyImageSync;
     // https://connect.trezor.io/9/methods/monero/moneroSignTransaction/
     moneroSignTransaction: typeof moneroSignTransaction;
-
-    // https://connect.trezor.io/9/methods/nem/nemGetAddress/
-    nemGetAddress: typeof nemGetAddress;
-
-    // https://connect.trezor.io/9/methods/nem/nemSignTransaction/
-    nemSignTransaction: typeof nemSignTransaction;
 
     // todo: link docs
     off: typeof off;

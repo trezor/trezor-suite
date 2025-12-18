@@ -79,8 +79,6 @@ export const connectCallableMethods = [
     'moneroGetWatchKey',
     'moneroKeyImageSync',
     'moneroSignTransaction',
-    'nemGetAddress',
-    'nemSignTransaction',
     'pushTransaction',
     'recoveryDevice',
     'requestLogin',

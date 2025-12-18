@@ -10,7 +10,6 @@ export * from './settings';
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano';
 export * from './api/bitcoin';
-export * from './api/eos';
 export * from './api/ripple';
 export * from './api/ethereum';
 export * from './api/monero';
