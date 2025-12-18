@@ -20,6 +20,7 @@ export const NETWORK_SYMBOLS_WITH_TOKENS = [
     'arb',
     'avax',
     'xlm',
+    'ada',
 ] satisfies Array<NetworkSymbol>;
 export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
 
