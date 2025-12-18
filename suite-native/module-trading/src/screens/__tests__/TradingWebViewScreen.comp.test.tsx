@@ -1,7 +1,8 @@
-import { TradingTransaction } from '@suite-common/trading';
+import { TradingTransaction, TradingType } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
+import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { TradingWebViewScreen } from '../TradingWebViewScreen';
 
@@ -9,11 +10,15 @@ let mockRouteParams: {
     closeCallbackUrl: string;
     source?: { uri?: string; html?: string };
     orderId?: string;
-} = { closeCallbackUrl: '' };
+    tradingType: TradingType;
+} = { closeCallbackUrl: '', tradingType: 'buy' };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ name: 'TradingWebViewScreen', params: { ...mockRouteParams } }),
+    useNavigation: () => ({
+        goBack: jest.fn(),
+    }),
 }));
 
 jest.mock('@suite-common/trading', () => {
@@ -33,6 +38,7 @@ describe('TradingWebViewScreen', () => {
         mockRouteParams = {
             closeCallbackUrl: 'CALLBACK_URL',
             source: { uri: 'SOURCE_URI', html: undefined },
+            tradingType: 'buy',
         };
         const { getByTestId } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
@@ -42,6 +48,7 @@ describe('TradingWebViewScreen', () => {
     it('should render error when no source is set', async () => {
         mockRouteParams = {
             closeCallbackUrl: 'CALLBACK_URL',
+            tradingType: 'buy',
         };
         const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
@@ -52,6 +59,7 @@ describe('TradingWebViewScreen', () => {
         mockRouteParams = {
             closeCallbackUrl: 'CALLBACK_URL',
             source: { uri: undefined, html: undefined },
+            tradingType: 'buy',
         };
         const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
 
@@ -68,6 +76,7 @@ describe('TradingWebViewScreen', () => {
             mockRouteParams = {
                 closeCallbackUrl: 'CALLBACK_URL',
                 orderId: 'orderId',
+                tradingType: 'buy',
             };
         });
 
@@ -103,6 +112,7 @@ describe('TradingWebViewScreen', () => {
         });
 
         it('should report on mount for exchange', async () => {
+            mockRouteParams.tradingType = 'exchange';
             const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
             preloadedState.wallet.trading.trades = [
                 {
@@ -127,6 +137,7 @@ describe('TradingWebViewScreen', () => {
         });
 
         it('should report on mount for sell', async () => {
+            mockRouteParams.tradingType = 'sell';
             const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
             preloadedState.wallet.trading.trades = [
                 {
@@ -148,6 +159,45 @@ describe('TradingWebViewScreen', () => {
                     action: 'visit',
                 }),
             });
+        });
+
+        it.each<TradingType>(['exchange', 'buy'])(
+            'should not change providerConfirmationStatus for [%s]',
+            async tradeType => {
+                mockRouteParams.tradingType = tradeType;
+                const preloadedState = { wallet: getWalletState({ tradeType }) };
+                preloadedState.wallet.trading.trades = [
+                    {
+                        tradeType,
+                        data: {
+                            orderId: 'orderId',
+                        },
+                    } as unknown as TradingTransaction,
+                ];
+                const { store } = await initStore(preloadedState);
+
+                await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+
+                expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
+            },
+        );
+
+        it('should not change providerConfirmationStatus for [sell]', async () => {
+            mockRouteParams.tradingType = 'sell';
+            const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
+            preloadedState.wallet.trading.trades = [
+                {
+                    tradeType: 'sell',
+                    data: {
+                        orderId: 'orderId',
+                    },
+                } as unknown as TradingTransaction,
+            ];
+            const { store } = await initStore(preloadedState);
+
+            await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
         });
     });
 });
