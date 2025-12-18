@@ -11,3 +11,6 @@ pub mod utils;
 pub use self::connection_broadcast::ConnectionBroadcast;
 pub use self::connection_handler::start_server;
 pub use self::message_handler::handle_message;
+
+#[cfg(target_os = "linux")]
+pub mod bluez;
