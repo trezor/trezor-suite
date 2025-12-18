@@ -55,6 +55,10 @@ inputs:
   run-reporter:
     description: "Flag to run GitHub Reporter, only on Release workflows"
     required: false
+  enable-coverage:
+    description: "Enable code coverage collection with Currents"
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -132,10 +136,17 @@ runs:
           REPORTER_OPT=""
         fi
 
+        if [[ "${{ inputs.enable-coverage }}" == "true" ]]; then
+          COVERAGE_OPT="--pwc-coverage ${{ inputs.project }}"
+        else
+          COVERAGE_OPT=""
+        fi
+
         docker compose up -d ${{ inputs.containers }}
         echo "Starting Playwright project ${{ inputs.project }} for test group ${{ inputs.test-group }}"
         yarn workspace @trezor/suite-e2e test:orchestrated:e2e:${{ inputs.project }} \
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
+          $COVERAGE_OPT \
           --forbid-only \
           $REPORTER_OPT \
           --grep="${{ inputs.additional-grep }}" \

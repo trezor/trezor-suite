@@ -3,11 +3,8 @@ import * as messages from '@trezor/protobuf/src/messages';
 import { BridgeTransport } from '@trezor/transport';
 
 import { expect, test } from '../../support/fixtures';
-import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
 import { DashboardPage } from '../../support/pageObjects/dashboardPage';
 import { DevicePrompt } from '../../support/pageObjects/devicePrompt';
-import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingPage';
-import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
@@ -88,7 +85,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ context, model, onboardingPage, dashboardPage, emulatorStartConf }) => {
+        async ({ context, model, onboardingPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
 
             const pageTwo = await context.newPage();
@@ -98,20 +95,12 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
                 window.Playwright = true;
             });
             await pageTwo.goto('./');
-            const analyticsSectionTwo = new AnalyticsSection(pageTwo);
             const devicePromptTwo = new DevicePrompt(pageTwo, model);
-            const settingsPageTwo = new SettingsPage(pageTwo);
-            const onboardingPageTwo = new OnboardingPage(
-                pageTwo,
-                model,
-                devicePromptTwo,
-                analyticsSectionTwo,
-                settingsPageTwo,
-                emulatorStartConf,
-            );
-            await onboardingPageTwo.completeOnboarding();
+
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
-            await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED');
+            await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED', {
+                timeout: 30_000, // Longer timeout needed here to wait for page load and session restore
+            });
             await expect(dashboardPage.deviceStatus).toHaveTranslation('TR_USE_HERE');
 
             await pageTwo.close();

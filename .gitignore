@@ -143,3 +143,6 @@ packages/suite-data/files/translations/master.json
 .direnv/
 .zed/*
 .cursorrules
+
+# currents coverage files
+.nyc_output/

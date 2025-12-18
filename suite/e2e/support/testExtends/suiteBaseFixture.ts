@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable jest/no-commented-out-tests */
-import { BrowserContext, Page, TestInfo, test as base, mergeTests } from '@playwright/test';
+import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
@@ -109,19 +109,6 @@ const webSetup = async (browserContext: BrowserContext) => {
     return page;
 };
 
-const webTeardown = async (page: Page, browserContext: BrowserContext, testInfo: TestInfo) => {
-    await page.close();
-    await browserContext.close();
-    const videoPath = getVideoPath(testInfo.outputDir);
-    if (videoPath) {
-        testInfo.attachments.push({
-            name: 'video',
-            path: videoPath,
-            contentType: 'video/webm',
-        });
-    }
-};
-
 const getDefaultFirmwareVersion = (model: Model): string => {
     const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
     const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
@@ -181,12 +168,11 @@ const trezorEnvSetup = async (
     await trezorUserEnvStuckProtection(setupPromise);
 };
 
-// We first add currents fixtures to ensure current initialize first and quarantine works even for fails in beforeEach
-const baseWithCurrents = mergeTests(base, currentsTest);
 // This is the base Suite text fixture containing all the necessary setup and core page object
 // Depending on the project type (desktop or web) it will launch the appropriate environment
 // and provide the necessary page object which is either electron window or web page
-const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
+// Extending our fixtures from currentsTest ensures Currents fixtures initialize first and quarantine works even for fails in beforeEach section
+const suiteBaseTest = currentsTest.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
     emulatorStartConf: { model: getModelFromEnv(), wipe: true },
@@ -217,7 +203,7 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
         {
             locale,
             colorScheme,
-            browser,
+            context,
             startEmulator,
             setupEmulator,
             emulatorStartConf,
@@ -244,15 +230,9 @@ const suiteBaseTest = baseWithCurrents.extend<suiteBaseFixture>({
             await use(suite.window);
             await electronTeardown(suite, testInfo, electronConf);
         } else {
-            const browserContext = await browser.newContext({
-                recordVideo: {
-                    dir: testInfo.outputPath(),
-                },
-            });
-            const page = await webSetup(browserContext);
+            const page = await webSetup(context);
             enhancePage(page);
             await use(page);
-            await webTeardown(page, browserContext, testInfo);
         }
 
         await TrezorUserEnvLinkProxy.logTestDetails(

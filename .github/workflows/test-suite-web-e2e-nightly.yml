@@ -26,12 +26,15 @@ jobs:
   build-web:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Build and Upload Suite Web
         uses: ./.github/actions/build-web
+        with:
+          instrument-code: "true"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
@@ -62,6 +65,7 @@ jobs:
           currents-ci-build-id: "nightly-run-${{ github.run_id }}-${{ github.run_attempt }}"
           currents-tags: "nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+          enable-coverage: "true"
 
   run-e2e-suite-web-tests-t3w1:
     if: github.repository == 'trezor/trezor-suite'

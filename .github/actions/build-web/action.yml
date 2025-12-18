@@ -1,6 +1,10 @@
 name: "Build and Upload Suite Web app"
 description: "Builds the Trezor Suite Web app and uploads it to S3 for e2e testing."
-
+inputs:
+  instrument-code:
+    description: "Enables Istanbul plugin for Babel to instrument the code for coverage reporting"
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -34,6 +38,7 @@ runs:
       env:
         ASSET_PREFIX: /suite-web/${{ env.branch }}/web
         DESKTOP_APP_NAME: "Trezor-Suite"
+        INSTRUMENT_CODE: ${{ inputs.instrument-code }}
       run: |
         yarn message-system-sign-config
         yarn workspace @trezor/suite-data build:lib
