@@ -331,7 +331,7 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES": "Automatic Trezor Suite updates",
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Automatically download the latest version of Trezor Suite in the background and install it when restarting the app. This ensures you're always up-to-date with the latest features and security patches. Updates occur without requiring your permission.",
   "TR_ALLOW_BLUETOOTH_CTA": "Allow",
-  "TR_ALL_NETWORKS": "All networks ({networkCount})",
+  "TR_ALL_NETWORKS": "All networks",
   "TR_ALL_NETWORKS_TOOLTIP": "View tokens from all {networkCount} networks. Filter by the most popular networks.",
   "TR_ALL_TRANSACTIONS": "Transactions",
   "TR_AMOUNT_REDUCED_TXS": "Amount reduced",

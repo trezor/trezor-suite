@@ -66,7 +66,7 @@ export const NetworkTabs = ({
                     >
                         <FormattedMessage
                             id="TR_ALL_NETWORKS"
-                            defaultMessage="All networks ({networkCount})"
+                            defaultMessage="All networks"
                             values={{ networkCount }}
                         />
                     </Tooltip>

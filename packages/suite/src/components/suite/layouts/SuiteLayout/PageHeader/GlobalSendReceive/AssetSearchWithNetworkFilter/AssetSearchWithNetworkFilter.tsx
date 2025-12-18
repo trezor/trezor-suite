@@ -49,9 +49,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                     selectedNetwork: networkFilter,
                     onChange: setNetworkFilter,
                     includeAllOption: !protocolSymbol,
-                    allLabel: translationString('TR_ALL_NETWORKS', {
-                        networkCount: enabledNetworks?.length,
-                    }),
+                    allLabel: translationString('TR_ALL_NETWORKS'),
                 }}
             />
         </Box>

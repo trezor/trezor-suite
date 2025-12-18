@@ -50,6 +50,7 @@ type AllowedFrameProps = Pick<FrameProps, (typeof allowedSelectFrameProps)[numbe
 const createSelectStyle = (
     theme: DefaultTheme,
     isRenderedInModal: boolean,
+    isClean: boolean,
 ): StylesConfig<OptionType, boolean> => ({
     menuPortal: base => ({
         ...(base as Record<string, CSSObject>),
@@ -74,6 +75,7 @@ const createSelectStyle = (
         // when theme changes from light to dark
         transition: 'background 0.3s',
         border: 'none',
+        width: isClean ? 'fit-content' : 'auto',
     }),
     groupHeading: base => ({
         ...(base as Record<string, CSSObject>),
@@ -123,7 +125,6 @@ type WrapperProps = TransientProps<
     $isWithPlaceholder: boolean;
     $elevation: Elevation;
     $isLoading?: boolean;
-    $menuFitContent?: boolean;
 };
 
 const SelectWrapper = styled.div<WrapperProps>`
@@ -159,6 +160,7 @@ const SelectWrapper = styled.div<WrapperProps>`
         cursor: pointer;
         ${baseInputStyle};
         background-color: ${({ $isClean }) => $isClean && 'transparent !important'};
+        border-color: ${({ $isClean }) => $isClean && 'transparent !important'};
 
         &:hover:not(:focus-within) {
             border-color: transparent;
@@ -183,7 +185,8 @@ const SelectWrapper = styled.div<WrapperProps>`
         flex-wrap: nowrap;
         min-width: ${({ $minValueWidth }) => $minValueWidth};
         justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        padding: 0 ${spacingsPx.xl} 0 0;
+        padding: 0;
+        padding-right: ${({ $isClean }) => ($isClean ? spacingsPx.xxs : spacingsPx.xl)};
         border: none;
     }
 
@@ -238,11 +241,6 @@ const SelectWrapper = styled.div<WrapperProps>`
         ${menuStyle};
         border: none;
         z-index: ${zIndices.base};
-        ${({ $menuFitContent }) =>
-            $menuFitContent &&
-            css`
-                width: fit-content;
-            `}
     }
 
     ${({ $isDisabled }) =>
@@ -289,7 +287,6 @@ export type SelectProps = KeyPressScrollProps &
         label?: ReactNode;
         size?: InputSize;
         minValueWidth?: string;
-        menuFitContent?: boolean;
         isMenuOpen?: boolean;
         isLoading?: boolean;
         /** @deprecated: workaround for issues with modal (GH #19376) */
@@ -308,7 +305,6 @@ export const Select = ({
     useKeyPressScroll,
     isSearchable = false,
     minValueWidth = 'initial',
-    menuFitContent,
     isMenuOpen,
     components,
     onChange,
@@ -396,7 +392,6 @@ export const Select = ({
                     $isSearchable={isSearchable}
                     $size={size}
                     $minValueWidth={minValueWidth}
-                    $menuFitContent={menuFitContent}
                     $isDisabled={isDisabled}
                     $isLoading={isLoading}
                     $isMenuOpen={isMenuOpen}
@@ -419,7 +414,7 @@ export const Select = ({
                         placeholder={placeholder || ''}
                         {...rest}
                         styles={{
-                            ...createSelectStyle(theme, isRenderedInModal),
+                            ...createSelectStyle(theme, isRenderedInModal, isClean),
                             ...(rest.styles || {}),
                         }}
                         components={memoizedComponents}
