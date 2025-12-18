@@ -40,7 +40,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@types/fs-extra": "^11.0.4",
-        "jws": "^4.0.0",
+        "jws": "^4.0.1",
         "tsx": "^4.20.3"
     },
     "nx": {

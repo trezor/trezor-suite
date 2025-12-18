@@ -30,7 +30,7 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "ajv": "^8.17.1",
-        "jws": "^4.0.0",
+        "jws": "^4.0.1",
         "toml": "^3.0.0"
     }
 }
