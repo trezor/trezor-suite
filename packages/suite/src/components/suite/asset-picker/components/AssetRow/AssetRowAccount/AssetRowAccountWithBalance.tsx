@@ -2,7 +2,6 @@ import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wal
 import { Account } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings } from '@trezor/theme';
 
 import { ItemClickableContainer } from '../ItemClickableContainer';
 import { AccountAmount } from './AccountAmount';
@@ -22,13 +21,13 @@ export function AssetRowAccountWithBalance({
         <ItemClickableContainer onClick={() => onClick(account)}>
             <Row
                 data-testid={`${dataTestId}/${account.symbol}`}
-                gap={spacings.sm}
+                gap={12}
                 alignItems="center"
                 overflow="hidden"
             >
                 <CoinLogo symbol={account.symbol} size={40} type="tokenWithNetwork" />
                 <Column overflow="hidden" alignItems="flex-start" justifyContent="flex-start">
-                    <Text variant="default" typographyStyle="body">
+                    <Text typographyStyle="body" ellipsisLineCount={1} maxWidth="100%">
                         {getNetworkDisplaySymbolName(account.symbol)}
                     </Text>
                     <Text variant="tertiary" typographyStyle="hint">
@@ -36,7 +35,6 @@ export function AssetRowAccountWithBalance({
                     </Text>
                 </Column>
             </Row>
-
             <AccountAmount account={account} />
         </ItemClickableContainer>
     );

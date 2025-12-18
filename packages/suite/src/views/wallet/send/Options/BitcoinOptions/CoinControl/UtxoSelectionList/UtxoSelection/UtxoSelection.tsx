@@ -4,9 +4,9 @@ import { selectAddressLabels, selectOutputLabels } from '@suite-common/suite-syn
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
-    Box,
     Checkbox,
     Column,
+    GhostContainer,
     Icon,
     InfoSegments,
     Row,
@@ -126,12 +126,10 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
 
     return (
-        <Box
-            onClick={isDisabled ? undefined : handleCheckbox}
-            backgroundColorOnInteraction={isDisabled ? undefined : 'stateFillElementGhostHovered'}
-            borderRadius={10}
+        <GhostContainer
+            onClick={handleCheckbox}
+            isActive={isChecked}
             padding={12}
-            cursor={isDisabled ? 'default' : 'pointer'}
             margin={{ horizontal: -12 }}
         >
             <Row gap={16} width="100%">
@@ -254,6 +252,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                     </Row>
                 </Column>
             </Row>
-        </Box>
+        </GhostContainer>
     );
 };

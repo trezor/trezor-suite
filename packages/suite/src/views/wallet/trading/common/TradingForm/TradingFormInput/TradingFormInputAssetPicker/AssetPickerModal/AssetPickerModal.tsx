@@ -1,5 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';
@@ -21,12 +22,14 @@ import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFo
 
 export type AssetPickerModalProps = {
     closeModal: () => void;
+    heading: TranslationKey;
     dataTestId?: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
 };
 
 export const AssetPickerModal = memo(function AssetPickerModalInner({
     closeModal,
+    heading,
     onAssetSelect,
     dataTestId,
 }: AssetPickerModalProps) {
@@ -91,11 +94,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     );
 
     return (
-        <AssetsModal
-            onClose={closeModal}
-            size="small"
-            heading={{ id: 'TR_SWAP_ASSET_PICKER_HEADING' }}
-        >
+        <AssetsModal onClose={closeModal} heading={{ id: heading }}>
             <AssetSearchWithNetworkFilter
                 placeholder="TR_ASSET_PICKER_SEARCH_PLACEHOLDER"
                 search={search}
