@@ -1,7 +1,5 @@
 import { MouseEventHandler, ReactNode } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { selectAddressLabels, selectOutputLabels } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
@@ -65,7 +63,6 @@ type UtxoSelectionProps = {
 };
 
 export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
-    const theme = useTheme();
     const {
         account,
         network,
@@ -131,11 +128,9 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     return (
         <Box
             onClick={isDisabled ? undefined : handleCheckbox}
-            backgroundColorOnInteraction={
-                isDisabled ? undefined : theme.backgroundSurfaceElevation2
-            }
-            borderRadius={8}
-            padding={{ vertical: 12, horizontal: 12 }}
+            backgroundColorOnInteraction={isDisabled ? undefined : 'stateFillElementGhostHovered'}
+            borderRadius={10}
+            padding={12}
             cursor={isDisabled ? 'default' : 'pointer'}
             margin={{ horizontal: -12 }}
         >

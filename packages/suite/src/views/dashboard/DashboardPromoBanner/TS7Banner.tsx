@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 
 import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -63,14 +63,13 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
 export const TS7Banner = ({ onClose, onCTAClick, isVisible }: TS7BannerProps) => {
     const { isBelowLaptop, isBelowDesktop } = useLayoutSize();
     const isVerticalLayout = useIsContentBelowBreakpoint();
-    const theme = useTheme();
 
     return (
         <AnimatedWrapper isVisible={isVisible} flagToHide="showTS7DashboardPromoBanner">
             <Box
                 height={isVerticalLayout ? undefined : 213}
                 padding={{ horizontal: 24, top: isVerticalLayout ? 16 : 0 }}
-                backgroundColor={theme.backgroundTertiaryDefaultOnElevation0}
+                backgroundColor="backgroundTertiaryDefaultOnElevation0"
             >
                 <ContentFlex
                     height="100%"

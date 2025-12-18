@@ -1,12 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import {
-    BorderWidths,
-    CSSColor,
-    Elevation,
-    mapElevationToBackground,
-    mapElevationToBorder,
-} from '@trezor/theme';
+import { BorderWidths, Color, Elevation, mapElevationToBorder } from '@trezor/theme';
 
 import {
     FrameProps,
@@ -46,10 +40,9 @@ const Container = styled.div<
     TransientProps<AllowedFrameProps> & {
         $borderWidth?: BorderWidth;
         $elevation: Elevation;
-        $hasBackground?: boolean;
-        $backgroundColor?: CSSColor;
-        $backgroundColorOnInteraction?: CSSColor;
-        $borderColor?: CSSColor;
+        $backgroundColor?: Color;
+        $backgroundColorOnInteraction?: Color;
+        $borderColor?: Color;
         $shadow?: string;
     }
 >`
@@ -57,7 +50,7 @@ const Container = styled.div<
     box-shadow: unset;
     border: 0 solid
         ${({ $borderColor, $elevation, theme }) =>
-            $borderColor ?? mapElevationToBorder({ theme, $elevation })};
+            $borderColor ? theme[$borderColor] : mapElevationToBorder({ theme, $elevation })};
     transition: background 0.3s ease;
 
     ${({ $borderWidth }) =>
@@ -73,24 +66,18 @@ const Container = styled.div<
                   border-width: ${getValueWithUnit($borderWidth)};
               `)}
 
-    ${({ $hasBackground, $elevation, theme }) =>
-        $hasBackground &&
-        css`
-            background: ${mapElevationToBackground({ theme, $elevation })};
-        `}
-
-    ${({ $backgroundColor }) =>
+    ${({ $backgroundColor, theme }) =>
         $backgroundColor &&
         css`
-            background: ${$backgroundColor};
+            background: ${theme[$backgroundColor]};
         `}
 
-    ${({ $backgroundColorOnInteraction }) =>
+    ${({ $backgroundColorOnInteraction, theme }) =>
         $backgroundColorOnInteraction &&
         css`
             &:hover,
             &:focus {
-                background: ${$backgroundColorOnInteraction};
+                background: ${theme[$backgroundColorOnInteraction]};
             }
         `}
 
@@ -117,14 +104,9 @@ type BorderWidth =
 export type BoxProps = AllowedFrameProps & {
     children?: React.ReactNode;
     borderWidth?: BorderWidth;
-    hasBackground?: boolean;
-    // TODO: type to token names
-    backgroundColor?: CSSColor;
-    // TODO: type to token names
-    backgroundColorOnInteraction?: CSSColor;
-    // TODO: type to token names
-    borderColor?: CSSColor;
-    // TODO: type to token names
+    backgroundColor?: Color;
+    backgroundColorOnInteraction?: Color;
+    borderColor?: Color;
     shadow?: string;
     'data-testid'?: string;
     'aria-hidden'?: boolean;
@@ -138,7 +120,6 @@ export type BoxProps = AllowedFrameProps & {
 export const Box = ({
     children,
     borderWidth,
-    hasBackground,
     backgroundColor,
     backgroundColorOnInteraction,
     borderColor,
@@ -164,7 +145,6 @@ export const Box = ({
             $backgroundColor={backgroundColor}
             $backgroundColorOnInteraction={backgroundColorOnInteraction}
             $borderColor={borderColor}
-            $hasBackground={hasBackground}
             $elevation={elevation}
             onClick={onClick}
             onMouseEnter={onMouseEnter}

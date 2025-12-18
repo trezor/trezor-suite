@@ -1,7 +1,4 @@
-import { useTheme } from 'styled-components';
-
 import { Box, Column, Row, Text } from '@trezor/components';
-import { mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
 import { AssetLogo, AssetLogoProps, shouldShowNetworkIcon } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
@@ -27,19 +24,17 @@ export function TopAssets({
     onAssetClick,
     'data-testid': dataTestId,
 }: TopAssetsProps) {
-    const theme = useTheme();
-
     return (
         <Box
             borderRadius={12}
             borderWidth={1}
-            borderColor={mapElevationToBorder({ theme, $elevation: 1 })}
+            borderColor="baseBorderElementNeutralSoftest"
             width="100%"
             as="button"
             overflow="hidden"
             data-testid={dataTestId}
         >
-            <Row hasDivider alignItems="stretch">
+            <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
                 {assets.map(asset => {
                     const displaySymbol = asset.symbol.toUpperCase();
 
@@ -49,10 +44,7 @@ export function TopAssets({
                             onClick={() => onAssetClick(asset)}
                             padding={{ top: 10, horizontal: 12, bottom: 6 }}
                             flex="1"
-                            backgroundColorOnInteraction={mapElevationToBackground({
-                                theme,
-                                $elevation: 1,
-                            })}
+                            backgroundColorOnInteraction="stateFillElementGhostHovered"
                             cursor="pointer"
                         >
                             <Column alignItems="center" justifyContent="center" gap={4}>

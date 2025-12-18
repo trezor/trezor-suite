@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { Box, Row } from '@trezor/components';
 
 import { ASSET_ROW_HEIGHT } from '../../constants';
@@ -10,8 +8,6 @@ type ItemClickableContainerProps = {
 };
 
 export function ItemClickableContainer({ children, onClick }: ItemClickableContainerProps) {
-    const theme = useTheme();
-
     return (
         <Box
             borderRadius={10}
@@ -24,7 +20,7 @@ export function ItemClickableContainer({ children, onClick }: ItemClickableConta
             }}
             as="button"
             cursor="pointer"
-            backgroundColorOnInteraction={theme.backgroundTertiaryPressedOnElevation0}
+            backgroundColorOnInteraction="stateFillElementGhostHovered"
         >
             <Row justifyContent="space-between" gap={12} height="100%">
                 {children}

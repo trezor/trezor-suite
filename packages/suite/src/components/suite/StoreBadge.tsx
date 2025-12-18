@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { Box, Image, Row } from '@trezor/components';
-import { paletteV2 } from '@trezor/theme';
 
 import { TrezorLink } from './TrezorLink';
 
@@ -31,7 +30,7 @@ export const StoreBadge = ({ url, image, isHighlighted, onClick }: StoreBadgePro
                 padding={{ vertical: 8, horizontal: 12 }}
                 cursor="pointer"
                 borderRadius={8}
-                backgroundColor={paletteV2.lightNeutralGrey100}
+                backgroundColor="baseFillElementNeutralSoft"
                 onMouseLeave={onMouseLeave}
             >
                 <Row alignItems="center">

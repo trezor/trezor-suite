@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevices } from '@suite-common/wallet-core';
@@ -15,7 +13,6 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const theme = useTheme();
     const dispatch = useDispatch();
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
@@ -54,7 +51,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
                     onCancel={cancelable ? onCancel : undefined}
                 />
             ))}
-            <Box backgroundColor={theme.backgroundSurfaceElevation1} borderRadius={12}>
+            <Box backgroundColor="backgroundSurfaceElevation1" borderRadius={12}>
                 <Button
                     intent="neutral"
                     priority="secondary"

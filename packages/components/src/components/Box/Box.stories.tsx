@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 
-import { borders } from '@trezor/theme';
+import { borders, colorVariants } from '@trezor/theme';
 
 import { Box as BoxComponent, allowedBoxFrameProps } from './Box';
 import { getFramePropsStory } from '../../utils/frameProps';
@@ -27,10 +27,28 @@ export const Box: StoryObj<typeof BoxComponent> = {
         ...getFramePropsStory(allowedBoxFrameProps).args,
         width: '300px',
         height: '300px',
+        backgroundColor: undefined,
+        backgroundColorOnInteraction: undefined,
+        borderColor: undefined,
     },
     argTypes: {
         backgroundColor: {
-            control: 'color',
+            control: {
+                type: 'select',
+            },
+            options: Object.keys(colorVariants.standard),
+        },
+        backgroundColorOnInteraction: {
+            control: {
+                type: 'select',
+            },
+            options: Object.keys(colorVariants.standard),
+        },
+        borderColor: {
+            control: {
+                type: 'select',
+            },
+            options: Object.keys(colorVariants.standard),
         },
         borderWidth: {
             control: 'select',
