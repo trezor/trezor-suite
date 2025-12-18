@@ -60,7 +60,11 @@ export type MMKVStorageDep = { mmkvStorage: Storage };
 
 type CreateMMKVStorageDeps = EnsureMMKVKeyDep;
 
-export const createMMKVStorage = (deps: CreateMMKVStorageDeps): Storage => {
+type GetMMKVRaw = {
+    getMMKV: () => Promise<MMKV>;
+};
+
+export const createMMKVStorage = (deps: CreateMMKVStorageDeps): Storage & GetMMKVRaw => {
     let mmkvAndKey: { mmkv: MMKV; encryptionKey: string } | null = null;
 
     const ensureMMKV = async () => {
@@ -85,6 +89,7 @@ export const createMMKVStorage = (deps: CreateMMKVStorageDeps): Storage => {
     };
 
     return {
+        getMMKV: async () => (await ensureMMKV()).mmkv,
         setItem: async (key, value) => {
             (await ensureMMKV()).mmkv.set(key, value);
 
