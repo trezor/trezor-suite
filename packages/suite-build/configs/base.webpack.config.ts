@@ -102,7 +102,7 @@ const config: webpack.Configuration = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        cacheDirectory: true,
+                        cacheDirectory: !process.env.INSTRUMENT_CODE,
                         presets: [
                             [
                                 '@babel/preset-react',
@@ -130,6 +130,29 @@ const config: webpack.Configuration = {
                                 },
                             ],
                             ...(isDev ? ['react-refresh/babel'] : []),
+                            ...(process.env.INSTRUMENT_CODE
+                                ? [
+                                      [
+                                          'istanbul',
+                                          {
+                                              cwd: resolve(__dirname, '../../../'),
+                                              include: [
+                                                  'packages/*/src/**/*',
+                                                  'suite-common/*/src/**/*',
+                                              ],
+                                              exclude: [
+                                                  '**/*.test.{ts,tsx,js,jsx}',
+                                                  '**/*.spec.{ts,tsx,js,jsx}',
+                                                  '**/__tests__/**',
+                                                  '**/tests/**',
+                                                  '**/test/**',
+                                                  '**/e2e/**',
+                                              ],
+                                              extension: ['.js', '.jsx', '.ts', '.tsx'],
+                                          },
+                                      ],
+                                  ]
+                                : []),
                         ],
                     },
                 },
