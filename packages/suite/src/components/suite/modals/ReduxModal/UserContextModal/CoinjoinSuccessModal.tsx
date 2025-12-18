@@ -64,7 +64,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
                     </Modal.Button>
                 </>
             }
-            size="small"
+            width={600}
             iconName="arrowsIn"
         >
             <Column gap={spacings.xxs}>

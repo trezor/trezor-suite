@@ -10,7 +10,8 @@ import {
     useBuildTradingAssetOptions,
 } from './hooks/useBuildTradingAssetOptions';
 
-const LIST_HEIGHT = 620;
+const LIST_HEIGHT = 530;
+
 export interface AssetListWrapperProps {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
@@ -38,6 +39,7 @@ export const AssetListWrapper = memo(function AssetListWrapperInner({
         <AssetsListEmpty
             isEmpty={listItems.length === 0}
             heading="TR_ASSET_PICKER_SEARCH_NO_RESULTS"
+            description="TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION"
             height={LIST_HEIGHT}
         >
             <AssetsList

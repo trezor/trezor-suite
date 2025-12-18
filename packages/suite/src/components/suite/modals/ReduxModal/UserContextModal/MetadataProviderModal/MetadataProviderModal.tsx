@@ -51,7 +51,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
         <Modal
             onCancel={onModalCancel}
             data-testid="@modal/metadata-provider"
-            size="small"
+            width={600}
             iconName="tag"
             bottomContent={
                 <>

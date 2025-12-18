@@ -32,7 +32,7 @@ type GlobalSendModalProps = {
     onSubmit: (account: Account, filledSearch: boolean) => void;
 };
 
-const LIST_HEIGHT = 500;
+const LIST_HEIGHT = 480;
 
 export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const dispatch = useDispatch();

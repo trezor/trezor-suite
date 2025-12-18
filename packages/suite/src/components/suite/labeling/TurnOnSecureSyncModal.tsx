@@ -23,7 +23,7 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
             heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
             description={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION" />}
             onCancel={onClose}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={onSwitch}>

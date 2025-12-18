@@ -8,7 +8,7 @@ type BackgroundGalleryModalProps = {
 };
 
 export const BackgroundGalleryModal = ({ onCancel }: BackgroundGalleryModalProps) => (
-    <Modal heading={<Translation id="TR_HOMESCREEN_GALLERY" />} onCancel={onCancel} size="small">
+    <Modal heading={<Translation id="TR_HOMESCREEN_GALLERY" />} onCancel={onCancel} width={600}>
         <Card>
             <HomescreenGallery />
         </Card>

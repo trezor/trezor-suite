@@ -31,7 +31,7 @@ const AutoEjectConfirmationModal = ({
         <Modal
             heading={<Translation id="TR_AUTO_EJECT_CONFIRMATION_TITLE" />}
             onCancel={onCancel}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={handleConfirmClick} data-testid="@log/export-button">

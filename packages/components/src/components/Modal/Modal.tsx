@@ -16,8 +16,7 @@ import { ModalBackdrop } from './ModalBackdrop';
 import { ModalButton } from './ModalButton';
 import { ModalContext } from './ModalContext';
 import { ModalProvider } from './ModalProvider';
-import { ModalAlignment, ModalSize, ModalVariant } from './types';
-import { mapModalSizeToWidth } from './utils';
+import { ModalAlignment, ModalVariant, ModalWidth } from './types';
 import { FrameProps, FramePropsKeys, Padding } from '../../utils/frameProps';
 import { useScrollShadow } from '../../utils/useScrollShadow';
 import { Box } from '../Box/Box';
@@ -61,7 +60,7 @@ type ModalProps = AllowedFrameProps & {
     onCancel?: () => void;
     isBackdropCancelable?: boolean;
     alignment?: ModalAlignment;
-    size?: ModalSize;
+    width?: ModalWidth;
     iconName?: IconName;
     'data-testid'?: string;
     padding?: Padding;
@@ -71,7 +70,7 @@ type ModalProps = AllowedFrameProps & {
 const InnerModalBase = ({
     children,
     variant,
-    size = 'medium',
+    width = 680,
     heading,
     description,
     bottomContent,
@@ -97,7 +96,7 @@ const InnerModalBase = ({
     });
 
     return (
-        <Box maxWidth="95%" maxHeight="85vh" width={mapModalSizeToWidth(size)} height={height}>
+        <Box maxWidth="95%" maxHeight="85vh" width={width} height={height}>
             <Container $elevation={elevation} data-testid={dataTest} id={MODAL_CONTENT_ID}>
                 <Column height="100%">
                     {hasHeader && (
@@ -209,4 +208,4 @@ Modal.Provider = ModalProvider;
 Modal.ModalBase = ModalBase;
 
 export { Modal, MODAL_CONTENT_ID };
-export type { ModalProps, ModalSize };
+export type { ModalProps, ModalWidth };

@@ -116,7 +116,7 @@ export const FirmwareModal = ({
             case 'started':
                 if (isProgressCheckDisplayed) {
                     return (
-                        <Modal size="large">
+                        <Modal width={760}>
                             <FirmwareInstallationProgressCheck
                                 handleDismiss={handleDismissProgressCheck}
                             />

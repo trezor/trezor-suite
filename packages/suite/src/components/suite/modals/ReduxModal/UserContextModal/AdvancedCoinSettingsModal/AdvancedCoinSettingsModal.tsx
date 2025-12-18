@@ -82,7 +82,7 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 </Text>
             }
             description={<Translation id="SETTINGS_BACKEND_SETTINGS_DESCRIPTION" />}
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

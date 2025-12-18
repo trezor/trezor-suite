@@ -45,7 +45,7 @@ export const PassphraseOnDeviceModal = ({ device }: PassphraseOnDeviceModalProps
                 deviceUnitColor={device?.features?.unit_color}
                 onCancel={onCancel}
             />
-            <Modal.ModalBase size="tiny" data-testid="@modal/enter-passphrase-on-device">
+            <Modal.ModalBase width={400} data-testid="@modal/enter-passphrase-on-device">
                 <ImageWrapper>
                     <DeviceConfirmImage device={device} />
                 </ImageWrapper>

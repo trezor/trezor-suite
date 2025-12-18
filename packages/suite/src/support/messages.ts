@@ -11039,4 +11039,8 @@ export default defineMessages({
         id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS',
         defaultMessage: 'No coin or token found',
     },
+    TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION: {
+        id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION',
+        defaultMessage: 'Check the spelling or browse the list to select an option.',
+    },
 } as const);

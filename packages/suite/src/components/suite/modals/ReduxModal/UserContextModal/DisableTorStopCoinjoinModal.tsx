@@ -28,7 +28,7 @@ export const DisableTorStopCoinjoinModal = ({
             onCancel={onKeepRunningTor}
             heading={<Translation id="TR_TOR_DISABLE" />}
             variant="warning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button onClick={onStopRunningTor}>

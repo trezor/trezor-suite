@@ -79,7 +79,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                 };
 
                 return {
-                    size: 'small',
+                    width: 600,
                     children: (
                         <MultiShareBackupStep1
                             isChecked1={isChecked1}

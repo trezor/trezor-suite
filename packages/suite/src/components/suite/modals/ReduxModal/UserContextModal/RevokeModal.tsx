@@ -145,7 +145,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         <Modal
             onCancel={() => onClose()}
             variant="primary"
-            size="small"
+            width={600}
             heading={
                 <Translation
                     id="TR_EXCHANGE_APPROVAL_REVOKE_TOKEN_SPENDING"

@@ -18,7 +18,7 @@ export const MoreRoundsNeededModal = () => {
                     <Translation id="TR_CLOSE" />
                 </Modal.Button>
             }
-            size="small"
+            width={600}
             iconName="arrowsIn"
             variant="info"
         >

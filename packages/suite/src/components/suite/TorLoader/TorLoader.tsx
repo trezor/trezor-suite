@@ -104,7 +104,7 @@ export const TorLoader = ({ callback }: TorLoadingScreenProps) => {
         <Modal
             variant="info"
             iconName="torBrowser"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     {!isDisabling && (

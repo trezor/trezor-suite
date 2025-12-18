@@ -217,7 +217,7 @@ export const ApproveModal = ({
         <Modal
             onCancel={() => onClose()}
             variant="primary"
-            size="small"
+            width={600}
             heading={
                 <Translation
                     id="TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING"

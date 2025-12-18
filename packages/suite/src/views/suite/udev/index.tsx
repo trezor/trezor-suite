@@ -101,7 +101,7 @@ export const UdevRules = ({ onCancel }: ForegroundAppProps) => {
                     </Modal.Button>
                 </>
             }
-            size="small"
+            width={600}
         >
             <Column gap={spacings.sm}>
                 <Paragraph variant="tertiary">

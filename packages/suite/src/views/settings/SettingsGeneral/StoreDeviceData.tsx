@@ -51,7 +51,7 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
             onCancel={onCancel}
             heading={<Translation id="TR_STORE_DEVICE_DATA_MODAL_TITLE" />}
             variant="warning"
-            size="small"
+            width={600}
             bottomContent={
                 <>
                     <Modal.Button

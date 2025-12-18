@@ -21,7 +21,7 @@ export const ConfirmFingerprintModal = ({ device }: ConfirmFingerprintProps) => 
         <Modal.ModalBase
             heading={<Translation id="TR_CHECK_FINGERPRINT" />}
             data-testid="@suite/modal/confirm-fingerprint-on-device"
-            size="tiny"
+            width={400}
         >
             <Card>
                 <Fingerprint device={device} />

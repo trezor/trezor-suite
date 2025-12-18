@@ -47,7 +47,7 @@ export const ConnectSelectDeviceModal = () => {
         <ConnectModalBackdrop>
             <Modal.ModalBase
                 variant="primary"
-                size="tiny"
+                width={400}
                 onCancel={onCancel}
                 heading={
                     <Translation

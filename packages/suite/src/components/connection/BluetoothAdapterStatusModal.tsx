@@ -66,7 +66,7 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
     return (
         <Modal
             heading={<Translation id={status.title} />}
-            size="small"
+            width={600}
             onCancel={onCancel}
             bottomContent={
                 <>

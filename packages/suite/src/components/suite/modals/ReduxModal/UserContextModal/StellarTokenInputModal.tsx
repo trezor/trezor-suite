@@ -60,7 +60,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
 
     return (
         <Modal
-            size="small"
+            width={600}
             onCancel={onCancel}
             heading={<Translation id="TR_ACTIVATE_TOKEN_MANUALLY" />}
             bottomContent={

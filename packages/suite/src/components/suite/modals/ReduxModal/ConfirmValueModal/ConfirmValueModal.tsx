@@ -147,7 +147,7 @@ export const ConfirmValueModal = ({
                     )
                 }
                 onCancel={onCancel}
-                size="small"
+                width={600}
             >
                 <Column gap={spacings.md}>
                     {!device?.connected && (

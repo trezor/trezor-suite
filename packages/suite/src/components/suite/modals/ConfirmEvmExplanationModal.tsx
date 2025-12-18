@@ -87,7 +87,7 @@ export const ConfirmEvmExplanationModal = ({
                     <Translation id="TR_GOT_IT_BUTTON" />
                 </Modal.Button>
             }
-            size="small"
+            width={600}
             heading={
                 <Translation
                     id={titleTranslationsIds[route]}
