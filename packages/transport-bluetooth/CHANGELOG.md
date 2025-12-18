@@ -1,5 +1,13 @@
 # Changelog
 
+### 0.4.3
+
+- feat: add linux pairing Agent and handle pairing PIN request
+- fix: linux manual unpair via https://github.com/deviceplug/btleplug/pull/446
+- fix: linux get_info when systemctl is disabled
+- fix: linux abort pairing when system UI is missing
+- fix: linux + macos, wait for missing characteristics
+
 ### 0.4.2
 
 - added open_device/close_device characteristics param
