@@ -22,6 +22,7 @@ import { DebugModeCopyableText } from '@suite-native/trading-debug';
 import { tradingActions } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { useProviderWebViewLifecycle } from '../hooks/general/providerConfirmation/useProviderWebViewLifecycle';
 import { useTradingAnalyticReportCallback } from '../hooks/general/useTradingAnalyticReportCallback';
 import { useWatchTrade } from '../hooks/general/useWatchTrade';
 import { doesUrlContainCloseCallbackUrl } from '../utils/general/utils';
@@ -38,6 +39,8 @@ export const TradingWebViewScreen = () => {
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
     const receivedDeeplinkUrl = useLinkingURL();
+    const { handleWebViewSuccess } = useProviderWebViewLifecycle(tradingType);
+
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId ?? ''),
     );
@@ -69,6 +72,9 @@ export const TradingWebViewScreen = () => {
                 if (orderId && tradingType === 'buy') {
                     dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
                 }
+                if (tradingType === 'sell') {
+                    handleWebViewSuccess();
+                }
                 navigation.goBack();
 
                 return false;
@@ -76,7 +82,7 @@ export const TradingWebViewScreen = () => {
 
             return true;
         },
-        [closeCallbackUrl, dispatch, navigation, orderId, tradingType],
+        [closeCallbackUrl, dispatch, navigation, orderId, tradingType, handleWebViewSuccess],
     );
 
     useEffect(() => {
