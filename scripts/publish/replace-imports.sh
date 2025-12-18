@@ -24,8 +24,27 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ "$2" == "esm" ]; then
     BABEL_CONFIG="$SCRIPT_DIR/babel.config.esm.json"
+    LIB_DIR="libESM"
 else
     BABEL_CONFIG="$SCRIPT_DIR/babel.config.cjs.json"
+    LIB_DIR="lib"
 fi
 
+# Transform .js files using Babel
 yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$BABEL_CONFIG"
+
+# Determine the operating system
+OS="$(uname)"
+
+# Transform .d.ts files using sed
+# It should be possible to solve this using babel but babel needs @babel/preset-typescript to parse .d.ts files
+# and that preset there is the risk of stripping type declarations, which would break .d.ts files.
+# Using sed is faster and it just works.
+ # Execute the appropriate command based on the OS 
+ if [[ "$OS" == "Darwin" ]]; then
+    # macOS command with -i '' for in-place editing without backup and -E for extended regex 
+    find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src|@trezor/\1/${LIB_DIR}|g" {} +
+else
+    # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex 
+    find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/${LIB_DIR}|g" {} +
+fi
