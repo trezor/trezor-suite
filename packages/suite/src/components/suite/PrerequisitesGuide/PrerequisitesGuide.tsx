@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     deviceNeedsAttention,
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Column, Paragraph, Text, motionEasing } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceWithScene } from '@trezor/product-components';
 
 import { getMessageId } from 'src/components/suite';
@@ -47,7 +47,7 @@ const BottomAnimation = ({ children }: { children: React.ReactNode }) => (
 const DeviceImage = ({ selectedDevice }: { selectedDevice: TrezorDevice | undefined }) => {
     const selectedDeviceModelInternal = selectedDevice
         ? getDeviceInternalModel(selectedDevice)
-        : DEFAULT_FLAGSHIP_MODEL;
+        : DeviceModelInternal.T1B1;
 
     return (
         <Box margin={{ top: 40, bottom: 60 }}>

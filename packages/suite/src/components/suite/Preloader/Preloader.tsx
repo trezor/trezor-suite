@@ -1,6 +1,5 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
-import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
 
@@ -22,7 +21,6 @@ import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { selectShouldDisplayDeviceCompromisedOnRoute } from './selectShouldDisplayDeviceCompromisedOnRoute';
-import { AnalyticsConsentScreen } from '../../../views/start/AnalyticsConsentScreen';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
@@ -50,7 +48,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     const shouldDisplayDeviceCompromisedOnRoute = useSelector(
         selectShouldDisplayDeviceCompromisedOnRoute,
     );
-    const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
 
     const { device } = useDevice();
     useReportDeviceCompromised({ device });
@@ -66,18 +63,12 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     }, [dispatch]);
 
     useEffect(() => {
-        if (isAnalyticsConsentConfirmed) {
-            dispatch(init());
-        }
-    }, [dispatch, isAnalyticsConsentConfirmed]);
+        dispatch(init());
+    }, [dispatch]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();
     useWindowVisibility();
-
-    if (!isAnalyticsConsentConfirmed) {
-        return <AnalyticsConsentScreen />;
-    }
 
     if (lifecycle.status === 'error') {
         throw new Error(lifecycle.error);

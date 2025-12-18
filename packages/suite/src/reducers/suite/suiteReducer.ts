@@ -207,7 +207,7 @@ const initialState: SuiteState = {
         sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
         isCoinsFilterVisible: false,
         suiteSyncRelayUrl: null,
-        autoEject: false,
+        autoEject: true,
     },
     recentlyConnectedDeviceRef: null,
     recentlyDisconnectedDevice: null,

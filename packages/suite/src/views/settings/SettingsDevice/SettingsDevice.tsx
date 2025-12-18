@@ -1,8 +1,6 @@
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
-import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/wallet-core';
-import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -15,32 +13,15 @@ import type { TrezorDevice } from 'src/types/suite';
 import { getHowToGetFromBootloaderInstructionsMap } from 'src/utils/device/bootloader';
 import { isRecoveryInProgress } from 'src/utils/device/isRecoveryInProgress';
 
-import { AuthenticateDevice } from './AuthenticateDevice';
-import { AutoLock } from './AutoLock';
 import { BackupFailed } from './BackupFailed';
 import { BackupRecoverySeed } from './BackupRecoverySeed';
-import { BluetoothEraseBonds } from './BluetoothEraseBonds';
-import { Brightness } from './Brightness';
-import { ChangeLanguage } from './ChangeLanguage';
 import { ChangePin } from './ChangePin';
 import { CheckRecoverySeed } from './CheckRecoverySeed';
-import { CustomFirmware } from './CustomFirmware';
-import { DeviceAuthenticityOptOut } from './DeviceAuthenticityOptOut';
 import { DeviceLabel } from './DeviceLabel';
-import { DisplayRotation } from './DisplayRotation';
-import { FirmwareAuthenticityChecks } from './FirmwareAuthenticityChecks';
-import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
-import { ForgetDevice } from './ForgetDevice';
-import { HapticFeedback } from './HapticFeedback';
-import { Homescreen } from './Homescreen';
 import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
-import { SafetyChecks } from './SafetyChecks';
-import { ThpAutoconnect } from './ThpAutoconnect';
-import { WipeCode } from './WipeCode';
-import { WipeDevice } from './WipeDevice/WipeDevice';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice) => {
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
@@ -61,8 +42,6 @@ export const SettingsDevice = () => {
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const isDeviceConnectedViaBluetooth = useSelector(selectIsDeviceConnectedViaBluetooth);
-    const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
 
     if (noTransportAvailable || deviceSettingsUnavailable(device)) {
         return (
@@ -87,11 +66,7 @@ export const SettingsDevice = () => {
         );
     }
 
-    const {
-        unfinished_backup: unfinishedBackup,
-        pin_protection: pinProtection,
-        safety_checks: safetyChecks,
-    } = device.features;
+    const { unfinished_backup: unfinishedBackup, pin_protection: pinProtection } = device.features;
 
     const deviceModelInternal = device.features.internal_model;
 
@@ -99,8 +74,6 @@ export const SettingsDevice = () => {
     // because Device authenticity check is something you can (and have to) do on a device with FW but without seed
     const isSecuritySectionVisible =
         isNormalMode || (initializeMode && supportsDeviceAuthentication);
-
-    const isThpDevice = device?.thp !== undefined;
 
     const bootloaderDescription = getHowToGetFromBootloaderInstructionsMap({ deviceModelInternal });
 
@@ -145,10 +118,6 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="puzzlePiece">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
-                {(!bootloaderMode || bitcoinOnlyDevice) && (
-                    <FirmwareTypeChange isDeviceLocked={isDeviceLocked} />
-                )}
-                <ChangeLanguage isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
             {isSecuritySectionVisible && (
@@ -157,11 +126,7 @@ export const SettingsDevice = () => {
                         <>
                             <PinProtection isDeviceLocked={isDeviceLocked} />
                             {pinProtection && <ChangePin isDeviceLocked={isDeviceLocked} />}
-                            {safetyChecks && <SafetyChecks isDeviceLocked={isDeviceLocked} />}
                         </>
-                    )}
-                    {supportsDeviceAuthentication && (
-                        <AuthenticateDevice isDeviceLocked={isDeviceLocked} />
                     )}
                 </SettingsSection>
             )}
@@ -169,29 +134,8 @@ export const SettingsDevice = () => {
             {isNormalMode && (
                 <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="palette">
                     <DeviceLabel isDeviceLocked={isDeviceLocked} />
-                    <Homescreen isDeviceLocked={isDeviceLocked} />
-                    <DisplayRotation isDeviceLocked={isDeviceLocked} />
-                    <Brightness isDeviceLocked={isDeviceLocked} />
-                    <HapticFeedback isDeviceLocked={isDeviceLocked} />
-                    {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                 </SettingsSection>
             )}
-
-            <SettingsSection title={<Translation id="TR_DEVICE_CONNECTION" />} icon="plugs">
-                {isThpDevice && <ThpAutoconnect isDeviceLocked={isDeviceLocked} />}
-                {isDeviceConnectedViaBluetooth && (
-                    <BluetoothEraseBonds isDeviceLocked={isDeviceLocked} />
-                )}
-                <ForgetDevice />
-            </SettingsSection>
-
-            <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="ghost">
-                <WipeDevice isDeviceLocked={isDeviceLocked} />
-                {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
-                <CustomFirmware />
-                {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
-                <FirmwareAuthenticityChecks />
-            </SettingsSection>
         </SettingsLayout>
     );
 };

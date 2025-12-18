@@ -45,7 +45,9 @@ export const CoinGroup = ({ networks, enabledNetworks }: CoinGroupProps) => {
                 toggleSettingsMode={toggleSettingsMode}
             />
             <CoinList
-                networks={networks}
+                networks={networks.filter(network =>
+                    ['btc', 'ltc', 'eth', 'doge', 'bcash', 'zec'].includes(network.symbol),
+                )}
                 enabledNetworks={enabledNetworks}
                 settingsMode={settingsMode}
                 onToggle={settingsMode ? onSettings : onToggle}

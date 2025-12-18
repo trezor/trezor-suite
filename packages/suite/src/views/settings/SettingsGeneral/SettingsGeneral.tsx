@@ -1,10 +1,6 @@
 import { Context } from '@suite-common/message-system';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    selectEnabledNetworks,
-    selectIsMevProtectionSettingsVisible,
-    selectIsNetworkReserveSettingsVisible,
-} from '@suite-common/wallet-core';
+import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -23,11 +19,7 @@ import {
 } from 'src/selectors/suite/suiteSelectors';
 import { TorStatus } from 'src/types/suite';
 
-import { AddressDisplay } from './AddressDisplay';
-import { Analytics } from './Analytics';
 import { AutoEject } from './AutoEject';
-import { AutoStart } from './AutoStart';
-import { AutomaticUpdate } from './AutomaticUpdate';
 import { BaseCurrency } from './BaseCurrency';
 import { BioAuthSettings } from './BioAuthSettings';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
@@ -35,16 +27,10 @@ import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
-import { EarlyAccess } from './EarlyAccess';
-import { Experimental } from './Experimental';
 import { Labeling } from './Labeling';
 import { Language } from './Language';
-import { MevProtection } from './MevProtection';
-import { NetworkReserve } from './NetworkReserve';
 import { ShowApplicationLog } from './ShowApplicationLog';
-import { ShowOnTray } from './ShowOnTray';
 import { StoreDeviceData } from './StoreDeviceData';
-import { Theme } from './Theme';
 import { Tor } from './Tor';
 import { TorExternal } from './TorExternal';
 import { TorOnionLinks } from './TorOnionLinks';
@@ -58,7 +44,6 @@ export const SettingsGeneral = () => {
     const { isTorEnabled } = useSelector(selectTorState);
     const torStatus = useSelector(state => state.suite.torStatus);
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const desktopUpdate = useSelector(state => state.desktopUpdate);
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const { isBelowTablet } = useLayoutSize();
 
@@ -73,8 +58,6 @@ export const SettingsGeneral = () => {
     );
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
-    const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
-    const isNetworkReserveSettingsVisible = useSelector(selectIsNetworkReserveSettingsVisible);
 
     return (
         <SettingsLayout data-testid="@settings/index">
@@ -116,37 +99,9 @@ export const SettingsGeneral = () => {
             </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_APPLICATION" />} icon="appWindow">
-                <Theme />
-                <AddressDisplay />
-                <Analytics />
                 <ShowApplicationLog />
                 <ClearStorage />
-                <AutomaticUpdate />
                 <VersionWithUpdate />
-            </SettingsSection>
-
-            {isMevProtectionSettingsVisible && (
-                <SettingsSection title={<Translation id="TR_SECURITY" />} icon="shield">
-                    <MevProtection />
-                </SettingsSection>
-            )}
-
-            {isNetworkReserveSettingsVisible && (
-                <SettingsSection title={<Translation id="TR_NETWORKS" />} icon="graph">
-                    <NetworkReserve />
-                </SettingsSection>
-            )}
-
-            {isDesktop() && (
-                <SettingsSection title={<Translation id="TR_TREZOR_CONNECT" />} icon="plugs">
-                    <AutoStart />
-                    <ShowOnTray />
-                </SettingsSection>
-            )}
-
-            <SettingsSection title={<Translation id="TR_EXPERIMENTAL_FEATURES" />} icon="atom">
-                {desktopUpdate.enabled && <EarlyAccess />}
-                <Experimental />
             </SettingsSection>
         </SettingsLayout>
     );

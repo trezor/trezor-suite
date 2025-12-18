@@ -50,13 +50,6 @@ const SettingsHeader = () => {
                 callback: () => dispatch(goto('settings-coins', { preserveParams: true })),
             },
             {
-                id: 'settings-connected-apps',
-                title: <Translation id="TR_CONNECTED_APPS" />,
-                position: 'primary',
-                'data-testid': '@settings/menu/connected-apps',
-                callback: () => dispatch(goto('settings-connected-apps', { preserveParams: true })),
-            },
-            {
                 id: 'settings-debug',
                 title: <Translation id="TR_DEBUG_SETTINGS" />,
                 position: 'primary',
