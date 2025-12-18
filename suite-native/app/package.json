@@ -103,7 +103,7 @@
         "@whatwg-node/events": "0.1.2",
         "abortcontroller-polyfill": "1.7.8",
         "event-target-shim": "6.0.2",
-        "expo": "~54.0.13",
+        "expo": "~54.0.25",
         "expo-build-properties": "~1.0.9",
         "expo-camera": "~17.0.8",
         "expo-clipboard": "~8.0.7",
