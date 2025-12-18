@@ -26,7 +26,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "jws": "^4.0.0"
+        "jws": "^4.0.1"
     },
     "devDependencies": {
         "@trezor/device-utils": "workspace:^"

@@ -99,13 +99,13 @@
         "bs58check": "^4.0.0",
         "cbor": "^10.0.10",
         "cross-fetch": "^4.1.0",
-        "jws": "^4.0.0"
+        "jws": "^4.0.1"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
-        "@types/jws": "^3.2.10",
+        "@types/jws": "^3.2.11",
         "@types/karma": "^6.3.9",
         "@types/node-fetch": "^2.6.12",
         "babel-loader": "^10.0.0",
