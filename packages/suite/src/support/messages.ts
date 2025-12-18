@@ -313,7 +313,7 @@ export default defineMessages({
         id: 'TR_CHECKED_BALANCES_ON',
     },
     TR_ALL_NETWORKS: {
-        defaultMessage: 'All networks ({networkCount})',
+        defaultMessage: 'All networks',
         id: 'TR_ALL_NETWORKS',
     },
     TR_ALL_NETWORKS_TOOLTIP: {

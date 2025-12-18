@@ -39,9 +39,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
                     selectedNetwork: networkFilter,
                     onChange: setNetworkFilter,
                     includeAllOption: true,
-                    allLabel: translationString('TR_ALL_NETWORKS', {
-                        networkCount: networks.length,
-                    }),
+                    allLabel: translationString('TR_ALL_NETWORKS'),
                 }}
                 data-testid="@trading/form/select-crypto/search"
             />
