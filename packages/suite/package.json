@@ -26,7 +26,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@noble/hashes": "^2.0.1",
         "@reduxjs/toolkit": "2.11.0",
-        "@sentry/core": "10.17.0",
+        "@sentry/core": "10.27.0",
         "@solana/kit": "^2.3.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/assets": "workspace:*",
