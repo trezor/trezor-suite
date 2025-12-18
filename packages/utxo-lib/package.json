@@ -23,7 +23,7 @@
     "main": "./src/index.ts",
     "files": [
         "lib/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "publishConfig": {
         "main": "./lib/index.js",

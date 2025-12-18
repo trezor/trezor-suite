@@ -9,7 +9,7 @@
     },
     "files": [
         "lib/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",

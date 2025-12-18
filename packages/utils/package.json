@@ -59,7 +59,7 @@
     "files": [
         "lib/",
         "libESM/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest --verbose -c ./jest.config.js",

@@ -28,7 +28,7 @@
     "files": [
         "lib/",
         "libESM/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",

@@ -32,7 +32,7 @@
     "files": [
         "lib/",
         "libESM/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "peerDependencies": {
         "@stellar/stellar-sdk": "^13.3.0",

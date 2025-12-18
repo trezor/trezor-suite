@@ -22,7 +22,7 @@
     "files": [
         "lib/",
         "!lib/ui",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "main": "src/index.ts",
     "browser": {

@@ -25,7 +25,7 @@
     },
     "files": [
         "lib/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "predev": "node webpack/generate_dev_cert.js",
