@@ -121,7 +121,6 @@ export function Menu({
         ethereum: 'eth',
         litecoin: 'ltc',
         monero: 'xmr',
-        nem: 'nem',
         ripple: 'xrp',
         solana: 'sol',
         stellar: 'xlm',

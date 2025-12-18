@@ -524,27 +524,6 @@ const rippleSignTransaction = [
     },
 ];
 
-const nemGetAddress = [
-    {
-        ...getAddress[0],
-        dir: 'nem',
-        url: 'nemGetAddress',
-        views: [
-            confirmExportAddressScreen,
-            getConfirmAddressOnDeviceScreen('ND7FI2VK7ZRCPDRUII62XL567V72IPO5CALURY6D'),
-        ],
-    },
-];
-
-const nemSignTransaction = [
-    {
-        device: initializedDevice,
-        dir: 'nem',
-        url: 'nemSignTransaction',
-        views: [confirmOutput, confirmOutput, confirmOutput, followDevice],
-    },
-];
-
 const cipherKeyValue = [
     {
         dir: 'other',
@@ -582,8 +561,6 @@ export const fixtures = [
     // ...stellarSignTransaction,
     ...rippleGetAddress,
     ...rippleSignTransaction,
-    ...nemGetAddress,
-    ...nemSignTransaction,
     ...cipherKeyValue,
     // balance dependent tests
     // these are using masked seed in github CI

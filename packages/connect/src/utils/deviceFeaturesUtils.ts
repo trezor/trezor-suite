@@ -84,9 +84,6 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
         if (info.type === 'ethereum') {
             return !capabilities.includes('Capability_Ethereum');
         }
-        if (info.type === 'nem') {
-            return !capabilities.includes('Capability_NEM');
-        }
         // misc
         if (info.shortcut === 'BNB' && info.type === 'misc') {
             return !capabilities.includes('Capability_Binance');

@@ -16,7 +16,6 @@ const feeLevelsPerTypeFactory = (coinInfo: CoinInfo): MiscFeeLevels => {
         case 'ethereum':
             return new EthereumFeeLevels(coinInfo);
         case 'misc':
-        case 'nem':
             return new MiscFeeLevels(coinInfo);
         default:
             return exhaustive(type);

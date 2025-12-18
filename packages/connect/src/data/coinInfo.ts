@@ -211,11 +211,11 @@ const parseEthereumNetworksJson = (json: any) => {
     });
 };
 
-const parseMiscNetworksJSON = (json: any, type?: 'misc' | 'nem') => {
+const parseMiscNetworksJSON = (json: any) => {
     Object.keys(json).forEach(key => {
         const network = json[key];
         miscNetworks.push({
-            type: type || 'misc',
+            type: 'misc',
             blockchainLink: network.blockchain_link,
             curve: network.curve,
             label: network.name,
@@ -238,8 +238,6 @@ export const parseCoinsJson = (json: any) => {
                 return parseEthereumNetworksJson(json[key]);
             case 'misc':
                 return parseMiscNetworksJSON(json[key]);
-            case 'nem':
-                return parseMiscNetworksJSON(json[key], 'nem');
             // no default
         }
     });

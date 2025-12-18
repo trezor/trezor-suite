@@ -5,7 +5,6 @@ import eos from './eos';
 import ethereum from './ethereum';
 import management from './management';
 import monero from './monero/index';
-import nem from './nem/index';
 import other from './other';
 import ripple from './ripple/index';
 import solana from './solana';
@@ -17,7 +16,6 @@ export default [
     ...ethereum,
     ...ripple,
     ...stellar,
-    ...nem,
     ...cardano,
     ...tezos,
     ...eos,

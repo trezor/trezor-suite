@@ -68,11 +68,6 @@ const groups = {
         includeFilter:
             'moneroGetAddress,moneroGetWatchKey,moneroKeyImageSync,moneroSignTransaction',
     },
-    nem: {
-        name: 'nem',
-        pattern: 'methods',
-        includeFilter: 'nemGetAddress,nemSignTransaction',
-    },
     ripple: {
         name: 'ripple',
         pattern: 'methods',
@@ -117,7 +112,7 @@ const inputs = [
                 if (group.name === 'thp') {
                     return firmware !== '2.3.0' && model === 'T3W1';
                 }
-                if (['nem', 'eos'].includes(group.name)) {
+                if (['eos'].includes(group.name)) {
                     return !['T3W1', 'T3T1', 'T3B1'].includes(model);
                 }
                 return true;
