@@ -49,7 +49,7 @@
     },
     "files": [
         "lib/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "jest --version && jest",

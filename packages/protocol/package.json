@@ -17,7 +17,7 @@
     "npmPublishAccess": "public",
     "files": [
         "lib/",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",

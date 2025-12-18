@@ -21,8 +21,7 @@
     "main": "src/index",
     "files": [
         "lib/",
-        "CHANGELOG.md",
-        "!**/*.map"
+        "CHANGELOG.md"
     ],
     "publishConfig": {
         "main": "lib/index.js"
