@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2025-12-11T00:00:00+00:00",
-    "sequence": 126,
+    "timestamp": "2025-12-18T00:00:00+00:00",
+    "sequence": 127,
     "actions": [
         {
             "conditions": [
@@ -395,6 +395,38 @@
                         "pt": "Ir para trezor.io/trezor-suite",
                         "uk": "Перейти на trezor.io/trezor-suite"
                     }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "151c4f91-8bc4-4158-a7e3-c1aae2979742",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en": "Never type your wallet backup into the computer; your backup should only ever be entered directly on your Trezor device.",
+                    "es": "Nunca escriba la copia de seguridad de su monedero en el ordenador; la copia de seguridad solo debe introducirse directamente en su dispositivo Trezor.",
+                    "cs": "Nikdy nezadávejte zálohu peněženky do počítače; záloha by se měla zadávat pouze přímo na vašem zařízení Trezor.",
+                    "ru": "Никогда не вводите резервную копию кошелька на компьютере; резервную копию следует вводить только непосредственно на вашем устройстве Trezor.",
+                    "ja": "コンピューターにウォレットのバックアップを決して入力しないでください。バックアップは、Trezorデバイス上で直接入力する必要があります。",
+                    "hu": "Soha ne írja be a tárca biztonsági mentését a számítógépbe; a biztonsági mentést kizárólag a Trezor eszközön szabad megadni.",
+                    "it": "Non digitare mai il backup del wallet nel computer; il backup deve essere inserito esclusivamente sul tuo dispositivo Trezor.",
+                    "fr": "Ne saisissez jamais la sauvegarde de votre portefeuille sur l'ordinateur ; elle doit être saisie uniquement et directement sur votre appareil Trezor.",
+                    "de": "Geben Sie Ihr Wallet-Backup niemals am Computer ein; das Backup darf ausschließlich direkt auf Ihrem Trezor-Gerät eingegeben werden.",
+                    "tr": "Cüzdan yedeğinizi asla bilgisayara yazmayın; yedeğiniz yalnızca doğrudan Trezor cihazınız üzerinden girilmelidir.",
+                    "pt": "Nunca digite o backup da sua carteira no computador; o backup deve ser inserido apenas diretamente no seu dispositivo Trezor.",
+                    "uk": "Ніколи не вводьте резервну копію гаманця на комп’ютері; резервну копію слід вводити лише безпосередньо на вашому пристрої Trezor."
                 }
             }
         },
