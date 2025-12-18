@@ -55,7 +55,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
-        "expo": "~54.0.20",
+        "expo": "~54.0.25",
         "expo-haptics": "~15.0.7",
         "expo-linear-gradient": "~15.0.7",
         "expo-video": "~3.0.11",
