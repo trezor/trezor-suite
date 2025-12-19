@@ -8,12 +8,12 @@ import { DelegatedIdentityKey, TrezorDeviceWithState } from '@suite-common/suite
 import TrezorConnect from '@trezor/connect';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
-import { DEFAULT_WALLET_SIZE_QUOTA } from './constants';
+import { DEFAULT_DEVICE_SIZE_QUOTA } from './constants';
 import { quotaManagerDeviceFetched, quotaManagerFetchError } from './quotaManagerActions';
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByPublicKey } from './storage/checkStorage';
 import { registerStorageThunk } from './storage/registerStorageThunk';
-import { prepareBufferEvoluSignRegistrationRequest } from './util/prepareBufferEvoluSignRegistrationRequest';
+import { prepareMessageBufferEvoluSignRegistrationRequest } from './util/prepareMessageBufferEvoluSignRegistrationRequest';
 
 const EVOLU_SIGN_REGISTRATION_REQUEST_HEADER = 'EvoluSignRegistrationRequest';
 
@@ -80,9 +80,9 @@ export const ensureDeviceHasQuotaThunk =
         const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
-            buffer: prepareBufferEvoluSignRegistrationRequest({
+            appendMessageBuffer: prepareMessageBufferEvoluSignRegistrationRequest({
                 challenge: sessionChallenge.payload.challenge,
-                size: DEFAULT_WALLET_SIZE_QUOTA,
+                size: DEFAULT_DEVICE_SIZE_QUOTA,
             }),
         });
 
@@ -90,14 +90,14 @@ export const ensureDeviceHasQuotaThunk =
 
         const registrationRequestResult = await TrezorConnect.evoluSignRegistrationRequest({
             challenge_from_server: sessionChallenge.payload.challenge,
-            size_to_acquire: DEFAULT_WALLET_SIZE_QUOTA,
+            size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
             proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
         });
 
         if (registrationRequestResult.success) {
             dispatch(
                 registerStorageThunk({
-                    size: DEFAULT_WALLET_SIZE_QUOTA,
+                    size: DEFAULT_DEVICE_SIZE_QUOTA,
                     certificateChain: {
                         deviceCert: registrationRequestResult.payload.certificate_chain[0],
                         caCert: registrationRequestResult.payload.certificate_chain[1],

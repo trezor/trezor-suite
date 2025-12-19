@@ -26,10 +26,11 @@ export {
 export {
     selectQuotaManagerBaseUrl,
     selectIsQuotaManagerEnabled,
-    selectAssignedOwnerIds,
+    selectOwnersAllowance,
     selectRegisteredDevices,
     selectIsDeviceRegistered,
     selectHasOwnerAllowance,
+    selectHasDeviceAllowance,
 } from './quotaManagerSelectors';
 
 /**

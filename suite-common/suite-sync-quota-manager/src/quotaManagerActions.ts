@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { SuiteSyncOwnerIdHashed } from './types';
+import { WalletDescriptor } from '@suite-common/wallet-types';
 
 export const QUOTA_MANAGER_PREFIX = '@suite/quota-manager';
 
@@ -37,7 +37,7 @@ export const eraseFetchedDataDebug = createAction(`${QUOTA_MANAGER_PREFIX}/erase
 
 export const quotaManagerOwnerFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/ownerFetched`,
-    (payload: { ownerIdHash: SuiteSyncOwnerIdHashed; totalSpace: number }) => ({
+    (payload: { walletDescriptor: WalletDescriptor; totalSpace: number }) => ({
         payload,
     }),
 );

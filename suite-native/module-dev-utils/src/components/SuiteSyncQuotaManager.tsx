@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     eraseFetchedDataDebug,
     quotaManagerEnabledUpdated,
-    selectAssignedOwnerIds,
     selectIsQuotaManagerEnabled,
+    selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
@@ -21,7 +21,7 @@ export const SuiteSyncQuotaManager = () => {
     const isQuotaManagerEnabled = useSelector(selectIsQuotaManagerEnabled);
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
-    const assignedOwnerIds = useSelector(selectAssignedOwnerIds);
+    const ownersAllowance = useSelector(selectOwnersAllowance);
 
     const handleQuotaManagerEnableToggle = () =>
         dispatch(quotaManagerEnabledUpdated({ isEnabled: !isQuotaManagerEnabled }));
@@ -97,13 +97,13 @@ export const SuiteSyncQuotaManager = () => {
                     <Text variant="hint" color="textSubdued">
                         Assigned Owner IDs
                     </Text>
-                    {assignedOwnerIds.length === 0 ? (
+                    {ownersAllowance.length === 0 ? (
                         <Text>No owner IDs assigned.</Text>
                     ) : (
-                        assignedOwnerIds.map(owner => (
-                            <VStack key={owner.ownerId} spacing="sp2">
+                        ownersAllowance.map(owner => (
+                            <VStack key={owner.walletDescriptor} spacing="sp2">
                                 <Text variant="label">Owner ID</Text>
-                                <Text>{owner.ownerId}</Text>
+                                <Text>{owner.walletDescriptor}</Text>
                                 <Text variant="label">Total Space</Text>
                                 <Text>{owner.totalSpace}</Text>
                             </VStack>

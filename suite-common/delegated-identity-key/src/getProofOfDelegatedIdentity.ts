@@ -14,7 +14,7 @@ export const ProofOfDelegatedSignFailed = (caused: any): ProofOfDelegatedSignFai
 export type GetProofOfDelegatedIdentityParams = {
     delegatedKey: DelegatedIdentityKey;
     header: string;
-    buffer?: Buffer;
+    appendMessageBuffer?: Buffer;
 };
 
 type GetProofOfDelegatedIdentityResult = Result<
@@ -25,7 +25,7 @@ type GetProofOfDelegatedIdentityResult = Result<
 export const getProofOfDelegatedIdentity = ({
     delegatedKey,
     header,
-    buffer,
+    appendMessageBuffer: buffer,
 }: GetProofOfDelegatedIdentityParams): GetProofOfDelegatedIdentityResult => {
     const prefixedMessageInBuffer = Buffer.concat([
         bufferUtils.getChunkSize(header.length),

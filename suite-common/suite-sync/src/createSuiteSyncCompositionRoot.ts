@@ -2,6 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import { SuiteSync } from '@suite-common/suite-sync-types';
 import {
@@ -79,11 +80,12 @@ export const createSuiteSyncCompositionRoot = (
 
     const refreshSuiteSyncKeys = createRefreshSuiteSync({
         dispatch: deps.dispatch,
-        getState: deps.getState,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwner,
         loadSuiteSyncOwnerFromState,
         getDeviceForStaticSessionId,
+        hasAllowance: ({ walletDescriptor, deviceId }) =>
+            selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
     });
 
     const ensureStorage = createEnsureStorage({

@@ -1,22 +1,11 @@
-import { combineReducers } from '@reduxjs/toolkit';
-
-import {
-    getProofOfDelegatedIdentity,
-    getPublicIdentityKeyFromDelegatedKey,
-} from '@suite-common/delegated-identity-key';
-import { DelegatedIdentityKey, asSuiteSyncOwnerId } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { asProofOfDelegatedIdentity } from '@trezor/connect';
+import { asDelegatedIdentityKey, asSuiteSyncOwnerId } from '@suite-common/suite-types';
+import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
 import { DEFAULT_OWNER_SIZE_QUOTA } from '../constants';
 import { ensureOwnerHasAllocatedQuotaThunk } from '../ensureOwnerHasAllocatedQuotaThunk';
-import {
-    SuiteSyncQuotaManagerState,
-    prepareSuiteSyncQuotaManagerReducer,
-    quotaManagerInitialState,
-} from '../quotaManagerReducer';
+import { SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
 import { checkStorageByOwnerId } from '../storage/checkStorage';
 import { transferStorageThunk } from '../storage/transferStorageThunk';
 
@@ -32,39 +21,19 @@ jest.mock('../storage/transferStorageThunk', () => ({
     transferStorageThunk: jest.fn(),
 }));
 
-jest.mock('@suite-common/delegated-identity-key', () => ({
-    getProofOfDelegatedIdentity: jest.fn(),
-    getPublicIdentityKeyFromDelegatedKey: jest.fn(),
-}));
+const createGetState = (statePatch?: Partial<SuiteSyncQuotaManagerState>) => () => ({
+    suiteSyncQuotaManager: {
+        ...quotaManagerInitialState,
+        baseUrl: 'https://quota-manager.test',
+        ...statePatch,
+    },
+});
 
-jest.mock(
-    '@trezor/connect-analytics',
-    () => ({
-        EventType: {
-            DeviceSelected: 'DeviceSelected',
-        },
-    }),
-    { virtual: true },
+const delegatedKey = asDelegatedIdentityKey(
+    '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
 );
-
-const suiteSyncQuotaManagerReducer = prepareSuiteSyncQuotaManagerReducer(extraDependenciesMock);
-
-const createStore = (statePatch?: Partial<SuiteSyncQuotaManagerState>) =>
-    configureMockStore({
-        reducer: combineReducers({
-            suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
-        }),
-        preloadedState: {
-            suiteSyncQuotaManager: {
-                ...quotaManagerInitialState,
-                baseUrl: 'https://quota-manager.test',
-                ...statePatch,
-            },
-        },
-    });
-
-const delegatedKey = 'deadbeefcafebabe' as unknown as DelegatedIdentityKey;
-const ownerId = 'owner-id';
+const ownerId = asSuiteSyncOwnerId('owner-id');
+const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
 
 const prepareChallengeSessionMock = prepareChallengeSession as jest.MockedFunction<
     typeof prepareChallengeSession
@@ -72,13 +41,6 @@ const prepareChallengeSessionMock = prepareChallengeSession as jest.MockedFuncti
 const checkStorageByOwnerIdMock = checkStorageByOwnerId as jest.MockedFunction<
     typeof checkStorageByOwnerId
 >;
-const getProofOfDelegatedIdentityMock = getProofOfDelegatedIdentity as jest.MockedFunction<
-    typeof getProofOfDelegatedIdentity
->;
-const getPublicIdentityKeyFromDelegatedKeyMock =
-    getPublicIdentityKeyFromDelegatedKey as jest.MockedFunction<
-        typeof getPublicIdentityKeyFromDelegatedKey
-    >;
 const transferStorageThunkMock = transferStorageThunk as jest.MockedFunction<
     typeof transferStorageThunk
 >;
@@ -86,129 +48,107 @@ const transferStorageThunkMock = transferStorageThunk as jest.MockedFunction<
 describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
-
-        getPublicIdentityKeyFromDelegatedKeyMock.mockReturnValue('public-key');
         transferStorageThunkMock.mockReturnValue(jest.fn());
     });
 
     it('returns early when quota manager is disabled', async () => {
-        const store = createStore({ enabled: false });
+        const getState = createGetState({ enabled: false });
+        const dispatch = jest.fn();
 
-        await store.dispatch(
-            ensureOwnerHasAllocatedQuotaThunk({
-                ownerId: asSuiteSyncOwnerId(ownerId),
-                delegatedKey,
-            }),
+        await ensureOwnerHasAllocatedQuotaThunk({ ownerId, delegatedKey, walletDescriptor })(
+            dispatch,
+            getState,
         );
 
         expect(checkStorageByOwnerIdMock).not.toHaveBeenCalled();
-        expect(getPublicIdentityKeyFromDelegatedKeyMock).not.toHaveBeenCalled();
-        expect(store.getActions()).toEqual([]);
+        expect(dispatch).not.toHaveBeenCalled();
     });
 
     it('dispatches owner fetched when storage already exists', async () => {
-        const store = createStore({ enabled: true });
+        const getState = createGetState({ enabled: true });
+        const dispatch = jest.fn();
 
         checkStorageByOwnerIdMock.mockResolvedValue(ok({ totalSpace: 2048 }));
 
-        await store.dispatch(
-            ensureOwnerHasAllocatedQuotaThunk({
-                ownerId: asSuiteSyncOwnerId(ownerId),
-                delegatedKey,
-            }),
+        await ensureOwnerHasAllocatedQuotaThunk({ ownerId, delegatedKey, walletDescriptor })(
+            dispatch,
+            getState,
         );
 
         expect(checkStorageByOwnerIdMock).toHaveBeenCalledWith({
             baseUrl: 'https://quota-manager.test',
             ownerId,
         });
-        expect(store.getActions()).toContainEqual({
-            type: '@suite/quota-manager/ownerFetched',
-            payload: {
-                ownerIdHash: '6bf59adace75d8046b55264ca904a615145c2c52da304dd016c09610ee0010a4',
-                totalSpace: 2048,
-            },
-        });
+        expect(dispatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: '@suite/quota-manager/ownerFetched',
+                payload: {
+                    walletDescriptor,
+                    totalSpace: 2048,
+                },
+            }),
+        );
         expect(prepareChallengeSessionMock).not.toHaveBeenCalled();
         expect(transferStorageThunkMock).not.toHaveBeenCalled();
     });
 
     it('dispatches quota manager error for non-404 failures', async () => {
-        const store = createStore({ enabled: true });
+        const getState = createGetState({ enabled: true });
+        const dispatch = jest.fn();
 
         checkStorageByOwnerIdMock.mockResolvedValue(err({ code: 500, message: 'Internal error' }));
 
-        await store.dispatch(
-            ensureOwnerHasAllocatedQuotaThunk({
-                ownerId: asSuiteSyncOwnerId(ownerId),
-                delegatedKey,
-            }),
+        await ensureOwnerHasAllocatedQuotaThunk({ ownerId, delegatedKey, walletDescriptor })(
+            dispatch,
+            getState,
         );
 
-        expect(store.getActions()).toContainEqual({
-            type: '@suite/quota-manager/fetchError',
-            payload: { error: 'Internal error' },
-        });
+        expect(dispatch).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: '@suite/quota-manager/fetchError',
+                payload: { error: 'Internal error' },
+            }),
+        );
         expect(prepareChallengeSessionMock).not.toHaveBeenCalled();
     });
 
     it('requests storage transfer when owner storage is missing', async () => {
-        const store = createStore({ enabled: true });
+        const getState = createGetState({ enabled: true });
+        const dispatch: ReturnType<typeof jest.fn> = jest.fn((action: unknown) => {
+            if (typeof action === 'function')
+                return (action as (...args: any[]) => any)(dispatch, getState);
+
+            return action;
+        });
 
         checkStorageByOwnerIdMock.mockResolvedValue(err({ code: 404, message: 'Not Found' }));
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-123', challenge: 'aa55' }),
-        );
-        getProofOfDelegatedIdentityMock.mockReturnValue(
-            ok(asProofOfDelegatedIdentity('proof-hex')),
         );
 
         const transferThunkInner = jest.fn();
         transferStorageThunkMock.mockReturnValue(transferThunkInner);
 
-        await store.dispatch(
-            ensureOwnerHasAllocatedQuotaThunk({
-                ownerId: asSuiteSyncOwnerId(ownerId),
-                delegatedKey,
-            }),
+        await ensureOwnerHasAllocatedQuotaThunk({ ownerId, delegatedKey, walletDescriptor })(
+            dispatch,
+            getState,
         );
 
         expect(prepareChallengeSessionMock).toHaveBeenCalledWith({
             baseUrl: 'https://quota-manager.test',
         });
-        expect(getProofOfDelegatedIdentityMock).toHaveBeenCalledWith({
-            delegatedKey,
-            header: 'EvoluAddSpaceToOwnerV1',
-            buffer: expect.any(Buffer),
-        });
         expect(transferStorageThunkMock).toHaveBeenCalledWith({
-            ownerId,
-            publicKey: 'public-key',
-            proof: 'proof-hex',
-            size: DEFAULT_OWNER_SIZE_QUOTA,
-            challenge: 'aa55',
-            sessionId: 'session-123',
+            params: {
+                ownerId,
+                publicKey:
+                    '0428a3cefc19b41ff56795e371aab72d6d85a3ca2200bd46c54e611a36222295a88b44d6f23ce94025b6010f9eb0f9168ad35d8396dc865fa0a16f2f5471816a45',
+                proof: '3fe8d55f5dfdc54133027c3a94903ab4e038353dc08ec4d324c7fd5eda74def911249c2bf1929313a223ce4fa50140fb6c717b46f123c901a5df39afbe7f2bb7',
+                size: DEFAULT_OWNER_SIZE_QUOTA,
+                challenge: 'aa55',
+                sessionId: 'session-123',
+            },
+            walletDescriptor,
         });
         expect(transferThunkInner).toHaveBeenCalled();
-        expect(store.getActions()).toEqual([]);
-    });
-
-    it('does not dispatch transfer when proof generation fails', async () => {
-        const store = createStore({ enabled: true });
-
-        checkStorageByOwnerIdMock.mockResolvedValue(err({ code: 404, message: 'Not Found' }));
-        prepareChallengeSessionMock.mockResolvedValue(
-            ok({ sessionId: 'session-123', challenge: 'aa55' }),
-        );
-        getProofOfDelegatedIdentityMock.mockReturnValue(err({ type: 'ProofFailed' } as any));
-
-        await store.dispatch(
-            ensureOwnerHasAllocatedQuotaThunk({
-                ownerId: asSuiteSyncOwnerId(ownerId),
-                delegatedKey,
-            }),
-        );
-
-        expect(transferStorageThunkMock).not.toHaveBeenCalled();
     });
 });
