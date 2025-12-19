@@ -1,3 +1,9 @@
+export type KeyboardKey = {
+    code: number;
+    value: string;
+    valueMac?: string;
+};
+
 export const keyboardKeys = {
     BACKSPACE: { code: 8, value: 'Backspace' },
     TAB: { code: 9, value: 'Tab' },
@@ -99,7 +105,6 @@ export const keyboardKeys = {
     BACK_SLASH: { code: 220, value: '\\' },
     CLOSE_BRACKET: { code: 221, value: ']' },
     SINGLE_QUOTE: { code: 222, value: "'" },
-};
+} satisfies Record<string, KeyboardKey>;
 
-export type KeyboardKeys = typeof keyboardKeys;
 export type Keys = keyof typeof keyboardKeys;

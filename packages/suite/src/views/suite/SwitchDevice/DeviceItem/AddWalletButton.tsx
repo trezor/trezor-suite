@@ -3,18 +3,7 @@ import { useDispatch } from 'react-redux';
 
 import { selectDeviceThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
-import {
-    Button,
-    Card,
-    Column,
-    ElevationUp,
-    IconButton,
-    Row,
-    Text,
-    Tooltip,
-} from '@trezor/components';
-import { isMacOs } from '@trezor/env-utils';
-import { spacings } from '@trezor/theme';
+import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 
 import { closeModalApp, goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
@@ -65,59 +54,57 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
 
     const ExpandedPassphraseContainer = () => (
         <Card paddingType="none" fillType="flat">
-            <ElevationUp>
-                <Column gap={spacings.sm} padding={spacings.sm}>
-                    <Row alignItems="center" justifyContent="space-between">
-                        <Text>
-                            <Translation id="TR_ADD_HIDDEN_WALLET" />
-                        </Text>
-                        <IconButton
-                            intent="neutral"
-                            priority="secondary"
-                            icon="x"
-                            onClick={() => {
-                                setIsPassphraseExpanded(false);
-                            }}
-                        />
-                    </Row>
-                    <Column gap={spacings.xs}>
-                        <Button
-                            data-testid="@switch-device/add-new-hidden-wallet-button"
-                            intent="brand"
-                            priority="secondary"
-                            size="large"
-                            iconLeft="plusCircleFilled"
-                            width="100%"
-                            isDisabled={isLocked}
-                            onClick={() =>
-                                onAddWallet({
-                                    walletType: WalletType.PASSPHRASE,
-                                })
-                            }
-                        >
-                            <Translation id="TR_NEW_PASSPHRASE_WALLET" />
-                        </Button>
-                        <Button
-                            data-testid="@switch-device/add-existing-hidden-wallet-button"
-                            intent="neutral"
-                            priority="secondary"
-                            size="large"
-                            iconLeft="folderOpen"
-                            width="100%"
-                            isDisabled={isLocked}
-                            onClick={() =>
-                                onAddWallet({
-                                    walletType: WalletType.PASSPHRASE,
-                                    isExisting: true,
-                                })
-                            }
-                            shortcut={!isLocked ? [isMacOs() ? '⌥' : 'Alt', 'P'] : undefined}
-                        >
-                            <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
-                        </Button>
-                    </Column>
+            <Column gap={12} padding={12}>
+                <Row alignItems="center" justifyContent="space-between">
+                    <Text>
+                        <Translation id="TR_ADD_HIDDEN_WALLET" />
+                    </Text>
+                    <IconButton
+                        intent="neutral"
+                        priority="secondary"
+                        icon="x"
+                        onClick={() => {
+                            setIsPassphraseExpanded(false);
+                        }}
+                    />
+                </Row>
+                <Column gap={8}>
+                    <Button
+                        data-testid="@switch-device/add-new-hidden-wallet-button"
+                        intent="brand"
+                        priority="secondary"
+                        size="large"
+                        iconLeft="plusCircleFilled"
+                        width="100%"
+                        isDisabled={isLocked}
+                        onClick={() =>
+                            onAddWallet({
+                                walletType: WalletType.PASSPHRASE,
+                            })
+                        }
+                    >
+                        <Translation id="TR_NEW_PASSPHRASE_WALLET" />
+                    </Button>
+                    <Button
+                        data-testid="@switch-device/add-existing-hidden-wallet-button"
+                        intent="neutral"
+                        priority="secondary"
+                        size="large"
+                        iconLeft="folderOpen"
+                        width="100%"
+                        isDisabled={isLocked}
+                        onClick={() =>
+                            onAddWallet({
+                                walletType: WalletType.PASSPHRASE,
+                                isExisting: true,
+                            })
+                        }
+                        shortcut={!isLocked ? ['ALT', 'KEY_P'] : undefined}
+                    >
+                        <Translation id="TR_OPEN_PREVIOUSLY_USED_WALLET" />
+                    </Button>
                 </Column>
-            </ElevationUp>
+            </Column>
         </Card>
     );
 
@@ -127,7 +114,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
             cursor="pointer"
             placement="bottom"
         >
-            <Column flex="1" gap={spacings.xs} alignItems="center">
+            <Column flex="1" gap={8} alignItems="center">
                 {!emptyPassphraseWalletExists && (
                     <Button
                         data-testid="@switch-device/add-wallet-button"

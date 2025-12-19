@@ -7,13 +7,12 @@ import {
     Card,
     Column,
     Grid,
+    IconButton,
     Input,
     KEYBOARD_CODE,
     Paragraph,
-    PinButton,
     Row,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -112,7 +111,7 @@ export const PinMatrix = ({
     }, [onPinAdd, onPinBackspace, onSubmit]);
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16} maxWidth={380}>
             {showExplanation && (
                 <Banner
                     intent="info"
@@ -129,31 +128,36 @@ export const PinMatrix = ({
                 </Banner>
             )}
             <Card label={showLabel ? <Translation id="TR_ENTER_PIN" /> : undefined}>
-                <Column gap={spacings.xl} padding={spacings.md} data-testid="@pin">
-                    <Grid columns={3} gap={spacings.lg} width="100%">
+                <Column gap={40} padding={16} data-testid="@pin" alignItems="center">
+                    <Grid columns={3} gap={20}>
                         {
-                            // prettier-ignore
                             // Order follows standard numeric keypad layout
-                            ['7', '8', '9',
-                             '4', '5', '6',
-                             '1', '2', '3'].map(value => (
-                                <PinButton
+                            ['7', '8', '9', '4', '5', '6', '1', '2', '3'].map(value => (
+                                <IconButton
+                                    size="large"
                                     key={value}
                                     data-value={value}
+                                    icon="dotOutlineFilled"
+                                    intent="neutral"
+                                    priority="secondary"
                                     onClick={() => onPinAdd(value)}
+                                    isDisabled={isDisabled}
                                     data-testid={`@pin/input/${value}`}
-                                    disabled={isDisabled}
                                 />
                             ))
                         }
                     </Grid>
-                    <Row gap={spacings.md}>
-                        <Input disabled value={pin.replace(/[0-9]/g, '●')} size="small" />
+                    <Row gap={16} width="100%">
+                        <Input
+                            width="100%"
+                            disabled
+                            value={pin.replace(/[0-9]/g, '●')}
+                            size="small"
+                        />
                         <Button
                             intent="neutral"
                             priority="secondary"
                             onClick={onPinBackspace}
-                            size="small"
                             iconLeft="caretLeft"
                             isDisabled={isDisabled}
                         >

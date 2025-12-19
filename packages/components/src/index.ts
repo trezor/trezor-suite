@@ -20,7 +20,6 @@ export { Button, type ButtonProps } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';
 export * from './components/Icon/Icon';
 export { ComponentWithSubIcon } from './components/ComponentWithSubIcon/ComponentWithSubIcon';
-export * from './components/buttons/PinButton/PinButton';
 export * from './components/buttons/TextButton/TextButton';
 export { Box, type BoxProps } from './components/Box/Box';
 export {
@@ -54,7 +53,7 @@ export * from './components/form/Textarea/Textarea';
 export * from './components/form/FractionButton/FractionButton';
 export * from './components/GradientOverlay/GradientOverlay';
 export { Grid, type GridProps } from './components/Grid/Grid';
-export * from './components/HotkeyBadge/HotkeyBadge';
+export * from './components/ShortcutBadge/ShortcutBadge';
 export * from './components/Image/Image';
 export * from './components/Image/images';
 export { DotIndicator, type DotIndicatorProps } from './components/DotIndicator/DotIndicator';
