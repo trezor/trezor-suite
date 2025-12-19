@@ -4,8 +4,6 @@ import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-
 import {
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
-    selectHasOwnerAllowance,
-    selectIsDeviceRegistered,
 } from '@suite-common/suite-sync-quota-manager';
 import {
     EnsureSuiteSyncOwnerDep,
@@ -13,10 +11,11 @@ import {
     RefreshSuiteSyncKeys,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
+import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { err, exhaustive, ok } from '@trezor/type-utils';
 
 import { GetDeviceForStaticSessionIdDep } from './getDeviceForStaticSessionId';
+import { GetDeviceHasAllowance } from './getDeviceHasAllowance';
 import { LoadSuiteSyncOwnerFromStateDep } from './owner/createLoadSuiteSyncOwnerFromState';
 
 /**
@@ -29,7 +28,7 @@ export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailableType =
 
 export type RefreshSuiteSyncKeysDeps = {
     dispatch: Dispatch;
-    getState: () => any;
+    hasAllowance: GetDeviceHasAllowance;
 } & EnsureSuiteSyncOwnerDep &
     LoadSuiteSyncOwnerFromStateDep &
     EnsureDelegatedIdentityKeyDep &
@@ -46,14 +45,11 @@ export const createRefreshSuiteSync =
 
         const owner = await deps.loadSuiteSyncOwnerFromState({ deviceStaticId });
 
+        const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
+
         // If device has an owner, is registered in quota manager and the owner
         // already has an allowance, there's nothing to refresh — return success.
-        if (
-            owner !== null &&
-            device.id &&
-            selectIsDeviceRegistered(deps.getState(), device.id) &&
-            selectHasOwnerAllowance(deps.getState(), owner.ownerId)
-        ) {
+        if (owner !== null && deps.hasAllowance({ walletDescriptor, deviceId: device.id })) {
             return ok(owner);
         }
 
@@ -96,6 +92,7 @@ export const createRefreshSuiteSync =
 
             await deps.dispatch(
                 ensureOwnerHasAllocatedQuotaThunk({
+                    walletDescriptor,
                     ownerId: ownerResult.payload.ownerId,
                     delegatedKey: delegatedKeyResult.payload,
                 }),

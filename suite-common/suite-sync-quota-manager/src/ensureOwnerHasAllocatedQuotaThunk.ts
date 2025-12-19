@@ -5,6 +5,7 @@ import {
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
 import { DelegatedIdentityKey, SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import { DEFAULT_OWNER_SIZE_QUOTA } from './constants';
@@ -12,18 +13,18 @@ import { quotaManagerFetchError, quotaManagerOwnerFetched } from './quotaManager
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
 import { transferStorageThunk } from './storage/transferStorageThunk';
-import { hashSuiteSyncOwnerId } from './util/hasSuiteSyncOwnerId';
-import { prepareBufferEvoluAddSpaceToOwner } from './util/prepareBufferEvoluAddSpaceToOwner';
+import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
 const EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER = 'EvoluAddSpaceToOwnerV1';
 
 type EnsureOwnerHasAllocatedQuotaParams = {
     ownerId: SuiteSyncOwnerId;
+    walletDescriptor: WalletDescriptor;
     delegatedKey: DelegatedIdentityKey;
 };
 
 export const ensureOwnerHasAllocatedQuotaThunk =
-    ({ ownerId, delegatedKey }: EnsureOwnerHasAllocatedQuotaParams) =>
+    ({ ownerId, walletDescriptor, delegatedKey }: EnsureOwnerHasAllocatedQuotaParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
         const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
 
@@ -36,18 +37,18 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             ownerId,
         });
 
-        if (hasOwnerStorage.ok) {
+        if (hasOwnerStorage.success) {
             dispatch(
                 quotaManagerOwnerFetched({
-                    ownerIdHash: hashSuiteSyncOwnerId(ownerId),
-                    totalSpace: hasOwnerStorage.value.totalSpace ?? 0,
+                    walletDescriptor,
+                    totalSpace: hasOwnerStorage.payload.totalSpace ?? 0,
                 }),
             );
 
             return;
         }
 
-        if (!hasOwnerStorage.ok && hasOwnerStorage.error.code !== 404) {
+        if (!hasOwnerStorage.success && hasOwnerStorage.error.code !== 404) {
             dispatch(
                 quotaManagerFetchError({
                     error: hasOwnerStorage.error.message,
@@ -61,7 +62,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             baseUrl: quotaManagerBaseUrl,
         });
 
-        if (!sessionChallenge.ok) {
+        if (!sessionChallenge.success) {
             dispatch(
                 quotaManagerFetchError({
                     error: sessionChallenge.error.message,
@@ -74,26 +75,29 @@ export const ensureOwnerHasAllocatedQuotaThunk =
         const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
             delegatedKey,
             header: EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
-            buffer: prepareBufferEvoluAddSpaceToOwner({
+            appendMessageBuffer: prepareMessageBufferEvoluAddSpaceToOwner({
                 publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                 ownerId,
-                challenge: sessionChallenge.value.challenge,
+                challenge: sessionChallenge.payload.challenge,
                 size: DEFAULT_OWNER_SIZE_QUOTA,
             }),
         });
 
-        if (!proofOfDelegatedIdentity.ok) {
+        if (!proofOfDelegatedIdentity.success) {
             return;
         }
 
         await dispatch(
             transferStorageThunk({
-                ownerId,
-                publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
-                proof: proofOfDelegatedIdentity.value,
-                size: DEFAULT_OWNER_SIZE_QUOTA,
-                challenge: sessionChallenge.value.challenge,
-                sessionId: sessionChallenge.value.sessionId,
+                params: {
+                    ownerId,
+                    publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
+                    proof: proofOfDelegatedIdentity.payload,
+                    size: DEFAULT_OWNER_SIZE_QUOTA,
+                    challenge: sessionChallenge.payload.challenge,
+                    sessionId: sessionChallenge.payload.sessionId,
+                },
+                walletDescriptor,
             }),
         );
     };

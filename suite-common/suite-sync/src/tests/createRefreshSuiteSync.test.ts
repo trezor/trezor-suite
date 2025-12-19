@@ -18,6 +18,7 @@ import { LoadSuiteSyncOwnerFromState } from '../owner/createLoadSuiteSyncOwnerFr
 const createMockDeps = () =>
     ({
         dispatch: mockNotExpected<Dispatch>('dispatch'),
+        hasAllowance: mockNotExpected<RefreshSuiteSyncKeysDeps['hasAllowance']>('hasAllowance'),
         ensureSuiteSyncOwner: mockNotExpected<EnsureSuiteSyncOwner>('ensureSuiteSyncOwner'),
         loadSuiteSyncOwnerFromState: mockNotExpected<LoadSuiteSyncOwnerFromState>(
             'loadSuiteSyncOwnerFromState',
@@ -73,6 +74,7 @@ describe(createRefreshSuiteSync.name, () => {
     it('returns an suite sync owner when device has state and is available', async () => {
         const deps = createMockDeps();
         deps.loadSuiteSyncOwnerFromState.mockResolvedValue(OWNER_1);
+        deps.hasAllowance.mockReturnValue(true);
 
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({

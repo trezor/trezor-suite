@@ -5,16 +5,18 @@ type PrepareBufferForEvoluSignRegistrationRequestParams = {
     size: number;
 };
 
-export const prepareBufferEvoluSignRegistrationRequest = ({
+export const prepareMessageBufferEvoluSignRegistrationRequest = ({
     size,
     challenge,
 }: PrepareBufferForEvoluSignRegistrationRequestParams): Buffer => {
     const sizeBuffer = Buffer.alloc(4, 0, 'binary');
     sizeBuffer.writeUInt32BE(size, 0);
 
+    const challengeBuffer = Buffer.from(challenge, 'hex');
+
     return Buffer.concat([
-        bufferUtils.getChunkSize(Buffer.from(challenge, 'hex').byteLength),
-        Buffer.from(challenge, 'hex'),
+        bufferUtils.getChunkSize(challengeBuffer.byteLength),
+        challengeBuffer,
         bufferUtils.getChunkSize(sizeBuffer.length),
         sizeBuffer,
     ]);

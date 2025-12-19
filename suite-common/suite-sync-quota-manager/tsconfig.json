@@ -8,9 +8,11 @@
         { "path": "../delegated-identity-key" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
+        { "path": "../test-utils" },
         { "path": "../wallet-core" },
-        { "path": "../wallet-utils" },
+        { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

@@ -1,12 +1,12 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
 import { SuiteSyncOwnerId } from '@suite-common/suite-types';
+import { WalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
 import { quotaManagerFetchError, quotaManagerOwnerFetched } from '../quotaManagerActions';
 import { quotaManagerFetch } from '../quotaManagerFetch';
 import { selectQuotaManagerBaseUrl } from '../quotaManagerSelectors';
-import { hashSuiteSyncOwnerId } from '../util/hasSuiteSyncOwnerId';
 
 type TransferStorageBody = {
     publicKey: string;
@@ -21,8 +21,14 @@ type TransferStorageResponse = {
     storageLimit: number | null;
 };
 
+type TransferStorageThunkParams = {
+    params: TransferStorageBody;
+    walletDescriptor: WalletDescriptor;
+};
+
 export const transferStorageThunk =
-    (params: TransferStorageBody) => async (dispatch: Dispatch, getState: () => any) => {
+    ({ params, walletDescriptor }: TransferStorageThunkParams) =>
+    async (dispatch: Dispatch, getState: () => any) => {
         const baseUrl = selectQuotaManagerBaseUrl(getState());
 
         const result = await quotaManagerFetch({
@@ -42,7 +48,7 @@ export const transferStorageThunk =
 
         dispatch(
             quotaManagerOwnerFetched({
-                ownerIdHash: hashSuiteSyncOwnerId(params.ownerId),
+                walletDescriptor,
                 totalSpace: response.storageLimit ?? 0,
             }),
         );

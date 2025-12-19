@@ -3,8 +3,8 @@ import { useState } from 'react';
 import {
     eraseFetchedDataDebug,
     quotaManagerEnabledUpdated,
-    selectAssignedOwnerIds,
     selectIsQuotaManagerEnabled,
+    selectOwnersAllowance,
     selectQuotaManagerBaseUrl,
     selectRegisteredDevices,
     updateQuotaManagerBaseUrl,
@@ -20,7 +20,7 @@ export const QuotaManagerSettings = () => {
     const dispatch = useDispatch();
     const quotaManagerBaseUrl = useSelector(selectQuotaManagerBaseUrl);
     const registeredDevices = useSelector(selectRegisteredDevices);
-    const assignedOwnerIds = useSelector(selectAssignedOwnerIds);
+    const ownersAllowance = useSelector(selectOwnersAllowance);
     const isQuotaManagerEnabled = useSelector(selectIsQuotaManagerEnabled);
     const [quotaManagerUrl, setQuotaManagerUrl] = useState(quotaManagerBaseUrl ?? '');
 
@@ -108,12 +108,12 @@ export const QuotaManagerSettings = () => {
                 <TextColumn title="Assigned Owner IDs" />
                 <ActionColumn>
                     <Column gap={spacings.xxs}>
-                        {assignedOwnerIds.length === 0 ? (
+                        {ownersAllowance.length === 0 ? (
                             <div>No owner IDs assigned.</div>
                         ) : (
-                            assignedOwnerIds.map(owner => (
-                                <div key={owner.ownerIdHash} style={{ marginBottom: 8 }}>
-                                    <strong>Owner ID:</strong> {owner.ownerIdHash}
+                            ownersAllowance.map(owner => (
+                                <div key={owner.walletDescriptor} style={{ marginBottom: 8 }}>
+                                    <strong>walletDescriptor:</strong> {owner.walletDescriptor}
                                     <br />
                                     <strong>Total Space:</strong> {owner.totalSpace}
                                 </div>
