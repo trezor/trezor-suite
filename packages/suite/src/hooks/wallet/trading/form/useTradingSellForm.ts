@@ -6,6 +6,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { EventType } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
+import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -106,8 +107,12 @@ export const useTradingSellForm = ({
         useTradingNavigation(account);
 
     const isDebug = useSelector(selectIsDebugModeActive);
+    // we consider this feature enabled unless disabled by message system
+    const isSlip24FeatureEnabled = useSelector(state =>
+        selectIsFeatureEnabled(state, Feature.trading.slip24, true),
+    );
     const isSlip24Active = useSelector(state =>
-        selectTradingIsSlip24Allowed(state, account, isDebug),
+        selectTradingIsSlip24Allowed(state, account, isSlip24FeatureEnabled && isDebug),
     );
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

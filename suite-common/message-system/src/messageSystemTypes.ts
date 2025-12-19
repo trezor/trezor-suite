@@ -81,6 +81,7 @@ export const Feature = {
             blacklist: 'trading.restrictions.blacklist',
         },
         survey: 'trading.survey',
+        slip24: 'trading.slip24',
     },
     mevProtection: 'settings.mevProtection',
 
