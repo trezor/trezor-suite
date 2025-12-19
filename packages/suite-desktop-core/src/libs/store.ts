@@ -15,6 +15,7 @@ export type WinBoundsCoords = WinBounds & {
 export class Store {
     private static instance: Store;
     private readonly store: ElectronStore<{
+        isAnonymousMode: boolean;
         winBounds: WinBoundsCoords;
         updateSettings: UpdateSettings;
         themeSettings: SuiteThemeVariant;
@@ -37,11 +38,25 @@ export class Store {
         return Store.instance;
     }
 
+    /** Persists the anonymous mode setting. If true, persisting anything else will be disabled. */
+    public setAnonymousMode(isAnonymousMode: boolean) {
+        this.store.set('isAnonymousMode', isAnonymousMode);
+    }
+
+    public getAnonymousMode() {
+        return this.store.get('isAnonymousMode', false);
+    }
+
+    private isEnabled() {
+        return this.getAnonymousMode() === false;
+    }
+
     public getWinBounds() {
         return this.store.get('winBounds', getInitialWindowSize());
     }
 
     public setWinBounds(winBounds: WinBoundsCoords) {
+        if (!this.isEnabled()) return;
         // save only non zero dimensions
         if (winBounds.width > 0 && winBounds.height > 0) {
             this.store.set('winBounds', winBounds);
@@ -56,6 +71,7 @@ export class Store {
     }
 
     public setUpdateSettings(updateSettings: UpdateSettings) {
+        if (!this.isEnabled()) return;
         this.store.set('updateSettings', updateSettings);
     }
 
@@ -64,6 +80,7 @@ export class Store {
     }
 
     public setThemeSettings(themeSettings: SuiteThemeVariant) {
+        if (!this.isEnabled()) return;
         this.store.set('themeSettings', themeSettings);
     }
 
@@ -80,6 +97,7 @@ export class Store {
     }
 
     public setTorSettings(torSettings: TorSettings) {
+        if (!this.isEnabled()) return;
         this.store.set('torSettings', torSettings);
     }
 
@@ -95,6 +113,7 @@ export class Store {
     }
 
     public setBridgeSettings(bridgeSettings: BridgeSettings) {
+        if (!this.isEnabled()) return;
         this.store.set('bridgeSettings', bridgeSettings);
     }
 
@@ -105,6 +124,7 @@ export class Store {
     }
 
     public setTraySettings(traySettings: TraySettings) {
+        if (!this.isEnabled()) return;
         this.store.set('traySettings', traySettings);
     }
 
@@ -117,6 +137,7 @@ export class Store {
     }
 
     public setConnectSettings(connectSettings: Partial<ConnectSettings>) {
+        if (!this.isEnabled()) return;
         this.store.set('connectSettings', {
             ...this.store.get('connectSettings'),
             ...connectSettings,
@@ -130,6 +151,7 @@ export class Store {
     }
 
     public setBioAuthSettings(bioAuthSettings: Partial<BioAuthSettings>) {
+        if (!this.isEnabled()) return;
         this.store.set('bioAuthSettings', {
             ...this.store.get('bioAuthSettings'),
             ...bioAuthSettings,

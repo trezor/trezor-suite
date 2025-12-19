@@ -26,6 +26,7 @@ class CommonDB<TDBStructure> {
     supported: boolean | undefined;
     blocking = false;
     blocked = false;
+    isAnonymousMode = false;
     onUpgrade!: OnUpgradeFunc<TDBStructure>;
     onDowngrade!: () => any;
     onBlocked?: () => void;
@@ -67,6 +68,7 @@ class CommonDB<TDBStructure> {
     static isDBAvailable = () => !!indexedDB || !!window.indexedDB || !!global.indexedDB;
 
     isSupported = () => {
+        if (this.isAnonymousMode) return false;
         if (this.supported === undefined) {
             const isAvailable = CommonDB.isDBAvailable();
             this.supported = isAvailable;
@@ -82,7 +84,11 @@ class CommonDB<TDBStructure> {
         const isSupported = this.isSupported();
 
         // if the instance is blocking db upgrade, db connection will be closed
-        return isSupported && !this.blocking && !this.blocked;
+        return isSupported && !this.isAnonymousMode && !this.blocking && !this.blocked;
+    };
+
+    setAnonymousMode = (isAnonymousMode: boolean) => {
+        this.isAnonymousMode = isAnonymousMode;
     };
 
     closeAfterTimeout = (timeout = 1000) => {

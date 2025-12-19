@@ -21,7 +21,20 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     return (['wait', 'quit', 'reload'] as const)[resp.response];
 };
 
-export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string, any>) => {
+type HandshakeAndHangDetectParams = {
+    mainWindow: BrowserWindow;
+    statePatch?: Record<string, any>;
+    isAnonymousMode?: boolean;
+};
+
+/**
+ * Sets up one-time listener for handshake from renderer process, and handles timeout if nothing is received.
+ */
+export const handshakeAndHangDetect = ({
+    mainWindow,
+    statePatch,
+    isAnonymousMode,
+}: HandshakeAndHangDetectParams) => {
     const { logger } = global;
     const handshakeHandler = (ipcEvent: ElectronIpcMainInvokeEvent) => {
         validateIpcMessage({ ipcEvent });
@@ -55,7 +68,7 @@ export const hangDetect = (mainWindow: BrowserWindow, statePatch?: Record<string
             }
             resolve('success');
 
-            return Promise.resolve({ statePatch });
+            return Promise.resolve({ statePatch, isAnonymousMode });
         });
         loadIndex(mainWindow);
     });

@@ -151,6 +151,13 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
             return Promise.resolve({ success: false, error: 'invalid params' });
         },
+        setAnonymousMode: (enabled: boolean) => {
+            if (validation.isPrimitive('boolean', enabled)) {
+                return ipcRenderer.invoke('user-data/set-anonymous-mode', enabled);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
 
         // Logger
         configLogger: config => {

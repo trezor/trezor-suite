@@ -5,6 +5,8 @@ import path from 'path';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { InvokeResult } from '@trezor/suite-desktop-api';
 
+import { Store } from './store';
+
 export const clearAppCache = () =>
     new Promise<void>((resolve, reject) => {
         const cachePath = path.join(app.getPath('userData'), 'Cache');
@@ -161,4 +163,22 @@ export const open = async (directory: string): Promise<InvokeResult> => {
 
         return { success: false, error: error.message, code: error.code };
     }
+};
+
+type SetAnonymousModeParams = {
+    enabled: boolean;
+    store: Store;
+};
+export const setAnonymousMode = async ({
+    enabled,
+    store,
+}: SetAnonymousModeParams): Promise<InvokeResult> => {
+    if (enabled) {
+        const clearResult = await clear();
+        if (!clearResult.success) return clearResult;
+    }
+    // at this point, we are creating a new store in the empty user data directory
+    store.setAnonymousMode(enabled);
+
+    return { success: true };
 };

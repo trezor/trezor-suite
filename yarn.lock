@@ -15153,6 +15153,7 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": "npm:^7.4.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@trezor/components": "workspace:*"

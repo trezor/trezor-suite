@@ -49,6 +49,7 @@ export type HandshakeClient = {
 
 export type HandshakeInit = {
     statePatch?: Record<string, any>;
+    isAnonymousMode?: boolean;
 };
 
 export type HandshakeTorModule = {

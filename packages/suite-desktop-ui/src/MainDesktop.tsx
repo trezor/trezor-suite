@@ -3,6 +3,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { type History, createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
+import { analyticsActions } from '@suite-common/analytics';
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -16,9 +17,12 @@ import {
     ToastContainer,
     TrafficLightDraggableWindowHeader,
 } from 'src/components/suite';
+import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
+import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { initStore } from 'src/reducers/store';
+import { db } from 'src/storage';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
@@ -34,8 +38,6 @@ import { initSentry } from './sentry';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
-import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();
@@ -68,12 +70,21 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const memoryHistory = createMemoryHistory();
+    const { statePatch, isAnonymousMode } = await desktopApi.handshake();
+    if (isAnonymousMode === true) {
+        // eslint-disable-next-line no-console
+        console.info('🕶️ Suite Desktop starts in Anonymous Mode, nothing will be persisted!');
+        db.setAnonymousMode(true);
+    }
     const preloadAction = await preloadStore();
-    const { statePatch } = await desktopApi.handshake();
     const { store, services } = initStore(preloadAction, {
         statePatch,
         additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
     });
+    // QoL tweak to automatically reject analytics, assuming that's what you want in anonymous mode (so you don't see confirmation everytime)
+    if (isAnonymousMode === true) {
+        store.dispatch(analyticsActions.disableAnalytics());
+    }
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
