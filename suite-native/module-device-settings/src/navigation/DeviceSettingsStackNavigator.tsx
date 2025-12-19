@@ -64,6 +64,10 @@ export const DeviceSettingsStackNavigator = () => {
                 name={DeviceSettingsStackRoutes.DeviceBackupAndPassphrase}
                 component={BackupAndPassphraseScreen}
             />
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.DeviceAuthenticity}
+                component={DeviceAuthenticityScreen}
+            />
             <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <DeviceSettingsStack.Screen
                     name={DeviceSettingsStackRoutes.DeviceNameStack}
@@ -103,15 +107,11 @@ export const DeviceSettingsStackNavigator = () => {
                     name={DeviceSettingsStackRoutes.DevicePassphraseStack}
                     component={DevicePassphraseStackNavigator}
                 />
+                <DeviceSettingsStack.Screen
+                    name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
+                    component={DeviceAuthenticityStackNavigator}
+                />
             </DeviceSettingsStack.Group>
-            <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceAuthenticity}
-                component={DeviceAuthenticityScreen}
-            />
-            <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
-                component={DeviceAuthenticityStackNavigator}
-            />
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.WipeDeviceStack}
                 component={WipeDeviceStackNavigator}
