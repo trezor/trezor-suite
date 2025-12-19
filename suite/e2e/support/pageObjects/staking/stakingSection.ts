@@ -4,6 +4,7 @@ import { paletteV1 } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
+import { step } from '../../common';
 
 export class StakingSection {
     readonly rewardList: RewardsList;
@@ -127,6 +128,7 @@ export class StakingSection {
         this.modalHeader = this.page.getByTestId('@modal/header');
     }
 
+    @step()
     async expectProgressIndicatorsToMatchPhase(
         phase: 'pendingTransaction' | 'addingToPool' | 'receivingRewards',
     ) {
@@ -163,25 +165,28 @@ export class StakingSection {
         );
     }
 
-    async expectStakingAmounts(options: {
+    @step()
+    async expectStakingAmounts(expected: {
         pending: string | 'hidden';
         staked: string | 'hidden';
         rewards: string | 'hidden';
         unstaking: string | 'hidden';
     }) {
-        const amounts = [
-            { locator: this.pendingAmount, value: options.pending },
-            { locator: this.stakedAmount, value: options.staked },
-            { locator: this.rewardsAmount, value: options.rewards },
-            { locator: this.unstakingAmount, value: options.unstaking },
-        ];
+        await expect(async () => {
+            const getStatus = async (locator: Locator) =>
+                (await locator.isVisible()) ? locator.innerText() : 'hidden';
 
-        for (const { locator, value } of amounts) {
-            if (value === 'hidden') {
-                await expect(locator).toBeHidden();
-            } else {
-                await expect(locator).toHaveText(value);
-            }
-        }
+            const [pending, staked, rewards, unstaking] = await Promise.all([
+                getStatus(this.pendingAmount),
+                getStatus(this.stakedAmount),
+                getStatus(this.rewardsAmount),
+                getStatus(this.unstakingAmount),
+            ]);
+
+            expect(
+                { pending, staked, rewards, unstaking },
+                'expected Staking dashboard to show correct values',
+            ).toEqual(expected);
+        }).toPass();
     }
 }
