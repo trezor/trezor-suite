@@ -10,7 +10,10 @@ import { getPrefixedURL } from 'src/utils/suite/router';
  */
 export const getOauthReceiverUrl = () => {
     if (!desktopApi.available) {
-        return `${window.location.origin}${getPrefixedURL('/static/oauth/oauth_receiver.html')}`;
+        return new URL(
+            getPrefixedURL('/static/oauth/oauth_receiver.html'),
+            window.location.origin,
+        ).toString();
     }
 
     return desktopApi.getHttpReceiverAddress('/oauth');

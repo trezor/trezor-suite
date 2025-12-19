@@ -1,0 +1,14 @@
+{
+    "public": "build",
+    "headers": [
+        {
+            "source": "**/*.html",
+            "headers": [
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'sha256-CMsgtXIUgF58yz1R2jwFGG5Hnd9ZlhuaLq7llOPYQvY='; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.trezor.io; connect-src data: *; frame-ancestors 'none'; upgrade-insecure-requests"
+                }
+            ]
+        }
+    ]
+}

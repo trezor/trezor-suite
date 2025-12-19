@@ -7,6 +7,19 @@ import { DEV_PORTS } from '../utils/constants';
 import { project } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
+/**
+ * `packages/suite-data/files/oauth/oauth_receiver.html`
+ */
+const oauthReceiverInlineScriptHash = 'sha256-CMsgtXIUgF58yz1R2jwFGG5Hnd9ZlhuaLq7llOPYQvY=';
+
+/**
+ * `packages/suite-web/src/static/index.html`
+ */
+const faviconInlineScriptHash = 'sha256-1YQBibZWwmN5MXiubzhih9QDjLdHB9/4SCFdoQQY8n4=';
+
+const cspReportUri =
+    'https://o117836.ingest.us.sentry.io/api/5193825/security/?sentry_key=6d91ca6e6a5d4de7b47989455858b5f6';
+
 const distPath = path.join(getPathForProject(project), 'build');
 const config: webpack.Configuration = {
     stats: {
@@ -31,6 +44,57 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new WebpackPluginServe({
+            // FIXME:
+            middleware: app => {
+                app.use(async (ctx, next) => {
+                    await next();
+                    ctx.set(
+                        'Content-Security-Policy',
+                        // TODO: get ridd off the sha256
+                        `default-src 'self'; script-src 'self' 'unsafe-eval' '${oauthReceiverInlineScriptHash}' '${faviconInlineScriptHash}'; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; style-src-elem 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.trezor.io; connect-src data: *; frame-ancestors 'none'; upgrade-insecure-requests; report-uri ${cspReportUri}; report-to csp-endpoint`,
+                    );
+
+                    ctx.set(
+                        'Report-To',
+                        `${JSON.stringify({
+                            group: 'csp-endpoint',
+                            max_age: 10886400,
+                            endpoints: [{ url: `${cspReportUri}` }],
+                            include_subdomains: true,
+                        })}`,
+                    );
+
+                    ctx.set('Reporting-Endpoints', `csp-endpoint=${cspReportUri}`);
+
+                    /**
+                     * No one can embed your site in an iframe.
+                     */
+                    ctx.set('X-Frame-Options', 'DENY');
+
+                    /**
+                     * Prevents the browser from trying to guess the MIME type of a file
+                     * and instead forces it to use the one provided by the server.
+                     */
+                    ctx.set('X-Content-Type-Options', 'nosniff');
+
+                    /**
+                     * Sets `window.opener` to `null` for all outbound links.
+                     */
+                    ctx.set('Cross-Origin-Opener-Policy', 'same-origin');
+
+                    // TODO:
+                    ctx.set('Cross-Origin-Embedder-Policy', 'require-corp');
+
+                    /**
+                     * Prevents the browser from making cross-origin requests to the resource.
+                     */
+                    // ctx.set('Cross-origin-resource-policy', 'cross-origin');
+
+                    ctx.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+                    ctx.set('Upgrade-Insecure-Requests', '1');
+                });
+            },
             port: DEV_PORTS[project],
             hmr: true,
             host: 'localhost',

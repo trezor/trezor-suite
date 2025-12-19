@@ -264,6 +264,8 @@ export const AssetLogo = ({
                         alt={placeholder}
                         onLoad={handleOnLoad}
                         onError={handleLoadError}
+                        // TODO: only for, for prod. the origin is the same
+                        crossOrigin="anonymous"
                     />
                 </ElevationUp>
             )}
