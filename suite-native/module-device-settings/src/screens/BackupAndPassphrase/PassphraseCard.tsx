@@ -9,17 +9,14 @@ import {
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    BackupAndPassphraseParamList,
-    BackupAndPassphraseStackRoutes,
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
-type NavigationProp = StackNavigationProps<
-    BackupAndPassphraseParamList,
-    BackupAndPassphraseStackRoutes.BackupAndPassphrase
->;
+type NavigationProp = StackNavigationProps<DeviceSettingsStackParamList, DeviceSettingsStackRoutes>;
 
 export const PassphraseCard = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -30,7 +27,7 @@ export const PassphraseCard = () => {
     if (!device) return null;
 
     const togglePassphrase = async () => {
-        navigation.navigate(BackupAndPassphraseStackRoutes.ContinueOnTrezor);
+        navigation.navigate(DeviceSettingsStackRoutes.DevicePassphraseStack);
         const response = await TrezorConnect.applySettings({
             device: {
                 path: device.path,

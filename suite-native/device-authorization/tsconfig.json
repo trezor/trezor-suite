@@ -10,6 +10,8 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../bluetooth" },
+        { "path": "../device" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" },

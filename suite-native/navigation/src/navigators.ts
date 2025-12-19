@@ -20,7 +20,6 @@ import {
     AddCoinAccountStackRoutes,
     AppTabsRoutes,
     AuthorizeDeviceStackRoutes,
-    BackupAndPassphraseStackRoutes,
     DemoAccountQuestionnaireStackRoutes,
     DevUtilsStackRoutes,
     DeviceAuthenticityStackRoutes,
@@ -28,6 +27,7 @@ import {
     DeviceCheckBackupStackRoutes,
     DeviceNameStackRoutes,
     DeviceOnboardingStackRoutes,
+    DevicePassphraseStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackRoutes,
     FirmwareLanguageStackRoutes,
@@ -242,12 +242,13 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DevicePinProtectionStack]: {
         type: PinActionType;
     };
+    [DeviceSettingsStackRoutes.DeviceBackupAndPassphrase]: undefined;
+    [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: undefined;
+    [DeviceSettingsStackRoutes.DevicePassphraseStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
-    [DeviceSettingsStackRoutes.BackupAndPassphraseStack]: NavigatorScreenParams<BackupAndPassphraseParamList>;
-    [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: NavigatorScreenParams<DeviceCheckBackupStackParamList>;
 };
 
 export type DeviceNameStackParamList = {
@@ -289,12 +290,8 @@ export type WipeDeviceStackParamList = {
     [WipeDeviceStackRoutes.FactoryReset]: undefined;
 };
 
-export type BackupAndPassphraseParamList = {
-    [BackupAndPassphraseStackRoutes.BackupAndPassphrase]: undefined;
-    [BackupAndPassphraseStackRoutes.ContinueOnTrezor]: undefined;
-};
-
 export type DeviceCheckBackupStackParamList = {
+    [DeviceCheckBackupStackRoutes.DeviceConnectionGuard]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupTutorial]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackup]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupSuccess]: undefined;
@@ -304,6 +301,11 @@ export type DeviceCheckBackupStackParamList = {
     };
     [DeviceCheckBackupStackRoutes.CheckBackupSupport]: undefined;
     [DeviceCheckBackupStackRoutes.CheckBackupFail]: undefined;
+};
+
+export type DevicePassphraseStackParamList = {
+    [DevicePassphraseStackRoutes.DeviceConnectionGuard]: undefined;
+    [DevicePassphraseStackRoutes.ContinueOnTrezor]: undefined;
 };
 
 export type DeviceAuthenticityStackParamList = {

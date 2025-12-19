@@ -89,11 +89,12 @@ export enum DeviceSettingsStackRoutes {
     UnpairBluetoothDevice = 'UnpairBluetoothDevice',
     DevicePinProtection = 'DevicePinProtection',
     DevicePinProtectionStack = 'DevicePinProtectionStack',
-    BackupAndPassphraseStack = 'BackupAndPassphraseStack',
+    DeviceBackupAndPassphrase = 'DeviceBackupAndPassphrase',
+    DeviceCheckBackupStack = 'DeviceCheckBackupStack',
+    DevicePassphraseStack = 'DevicePassphraseStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
     WipeDeviceStack = 'WipeDeviceStack',
-    DeviceCheckBackupStack = 'DeviceCheckBackupStack',
 }
 
 export enum DeviceNameStackRoutes {
@@ -111,6 +112,22 @@ export enum DevicePinProtectionStackRoutes {
     ConfirmNewPin = 'ConfirmNewPin',
 }
 
+export enum DeviceCheckBackupStackRoutes {
+    UnsupportedModel = 'UnsupportedModel',
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    CheckBackupTutorial = 'CheckBackupTutorial',
+    CheckBackup = 'CheckBackup',
+    CheckBackupSuccess = 'CheckBackupSuccess',
+    CheckBackupRecap = 'CheckBackupRecap',
+    CheckBackupFail = 'CheckBackupFail',
+    CheckBackupSupport = 'CheckBackupSupport',
+}
+
+export enum DevicePassphraseStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+}
+
 export enum FirmwareUpdateStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
@@ -126,16 +143,6 @@ export enum FirmwareLanguageStackRoutes {
 export enum DeviceAutoConnectStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmAutoConnect = 'ConfirmAutoConnect',
-}
-
-export enum DeviceCheckBackupStackRoutes {
-    CheckBackupTutorial = 'CheckBackupTutorial',
-    CheckBackup = 'CheckBackup',
-    CheckBackupSuccess = 'CheckBackupSuccess',
-    CheckBackupRecap = 'CheckBackupRecap',
-    UnsupportedModel = 'UnsupportedModel',
-    CheckBackupFail = 'CheckBackupFail',
-    CheckBackupSupport = 'CheckBackupSupport',
 }
 
 export enum DeviceAuthenticityStackRoutes {

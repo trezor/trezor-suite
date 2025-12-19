@@ -40,7 +40,7 @@ export const DeviceCheckBackupUnsupportedModelScreen = () => {
     };
 
     return (
-        <Screen header={<ScreenHeader />}>
+        <Screen header={<ScreenHeader closeActionType="close" />}>
             <Box marginTop="sp16">
                 <TitleHeader
                     titleVariant="titleMedium"

@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
-    BackupAndPassphraseStackRoutes,
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
     StackNavigationProps,
@@ -27,9 +26,7 @@ export const BackupAndPassphraseCard = () => {
     }
 
     const handleOnPress = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.BackupAndPassphraseStack, {
-            screen: BackupAndPassphraseStackRoutes.BackupAndPassphrase,
-        });
+        navigation.navigate(DeviceSettingsStackRoutes.DeviceBackupAndPassphrase);
     };
 
     return (

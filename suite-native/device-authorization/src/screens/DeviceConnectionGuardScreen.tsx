@@ -6,9 +6,10 @@ import {
     ConnectAndUnlockDeviceScreenContent,
     TurnOnAndUnlockDeviceScreenContent,
 } from '@suite-native/device';
-import { ConnectDeviceScreenHeader } from '@suite-native/device-authorization';
 import { Screen } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+
+import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
 
 type DeviceConnectionGuardScreenParams = {
     onCancel?: () => void;

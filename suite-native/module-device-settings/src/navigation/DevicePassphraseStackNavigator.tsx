@@ -5,32 +5,32 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
 import {
-    DeviceAutoConnectStackParamList,
-    DeviceAutoConnectStackRoutes,
+    DevicePassphraseStackParamList,
+    DevicePassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 
-const DeviceAutoConnectStack = createNativeStackNavigator<DeviceAutoConnectStackParamList>();
+const BackupAndPassphraseStack = createNativeStackNavigator<DevicePassphraseStackParamList>();
 
-export const DeviceAutoConnectStackNavigator = () => {
+export const DevicePassphraseStackNavigator = () => {
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     return (
-        <DeviceAutoConnectStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+        <BackupAndPassphraseStack.Navigator screenOptions={stackNavigationOptionsConfig}>
             {!isDeviceConnected && (
-                <DeviceAutoConnectStack.Screen
-                    name={DeviceAutoConnectStackRoutes.DeviceConnectionGuard}
+                <BackupAndPassphraseStack.Screen
+                    name={DevicePassphraseStackRoutes.DeviceConnectionGuard}
                     component={DeviceConnectionGuardScreenWithCancel}
                 />
             )}
             {isDeviceConnected && (
-                <DeviceAutoConnectStack.Screen
-                    name={DeviceAutoConnectStackRoutes.ConfirmAutoConnect}
+                <BackupAndPassphraseStack.Screen
+                    name={DevicePassphraseStackRoutes.ContinueOnTrezor}
                     component={ContinueOnTrezorScreen}
                 />
             )}
-        </DeviceAutoConnectStack.Navigator>
+        </BackupAndPassphraseStack.Navigator>
     );
 };
