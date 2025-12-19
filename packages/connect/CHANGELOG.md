@@ -11,7 +11,7 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.7.0
+# 9.7.1-beta.1
 
 We are deprecating `coreMode: 'iframe'` for connect-web, which is now limited due to [Local Network Access](https://developer.chrome.com/blog/local-network-access) permission. If you are using it explicitly, we recommend moving to `coreMode: 'auto'` for a better user experience.
 
@@ -51,6 +51,10 @@ This release also fixes import issues with CommonJS in Node environments.
 - feat(connect-webextension): suite web popup implementation for webextension (175e40c)
 - feat(connect): use existing message channels for suite web (314464a)
 - feat(connect): suite web popup implementation (6bafb1e)
+
+#  9.7.0
+
+This release had an issue with TypeScript definitions files.
 
 # 9.6.4
 
