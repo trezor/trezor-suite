@@ -1,14 +1,7 @@
 import { routes } from '@suite-common/suite-config';
-import { ArrayElement, ConstWithOptionalFields } from '@trezor/type-utils';
+import { ArrayElement, ConstWithOptionalFields, Keys } from '@trezor/type-utils';
 
-type RouteKeys =
-    | keyof ArrayElement<typeof routes>
-    | 'params'
-    | 'hasNestedRoutes'
-    | 'isForegroundApp'
-    | 'isNestedRoute'
-    | 'isFullscreenApp'
-    | 'clearUrl';
+type RouteKeys = Keys<ArrayElement<typeof routes>>;
 
 export type Route = ArrayElement<ConstWithOptionalFields<typeof routes, RouteKeys>>;
 
