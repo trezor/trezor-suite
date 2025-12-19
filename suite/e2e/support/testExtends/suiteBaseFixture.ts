@@ -55,6 +55,8 @@ const electronSetup = async (
         .context()
         .tracing.start({ screenshots: true, snapshots: true, sources: true });
 
+    await mockRemoteMessageSystem(suite.window);
+
     return suite;
 };
 
