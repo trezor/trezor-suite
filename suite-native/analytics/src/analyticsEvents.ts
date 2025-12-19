@@ -1,13 +1,10 @@
-import type { AttributeDef, EventDef } from './analyticsSchema';
-import * as sharedEventsData from './shared/data';
-// import * as desktopEventsData from './suite/data';
-import * as mobileEventsData from './suite-native/data';
+import { AttributeDef, EventDef, sharedEventsData } from '@suite-common/analytics';
 
-// export const desktopEvents = desktopEventsData;
+import * as mobileEventsData from './events';
+
 export const mobileEvents = mobileEventsData;
 export const sharedEvents = sharedEventsData;
 
-// export type AnyDesktopEventDef = (typeof desktopEvents)[keyof typeof desktopEvents];
 export type AnyMobileEventDef = (typeof mobileEvents)[keyof typeof mobileEvents];
 export type AnySharedEventDef = (typeof sharedEvents)[keyof typeof sharedEvents];
 
@@ -23,6 +20,5 @@ export type EventInstance<E extends EventDef<any, any>> = {
     };
 };
 
-// export type AnalyticsDesktopEvent = EventInstance<AnyDesktopEventDef>;
 export type AnalyticsMobileEvent = EventInstance<AnyMobileEventDef>;
 export type AnalyticsSharedEvent = EventInstance<AnySharedEventDef>;

@@ -77,7 +77,7 @@ export enum EventType {
     TradingExchangeApproval = 'trade/approval',
     TradingReceivedQuotes = 'trade/received-quotes',
 
-    StakingNavigate = 'staking/navigate',
+    // StakingNavigate = 'staking/navigate',
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',
     StakingClaim = 'staking/claim',
@@ -138,7 +138,7 @@ export enum EventType {
     GetMobileApp = 'promo/mobile',
 
     ReferralButton = 'promo/referral-button',
-    DashboardBanner = 'promo/dashboard-banner',
+    // DashboardBanner = 'promo/dashboard-banner',
 
     AutostartModal = 'autostart-modal',
 }

@@ -1,11 +1,12 @@
+import { createReportAnalytics } from '@suite-common/analytics';
+import { Analytics } from '@trezor/analytics';
+
 import {
     AnalyticsDesktopEvent,
     AnalyticsSharedEvent,
     AnyDesktopEventDef,
     AnySharedEventDef,
 } from './analyticsEvents';
-import { createReportAnalytics } from '@suite-common/analytics';
-import { Analytics } from '@trezor/analytics';
 
 const newAnalytics = new Analytics<AnalyticsDesktopEvent | AnalyticsSharedEvent>({
     version: process.env.VERSION!,

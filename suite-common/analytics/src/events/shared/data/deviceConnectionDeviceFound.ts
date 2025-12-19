@@ -1,11 +1,15 @@
 import type { AttributeDef, EventDef } from '../../analyticsSchema';
+import { EventType } from '../constants';
 
 type Attributes = {
     option: AttributeDef<'connect' | 'close'>;
 };
 
-export const deviceConnectionDeviceFound = {
-    name: 'device-connection/device-found',
+export const deviceConnectionDeviceFound: EventDef<
+    Attributes,
+    EventType.DeviceConnectionDeviceFound
+> = {
+    name: EventType.DeviceConnectionDeviceFound,
     descriptionTrigger:
         'User clicks on Connect button for any  nearby Trezor on Device Found Screen',
     changelog: [{ version: '25.11.1', notes: 'added' }],
@@ -15,4 +19,4 @@ export const deviceConnectionDeviceFound = {
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },
-} satisfies EventDef<Attributes>;
+};

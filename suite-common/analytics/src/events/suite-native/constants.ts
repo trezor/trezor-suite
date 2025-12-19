@@ -7,7 +7,7 @@ export enum EventType {
     CreateReceiveAddress = 'create_receive_address',
     CreateReceiveAddressShowAddress = 'create_receive_address/show_address',
     ConfirmedReceiveAdress = 'receiveAddress/confirm_on_trezor',
-    AssetDetail = 'asset_detail',
+    // AssetDetail = 'asset_detail',
     AssetDetailTimeframeChange = 'asset_detail/timeframe_change',
     TransactionDetail = 'transaction_detail',
     TransactionDetailParameters = 'transaction_detail/parameters',

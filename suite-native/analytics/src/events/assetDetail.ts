@@ -1,8 +1,6 @@
+import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-
-import type { AttributeDef, EventDef } from '../../analyticsSchema';
-import { EventType } from '../constants';
 
 type Attributes = {
     assetSymbol: AttributeDef<NetworkSymbol>;
@@ -10,8 +8,8 @@ type Attributes = {
     tokenAddress?: AttributeDef<TokenAddress>;
 };
 
-export const assetDetail = {
-    name: EventType.AssetDetail,
+export const assetDetail: EventDef<Attributes, 'asset_detail'> = {
+    name: 'asset_detail',
     descriptionTrigger: '?',
     changelog: [
         { version: '25.4.0', notes: 'added' },
@@ -29,4 +27,4 @@ export const assetDetail = {
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },
-} satisfies EventDef<Attributes>;
+};

@@ -1,1 +1,1 @@
-export { analytics, reportAnalytics } from '../suite';
+export { analytics } from '../suite';

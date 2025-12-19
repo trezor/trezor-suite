@@ -2,11 +2,11 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 type Attributes = {
     action: AttributeDef<'cta' | 'close'>;
-    bannerType?: AttributeDef<string | null>;
+    bannerType?: AttributeDef<'tex' | 'ts7' | null>;
 };
 
-export const dashboardBanner = {
-    name: 'promo/dashboard-banner' as const,
+export const dashboardBanner: EventDef<Attributes, 'promo/dashboard-banner'> = {
+    name: 'promo/dashboard-banner',
     descriptionTrigger: 'A user clicks the dashboard promo banner',
     changelog: [{ version: '25.8.0', notes: 'added' }],
 
@@ -19,8 +19,4 @@ export const dashboardBanner = {
             changelog: [{ version: '25.8.0', notes: 'added' }],
         },
     },
-} satisfies EventDef<Attributes>;
-
-// type X = (typeof dashboardBanner | typeof dashboardBanner2)['name'];
-//
-// const x: X = { type: 'asd' };
+};

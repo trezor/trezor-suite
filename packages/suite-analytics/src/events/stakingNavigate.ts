@@ -19,7 +19,7 @@ type Attributes = {
     networkSymbol?: AttributeDef<NetworkSymbol>;
 };
 
-export const stakingNavigate = {
+export const stakingNavigate: EventDef<Attributes, 'staking/navigate'> = {
     name: 'staking/navigate' as const,
     descriptionTrigger:
         'fired when the user navigates from any staking button to the staking dashboard',
@@ -39,4 +39,4 @@ export const stakingNavigate = {
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
     },
-} satisfies EventDef<Attributes>;
+};
