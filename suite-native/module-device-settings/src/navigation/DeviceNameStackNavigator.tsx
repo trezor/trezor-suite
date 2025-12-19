@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
 import {
     DeviceNameStackParamList,
     DeviceNameStackRoutes,
@@ -10,7 +11,6 @@ import {
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
-import { DeviceConnectionGuardScreen } from '../screens/DeviceConnectionGuardScreen';
 import { DeviceNameLoadingScreen } from '../screens/DeviceNameLoadingScreen';
 import { DeviceNameScreen } from '../screens/DeviceNameScreen';
 

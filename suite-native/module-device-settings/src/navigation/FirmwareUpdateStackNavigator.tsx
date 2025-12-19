@@ -9,8 +9,8 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
+import { DeviceConnectionGuardScreen } from '../../../device-authorization/src/screens/DeviceConnectionGuardScreen';
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
-import { DeviceConnectionGuardScreen } from '../screens/DeviceConnectionGuardScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';
 

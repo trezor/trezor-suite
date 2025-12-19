@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
 import {
     FirmwareLanguageStackParamList,
     FirmwareLanguageStackRoutes,
@@ -10,7 +11,6 @@ import {
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
-import { DeviceConnectionGuardScreenWithCancel } from '../screens/DeviceConnectionGuardScreen';
 
 const FirmwareLanguageStack = createNativeStackNavigator<FirmwareLanguageStackParamList>();
 

@@ -4,7 +4,6 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Screen } from '@suite-native/navigation';
 import {
     SwipeableWalkthrough,
@@ -19,7 +18,6 @@ import { CheckBackupTutorialStep2 } from '../components/CheckBackupTutorialStep2
 const WALLET_BACKUP_TUTORIAL_STEPS_COUNT = 2;
 
 export const DeviceCheckBackupTutorialScreen = () => {
-    useDeviceConnectionGuard();
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
     const currentStepIndex = useSharedValue(0);
 

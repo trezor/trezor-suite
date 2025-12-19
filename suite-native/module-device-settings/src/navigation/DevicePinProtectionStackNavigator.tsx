@@ -9,6 +9,7 @@ import {
     selectIsDeviceConnected,
 } from '@suite-common/wallet-core';
 import { usePinAction } from '@suite-native/device';
+import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
 import {
     DevicePinProtectionStackParamList,
     DevicePinProtectionStackRoutes,
@@ -19,7 +20,6 @@ import {
 } from '@suite-native/navigation';
 
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
-import { DeviceConnectionGuardScreen } from '../screens/DeviceConnectionGuardScreen';
 import {
     ConfirmNewPinScreen,
     EnterCurrentPinScreen,
