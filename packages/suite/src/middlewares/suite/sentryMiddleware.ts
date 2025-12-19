@@ -20,6 +20,7 @@ import {
     ROUTER,
     SUITE,
 } from 'src/actions/suite/constants';
+import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { getSuiteReadyPayload } from 'src/utils/suite/analytics';
 import {
@@ -112,7 +113,7 @@ const sentryMiddleware =
                 break;
             }
             case ROUTER.LOCATION_CHANGE:
-                setSentryTag('routerURL', action.payload.url);
+                setSentryTag('routerURL', selectRouterUrl(state));
                 break;
             case SUITE.TOR_STATUS:
                 setSentryTag('torStatus', action.payload);

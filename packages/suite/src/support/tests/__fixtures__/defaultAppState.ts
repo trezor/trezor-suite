@@ -63,7 +63,6 @@ export const initialAppState: AppState = {
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,
-        url: '/suite-web/develop/web/',
         pathname: '/suite-web/develop/web/',
         app: 'dashboard',
         route: {

@@ -71,7 +71,6 @@ describe('suite middleware', () => {
             const store = initStore(
                 getInitialState({
                     loaded: false,
-                    url: '/',
                     pathname: '/',
                     hash: undefined,
                     app: 'unknown',
@@ -83,7 +82,6 @@ describe('suite middleware', () => {
                 }),
             );
             const payload = {
-                url: '/',
                 pathname: '/',
                 app: 'dashboard',
                 route: {
@@ -109,7 +107,6 @@ describe('suite middleware', () => {
             const store = initStore(
                 getInitialState({
                     loaded: true,
-                    url: '/onboarding',
                     pathname: '/onboarding',
                     hash: undefined,
                     app: 'onboarding',
@@ -131,7 +128,6 @@ describe('suite middleware', () => {
                 }),
             );
             const payload = {
-                url: '/onboarding',
                 pathname: '/onboarding',
                 app: 'onboarding',
                 route: {

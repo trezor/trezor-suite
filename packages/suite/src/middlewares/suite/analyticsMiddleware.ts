@@ -34,6 +34,7 @@ import { ROUTER, SUITE } from 'src/actions/suite/constants';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { COINJOIN } from 'src/actions/wallet/constants';
+import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import {
     selectAnonymityGainToReportByAccountKey,
     selectCoinjoinAccountByKey,
@@ -55,7 +56,7 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 */
 const analyticsMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) => (next: Dispatch) => (action: Action) => {
-        const prevRouterUrl = api.getState().router.url;
+        const prevRouterUrl = selectRouterUrl(api.getState());
 
         // pass action
         next(action);
@@ -250,7 +251,7 @@ const analyticsMiddleware =
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
-                            nextRouterUrl: redactRouterUrl(action.payload.url),
+                            nextRouterUrl: redactRouterUrl(selectRouterUrl(state)),
                             anchor: redactTransactionIdFromAnchor(action.payload.anchor),
                         },
                     });

@@ -65,7 +65,6 @@ describe('onboardingMiddleware', () => {
             const store = initStore(
                 getInitialState({
                     loaded: false,
-                    url: '/',
                     pathname: '/',
                     hash: undefined,
                     app: 'unknown',

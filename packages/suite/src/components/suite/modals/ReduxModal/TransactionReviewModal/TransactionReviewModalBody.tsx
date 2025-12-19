@@ -12,6 +12,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
@@ -42,7 +43,7 @@ export const TransactionReviewModalBody = ({
     const { precomposedTx } = txInfoState;
     const [hasTxExpired, setHasTxExpired] = useState(false);
 
-    const router = useSelector(state => state.router);
+    const url = useSelector(selectRouterUrl);
 
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
@@ -97,10 +98,10 @@ export const TransactionReviewModalBody = ({
 
             analytics.report({
                 type: EventType.TransactionRetry,
-                payload: { url: redactRouterUrl(router.url) },
+                payload: { url: redactRouterUrl(url) },
             });
         },
-        [tryAgainSignTx, router.url],
+        [tryAgainSignTx, url],
     );
 
     if (!device) return null;
