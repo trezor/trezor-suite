@@ -1,11 +1,34 @@
 import { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import { BorderRadii, CSSColor, TypographyStyle } from '@trezor/theme';
+import { BorderRadii, CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
-import { ButtonIntent, ButtonPriority, ButtonSize } from './types';
+import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from './types';
 
 const OPACITY_HOVER_STATE = 0.82;
 const OPACITY_ACTIVE_STATE = 0.74;
+
+export const pickButtonProps = ({
+    href,
+    target = '_blank',
+    onClick,
+    type = 'button',
+    tabIndex,
+    isLoading = false,
+    isDisabled = false,
+}: CommonButtonProps) => {
+    const isLink = href !== undefined;
+
+    return {
+        as: isLink ? 'a' : 'button',
+        disabled: isLink ? false : isDisabled || isLoading,
+        onClick,
+        type: isLink ? undefined : type,
+        tabIndex,
+        href,
+        target: isLink ? target : undefined,
+        rel: isLink ? 'noreferrer noopener' : undefined,
+    };
+};
 
 export const commonButtonStyles = css`
     border: 0;
@@ -93,44 +116,52 @@ export const mapPropsToColor = (
     theme: DefaultTheme,
 ): CSSColor => {
     if (isDisabled) {
-        return isInverse ? theme.stateContentDisabledInverse : theme.stateContentDisabled;
+        return theme[isInverse ? 'stateContentDisabledInverse' : 'stateContentDisabled'];
     }
 
-    const colorMap: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
+    const colorMap: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
         primary: {
-            brand: theme.baseContentOnActionBrandPrimary,
-            neutral: theme.baseContentReversePrimary,
-            info: theme.baseContentOnActionInfoPrimary,
-            warning: theme.baseContentOnActionWarningPrimary,
-            critical: theme.baseContentOnActionNegativePrimary,
+            brand: 'baseContentOnActionBrandPrimary',
+            neutral: 'baseContentReversePrimary',
+            info: 'baseContentOnActionInfoPrimary',
+            warning: 'baseContentOnActionWarningPrimary',
+            critical: 'baseContentOnActionNegativePrimary',
+            accentViolet: 'baseContentOnActionAccentVioletPrimary',
+            accentOrange: 'baseContentOnActionAccentOrangePrimary',
         },
         secondary: {
-            brand: theme.baseContentBrandContrast,
-            neutral: theme.baseContentNeutralContrast,
-            info: theme.baseContentInfoContrast,
-            warning: theme.baseContentWarningContrast,
-            critical: theme.baseContentNegativeContrast,
+            brand: 'baseContentBrandContrast',
+            neutral: 'baseContentNeutralContrast',
+            info: 'baseContentInfoContrast',
+            warning: 'baseContentWarningContrast',
+            critical: 'baseContentNegativeContrast',
+            accentViolet: 'baseContentAccentVioletContrast',
+            accentOrange: 'baseContentAccentOrangeContrast',
         },
     };
 
-    const colorMapInverse: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
+    const colorMapInverse: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
         primary: {
-            brand: theme.baseContentOnActionBrandPrimaryInverse,
-            neutral: theme.baseContentReversePrimaryInverse,
-            info: theme.baseContentOnActionInfoPrimaryInverse,
-            warning: theme.baseContentOnActionWarningPrimaryInverse,
-            critical: theme.baseContentOnActionNegativePrimaryInverse,
+            brand: 'baseContentOnActionBrandPrimaryInverse',
+            neutral: 'baseContentReversePrimaryInverse',
+            info: 'baseContentOnActionInfoPrimaryInverse',
+            warning: 'baseContentOnActionWarningPrimaryInverse',
+            critical: 'baseContentOnActionNegativePrimaryInverse',
+            accentViolet: 'baseContentOnActionAccentVioletPrimaryInverse',
+            accentOrange: 'baseContentOnActionAccentOrangePrimaryInverse',
         },
         secondary: {
-            brand: theme.baseContentBrandContrastInverse,
-            neutral: theme.baseContentNeutralContrastInverse,
-            info: theme.baseContentInfoContrastInverse,
-            warning: theme.baseContentWarningContrastInverse,
-            critical: theme.baseContentNegativeContrastInverse,
+            brand: 'baseContentBrandContrastInverse',
+            neutral: 'baseContentNeutralContrastInverse',
+            info: 'baseContentInfoContrastInverse',
+            warning: 'baseContentWarningContrastInverse',
+            critical: 'baseContentNegativeContrastInverse',
+            accentViolet: 'baseContentAccentVioletContrastInverse',
+            accentOrange: 'baseContentAccentOrangeContrastInverse',
         },
     };
 
-    return isInverse ? colorMapInverse[priority][intent] : colorMap[priority][intent];
+    return theme[isInverse ? colorMapInverse[priority][intent] : colorMap[priority][intent]];
 };
 
 export const mapPropsToCSS = (
@@ -141,62 +172,70 @@ export const mapPropsToCSS = (
     theme: DefaultTheme,
 ): RuleSet<object> => {
     if (isDisabled) {
-        const backgroundMapDisabled: Record<ButtonPriority, CSSColor> = {
-            primary: theme.stateFillElementBoldDisabled,
-            secondary: theme.stateFillElementSoftDisabled,
+        const backgroundMapDisabled: Record<ButtonPriority, Color> = {
+            primary: 'stateFillElementBoldDisabled',
+            secondary: 'stateFillElementSoftDisabled',
         };
 
-        const backgroundMapDisabledInverse: Record<ButtonPriority, CSSColor> = {
-            primary: theme.stateFillElementBoldInverseDisabled,
-            secondary: theme.stateFillElementSoftInverseDisabled,
+        const backgroundMapDisabledInverse: Record<ButtonPriority, Color> = {
+            primary: 'stateFillElementBoldInverseDisabled',
+            secondary: 'stateFillElementSoftInverseDisabled',
         };
 
-        const backgroundColor = isInverse
-            ? backgroundMapDisabledInverse[priority]
-            : backgroundMapDisabled[priority];
+        const backgroundColor =
+            theme[
+                isInverse ? backgroundMapDisabledInverse[priority] : backgroundMapDisabled[priority]
+            ];
 
         return css`
             background: ${backgroundColor};
         `;
     }
 
-    const backgroundMap: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
+    const backgroundMap: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
         primary: {
-            brand: theme.baseFillElementBrandBold,
-            neutral: theme.baseFillElementContrast,
-            info: theme.baseFillElementInfoBold,
-            warning: theme.baseFillElementWarningBold,
-            critical: theme.baseFillElementNegativeBold,
+            brand: 'baseFillElementBrandBold',
+            neutral: 'baseFillElementContrast',
+            info: 'baseFillElementInfoBold',
+            warning: 'baseFillElementWarningBold',
+            critical: 'baseFillElementNegativeBold',
+            accentViolet: 'baseFillElementAccentVioletBold',
+            accentOrange: 'baseFillElementAccentOrangeBold',
         },
         secondary: {
-            brand: theme.baseFillElementBrandSoft,
-            neutral: theme.baseFillElementNeutralSoft,
-            info: theme.baseFillElementInfoSoft,
-            warning: theme.baseFillElementWarningSoft,
-            critical: theme.baseFillElementNegativeSoft,
+            brand: 'baseFillElementBrandSoft',
+            neutral: 'baseFillElementNeutralSoft',
+            info: 'baseFillElementInfoSoft',
+            warning: 'baseFillElementWarningSoft',
+            critical: 'baseFillElementNegativeSoft',
+            accentViolet: 'baseFillElementAccentVioletSoft',
+            accentOrange: 'baseFillElementAccentOrangeSoft',
         },
     };
 
-    const backgroundMapInverse: Record<ButtonPriority, Record<ButtonIntent, CSSColor>> = {
+    const backgroundMapInverse: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
         primary: {
-            brand: theme.baseFillElementBrandBoldInverse,
-            neutral: theme.baseFillElementNeutralLight,
-            info: theme.baseFillElementInfoBoldInverse,
-            warning: theme.baseFillElementWarningBoldInverse,
-            critical: theme.baseFillElementNegativeBoldInverse,
+            brand: 'baseFillElementBrandBoldInverse',
+            neutral: 'baseFillElementNeutralLight',
+            info: 'baseFillElementInfoBoldInverse',
+            warning: 'baseFillElementWarningBoldInverse',
+            critical: 'baseFillElementNegativeBoldInverse',
+            accentViolet: 'baseFillElementAccentVioletBoldInverse',
+            accentOrange: 'baseFillElementAccentOrangeBoldInverse',
         },
         secondary: {
-            brand: theme.baseFillElementBrandSoftInverse,
-            neutral: theme.baseFillElementNeutralSoftInverse,
-            info: theme.baseFillElementInfoSoftInverse,
-            warning: theme.baseFillElementWarningSoftInverse,
-            critical: theme.baseFillElementNegativeSoftInverse,
+            brand: 'baseFillElementBrandSoftInverse',
+            neutral: 'baseFillElementNeutralSoftInverse',
+            info: 'baseFillElementInfoSoftInverse',
+            warning: 'baseFillElementWarningSoftInverse',
+            critical: 'baseFillElementNegativeSoftInverse',
+            accentViolet: 'baseFillElementAccentVioletSoftInverse',
+            accentOrange: 'baseFillElementAccentOrangeSoftInverse',
         },
     };
 
-    const backgroundColor = isInverse
-        ? backgroundMapInverse[priority][intent]
-        : backgroundMap[priority][intent];
+    const backgroundColor =
+        theme[isInverse ? backgroundMapInverse[priority][intent] : backgroundMap[priority][intent]];
 
     return css`
         background: ${backgroundColor};

@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 
 import { Button as ButtonComponent, ButtonProps, allowedButtonFrameProps } from './Button';
 import { variables } from '../../../config';
@@ -15,9 +16,7 @@ export default meta;
 export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Placeholder',
-        onClick: () => null,
-        href: undefined,
-        target: undefined,
+        onClick: action('onClick'),
         intent: 'brand',
         priority: 'primary',
         size: 'medium',

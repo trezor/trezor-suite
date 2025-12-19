@@ -87,9 +87,8 @@ const Data = ({ value }: { value: string }) => {
             </DataWrapper>
             <Row justifyContent="center">
                 <TextButton
-                    variant="tertiary"
-                    icon={isExpanded ? 'caretUp' : 'caretDown'}
-                    iconAlignment="start"
+                    intent="neutral"
+                    iconLeft={isExpanded ? 'caretUp' : 'caretDown'}
                     onClick={() => setIsExpanded(!isExpanded)}
                 >
                     <Translation id={isExpanded ? 'TR_SHOW_LESS' : 'TR_SHOW_MORE'} />

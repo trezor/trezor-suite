@@ -42,7 +42,6 @@ import { TroubleshootingTips } from './troubleshooting/TroubleshootingTips';
 import { getMessageId } from './getMessageId';
 import { CoinGroup } from './CoinGroup/CoinGroup';
 import { CoinList } from './CoinList/CoinList';
-import { CloseButton } from './CloseButton';
 import { StatusLight } from './StatusLight';
 import { AmountUnitSwitchWrapper } from './AmountUnitSwitchWrapper';
 import { TorLoader } from './TorLoader/TorLoader';
@@ -93,7 +92,6 @@ export {
     TroubleshootingTips,
     CoinGroup,
     CoinList,
-    CloseButton,
     StatusLight,
     AmountUnitSwitchWrapper,
     TorLoader,

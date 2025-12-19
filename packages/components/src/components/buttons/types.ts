@@ -1,6 +1,16 @@
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, HTMLAttributes } from 'react';
+
 import { UIIntent, UIPriority, UISize } from '../../config/types';
 
-export const buttonIntents = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
+export const buttonIntents = [
+    'brand',
+    'neutral',
+    'info',
+    'warning',
+    'critical',
+    'accentViolet',
+    'accentOrange',
+] as const;
 export type ButtonIntent = Extract<UIIntent, (typeof buttonIntents)[number]>;
 
 export const buttonSizes = ['large', 'medium', 'small'] as const;
@@ -8,3 +18,14 @@ export type ButtonSize = Extract<UISize, (typeof buttonSizes)[number]>;
 
 export const buttonPriorities = ['primary', 'secondary'] as const;
 export type ButtonPriority = Extract<UIPriority, (typeof buttonPriorities)[number]>;
+
+export type CommonButtonProps = {
+    intent?: ButtonIntent;
+    isLoading?: boolean;
+    isDisabled?: boolean;
+    onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
+    type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
+    href?: AnchorHTMLAttributes<HTMLAnchorElement>['href'];
+    target?: AnchorHTMLAttributes<HTMLAnchorElement>['target'];
+    tabIndex?: HTMLAttributes<HTMLElement>['tabIndex'];
+};

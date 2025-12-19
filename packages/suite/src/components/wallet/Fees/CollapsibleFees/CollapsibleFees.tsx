@@ -111,7 +111,7 @@ export function CollapsibleFees({
                                     <TextButton
                                         onClick={() => changeFeeLevel('custom')}
                                         data-testid="@wallet/fees/select-custom-fee"
-                                        variant="tertiary"
+                                        intent="neutral"
                                         size="small"
                                         isUnderlined
                                     >

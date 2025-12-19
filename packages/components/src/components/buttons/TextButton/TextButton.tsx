@@ -1,8 +1,6 @@
-import React, { ButtonHTMLAttributes } from 'react';
+import React from 'react';
 
-import styled, { DefaultTheme, useTheme } from 'styled-components';
-
-import { CSSColor, borders, spacingsPx, typography } from '@trezor/theme';
+import styled from 'styled-components';
 
 import {
     FrameProps,
@@ -11,179 +9,105 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { TransientProps } from '../../../utils/transientProps';
-import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
+import { Box } from '../../Box/Box';
+import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { IconAlignment, getIconColor, getIconSize } from '../buttonStyleUtils';
+import { Text } from '../../typography/Text/Text';
+import { ButtonIntent, CommonButtonProps } from '../types';
+import { TextButtonSize } from './types';
+import { mapIntentToCSS, mapSizeToIconSize, mapSizeToTypographyStyle } from './utils';
+import { pickButtonProps } from '../utils';
 
-export const allowedTextButtonFrameProps = ['margin'] as const satisfies FramePropsKeys[];
+export const allowedTextButtonFrameProps = [
+    'margin',
+    'maxWidth',
+    'width',
+    'flex',
+] as const satisfies FramePropsKeys[];
 export type AllowedTextButtonFrameProps = Pick<
     FrameProps,
     (typeof allowedTextButtonFrameProps)[number]
 >;
 
-export const textButtonSizes = ['small', 'large'] as const;
-export type TextButtonSize = (typeof textButtonSizes)[number];
-
-export const textButtonVariants = [
-    'primary',
-    'tertiary',
-    'info',
-    'warning',
-    'destructive',
-] as const;
-export type TextButtonVariant = (typeof textButtonVariants)[number];
-
-type GetIconProps = {
-    icon?: IconName | React.ReactElement;
-    size?: number;
-    color?: CSSColor;
-};
-
-export const getIcon = ({ icon, size, color }: GetIconProps) => {
-    if (!icon) return null;
-    if (typeof icon === 'string') {
-        return <Icon name={icon as IconName} size={size} color={color} />;
-    }
-
-    return icon;
-};
-
-const mapVariantToColor: Record<TextButtonVariant, string> = {
-    primary: 'textPrimaryDefault',
-    tertiary: 'textSubdued',
-    info: 'textAlertBlue',
-    warning: 'textAlertYellow',
-    destructive: 'textAlertRed',
-};
-
-const mapVariantToHoverColor: Record<TextButtonVariant, string> = {
-    primary: 'textPrimaryPressed',
-    tertiary: 'textPrimaryPressed',
-    info: 'textPrimaryPressed',
-    warning: 'textPrimaryPressed',
-    destructive: 'textPrimaryPressed',
-};
-
 const TextButtonContainer = styled.button<
     TransientProps<AllowedTextButtonFrameProps> & {
-        $size: TextButtonSize;
-        $iconAlignment: IconAlignment;
-        $variant: TextButtonVariant;
+        $intent: ButtonIntent;
         $isUnderlined: boolean;
+        disabled: boolean;
     }
 >`
-    display: flex;
-    align-items: center;
-    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'end' && 'row-reverse'};
-    gap: ${spacingsPx.xs};
-    border: 1px solid transparent;
-    border-radius: ${borders.radii.xxs};
+    display: inline-flex;
+    flex-shrink: 0;
+    width: fit-content;
+    border: 0;
     background: none;
-    color: ${({ theme, $variant }) => theme[mapVariantToColor[$variant] as keyof DefaultTheme]};
-
-    ${({ $size }) => ($size === 'small' ? typography.hint : typography.body)};
-    white-space: nowrap;
-    transition:
-        ${focusStyleTransition},
-        color 0.1s ease-out;
-    outline: none;
+    padding: 0;
+    outline: 0;
     cursor: pointer;
-
-    ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
-
-    ${getFocusShadowStyle()}
-    ${withFrameProps}
-
-    &:hover {
-        color: ${({ theme, $variant }) =>
-            theme[mapVariantToHoverColor[$variant] as keyof DefaultTheme]};
-
-        path {
-            fill: ${({ theme, $variant }) =>
-                theme[mapVariantToHoverColor[$variant] as keyof DefaultTheme]};
-        }
-    }
+    white-space: nowrap;
+    max-width: 100%;
+    -webkit-app-region: no-drag;
+    transition: 0.1s ease-in-out;
 
     &:disabled {
-        color: ${({ theme }) => theme.textDisabled};
         cursor: not-allowed;
-
-        path {
-            fill: ${({ theme }) => theme.iconDisabled};
-        }
     }
+
+    ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
+    ${({ $intent, disabled, theme }) => mapIntentToCSS($intent, disabled, theme)}
+
+    ${withFrameProps}
 `;
 
-type SelectedHTMLButtonProps = Pick<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type' | 'tabIndex'
->;
-
-export type TextButtonProps = SelectedHTMLButtonProps &
+export type TextButtonProps = CommonButtonProps &
     AllowedTextButtonFrameProps & {
-        icon?: IconName;
-        iconAlignment?: IconAlignment;
+        iconLeft?: IconName;
+        iconRight?: IconName;
         size?: TextButtonSize;
-        isDisabled?: boolean;
-        isLoading?: boolean;
-        variant?: TextButtonVariant;
         children?: React.ReactNode;
         isUnderlined?: boolean;
-        className?: string;
         'data-testid'?: string;
-        title?: string;
     };
 
 export const TextButton = ({
-    icon,
-    iconAlignment = 'start',
+    iconLeft,
+    iconRight,
     size = 'large',
-    isDisabled = false,
     isUnderlined = false,
-    isLoading = false,
     children,
-    onClick,
-    variant = 'primary',
+    intent = 'brand',
     'data-testid': dataTestId,
-    className,
-    tabIndex,
-    type = 'button',
-    title,
-    onMouseOver,
-    onMouseLeave,
-    ...rest
+    ...props
 }: TextButtonProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedTextButtonFrameProps);
-    const theme = useTheme();
-    const IconComponent = getIcon({
-        icon,
-        size: getIconSize(size),
-        color: getIconColor({ variant, isDisabled, theme, isSubtle: true }),
-    });
-
-    const Loader = <Spinner size={getIconSize(size)} />;
+    const frameProps = pickAndPrepareFrameProps(props, allowedTextButtonFrameProps);
+    const buttonProps = pickButtonProps(props);
+    const iconSize = mapSizeToIconSize(size);
 
     return (
         <TextButtonContainer
-            $size={size}
-            $iconAlignment={iconAlignment}
-            disabled={isDisabled || isLoading}
-            $variant={variant}
+            $intent={intent}
             $isUnderlined={isUnderlined}
             data-testid={dataTestId}
-            onClick={onClick}
-            className={className}
-            tabIndex={tabIndex}
-            type={type}
-            onMouseOver={onMouseOver}
-            onMouseLeave={onMouseLeave}
-            title={title}
+            {...buttonProps}
             {...frameProps}
         >
-            {!isLoading && icon && IconComponent}
-            {isLoading && Loader}
-            {children}
+            <Row gap={8} justifyContent="center" overflow="hidden" width="100%">
+                {props.isLoading && (
+                    <Spinner isGrey={true} size={iconSize} data-testid={`${dataTestId}/spinner`} />
+                )}
+                {iconLeft && !props.isLoading && <Icon name={iconLeft} size={iconSize} />}
+                <Box overflow="hidden">
+                    <Text
+                        as="div"
+                        typographyStyle={mapSizeToTypographyStyle(size)}
+                        ellipsisLineCount={1}
+                    >
+                        {children}
+                    </Text>
+                </Box>
+                {iconRight && !props.isLoading && <Icon name={iconRight} size={iconSize} />}
+            </Row>
         </TextButtonContainer>
     );
 };

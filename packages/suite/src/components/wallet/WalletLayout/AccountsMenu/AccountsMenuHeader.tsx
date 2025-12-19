@@ -1,16 +1,7 @@
 import styled from 'styled-components';
 
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    Box,
-    Column,
-    Divider,
-    Row,
-    SkeletonRectangle,
-    TextButton,
-    Tooltip,
-} from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Box, Column, Divider, Icon, Row, SkeletonRectangle, Tooltip } from '@trezor/components';
 
 import { AccountSearchBox } from './AccountSearchBox';
 import { AddAccountButton } from './AddAccountButton';
@@ -62,10 +53,14 @@ export const AccountsMenuHeader = () => {
 
     return (
         <>
-            <Divider margin={{ top: 0, bottom: spacings.sm }} />
-            <Box margin={{ horizontal: spacings.xs }}>
+            <Divider margin={{ top: 0, bottom: 12 }} />
+            <Box margin={{ horizontal: 8 }}>
                 <ExpandedSidebarOnly>
-                    <Row justifyContent="space-between" gap={spacings.xs}>
+                    <Row
+                        justifyContent="space-between"
+                        gap={12}
+                        padding={{ right: !isEmpty ? 10 : 0 }}
+                    >
                         {isDiscoveryRunning ? (
                             <SkeletonRectangle animate width="100%" height={38} />
                         ) : (
@@ -85,12 +80,12 @@ export const AccountsMenuHeader = () => {
                                     >
                                         <RelativeWrapper>
                                             {coinFilter.length > 0 && <Indicator />}
-                                            <TextButton
-                                                size="small"
+                                            <Icon
+                                                size={16}
                                                 variant={
                                                     isCoinsFilterVisible ? 'primary' : 'tertiary'
                                                 }
-                                                icon="funnelSimple"
+                                                name="funnelSimple"
                                                 onClick={toggleCoinsFilter}
                                                 data-testid="@account-menu/filter-accounts"
                                             />
@@ -98,24 +93,15 @@ export const AccountsMenuHeader = () => {
                                     </Tooltip>
                                 )}
 
-                                <AddAccountButton
-                                    isFullWidth={isEmpty}
-                                    isIconOnly={!isEmpty}
-                                    data-testid="@account-menu/add-account"
-                                    device={device}
-                                />
+                                <AddAccountButton isIconOnly={!isEmpty} device={device} />
                             </>
                         )}
                     </Row>
                     {isCoinsFilterVisible && showCoinFilter && <CoinsFilter />}
                 </ExpandedSidebarOnly>
                 <CollapsedSidebarOnly>
-                    <Column alignItems="center" margin={{ bottom: spacings.sm }}>
-                        <AddAccountButton
-                            isIconOnly={true}
-                            data-testid="@account-menu/add-account"
-                            device={device}
-                        />
+                    <Column alignItems="center" margin={{ bottom: 12 }}>
+                        <AddAccountButton isIconOnly={true} device={device} />
                     </Column>
                 </CollapsedSidebarOnly>
             </Box>

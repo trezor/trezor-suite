@@ -1,5 +1,3 @@
-import { ButtonHTMLAttributes } from 'react';
-
 import styled, { useTheme } from 'styled-components';
 
 import { borders, spacingsPx } from '@trezor/theme';
@@ -16,7 +14,7 @@ import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
+import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
 import {
     addAlphaToHex,
     commonButtonStyles,
@@ -25,6 +23,7 @@ import {
     mapSizeToBorderRadius,
     mapSizeToIconSize,
     mapSizeToTypographyStyle,
+    pickButtonProps,
 } from '../utils';
 import { mapSizeToGap, mapSizeToPadding } from './utils';
 
@@ -42,7 +41,7 @@ type ButtonContainerProps = TransientProps<AllowedButtonFrameProps> & {
     $priority: ButtonPriority;
     $intent: ButtonIntent;
     $isInverse: boolean;
-    $isDisabled: boolean;
+    disabled: boolean;
 };
 
 const Container = styled.button<ButtonContainerProps>`
@@ -50,8 +49,8 @@ const Container = styled.button<ButtonContainerProps>`
 
     border-radius: ${({ $size }) => mapSizeToBorderRadius($size)};
 
-    ${({ $intent, $priority, $isDisabled, $isInverse, theme }) =>
-        mapPropsToCSS($intent, $priority, $isDisabled, $isInverse, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
+        mapPropsToCSS($intent, $priority, disabled, $isInverse, theme)}
 
     ${withFrameProps}
 `;
@@ -62,30 +61,14 @@ const ShortcutContainer = styled.div`
     padding: ${spacingsPx.xxs};
 `;
 
-type SelectedHTMLButtonProps = Pick<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'onClick' | 'type' | 'tabIndex'
->;
-
-type ExclusiveAProps =
-    | { href?: undefined; target?: undefined }
-    | {
-          href?: string;
-          target?: string;
-      };
-
-export type ButtonProps = SelectedHTMLButtonProps &
-    AllowedButtonFrameProps &
-    ExclusiveAProps & {
+export type ButtonProps = CommonButtonProps &
+    AllowedButtonFrameProps & {
         size?: ButtonSize;
-        isDisabled?: boolean;
         isInverse?: boolean;
-        isLoading?: boolean;
         iconLeft?: IconName;
         iconRight?: IconName;
         children: React.ReactNode;
         'data-testid'?: string;
-        intent?: ButtonIntent;
         priority?: ButtonPriority;
         shortcut?: string[];
         className?: string;
@@ -94,28 +77,21 @@ export type ButtonProps = SelectedHTMLButtonProps &
 export const Button = ({
     'data-testid': dataTestId,
     children,
-    href,
     iconLeft,
     iconRight,
-    intent = 'brand',
-    isDisabled = false,
     isInverse = false,
-    isLoading = false,
-    onClick,
+    intent = 'brand',
     shortcut,
     size = 'medium',
-    tabIndex,
-    target,
-    type = 'button',
     priority = 'primary',
     // TODO: remove className
     className,
-    ...rest
+    ...props
 }: ButtonProps) => {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedButtonFrameProps);
-    const isLink = href !== undefined;
-    const color = mapPropsToColor(intent, priority, isDisabled || isLoading, isInverse, theme);
+    const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
+    const buttonProps = pickButtonProps(props);
+    const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
@@ -124,21 +100,14 @@ export const Button = ({
 
     return (
         <Container
-            as={isLink ? 'a' : 'button'}
             data-testid={dataTestId}
-            $isDisabled={isDisabled || isLoading}
-            disabled={isDisabled || isLoading}
-            href={href}
-            onClick={isDisabled || isLoading ? undefined : onClick}
-            tabIndex={tabIndex}
-            target={isLink ? target || '_blank' : undefined}
-            type={type}
             $size={size}
             $priority={priority}
-            $intent={intent}
             $isInverse={isInverse}
+            $intent={intent}
             className={className}
             {...frameProps}
+            {...buttonProps}
         >
             <Row
                 gap={mapSizeToGap(size)}
@@ -147,15 +116,14 @@ export const Button = ({
                 overflow="hidden"
                 width="100%"
             >
-                {isLoading && (
+                {props.isLoading && (
                     <Spinner
-                        isGrey={false}
-                        bodyColor={color}
+                        isGrey={true}
                         size={mapSizeToIconSize(size)}
                         data-testid={`${dataTestId}/spinner`}
                     />
                 )}
-                {iconLeft && !isLoading && <Icon name={iconLeft} {...iconProps} />}
+                {iconLeft && !props.isLoading && <Icon name={iconLeft} {...iconProps} />}
                 <Box padding={{ horizontal: 4 }} overflow="hidden">
                     <Text
                         as="div"
@@ -166,7 +134,7 @@ export const Button = ({
                         {children}
                     </Text>
                 </Box>
-                {iconRight && !isLoading && <Icon name={iconRight} {...iconProps} />}
+                {iconRight && !props.isLoading && <Icon name={iconRight} {...iconProps} />}
                 {shortcut?.length && (
                     <Row gap={2}>
                         {shortcut.map((hotkey, index) => (

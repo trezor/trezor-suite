@@ -1,3 +1,6 @@
+/**
+ * @deprecated Use numbers directly instead
+ */
 export const spacings = {
     zero: 0,
     xxxs: 2,
@@ -14,7 +17,9 @@ export const spacings = {
     xxxxxxl: 80,
 } as const;
 
-// TypeScript is lame and doesn't allow us to use `as const` with `Object.keys` so we have to cast it to `Spacing` manually
+/**
+ * @deprecated Use numbers directly instead
+ */
 export const negativeSpacings = {
     zero: 0,
     xxxs: -2,

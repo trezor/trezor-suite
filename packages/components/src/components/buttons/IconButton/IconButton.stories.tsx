@@ -1,4 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 
 import {
     IconButton as IconButtonComponent,
@@ -18,7 +19,7 @@ export default meta;
 
 export const IconButton: StoryObj<IconButtonProps> = {
     args: {
-        onClick: () => null,
+        onClick: action('onClick'),
         icon: 'addressBookFilled',
         intent: 'brand',
         priority: 'primary',
@@ -29,6 +30,12 @@ export const IconButton: StoryObj<IconButtonProps> = {
         ...getFramePropsStory(allowedIconButtonFrameProps).args,
     },
     argTypes: {
+        href: {
+            type: 'string',
+        },
+        target: {
+            type: 'string',
+        },
         icon: {
             options: variables.ICONS,
             control: { type: 'select' },
