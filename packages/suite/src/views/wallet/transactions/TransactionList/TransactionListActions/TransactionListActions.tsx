@@ -5,9 +5,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { InputButton } from '@trezor/components';
+import { Icon, Input } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
-import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
@@ -32,7 +31,6 @@ export const TransactionListActions = ({
     accountMetadata,
     isExportable = true,
 }: TransactionListActionsProps) => {
-    const [isExpanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
     const transactionHistoryPrefill = useSelector(
@@ -72,7 +70,6 @@ export const TransactionListActions = ({
 
     useEffect(() => {
         setHasFetchedAll(false);
-        setExpanded(false);
         setSearch('');
     }, [account.symbol, account.index, account.accountType, setSearch]);
 
@@ -88,15 +85,15 @@ export const TransactionListActions = ({
     }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
 
     return (
-        <Row gap={spacings.sm}>
-            <InputButton
-                placeholder={translationString('TR_SEARCH_TRANSACTIONS')}
-                isExpanded={isExpanded}
-                value={searchQuery}
-                setExpanded={setExpanded}
-                onChange={onSearch}
-                setValue={setSearch}
+        <Row gap={12}>
+            <Input
                 data-testid="@wallet/accounts/search-icon"
+                placeholder={translationString('TR_SEARCH_TRANSACTIONS')}
+                value={searchQuery}
+                onChange={event => setSearch(event.target.value)}
+                onClear={() => setSearch('')}
+                size="small"
+                leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
             />
             {hasNetworkPotentialFraudTransactions(account.symbol) && <FilterAction />}
             {isExportable && (

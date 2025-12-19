@@ -1,10 +1,10 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Button, IconButton, IconName, InputButton, Row, SubTabs } from '@trezor/components';
+import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
@@ -82,7 +82,6 @@ export const TokensNavigation = ({
     showManualActivation = false,
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
-    const [isExpanded, setExpanded] = useState(false);
     const routeName = useSelector(selectRouteName);
     const tokenDefinitions = useSelector(state =>
         isNft
@@ -118,7 +117,6 @@ export const TokensNavigation = ({
 
     useEffect(() => {
         setSearchQuery('');
-        setExpanded(false);
     }, [account.symbol, account.index, account.accountType, setSearchQuery]);
 
     return (
@@ -147,16 +145,16 @@ export const TokensNavigation = ({
                         <Translation id="TR_ACTIVATE_MANUALLY" />
                     </Button>
                 )}
-                <InputButton
+                <Input
+                    data-testid="@wallet/accounts/search-icon"
                     placeholder={translationString(
                         isNft ? 'TR_SEARCH_COLLECTIONS' : 'TR_SEARCH_TOKENS',
                     )}
-                    isExpanded={isExpanded}
                     value={searchQuery}
-                    setExpanded={setExpanded}
-                    setValue={setSearchQuery}
-                    onChange={setSearchQuery}
-                    data-testid="@wallet/accounts/search-icon"
+                    onChange={event => setSearchQuery(event.target.value)}
+                    onClear={() => setSearchQuery('')}
+                    size="small"
+                    leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
                 />
                 {showAddToken && (
                     <IconButton
