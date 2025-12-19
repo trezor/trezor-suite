@@ -19,7 +19,7 @@ const defaultLocation = {
     key: '',
     hash: '',
     search: '',
-};
+} as const;
 
 interface InitialState {
     suite?: Partial<SuiteState>;
@@ -71,7 +71,7 @@ const initStore = (state: State) => {
 describe('Suite Actions', () => {
     fixtures.init.forEach(f => {
         it(`init: ${f.description}`, () => {
-            const state = getInitialState(f.state as InitialState);
+            const state = getInitialState(f.state as InitialState | undefined);
             const { store, routerServices } = initStore(state);
             routerServices.navigate(defaultLocation);
             store.dispatch(routerActions.init());
@@ -110,10 +110,8 @@ describe('Suite Actions', () => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
             const { store, routerServices } = initStore(state);
-            routerServices.navigate({
-                ...defaultLocation,
-                hash: `#${f.hash}`,
-            });
+            routerServices.navigate({ ...defaultLocation, hash: `#${f.hash}` });
+            store.dispatch(routerActions.onLocationChange(routerServices.getLocation()));
 
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
@@ -130,7 +128,7 @@ describe('Suite Actions', () => {
             router: { loaded: true },
         } as InitialState);
         const { store } = initStore(state);
-        store.dispatch(routerActions.onLocationChange('/'));
+        store.dispatch(routerActions.onLocationChange({ pathname: '/' }));
         expect(store.getActions().length).toEqual(0);
     });
 

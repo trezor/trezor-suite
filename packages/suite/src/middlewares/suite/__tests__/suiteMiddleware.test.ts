@@ -72,7 +72,8 @@ describe('suite middleware', () => {
                 getInitialState({
                     loaded: false,
                     pathname: '/',
-                    hash: undefined,
+                    hash: '',
+                    search: '',
                     app: 'unknown',
                     params: undefined,
                     route: undefined,
@@ -108,7 +109,8 @@ describe('suite middleware', () => {
                 getInitialState({
                     loaded: true,
                     pathname: '/onboarding',
-                    hash: undefined,
+                    hash: '',
+                    search: '',
                     app: 'onboarding',
                     params: undefined,
                     route: {
