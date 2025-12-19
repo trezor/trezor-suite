@@ -1,60 +1,34 @@
-import { Button, ButtonProps, TOOLTIP_DELAY_NORMAL, TextButton, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Button, Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 
-import { useResponsiveContext } from '../../../../support/suite/ResponsiveContext';
-
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
-    let message;
     if (device && !device.connected) {
-        message = <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />;
+        return <Translation id="TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT" />;
     } else if (discoveryIsRunning) {
-        message = <Translation id="TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY" />;
+        return <Translation id="TR_TO_ADD_NEW_ACCOUNT_WAIT_FOR_DISCOVERY" />;
     }
-
-    return message;
 };
 
-interface AddAccountButtonProps extends Omit<ButtonProps, 'children'> {
+type AddAccountButtonProps = {
     device: TrezorDevice | undefined;
-    closeMenu?: () => void;
-    isDisabled?: boolean;
-    isFullWidth?: boolean;
     isIconOnly?: boolean;
-    customModalOpen?: (payload: { device: TrezorDevice }) => void;
-}
+};
 
-export const AddAccountButton = ({
-    device,
-    isDisabled,
-    closeMenu,
-    isFullWidth,
-    isIconOnly,
-    customModalOpen,
-    ...rest
-}: AddAccountButtonProps) => {
+export const AddAccountButton = ({ device, isIconOnly }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const dispatch = useDispatch();
-    const { isSidebarCollapsed } = useResponsiveContext();
+
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled = isDiscoveryRunning || !device || !device.connected;
-
     const tooltipMessage = getExplanationMessage(device, isDiscoveryRunning);
+    const dataTestId = '@account-menu/add-account';
 
     const handleOnClick = () => {
         if (!device) {
-            return;
-        }
-
-        if (customModalOpen) {
-            customModalOpen({
-                device,
-            });
-
             return;
         }
 
@@ -64,52 +38,43 @@ export const AddAccountButton = ({
                 device,
             }),
         );
-        if (closeMenu) closeMenu();
     };
-
-    const { size, isInverse, iconLeft, iconRight, intent, priority, shortcut, ...textButtonRest } =
-        rest;
 
     const ButtonComponent = isIconOnly ? (
         <Tooltip isActive={!tooltipMessage} content={<Translation id="TR_ADD_ACCOUNT" />}>
-            <TextButton
+            <Icon
                 onClick={device ? handleOnClick : undefined}
-                icon="plus"
-                isDisabled={addAccountDisabled || isDisabled}
-                size="small"
-                variant="tertiary"
-                margin={{ right: isSidebarCollapsed ? 0 : spacings.xs }}
-                {...textButtonRest}
+                name="plus"
+                size={16}
+                variant={addAccountDisabled ? 'disabled' : 'tertiary'}
+                data-testid={dataTestId}
             />
         </Tooltip>
     ) : (
         <Button
             onClick={device ? handleOnClick : undefined}
             iconLeft="plus"
-            isDisabled={addAccountDisabled || isDisabled}
+            isDisabled={addAccountDisabled}
             intent="neutral"
             priority="secondary"
-            width={isFullWidth ? '100%' : undefined}
-            {...rest}
+            width="100%"
+            data-testid={dataTestId}
         >
             <Translation id="TR_ADD_ACCOUNT" />
         </Button>
     );
 
-    if (tooltipMessage) {
-        return (
-            <Tooltip
-                width={isFullWidth ? '100%' : undefined}
-                tooltipMaxWidth={200}
-                content={tooltipMessage}
-                placement="bottom"
-                cursor="not-allowed"
-                delayShow={TOOLTIP_DELAY_NORMAL}
-            >
-                {ButtonComponent}
-            </Tooltip>
-        );
-    }
-
-    return ButtonComponent;
+    return (
+        <Tooltip
+            width="100%"
+            isActive={!!tooltipMessage}
+            tooltipMaxWidth={200}
+            content={tooltipMessage}
+            placement="bottom"
+            cursor="not-allowed"
+            delayShow={TOOLTIP_DELAY_NORMAL}
+        >
+            {ButtonComponent}
+        </Tooltip>
+    );
 };

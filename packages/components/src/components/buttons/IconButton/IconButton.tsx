@@ -1,5 +1,3 @@
-import { ButtonHTMLAttributes } from 'react';
-
 import styled, { useTheme } from 'styled-components';
 
 import {
@@ -12,13 +10,14 @@ import { TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
-import { ButtonIntent, ButtonPriority, ButtonSize } from '../types';
+import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
 import {
     commonButtonStyles,
     mapPropsToCSS,
     mapPropsToColor,
     mapSizeToBorderRadius,
     mapSizeToIconSize,
+    pickButtonProps,
 } from '../utils';
 import { mapSizeToPadding } from './utils';
 
@@ -47,20 +46,12 @@ const Container = styled.button<ButtonContainerProps>`
     ${withFrameProps}
 `;
 
-type SelectedHTMLButtonProps = Pick<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'onClick' | 'type' | 'tabIndex'
->;
-
-export type IconButtonProps = SelectedHTMLButtonProps &
+export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
-        isDisabled?: boolean;
         isInverse?: boolean;
-        isLoading?: boolean;
         icon: IconName;
         'data-testid'?: string;
-        intent?: ButtonIntent;
         priority?: ButtonPriority;
     };
 
@@ -68,19 +59,15 @@ export const IconButton = ({
     'data-testid': dataTestId,
     icon,
     intent = 'brand',
-    isDisabled = false,
     isInverse = false,
-    isLoading = false,
-    onClick,
     size = 'medium',
-    tabIndex,
-    type = 'button',
     priority = 'primary',
-    ...rest
+    ...props
 }: IconButtonProps) => {
     const theme = useTheme();
-    const frameProps = pickAndPrepareFrameProps(rest, allowedIconButtonFrameProps);
-    const color = mapPropsToColor(intent, priority, isDisabled, isInverse, theme);
+    const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
+    const buttonProps = pickButtonProps(props);
+    const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
 
     const iconProps = {
         size: mapSizeToIconSize(size),
@@ -90,21 +77,17 @@ export const IconButton = ({
     return (
         <Container
             data-testid={dataTestId}
-            disabled={isDisabled}
-            onClick={onClick}
-            tabIndex={tabIndex}
-            type={type}
             $size={size}
             $priority={priority}
             $intent={intent}
             $isInverse={isInverse}
+            {...buttonProps}
             {...frameProps}
         >
             <Box padding={mapSizeToPadding(size)}>
-                {isLoading ? (
+                {props.isLoading ? (
                     <Spinner
-                        isGrey={false}
-                        bodyColor={color}
+                        isGrey={true}
                         size={mapSizeToIconSize(size)}
                         data-testid={`${dataTestId}/spinner`}
                     />

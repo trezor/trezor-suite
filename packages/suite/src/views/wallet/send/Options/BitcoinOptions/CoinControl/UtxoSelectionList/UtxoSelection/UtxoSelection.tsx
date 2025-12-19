@@ -210,7 +210,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                             {transaction && (
                                 <TextButton
                                     size="small"
-                                    variant="tertiary"
+                                    intent="neutral"
                                     onClick={showTransactionDetail}
                                 >
                                     <Translation id="TR_DETAIL" />

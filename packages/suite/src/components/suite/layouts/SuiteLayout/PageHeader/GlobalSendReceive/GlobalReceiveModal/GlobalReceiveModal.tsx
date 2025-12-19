@@ -2,10 +2,12 @@ import { useCallback, useRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { Divider, Link } from '@trezor/components';
+import { Divider, Link, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { Translation } from 'src/components/suite/Translation';
 import {
     AssetRowReceiveToAccount,
     AssetsList,
@@ -15,8 +17,7 @@ import {
 import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks/useDataFingerprint';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
-import { AddAccountButton } from 'src/components/wallet/WalletLayout/AccountsMenu/AddAccountButton';
-import { useDevice, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import { Account, AccountItemType } from 'src/types/wallet';
 
@@ -33,7 +34,10 @@ const LIST_HEIGHT = 385;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
     const { device } = useDevice();
+    const { isDiscoveryRunning } = useDiscovery();
+    const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
     const acccountModal = useModal(false);
+    const dispatch = useDispatch();
     const theme = useTheme();
 
     const listRef = useRef<HTMLDivElement>(null);
@@ -73,11 +77,22 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 }}
                 onClose={() => onCancel(filledSearch)}
                 bottomContent={
-                    <AddAccountButton
+                    <Modal.Button
                         data-testid="@global-send-receive/add-account"
-                        device={device}
-                        customModalOpen={() => {
-                            acccountModal.openModal();
+                        intent="neutral"
+                        priority="secondary"
+                        isDisabled={isAddAccountDisabled}
+                        onClick={() => {
+                            if (!device) {
+                                return;
+                            }
+
+                            dispatch(
+                                openModal({
+                                    type: 'add-account',
+                                    device,
+                                }),
+                            );
 
                             analytics.report({
                                 type: EventType.DashboardReceiveModalOptions,
@@ -87,8 +102,9 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 },
                             });
                         }}
-                        isIconOnly={false}
-                    />
+                    >
+                        <Translation id="TR_ADD_ACCOUNT" />
+                    </Modal.Button>
                 }
             >
                 <AssetSearchWithNetworkFilter

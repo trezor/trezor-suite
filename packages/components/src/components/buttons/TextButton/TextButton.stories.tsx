@@ -1,15 +1,15 @@
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 
 import {
     TextButton as TextButtonComponent,
     TextButtonProps,
     allowedTextButtonFrameProps,
-    textButtonSizes,
-    textButtonVariants,
 } from './TextButton';
+import { textButtonSizes } from './types';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { iconAlignments } from '../buttonStyleUtils';
+import { buttonIntents } from '../types';
 
 const meta: Meta<typeof TextButtonComponent> = {
     title: '🫵 Buttons',
@@ -20,8 +20,8 @@ export default meta;
 export const TextButton: StoryObj<TextButtonProps> = {
     args: {
         children: 'Button label',
-        variant: 'primary',
-        iconAlignment: 'start',
+        onClick: action('onClick'),
+        intent: 'brand',
         size: 'large',
         isDisabled: false,
         isLoading: false,
@@ -30,37 +30,31 @@ export const TextButton: StoryObj<TextButtonProps> = {
     },
     argTypes: {
         children: {
-            table: {
-                type: {
-                    summary: 'ReactNode',
-                },
-            },
+            type: 'string',
         },
-        variant: {
-            control: {
-                type: 'radio',
-            },
-            options: textButtonVariants,
+        href: {
+            type: 'string',
         },
-        icon: {
-            options: [null, ...variables.ICONS],
+        target: {
+            type: 'string',
+        },
+        intent: {
             control: {
                 type: 'select',
-                labels: {
-                    'No icon': null,
-                    ...variables.ICONS.reduce((acc, icon) => ({ ...acc, [icon]: icon }), {}),
-                },
             },
+            options: buttonIntents,
         },
-        iconAlignment: {
-            control: {
-                type: 'radio',
-            },
-            options: iconAlignments,
+        iconLeft: {
+            options: [null, ...variables.ICONS],
+            control: { type: 'select' },
+        },
+        iconRight: {
+            options: [null, ...variables.ICONS],
+            control: { type: 'select' },
         },
         size: {
             control: {
-                type: 'radio',
+                type: 'select',
             },
             options: textButtonSizes,
         },
@@ -78,9 +72,6 @@ export const TextButton: StoryObj<TextButtonProps> = {
             control: {
                 type: 'boolean',
             },
-        },
-        title: {
-            control: { type: 'text' },
         },
         ...getFramePropsStory(allowedTextButtonFrameProps).argTypes,
     },

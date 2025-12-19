@@ -27,9 +27,8 @@ export const MessageSystemDevices = ({ devices }: MessageSystemDevicesProps) => 
                 label={
                     <Collapsible.Toggle>
                         <TextButton
-                            icon={expanded ? 'caretUpFilled' : 'caretDownFilled'}
-                            iconAlignment="end"
-                            variant="tertiary"
+                            iconRight={expanded ? 'caretUpFilled' : 'caretDownFilled'}
+                            intent="neutral"
                             onClick={handleToggle}
                         >
                             Devices ({devices.length})

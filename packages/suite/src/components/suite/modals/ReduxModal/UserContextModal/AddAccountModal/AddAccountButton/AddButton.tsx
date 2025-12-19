@@ -5,10 +5,10 @@ import { ButtonProps, Modal, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 
-interface AddButtonProps extends Omit<ButtonProps, 'children'> {
+type AddButtonProps = Partial<ButtonProps> & {
     disabledMessage: ReactNode;
     networkName: Network['name'];
-}
+};
 
 export const AddButton = ({ disabledMessage, networkName, ...buttonProps }: AddButtonProps) => (
     <Tooltip tooltipMaxWidth={285} content={disabledMessage}>
