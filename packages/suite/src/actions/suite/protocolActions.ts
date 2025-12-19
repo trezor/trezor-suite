@@ -111,10 +111,9 @@ export const handleProtocolRequest =
                 const decodedPath = decodeURIComponent(redirectPath);
                 const [, hash] = decodedPath.split('/coinmarket-redirect/');
                 if (hash) {
-                    const fullUrl = `/coinmarket-redirect#${hash}`;
-
-                    extra.routerServices.navigate(fullUrl);
-                    dispatch(routerActions.onLocationChange(fullUrl));
+                    const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
+                    extra.routerServices.navigate(path);
+                    dispatch(routerActions.onLocationChange(path));
                 }
             }
         }

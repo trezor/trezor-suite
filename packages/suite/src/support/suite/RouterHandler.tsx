@@ -14,8 +14,8 @@ export const RouterHandler = ({ routerServices }: { routerServices: RouterServic
     useEffect(() => {
         const emitLocation = () => {
             if (routerLoaded) {
-                const { pathname, hash } = routerServices.getLocation();
-                dispatch(onLocationChange(pathname + hash));
+                const location = routerServices.getLocation();
+                dispatch(onLocationChange(location));
             }
         };
 
