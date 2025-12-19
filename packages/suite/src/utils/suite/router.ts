@@ -8,7 +8,7 @@ import {
     GlobalSendReceiveType,
 } from '@suite-common/wallet-types';
 
-import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
+import routes, { type RouterAppWithParams } from 'src/constants/suite/routes';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
@@ -52,17 +52,29 @@ export const ensureRouterPath = (path: {
     hash: ensureHashString(path.hash),
 });
 
-export const findRoute = (url: string) => {
-    const [pathname] = url.split('#');
+export { type RouterPath };
+
+export type RouterPathOptional = {
+    pathname: RouterPath['pathname'];
+    search?: RouterPath['search'];
+    hash?: RouterPath['hash'];
+};
+
+export const isEqualLocation = (loc1: RouterPathOptional, loc2: RouterPathOptional) =>
+    loc1.pathname === loc2.pathname &&
+    (loc1.search ?? '') === (loc2.search ?? '') &&
+    (loc1.hash ?? '') === (loc2.hash ?? '');
+
+export const findRoute = (pathname: PathString) => {
     const clean = pathname.length > 1 ? pathname.replace(/\/$/, '') : pathname;
 
     return routes.find(r => r.pattern === clean);
 };
 
-const validateWalletParams = (url: string): CommonWalletParams => {
-    const [, hash] = url.split('#');
-    if (!hash) return;
-    const [symbol, index, rawAccountType] = hash.split('/').filter(p => p.length > 0);
+const parseHash = (hash: HashString) => hash.replace(/^#/, '').split('/').filter(Boolean);
+
+const validateWalletParams = (hash: HashString): CommonWalletParams => {
+    const [symbol, index, rawAccountType] = parseHash(hash);
     if (!index) return;
 
     const network = getNetworkOptional(symbol);
@@ -97,9 +109,8 @@ const modalAppParamsDefaultValues: ModalAppParams = {
     variant: undefined,
 };
 
-const validateModalAppParams = (url: string, params?: Route['params']): ModalAppParams => {
-    const [, hash] = url.split('#');
-    const splitted = hash?.split('/').filter(p => p.length > 0);
+const validateModalAppParams = (hash: HashString, params?: Route['params']): ModalAppParams => {
+    const splitted = parseHash(hash);
     if (!splitted || splitted.length === 0) return modalAppParamsDefaultValues;
 
     return {
@@ -131,11 +142,8 @@ export function parseDashboardParams(params: unknown): DashboardParams | undefin
     }
 }
 
-const validateDashboardParams = (url: string): DashboardParams | undefined => {
-    const hashIndex = url.indexOf('#');
-
-    const hash = hashIndex >= 0 ? url.slice(hashIndex + 1) : '';
-    const [modal, networkSymbol] = hash.split('/').filter(Boolean);
+const validateDashboardParams = (hash: HashString): DashboardParams | undefined => {
+    const [modal, networkSymbol] = parseHash(hash);
 
     if (modal === undefined) {
         return undefined;
@@ -152,47 +160,23 @@ const validateDashboardParams = (url: string): DashboardParams | undefined => {
     return params;
 };
 
-// Used in routerReducer
-export const getAppWithParams = (url: string): RouterAppWithParams => {
-    const route = findRoute(url);
-
-    if (!route) {
-        return {
-            app: 'unknown',
-            route: undefined,
-            params: undefined,
-        };
+const getAppParams = (route: Route, hash: HashString = '') => {
+    switch (route.app) {
+        case 'dashboard':
+            return validateDashboardParams(hash);
+        case 'wallet':
+            return validateWalletParams(hash);
+        default:
+            return route.params ? validateModalAppParams(hash, route.params) : undefined;
     }
+};
 
-    if (route.app === 'dashboard') {
-        return {
-            app: route.app,
-            params: validateDashboardParams(url),
-            route,
-        } as RouterAppWithParams;
-    }
+export const getAppWithParams = (path: { pathname: PathString; hash?: HashString }) => {
+    const route = findRoute(path.pathname);
+    const app = route?.app ?? 'unknown';
+    const params = route && getAppParams(route, path.hash);
 
-    if (route.app === 'wallet') {
-        return {
-            app: route.app,
-            params: validateWalletParams(url),
-            route,
-        };
-    }
-
-    if (route.params) {
-        return {
-            app: route.app,
-            params: validateModalAppParams(url, route.params),
-            route,
-        } as RouterAppWithParams;
-    }
-
-    return {
-        app: route.app,
-        route,
-        params: undefined,
-    } as RouterAppWithParams;
+    return { app, params, route } as RouterAppWithParams;
 };
 
 export type WalletParams = CommonWalletParams;
@@ -205,6 +189,13 @@ export type RouteParams = {
 export const getRoute = (name: Route['name']) => routes.find(r => r.name === name);
 
 export const getRouteHash = (route?: Route, params?: RouteParams) =>
-    params &&
-    route?.params &&
-    ['', ...route.params.filter(p => p in params).map(p => params[p])].join('/');
+    ensureHashString(
+        params &&
+            route?.params &&
+            [
+                '',
+                ...route.params
+                    .filter(p => Object.prototype.hasOwnProperty.call(params, p))
+                    .map(p => params[p]),
+            ].join('/'),
+    );

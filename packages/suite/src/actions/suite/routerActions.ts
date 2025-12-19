@@ -4,7 +4,6 @@
 
 import { ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import { Route } from '@suite-common/suite-types';
-import { Branded } from '@trezor/type-utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
 import * as suiteActions from 'src/actions/suite/suiteActions';
@@ -14,25 +13,20 @@ import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/su
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     RouteParams,
+    RouterPathOptional,
     findRoute,
     getAppWithParams,
     getRoute,
     getRouteHash,
+    isEqualLocation,
 } from 'src/utils/suite/router';
-
-export type NonLeadingHashString = string & Branded<'NonLeadingHashString'>;
-const sanitizeForNonLeadingHashString = (s: string): NonLeadingHashString =>
-    (s.startsWith('#') ? s.slice(1) : s) as NonLeadingHashString;
 
 export type RouterAction =
     | {
           type: typeof ROUTER.LOCATION_CHANGE;
-          payload: {
-              pathname: string;
-              search?: string;
-              hash?: NonLeadingHashString;
-              settingsBackRoute?: SettingsBackRoute;
+          payload: RouterPathOptional & {
               anchor?: AnchorType;
+              settingsBackRoute?: SettingsBackRoute;
           } & RouterAppWithParams;
       }
     | {
@@ -54,39 +48,30 @@ export const onBeforePopState = () => (_dispatch: Dispatch, getState: GetState) 
 /**
  * Handle changes of history.location and history.location.hash
  * Called from ./support/RouterHandler
- * @param {string} url
  */
 export const onLocationChange =
-    (url: string, anchor?: AnchorType) =>
-    (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+    (location: RouterPathOptional & { anchor?: AnchorType }) =>
+    (dispatch: Dispatch, getState: GetState) => {
         const unlocked = dispatch(onBeforePopState());
         const { router } = getState();
         if (!unlocked && router.loaded) return;
-        if (router.url === url && router.app !== 'unknown') return null;
+
+        if (isEqualLocation(router, location) && router.app !== 'unknown') {
+            return null;
+        }
+
         // TODO: check if the view is not locked by the device request
-
-        const { pathname, search, hash } = extra.routerServices.getLocation();
-
-        const appWithParams = getAppWithParams(url);
+        const appWithParams = getAppWithParams(location);
 
         return dispatch({
             type: ROUTER.LOCATION_CHANGE,
-            payload: {
-                pathname,
-                search,
-                hash: sanitizeForNonLeadingHashString(hash),
-                anchor,
-                ...appWithParams,
-            },
+            payload: { ...location, ...appWithParams },
         });
     };
 
 // if anchor param is not set, it works as reset
 export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _getState: GetState) =>
-    dispatch({
-        type: ROUTER.ANCHOR_CHANGE,
-        payload: anchor,
-    });
+    dispatch({ type: ROUTER.ANCHOR_CHANGE, payload: anchor });
 
 /**
  * Dispatch initial url
@@ -95,9 +80,8 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const { pathname, search, hash } = extra.routerServices.getLocation();
-        const url = `${pathname}${search ?? ''}${hash ?? ''}`;
-        dispatch(onLocationChange(url));
+        const location = extra.routerServices.getLocation();
+        dispatch(onLocationChange(location));
     }
 };
 
@@ -127,10 +111,9 @@ export const goto =
         const route = getRoute(routeName);
         const newHash = getRouteHash(route, params);
         const pathname = route?.pattern || '/';
-        const hash = preserveParams ? state.router.hash : newHash ? `#${newHash}` : '';
-        const urlBase = `${pathname}${hash}`;
+        const hash = preserveParams ? state.router.hash : (newHash ?? '');
 
-        if (urlBase === state.router.url) {
+        if (isEqualLocation(state.router, { pathname, hash, search: '' })) {
             // if location is same, but anchor is set (e.g. click on tor icon when in app settings), let's propagate it to redux state
             if (anchor) {
                 // postpone propagation to allow clearing anchor in redux state by click listener
@@ -139,24 +122,22 @@ export const goto =
 
             return;
         }
-        const location = extra.routerServices.getLocation();
-        const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
 
-        dispatch(onLocationChange(newUrl, anchor));
+        dispatch(onLocationChange({ pathname, hash, anchor }));
         if (route?.isForegroundApp) {
             dispatch(suiteActions.lockRouter(true));
 
             // NOTE: this is useful eg. on welcome screen / logged out screen
             // where we want to have suite-start router clearing the URL to ensure
             // that there isn't a state stuck
-            if (route?.clearUrl) {
-                extra.routerServices.navigate(urlBase);
+            if (route.clearUrl) {
+                extra.routerServices.navigate({ pathname });
             }
 
             return;
         }
 
-        extra.routerServices.navigate(newUrl);
+        extra.routerServices.navigate({ pathname, hash });
     };
 
 /**
@@ -179,14 +160,10 @@ export const closeModalApp =
         }
 
         if (!preserveParams && location.hash.length > 0) {
-            extra.routerServices.navigate(location.pathname);
+            extra.routerServices.navigate({ pathname: location.pathname });
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
-            dispatch(
-                onLocationChange(
-                    `${location.pathname}${location.search ?? ''}${location.hash ?? ''}`,
-                ),
-            );
+            dispatch(onLocationChange(location));
         }
     };
 
