@@ -5,11 +5,12 @@ import { getSubtleCrypto } from '@trezor/crypto-utils';
 import { bufferUtils } from '@trezor/utils';
 
 import {
+    PrepareDeviceAuthenticityDataParams,
     VerifyAuthenticityProofParams,
     VerifyAuthenticityProofResult,
     VerifySignature,
 } from './types';
-import { getRootPubKeyBlacklist, getRootPubKeys } from './utils';
+import { getCaPubKeyBlacklist, getRootPubKeys } from './utils';
 import { AlgorithmName, parseCertificate } from './x509certificate';
 
 // There is incomparability in results between nodejs and window SubtleCrypto api.
@@ -51,7 +52,7 @@ export const verifySignatureP256: VerifySignature = async (rawKey, data, signatu
 // Verifies Ed25519 signature using @noble/curves, because SubtleCrypto Ed25519 is still not broadly supported.
 // We can revert to SubtleCrypto when we stop supporting Chromium < 137 https://caniuse.com/mdn-api_subtlecrypto_sign_ed25519
 // Also must be verified react-native javascript runtime (unknown support matrix).
-const verifySignatureEd25519: VerifySignature = (rawKey, data, signature) => {
+export const verifySignatureEd25519: VerifySignature = (rawKey, data, signature) => {
     try {
         return ed25519.verify(signature, data, rawKey);
     } catch {
@@ -103,16 +104,32 @@ const validateCaCertExtensions = (cert: ReturnType<typeof parseCertificate>, pat
     }
 };
 
+// Compose the data against which the signatures will be verified.
+export const prepareDeviceAuthenticityData = ({
+    payload,
+    prefix = 'AuthenticateDevice:',
+}: PrepareDeviceAuthenticityDataParams): Uint8Array => {
+    const prefixBuffer = Buffer.from(prefix);
+    const payloadArray = Array.isArray(payload) ? payload : [payload];
+    const chunks = [prefixBuffer, ...payloadArray];
+
+    return Buffer.concat(
+        chunks.flatMap(chunk => [bufferUtils.getChunkSize(chunk.byteLength), chunk]),
+    );
+};
+
+/**
+ * Parses certificate, matches them against known root public keys, and verifies the signature over the prepared data.
+ * P-256 and Ed25519 algorithms are supported and automatically detected from the certificate.
+ */
 export const verifyAuthenticityProof = async ({
-    challenge,
     certificates,
     signature,
+    data,
     deviceModel,
     allowDebugKeys,
     config,
     blacklistConfig,
-    challengePrefix = 'AuthenticateDevice:',
-    bufferChunks = [],
 }: VerifyAuthenticityProofParams): Promise<VerifyAuthenticityProofResult> => {
     // Parse config with given device model, type of secure element and debug mode.
     const allRootPubKeys = getRootPubKeys({
@@ -120,7 +137,7 @@ export const verifyAuthenticityProof = async ({
         deviceModel,
         allowDebugKeys,
     });
-    const rootPubKeyBlacklist = getRootPubKeyBlacklist({
+    const caPubKeyBlacklist = getCaPubKeyBlacklist({
         blacklistConfig,
         allowDebugKeys,
     });
@@ -199,26 +216,16 @@ export const verifyAuthenticityProof = async ({
         deviceCert.signatureValue.bits.bytes,
     );
 
-    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** if DEVICES pubKey is not on blacklist
-    const challengePrefixBuffer = Buffer.from(challengePrefix);
-
-    const chunks =
-        bufferChunks && bufferChunks.length > 0
-            ? [challengePrefixBuffer, ...bufferChunks]
-            : [challengePrefixBuffer, challenge];
-
-    const prefixedBuffer = Buffer.concat(
-        chunks.flatMap(chunk => [bufferUtils.getChunkSize(chunk.byteLength), chunk]),
-    );
-
+    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge
     const isSignatureValid = await verifySignatureFn(
         Buffer.from(deviceCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
-        prefixedBuffer,
+        data,
         Buffer.from(signature, 'hex'),
     );
 
+    // 6. checks if DEVICES pubKey is not on blacklist
     if (isDeviceCertValid && isSignatureValid) {
-        if (rootPubKeyBlacklist.includes(caPubKey)) {
+        if (caPubKeyBlacklist.includes(caPubKey)) {
             return {
                 valid: false,
                 caPubKey,

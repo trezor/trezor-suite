@@ -3,6 +3,7 @@ import {
     deviceAuthenticityBlacklistConfig,
     deviceAuthenticityConfig,
     getRandomChallenge,
+    prepareDeviceAuthenticityData,
     verifyAuthenticityProof,
 } from '@trezor/device-authenticity';
 import { Assert } from '@trezor/schema-utils';
@@ -47,7 +48,7 @@ export default class AuthenticateDevice extends AbstractMethod<
         const config = this.params.config || deviceAuthenticityConfig;
         const blacklistConfig = this.params.blacklistConfig || deviceAuthenticityBlacklistConfig;
         const commonParams = {
-            challenge,
+            data: prepareDeviceAuthenticityData({ payload: challenge }),
             deviceModel: this.device.features.internal_model,
             allowDebugKeys: this.params.allowDebugKeys,
             config,

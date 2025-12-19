@@ -1,7 +1,9 @@
+import { bufferUtils } from '@trezor/utils';
+
 import type { DeviceAuthenticityBlacklistConfig } from '../config/deviceAuthenticityBlacklistConfigTypes';
 import type { DeviceAuthenticityConfig } from '../config/deviceAuthenticityConfigTypes';
 import { VerifyAuthenticityProofParams } from '../types';
-import { verifyAuthenticityProof } from '../verifyAuthenticityProof';
+import { prepareDeviceAuthenticityData, verifyAuthenticityProof } from '../verifyAuthenticityProof';
 
 const CA_CERT_OPTIGA =
     '308201df30820184a00302010202040a001ab3300a06082a8648ce3d0403023054310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3125302306035504030c1c5472657a6f72204d616e75666163747572696e6720526f6f742043413020170d3233303130313030303030305a180f32303533303130313030303030305a304f310b300906035504061302435a311e301c060355040a0c155472657a6f7220436f6d70616e7920732e722e6f2e3120301e06035504030c175472657a6f72204d616e75666163747572696e672043413059301306072a8648ce3d020106082a8648ce3d030107034200041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4a3473045300e0603551d0f0101ff04040302020430120603551d130101ff040830060101ff020100301f0603551d2304183016801428b202f8f9c78a74e8c152bbfb433d99d0ca03ef300a06082a8648ce3d0403020349003046022100dfe2f837f3644c1f0250d37cd0f7d1e4e9b8cfc4820d7f5a623a8cb69df99f6c02210089148848c5fc597df4b8545d9b19d1cc15abe0e1252fa2938a4cf01ae835c563';
@@ -67,7 +69,7 @@ const BLACKLIST_CONFIG: DeviceAuthenticityBlacklistConfig = {
 const defaultOptigaProps: VerifyAuthenticityProofParams = {
     certificates: [DEVICE_CERT_OPTIGA, CA_CERT_OPTIGA],
     signature: SIGNATURE_OPTIGA,
-    challenge: Buffer.from(CHALLENGE, 'hex'),
+    data: prepareDeviceAuthenticityData({ payload: Buffer.from(CHALLENGE, 'hex') }),
     deviceModel: 'T2B1',
     config: CONFIG,
     blacklistConfig: BLACKLIST_CONFIG,
@@ -274,15 +276,42 @@ describe(`firmware/${verifyAuthenticityProof.name}`, () => {
             Buffer.from(challenge, 'hex'),
             sizeBuffer,
         ];
+        const data = prepareDeviceAuthenticityData({ payload: bufferChunks, prefix: header });
 
         const verify = await verifyAuthenticityProof({
             ...defaultOptigaProps,
-            challenge: Buffer.from(challenge, 'hex'),
+            data,
             signature: SIGNATURE_OPTIGA_EVOLU,
-            challengePrefix: header,
-            bufferChunks,
         });
 
         expect(verify.valid).toBe(true);
+    });
+});
+
+describe(`firmware/${prepareDeviceAuthenticityData.name}`, () => {
+    it('prepare data with single buffer with default prefix', () => {
+        const payload = Buffer.from('deadbeef', 'hex');
+        const data = prepareDeviceAuthenticityData({ payload });
+        const expectedResult = Buffer.concat([
+            bufferUtils.getChunkSize(19),
+            Buffer.from('AuthenticateDevice:'),
+            bufferUtils.getChunkSize(4),
+            payload,
+        ]);
+        expect(data).toEqual(expectedResult);
+    });
+
+    it('prepare data with multiple buffers with custom prefix', () => {
+        const payload = [Buffer.from('dead', 'hex'), Buffer.from('beef', 'hex')];
+        const data = prepareDeviceAuthenticityData({ payload, prefix: 'Something:' });
+        const expectedResult = Buffer.concat([
+            bufferUtils.getChunkSize(10),
+            Buffer.from('Something:'),
+            bufferUtils.getChunkSize(2),
+            Buffer.from('dead', 'hex'),
+            bufferUtils.getChunkSize(2),
+            Buffer.from('beef', 'hex'),
+        ]);
+        expect(data).toEqual(expectedResult);
     });
 });

@@ -7,14 +7,14 @@ import type { DeviceAuthenticityConfig } from './config/deviceAuthenticityConfig
 
 export const getRandomChallenge = () => crypto.randomBytes(32);
 
-type GetRootPubKeyBlacklistParams = {
+type GetCaPubKeyBlacklistParams = {
     blacklistConfig: DeviceAuthenticityBlacklistConfig;
     allowDebugKeys?: boolean;
 };
-export const getRootPubKeyBlacklist = ({
+export const getCaPubKeyBlacklist = ({
     blacklistConfig,
     allowDebugKeys,
-}: GetRootPubKeyBlacklistParams): string[] => {
+}: GetCaPubKeyBlacklistParams): string[] => {
     const normalBlacklist = blacklistConfig.blacklistedCaPubKeys ?? [];
     const debugBlacklist = blacklistConfig.debug?.blacklistedCaPubKeys ?? [];
 
