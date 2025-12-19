@@ -8,7 +8,7 @@ import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
-    ExtraDependenciesServices,
+    CommonServices,
     ExtraDependenciesStatic,
     LocationPushState,
     To,
@@ -75,7 +75,7 @@ type SuiteAppDeps = {
     dispatch: any;
 };
 
-export const createSuiteCompositionRoot = (deps: SuiteAppDeps): ExtraDependenciesServices => {
+export const createSuiteCompositionRoot = (deps: SuiteAppDeps): { services: CommonServices } => {
     const platformEncryption = isDesktop()
         ? createElectronPlatformEncryption({ desktopApi })
         : createWebauthnPlatformEncryption();

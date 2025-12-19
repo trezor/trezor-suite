@@ -20,7 +20,11 @@ import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
-import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
+import {
+    NativeServices,
+    createNativeCompositionRoot,
+    extraDependencies,
+} from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;
@@ -76,7 +80,13 @@ export const initStore = (preloadedState?: PreloadedState) => {
                     createStoreWithExtraStoreMiddleware({
                         extraFactory: api => ({
                             ...extraDependencies,
-                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey }),
+                            services: {
+                                ...createNativeCompositionRoot({
+                                    ...api,
+                                    ensureMMKVKey,
+                                    getMMKVStorage: mmkvStorage.getMMKV,
+                                }),
+                            },
                         }),
                         onExtraCreated: initializedExtra => {
                             extra = initializedExtra;
@@ -91,7 +101,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
 
     return {
         ...castExtraStore(store, extra),
-        mmkvStorage,
+        services: extra!.services as NativeServices,
     };
 };
 

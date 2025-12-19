@@ -8,7 +8,6 @@ import { captureSentryException } from '@suite-native/sentry';
 import { StorageProvider } from '@suite-native/storage';
 
 import { NativeServicesProvider } from './NativeServicesProvider';
-import { buildNativeServices } from './nativeServices';
 import { PreloadedState, StoreWithExtra, initStore } from './store';
 
 export type BaseStoreProviderProps = {
@@ -54,10 +53,7 @@ export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProvide
     if (store === null || storePersistor === null) return null;
 
     return (
-        <NativeServicesProvider
-            commonServices={store.extra.services}
-            mmkvStorage={store.mmkvStorage}
-        >
+        <NativeServicesProvider services={store.services}>
             <Provider store={store.store}>
                 <StorageProvider persistor={storePersistor}>{children}</StorageProvider>
             </Provider>

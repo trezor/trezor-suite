@@ -43,11 +43,9 @@ export type To = string | Partial<Path>;
 
 export type LocationPushState = Record<string, unknown>;
 
-export type ExtraDependenciesServices = {
-    services: {
-        suiteSync: SuiteSync;
-        platformEncryption: PlatformEncryption;
-    };
+export type CommonServices = {
+    suiteSync: SuiteSync;
+    platformEncryption: PlatformEncryption;
 };
 
 export type ExtraDependenciesStatic = {
@@ -137,7 +135,7 @@ export type ExtraDependenciesStatic = {
     };
 };
 
-export type ExtraDependencies = ExtraDependenciesStatic & ExtraDependenciesServices;
+export type ExtraDependencies = ExtraDependenciesStatic & { services: CommonServices };
 
 export type ExtraDependenciesForReducer = Pick<
     ExtraDependencies,
