@@ -1,9 +1,11 @@
 import { useLayoutEffect, useRef } from 'react';
 
+import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
+
 import { useSelector } from './useSelector';
 
 export const useResetScrollOnUrl = () => {
-    const url = useSelector(state => state.router.url);
+    const url = useSelector(selectRouterUrl);
 
     const scrollRef = useRef<HTMLDivElement>(null);
 

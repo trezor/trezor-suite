@@ -28,7 +28,6 @@ export type RouterAction =
     | {
           type: typeof ROUTER.LOCATION_CHANGE;
           payload: {
-              url: string;
               pathname: string;
               search?: string;
               hash?: NonLeadingHashString;
@@ -73,7 +72,6 @@ export const onLocationChange =
         return dispatch({
             type: ROUTER.LOCATION_CHANGE,
             payload: {
-                url,
                 pathname,
                 search,
                 hash: sanitizeForNonLeadingHashString(hash),

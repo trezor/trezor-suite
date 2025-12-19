@@ -12,7 +12,6 @@ export const init = [
             loaded: true,
             anchor: undefined,
             search: '',
-            url: '/',
             route: getRoute('suite-index'),
             settingsBackRoute: { name: 'suite-index' },
         },

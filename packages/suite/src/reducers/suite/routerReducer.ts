@@ -19,7 +19,6 @@ const ACCOUNT_TABS = [
 
 export type RouterState = {
     loaded: boolean;
-    url: string;
     pathname: string;
     search?: string;
     hash?: NonLeadingHashString;
@@ -35,7 +34,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<RouterRootState>(
 
 const initialState: RouterState = {
     loaded: false,
-    url: '/',
     pathname: '/',
     app: 'unknown',
     route: undefined,
@@ -71,6 +69,8 @@ export const selectRouter = (state: RouterRootState) => state.router;
 export const selectRoute = (state: RouterRootState): RouterState['route'] => state.router.route;
 export const selectRouterParams = (state: RouterRootState) => state.router.params;
 export const selectRouteName = (state: RouterRootState) => state.router.route?.name;
+export const selectRouterUrl = (state: RouterRootState) =>
+    `${state.router.pathname}${state.router.search ?? ''}${state.router.hash ?? ''}`;
 export const selectRouterSearch = (state: RouterRootState) => state.router.search;
 export const selectURLSearchParams = createMemoizedSelector(
     [selectRouterSearch],

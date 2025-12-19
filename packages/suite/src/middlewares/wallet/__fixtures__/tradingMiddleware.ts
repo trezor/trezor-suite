@@ -13,7 +13,6 @@ const TRADING_BUY_ROUTE = {
         app: 'wallet',
     },
     settingsBackRoute: { name: 'wallet-index', params: undefined },
-    url: '/accounts/coinmarket/buy#/btc/0/normal',
 } as RouterState;
 
 const TRADING_SELL_ROUTE = {
@@ -29,7 +28,6 @@ const TRADING_SELL_ROUTE = {
         app: 'wallet',
     },
     settingsBackRoute: { name: 'wallet-index', params: undefined },
-    url: '/accounts/coinmarket/sell#/btc/0/normal',
 } as RouterState;
 
 const TRADING_EXCHANGE_ROUTE = {
@@ -45,12 +43,10 @@ const TRADING_EXCHANGE_ROUTE = {
         app: 'wallet',
     },
     settingsBackRoute: { name: 'wallet-index', params: undefined },
-    url: '/accounts/coinmarket/exchange',
 } as RouterState;
 
 const DEFAULT_ROUTE = {
     loaded: false,
-    url: '/',
     pathname: '/',
     app: 'unknown',
     route: undefined,
