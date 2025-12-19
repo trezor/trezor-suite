@@ -9,16 +9,19 @@ export type VerifySignature = (
     signature: Uint8Array,
 ) => boolean | Promise<boolean>;
 
+export type PrepareDeviceAuthenticityDataParams = {
+    payload: Buffer | Buffer[];
+    prefix?: string;
+};
+
 export type VerifyAuthenticityProofParams = {
-    challenge: Buffer;
     certificates: string[];
     signature: string;
+    data: Uint8Array;
     deviceModel: keyof typeof PROTO.DeviceModelInternal; // Device.features.internal_model
     config: DeviceAuthenticityConfig;
     blacklistConfig: DeviceAuthenticityBlacklistConfig;
     allowDebugKeys?: boolean;
-    challengePrefix?: string;
-    bufferChunks?: Buffer[];
 };
 
 export type VerifyAuthenticityProofResult =
