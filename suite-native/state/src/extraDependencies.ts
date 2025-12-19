@@ -11,7 +11,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
-import type { EnsureMMKVKeyDep, MMKVStorageDep } from '@suite-native/storage';
+import type { EnsureMMKVKeyDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
@@ -38,8 +38,7 @@ const transports = transportsPerDeviceType[deviceType];
 type NativeAppDeps = {
     getState: () => any;
     dispatch: any;
-} & EnsureMMKVKeyDep &
-    MMKVStorageDep;
+} & EnsureMMKVKeyDep;
 
 export const createNativeCompositionRoot = (deps: NativeAppDeps) => {
     const platformEncryption = createNativePlatformEncryption({
@@ -62,7 +61,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps) => {
                 ensureDelegatedIdentityKey,
             }),
             platformEncryption,
-            getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         },
     };
 };

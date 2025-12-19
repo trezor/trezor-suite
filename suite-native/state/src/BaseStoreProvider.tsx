@@ -4,10 +4,11 @@ import { Provider } from 'react-redux';
 
 import { Persistor, persistStore } from 'redux-persist';
 
-import { ServicesProvider } from '@suite-common/redux-utils';
 import { captureSentryException } from '@suite-native/sentry';
 import { StorageProvider } from '@suite-native/storage';
 
+import { NativeServicesProvider } from './NativeServicesProvider';
+import { buildNativeServices } from './nativeServices';
 import { PreloadedState, StoreWithExtra, initStore } from './store';
 
 export type BaseStoreProviderProps = {
@@ -53,10 +54,13 @@ export const BaseStoreProvider = ({ children, preloadedState }: BaseStoreProvide
     if (store === null || storePersistor === null) return null;
 
     return (
-        <ServicesProvider services={store.extra.services}>
+        <NativeServicesProvider
+            commonServices={store.extra.services}
+            mmkvStorage={store.mmkvStorage}
+        >
             <Provider store={store.store}>
                 <StorageProvider persistor={storePersistor}>{children}</StorageProvider>
             </Provider>
-        </ServicesProvider>
+        </NativeServicesProvider>
     );
 };

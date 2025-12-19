@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { MMKV } from 'react-native-mmkv';
 
-import { useServices } from '@suite-common/redux-utils';
+import { useNativeServices } from '@suite-native/state/src/NativeServicesProvider';
 
 import { useRozenitePlugins } from '../hooks/useRozenitePlugins';
 
-const InitRosenitePluginInternal = ({ mmkvStorage }: { mmkvStorage: MMKV }) => {
+const InitRosenitePluginInternal = memo(({ mmkvStorage }: { mmkvStorage: MMKV }) => {
     // react hooks can be conditionally called with __DEV__ statement (Metro takes care of it)
     useRozenitePlugins({
         mmkvStorage,
     });
 
     return null;
-};
+});
 
-export const InitRosenitePlugin = () => {
-    const { getMMKVStorage } = useServices();
+export const InitRosenitePlugin = memo(() => {
+    const { getMMKVStorage } = useNativeServices();
     const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
 
     useEffect(() => {
@@ -27,4 +27,4 @@ export const InitRosenitePlugin = () => {
     return Boolean(mmkvStorage) && mmkvStorage ? (
         <InitRosenitePluginInternal mmkvStorage={mmkvStorage} />
     ) : null;
-};
+});

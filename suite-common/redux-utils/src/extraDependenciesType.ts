@@ -67,8 +67,6 @@ export type ExtraDependenciesServices = {
     services: {
         suiteSync: SuiteSync;
         platformEncryption: PlatformEncryption;
-        // NOTE: yes this BS is dev-only for native, should be removed from "common"
-        getMMKVStorage: () => Promise<MMKVStorageLikeInterface>;
     };
 };
 

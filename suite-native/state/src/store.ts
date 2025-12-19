@@ -76,7 +76,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
                     createStoreWithExtraStoreMiddleware({
                         extraFactory: api => ({
                             ...extraDependencies,
-                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey, mmkvStorage }),
+                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey }),
                         }),
                         onExtraCreated: initializedExtra => {
                             extra = initializedExtra;
@@ -89,7 +89,10 @@ export const initStore = (preloadedState?: PreloadedState) => {
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 
-    return castExtraStore(store, extra);
+    return {
+        ...castExtraStore(store, extra),
+        mmkvStorage,
+    };
 };
 
 export type StoreWithExtra = Awaited<ReturnType<typeof initStore>>;
