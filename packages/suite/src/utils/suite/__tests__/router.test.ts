@@ -38,7 +38,7 @@ describe('router', () => {
                 const route = getRoute(name);
                 const hash = getRouteHash(route, params);
 
-                return `${route?.pattern ?? '/'}${hash ? `#${hash}` : ''}`;
+                return `${route?.pattern ?? '/'}${hash}`;
             };
 
             // @ts-expect-error: invalid params
@@ -106,8 +106,10 @@ describe('router', () => {
                 },
                 route: getRoute('wallet-index'),
             };
-            expect(getAppWithParams('/accounts/#/btc/0/normal')).toEqual(resp);
-            expect(getAppWithParams('/accounts/#/btc/1/segwit')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/0/normal' })).toEqual(
+                resp,
+            );
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/1/segwit' })).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -115,7 +117,7 @@ describe('router', () => {
                     accountType: 'segwit',
                 },
             });
-            expect(getAppWithParams('/accounts/#/btc/1/legacy')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/1/legacy' })).toEqual({
                 ...resp,
                 params: {
                     symbol: 'btc',
@@ -123,23 +125,25 @@ describe('router', () => {
                     accountType: 'legacy',
                 },
             });
-            expect(getAppWithParams('/accounts/#/btc/NaN')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc/NaN' })).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/accounts/#/btc-invalid/0')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc-invalid/0' })).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/accounts/#/btc/0/unknown-type')).toEqual({
+            expect(
+                getAppWithParams({ pathname: '/accounts', hash: '#/btc/0/unknown-type' }),
+            ).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/accounts/#/btc')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '#/btc' })).toEqual({
                 ...resp,
                 params: undefined,
             });
-            expect(getAppWithParams('/accounts')).toEqual({
+            expect(getAppWithParams({ pathname: '/accounts', hash: '' })).toEqual({
                 ...resp,
                 params: undefined,
                 route: getRoute('wallet-index'),
@@ -147,19 +151,19 @@ describe('router', () => {
         });
 
         it('other params validation', () => {
-            expect(getAppWithParams('/')).toEqual({
+            expect(getAppWithParams({ pathname: '/' })).toEqual({
                 app: 'dashboard',
                 params: undefined,
                 route: getRoute('suite-index'),
             });
 
-            expect(getAppWithParams('/onboarding/')).toEqual({
+            expect(getAppWithParams({ pathname: '/onboarding/' })).toEqual({
                 app: 'onboarding',
                 params: undefined,
                 route: getRoute('onboarding-index'),
             });
 
-            expect(getAppWithParams('/unknown-route/')).toEqual({
+            expect(getAppWithParams({ pathname: '/unknown-route/' })).toEqual({
                 app: 'unknown',
                 params: undefined,
                 route: undefined,

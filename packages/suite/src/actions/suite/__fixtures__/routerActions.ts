@@ -106,7 +106,7 @@ export const initialRedirection = [
     },
     {
         description: `redirect to modal app`,
-        pathname: '/bridge',
+        pathname: '/bridge' as const,
         app: 'bridge',
     },
     {

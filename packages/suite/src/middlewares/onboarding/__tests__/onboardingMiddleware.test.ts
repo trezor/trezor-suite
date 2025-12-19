@@ -66,7 +66,8 @@ describe('onboardingMiddleware', () => {
                 getInitialState({
                     loaded: false,
                     pathname: '/',
-                    hash: undefined,
+                    hash: '',
+                    search: '',
                     app: 'unknown',
                     params: undefined,
                     route: undefined,

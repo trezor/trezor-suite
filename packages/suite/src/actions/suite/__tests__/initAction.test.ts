@@ -9,6 +9,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import type { PathString } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
@@ -289,7 +290,7 @@ describe('Suite init action', () => {
             const { store, routerServices } = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                routerServices.navigate(options.initialPath);
+                routerServices.navigate({ pathname: options.initialPath as PathString });
             }
 
             if (options?.trezorConnectError) {
