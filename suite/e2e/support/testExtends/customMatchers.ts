@@ -299,4 +299,26 @@ export const expect = baseExpect.extend({
             message: () => 'errors are handled in expects above',
         };
     },
+
+    async toHaveLoadedImage(locator: Locator, options?: { timeout?: number }) {
+        await baseExpect(locator).toBeVisible({ timeout: options?.timeout });
+        await baseExpect
+            .poll(
+                async () =>
+                    await locator.evaluate(
+                        (img: HTMLImageElement) => img.complete && img.naturalWidth > 0,
+                    ),
+                {
+                    timeout: options?.timeout,
+                    message:
+                        'expected locator to have image loaded but naturalWidth is 0 or complete is false',
+                },
+            )
+            .toBe(true);
+
+        return {
+            message: () => 'passed',
+            pass: true,
+        };
+    },
 });

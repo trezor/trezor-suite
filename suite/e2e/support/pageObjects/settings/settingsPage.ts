@@ -29,19 +29,10 @@ export const languageMap = {
     'en-US': 'English',
 };
 
-const backgroundImages = {
-    original_t2t1: {
-        path: 'static/images/homescreens/COLOR_240x240/original_t2t1.jpg',
-        locator: '@modal/gallery/color_240x240/original_t2t1',
-    },
-    circleweb: {
-        path: 'static/images/homescreens/BW_64x128/circleweb.png',
-        locator: '@modal/gallery/bw_64x128/circleweb',
-    },
-    nyancat: {
-        path: 'static/images/homescreens/BW_64x128/nyancat.png',
-        locator: '@modal/gallery/bw_64x128/nyancat',
-    },
+const backgroundImageButton = {
+    original_t2t1: '@modal/gallery/color_240x240/original_t2t1',
+    circleweb: '@modal/gallery/bw_64x128/circleweb',
+    nyancat: '@modal/gallery/bw_64x128/nyancat',
 };
 
 export class SettingsPage {
@@ -224,13 +215,12 @@ export class SettingsPage {
     }
 
     @step()
-    async changeDeviceBackground(image: keyof typeof backgroundImages) {
+    async changeDeviceBackground(image: keyof typeof backgroundImageButton) {
         await test.step('Change display background image', async () => {
-            // To solve the flakiness of the test, we need to wait for the image to load
-            const buttonImageLoad = this.page.waitForResponse(`**/${backgroundImages[image].path}`);
             await this.homescreenGalleryButton.click();
-            await buttonImageLoad;
-            await this.page.getByTestId(backgroundImages[image].locator).click();
+            const imageButton = this.page.getByTestId(backgroundImageButton[image]);
+            await expect(imageButton).toHaveLoadedImage();
+            await imageButton.click();
             await expect(this.confirmOnDevicePrompt).toBeVisible();
             await TrezorUserEnvLinkProxy.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
