@@ -3,7 +3,11 @@ import { captureException } from '@sentry/react-native';
 import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 
-export type EnsureMMKVKey = () => Promise<string | null>;
+import { Branded } from '@trezor/type-utils';
+
+export type MMKVStorageKey = string & Branded<'MMKVStorageKey'>;
+
+export type EnsureMMKVKey = () => Promise<MMKVStorageKey | null>;
 
 export type EnsureMMKVKeyDep = {
     ensureMMKVKey: EnsureMMKVKey;
@@ -29,11 +33,11 @@ export const createEnsureMMKVKey = (): EnsureMMKVKey => {
                 });
         })
         .then(secureKey => {
-            if (secureKey != null) return secureKey;
+            if (secureKey != null) return secureKey as MMKVStorageKey;
 
             // If we are here, it means that we have no encryption key in storage.
             // We need to generate a new one. This should happen only once on first app start.
-            const newSecureKey = Buffer.from(getRandomBytes(16)).toString('hex');
+            const newSecureKey = Buffer.from(getRandomBytes(16)).toString('hex') as MMKVStorageKey;
 
             return SecureStore.setItemAsync(ENCRYPTION_KEY, newSecureKey)
                 .then(() => newSecureKey)

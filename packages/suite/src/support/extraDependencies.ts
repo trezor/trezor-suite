@@ -13,6 +13,7 @@ import {
     LocationPushState,
     To,
 } from '@suite-common/redux-utils';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -97,6 +98,8 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): ExtraDependencie
                 ensureDelegatedIdentityKey,
             }),
             platformEncryption,
+            // TODO: This is native-only, this stub to be removed
+            getMMKVStorage: () => extraDependenciesMock.services.getMMKVStorage(),
         },
     };
 };

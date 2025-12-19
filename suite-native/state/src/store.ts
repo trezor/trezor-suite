@@ -76,7 +76,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
                     createStoreWithExtraStoreMiddleware({
                         extraFactory: api => ({
                             ...extraDependencies,
-                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey }),
+                            ...createNativeCompositionRoot({ ...api, ensureMMKVKey, mmkvStorage }),
                         }),
                         onExtraCreated: initializedExtra => {
                             extra = initializedExtra;

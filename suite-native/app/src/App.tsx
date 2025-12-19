@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { MMKV } from 'react-native-mmkv';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,13 +19,12 @@ import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { initSentry } from '@suite-native/sentry';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { StoreProvider, selectIsAppReady } from '@suite-native/state';
-import { createEnsureMMKVKey, createMMKVStorage } from '@suite-native/storage';
 
 import { BannersRenderer } from './BannersRenderer';
 import { ModalsRenderer } from './ModalsRenderer';
 import { StylesProvider } from './StylesProvider';
+import { InitRosenitePlugin } from './devtools/InitRoseniteDevTools';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
-import { useRozenitePlugins } from './hooks/useRozenitePlugins';
 import { applicationInit, postOnboardingInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
@@ -56,17 +54,7 @@ configureNetInfo();
 let isApplicationInitDispatched = false;
 let isPostOnboardingInitDispatched = false;
 
-const InitRosenitePlugin = ({ mmkvStorage }: { mmkvStorage: MMKV }) => {
-    // react hooks can be conditionally called with __DEV__ statement (Metro takes care of it)
-    useRozenitePlugins({
-        mmkvStorage,
-    });
-
-    return null;
-};
-
 const AppComponent = () => {
-    const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
@@ -74,20 +62,6 @@ const AppComponent = () => {
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
-
-    useEffect(() => {
-        if (!__DEV__) {
-            return;
-        }
-        const ensureMMKVKey = createEnsureMMKVKey();
-        createMMKVStorage({
-            ensureMMKVKey,
-        })
-            .getMMKV()
-            .then(mmkv => {
-                setMMKVStorage(mmkv);
-            });
-    }, []);
 
     useEffect(() => {
         if (!isApplicationInitDispatched) {
@@ -113,7 +87,7 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            {mmkvStorage && __DEV__ && <InitRosenitePlugin mmkvStorage={mmkvStorage} />}
+            <InitRosenitePlugin />
             <BannersRenderer />
             <BottomSheetModalProvider>
                 <Freeze freeze={isBiometricsOverlayVisible}>

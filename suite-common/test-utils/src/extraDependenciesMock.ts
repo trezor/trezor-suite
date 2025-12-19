@@ -9,6 +9,7 @@ import {
 import {
     type ExtraDependencies,
     type LocationPushState,
+    MMKVStorageLikeInterface,
     type To,
     createThunk,
 } from '@suite-common/redux-utils';
@@ -107,6 +108,8 @@ export const extraDependenciesMock: ExtraDependencies = {
     services: {
         suiteSync: suiteSyncMock,
         platformEncryption: platformEncryptionMock,
+        // NOTE: overriden in native, shoudn't be in desktop
+        getMMKVStorage: () => Promise.resolve({} as MMKVStorageLikeInterface),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(

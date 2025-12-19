@@ -39,6 +39,26 @@ type Path = {
     hash: string;
 };
 
+export type MMKVStorageLikeInterface = {
+    set: (key: string, value: boolean | string | number | ArrayBuffer) => void;
+    getBoolean: (key: string) => boolean | undefined;
+    getString: (key: string) => string | undefined;
+    getNumber: (key: string) => number | undefined;
+    getBuffer: (key: string) => ArrayBuffer | undefined;
+    contains: (key: string) => boolean;
+    remove: (key: string) => boolean;
+    getAllKeys: () => string[];
+    clearAll: () => void;
+    recrypt: (key: string | undefined) => void;
+    trim: () => void;
+    size: number;
+    isReadOnly: boolean;
+    addOnValueChangedListener: (onValueChanged: (key: string) => void) => any;
+    name: string;
+    equals: (other: any) => boolean;
+    dispose: () => void;
+};
+
 export type To = string | Partial<Path>;
 
 export type LocationPushState = Record<string, unknown>;
@@ -47,6 +67,8 @@ export type ExtraDependenciesServices = {
     services: {
         suiteSync: SuiteSync;
         platformEncryption: PlatformEncryption;
+        // NOTE: yes this BS is dev-only for native, should be removed from "common"
+        getMMKVStorage: () => Promise<MMKVStorageLikeInterface>;
     };
 };
 
