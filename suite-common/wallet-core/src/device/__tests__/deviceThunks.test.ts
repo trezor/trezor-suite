@@ -7,10 +7,7 @@ import { prepareThpReducer } from '@suite-common/thp';
 
 import { forgetPersistentDataPreloadedStateFixture } from '../__fixtures__/forgetPersistentDataPreloadedState';
 import { prepareDeviceReducer } from '../deviceReducer';
-import {
-    forgetAllDevicesPersistentDataThunk,
-    forgetSingleDevicePersistentDataThunk,
-} from '../deviceThunks';
+import { forgetSingleDevicePersistentDataThunk } from '../deviceThunks';
 
 const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
 const bluetoothReducer =
@@ -75,17 +72,5 @@ describe(forgetSingleDevicePersistentDataThunk.name, () => {
         await store.dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: 'device-id-4' }));
         const state = store.getState();
         expect(state).toEqual(forgetPersistentDataPreloadedStateFixture);
-    });
-});
-
-describe(forgetAllDevicesPersistentDataThunk.name, () => {
-    it('forgets all data, even orphaned', async () => {
-        const store = initStore();
-        await store.dispatch(forgetAllDevicesPersistentDataThunk());
-        const state = store.getState();
-
-        expect(state.device.persistentDeviceData).toEqual([]);
-        expect(state.bluetooth.knownDevices).toEqual([]);
-        expect(state.thp.credentials).toEqual([]);
     });
 });

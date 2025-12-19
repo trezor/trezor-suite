@@ -16,18 +16,8 @@ export default createMigration<SuiteDBSchema>('25.11.0', async (db, tx) => {
         return suite?.settings as OldSuiteSettingsType | undefined;
     };
 
-    const getWalletSettings = async () => {
-        if (!db.objectStoreNames.contains('walletSettings')) return undefined;
-        const walletSettingsStore = tx.objectStore('walletSettings');
-        const wallet = await walletSettingsStore.get('wallet');
-
-        return wallet as OldWalletSettingsType | undefined;
-    };
-
     const suiteSettings = await getSuiteSettings();
     const prevAutoEjectValue = suiteSettings?.autoEject === true;
-    const walletSettings = await getWalletSettings();
-    const prevAutoForgetValue = walletSettings?.autoForgetDeviceData === true;
 
     await updateAll(tx, 'walletSettings', walletSettings => {
         delete (walletSettings as OldWalletSettingsType).autoForgetDeviceData;
@@ -35,7 +25,6 @@ export default createMigration<SuiteDBSchema>('25.11.0', async (db, tx) => {
         return {
             ...walletSettings,
             isAutoEjectEnabled: prevAutoEjectValue,
-            isAutoForgetDeviceDataEnabled: prevAutoForgetValue,
         };
     });
 });

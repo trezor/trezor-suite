@@ -2620,51 +2620,6 @@ export default defineMessages({
         defaultMessage: 'Enable auto-eject?',
         id: 'TR_AUTO_EJECT_CONFIRMATION_TITLE',
     },
-    TR_AUTO_EJECT_FORCED_TOOLTIP: {
-        id: 'TR_AUTO_EJECT_FORCED_TOOLTIP',
-        defaultMessage:
-            'All wallets will be automatically ejected as storing device-related data is disabled.',
-    },
-    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE: {
-        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_TITLE',
-        defaultMessage: 'Store device-related data',
-    },
-    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION: {
-        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DESCRIPTION',
-        defaultMessage:
-            'Store essential device info locally to power features like anti-counterfeit checks and secure device pairing.',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_TITLE: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_TITLE',
-        defaultMessage: 'Store device-related data',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_ENABLED: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_ENABLED',
-        defaultMessage: 'Enabled',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_ENABLED_DESCRIPTION',
-        defaultMessage:
-            'Trezor Suite stores firmware, pairing credentials, and other device data locally to provide advanced security.',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_DISABLED: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED',
-        defaultMessage: 'Disabled',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_DESCRIPTION',
-        defaultMessage:
-            'No data is stored, and advanced security features are disabled. A secure pairing connection must be reestablished every time. Recommended for experienced users only. Use at your own risk.',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_BADGE',
-        defaultMessage: 'Advanced',
-    },
-    TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING: {
-        id: 'TR_STORE_DEVICE_DATA_MODAL_DISABLED_WARNING',
-        defaultMessage:
-            'All wallets will be safely ejected. Trezor Suite will restart automatically when the process is finished.',
-    },
     TR_LANGUAGE: {
         defaultMessage: 'Language',
         id: 'TR_LANGUAGE',

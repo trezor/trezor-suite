@@ -38,11 +38,6 @@ export const toggleHideSuspiciousTransactions = createAction(
     WALLET_SETTINGS.TOGGLE_HIDE_SUSPICIOUS_TRANSACTIONS,
 );
 
-export const setAutoForgetDeviceData = createAction(
-    WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA,
-    (enabled: boolean) => ({ payload: enabled }),
-);
-
 export const setAutoEjectEnabled = createAction(
     WALLET_SETTINGS.SET_AUTO_EJECT,
     (enabled: boolean) => ({ payload: enabled }),
@@ -70,7 +65,6 @@ export type WalletSettingsAction =
     | ReturnType<typeof changeNetworks>
     | ReturnType<typeof setBaseCurrency>
     | ReturnType<typeof toggleHideSuspiciousTransactions>
-    | ReturnType<typeof setAutoForgetDeviceData>
     | ReturnType<typeof setAutoEjectEnabled>
     | ReturnType<typeof setMevProtection>
     | ReturnType<typeof setNetworkReserve>
