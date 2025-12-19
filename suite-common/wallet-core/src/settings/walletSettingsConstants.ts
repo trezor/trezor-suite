@@ -8,7 +8,6 @@ const SET_DISCREET_MODE = '@wallet-settings/set-discreet-mode';
 const CHANGE_COIN_VISIBILITY = '@wallet-settings/change-coin-visibility';
 const SET_MEV_PROTECTION = '@wallet-settings/set-mev-protection';
 const SET_NETWORK_RESERVE = '@wallet-settings/set-network-reserve';
-const AUTO_FORGET_DEVICE_DATA = '@wallet-settings/set-auto-forget-device-data';
 const SET_AUTO_EJECT = '@wallet-settings/set-auto-eject';
 
 export const WALLET_SETTINGS = {
@@ -22,6 +21,5 @@ export const WALLET_SETTINGS = {
     CHANGE_COIN_VISIBILITY,
     SET_MEV_PROTECTION,
     SET_NETWORK_RESERVE,
-    AUTO_FORGET_DEVICE_DATA,
     SET_AUTO_EJECT,
 } as const;

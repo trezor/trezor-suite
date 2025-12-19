@@ -4,18 +4,10 @@ import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
-import {
-    changeNetworks,
-    setAutoForgetDeviceData,
-    setBitcoinAmountUnits,
-} from './walletSettingsActions';
+import { changeNetworks, setBitcoinAmountUnits } from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
 import { selectBitcoinAmountUnit, selectEnabledNetworks } from './walletSettingsReducer';
 import { accountsActions } from '../accounts/accountsActions';
-import {
-    forgetAllDevicesPersistentDataThunk,
-    setDeviceAutoEjectThunk,
-} from '../device/deviceThunks';
 import { selectAccountsToBeForgotten } from '../selectors';
 
 export const changeCoinVisibility = createThunk<
@@ -47,29 +39,6 @@ export const changeCoinVisibility = createThunk<
         payload: { symbol, shouldBeVisible },
     });
 });
-
-type SetAutoForgetDeviceDataThunkParams = {
-    shouldEnable: boolean;
-};
-
-export const setAutoForgetDeviceDataThunk = createThunk<
-    void,
-    SetAutoForgetDeviceDataThunkParams,
-    void
->(
-    `${WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA}/setAutoForgetDeviceDataThunk`,
-    async ({ shouldEnable }, { dispatch }) => {
-        if (!shouldEnable) {
-            dispatch(setAutoForgetDeviceData(false));
-
-            return;
-        }
-
-        dispatch(setAutoForgetDeviceData(true));
-        await dispatch(forgetAllDevicesPersistentDataThunk());
-        await dispatch(setDeviceAutoEjectThunk({ shouldEnable: true }));
-    },
-);
 
 export const toggleBitcoinAmountUnits = () => (dispatch: Dispatch, getState: () => any) => {
     const currentUnits = selectBitcoinAmountUnit(getState());

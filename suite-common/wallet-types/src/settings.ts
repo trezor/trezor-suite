@@ -25,6 +25,5 @@ export interface WalletSettings {
     bitcoinAmountUnit: PROTO.AmountUnit;
     mevProtection: boolean;
     networkReserve: boolean;
-    isAutoForgetDeviceDataEnabled: boolean;
     isAutoEjectEnabled: boolean;
 }

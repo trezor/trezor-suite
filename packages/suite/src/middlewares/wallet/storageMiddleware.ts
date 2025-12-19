@@ -26,7 +26,6 @@ import {
     selectDeviceByStaticSessionId,
     selectDevices,
     selectHistoricFiatRates,
-    selectIsAutoForgetDeviceDataEnabled,
     selectIsDeviceAutoEjectEnabled,
     selectSelectedDevice,
     setBaseCurrency,
@@ -244,10 +243,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 }
             }
 
-            const isAutoForgetEnabled = selectIsAutoForgetDeviceDataEnabled(api.getState());
-
             if (
-                !isAutoForgetEnabled &&
                 isAnyOf(
                     deviceActions.connectDevice, // Known device is stored
                     deviceActions.connectUnacquiredDevice, // Known device is stored
@@ -275,17 +271,15 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (
-                !isAutoForgetEnabled &&
-                (deviceActions.setThpCredentials.match(action) ||
-                    thpActions.incrementCredentialConnectionCounter.match(action) ||
-                    thpActions.removeCredentials.match(action) ||
-                    action.type === 'device-thp_credentials_changed')
+                deviceActions.setThpCredentials.match(action) ||
+                thpActions.incrementCredentialConnectionCounter.match(action) ||
+                thpActions.removeCredentials.match(action) ||
+                action.type === 'device-thp_credentials_changed'
             ) {
                 api.dispatch(storageActions.saveThpCredentials());
             }
 
             if (
-                !isAutoForgetEnabled &&
                 isAnyOf(
                     deviceActions.connectDevice,
                     deviceActions.deviceChanged,
@@ -294,10 +288,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 api.dispatch(storageActions.savePersistentDeviceData());
             }
-            // just a safeguard, nothing should be persisted in the first place
-            if (isAutoForgetEnabled && deviceActions.deviceDisconnect.match(action)) {
-                storageActions.clearPersistentDeviceData();
-            }
 
             switch (action.type) {
                 case WALLET_SETTINGS.SET_HIDE_BALANCE:
@@ -305,7 +295,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
                 case WALLET_SETTINGS.SET_MEV_PROTECTION:
                 case WALLET_SETTINGS.SET_NETWORK_RESERVE:
-                case WALLET_SETTINGS.AUTO_FORGET_DEVICE_DATA:
                 case WALLET_SETTINGS.SET_AUTO_EJECT:
                     api.dispatch(storageActions.saveWalletSettings());
 

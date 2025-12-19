@@ -432,25 +432,6 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
 );
 
 /**
- * Helper thunk to do the same as `forgetSingleDevicePersistentDataThunk`, but for all devices as well as orphaned data.
- * Note that if you eject wallets, but BT, THP and persistentDeviceData are stil remembered,
- * than they cannot be matched by iterating through `devices`, though they are in `persistentDeviceData`.
- */
-export const forgetAllDevicesPersistentDataThunk = createThunk(
-    `${DEVICE_MODULE_PREFIX}/forgetAllDevicesPersistentDataThunk`,
-    (_, { dispatch, getState }) => {
-        selectPersistentDeviceData(getState()).forEach(({ device_id }) =>
-            dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: device_id })),
-        );
-
-        // just to be extra sure that no trace of orphaned data is left:
-        dispatch(deviceActions.forgetAllDevicesPersistentData());
-        dispatch(thpActions.removeAllCredentials());
-        dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));
-    },
-);
-
-/**
  * Handles the necessary cleanup after a device has been wiped.
  * This includes forgetting old/new device instances, clearing persistent data,
  * showing a success toast, and requesting a reconnect.

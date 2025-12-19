@@ -27,11 +27,7 @@ describe('migration 25.11.0', () => {
             },
         });
         await db.put('suiteSettings', { settings: { autoEject: true } }, 'suite');
-        await db.put(
-            'walletSettings',
-            { autoForgetDeviceData: true, isAutoEjectEnabled: false },
-            'wallet',
-        );
+        await db.put('walletSettings', { isAutoEjectEnabled: false }, 'wallet');
         db.close();
 
         const migratedDb = await runMigration();
@@ -39,7 +35,6 @@ describe('migration 25.11.0', () => {
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet).toBeDefined();
         expect(wallet?.isAutoEjectEnabled).toBe(true);
-        expect(wallet?.isAutoForgetDeviceDataEnabled).toBe(true);
 
         migratedDb.close();
     });
@@ -60,7 +55,6 @@ describe('migration 25.11.0', () => {
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet).toBeDefined();
         expect(wallet?.isAutoEjectEnabled).toBe(false);
-        expect(wallet?.isAutoForgetDeviceDataEnabled).toBe(false);
 
         migratedDb.close();
     });
@@ -79,7 +73,6 @@ describe('migration 25.11.0', () => {
         const wallet = await migratedDb.get('walletSettings', 'wallet');
         expect(wallet).toBeDefined();
         expect(wallet?.isAutoEjectEnabled).toBe(false);
-        expect(wallet?.isAutoForgetDeviceDataEnabled).toBe(false);
 
         migratedDb.close();
     });

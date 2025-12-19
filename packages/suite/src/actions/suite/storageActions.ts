@@ -540,12 +540,6 @@ export const savePersistentDeviceData = () => async (_dispatch: Dispatch, getSta
     await db.addItem('persistentDeviceData', data, 'persistentDeviceData', true);
 };
 
-// BEWARE This is not a thunk (most functions in this file are thunks, but are not named as such TODO rename them to "thunk"
-export const clearPersistentDeviceData = async () => {
-    if (!db.isAccessible()) return;
-    await db.removeItemByPK('persistentDeviceData', 'persistentDeviceData');
-};
-
 export const saveConnectSettings = () => (_dispatch: Dispatch, getState: GetState) => {
     if (!db.isAccessible()) return;
     const { connectPopup, walletConnect } = getState();

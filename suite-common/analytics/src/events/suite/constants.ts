@@ -122,7 +122,6 @@ export enum EventType {
     SettingsGeneralLabeling = 'settings/general/labeling',
     SettingsGeneralLabelingProvider = 'settings/general/labeling-provider',
     SettingsGeneralAutoEject = 'settings/general/auto-eject',
-    SettingsGeneralStoreDeviceData = 'settings/general/store-device-data',
     SettingsGeneralMevProtection = 'settings/general/mev-protection',
     SettingsGeneralNetworkReserve = 'settings/general/network-reserve',
     SettingsCoinsBackend = 'settings/coins/backend',

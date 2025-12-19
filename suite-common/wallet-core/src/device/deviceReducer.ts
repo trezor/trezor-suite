@@ -646,9 +646,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(
                     d => d.device_id !== payload.deviceId,
                 );
             })
-            .addCase(deviceActions.forgetAllDevicesPersistentData, state => {
-                state.persistentDeviceData = [];
-            })
             .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
                 addButtonRequest(state, payload.device, payload.buttonRequest);
             })
