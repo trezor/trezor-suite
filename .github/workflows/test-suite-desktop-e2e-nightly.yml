@@ -43,3 +43,4 @@ jobs:
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}

@@ -57,5 +57,6 @@ jobs:
     secrets:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+      e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
       trezor-bot-app-id: ${{ secrets.TREZOR_BOT_APP_ID }}
       trezor-bot-private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}

@@ -225,4 +225,23 @@ export class WalletPage {
         const input = this.accountSearch.first();
         await input.clear();
     }
+
+    @step()
+    async getTokenBalance({
+        symbol,
+        atIndex,
+        tokenName,
+    }: {
+        symbol: NetworkSymbol;
+        atIndex: number;
+        tokenName: string;
+    }) {
+        await this.openAccount({ symbol, atIndex });
+        await this.page.getByTestId('@wallet/menu/wallet-tokens').click();
+        const tokenCryptoAmount = this.page.getByTestId(`@token-row/${tokenName}/crypto-amount`);
+        await expect(tokenCryptoAmount).toBeVisible();
+        const text = await tokenCryptoAmount.innerText();
+
+        return parseFloat(text);
+    }
 }

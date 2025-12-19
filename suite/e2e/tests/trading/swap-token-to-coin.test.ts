@@ -18,7 +18,7 @@ const receiveAmount = localizeNumber(swapQuotesTetherBTC[0].receiveStringAmount!
 const provider = getCompanyNameFromList(swapQuotesTetherBTC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} USDT`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
-const { sendAddress, send: tetherMint, receiveAddress } = swapTradeTetherBTC;
+const { sendAddress, send: tetherMint } = swapTradeTetherBTC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -56,7 +56,6 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                     networkFilter: 'btc',
                     assetCryptoId: getCryptoId('btc'),
                 },
-                receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },
@@ -65,7 +64,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await tradingPage.clickSwapBestOfferAndWaitForFees();
+            await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
         });
 
         await test.step('Initiate send', async () => {

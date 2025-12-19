@@ -124,6 +124,13 @@ export class DevicePrompt {
     }
 
     @step()
+    async compareAddressesOnDeviceAndSuite() {
+        const addressFromSuite = await this.outputValueOf('address').innerText();
+        const addressFromDevice = await this.getAddressFromDisplay();
+        expect(addressFromSuite.replace(/\s/g, '')).toBe(addressFromDevice.replace(/\s/g, ''));
+    }
+
+    @step()
     private async getPaginatedTextSeparator(): Promise<string | false> {
         const isSeparatorVisible = await this.paginatedTextSeparator.isVisible();
         if (!isSeparatorVisible) {

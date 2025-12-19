@@ -6,7 +6,6 @@ import { expect, test } from '../../support/fixtures';
 
 const sendAmount = '0.0004';
 const customFee = '10';
-const { receiveAddress } = swapTradeBTCEthereum;
 
 test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -42,7 +41,6 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
                     networkSymbol: 'eth',
                     assetCryptoId: getCryptoId('eth'),
                 },
-                receiveAddress,
             });
             await tradingPage.fees.switchToCustom();
             await tradingPage.fees.customInput.fill(customFee);

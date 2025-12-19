@@ -67,6 +67,9 @@ on:
       e2e-passphrase:
         description: "Passphrase for E2E tests"
         required: true
+      e2e-passphrase-live:
+        description: "Passphrase for Live E2E tests"
+        required: false
       github-token:
         description: "GitHub token for GitHub Reporter, only on Release workflows"
         required: false
@@ -173,6 +176,7 @@ jobs:
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
           GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
           PASSPHRASE: ${{ secrets.e2e-passphrase }}
+          PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
           GITHUB_TOKEN: ${{ steps.trezor-bot-token.outputs.token || secrets.github-token }}
           RELEASE_BUILD: ${{ inputs.release-build }}
           ELECTRON_DISABLE_SANDBOX: 1

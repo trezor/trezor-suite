@@ -15,7 +15,6 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
     4,
     BigNumber.ROUND_UP,
 );
-const { receiveAddress } = swapTradeEthereumBTC;
 
 test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -49,7 +48,6 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                     networkFilter: 'btc',
                     assetCryptoId: getCryptoId('btc'),
                 },
-                receiveAddress,
             });
             await tradingPage.fees.setEthereumCustomFees({
                 gasLimit,
