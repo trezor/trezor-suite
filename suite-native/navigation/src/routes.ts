@@ -128,6 +128,12 @@ export enum DevicePassphraseStackRoutes {
     ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
+export enum DeviceAuthenticityStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    AuthenticityCheck = 'AuthenticityCheck',
+    AuthenticitySuccess = 'AuthenticitySuccess',
+}
+
 export enum FirmwareUpdateStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
@@ -143,11 +149,6 @@ export enum FirmwareLanguageStackRoutes {
 export enum DeviceAutoConnectStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ConfirmAutoConnect = 'ConfirmAutoConnect',
-}
-
-export enum DeviceAuthenticityStackRoutes {
-    AuthenticityCheck = 'AuthenticityCheck',
-    AuthenticitySuccess = 'AuthenticitySuccess',
 }
 
 export enum WipeDeviceStackRoutes {

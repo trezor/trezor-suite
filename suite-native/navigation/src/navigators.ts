@@ -246,7 +246,9 @@ export type DeviceSettingsStackParamList = {
     [DeviceSettingsStackRoutes.DeviceCheckBackupStack]: undefined;
     [DeviceSettingsStackRoutes.DevicePassphraseStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceAuthenticity]: undefined;
-    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]: NavigatorScreenParams<DeviceAuthenticityStackParamList>;
+    [DeviceSettingsStackRoutes.DeviceAuthenticityStack]:
+        | NavigatorScreenParams<DeviceAuthenticityStackParamList>
+        | undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
     [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
 };
@@ -309,6 +311,7 @@ export type DevicePassphraseStackParamList = {
 };
 
 export type DeviceAuthenticityStackParamList = {
+    [DeviceAuthenticityStackRoutes.DeviceConnectionGuard]: undefined;
     [DeviceAuthenticityStackRoutes.AuthenticityCheck]: undefined;
     [DeviceAuthenticityStackRoutes.AuthenticitySuccess]: undefined;
 };
