@@ -1,10 +1,9 @@
-import { Locator, Page, Response } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { step } from '../../common';
-import { solanaUrlPattern } from '../../mocks/tradingMock';
 import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
@@ -29,6 +28,7 @@ export class FeeSection {
     readonly ethereumMaxFeePerGas: Locator;
     readonly ethereumMaxPriorityFeePerGas: Locator;
     readonly networkReserveBanner: Locator;
+    readonly maximumFeeAmountToBeCalculated: Locator;
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
@@ -46,32 +46,9 @@ export class FeeSection {
         this.ethereumMaxFeePerGas = this.page.getByTestId('maxFeePerGas');
         this.ethereumMaxPriorityFeePerGas = this.page.getByTestId('maxPriorityFeePerGas');
         this.networkReserveBanner = this.page.getByTestId('@send/network-reserve-banner');
-    }
-
-    @step()
-    promiseForResponseSolanaFeeCalls() {
-        const isSolanaResponse = (response: Response, method: string) =>
-            new RegExp(solanaUrlPattern).test(response.url()) &&
-            response.request().postDataJSON().method === method;
-        const getFeeForMessagePromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'getFeeForMessage'),
+        this.maximumFeeAmountToBeCalculated = this.page.getByTestId(
+            '@trading/quote/maximum-fee-amount-to-be-calculated',
         );
-        const getRecentPrioritizationFeesPromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'getRecentPrioritizationFees'),
-        );
-        const simulateTransactionPromise = this.page.waitForResponse(response =>
-            isSolanaResponse(response, 'simulateTransaction'),
-        );
-
-        // Suite calls each request twice and we have to wait for all of them
-        return Promise.all([
-            getFeeForMessagePromise,
-            getRecentPrioritizationFeesPromise,
-            simulateTransactionPromise,
-            getFeeForMessagePromise,
-            getRecentPrioritizationFeesPromise,
-            simulateTransactionPromise,
-        ]);
     }
 
     @step()

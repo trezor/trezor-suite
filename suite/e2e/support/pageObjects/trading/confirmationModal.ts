@@ -49,6 +49,7 @@ export class TradingConfirmationModal {
     @step()
     async initiateSendConfirmation(options?: { confirmAlsoToken: boolean }) {
         await this.openConfirmAndSendModal();
+        await this.devicePrompt.compareAddressesOnDeviceAndSuite();
         await this.devicePrompt.waitForPromptAndConfirm();
         if (options?.confirmAlsoToken) {
             await this.devicePrompt.waitForPromptAndConfirm();

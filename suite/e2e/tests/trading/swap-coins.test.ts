@@ -35,7 +35,7 @@ const receiveAmount = localizeNumber(swapQuotesSolanaBTC[0].receiveStringAmount)
 const provider = getCompanyNameFromList(swapQuotesSolanaBTC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} BTC`;
-const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
+const { sendAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
@@ -80,7 +80,6 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
                     searchFilter: 'Bitcoin',
                     assetCryptoId: getCryptoId('btc'),
                 },
-                receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
                 },

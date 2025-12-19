@@ -51,7 +51,12 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
                     </Text>
                 </Column>
             ) : (
-                <Text intent="neutral" priority="secondary" typographyStyle={typographyStyle}>
+                <Text
+                    intent="neutral"
+                    priority="secondary"
+                    typographyStyle={typographyStyle}
+                    data-testid="@trading/quote/maximum-fee-amount-to-be-calculated"
+                >
                     <Translation id="TO_BE_CALCULATED" />
                 </Text>
             )}

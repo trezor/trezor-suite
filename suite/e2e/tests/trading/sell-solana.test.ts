@@ -63,14 +63,13 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
 
     test('Sell Solana', async ({ page, tradingPage, tradingMock, devicePrompt }) => {
         await test.step('Fill in a sell request', async () => {
-            const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
             await tradingPage.fillSellForm({
                 cryptoAmount,
                 networkSymbolOrTokenId: 'sol',
                 cryptoCurrency: 'solana',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await solanaFeePromise;
+            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await expect(tradingPage.quotes.bestOfferAmount).toHaveText(fiatAmount);
@@ -133,14 +132,13 @@ test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
 
     test('Sell Solana for compared offer', async ({ page, tradingPage }) => {
         await test.step('Fill input amount and opens offer comparison', async () => {
-            const solanaFeePromise = tradingPage.fees.promiseForResponseSolanaFeeCalls();
             await tradingPage.fillSellForm({
                 cryptoAmount,
                 cryptoCurrency: 'solana',
                 networkSymbolOrTokenId: 'sol',
             });
             // Automation is too fast, we need to wait for Fees to be resolved
-            await solanaFeePromise;
+            await expect(tradingPage.fees.maximumFeeAmountToBeCalculated).toBeHidden();
             await expect(tradingPage.fees.maxFee).toBeVisible();
             await expect(tradingPage.fees.maxFeeFiat).toBeVisible();
             await tradingPage.quotes.selectedProvider.click();

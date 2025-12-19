@@ -18,7 +18,7 @@ const receiveAmount = localizeNumber(swapQuotesSolanaUSDC[0].receiveStringAmount
 const provider = getCompanyNameFromList(swapQuotesSolanaUSDC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} USDC`;
-const { sendAddress, receive: usdcMint, receiveAddress } = swapTradeSolanaUSDC;
+const { sendAddress, receive: usdcMint } = swapTradeSolanaUSDC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
 test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
@@ -59,7 +59,6 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
                     networkFilter: 'eth',
                     assetCryptoId: usdcMint as CryptoId,
                 },
-                receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
                 },
@@ -68,7 +67,7 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
 
         await test.step('Confirm the Swap trade', async () => {
             await expect(tradingPage.quotes.bestOfferAmount).toHaveText(formattedReceiveAmount);
-            await tradingPage.clickSwapBestOfferAndWaitForFees();
+            await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
         });
 
         await test.step('Initiate send', async () => {

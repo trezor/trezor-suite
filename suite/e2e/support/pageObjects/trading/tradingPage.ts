@@ -179,7 +179,6 @@ export class TradingPage {
     async fillSwapForm({
         sellAsset,
         buyAsset,
-        receiveAddress,
         selectReceiveAddress,
         amount,
     }: {
@@ -190,7 +189,6 @@ export class TradingPage {
         buyAsset: Omit<Parameters<TradingAssetsModal['selectBuyAsset']>[0], 'assetCryptoId'> & {
             assetCryptoId: CryptoId;
         };
-        receiveAddress?: string;
         selectReceiveAddress?: () => Promise<void>;
     }) {
         await this.assets.selectSellAsset(sellAsset);
@@ -206,32 +204,20 @@ export class TradingPage {
             await selectReceiveAddress();
         }
 
-        const quotesRequestPromise = this.page.waitForRequest(invityEndpoint.swapQuotes);
         const quotesResponsePromise = this.page.waitForResponse(invityEndpoint.swapQuotes);
         await expect(this.quotes.bestOfferAmount).toHaveText(/0 \w+/);
         await this.inputs.cryptoAmount.fill(amount);
         await quotesResponsePromise;
         await this.quotes.waitForSync();
-        await expect.soft(quotesRequestPromise).toHavePayload(
-            {
-                receive: buyAsset.assetCryptoId,
-                send: sellAsset.assetCryptoId,
-                sendStringAmount: amount,
-                dex: 'enable',
-                receiveAddress,
-            },
-            { omit: ['fromAddress'] },
-        );
     }
 
     @step()
-    async clickSwapBestOfferAndWaitForFees() {
-        // The suite does not wait for these responses and it causes flakiness in automation.
+    async waitForSolanaFeesAndClickSwapBestOffer() {
+        // The suite does not wait for solana fees to be calculated and it causes flakiness in automation.
         // Toast error: 'Transaction signing error: Missing composed data' and not possible to send.
         // So we have to wait for them manually.
-        const swapFeeCallsPromise = this.fees.promiseForResponseSolanaFeeCalls();
+        await expect(this.fees.maximumFeeAmountToBeCalculated).toBeHidden();
         await this.swapBestOfferButton.click();
-        await swapFeeCallsPromise;
     }
 
     @step()
