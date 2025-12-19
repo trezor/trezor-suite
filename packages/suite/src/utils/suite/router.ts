@@ -1,3 +1,4 @@
+import { HashString, PathString, RouterPath, SearchString } from '@suite-common/redux-utils';
 import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
@@ -28,6 +29,28 @@ export const stripPrefixedURL = (url: string) => {
 
     return url;
 };
+
+// https://github.com/remix-run/history/blob/main/docs/api-reference.md#locationpathname
+const ensurePathString = (s: string = ''): PathString =>
+    (s.startsWith('/') ? s : `/${s}`) as PathString;
+
+// https://github.com/remix-run/history/blob/main/docs/api-reference.md#locationsearch
+const ensureSearchString = (s: string = ''): SearchString =>
+    (!s || s.startsWith('?') ? s : `?${s}`) as SearchString;
+
+// https://github.com/remix-run/history/blob/main/docs/api-reference.md#locationhash
+const ensureHashString = (s: string = ''): HashString =>
+    (!s || s.startsWith('#') ? s : `#${s}`) as HashString;
+
+export const ensureRouterPath = (path: {
+    pathname?: string;
+    search?: string;
+    hash?: string;
+}): RouterPath => ({
+    pathname: ensurePathString(path.pathname),
+    search: ensureSearchString(path.search),
+    hash: ensureHashString(path.hash),
+});
 
 export const findRoute = (url: string) => {
     const [pathname] = url.split('#');

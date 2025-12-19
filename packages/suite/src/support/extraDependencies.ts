@@ -33,7 +33,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
-import { getPrefixedURL, stripPrefixedURL } from 'src/utils/suite/router';
+import { ensureRouterPath, getPrefixedURL, stripPrefixedURL } from 'src/utils/suite/router';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
@@ -65,16 +65,17 @@ export const createRouterServices = (history: History): RouterServices => ({
     getLocation: () => {
         const { location } = history;
 
-        return { ...location, pathname: stripPrefixedURL(location.pathname) };
+        return ensureRouterPath({ ...location, pathname: stripPrefixedURL(location.pathname) });
     },
     navigate: (to, state) =>
         history.push(
-            typeof to === 'string'
-                ? getPrefixedURL(to)
-                : { ...to, pathname: to.pathname && getPrefixedURL(to.pathname) },
+            { ...to, pathname: to.pathname ? getPrefixedURL(to.pathname) : undefined },
             state,
         ),
-    listen: listener => history.listen(listener),
+    listen: listener =>
+        history.listen(({ location, action }) =>
+            listener({ location: ensureRouterPath(location), action }),
+        ),
 });
 
 type SuiteAppDeps = {

@@ -179,9 +179,9 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     routerServices: {
         getLocation: () => ({
-            pathname: 'mocked_path',
-            hash: 'mocked_hash',
-            search: 'mocked_search',
+            pathname: '/mocked_path',
+            hash: '#mocked_hash',
+            search: '?mocked_search',
         }),
         navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
         listen: (_: {}) => () => {},

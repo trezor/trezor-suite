@@ -33,22 +33,24 @@ type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
+export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
+export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
+export type HashString = '' | `#${string}`; // in format `#/alpha/beta/gamma`
+
 // NOTE: this is basically a bit stricter Path from history package (file://./../../../node_modules/history/index.d.ts),
 // but it is satisfied by window.location as well
-type Path = {
-    pathname: string;
-    search: string;
-    hash: string;
+export type RouterPath = {
+    pathname: PathString;
+    search: SearchString;
+    hash: HashString;
 };
 
-export type To = string | Partial<Path>;
-
 // This is a Listener from history package
-type Listener = (_: { location: Path; action: 'PUSH' | 'POP' | 'REPLACE' }) => void;
+type Listener = (_: { location: RouterPath; action: 'PUSH' | 'POP' | 'REPLACE' }) => void;
 
 export type RouterServices = {
-    getLocation: () => Path;
-    navigate: (to: To, state?: LocationPushState) => void;
+    getLocation: () => RouterPath;
+    navigate: (to: Partial<RouterPath>, state?: LocationPushState) => void;
     // calling .listen(listener) returns a cleanup function
     listen: (listener: Listener) => () => void;
 };
