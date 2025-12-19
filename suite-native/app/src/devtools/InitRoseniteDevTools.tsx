@@ -19,13 +19,12 @@ export const InitRosenitePlugin = () => {
     const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
 
     useEffect(() => {
-        if (!__DEV__) {
-            return;
-        }
         getMMKVStorage().then(mmkv => {
             setMMKVStorage(mmkv);
         });
     }, [getMMKVStorage]);
 
-    return __DEV__ && mmkvStorage ? <InitRosenitePluginInternal mmkvStorage={mmkvStorage} /> : null;
+    return Boolean(mmkvStorage) && mmkvStorage ? (
+        <InitRosenitePluginInternal mmkvStorage={mmkvStorage} />
+    ) : null;
 };

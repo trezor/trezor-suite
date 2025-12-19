@@ -87,7 +87,7 @@ const AppComponent = () => {
 
     return (
         <FormatterProvider config={formattersConfig}>
-            <InitRosenitePlugin />
+            {__DEV__ && <InitRosenitePlugin />}
             <BannersRenderer />
             <BottomSheetModalProvider>
                 <Freeze freeze={isBiometricsOverlayVisible}>
