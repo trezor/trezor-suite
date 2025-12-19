@@ -3,6 +3,7 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 import { BorderRadii, CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
 import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from './types';
+import { addAlphaToHex } from '../../utils/utils';
 
 const OPACITY_HOVER_STATE = 0.82;
 const OPACITY_ACTIVE_STATE = 0.74;
@@ -54,29 +55,6 @@ export const commonButtonStyles = css`
         transform: scale(0.95);
     }
 `;
-
-export const addAlphaToHex = (hex: CSSColor, percent: number): CSSColor => {
-    const cleanHex = hex.replace(/^#/, '');
-    const clampedPercent = Math.min(1, Math.max(0, percent));
-
-    const normalizedHex =
-        cleanHex.length === 3 || cleanHex.length === 4
-            ? cleanHex
-                  .split('')
-                  .map(c => c + c)
-                  .join('')
-            : cleanHex;
-
-    const rgbHex = normalizedHex.slice(0, 6);
-    const existingAlphaHex = normalizedHex.length === 8 ? normalizedHex.slice(6, 8) : 'FF';
-    const baseAlpha = parseInt(existingAlphaHex, 16);
-    const newAlphaHex = Math.round(baseAlpha * clampedPercent)
-        .toString(16)
-        .padStart(2, '0')
-        .toUpperCase();
-
-    return `#${rgbHex}${newAlphaHex}`;
-};
 
 export const mapSizeToBorderRadius = (size: ButtonSize): BorderRadii => {
     const borderRadiusMap: Record<ButtonSize, BorderRadii> = {

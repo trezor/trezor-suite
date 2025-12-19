@@ -6,12 +6,11 @@ import {
     Card,
     Column,
     Grid,
+    IconButton,
     KEYBOARD_CODE,
     Paragraph,
-    PinButton,
 } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { resolveAfter } from '@trezor/utils';
 
@@ -96,7 +95,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     }, [backspace, count, onSubmit]);
 
     return (
-        <Column gap={spacings.md}>
+        <Column gap={16} maxWidth={380}>
             <Banner
                 intent="info"
                 icon="question"
@@ -111,38 +110,28 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                 </Paragraph>
             </Banner>
             <Card paddingType="none">
-                <Column gap={spacings.xl} padding={spacings.xxl} alignItems="flex-end">
-                    <Grid columns={count === 9 ? 3 : 2} gap={spacings.lg} width="100%">
-                        {count === 9 &&
-                            // prettier-ignore
-                            // Order follows standard numeric keypad layout
-                            [7, 8, 9,
-                             4, 5, 6,
-                             1, 2, 3].map(num => (
-                                <PinButton
-                                    key={num}
-                                    data-value={String(num)}
-                                    onClick={() => onSubmit(String(num))}
-                                    data-testid={
-                                        num === 1 ? '@recovery/word-input-advanced/1' : undefined
-                                    }
-                                />
-                            ))}
-                        {count === 6 && (
-                            // TODO: Do we need the data-value mess here? Can it be removed?
-                            <>
-                                <PinButton data-value="8" onClick={() => onSubmit('7')} />
-                                <PinButton data-value="9" onClick={() => onSubmit('9')} />
-                                <PinButton data-value="5" onClick={() => onSubmit('4')} />
-                                <PinButton data-value="6" onClick={() => onSubmit('6')} />
-                                <PinButton
-                                    data-value="2"
-                                    onClick={() => onSubmit('1')}
-                                    data-testid="@recovery/word-input-advanced/1"
-                                />
-                                <PinButton data-value="3" onClick={() => onSubmit('3')} />
-                            </>
-                        )}
+                <Column gap={40} padding={16} alignItems="center">
+                    <Grid columns={count === 9 ? 3 : 2} gap={20}>
+                        {(count === 9
+                            ? // prettier-ignore
+                              [7, 8, 9,
+                               4, 5, 6,
+                               1, 2, 3]
+                            : // prettier-ignore
+                              [7, 9,
+                               4, 6,
+                               1, 3]
+                        ).map(num => (
+                            <IconButton
+                                key={num}
+                                onClick={() => onSubmit(String(num))}
+                                data-testid={`@recovery/word-input-advanced/${num}`}
+                                icon="dotOutlineFilled"
+                                intent="neutral"
+                                priority="secondary"
+                                size="large"
+                            />
+                        ))}
                     </Grid>
                     <Button
                         intent="neutral"

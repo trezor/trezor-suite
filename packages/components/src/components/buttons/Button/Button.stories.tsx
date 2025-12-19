@@ -66,7 +66,12 @@ export const Button: StoryObj<ButtonProps> = {
             control: { type: 'select' },
         },
         shortcut: {
-            control: { type: 'object' },
+            control: { type: 'select' },
+            options: [undefined, 'example'],
+            mapping: {
+                undefined,
+                example: ['CTRL', 'KEY_P'],
+            },
         },
         ...getFramePropsStory(allowedButtonFrameProps).argTypes,
     },

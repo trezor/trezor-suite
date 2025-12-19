@@ -59,10 +59,16 @@ export const PinModal = ({ device }: PinModalProps) => {
                             onClick={handlePinSubmit}
                             data-testid="@pin/submit-button"
                             isDisabled={submitted}
+                            flex="1"
                         >
                             <Translation id="TR_CONFIRM" />
                         </Modal.Button>
-                        <Modal.Button onClick={onCancel} intent="neutral" priority="secondary">
+                        <Modal.Button
+                            onClick={onCancel}
+                            intent="neutral"
+                            priority="secondary"
+                            flex="1"
+                        >
                             <Translation id="TR_CANCEL" />
                         </Modal.Button>
                     </>

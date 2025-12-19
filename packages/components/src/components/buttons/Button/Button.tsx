@@ -1,7 +1,5 @@
 import styled, { useTheme } from 'styled-components';
 
-import { borders, spacingsPx } from '@trezor/theme';
-
 import {
     FrameProps,
     FramePropsKeys,
@@ -12,11 +10,11 @@ import { TransientProps } from '../../../utils/transientProps';
 import { Box } from '../../Box/Box';
 import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
+import { ShortcutBadge } from '../../ShortcutBadge/ShortcutBadge';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from '../types';
 import {
-    addAlphaToHex,
     commonButtonStyles,
     mapPropsToCSS,
     mapPropsToColor,
@@ -26,6 +24,7 @@ import {
     pickButtonProps,
 } from '../utils';
 import { mapSizeToGap, mapSizeToPadding } from './utils';
+import { Keys } from '../../ShortcutBadge/keyboardKeys';
 
 export const allowedButtonFrameProps = [
     'margin',
@@ -55,12 +54,6 @@ const Container = styled.button<ButtonContainerProps>`
     ${withFrameProps}
 `;
 
-const ShortcutContainer = styled.div`
-    background-color: ${({ theme }) => addAlphaToHex(theme.baseFillElementNeutralDark, 0.09)};
-    border-radius: ${borders.radii.xxs};
-    padding: ${spacingsPx.xxs};
-`;
-
 export type ButtonProps = CommonButtonProps &
     AllowedButtonFrameProps & {
         size?: ButtonSize;
@@ -70,7 +63,7 @@ export type ButtonProps = CommonButtonProps &
         children: React.ReactNode;
         'data-testid'?: string;
         priority?: ButtonPriority;
-        shortcut?: string[];
+        shortcut?: Keys[];
         className?: string;
     };
 
@@ -136,15 +129,9 @@ export const Button = ({
                 </Box>
                 {iconRight && !props.isLoading && <Icon name={iconRight} {...iconProps} />}
                 {shortcut?.length && (
-                    <Row gap={2}>
-                        {shortcut.map((hotkey, index) => (
-                            <ShortcutContainer key={index}>
-                                <Text typographyStyle="label" color={color} case="uppercase">
-                                    {hotkey}
-                                </Text>
-                            </ShortcutContainer>
-                        ))}
-                    </Row>
+                    <Text as="div" color={color}>
+                        <ShortcutBadge shortcut={shortcut} />
+                    </Text>
                 )}
             </Row>
         </Container>
