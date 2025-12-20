@@ -29,6 +29,7 @@ import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
 import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 import { UnpairBluetoothDeviceScreen } from '../screens/UnpairBluetoothDeviceScreen';
+import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
 
 const DeviceSettingsStack = createNativeStackNavigator<DeviceSettingsStackParamList>();
 
@@ -67,6 +68,10 @@ export const DeviceSettingsStackNavigator = () => {
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.DeviceAuthenticity}
                 component={DeviceAuthenticityScreen}
+            />
+            <DeviceSettingsStack.Screen
+                name={DeviceSettingsStackRoutes.WipeDevice}
+                component={WipeDeviceScreen}
             />
             <DeviceSettingsStack.Group screenOptions={{ animation: 'slide_from_bottom' }}>
                 <DeviceSettingsStack.Screen
@@ -111,11 +116,11 @@ export const DeviceSettingsStackNavigator = () => {
                     name={DeviceSettingsStackRoutes.DeviceAuthenticityStack}
                     component={DeviceAuthenticityStackNavigator}
                 />
+                <DeviceSettingsStack.Screen
+                    name={DeviceSettingsStackRoutes.WipeDeviceStack}
+                    component={WipeDeviceStackNavigator}
+                />
             </DeviceSettingsStack.Group>
-            <DeviceSettingsStack.Screen
-                name={DeviceSettingsStackRoutes.WipeDeviceStack}
-                component={WipeDeviceStackNavigator}
-            />
         </DeviceSettingsStack.Navigator>
     );
 };

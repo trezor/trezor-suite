@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
@@ -11,18 +10,13 @@ import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    WipeDeviceStackParamList,
+    StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
 
-type NavigationProps = CompositeNavigationProp<
-    NativeStackNavigationProp<WipeDeviceStackParamList, WipeDeviceStackRoutes.WipeDevice>,
-    CompositeNavigationProp<
-        NativeStackNavigationProp<DeviceSettingsStackParamList>,
-        NativeStackNavigationProp<RootStackParamList>
-    >
+type NavigationProps = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.WipeDeviceStack
 >;
 
 export const useWipeDevice = () => {
@@ -38,12 +32,7 @@ export const useWipeDevice = () => {
         // not wanted here. We want to treat it differently since it was wiped so user goes to onboarding through homescreen.
         dispatch(setWasDeviceOnboardingCancelled(true));
 
-        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceSettingsStackRoutes.WipeDeviceStack,
-            params: {
-                screen: WipeDeviceStackRoutes.ContinueOnTrezor,
-            },
-        });
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
 
         const response = await requestPrioritizedDeviceAccess({
             deviceCallback: async () => await dispatch(wipeDeviceThunk()),
@@ -53,11 +42,8 @@ export const useWipeDevice = () => {
             analytics.report({
                 type: EventTypeShared.SettingsDeviceWipe,
             });
-            navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-                screen: DeviceSettingsStackRoutes.WipeDeviceStack,
-                params: {
-                    screen: WipeDeviceStackRoutes.WipeDeviceLoadingScreen,
-                },
+            navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
+                screen: WipeDeviceStackRoutes.WipeDeviceLoadingScreen,
             });
         } else {
             if (navigation.canGoBack()) {
