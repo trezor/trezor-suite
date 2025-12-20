@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import {
     connectPopupCallThunk,
     connectPopupCancelThunk,
@@ -9,7 +10,7 @@ import {
 } from '@suite-common/connect-popup';
 import { CALL_SOURCE_DESKTOP_WS } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { CallMethodKeys } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { openModal } from 'src/actions/suite/modalActions';

@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/analytics",
+    "name": "@suite/analytics-shared",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,11 +11,7 @@
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
-        "@suite-native/config": "workspace:*",
-        "@suite-native/sentry": "workspace:*",
-        "@trezor/analytics": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/env-utils": "workspace:*"
+        "@suite-native/analytics": "workspace:*",
+        "@trezor/suite-analytics": "workspace:*"
     }
 }

@@ -2,9 +2,10 @@ import { UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';

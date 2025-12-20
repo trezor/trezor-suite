@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { BluetoothDeviceId } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 
 import { DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';

@@ -1,6 +1,7 @@
+import { EventTypeShared } from '@suite-common/analytics';
 import { createMiddleware } from '@suite-common/redux-utils';
 import { thpActions } from '@suite-common/thp';
-import { EventTypeShared, analytics } from '@suite-native/analytics';
+import { analytics } from '@suite-native/analytics';
 
 export const thpMiddleware = createMiddleware((action, { next }) => {
     if (thpActions.finishThpFlow.match(action)) {

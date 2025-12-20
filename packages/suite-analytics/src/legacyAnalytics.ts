@@ -1,7 +1,7 @@
+import { SuiteSharedAnalyticsEvent } from '@suite-common/analytics';
 import { Analytics } from '@trezor/analytics';
 
 import { SuiteAnalyticsEvent } from './types';
-import { SuiteSharedAnalyticsEvent } from '../shared/types';
 
 /** @deprecated use `reportAnalytics` instead */
 export const analytics = new Analytics<SuiteAnalyticsEvent | SuiteSharedAnalyticsEvent>({

@@ -1,6 +1,7 @@
+import { EventTypeShared } from '@suite-common/analytics';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 
 import { useDispatch } from 'src/hooks/suite';
 

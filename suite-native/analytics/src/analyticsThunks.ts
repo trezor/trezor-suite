@@ -5,12 +5,14 @@ import {
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
-import { EventType, analytics } from '@suite-common/analytics/src/events/suite-native';
 import { createThunk } from '@suite-common/redux-utils';
+import { EventType } from '@suite-native/analytics';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
+
+import { analytics } from './legacyAnalytics';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 

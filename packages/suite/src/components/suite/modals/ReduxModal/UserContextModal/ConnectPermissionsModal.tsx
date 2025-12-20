@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Card, Checkbox, Column, Icon, List, Modal, Row, Text } from '@trezor/components';
 import { ERRORS } from '@trezor/connect';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';

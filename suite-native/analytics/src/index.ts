@@ -1,2 +1,12 @@
+import { getRandomId } from '@trezor/analytics';
+
 export * from './analyticsThunks';
-export * from '@suite-common/analytics/src/events/suite-native';
+export { analytics } from './legacyAnalytics';
+export { EventType } from './constants';
+export type {
+    CountryChangeContextCheck,
+    CountryChangeContext,
+    CountryChangeAction,
+    SuiteNativeAnalyticsEvent,
+} from './types';
+export { getRandomId }; // is it used?

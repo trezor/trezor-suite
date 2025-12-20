@@ -1,4 +1,3 @@
-// @TODO
 export enum AppUpdateEventStatus {
     Available = 'available',
     Download = 'download',

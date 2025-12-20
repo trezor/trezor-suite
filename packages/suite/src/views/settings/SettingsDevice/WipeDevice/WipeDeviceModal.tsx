@@ -2,10 +2,11 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import * as routerActions from 'src/actions/suite/routerActions';

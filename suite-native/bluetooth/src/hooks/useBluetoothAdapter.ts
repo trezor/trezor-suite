@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
-import { EventTypeShared, analytics } from '@suite-native/analytics';
+import { analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';

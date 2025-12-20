@@ -2,8 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventTypeShared, analytics } from '@suite-native/analytics';
+import { analytics } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {

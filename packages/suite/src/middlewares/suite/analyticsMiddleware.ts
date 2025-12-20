@@ -1,6 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
+import { EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
@@ -27,7 +28,7 @@ import {
     hasBitcoinOnlyFirmware,
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
-import { EventType, EventTypeShared, analytics } from '@trezor/suite-analytics';
+import { EventType, analytics } from '@trezor/suite-analytics';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { ROUTER, SUITE } from 'src/actions/suite/constants';
