@@ -23,7 +23,6 @@ export const WipeDeviceScreen = () => {
                 <DynamicScreenHeader
                     title={<Translation id="moduleDeviceSettings.wipeDevice.title" />}
                     subtitle={<Translation id="moduleDeviceSettings.wipeDevice.subtitle" />}
-                    closeActionType="close"
                 />
             }
         >

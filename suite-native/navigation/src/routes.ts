@@ -94,6 +94,7 @@ export enum DeviceSettingsStackRoutes {
     DevicePassphraseStack = 'DevicePassphraseStack',
     DeviceAuthenticity = 'DeviceAuthenticity',
     DeviceAuthenticityStack = 'DeviceAuthenticityStack',
+    WipeDevice = 'WipeDevice',
     WipeDeviceStack = 'WipeDeviceStack',
 }
 
@@ -152,7 +153,7 @@ export enum DeviceAutoConnectStackRoutes {
 }
 
 export enum WipeDeviceStackRoutes {
-    WipeDevice = 'WipeDevice',
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
     FactoryReset = 'FactoryReset',

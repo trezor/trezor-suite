@@ -250,7 +250,10 @@ export type DeviceSettingsStackParamList = {
         | NavigatorScreenParams<DeviceAuthenticityStackParamList>
         | undefined;
     [DeviceSettingsStackRoutes.ContinueOnTrezor]: undefined;
-    [DeviceSettingsStackRoutes.WipeDeviceStack]: NavigatorScreenParams<WipeDeviceStackParamList>;
+    [DeviceSettingsStackRoutes.WipeDevice]: undefined;
+    [DeviceSettingsStackRoutes.WipeDeviceStack]:
+        | NavigatorScreenParams<WipeDeviceStackParamList>
+        | undefined;
 };
 
 export type DeviceNameStackParamList = {
@@ -286,7 +289,7 @@ export type DevicePinProtectionStackParamList = {
 };
 
 export type WipeDeviceStackParamList = {
-    [WipeDeviceStackRoutes.WipeDevice]: undefined;
+    [WipeDeviceStackRoutes.DeviceConnectionGuard]: undefined;
     [WipeDeviceStackRoutes.ContinueOnTrezor]: undefined;
     [WipeDeviceStackRoutes.WipeDeviceLoadingScreen]: undefined;
     [WipeDeviceStackRoutes.FactoryReset]: undefined;

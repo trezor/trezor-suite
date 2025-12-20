@@ -1,6 +1,9 @@
+import { useSelector } from 'react-redux';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
+import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { DeviceConnectionGuardScreenWithCancel } from '@suite-native/device-authorization';
 import {
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
@@ -10,28 +13,26 @@ import {
 import { FactoryResetScreen } from '../screens/FactoryResetScreen';
 import { WipeDeviceContinueOnTrezorScreen } from '../screens/WipeDeviceContinueOnTrezorScreen';
 import { WipeDeviceLoadingScreen } from '../screens/WipeDeviceLoadingScreen';
-import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
 
 const WipeDeviceStack = createNativeStackNavigator<WipeDeviceStackParamList>();
 
 export const WipeDeviceStackNavigator = () => {
-    const { isDeviceConnected } = useDeviceConnectionGuard();
-
-    if (!isDeviceConnected) return;
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     return (
-        <WipeDeviceStack.Navigator
-            initialRouteName={WipeDeviceStackRoutes.WipeDevice}
-            screenOptions={stackNavigationOptionsConfig}
-        >
-            <WipeDeviceStack.Screen
-                name={WipeDeviceStackRoutes.WipeDevice}
-                component={WipeDeviceScreen}
-            />
-            <WipeDeviceStack.Screen
-                name={WipeDeviceStackRoutes.ContinueOnTrezor}
-                component={WipeDeviceContinueOnTrezorScreen}
-            />
+        <WipeDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+            {!isDeviceConnected && (
+                <WipeDeviceStack.Screen
+                    name={WipeDeviceStackRoutes.DeviceConnectionGuard}
+                    component={DeviceConnectionGuardScreenWithCancel}
+                />
+            )}
+            {isDeviceConnected && (
+                <WipeDeviceStack.Screen
+                    name={WipeDeviceStackRoutes.ContinueOnTrezor}
+                    component={WipeDeviceContinueOnTrezorScreen}
+                />
+            )}
             <WipeDeviceStack.Screen
                 name={WipeDeviceStackRoutes.WipeDeviceLoadingScreen}
                 component={WipeDeviceLoadingScreen}

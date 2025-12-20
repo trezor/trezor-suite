@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 
 import { Button, Card, Pictogram, Text, TextDivider, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
@@ -11,10 +10,8 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
     Screen,
-    WipeDeviceStackParamList,
+    StackNavigationProps,
     WipeDeviceStackRoutes,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
@@ -32,12 +29,9 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-type NavigationProps = CompositeNavigationProp<
-    NativeStackNavigationProp<WipeDeviceStackParamList, WipeDeviceStackRoutes.WipeDevice>,
-    CompositeNavigationProp<
-        NativeStackNavigationProp<DeviceSettingsStackParamList>,
-        NativeStackNavigationProp<RootStackParamList>
-    >
+type NavigationProps = StackNavigationProps<
+    DeviceSettingsStackParamList,
+    DeviceSettingsStackRoutes.WipeDeviceStack
 >;
 
 export const BootloaderModeScreen = () => {
@@ -49,11 +43,8 @@ export const BootloaderModeScreen = () => {
     useInterceptNativeNavigation();
 
     const handleRedirectToFactoryReset = () => {
-        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
-            screen: DeviceSettingsStackRoutes.WipeDeviceStack,
-            params: {
-                screen: WipeDeviceStackRoutes.FactoryReset,
-            },
+        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
+            screen: WipeDeviceStackRoutes.FactoryReset,
         });
     };
 

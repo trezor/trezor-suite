@@ -7,14 +7,12 @@ import {
     ContinueOnTrezorScreenContent,
     selectShouldFactoryResetBeVisible,
 } from '@suite-native/device';
-import { useDeviceConnectionGuard } from '@suite-native/device-authorization';
 import { Screen, ScreenHeader, useInterceptNativeNavigation } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 
 export const WipeDeviceContinueOnTrezorScreen = () => {
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
 
-    useDeviceConnectionGuard();
     useInterceptNativeNavigation({ onPress: TrezorConnect.cancel });
 
     const device = useSelector(selectSelectedDevice);
