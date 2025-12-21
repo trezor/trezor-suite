@@ -7,14 +7,17 @@ type AnyEventDefLike = {
     name: string;
     attributes: Record<string, unknown>;
 };
+type AttrValue<T> = NonNullable<T> extends AttributeDef<infer V> ? V : never;
 
-type PayloadFor<E extends AnyEventDefLike> = {
-    [K in keyof E['attributes'] & string]: NonNullable<E['attributes'][K]> extends AttributeDef<
-        infer V
-    >
-        ? V
-        : never;
-};
+type OptionalKeys<T> = {
+    [K in keyof T]-?: undefined extends T[K] ? K : never;
+}[keyof T];
+
+type RequiredKeys<T> = Exclude<keyof T, OptionalKeys<T>>;
+
+export type PayloadFor<E extends AnyEventDefLike> = {
+    [K in RequiredKeys<E['attributes']> & string]: AttrValue<E['attributes'][K]>;
+} & { [K in OptionalKeys<E['attributes']> & string]?: AttrValue<E['attributes'][K]> | undefined };
 
 export function createReportAnalytics<
     AnyEventDefUnion extends AnyEventDefLike,

@@ -1,5 +1,4 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EventType } from '../constants';
 
