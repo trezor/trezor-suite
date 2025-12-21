@@ -1,3 +1,4 @@
+@emurgo/csl-mobile-bridge
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk-ethereum
