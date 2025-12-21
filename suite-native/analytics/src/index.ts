@@ -23,3 +23,4 @@ export type {
     SuiteNativeAnalyticsEvent,
 } from './types';
 export { reportAnalytics } from './reportAnalytics';
+export * from './events';
