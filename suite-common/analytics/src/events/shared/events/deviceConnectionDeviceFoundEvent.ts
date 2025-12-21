@@ -5,7 +5,7 @@ type Attributes = {
     option: AttributeDef<'connect' | 'close'>;
 };
 
-export const deviceConnectionDeviceFound: EventDef<
+export const deviceConnectionDeviceFoundEvent: EventDef<
     Attributes,
     EventType.DeviceConnectionDeviceFound
 > = {

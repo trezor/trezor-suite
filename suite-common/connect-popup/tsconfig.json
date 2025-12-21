@@ -8,6 +8,9 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
+        {
+            "path": "../../suite/analytics-shared"
+        },
         { "path": "../../packages/connect" },
         { "path": "../../packages/utils" }
     ]

@@ -11,6 +11,7 @@
         { "path": "../config" },
         { "path": "../sentry" },
         { "path": "../../packages/analytics" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" }
     ]
 }

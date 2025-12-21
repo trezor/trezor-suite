@@ -1,2 +1,2 @@
-export { stakingNavigate } from './stakingNavigate';
-export { dashboardBanner } from './dashboardBanner';
+export { stakingNavigateEvent } from './stakingNavigateEvent';
+export { dashboardBannerEvent } from './dashboardBannerEvent';

@@ -7,20 +7,13 @@
     "include": [".", "**/*.json"],
     "references": [
         {
-            "path": "../../suite-common/delegated-identity-key-types"
+            "path": "../../suite-common/analytics"
         },
         {
-            "path": "../../suite-common/platform-encryption"
+            "path": "../../suite-native/analytics"
         },
         {
-            "path": "../../suite-common/suite-sync"
-        },
-        {
-            "path": "../../suite-common/suite-sync-evolu"
-        },
-        {
-            "path": "../../suite-common/suite-sync-types"
-        },
-        { "path": "../../packages/connect" }
+            "path": "../../packages/suite-analytics"
+        }
     ]
 }

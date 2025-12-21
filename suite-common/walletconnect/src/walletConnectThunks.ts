@@ -8,7 +8,8 @@ import {
     populateAuthPayload,
 } from '@walletconnect/utils';
 
-import { EventType, analytics } from '@suite-common/analytics';
+import { analytics } from '@suite/analytics-shared';
+import { EventType } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';

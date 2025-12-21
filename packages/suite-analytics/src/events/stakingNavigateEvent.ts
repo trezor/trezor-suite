@@ -1,6 +1,8 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
+import { EventType } from '../constants';
+
 type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;
     from: AttributeDef<
@@ -19,8 +21,8 @@ type Attributes = {
     networkSymbol?: AttributeDef<NetworkSymbol>;
 };
 
-export const stakingNavigate: EventDef<Attributes, 'staking/navigate'> = {
-    name: 'staking/navigate' as const,
+export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigate> = {
+    name: EventType.StakingNavigate,
     descriptionTrigger:
         'fired when the user navigates from any staking button to the staking dashboard',
     changelog: [

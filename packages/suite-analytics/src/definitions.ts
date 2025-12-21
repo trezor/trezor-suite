@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus } from '@trezor/suite-analytics';
+import { AppUpdateEventStatus } from './constants';
 
 export type OnboardingAnalytics = {
     startTime: number;

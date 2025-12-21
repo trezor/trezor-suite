@@ -1,3 +1,12 @@
+import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
+import { TradingType } from '@suite-common/trading';
+import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
+import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { DeviceMode, VersionArray } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
+
+import { EventType } from './constants';
 import {
     AnalyticsSendFlowStep,
     DemoAccountQuestionnaireLinkKey,
@@ -13,15 +22,6 @@ import {
     TradingSellAction,
     TradingSellStep,
 } from './definitions';
-import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
-import { TradingType } from '@suite-common/trading';
-import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { DeviceMode, VersionArray } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
-
-import { EventType } from './constants';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
@@ -159,7 +159,7 @@ export type SuiteNativeAnalyticsEvent =
           type: EventType.BiometricsChange;
           payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
       }
-    | { type: EventType.ConfirmedReceiveAdress }
+    | { type: EventType.ConfirmedReceiveAddress }
     | { type: EventType.EmptyDashboardClick; payload: { action: 'syncCoins' | 'connectDevice' } }
     | {
           type: EventType.DeviceManagerClick;

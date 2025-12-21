@@ -1,5 +1,5 @@
-import { FirmwareType } from '@trezor/connect/libDev/src';
-import { DeviceModelInternal } from '@trezor/device-utils/libDev/src';
+import { FirmwareType } from '@trezor/connect';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 export type AnalyticsSendFlowStep =
     | 'address_and_amount'

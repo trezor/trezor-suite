@@ -1,12 +1,14 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
+import { EventType } from '../constants';
+
 type Attributes = {
     action: AttributeDef<'cta' | 'close'>;
     bannerType?: AttributeDef<'tex' | 'ts7' | null>;
 };
 
-export const dashboardBanner: EventDef<Attributes, 'promo/dashboard-banner'> = {
-    name: 'promo/dashboard-banner',
+export const dashboardBannerEvent: EventDef<Attributes, EventType.DashboardBanner> = {
+    name: EventType.DashboardBanner,
     descriptionTrigger: 'A user clicks the dashboard promo banner',
     changelog: [{ version: '25.8.0', notes: 'added' }],
 

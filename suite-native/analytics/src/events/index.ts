@@ -1,1 +1,1 @@
-export { assetDetail } from './assetDetail';
+export { assetDetailEvent } from './assetDetailEvent';

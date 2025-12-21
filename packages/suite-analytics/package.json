@@ -11,6 +11,8 @@
     },
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
-        "@trezor/analytics": "workspace:*"
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/analytics": "workspace:*",
+        "@trezor/device-utils": "workspace:*"
     }
 }

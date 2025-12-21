@@ -1,1 +1,1 @@
-export { deviceConnectionDeviceFound } from './deviceConnectionDeviceFound';
+export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
