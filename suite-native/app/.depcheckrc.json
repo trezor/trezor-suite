@@ -37,6 +37,7 @@
         "redux-persist",
         "@config-plugins/detox",
         "@currents/cmd",
+        "@emurgo/csl-mobile-bridge",
         "expo-atlas"
     ]
 }

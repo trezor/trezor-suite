@@ -157,6 +157,7 @@
         "@babel/core": "7.28.5",
         "@config-plugins/detox": "^11.0.0",
         "@currents/cmd": "^1.9.4",
+        "@emurgo/csl-mobile-bridge": "9.0.1",
         "@jest/globals": "^29.7.0",
         "@react-native-community/cli": "^15.1.2",
         "@react-native/babel-preset": "0.81.0",
