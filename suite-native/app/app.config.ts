@@ -134,6 +134,7 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
+        './plugins/withFollyFlags',
         [
             './plugins/withAndroidMainActivityAttributes.js',
             {
