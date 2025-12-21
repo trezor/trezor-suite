@@ -13,17 +13,17 @@
 /packages/analytics @tomasklim
 /packages/suite-analytics @tomasklim
 
-/suite-common/analytics/src/events/shared/constants.ts @kolomaznikt
-/suite-common/analytics/src/events/suite/constants.ts @kolomaznikt
-/suite-common/analytics/src/events/suite-native/constants.ts @kolomaznikt
+packages/suite-analytics/src/events/ @kolomaznikt @jvaclavik
+packages/suite-analytics/src/constants.ts @kolomaznikt @jvaclavik
+packages/suite-analytics/src/types.ts @kolomaznikt @jvaclavik
 
-/suite-common/analytics/src/events/shared/types.ts @kolomaznikt
-/suite-common/analytics/src/events/suite/types.ts @kolomaznikt
-/suite-common/analytics/src/events/suite-native/types.ts @kolomaznikt
+suite-common/analytics/src/events/shared/events @kolomaznikt @jvaclavik
+/suite-common/analytics/src/events/shared/constants.ts @kolomaznikt @jvaclavik
+suite-common/analytics/src/events/shared/types.ts @kolomaznikt @jvaclavik
 
-/suite-common/analytics/src/events/shared/data @kolomaznikt
-/suite-common/analytics/src/events/suite/data @kolomaznikt
-/suite-common/analytics/src/events/suite-native/data @kolomaznikt
+suite-native/analytics/src/events @kolomaznikt @jvaclavik
+suite-native/analytics/src/constants.ts @kolomaznikt @jvaclavik
+suite-native/analytics/src/types.ts @kolomaznikt @jvaclavik
 
 /packages/blockchain-link @mroz22 @marekrjpolak
 

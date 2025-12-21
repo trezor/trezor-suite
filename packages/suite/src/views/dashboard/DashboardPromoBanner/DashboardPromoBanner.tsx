@@ -5,7 +5,7 @@ import { Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { reportAnalytics } from '@trezor/suite-analytics';
+import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -46,7 +46,7 @@ export const DashboardPromoBanner = () => {
 
     const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
         reportAnalytics({
-            type: 'promo/dashboard-banner',
+            type: EventType.DashboardBanner,
             payload: {
                 action: 'close',
                 bannerType: currentBanner,
@@ -57,7 +57,7 @@ export const DashboardPromoBanner = () => {
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
         reportAnalytics({
-            type: 'promo/dashboard-banner',
+            type: EventType.DashboardBanner,
             payload: {
                 action: 'cta',
                 bannerType: currentBanner,

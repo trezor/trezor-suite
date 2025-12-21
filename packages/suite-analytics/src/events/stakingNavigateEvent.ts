@@ -18,7 +18,7 @@ type Attributes = {
         | 'dashboard/staking-dashboard/insufficient-funds'
         | 'dashboard/staking-dashboard/staking-inactive'
     >;
-    networkSymbol?: AttributeDef<NetworkSymbol>;
+    networkSymbol?: AttributeDef<string>;
 };
 
 export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigate> = {

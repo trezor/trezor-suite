@@ -5,6 +5,10 @@
         {
             "path": "../../suite-common/analytics"
         },
-        { "path": "../analytics" }
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        { "path": "../analytics" },
+        { "path": "../device-utils" }
     ]
 }

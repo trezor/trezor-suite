@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { EventType } from '@suite/analytics-shared';
 import { reportAnalytics } from '@suite-native/analytics';
 import {
     BluetoothDevice,
@@ -35,7 +36,7 @@ export const ConnectBluetoothDeviceScreen = () => {
     const handleDeviceButtonPress = useCallback(
         (device: BluetoothDevice) => {
             reportAnalytics({
-                type: 'device-connection/device-found',
+                type: EventType.DeviceConnectionDeviceFound,
                 payload: {
                     option: 'connect',
                 },

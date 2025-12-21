@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { EventType } from '@suite/analytics-shared';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
@@ -84,7 +85,7 @@ const ActionButton = ({
 
     const handleOnClick = () => {
         reportAnalytics({
-            type: 'device-connection/device-found',
+            type: EventType.DeviceConnectionDeviceFound,
             payload: {
                 option: 'connect',
             },

@@ -1,3 +1,4 @@
+import { EventType } from '@suite/analytics-shared';
 import { Modal } from '@trezor/components';
 import { reportAnalytics } from '@trezor/suite-analytics';
 
@@ -24,7 +25,7 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
     const handleClose = () => {
         if (selectedDevice) {
             reportAnalytics({
-                type: 'device-connection/device-found',
+                type: EventType.DeviceConnectionDeviceFound,
                 payload: {
                     option: 'close',
                 },

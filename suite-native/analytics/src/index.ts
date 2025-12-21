@@ -22,3 +22,4 @@ export type {
     CountryChangeAction,
     SuiteNativeAnalyticsEvent,
 } from './types';
+export { reportAnalytics } from './reportAnalytics';
