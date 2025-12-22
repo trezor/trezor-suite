@@ -14,7 +14,7 @@ import {
 import { SkeletonRectangle } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import type { UseFiatFromCryptoValueParams } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';

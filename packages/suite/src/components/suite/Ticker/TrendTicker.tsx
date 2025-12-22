@@ -7,7 +7,7 @@ import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 
-import { BaseCurrencyValue } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 

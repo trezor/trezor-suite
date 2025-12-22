@@ -12,7 +12,7 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Column, Paragraph, Text, motionEasing } from '@trezor/components';
 import { DeviceWithScene } from '@trezor/product-components';
 
-import { getMessageId } from 'src/components/suite';
+import { getMessageId } from 'src/components/suite/getMessageId';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 

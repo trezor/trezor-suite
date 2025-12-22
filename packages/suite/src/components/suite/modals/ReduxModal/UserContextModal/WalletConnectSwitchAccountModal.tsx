@@ -14,7 +14,7 @@ import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { AccountLabel } from 'src/components/suite';
+import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';

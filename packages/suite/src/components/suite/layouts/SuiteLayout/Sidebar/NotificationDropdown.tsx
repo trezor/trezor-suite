@@ -6,7 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { Box, Menu, Popover, PopoverRef } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Notifications } from 'src/components/suite/notifications';
+import { Notifications } from 'src/components/suite/notifications/Notifications/Notifications';
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';

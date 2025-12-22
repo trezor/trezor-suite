@@ -13,8 +13,8 @@ import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 

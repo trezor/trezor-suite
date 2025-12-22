@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Loading } from 'src/components/suite';
+import { Loading } from 'src/components/suite/Loading';
 
 const StyledLoading = styled(Loading)`
     height: 100%;

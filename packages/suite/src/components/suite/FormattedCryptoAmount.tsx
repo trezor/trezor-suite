@@ -20,7 +20,8 @@ import { Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { HiddenPlaceholder, Sign } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+import { Sign } from 'src/components/suite/Sign';
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

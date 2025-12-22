@@ -8,9 +8,9 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { TokenTransfer } from '@trezor/connect';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
-import { HiddenPlaceholder, Sign } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
+import { Sign } from 'src/components/suite/Sign';
 import { Translation } from 'src/components/suite/Translation';
-// importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useTranslation } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

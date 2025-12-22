@@ -3,7 +3,9 @@ import { Transaction } from '@trezor/blockchain-link-types';
 import { Icon, InfoSegments, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Address, FormattedDate, HiddenPlaceholder } from 'src/components/suite';
+import { Address } from 'src/components/suite/Address';
+import { FormattedDate } from 'src/components/suite/FormattedDate';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 
 type RowIcon = {
     txType: Transaction['type'];

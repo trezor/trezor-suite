@@ -1,7 +1,7 @@
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { NotificationRenderer } from 'src/components/suite';
+import { NotificationRenderer } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { AppState } from 'src/types/suite';
 
 import { NotificationView } from './NotificationView';

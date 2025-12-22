@@ -1,6 +1,6 @@
 import { Card, Modal } from '@trezor/components';
 
-import { HomescreenGallery } from 'src/components/suite';
+import { HomescreenGallery } from 'src/components/suite/HomescreenGallery';
 import { Translation } from 'src/components/suite/Translation';
 
 type BackgroundGalleryModalProps = {

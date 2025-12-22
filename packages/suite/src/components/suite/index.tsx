@@ -1,3 +1,7 @@
+/*
+WARNING - do NOT import from this file in the suite/src/components/suite/ subdirectories!
+*/
+
 /* eslint-disable import/order */
 import { AccountLabel } from './AccountLabel';
 import { Address } from './Address';
