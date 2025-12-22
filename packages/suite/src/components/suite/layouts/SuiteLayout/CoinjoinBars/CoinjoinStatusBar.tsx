@@ -11,8 +11,9 @@ import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { CountdownTimer, WalletLabeling } from 'src/components/suite';
+import { CountdownTimer } from 'src/components/suite/CountdownTimer';
 import { Translation } from 'src/components/suite/Translation';
+import { WalletLabeling } from 'src/components/suite/labeling';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';

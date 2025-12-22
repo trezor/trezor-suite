@@ -8,7 +8,7 @@ import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import { NotificationViewProps } from 'src/components/suite';
+import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';

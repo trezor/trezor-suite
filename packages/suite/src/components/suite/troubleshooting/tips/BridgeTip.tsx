@@ -1,5 +1,5 @@
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 
 export const SuiteDesktopTip = () => {

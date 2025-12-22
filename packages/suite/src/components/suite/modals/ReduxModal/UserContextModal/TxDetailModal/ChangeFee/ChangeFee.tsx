@@ -8,7 +8,8 @@ import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';

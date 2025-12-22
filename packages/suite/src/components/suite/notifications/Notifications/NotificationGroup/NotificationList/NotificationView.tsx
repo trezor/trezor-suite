@@ -6,7 +6,7 @@ import { Button, ButtonProps, Column, Icon, IconName, Paragraph, Row } from '@tr
 import { ButtonPriority } from '@trezor/components/src/components/buttons/types';
 import { spacings } from '@trezor/theme';
 
-import { FormattedDateWithBullet } from 'src/components/suite';
+import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
 import type { ToastNotificationVariant } from 'src/types/suite';

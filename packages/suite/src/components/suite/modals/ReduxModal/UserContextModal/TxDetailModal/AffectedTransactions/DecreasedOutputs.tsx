@@ -15,7 +15,9 @@ import {
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
 
-import { Address, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { Address } from 'src/components/suite/Address';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { RbfContextValues, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 

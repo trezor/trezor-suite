@@ -4,7 +4,7 @@ import { spacings } from '@trezor/theme';
 
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';

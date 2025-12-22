@@ -10,13 +10,11 @@ import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 
-import {
-    AmountUnitSwitchWrapper,
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    Labeling,
-} from 'src/components/suite';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
+import { AmountUnitSwitchWrapper } from 'src/components/suite/AmountUnitSwitchWrapper';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { Labeling } from 'src/components/suite/labeling';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

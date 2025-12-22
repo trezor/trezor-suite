@@ -5,7 +5,7 @@ import styled, { useTheme } from 'styled-components';
 import { ElevationContext, ElevationDown, ElevationUp, Modal, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
-import { Metadata } from 'src/components/suite';
+import { Metadata } from 'src/components/suite/Metadata';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
 import { useLayoutSize } from 'src/hooks/suite';

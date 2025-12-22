@@ -4,7 +4,7 @@ import { Banner, Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
-import { CheckItem } from 'src/components/suite';
+import { CheckItem } from 'src/components/suite/CheckItem';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 

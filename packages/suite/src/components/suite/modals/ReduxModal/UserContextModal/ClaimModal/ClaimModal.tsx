@@ -11,7 +11,8 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';

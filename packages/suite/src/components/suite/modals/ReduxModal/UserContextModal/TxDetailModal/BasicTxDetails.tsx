@@ -21,7 +21,7 @@ import { CoinLogo, FeeRate } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { FormattedDateWithBullet } from 'src/components/suite';
+import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { Translation } from 'src/components/suite/Translation';
 import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';

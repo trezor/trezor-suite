@@ -6,12 +6,10 @@ import { NotificationEntry, notificationsActions } from '@suite-common/toast-not
 import { Button, Column, Icon, Row } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import {
-    NotificationRenderer,
-    NotificationViewProps,
-    mapActionVariantToIntent,
-} from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { NotificationRenderer } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
+import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
+import { mapActionVariantToIntent } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
 

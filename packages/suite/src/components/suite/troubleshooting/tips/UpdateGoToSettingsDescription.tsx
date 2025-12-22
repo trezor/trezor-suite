@@ -1,6 +1,6 @@
 import { goto } from 'src/actions/suite/routerActions';
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch } from 'src/hooks/suite';
 
 export const UpdateGoToSettingsDescription = () => {

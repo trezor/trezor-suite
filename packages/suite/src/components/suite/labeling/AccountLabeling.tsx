@@ -3,7 +3,7 @@ import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { findAccountDevice } from '@suite-common/wallet-utils';
 import { BadgeProps } from '@trezor/components';
 
-import { AccountLabel } from 'src/components/suite';
+import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
 import { Account as WalletAccount } from 'src/types/wallet';
 

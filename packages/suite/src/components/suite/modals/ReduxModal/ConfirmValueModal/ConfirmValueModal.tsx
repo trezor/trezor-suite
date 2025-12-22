@@ -30,9 +30,11 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
-import { AccountLabel, Address, Labeling } from 'src/components/suite';
+import { AccountLabel } from 'src/components/suite/AccountLabel';
+import { Address } from 'src/components/suite/Address';
 import { QrCode } from 'src/components/suite/QrCode';
 import { Translation } from 'src/components/suite/Translation';
+import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';

@@ -2,7 +2,7 @@ import { usePin } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 
-import { PinMatrix } from 'src/components/suite';
+import { PinMatrix } from 'src/components/suite/PinMatrix/PinMatrix';
 import { Translation } from 'src/components/suite/Translation';
 import { TrezorDevice } from 'src/types/suite';
 

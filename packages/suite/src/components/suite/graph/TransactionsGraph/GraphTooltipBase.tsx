@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { Row, Text } from '@trezor/components';
 import { paletteV1, paletteV2, spacings } from '@trezor/theme';
 
-import { FormattedDate } from 'src/components/suite';
+import { FormattedDate } from 'src/components/suite/FormattedDate';
 import { Translation } from 'src/components/suite/Translation';
 import { CommonAggregatedHistory, GraphRange } from 'src/types/wallet/graph';
 

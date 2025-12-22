@@ -1,12 +1,12 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Column, Grid, Image } from '@trezor/components';
 import { DeviceModelInternal, getDeviceColorVariant } from '@trezor/device-utils';
+import type { ModelFor } from '@trezor/product-components';
 import {
     DeviceAnimation,
     DeviceWithScene,
     getLargeModelImagePath,
 } from '@trezor/product-components';
-import type { ModelFor } from '@trezor/product-components';
 import { borders, breakpoints, spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';

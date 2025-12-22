@@ -3,8 +3,8 @@ import { MouseEventHandler } from 'react';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { TroubleshootingTips } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 export const DeviceTrezorHostProtocolPair = () => {

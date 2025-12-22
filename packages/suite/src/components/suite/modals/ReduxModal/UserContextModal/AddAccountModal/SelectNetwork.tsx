@@ -1,7 +1,7 @@
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { Paragraph } from '@trezor/components';
 
-import { CoinList } from 'src/components/suite';
+import { CoinList } from 'src/components/suite/CoinList/CoinList';
 
 type SelectNetworkProps = {
     heading: React.ReactNode;

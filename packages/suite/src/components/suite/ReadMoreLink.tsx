@@ -1,8 +1,8 @@
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import * as URLS from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 interface ReadMoreLinkProps {
     url: keyof Omit<typeof URLS, 'TOR_URLS' | 'SUITE_TRADING_REDIRECT_DEEPLINKS'>;

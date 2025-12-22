@@ -8,8 +8,8 @@ import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { DeviceConfirmImage } from 'src/components/suite';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
+import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { Translation } from 'src/components/suite/Translation';
 import messages from 'src/support/messages';
 import { TrezorDevice } from 'src/types/suite';

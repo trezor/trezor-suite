@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 import { useFormatters } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { FormattedCryptoAmount } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
 interface CommonProps {
     setWidth: (n: number) => void;
