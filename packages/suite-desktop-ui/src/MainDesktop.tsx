@@ -1,41 +1,41 @@
-/* eslint-disable import/order */
 import { Provider as ReduxProvider } from 'react-redux';
+
+import { type History, createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { desktopApi } from '@trezor/suite-desktop-api';
-import { createIpcProxy } from '@trezor/ipc-proxy';
+import { ServicesProvider } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
+import { createIpcProxy } from '@trezor/ipc-proxy';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { initStore } from 'src/reducers/store';
-import { preloadStore } from 'src/support/suite/preloadStore';
-import { Metadata } from 'src/components/suite/Metadata';
+import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
+import * as STORAGE from 'src/actions/suite/constants/storageConstants';
+import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import {
     AppRouter,
     Preloader,
     ToastContainer,
     TrafficLightDraggableWindowHeader,
 } from 'src/components/suite';
-import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
-import { useTor } from 'src/support/suite/useTor';
-import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
-import { Main } from 'src/support/suite/Main';
-import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
-import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
+import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { desktopHandshake } from 'src/actions/suite/suiteActions';
-import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
-import * as STORAGE from 'src/actions/suite/constants/storageConstants';
-
-import { DesktopUpdater } from './support/DesktopUpdater';
-import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
-import { desktopComponents } from './support/desktopComponents';
-import { type History, createMemoryHistory } from 'history';
+import { initStore } from 'src/reducers/store';
 import { createRouterServices } from 'src/support/extraDependencies';
-import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
+import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
+import { Main } from 'src/support/suite/Main';
+import { preloadStore } from 'src/support/suite/preloadStore';
+import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
+import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
+import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop';
+import { useTor } from 'src/support/suite/useTor';
+
 import { GlobalStyle } from './GlobalStyle';
 import { initSentry } from './sentry';
-import { ServicesProvider } from '@suite-common/redux-utils';
+import { DesktopUpdater } from './support/DesktopUpdater';
+import { desktopComponents } from './support/desktopComponents';
+import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
+import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();

@@ -3,6 +3,7 @@ WARNING - do NOT import from this file in the suite/src/components/suite/ subdir
 */
 
 /* eslint-disable import/order */
+// TODO Change this to direct export {} from, instead of importing and re-exporting, but currently cannot be done because of circular dependencies.
 import { AccountLabel } from './AccountLabel';
 import { Address } from './Address';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
