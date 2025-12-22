@@ -30,7 +30,7 @@
         "@suite-native/trading-consts": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.81.4"
+        "react-native": "0.81.5"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
