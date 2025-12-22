@@ -263,6 +263,40 @@ const connect: Fixture<
             },
         ],
     },
+    {
+        description: 'Connect unacquired device and replace remembered device',
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                getSuiteDevice({
+                    type: 'acquired',
+                    path: '1',
+                    remember: true,
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CONNECT_UNACQUIRED,
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        status: 'thp-locked',
+                        path: '1',
+                    }),
+                    isAutoEjectEnabled: false,
+                },
+            },
+        ],
+        result: [
+            {
+                type: 'unacquired',
+                status: 'thp-locked',
+                path: '1',
+                remember: true,
+            },
+        ],
+    },
 ];
 
 const disconnect = [
