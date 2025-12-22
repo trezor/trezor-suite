@@ -24,7 +24,7 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-localization": "~17.0.7",
+        "expo-localization": "~17.0.8",
         "intl-pluralrules": "^2.0.1",
         "react": "19.1.0",
         "react-intl": "^8.0.6",
