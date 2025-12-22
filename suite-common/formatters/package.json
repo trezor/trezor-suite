@@ -23,6 +23,6 @@
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
         "react": "19.1.0",
-        "react-intl": "^7.1.11"
+        "react-intl": "^8.0.6"
     }
 }
