@@ -1,5 +1,8 @@
-import { A, D, pipe } from '@mobily/ts-belt';
 import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const { A, D, pipe } = require('@mobily/ts-belt');
 
 type WorkspacePackageName = string;
 type WorkspaceItem = {
@@ -17,9 +20,10 @@ export const getWorkspacesList = (): Record<WorkspacePackageName, WorkspaceItem>
     const validJsonString = `[ ${
         rawList.slice(0, indexOfLastComma) + rawList.slice(indexOfLastComma + 1)
     } ]`;
+
     const workspaces = pipe(
         JSON.parse(validJsonString),
-        (A.sortBy as any)((current: WorkspaceItem, next: WorkspaceItem) =>
+        A.sort((current: WorkspaceItem, next: WorkspaceItem) =>
             current?.name > next?.name ? 1 : -1,
         ),
         A.map((workspace: WorkspaceItem) => [workspace.name, workspace] as const),
