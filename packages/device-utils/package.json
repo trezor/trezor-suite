@@ -20,6 +20,6 @@
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },
     "devDependencies": {
-        "tsx": "^4.20.3"
+        "tsx": "^4.21.0"
     }
 }
