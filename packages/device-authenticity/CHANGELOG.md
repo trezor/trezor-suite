@@ -1,3 +1,8 @@
+# 1.1.1
+
+- npm-prerelease: @trezor/device-authenticity 1.1.1-beta.1 (3217420df5)
+- feat(authenticity): export verifySignatureP256 (cf295c199b)
+
 # 1.1.0
 
 - feat(authenticity): export verifySignatureP256 (fdffd59cbb)
