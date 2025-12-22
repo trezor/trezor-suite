@@ -121,7 +121,7 @@
         "react-focus-lock": "^2.13.6",
         "react-helmet-async": "^2.0.5",
         "react-hook-form": "^7.66.1",
-        "react-intl": "^7.1.11",
+        "react-intl": "^8.0.6",
         "react-redux": "9.2.0",
         "react-select": "^5.10.2",
         "react-toastify": "^10.0.5",

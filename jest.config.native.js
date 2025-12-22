@@ -29,7 +29,7 @@ module.exports = {
         '\\.(js|jsx|ts|tsx)$': ['babel-jest', babelConfig],
     },
     transformIgnorePatterns: [
-        'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@shopify/flash-list|@noble|@scure|@evolu|nanoid|msgpackr|@gorhom|uuid)',
+        'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@shopify/react-native-skia|@shopify/flash-list|@noble|@scure|@evolu|nanoid|msgpackr|@gorhom|uuid|react-intl|@formatjs/*|intl-messageformat)',
     ],
     setupFiles: [
         '<rootDir>/../../suite-native/test-utils/src/mocks/expoAndRNMock.jsx',
