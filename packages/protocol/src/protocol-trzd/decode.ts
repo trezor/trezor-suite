@@ -1,8 +1,8 @@
 // Decode `trzd` protocol used for decoding of dynamically loaded `@trezor/protobuf` messages
 // https://github.com/trezor/trezor-firmware/blob/087becd2caa5618eecab37ac3f2ca51172e52eb9/docs/common/ethereum-definitions.md#definition-format
 
-export const decode = (bytes: ArrayBuffer) => {
-    const byteBuffer = Buffer.from(bytes);
+export const decode = (bytes: Buffer | ArrayBuffer | Uint8Array) => {
+    const byteBuffer = Buffer.from(bytes as ArrayBufferLike);
     // 5 bytes magic `trzd`
     const magic = byteBuffer.subarray(0, 5).toString('utf8');
     // 1 byte

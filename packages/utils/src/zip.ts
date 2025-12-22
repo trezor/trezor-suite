@@ -1,6 +1,6 @@
 export const createZip = (buffers: { name: string; content: ArrayBuffer }[]) => {
-    const fileEntries: ArrayBuffer[] = [];
-    const centralDirectory: ArrayBuffer[] = [];
+    const fileEntries: (ArrayBuffer | Uint8Array)[] = [];
+    const centralDirectory: (ArrayBuffer | Uint8Array)[] = [];
     let offset = 0;
 
     buffers.forEach(({ name, content }) => {
