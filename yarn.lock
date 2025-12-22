@@ -14044,7 +14044,7 @@ __metadata:
     redux-thunk: "npm:^3.1.0"
     remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^4.0.1"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     styled-components: "npm:^6.1.19"
     swr: "npm:^2.3.3"
     typescript-styled-plugin: "npm:^0.18.3"
@@ -14070,7 +14070,7 @@ __metadata:
     crypto-browserify: "npm:3.12.0"
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:5.6.4"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     stream-browserify: "npm:^3.0.0"
     terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:5.102.1"
@@ -14151,7 +14151,7 @@ __metadata:
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:5.6.4"
     react-dom: "npm:19.1.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     stream-browserify: "npm:^3.0.0"
     terser-webpack-plugin: "npm:^5.3.14"
     vm-browserify: "npm:^1.1.2"
@@ -14219,7 +14219,7 @@ __metadata:
     "@types/web": "npm:^0.0.197"
     babel-loader: "npm:^10.0.0"
     html-webpack-plugin: "npm:5.6.4"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.14"
     tsx: "npm:^4.21.0"
@@ -14247,7 +14247,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^10.0.0"
     copy-webpack-plugin: "npm:^13.0.1"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     terser-webpack-plugin: "npm:^5.3.14"
     webpack: "npm:5.102.1"
     webpack-cli: "npm:^6.0.1"
@@ -14842,7 +14842,7 @@ __metadata:
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     react-redux: "npm:9.2.0"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     stylelint: "npm:^16.17.0"
     stylelint-config-standard: "npm:^38.0.0"
     tsx: "npm:^4.21.0"
@@ -27362,7 +27362,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^11.0.0, glob@npm:^11.0.3":
+"glob@npm:^11.0.3":
   version: 11.1.0
   resolution: "glob@npm:11.1.0"
   dependencies:
@@ -36776,6 +36776,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"package-json-from-dist@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "package-json-from-dist@npm:1.0.1"
+  checksum: 10/58ee9538f2f762988433da00e26acc788036914d57c71c246bf0be1b60cdbd77dd60b6a3e1a30465f0b248aeb80079e0b34cb6050b1dfa18c06953bb1cbc7602
+  languageName: node
+  linkType: hard
+
 "pako@npm:^0.2.5":
   version: 0.2.9
   resolution: "pako@npm:0.2.9"
@@ -40550,15 +40557,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^6.0.1":
-  version: 6.0.1
-  resolution: "rimraf@npm:6.0.1"
+"rimraf@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "rimraf@npm:6.1.2"
   dependencies:
-    glob: "npm:^11.0.0"
-    package-json-from-dist: "npm:^1.0.0"
+    glob: "npm:^13.0.0"
+    package-json-from-dist: "npm:^1.0.1"
   bin:
     rimraf: dist/esm/bin.mjs
-  checksum: 10/0eb7edf08aa39017496c99ba675552dda11a20811ba78f8232da2ba945308c91e9cd673f95998b1a8202bc7436d33390831d23ea38ae52751038d56373ad99e2
+  checksum: 10/add8e566fe903f59d7b55c6c2382320c48302778640d1951baf247b3b451af496c2dee7195c204a8c646fd6327feadd1f5b61ce68c1362d4898075a726d83cc6
   languageName: node
   linkType: hard
 
@@ -43825,7 +43832,7 @@ __metadata:
     nx: "npm:^18.0.3"
     patch-package: "npm:8.0.1"
     prettier: "npm:^3.6.2"
-    rimraf: "npm:^6.0.1"
+    rimraf: "npm:^6.1.2"
     ts-node: "npm:^10.9.2"
     tslib: "npm:^2.6.2"
     tsx: "npm:^4.21.0"
