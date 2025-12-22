@@ -31,7 +31,7 @@
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "postcss-styled-syntax": "^0.7.1",
-        "rimraf": "^6.0.1",
+        "rimraf": "^6.1.2",
         "stylelint": "^16.17.0",
         "stylelint-config-standard": "^38.0.0",
         "tsx": "^4.20.3"
