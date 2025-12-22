@@ -11280,7 +11280,7 @@ __metadata:
     react-native-mmkv: "npm:~4.0.0"
     react-native-nitro-modules: "npm:^0.31.2"
     react-native-performance: "npm:^5.1.4"
-    react-native-permissions: "npm:5.4.2"
+    react-native-permissions: "npm:5.4.4"
     react-native-quick-crypto: "npm:1.0.3"
     react-native-reanimated: "npm:~4.1.5"
     react-native-restart: "npm:0.0.27"
@@ -11434,7 +11434,7 @@ __metadata:
     expo-constants: "npm:18.0.11"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
-    react-native-permissions: "npm:5.4.2"
+    react-native-permissions: "npm:5.4.4"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -13032,7 +13032,7 @@ __metadata:
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-keyboard-controller: "npm:1.19.2"
-    react-native-permissions: "npm:5.4.2"
+    react-native-permissions: "npm:5.4.4"
     react-native-safe-area-context: "npm:5.6.1"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -38936,9 +38936,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-permissions@npm:5.4.2":
-  version: 5.4.2
-  resolution: "react-native-permissions@npm:5.4.2"
+"react-native-permissions@npm:5.4.4":
+  version: 5.4.4
+  resolution: "react-native-permissions@npm:5.4.4"
   peerDependencies:
     react: ">=18.1.0"
     react-native: ">=0.70.0"
@@ -38946,7 +38946,7 @@ __metadata:
   peerDependenciesMeta:
     react-native-windows:
       optional: true
-  checksum: 10/b58250476b4fc3affe08f7c28454fe42267ceef8097499c96da773b5c8e2cb8e18940ca586f28194615342890bf30ae298e9cf647682b30478cc9b867d2e0d90
+  checksum: 10/9a31237a47ecdb01e33c25d3e926db6d8de90629d019c61b2e7127b9e83be544b77bc2bab49c46e295a8c667abbfde9c6efbba180d92c51e9f9a9dedba9d4ba7
   languageName: node
   linkType: hard
 
