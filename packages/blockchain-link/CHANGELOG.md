@@ -1,3 +1,7 @@
+# 2.6.1
+
+- npm-prerelease: @trezor/blockchain-link 2.6.1-beta.1 (7f2a0b24e3)
+
 # 2.6.0
 
 - npm-prerelease: @trezor/blockchain-link 2.6.0-beta.2 (f782d73fa1)
