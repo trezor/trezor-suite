@@ -1,3 +1,7 @@
+# 1.5.1
+
+- npm-prerelease: @trezor/blockchain-link-utils 1.5.1-beta.1 (2662cd1ed3)
+
 # 1.5.0
 
 - chore(blockchain-link-utils): remove dependency to protobuf (2f3d880b50)
