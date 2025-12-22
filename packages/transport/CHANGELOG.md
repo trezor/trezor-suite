@@ -1,3 +1,7 @@
+# 1.6.1
+
+- npm-prerelease: @trezor/transport 1.6.1-beta.1 (08e1bf9846)
+
 # 1.6.0
 
 - fix(transport): wrap errors from `receive` utility (8702dc753a)
