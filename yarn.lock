@@ -11941,7 +11941,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   languageName: unknown
   linkType: soft
 
@@ -12226,7 +12226,7 @@ __metadata:
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
     semver: "npm:^7.7.1"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   languageName: unknown
   linkType: soft
 
@@ -12362,7 +12362,7 @@ __metadata:
     react-hook-form: "npm:^7.66.1"
     react-native: "npm:0.81.4"
     react-native-reanimated: "npm:~4.1.5"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
     yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
@@ -12512,7 +12512,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
     react: "npm:19.1.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   peerDependencies:
     react-native: "*"
     react-native-reanimated: "*"
@@ -13310,7 +13310,7 @@ __metadata:
     react-native-reanimated: "npm:~4.1.5"
     react-native-safe-area-context: "npm:5.6.1"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   languageName: unknown
   linkType: soft
 
@@ -13392,7 +13392,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.29.0"
     react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   languageName: unknown
   linkType: soft
 
@@ -13731,7 +13731,7 @@ __metadata:
     react-native: "npm:0.81.4"
     react-native-gesture-handler: "npm:2.29.0"
     react-native-reanimated: "npm:~4.1.5"
-    type-fest: "npm:4.24.0"
+    type-fest: "npm:4.41.0"
   languageName: unknown
   linkType: soft
 
@@ -45081,10 +45081,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:4.24.0":
-  version: 4.24.0
-  resolution: "type-fest@npm:4.24.0"
-  checksum: 10/60efd6ec71f5113ef0a0fcabe61fc722bb2520ea082bc23e4b4dfb44204234dc691560a5e837f939160d7c18b410ed8fae32ddb752d57bed009248e0f61dce6b
+"type-fest@npm:4.41.0":
+  version: 4.41.0
+  resolution: "type-fest@npm:4.41.0"
+  checksum: 10/617ace794ac0893c2986912d28b3065ad1afb484cad59297835a0807dc63286c39e8675d65f7de08fafa339afcb8fe06a36e9a188b9857756ae1e92ee8bda212
   languageName: node
   linkType: hard
 
