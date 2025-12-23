@@ -1,9 +1,10 @@
+import { EventType } from '@suite/analytics';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
-import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { AccountItemLogo } from './AccountItemLogo/AccountItemLogo';
@@ -50,6 +51,7 @@ export const AccountItem = ({
     isFiatLoading,
     onClick,
 }: AccountItemProps) => {
+    const analytics = useAnalytics();
     const { accountType, index, symbol } = account;
 
     const goToWithAnalytics = useGoToWithAnalytics(account);
@@ -72,12 +74,12 @@ export const AccountItem = ({
         });
 
         if (type === 'staking') {
-            reportAnalytics({
+            analytics.report({
                 type: EventType.StakingNavigate,
-                payload: {
-                    action: 'navigate',
-                    from: 'sidebar',
-                    networkSymbol: symbol,
+                attributes: {
+                    action: { value: 'navigate' },
+                    from: { value: 'sidebar' },
+                    networkSymbol: { value: symbol },
                 },
             });
         }

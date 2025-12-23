@@ -1,3 +1,4 @@
+import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@suite/analytics';
 import { selectActiveExperimentsWithVariants } from '@suite-common/message-system';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
@@ -17,7 +18,6 @@ import {
     getWindowHeight,
     getWindowWidth,
 } from '@trezor/env-utils';
-import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@trezor/suite-analytics';
 import { UpdateInfo } from '@trezor/suite-desktop-api';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';

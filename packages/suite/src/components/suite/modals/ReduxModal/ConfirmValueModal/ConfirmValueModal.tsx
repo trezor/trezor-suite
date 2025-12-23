@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { selectAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -26,7 +27,8 @@ import {
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
+
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -75,7 +77,7 @@ export const ConfirmValueModal = ({
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
         deviceStaticSessionId: account!.deviceState,
     });
@@ -97,7 +99,7 @@ export const ConfirmValueModal = ({
         const result = copyToClipboard(value);
 
         if (account) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.CreateReceiveAddressCopyAddress,
                 payload: { assetSymbol: account.symbol },
             });

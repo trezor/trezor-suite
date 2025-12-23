@@ -12,7 +12,7 @@ import fixtures, {
 
 const { getSuiteDevice } = testMocks;
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
+jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
 
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 

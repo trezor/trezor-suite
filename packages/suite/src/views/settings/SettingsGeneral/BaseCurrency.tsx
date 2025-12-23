@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
@@ -7,7 +8,6 @@ import {
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -15,8 +15,10 @@ import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const BaseCurrency = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
@@ -25,7 +27,7 @@ export const BaseCurrency = () => {
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralChangeFiat,
             payload: {
                 fiat: option.value,

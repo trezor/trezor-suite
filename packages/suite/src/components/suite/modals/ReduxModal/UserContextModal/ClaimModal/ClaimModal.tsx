@@ -6,7 +6,8 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -31,6 +32,7 @@ interface ClaimModalModalProps {
 const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
+    const legacyAnalytics = useLegacyAnalytics();
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -105,7 +107,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
         handleSubmit(signTx)();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'continue',
@@ -118,7 +120,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     const onCancelClick = () => {
         onCancel?.();
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'cancel',

@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { useTheme } from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
@@ -11,7 +12,6 @@ import { AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Icon, IconButton, Row, Table, Text } from '@trezor/components';
-import { EventType, analytics, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -25,6 +25,7 @@ import {
 import { Translation } from 'src/components/suite/Translation';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -62,6 +63,8 @@ export const AssetRow = memo(
     }: AssetTableRowProps) => {
         const { symbol } = network;
         const dispatch = useDispatch();
+        const analytics = useAnalytics();
+        const legacyAnalytics = useLegacyAnalytics();
         const theme = useTheme();
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
@@ -101,18 +104,18 @@ export const AssetRow = memo(
         );
 
         const onStakeButtonClick = () => {
-            reportAnalytics({
+            analytics.report({
                 type: EventType.StakingNavigate,
-                payload: {
-                    action: 'navigate',
-                    from: 'dashboard/assets',
-                    networkSymbol: symbol,
+                attributes: {
+                    action: { value: 'navigate' },
+                    from: { value: 'dashboard/assets' },
+                    networkSymbol: { value: symbol },
                 },
             });
         };
 
         const onBuyButtonClick = () => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TradingNavigate,
                 payload: {
                     action: 'navigate',

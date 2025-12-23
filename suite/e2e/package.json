@@ -41,7 +41,7 @@
         "@trezor/eslint": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/suite": "workspace:*",
-        "@trezor/suite-analytics": "workspace:*",
+        "@suite/analytics": "workspace:*",
         "@trezor/suite-data": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",

@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
+import { SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
-import { SuiteDesktopLegacyAnalyticsEvents } from '@trezor/suite-analytics';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';

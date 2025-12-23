@@ -8,18 +8,18 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
-import { getTrackingRandomId } from '@trezor/analytics';
+import { Analytics, getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
 import { EventType } from './constants';
-import { analytics } from './legacyAnalytics';
+import { type SuiteNativeLegacyAnalyticsEvents } from './types';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
-    (_, { dispatch }) => {
-        analytics.report({
+    (_, { dispatch, extra }) => {
+        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report({
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
@@ -30,8 +30,8 @@ export const enableAnalyticsThunk = createThunk(
 
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
-    (_, { dispatch }) => {
-        analytics.report(
+    (_, { dispatch, extra }) => {
+        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
@@ -42,7 +42,7 @@ export const disableAnalyticsThunk = createThunk(
 
 export const initAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/init`,
-    (_, { dispatch, getState }) => {
+    (_, { dispatch, getState, extra }) => {
         const sessionId = getTrackingRandomId();
         const instanceId = selectAnalyticsInstanceId(getState()) ?? getTrackingRandomId();
         const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
@@ -50,17 +50,20 @@ export const initAnalyticsThunk = createThunk(
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-        analytics.init(hasUserAllowedTracking, {
-            instanceId,
-            sessionId,
-            environment: 'mobile',
-            commitId: getCommitHash(),
-            isDev: isDevelopEnv(),
-            callbacks: {
-                onEnable: () => dispatch(enableAnalyticsThunk()),
-                onDisable: () => dispatch(disableAnalyticsThunk()),
+        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).init(
+            hasUserAllowedTracking,
+            {
+                instanceId,
+                sessionId,
+                environment: 'mobile',
+                commitId: getCommitHash(),
+                isDev: isDevelopEnv(),
+                callbacks: {
+                    onEnable: () => dispatch(enableAnalyticsThunk()),
+                    onDisable: () => dispatch(disableAnalyticsThunk()),
+                },
             },
-        });
+        );
 
         allowSentryReport(isAnalyticsEnabled);
         setSentryUser(instanceId);

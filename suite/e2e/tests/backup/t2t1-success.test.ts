@@ -1,4 +1,4 @@
-import { EventType } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
 
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';

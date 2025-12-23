@@ -19,7 +19,7 @@ interface InitialState {
     device?: Partial<DeviceReducerState>;
 }
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
+jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
 
 const getInitialState = (override?: InitialState): any => {
     const suite = override ? override.suite : undefined;

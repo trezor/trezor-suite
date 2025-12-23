@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { EventType } from '@suite/analytics-shared';
+import { EventType } from '@suite-common/analytics';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
@@ -9,7 +9,8 @@ import {
 } from '@suite-common/bluetooth';
 import { Button, Row } from '@trezor/components';
 import { BluetoothDeviceId } from '@trezor/connect';
-import { reportAnalytics } from '@trezor/suite-analytics';
+
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
@@ -77,17 +78,17 @@ const ActionButton = ({
 }: ActionButtonProps) => {
     const connectingDevicesIds = useSelector(selectConnectingDevices);
     const { onConnect } = useConnectionGlobalModalContext();
-
+    const analytics = useAnalytics();
     const isSuiteTryingToConnectToDevice = connectingDevicesIds.includes(device.id);
     const connectionStatus = connectionStatusMap[device.connectionStatus.type];
     const isClickable = connectionStatus?.component === 'button';
     const isLoading = connectionStatus?.component === 'loader';
 
     const handleOnClick = () => {
-        reportAnalytics({
+        analytics.report({
             type: EventType.DeviceConnectionDeviceFound,
-            payload: {
-                option: 'connect',
+            attributes: {
+                option: { value: 'connect' },
             },
         });
         onConnect(device.id);

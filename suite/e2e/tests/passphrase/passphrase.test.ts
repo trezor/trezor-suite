@@ -1,5 +1,5 @@
+import { EventType } from '@suite/analytics';
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
-import { EventType } from '@trezor/suite-analytics';
 
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';

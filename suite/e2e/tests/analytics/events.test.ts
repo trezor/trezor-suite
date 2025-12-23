@@ -1,5 +1,5 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import { EventType } from '@trezor/suite-analytics';
+import { EventType } from '@suite/analytics';
 
 import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
