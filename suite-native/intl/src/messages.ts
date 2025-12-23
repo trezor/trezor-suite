@@ -2076,6 +2076,12 @@ export const messages = {
                         primaryButton: 'Convert',
                     },
                 },
+                solAssociatedAccountAddress: {
+                    label: "You're sending funds to an associated account, such as a token or staking account. <link>Learn more</link>",
+                    alert: {
+                        title: 'Unable to verify address history. Check that the address is correct.',
+                    },
+                },
                 addressQrLabel: 'Scan recipient address',
                 amountLabel: 'Amount to be sent',
                 maxButton: 'Send max',

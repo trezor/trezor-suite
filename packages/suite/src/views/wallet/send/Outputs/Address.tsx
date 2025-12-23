@@ -13,9 +13,9 @@ import {
     isAddressValid,
     isBech32AddressUppercase,
     isBitcoinCashAddressUppercase,
+    isProgramDerivedAccount,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
 import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
@@ -382,11 +382,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                     }
 
                     if (!isExternalAddressCheckWarningDismissed && isExternalAddressCheckEnabled) {
-                        const isProgramDerivedAccount = !(
-                            payload?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY ||
-                            payload?.misc?.owner === undefined
-                        );
-                        if (isProgramDerivedAccount) {
+                        if (isProgramDerivedAccount(payload)) {
                             return translationString('TR_SOL_ADDRESS_IS_ASSOCIATED_ACCOUNT');
                         }
                     }

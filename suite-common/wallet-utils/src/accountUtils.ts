@@ -28,7 +28,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { formatTokenSymbol } from '@trezor/blockchain-link-utils';
+import { formatTokenSymbol, solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     AccountAddress,
     AccountAddresses,
@@ -50,6 +50,8 @@ import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
+
+const { SYSTEM_PROGRAM_PUBLIC_KEY } = solanaUtils;
 
 export const isUtxoBased = (account: Account) =>
     account.networkType === 'bitcoin' || account.networkType === 'cardano';
@@ -1237,3 +1239,6 @@ export function accountsFiatBalanceInDescOrderComparator({
 
     return 0;
 }
+
+export const isProgramDerivedAccount = (data: AccountInfo) =>
+    !(data?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY || data?.misc?.owner === undefined);
