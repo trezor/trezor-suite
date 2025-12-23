@@ -7,7 +7,6 @@ import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { Metadata } from 'src/components/suite/Metadata';
 import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
@@ -17,10 +16,10 @@ import {
     ToastContainer,
     TrafficLightDraggableWindowHeader,
 } from 'src/components/suite';
-import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { initStore } from 'src/reducers/store';
+import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
@@ -31,13 +30,12 @@ import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop
 import { useTor } from 'src/support/suite/useTor';
 
 import { GlobalStyle } from './GlobalStyle';
+import { initSentry } from './sentry';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
-import { GlobalStyle } from './GlobalStyle';
-import { initSentry } from './sentry';
 
 const MainDesktop = ({ history }: { history: History }) => {
     useTor();

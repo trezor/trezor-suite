@@ -1,4 +1,4 @@
-import type { AttributeDef, EventDef } from '../../analyticsSchema';
+import type { AttributeDef, EventDef } from '../../events/eventDefinition';
 import { EventType } from '../constants';
 
 type Attributes = {
