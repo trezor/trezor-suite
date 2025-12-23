@@ -10,6 +10,7 @@ export default class SetBusy extends AbstractMethod<'setBusy', PROTO.SetBusy> {
         this.useDeviceState = false;
         this.requiredPermissions = ['management'];
         this.skipFinalReload = false;
+        this.overridePreviousCall = true; // currently used only in cj and should always override
 
         const { payload } = this;
 

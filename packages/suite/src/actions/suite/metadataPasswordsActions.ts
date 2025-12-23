@@ -100,7 +100,6 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     try {
         const res = await TrezorConnect.cipherKeyValue({
             device: { path: device?.path },
-            override: true,
             useEmptyPassphrase: true,
             path: METADATA_PASSWORDS.PATH,
             key: METADATA_PASSWORDS.DEFAULT_KEYPHRASE,

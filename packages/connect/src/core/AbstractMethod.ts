@@ -174,8 +174,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             : false;
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
-        this.overridePreviousCall =
-            typeof payload.override === 'boolean' ? payload.override : false;
+        this.overridePreviousCall = false;
         this.overridden = false;
         this.useEmptyPassphrase =
             typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : false;
