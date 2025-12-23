@@ -9343,7 +9343,11 @@ export default defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            'Your current provider is reducing its ADA rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your funds and past rewards stay safe.',
+            'Action required: Your ADA staking will stop earning rewards on 31.12.2025 unless you update your provider. Switch to Everstake now to earn ~{apy}% APY.',
+    },
+    TR_STAKING_REWARDS_REDUCED: {
+        id: 'TR_STAKING_REWARDS_REDUCED',
+        defaultMessage: 'Rewards reduced',
     },
     TR_STAKING_MODAL_OUTDATED_BUTTON: {
         id: 'TR_STAKING_MODAL_OUTDATED_BUTTON',
