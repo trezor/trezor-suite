@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { useServices } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useNativeServices } from '@suite-native/state';
 
 import { selectIsLabelingEnabled } from '../selectors';
 
@@ -18,7 +18,7 @@ type EditableLabelLayoutParams = {
 
 export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutParams) => {
     const { showAlert } = useAlert();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useNativeServices();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);

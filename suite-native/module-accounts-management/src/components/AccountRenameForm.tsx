@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/redux-utils';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     AccountFormValues,
@@ -17,6 +16,7 @@ import {
     selectAccountLabel,
     selectIsLabelingEnabled,
 } from '@suite-native/labeling';
+import { useNativeServices } from '@suite-native/state';
 
 type AccountRenameFormProps = {
     accountKey: string;
@@ -26,7 +26,7 @@ type AccountRenameFormProps = {
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
     const { translate } = useTranslate();
     const dispatch = useDispatch();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useNativeServices();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

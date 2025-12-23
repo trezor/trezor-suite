@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/redux-utils';
 import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -21,12 +20,13 @@ import {
 import { useDevice, useSelector, useTranslation } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useSuiteServices();
 
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();

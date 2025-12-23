@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsFeatureSuiteSyncAvailable,
@@ -10,6 +9,7 @@ import {
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { useNativeServices } from '@suite-native/state';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';
@@ -17,7 +17,7 @@ const DEFAULT_CUSTOM_RELAY_URL = '';
 export const SuiteSyncRelaySettings = () => {
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
     const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
-    const { suiteSync } = useServices();
+    const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
     const dispatch = useDispatch();
 

@@ -12,21 +12,22 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { MockedFormatterProvider } from '@suite-common/formatters';
-import { ExtraDependencies, ServicesProvider } from '@suite-common/redux-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
+import { SuiteServicesProvider } from '../SuiteServicesProvider';
+import { SuiteServices } from '../extraDependencies';
 import { ResponsiveContextProvider } from '../suite/ResponsiveContext';
 
 // used in hooks tests
 export const renderWithProviders = (
     store: any,
-    services: ExtraDependencies['services'],
+    services: SuiteServices,
     children: ReactNode,
 ): RenderResult =>
     render(
         <Provider store={store}>
-            <ServicesProvider services={services}>
+            <SuiteServicesProvider services={services}>
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <IntlProvider locale="en">
@@ -34,7 +35,7 @@ export const renderWithProviders = (
                         </IntlProvider>
                     </ResponsiveContextProvider>
                 </ConnectedThemeProvider>
-            </ServicesProvider>
+            </SuiteServicesProvider>
         </Provider>,
     );
 

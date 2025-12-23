@@ -1,4 +1,3 @@
-import { useServices } from '@suite-common/redux-utils';
 import {
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncDebugEnabled,
@@ -11,6 +10,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as metadataThunks from 'src/actions/suite/metadataThunks';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
@@ -27,7 +27,7 @@ type UseLabelingCombinedParams = {
  */
 export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
     const dispatch = useDispatch();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useSuiteServices();
 
     const device = useSelector(state =>
         deviceStaticSessionId !== undefined
