@@ -1,13 +1,14 @@
-import { SuiteSharedAnalyticsEvent } from '@suite-common/analytics';
 import { Analytics } from '@trezor/analytics';
 
 import { SuiteAnalyticsEvent } from './types';
 
+export type DesktopLegacyAnalyticsDep = {
+    legacyAnalytics: Analytics<SuiteAnalyticsEvent>;
+};
+
 /** @deprecated use `createAnalytics` instead */
-export const createLegacyAnalytics = (): Analytics<
-    SuiteAnalyticsEvent | SuiteSharedAnalyticsEvent
-> =>
-    new Analytics<SuiteAnalyticsEvent | SuiteSharedAnalyticsEvent>({
+export const createLegacyAnalytics = (): Analytics<SuiteAnalyticsEvent> =>
+    new Analytics<SuiteAnalyticsEvent>({
         version: process.env.VERSION!,
         app: 'suite',
         useQueue: true,

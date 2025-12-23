@@ -2,6 +2,10 @@ import { Analytics } from '@trezor/analytics';
 
 import { AnalyticsDesktopEvents } from './analyticsEvents';
 
+export type DesktopAnalyticsDep = {
+    analytics: Analytics<AnalyticsDesktopEvents>;
+};
+
 export const createAnalytics = (): Analytics<AnalyticsDesktopEvents> =>
     new Analytics<AnalyticsDesktopEvents>({
         version: process.env.VERSION!,

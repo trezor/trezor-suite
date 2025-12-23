@@ -21,6 +21,6 @@ export type {
     CountryChangeAction,
     SuiteNativeAnalyticsEvent,
 } from './types';
-export { createAnalytics } from './createAnalytics';
-export { createLegacyAnalytics } from './createLegacyAnalytics';
+export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
+export { createLegacyAnalytics, type NativeLegacyAnalyticsDep } from './createLegacyAnalytics';
 export * from './events';

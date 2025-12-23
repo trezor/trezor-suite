@@ -1,5 +1,5 @@
-export { createLegacyAnalytics } from './createLegacyAnalytics';
-export { createAnalytics } from './createAnalytics';
+export { createLegacyAnalytics, type DesktopLegacyAnalyticsDep } from './createLegacyAnalytics';
+export { createAnalytics, type DesktopAnalyticsDep } from './createAnalytics';
 export * from './events';
 export type {
     SuiteAnalyticsEventSuiteReady,

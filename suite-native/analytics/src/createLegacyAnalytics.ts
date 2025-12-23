@@ -3,6 +3,11 @@ import { getSuiteVersion } from '@trezor/env-utils';
 
 import { SuiteNativeAnalyticsEvent } from './types';
 
+/** @deprecated */
+export type NativeLegacyAnalyticsDep = {
+    legacyAnalytics: Analytics<SuiteNativeAnalyticsEvent>;
+};
+
 /** @deprecated use `createAnalytics` instead */
 export const createLegacyAnalytics = (): Analytics<SuiteNativeAnalyticsEvent> => {
     const analytics = new Analytics<SuiteNativeAnalyticsEvent>({
