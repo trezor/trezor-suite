@@ -1,108 +1,14 @@
-import { ed25519 } from '@noble/curves/ed25519.js';
-import * as crypto from 'crypto';
-
-import { getSubtleCrypto } from '@trezor/crypto-utils';
 import { bufferUtils } from '@trezor/utils';
 
 import {
     PrepareDeviceAuthenticityDataParams,
     VerifyAuthenticityProofParams,
     VerifyAuthenticityProofResult,
-    VerifySignature,
 } from './types';
 import { getCaPubKeyBlacklist, getRootPubKeys } from './utils';
-import { AlgorithmName, parseCertificate } from './x509certificate';
-
-// There is incomparability in results between nodejs and window SubtleCrypto api.
-// window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
-// The only common format of publicKey is PEM.
-export const verifySignatureP256: VerifySignature = async (rawKey, data, signature) => {
-    const signer = crypto.createVerify('sha256');
-    signer.update(Buffer.from(data));
-
-    const SubtleCrypto = getSubtleCrypto();
-
-    try {
-        // get ECDSA P-256 (secp256r1) key from RAW key
-        const ecPubKey = await SubtleCrypto.importKey(
-            'raw',
-            rawKey,
-            { name: 'ECDSA', namedCurve: 'P-256' },
-            true,
-            ['verify'],
-        );
-
-        // export ECDSA key as spki
-        const spkiPubKey = await SubtleCrypto.exportKey('spki', ecPubKey);
-
-        // create PEM from spki
-        const key = `-----BEGIN PUBLIC KEY-----\n${Buffer.from(spkiPubKey).toString(
-            'base64',
-        )}\n-----END PUBLIC KEY-----`;
-
-        // verify using PEM key
-        return signer.verify({ key }, Buffer.from(signature));
-    } catch {
-        // invalid inputs shall be considered unsuccessful verification, rather than runtime error
-        // (e.g. calling this with a P-256 signature and an Ed25519 key)
-        return false;
-    }
-};
-
-// Verifies Ed25519 signature using @noble/curves, because SubtleCrypto Ed25519 is still not broadly supported.
-// We can revert to SubtleCrypto when we stop supporting Chromium < 137 https://caniuse.com/mdn-api_subtlecrypto_sign_ed25519
-// Also must be verified react-native javascript runtime (unknown support matrix).
-export const verifySignatureEd25519: VerifySignature = (rawKey, data, signature) => {
-    try {
-        return ed25519.verify(signature, data, rawKey);
-    } catch {
-        // invalid inputs shall be considered unsuccessful verification, rather than runtime error
-        // @noble/hashes correctly returns false when calling this with an Ed25519 signature and a P-256 key, but malformed signature sometimes throws
-        return false;
-    }
-};
-
-const getVerifyFn = (algorithmName: AlgorithmName): VerifySignature => {
-    if (algorithmName === 'P-256') return verifySignatureP256;
-    if (algorithmName === 'Ed25519') return verifySignatureEd25519;
-    throw new Error(`Unsupported signature algorithm.`);
-};
-
-// Check that this certificate is a valid Trezor CA.
-// KeyUsage must be present and allow certificate signing.
-// BasicConstraints must be present, have the cA flag and a pathLenConstraint.
-// Any unrecognized non-critical extension is allowed. Any unrecognized critical extension is disallowed.
-const validateCaCertExtensions = (cert: ReturnType<typeof parseCertificate>, pathLen: number) => {
-    let hasKeyUsage,
-        hasBasicConstraints = false;
-    cert.tbsCertificate.extensions.forEach(ext => {
-        if (ext.key === 'keyUsage') {
-            if (ext.keyCertSign !== '1') {
-                throw new Error(`CA keyCertSign not set`);
-            }
-            hasKeyUsage = true;
-        } else if (ext.key === 'basicConstraints') {
-            if (!ext.cA) {
-                throw new Error(`CA basicConstraints.cA not set`);
-            }
-            if (typeof ext.pathLenConstraint != 'number') {
-                throw new Error('CA basicConstraints.pathLenConstraint not set');
-            }
-            if (ext.pathLenConstraint < pathLen) {
-                throw new Error('Issuer was not permitted to issue certificate');
-            }
-            hasBasicConstraints = true;
-        } else if (ext.critical) {
-            throw new Error(`Unknown critical extension ${ext.key} in CA certificate`);
-        }
-    });
-
-    if (!hasKeyUsage || !hasBasicConstraints) {
-        throw new Error(
-            `CA missing extensions keyUsage: ${hasKeyUsage}, basicConstraints: ${hasBasicConstraints}`,
-        );
-    }
-};
+import { validateCaCertExtensions } from './validateCaCertExtensions';
+import { getVerifyFn } from './verifySignatures';
+import { parseCertificate } from './x509certificate';
 
 // Compose the data against which the signatures will be verified.
 export const prepareDeviceAuthenticityData = ({
