@@ -1,14 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useNativeServices } from '@suite-native/state';
 
 export const ToggleLabelingCard = () => {
     const { showAlert } = useAlert();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useNativeServices();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const showSuiteSyncDisableConfirmationAlert = () => {

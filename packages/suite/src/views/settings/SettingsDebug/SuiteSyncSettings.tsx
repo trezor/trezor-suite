@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { useServices } from '@suite-common/redux-utils';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectSuiteSyncRelayUrl,
@@ -14,11 +13,13 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 
+import { useSuiteServices } from '../../../support/SuiteServicesProvider';
+
 export const SuiteSyncSettings = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const dispatch = useDispatch();
-    const { suiteSync } = useServices();
+    const { suiteSync } = useSuiteServices();
 
     const {
         isSuiteSyncDebugEnabled,

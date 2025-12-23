@@ -4,7 +4,7 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { ExtraDependenciesStatic, ExtraWithStoreFactory } from '@suite-common/redux-utils';
+import { CommonServices, ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -34,24 +34,31 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
-export const createNativeCompositionRoot: ExtraWithStoreFactory = store => {
+type NativeAppDeps = {
+    getState: () => any;
+    dispatch: any;
+};
+
+export type NativeServices = CommonServices;
+
+export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption();
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-        ...store,
+        dispatch: deps.dispatch,
+        getState: deps.getState,
         platformEncryption,
         trezorConnect: TrezorConnect,
     });
 
     return {
-        services: {
-            suiteSync: createSuiteSyncNativeCompositionRoot({
-                ...store,
-                platformEncryption,
-                trezorConnect: TrezorConnect,
-                ensureDelegatedIdentityKey,
-            }),
+        suiteSync: createSuiteSyncNativeCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
             platformEncryption,
-        },
+            trezorConnect: TrezorConnect,
+            ensureDelegatedIdentityKey,
+        }),
+        platformEncryption,
     };
 };
 

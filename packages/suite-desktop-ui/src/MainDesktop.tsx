@@ -3,7 +3,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { type History, createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { ServicesProvider } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -20,6 +19,7 @@ import {
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { initStore } from 'src/reducers/store';
+import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { createRouterServices } from 'src/support/extraDependencies';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
@@ -70,7 +70,7 @@ export const init = async (container: HTMLElement) => {
     const memoryHistory = createMemoryHistory();
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const { store, extra } = initStore(preloadAction, {
+    const { store, services } = initStore(preloadAction, {
         statePatch,
         additionalExtraDeps: { routerServices: createRouterServices(memoryHistory) },
     });
@@ -101,13 +101,13 @@ export const init = async (container: HTMLElement) => {
     if (shouldRunTor) {
         await new Promise(resolve => {
             root.render(
-                <ServicesProvider services={extra.services}>
+                <SuiteServicesProvider services={services}>
                     <ReduxProvider store={store}>
                         <ConnectedIntlProvider>
                             <TorLoadingScreen callback={resolve} />
                         </ConnectedIntlProvider>
                     </ReduxProvider>
-                </ServicesProvider>,
+                </SuiteServicesProvider>,
             );
             desktopApi.toggleTor(true);
         });
@@ -139,10 +139,10 @@ export const init = async (container: HTMLElement) => {
 
     // finally render whole app
     root.render(
-        <ServicesProvider services={extra.services}>
+        <SuiteServicesProvider services={services}>
             <ReduxProvider store={store}>
                 <MainDesktop history={memoryHistory} />
             </ReduxProvider>
-        </ServicesProvider>,
+        </SuiteServicesProvider>,
     );
 };

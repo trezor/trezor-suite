@@ -7,9 +7,6 @@
         },
         { "path": "../../suite-common/mev" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -42,6 +39,7 @@
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
         { "path": "../settings" },
+        { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },
