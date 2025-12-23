@@ -145,7 +145,7 @@ export const Switch = ({
             {label && (
                 <label htmlFor={id}>
                     <Text
-                        variant={isDisabled ? 'disabled' : 'tertiary'}
+                        variant={isDisabled ? 'disabled' : 'default'}
                         typographyStyle={mapSizeToLabelTypography(size)}
                         cursor={isDisabled ? undefined : 'pointer'}
                     >
