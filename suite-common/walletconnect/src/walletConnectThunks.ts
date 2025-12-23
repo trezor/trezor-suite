@@ -114,7 +114,7 @@ export const sessionProposalThunk = createThunk<
     {
         event: WalletKitTypes.SessionProposal;
     }
->(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState }) => {
+>(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
     // Check supported networks
     const accounts = selectAllSuccessfulAccountsToList(getState());
     const networks: PendingConnectionProposalNetwork[] = [];
@@ -130,7 +130,7 @@ export const sessionProposalThunk = createThunk<
             ...event.verifyContext.verified,
         }),
     );
-    analytics.report({
+    extra.services.legacyAnalytics.report({
         type: EventType.WalletConnectProposal,
         payload: {
             origin: event.verifyContext.verified.origin,
@@ -145,7 +145,7 @@ export const sessionRequestThunk = createThunk<
     {
         event: WalletKitTypes.SessionRequest;
     }
->(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch }) => {
+>(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch, extra }) => {
     try {
         const adapter = getAdapterByMethod(event.params.request.method);
         if (!adapter) {
@@ -165,7 +165,7 @@ export const sessionRequestThunk = createThunk<
                 result: result.payload,
             },
         });
-        analytics.report({
+        extra.services.legacyAnalytics.report({
             type: EventType.WalletConnectSessionRequest,
             payload: {
                 origin: event.verifyContext.verified.origin,
@@ -256,7 +256,7 @@ export const sessionProposalApproveThunk = createThunk<
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
-    async ({ eventId, selectedDefaultAccount }, { dispatch, getState }) => {
+    async ({ eventId, selectedDefaultAccount }, { dispatch, getState, extra }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (
@@ -315,7 +315,7 @@ export const sessionProposalApproveThunk = createThunk<
                     }),
                 );
             }
-            analytics.report({
+            extra.services.legacyAnalytics.report({
                 type: EventType.WalletConnectProposalApproved,
                 payload: {
                     origin: pendingProposal.origin,
@@ -337,14 +337,14 @@ export const sessionProposalRejectThunk = createThunk<
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`,
-    async ({ eventId }, { getState, dispatch }) => {
+    async ({ eventId }, { getState, dispatch, extra }) => {
         await walletKit.rejectSession({
             id: eventId,
             reason: getSdkError('USER_REJECTED'),
         });
         const pendingProposal = selectPendingProposal(getState());
         dispatch(walletConnectActions.clearSessionProposal());
-        analytics.report({
+        extra.services.legacyAnalytics.report({
             type: EventType.WalletConnectProposalRejected,
             payload: {
                 origin: pendingProposal?.origin,
@@ -355,7 +355,7 @@ export const sessionProposalRejectThunk = createThunk<
 
 export const walletConnectInitThunk = createThunk(
     `${WALLETCONNECT_MODULE}/walletConnectInitThunk`,
-    async (_, { dispatch }) => {
+    async (_, { dispatch, extra }) => {
         if (walletKit) return;
 
         const core = new Core({
@@ -402,7 +402,7 @@ export const walletConnectInitThunk = createThunk(
         for (const proposal of Object.values(proposals)) {
             dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
         }
-        analytics.report({
+        extra.services.legacyAnalytics.report({
             type: EventType.WalletConnectInit,
         });
     },
@@ -410,7 +410,7 @@ export const walletConnectInitThunk = createThunk(
 
 export const walletConnectPairThunk = createThunk<void, { uri: string }>(
     `${WALLETCONNECT_MODULE}/walletConnectPairThunk`,
-    async ({ uri }, { dispatch }) => {
+    async ({ uri }, { dispatch, extra }) => {
         if (!walletKit) {
             // May happen when Suite cold-starts from deeplink
             await dispatch(walletConnectInitThunk());
@@ -418,7 +418,7 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
 
         try {
             await walletKit.pair({ uri });
-            analytics.report({
+            extra.services.legacyAnalytics.report({
                 type: EventType.WalletConnectPaired,
             });
         } catch {

@@ -58,11 +58,11 @@ export const DashboardPromoBanner = () => {
     };
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
-        analytics({
+        analytics.report({
             type: EventType.DashboardBanner,
-            payload: {
-                action: 'cta',
-                bannerType: currentBanner,
+            attributes: {
+                action: { value: 'cta' },
+                bannerType: { value: currentBanner },
             },
         });
     };

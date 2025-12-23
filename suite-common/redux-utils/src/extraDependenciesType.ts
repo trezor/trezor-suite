@@ -25,6 +25,9 @@ import {
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
+import { Analytics } from '@trezor/analytics';
+import type { AnalyticsSharedEvents, SuiteSharedAnalyticsEvent } from '@suite-common/analytics';
+
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -46,6 +49,8 @@ export type LocationPushState = Record<string, unknown>;
 export type CommonServices = {
     suiteSync: SuiteSync;
     platformEncryption: PlatformEncryption;
+    analytics: Analytics<AnalyticsSharedEvents>;
+    legacyAnalytics: Analytics<SuiteSharedAnalyticsEvent>;
 };
 
 export type ExtraDependenciesStatic = {
