@@ -1,6 +1,9 @@
 import { selectCardanoPoolsInfo, selectIsDiscreteModeActive } from '@suite-common/wallet-core';
 import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { isCardanoStakedWithEverstake } from '@suite-common/wallet-utils';
+import {
+    isCardanoStakedWithEverstake,
+    isCardanoStakedWithFiveBinaries,
+} from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 
 import { AccountLabel, CoinBalance } from 'src/components/suite';
@@ -50,7 +53,16 @@ export const AccountItemContent = ({
                     data-testid={`${dataTestKey}/label`}
                 >
                     {type === 'coin' && <AccountLabel account={account} />}
-                    {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
+                    {type === 'staking' && (
+                        <Column alignItems="flex-start">
+                            <Translation id="TR_NAV_STAKING" />
+                            {isCardanoStakedWithFiveBinaries(account) && (
+                                <Text typographyStyle="hint" variant="warning">
+                                    <Translation id="TR_STAKING_REWARDS_REDUCED" />
+                                </Text>
+                            )}
+                        </Column>
+                    )}
                     {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                 </Text>
 
