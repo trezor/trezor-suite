@@ -16,8 +16,8 @@ export const MIN_CARDANO_BALANCE_FOR_STAKING = MIN_CARDANO_AMOUNT_FOR_STAKING.pl
 );
 
 export const CARDANO_EVERSTAKE_STAKING_POOL = {
-    hex: '8120831fd871a6023c2099d05f21b76bdbb1e4a37464c0cd56f743c7',
-    bech32: 'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
+    hex: '9bf86442804da9329bfe0300592ce2e71eac4d6384a72e925f02f322',
+    bech32: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
 };
 
 export const CARDANO_EVERSTAKE_DREP = {
@@ -35,4 +35,10 @@ export const FIVE_BINARIES_POOLS = [
     'pool1z5rt6kn6yvuczj44qla73mfyln9l55lw0jkz6x4kjw00u32zec3',
     'pool1398lzhvtaa0hgz305d2jz4urfkwkkt66yv476wqe6att2f7dphh',
     'pool1z9m2kxeat06t30yf6ar7sqpert0cjdgxzcv2dv36dcwcqcqtgk4',
+];
+
+export const EVERSTAKE_POOLS = [
+    'pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn',
+    'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+    'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
 ];
