@@ -1,5 +1,4 @@
 export * from './analyticsThunks';
-export { analytics } from './legacyAnalytics';
 export { EventType } from './constants';
 export type {
     AnalyticsSendFlowStep,
@@ -22,5 +21,6 @@ export type {
     CountryChangeAction,
     SuiteNativeAnalyticsEvent,
 } from './types';
-export { reportAnalytics } from './reportAnalytics';
+export { createAnalytics } from './createAnalytics';
+export { createLegacyAnalytics } from './createLegacyAnalytics';
 export * from './events';

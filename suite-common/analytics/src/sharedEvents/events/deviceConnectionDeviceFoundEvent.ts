@@ -1,4 +1,4 @@
-import type { AttributeDef, EventDef } from '../../events/eventDefinition';
+import type { AttributeDef, EventDef } from '../../eventDefinition';
 import { EventType } from '../constants';
 
 type Attributes = {

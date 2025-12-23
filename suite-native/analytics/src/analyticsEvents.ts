@@ -1,9 +1,7 @@
-import { EventInstance } from '@suite-common/analytics';
+import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics';
 
-import * as mobileEventsData from './events';
+import * as nativeEventsData from './events';
 
-export const mobileEvents = mobileEventsData;
-
-export type AnyMobileEventDef = (typeof mobileEvents)[keyof typeof mobileEvents];
-
-export type AnalyticsMobileEvent = EventInstance<AnyMobileEventDef>;
+export const nativeEvents = nativeEventsData;
+export type AnyNativeEventsDef = (typeof nativeEvents)[keyof typeof nativeEvents];
+export type AnalyticsNativeEvents = EventInstance<AnyNativeEventsDef> | AnalyticsSharedEvents;

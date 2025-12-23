@@ -1,5 +1,5 @@
-export { analytics } from './legacyAnalytics';
-export { reportAnalytics } from './reportAnalytics';
+export { createLegacyAnalytics } from './createLegacyAnalytics';
+export { createAnalytics } from './createAnalytics';
 export * from './events';
 export type {
     SuiteAnalyticsEventSuiteReady,

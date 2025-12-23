@@ -1,19 +1,21 @@
 import { Analytics, Event } from '@trezor/analytics';
 import { getSuiteVersion } from '@trezor/env-utils';
 
-import { AnalyticsMobileEvent, AnalyticsSharedEvent } from './analyticsEvents';
+import { SuiteNativeAnalyticsEvent } from './types';
 
-export const createAnalytics = () => {
-    const newAnalytics = new Analytics<AnalyticsMobileEvent | AnalyticsSharedEvent>({
+/** @deprecated use `createAnalytics` instead */
+export const createLegacyAnalytics = (): Analytics<SuiteNativeAnalyticsEvent> => {
+    const analytics = new Analytics<SuiteNativeAnalyticsEvent>({
         version: getSuiteVersion(),
         app: 'suite',
     });
+
     // Inlined to avoid native dependency
     const isDebugEnv = () => process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug';
 
     if (isDebugEnv()) {
         // Do not send analytics in development
-        newAnalytics.report = (event: Event) => {
+        analytics.report = (event: Event) => {
             if (process.env.EXPO_PUBLIC_IS_ANALYTICS_LOGGER_ENABLED === 'true') {
                 // eslint-disable-next-line no-console
                 console.log(`Analytics report '${event.type}':`, event);
@@ -21,10 +23,5 @@ export const createAnalytics = () => {
         };
     }
 
-    return newAnalytics;
+    return analytics;
 };
-
-// export const reportAnalytics = createReportAnalytics<
-//     AnyMobileEventDef | AnySharedEventDef,
-//     AnalyticsMobileEvent | AnalyticsSharedEvent
-// >(newAnalytics);
