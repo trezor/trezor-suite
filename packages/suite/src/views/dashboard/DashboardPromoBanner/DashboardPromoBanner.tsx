@@ -5,7 +5,7 @@ import { Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { EventType, reportAnalytics } from '@trezor/suite-analytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -16,9 +16,11 @@ import {
 import { TS7Banner } from './TS7Banner';
 import { TrezorExpertBanner } from './TrezorExpertBanner';
 import { DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
+import { EventType } from '@suite/analytics';
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
+    const analytics = useAnalytics();
 
     const shouldShowTEXDashboardPromoBanner = useSelector(selectIsTEXDashboardPromoBannerShown);
     const shouldShowTS7DashboardPromoBanner = useSelector(selectIsTS7DashboardPromoBannerShown);
@@ -45,18 +47,18 @@ export const DashboardPromoBanner = () => {
     const deviceIsNotT3W1 = getDeviceInternalModel(selectedDevice) !== DeviceModelInternal.T3W1;
 
     const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
-        reportAnalytics({
+        analytics.report({
             type: EventType.DashboardBanner,
-            payload: {
-                action: 'close',
-                bannerType: currentBanner,
+            attributes: {
+                action: { value: 'close' },
+                bannerType: { value: currentBanner },
             },
         });
         setIsVisible(false);
     };
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
-        reportAnalytics({
+        analytics({
             type: EventType.DashboardBanner,
             payload: {
                 action: 'cta',

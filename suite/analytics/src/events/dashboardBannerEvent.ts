@@ -4,7 +4,7 @@ import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<'cta' | 'close'>;
-    bannerType?: AttributeDef<'tex' | 'ts7' | null>;
+    bannerType?: AttributeDef<string | null>;
 };
 
 export const dashboardBannerEvent: EventDef<Attributes, EventType.DashboardBanner> = {

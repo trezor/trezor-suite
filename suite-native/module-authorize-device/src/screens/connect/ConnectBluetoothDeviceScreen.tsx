@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite/analytics-shared';
-import { reportAnalytics } from '@suite-native/analytics';
+import { EventType } from '@suite-common/analytics';
 import {
     BluetoothDevice,
     BluetoothDeviceList,
@@ -18,6 +17,7 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/state';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
 
@@ -29,21 +29,22 @@ type NavigationProps = StackNavigationProps<
 export const ConnectBluetoothDeviceScreen = () => {
     const { connectBluetoothDevice } = useBluetoothDevice();
     const navigation = useNavigation<NavigationProps>();
+    const analytics = useAnalytics();
 
     const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
     const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
 
     const handleDeviceButtonPress = useCallback(
         (device: BluetoothDevice) => {
-            reportAnalytics({
+            analytics.report({
                 type: EventType.DeviceConnectionDeviceFound,
-                payload: {
-                    option: 'connect',
+                attributes: {
+                    option: { value: 'connect' },
                 },
             });
             connectBluetoothDevice(device);
         },
-        [connectBluetoothDevice],
+        [analytics, connectBluetoothDevice],
     );
 
     useEffect(() => {
