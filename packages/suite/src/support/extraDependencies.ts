@@ -8,8 +8,8 @@ import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import {
+    CommonServices,
     ExtraDependenciesStatic,
-    ExtraWithStoreFactory,
     LocationPushState,
     To,
 } from '@suite-common/redux-utils';
@@ -70,27 +70,34 @@ export const createRouterServices = (history: History) => ({
     navigate: (to: To, state?: LocationPushState) => history.push(to, state),
 });
 
-export const createSuiteCompositionRoot: ExtraWithStoreFactory = store => {
+type SuiteAppDeps = {
+    getState: () => any;
+    dispatch: any;
+};
+
+export type SuiteServices = CommonServices;
+
+export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
         ? createElectronPlatformEncryption({ desktopApi })
         : createWebauthnPlatformEncryption();
 
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-        ...store,
+        dispatch: deps.dispatch,
+        getState: deps.getState,
         platformEncryption,
         trezorConnect: TrezorConnect,
     });
 
     return {
-        services: {
-            suiteSync: createSuiteSyncDesktopCompositionRoot({
-                ...store,
-                platformEncryption,
-                trezorConnect: TrezorConnect,
-                ensureDelegatedIdentityKey,
-            }),
+        suiteSync: createSuiteSyncDesktopCompositionRoot({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
             platformEncryption,
-        },
+            trezorConnect: TrezorConnect,
+            ensureDelegatedIdentityKey,
+        }),
+        platformEncryption,
     };
 };
 
