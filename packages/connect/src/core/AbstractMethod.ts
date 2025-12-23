@@ -75,7 +75,11 @@ function validateStaticSessionId(input: unknown): StaticSessionId {
 
 // validate expected state from method parameter.
 // it could be undefined
-function validateDeviceState(input: unknown): DeviceState | undefined {
+function validateDeviceState(device: CallMethodPayload['device']): DeviceState | undefined {
+    if (!device || !('state' in device)) return {}; // no change in device state
+
+    const input = device.state;
+
     if (typeof input === 'string') {
         return { staticSessionId: validateStaticSessionId(input) };
     }
@@ -94,7 +98,7 @@ function validateDeviceState(input: unknown): DeviceState | undefined {
         return state;
     }
 
-    return undefined;
+    return undefined; // reset device state
 }
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
@@ -106,8 +110,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     params: Params;
 
     deviceState?: DeviceState;
-
-    hasExpectedDeviceState: boolean;
 
     keepSession: boolean;
 
@@ -168,10 +170,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.name = payload.method;
         this.payload = payload;
         this.responseID = message.id || 0;
-        this.deviceState = validateDeviceState(payload.device?.state);
-        this.hasExpectedDeviceState = payload.device
-            ? Object.prototype.hasOwnProperty.call(payload.device, 'state')
-            : false;
+        this.deviceState = validateDeviceState(payload.device);
         this.keepSession = typeof payload.keepSession === 'boolean' ? payload.keepSession : false;
         this.skipFinalReload = true;
         this.overridePreviousCall = false;

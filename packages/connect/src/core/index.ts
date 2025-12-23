@@ -547,10 +547,7 @@ const onCallDevice = async (
 
     // set device instance. default is 0
     device.setInstance(message.payload.device?.instance);
-
-    if (method.hasExpectedDeviceState) {
-        device.setState(method.deviceState);
-    }
+    device.setState(method.deviceState);
 
     // device is available
     // set public variables, listeners and run method
