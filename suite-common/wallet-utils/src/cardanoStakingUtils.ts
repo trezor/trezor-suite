@@ -4,6 +4,7 @@ import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     CARDANO_EVERSTAKE_STAKING_POOL,
     CARDANO_POOL_SATURATION_SAFE_THRESHOLD,
+    EVERSTAKE_POOLS,
     FIVE_BINARIES_POOLS,
 } from '@suite-common/wallet-constants';
 import {
@@ -51,10 +52,10 @@ export const isCardanoStakedWithEverstake = (
     account: Account,
     cardanoStakingPools: CardanoPoolInfo[],
 ) => {
-    if (!cardanoStakingPools?.length) return false;
-
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
+
+    if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId);
 
     return cardanoStakingPools.some(pool => pool.id === accountPoolId);
 };
@@ -63,10 +64,10 @@ export const isCardanoStakedOutsideEverstake = (
     account: Account,
     cardanoStakingPools: CardanoPoolInfo[],
 ) => {
-    if (!cardanoStakingPools?.length) return false;
-
     const accountPoolId = getAccountPoolId(account);
     if (!accountPoolId) return false;
+
+    if (!cardanoStakingPools?.length) return EVERSTAKE_POOLS.includes(accountPoolId) === false;
 
     return cardanoStakingPools.every(pool => pool.id !== accountPoolId);
 };
