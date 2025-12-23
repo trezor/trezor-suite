@@ -16,12 +16,14 @@ import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { SendFormLabelEditable } from '@suite-native/labeling';
+import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
-import { AddressChecksumMessage } from './AddressChecksumMessage';
+import { AddressInfoMessage } from './AddressInfoMessage';
+import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 
 type AddressInputProps = {
     index: number;
@@ -35,6 +37,8 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
+
+    const { checkSolAssociatedTokenAddress, isSolATA } = useSolAssociatedTokenAddress();
 
     const freshAccountAddress = useSelector(
         (state: NativeAccountsRootState & TransactionsRootState) =>
@@ -53,6 +57,11 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const handleChangeValue = (newValue: string) => {
         if (symbol && isAddressValid(newValue, symbol)) {
             analytics.report({ type: EventType.SendAddressFilled, payload: { method: 'manual' } });
+            checkSolAssociatedTokenAddress({
+                value: newValue,
+                symbol,
+                fieldName: addressFieldName,
+            });
         }
     };
 
@@ -93,7 +102,18 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
                 accessibilityLabel="address input"
                 rightIcon={<QrCodeBottomSheetIcon onCodeScanned={handleScanAddressQRCode} />}
             />
-            {wasAddressChecksummed && <AddressChecksumMessage />}
+            {wasAddressChecksummed && (
+                <AddressInfoMessage
+                    txId="moduleSend.outputs.recipients.checksum.label"
+                    link={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
+                />
+            )}
+            {isSolATA && (
+                <AddressInfoMessage
+                    txId="moduleSend.outputs.recipients.solAssociatedAccountAddress.label"
+                    link={HELP_CENTER_SOLANA_HELP_URL}
+                />
+            )}
         </VStack>
     );
 };
