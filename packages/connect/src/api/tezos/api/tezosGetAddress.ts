@@ -49,12 +49,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
             };
         });
 
-        const useEventListener =
-            payload.useEventListener &&
-            this.params.length === 1 &&
-            typeof this.params[0].address === 'string' &&
-            this.params[0].show_display;
-        this.useUi = !useEventListener;
+        this.useUi = this.getUseUi(this.params);
     }
 
     get info() {
