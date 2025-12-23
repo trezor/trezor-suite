@@ -14,7 +14,6 @@ export interface DeviceIdentity {
 export interface CommonParams {
     device?: DeviceIdentity & { state?: DeviceState | string }; // Note: state as string should be removed https://github.com/trezor/trezor-suite/issues/12710
     useEmptyPassphrase?: boolean;
-    useEventListener?: boolean; // this param is set automatically in factory
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
     /**
@@ -88,7 +87,6 @@ export const GetAddress = Type.Object({
     address: Type.Optional(Type.String()),
     showOnTrezor: Type.Optional(Type.Boolean({ default: true })),
     chunkify: Type.Optional(Type.Boolean()),
-    useEventListener: Type.Optional(Type.Boolean()),
 });
 
 export interface Address {

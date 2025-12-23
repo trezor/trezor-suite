@@ -200,6 +200,17 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.noBackupConfirmationMode = 'never';
     }
 
+    // Used in *getAddress methods
+    protected getUseUi(params: { address?: string; show_display?: boolean }[]) {
+        const useEventListener =
+            this.payload.useEventListener &&
+            params.length === 1 &&
+            typeof params[0].address === 'string' &&
+            params[0].show_display;
+
+        return !useEventListener;
+    }
+
     setDevice(device: Device) {
         this.device = device;
         // NOTE: every method should always send "device" parameter
