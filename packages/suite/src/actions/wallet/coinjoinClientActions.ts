@@ -255,10 +255,7 @@ export const setBusyScreen =
                 }
 
                 return TrezorConnect.setBusy({
-                    device: {
-                        path: device?.path,
-                    },
-                    override: true, // override current call (override SUITE.LOCK)
+                    device: { path: device?.path },
                     keepSession: !!expiry, // do not release device session, keep it for signTransaction
                     expiry_ms: expiry,
                 });
@@ -662,7 +659,6 @@ const signCoinjoinTx =
                             preauthorized: true,
                             serialize: false,
                             unlockPath,
-                            override: true, // override current call (override SUITE.LOCK)
                             chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
                         });
 

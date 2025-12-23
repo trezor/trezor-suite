@@ -16,7 +16,7 @@ const groups = {
     // temporarily created group for flaky test - to spend less time on reruns and to make test result in CI more readable without investigating long logs
     apiFlaky: {
         name: 'api-flaky',
-        pattern: 'override init',
+        pattern: 'init',
     },
     thp: {
         name: 'thp',

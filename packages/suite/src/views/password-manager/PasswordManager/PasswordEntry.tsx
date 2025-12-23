@@ -66,7 +66,6 @@ export const PasswordEntry = ({
         setInProgress(true);
         TrezorConnect.cipherKeyValue({
             device: { path: devicePath },
-            override: true,
             useEmptyPassphrase: true,
             path: PATH,
             key: getDisplayKey(title, username),
