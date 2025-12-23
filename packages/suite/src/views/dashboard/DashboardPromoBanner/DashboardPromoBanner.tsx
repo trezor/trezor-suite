@@ -1,22 +1,22 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
 import { Feature as MessageFeature } from '@suite-common/suite-types';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useSelector } from 'src/hooks/suite';
 import {
     selectIsTEXDashboardPromoBannerShown,
     selectIsTS7DashboardPromoBannerShown,
 } from 'src/selectors/suite/suiteSelectors';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { TS7Banner } from './TS7Banner';
 import { TrezorExpertBanner } from './TrezorExpertBanner';
 import { DashboardBannerTypeWithNull, isDashboardBannerType } from './dashboardBannerTypes';
-import { EventType } from '@suite/analytics';
 
 export const DashboardPromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
@@ -54,6 +54,7 @@ export const DashboardPromoBanner = () => {
                 bannerType: { value: currentBanner },
             },
         });
+
         setIsVisible(false);
     };
 

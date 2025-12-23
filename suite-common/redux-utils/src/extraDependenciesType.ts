@@ -4,6 +4,10 @@ import {
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
+import type {
+    AnalyticsSharedEvents,
+    SuiteSharedLegacyAnalyticsEvents,
+} from '@suite-common/analytics';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSync } from '@suite-common/suite-sync-types';
@@ -26,7 +30,6 @@ import {
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
 import { Analytics } from '@trezor/analytics';
-import type { AnalyticsSharedEvents, SuiteSharedAnalyticsEvent } from '@suite-common/analytics';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -50,7 +53,7 @@ export type CommonServices = {
     suiteSync: SuiteSync;
     platformEncryption: PlatformEncryption;
     analytics: Analytics<AnalyticsSharedEvents>;
-    legacyAnalytics: Analytics<SuiteSharedAnalyticsEvent>;
+    legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
 };
 
 export type ExtraDependenciesStatic = {

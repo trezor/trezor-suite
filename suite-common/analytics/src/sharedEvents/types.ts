@@ -1,6 +1,7 @@
 import { EventType } from './constants';
 
-export type SuiteSharedAnalyticsEvent =
+/** @deprecated use `AnalyticsSharedEvents` */
+export type SuiteSharedLegacyAnalyticsEvents =
     | {
           type: EventType.WalletConnectInit;
       }

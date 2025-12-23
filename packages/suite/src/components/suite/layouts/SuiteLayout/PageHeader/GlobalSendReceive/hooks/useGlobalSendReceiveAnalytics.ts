@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 
-import { EventType, SuiteAnalyticsEvent, analytics } from '@trezor/suite-analytics';
+import { EventType, SuiteDesktopLegacyAnalyticsEvents, analytics } from '@suite/analytics';
 
 type SendModalEventOptions = Extract<
-    SuiteAnalyticsEvent,
+    SuiteDesktopLegacyAnalyticsEvents,
     { type: EventType.DashboardSendModalOptions }
 >['payload']['option'];
 
 type ReceiveModalEventOptions = Extract<
-    SuiteAnalyticsEvent,
+    SuiteDesktopLegacyAnalyticsEvents,
     { type: EventType.DashboardReceiveModalOptions }
 >['payload']['option'];
 

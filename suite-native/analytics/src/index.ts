@@ -19,7 +19,7 @@ export type {
     CountryChangeContextCheck,
     CountryChangeContext,
     CountryChangeAction,
-    SuiteNativeAnalyticsEvent,
+    SuiteNativeLegacyAnalyticsEvents,
 } from './types';
 export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
 export { createLegacyAnalytics, type NativeLegacyAnalyticsDep } from './createLegacyAnalytics';

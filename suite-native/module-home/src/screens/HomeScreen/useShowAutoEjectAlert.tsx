@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, SuiteNativeAnalyticsEvent, analytics } from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents, analytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
@@ -18,7 +18,10 @@ import { useToast } from '@suite-native/toasts';
 
 import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 
-type AutoEjectModalEvent = Extract<SuiteNativeAnalyticsEvent, { type: EventType.AutoEjectModal }>;
+type AutoEjectModalEvent = Extract<
+    SuiteNativeLegacyAnalyticsEvents,
+    { type: EventType.AutoEjectModal }
+>;
 
 export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();

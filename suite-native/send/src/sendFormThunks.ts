@@ -25,7 +25,7 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
@@ -36,6 +36,7 @@ import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './constants';
+import { Analytics } from '@trezor/analytics';
 
 export const signTransactionNativeThunk = createThunk<
     BlockbookTransaction | undefined,
@@ -182,7 +183,7 @@ export const sendTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/sendTransactionThunk`,
     async (
         { selectedAccount, wasAppLeftDuringReview, tokenContract },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const isMevProtectionEnabled =
             selectIsMevProtectionEnabled(getState()) &&
@@ -218,7 +219,7 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            analytics.report({
+            (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report({
                 type: EventType.SendTransactionDispatched,
                 payload: {
                     symbol: selectedAccount.symbol,

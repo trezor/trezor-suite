@@ -4,7 +4,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
 
-/** @deprecated */
 export type SuiteAnalyticsEventSuiteReady = {
     type: EventType.SuiteReady;
     payload: {
@@ -64,8 +63,8 @@ export type TransactionCreatedEvent = {
     };
 };
 
-/** @deprecated */
-export type SuiteAnalyticsEvent =
+/** @deprecated use `AnalyticsDesktopEvents` */
+export type SuiteDesktopLegacyAnalyticsEvents =
     | SuiteAnalyticsEventSuiteReady
     | {
           type: EventType.RouterLocationChange;
