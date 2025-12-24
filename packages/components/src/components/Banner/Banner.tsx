@@ -61,7 +61,7 @@ export const Banner = ({
             {...frameProps}
             width={width}
         >
-            <Row gap={12} padding={{ vertical: 12, horizontal: 20 }}>
+            <Row gap={16} padding={{ vertical: 12, horizontal: 20 }}>
                 {isLoading && <Spinner size={20} />}
                 {!isLoading && withIcon && (
                     <Icon

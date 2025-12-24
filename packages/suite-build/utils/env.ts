@@ -8,6 +8,7 @@ const {
     ASSET_PREFIX,
     IS_CODESIGN_BUILD,
     SENTRY_AUTH_TOKEN,
+    TEST_BUILD,
 } = process.env;
 
 const project = PROJECT as Project;
@@ -17,6 +18,7 @@ const isCodesignBuild = IS_CODESIGN_BUILD === 'true';
 const launchElectron = LAUNCH_ELECTRON === 'true';
 const assetPrefix = ASSET_PREFIX || '';
 const sentryAuthToken = SENTRY_AUTH_TOKEN;
+const isTestBuild = TEST_BUILD === 'true';
 
 export {
     isAnalyzing,
@@ -26,4 +28,5 @@ export {
     assetPrefix,
     project,
     sentryAuthToken,
+    isTestBuild,
 };

@@ -20,6 +20,8 @@ runs:
 
     - name: Build Electron app.js for tests
       shell: bash
+      env:
+        TEST_BUILD: "true"
       run: |
         yarn workspace @trezor/suite-desktop build:app
         yarn workspace @trezor/suite-desktop build:ui
