@@ -30,6 +30,9 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
+        {
+            "path": "../module-staking-management"
+        },
         { "path": "../navigation" },
         { "path": "../staking" },
         { "path": "../tokens" },

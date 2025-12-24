@@ -10,6 +10,7 @@ import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-comm
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
+import { FiveBinariesHomeBanner } from '@suite-native/module-staking-management';
 import {
     AppTabsParamList,
     AppTabsRoutes,
@@ -64,6 +65,7 @@ export const Assets = () => {
 
     return (
         <>
+            <FiveBinariesHomeBanner />
             <AnimatedCard noPadding layout={LinearTransition}>
                 <AccountsRediscoveryNeededWarning hasPadding />
                 {deviceNetworks.map(symbol => (

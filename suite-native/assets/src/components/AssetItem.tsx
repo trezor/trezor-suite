@@ -128,7 +128,9 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
                     <Text variant="hint" color="textSubdued">
                         {accountsPerAsset}
                     </Text>
-                    {hasAnyAccountsWithStaking && <StakingBadge />}
+                    {hasAnyAccountsWithStaking && (
+                        <StakingBadge networkSymbol={cryptoCurrencySymbol} />
+                    )}
                     {hasAnyTokens && (
                         <Badge
                             elevation="1"

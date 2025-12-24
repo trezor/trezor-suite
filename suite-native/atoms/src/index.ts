@@ -54,6 +54,7 @@ export * from './TitleHeader/PictogramTitleHeader';
 export * from './TitleHeader/TitleHeader';
 export * from './TitleHeader/CenteredTitleHeader';
 export * from './RoundedIcon';
+export * from './CompoundRoundedIcon';
 export * from './TrezorSuiteHeader';
 export * from './Skeleton/BoxSkeleton';
 export * from './Skeleton/ListItemSkeleton';
