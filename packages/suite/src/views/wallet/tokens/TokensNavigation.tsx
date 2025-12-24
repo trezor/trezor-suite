@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Button, Icon, IconButton, IconName, Input, Row, SubTabs } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
@@ -14,6 +14,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 import { TranslationKey } from '../../../components/suite/Translation';
@@ -83,6 +84,7 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
+    const legacyAnalytics = useLegacyAnalytics();
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)
@@ -103,7 +105,7 @@ export const TokensNavigation = ({
 
     const handleAddToken = () => {
         if (account.symbol) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: account.symbol, action: 'add-token' },
             });

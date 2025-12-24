@@ -2,15 +2,16 @@ import { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import { GuideNode as GuideNodeType } from '@suite-common/suite-types';
 import { Icon } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings, transitions, typography } from '@trezor/theme';
 
 import { openNode } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getNodeTitle } from 'src/utils/suite/guide';
 
 const NodeButton = styled.button`
@@ -67,12 +68,12 @@ type GuideNodeProps = {
 export const GuideNode = ({ node, description }: GuideNodeProps) => {
     const language = useSelector(selectLanguage);
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const theme = useTheme();
 
     const navigateToNode = () => {
         dispatch(openNode(node));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.GuideNodeNavigation,
             payload: {
                 type: node.type,

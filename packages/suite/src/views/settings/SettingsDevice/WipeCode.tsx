@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { EventType } from '@suite/analytics';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
@@ -10,6 +10,7 @@ import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface Props {
     isDeviceLocked: boolean;
@@ -17,11 +18,12 @@ interface Props {
 
 export const WipeCode = ({ isDeviceLocked }: Props) => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const isDeviceProtectedByWipeCode = useSelector(selectIsDeviceProtectedByWipeCode);
 
     const enableWipeCode = () => {
         dispatch(changeWipeCode({ remove: false }));
-        analytics.report({
+        legacyAnalytics.report({
             type: isDeviceProtectedByWipeCode
                 ? EventType.SettingsDeviceChangeWipeCode
                 : EventType.SettingsDeviceSetupWipeCode,
@@ -30,7 +32,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
 
     const disableWipeCode = () => {
         dispatch(changeWipeCode({ remove: true }));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDeviceDisableWipeCode,
         });
     };

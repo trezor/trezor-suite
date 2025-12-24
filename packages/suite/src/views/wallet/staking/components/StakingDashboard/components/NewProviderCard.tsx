@@ -1,22 +1,24 @@
+import { EventType } from '@suite/analytics';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { isCardanoStakedWithFiveBinaries } from '@suite-common/wallet-utils';
 import { Button, Card, Column, H3, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface NewProviderCardProps {
     account: Account;
 }
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
@@ -36,7 +38,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                 }),
             );
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.StakingUpdateProvider,
                 payload: {
                     action: 'continue',

@@ -1,17 +1,19 @@
 import { FormattedList } from 'react-intl';
 
+import { EventType } from '@suite/analytics';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const NetworkReserve = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
@@ -24,7 +26,7 @@ export const NetworkReserve = () => {
 
         dispatch(setNetworkReserve(nextIsNetworkReserveEnabled));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralNetworkReserve,
             payload: { value: nextIsNetworkReserveEnabled },
         });

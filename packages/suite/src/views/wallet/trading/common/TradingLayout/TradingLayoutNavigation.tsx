@@ -1,10 +1,11 @@
+import { EventType } from '@suite/analytics';
 import { Route } from '@suite-common/suite-types';
 import { IconName, SubTabs } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];
@@ -36,13 +37,13 @@ const navigationItems: NavigationItem[] = [
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
 
         switch (route) {
             case 'wallet-trading-buy':
-                return analytics.report({
+                return legacyAnalytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',
@@ -51,7 +52,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     },
                 });
             case 'wallet-trading-sell':
-                return analytics.report({
+                return legacyAnalytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',
@@ -60,7 +61,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     },
                 });
             case 'wallet-trading-dca':
-                return analytics.report({
+                return legacyAnalytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',

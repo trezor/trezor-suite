@@ -2,7 +2,7 @@ import { produce } from 'immer';
 
 import { BackupType } from '@suite-common/suite-types';
 import { DEVICE } from '@trezor/connect';
-import { OnboardingAnalytics } from '@trezor/suite-analytics';
+import { OnboardingAnalytics } from '@suite/analytics';
 
 import { ONBOARDING } from 'src/actions/onboarding/constants';
 import * as STEP from 'src/constants/onboarding/steps';

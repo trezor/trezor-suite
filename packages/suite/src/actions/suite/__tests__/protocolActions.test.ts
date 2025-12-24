@@ -7,7 +7,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import * as protocolConstants from '../constants/protocolConstants';
 import * as protocolActions from '../protocolActions';
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
+jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
 
 const getInitialState = (state?: ProtocolState) => ({
     protocol: {

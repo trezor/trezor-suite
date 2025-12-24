@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,7 +23,6 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
-import { EventType, reportAnalytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
@@ -32,12 +32,14 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface StakingBannerProps {
     account: Account;
 }
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
+    const analytics = useAnalytics();
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
@@ -89,12 +91,12 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                 }
         }
 
-        reportAnalytics({
+        analytics.report({
             type: EventType.StakingNavigate,
-            payload: {
-                action: 'cancel',
-                from: 'account/banner',
-                networkSymbol: account.symbol,
+            attributes: {
+                action: { value: 'cancel' },
+                from: { value: 'account/banner' },
+                networkSymbol: { value: account.symbol },
             },
         });
     };
@@ -102,12 +104,12 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const goToStakingTab = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
 
-        reportAnalytics({
+        analytics.report({
             type: EventType.StakingNavigate,
-            payload: {
-                action: 'navigate',
-                from: 'account/banner',
-                networkSymbol: account.symbol,
+            attributes: {
+                action: { value: 'navigate' },
+                from: { value: 'account/banner' },
+                networkSymbol: { value: account.symbol },
             },
         });
     };

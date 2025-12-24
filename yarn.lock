@@ -10620,6 +10620,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:*"
     lodash: "npm:^4.17.21"
     react: "npm:19.1.0"
@@ -12545,7 +12546,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/mev": "workspace:*"
-    "@suite-common/mev": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13366,13 +13366,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/analytics-shared@workspace:*, @suite/analytics-shared@workspace:suite/analytics-shared":
+"@suite/analytics@workspace:*, @suite/analytics@workspace:suite/analytics":
   version: 0.0.0-use.local
-  resolution: "@suite/analytics-shared@workspace:suite/analytics-shared"
+  resolution: "@suite/analytics@workspace:suite/analytics"
   dependencies:
     "@suite-common/analytics": "workspace:*"
-    "@suite-native/analytics": "workspace:*"
-    "@trezor/suite-analytics": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/analytics": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -14444,17 +14445,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-analytics@workspace:*, @trezor/suite-analytics@workspace:packages/suite-analytics":
-  version: 0.0.0-use.local
-  resolution: "@trezor/suite-analytics@workspace:packages/suite-analytics"
-  dependencies:
-    "@suite-common/analytics": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@trezor/analytics": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/suite-build@workspace:packages/suite-build":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-build@workspace:packages/suite-build"
@@ -14585,11 +14575,11 @@ __metadata:
     "@sentry/electron": "npm:^7.4.0"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite/analytics": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
     "@trezor/suite": "workspace:*"
-    "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -14640,13 +14630,13 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite/analytics": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/suite": "workspace:*"
-    "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
@@ -14757,6 +14747,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
+    "@suite/analytics": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
@@ -14783,7 +14774,6 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/suite-analytics": "workspace:*"
     "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/suite-storage": "workspace:*"

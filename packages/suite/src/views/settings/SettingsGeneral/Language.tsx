@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { LANGUAGES, Locale, LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { CROWDIN_URL } from '@trezor/urls';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -14,6 +14,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getOsLocale } from 'src/utils/suite/l10n';
 
 const onlyOfficial = (locale: [string, LocaleInfo]): locale is [Locale, LocaleInfo] =>
@@ -61,6 +62,7 @@ const useLanguageOptions = () => {
 };
 
 export const Language = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const language = useSelector(selectLanguage);
     const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
     const dispatch = useDispatch();
@@ -76,7 +78,7 @@ export const Language = () => {
           };
 
     const onChange = ({ value }: { value: Locale | 'system' }) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralChangeLanguage,
             payload: {
                 platformLanguages: getPlatformLanguages().join(','),

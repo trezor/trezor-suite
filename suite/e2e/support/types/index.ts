@@ -1,7 +1,6 @@
+import { SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
-import { SuiteDesktopLegacyAnalyticsEvents } from '@trezor/suite-analytics';
-
 export type Requests = ReturnType<typeof urlSearchParams>[];
 
 export type ExtractByEventType<EventType> = Extract<

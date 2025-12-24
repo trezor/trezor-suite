@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectIsAutoForgetDeviceDataEnabled } from '@suite-common/wallet-core';
 import {
@@ -14,7 +15,6 @@ import {
     Radio,
     Row,
 } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setAutoForgetDeviceDataThunk } from 'src/actions/suite/autoForgetDeviceDataThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -22,10 +22,11 @@ import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     // The redux logic is consistent with auto-eject (enabled = should forget),
     // but the UI here has inverted meaning (enabled = should store data)
     const isAutoForgetDeviceDataEnabled = useSelector(selectIsAutoForgetDeviceDataEnabled);
@@ -37,7 +38,7 @@ export const StoreDeviceDataModal = ({ onCancel }: ModalProps) => {
         const shouldEnableAutoForget = !isStoreDataEnabled;
         dispatch(setAutoForgetDeviceDataThunk({ shouldEnable: shouldEnableAutoForget }));
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsGeneralStoreDeviceData,
             payload: { value: isStoreDataEnabled },
         });

@@ -32,7 +32,7 @@ jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
     }),
 );
 
-jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
+jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
 
 // use real package
 jest.unmock('dropbox');

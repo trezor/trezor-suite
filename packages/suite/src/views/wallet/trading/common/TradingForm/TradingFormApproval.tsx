@@ -3,6 +3,7 @@ import { usePrevious } from 'react-use';
 
 import styled, { DefaultTheme, keyframes } from 'styled-components';
 
+import { EventType } from '@suite/analytics';
 import {
     TradingExchangeType,
     tokenSupportsIncreasingAllowance,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -19,6 +19,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
@@ -73,7 +74,7 @@ export const TradingFormApproval = ({
     setIsManuallyApproved,
 }: TradingFormApprovalProps) => {
     const context = useTradingFormContext<TradingExchangeType>();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const {
         selectQuote,
         approveTransaction,
@@ -191,7 +192,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -214,7 +215,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -237,7 +238,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -263,7 +264,7 @@ export const TradingFormApproval = ({
     };
 
     const onRefreshClick = async () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
