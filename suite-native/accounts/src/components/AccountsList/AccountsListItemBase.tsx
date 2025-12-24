@@ -7,6 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 export type AccountListItemBaseProps = {
     icon: React.ReactNode;
     title: React.ReactNode;
+    secondaryTitle?: React.ReactNode;
     mainValue: React.ReactNode;
     secondaryValue: React.ReactNode;
     badges?: React.ReactNode;
@@ -85,6 +86,7 @@ const valuesContainerStyle = prepareNativeStyle(utils => ({
 export const AccountsListItemBase = ({
     icon,
     title,
+    secondaryTitle,
     badges,
     mainValue,
     secondaryValue,
@@ -114,6 +116,7 @@ export const AccountsListItemBase = ({
                 <Box marginRight="sp16">{icon}</Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
                     <Text>{title}</Text>
+                    {secondaryTitle}
                     <HStack spacing="sp4" alignItems="center">
                         {badges}
                     </HStack>

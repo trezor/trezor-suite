@@ -85,3 +85,9 @@ export const selectIsCardanoStakedOutsideEverstake = (
 
     return isCardanoStakedOutsideEverstake(account, cardanoStakingPool);
 };
+export const selectFirstCardanoAccountStakedWithFiveBinaries = createMemoizedSelector(
+    [selectDeviceAccounts],
+    accounts =>
+        accounts.find(account => account.visible && isCardanoStakedWithFiveBinaries(account)) ??
+        null,
+);

@@ -1,12 +1,16 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { AccountsRootState } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
-import { RoundedIcon } from '@suite-native/atoms';
+import { RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { NativeStakingRootState } from '@suite-native/staking';
-import { selectIsCardanoStakedOutsideEverstake } from '@suite-native/staking/src/cardanoStakingSelectors';
+import {
+    selectIsCardanoStakedOutsideEverstake,
+    selectIsCardanoStakedWithFiveBinaries,
+} from '@suite-native/staking/src/cardanoStakingSelectors';
 import { useNativeStyles } from '@trezor/styles';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
@@ -32,6 +36,9 @@ export const AdaAccountsListStakingItem = ({
     const isStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
         selectIsCardanoStakedOutsideEverstake(state, account.key),
     );
+    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
+        selectIsCardanoStakedWithFiveBinaries(state, account.key),
+    );
 
     const icon = useMemo(
         () =>
@@ -56,6 +63,13 @@ export const AdaAccountsListStakingItem = ({
                 />
             }
             title={<Translation id="accountList.staking" />}
+            secondaryTitle={
+                isStakedWithFiveBinaries && (
+                    <Text variant="hint" color="textAlertYellow">
+                        <Translation id="accountList.rewardsReduced" />
+                    </Text>
+                )
+            }
             mainValue={icon}
             secondaryValue={undefined}
         />

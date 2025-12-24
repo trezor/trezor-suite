@@ -124,7 +124,9 @@ export const AccountsListItem = ({
                     {formattedAccountType && (
                         <Badge label={formattedAccountType} size="small" elevation="1" />
                     )}
-                    {shouldShowStakingBadge && <StakingBadge />}
+                    {shouldShowStakingBadge && (
+                        <StakingBadge networkSymbol={account.symbol} account={account} />
+                    )}
                     {shouldShowTokenBadge && <TokenBadge accountKey={account.key} />}
                 </>
             }
