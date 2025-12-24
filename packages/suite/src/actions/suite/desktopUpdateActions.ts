@@ -1,5 +1,6 @@
+import { AppUpdateEventStatus, EventType } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { AppUpdateEventStatus, EventType, analytics } from '@trezor/suite-analytics';
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
 
 import { DESKTOP_UPDATE } from 'src/actions/suite/constants';
@@ -51,23 +52,24 @@ export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
     });
 };
 
-export const download = () => (dispatch: Dispatch, getState: GetState) => {
-    const { latest, allowPrerelease } = getState().desktopUpdate;
+export const download =
+    () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+        const { latest, allowPrerelease } = getState().desktopUpdate;
 
-    const payload = getAppUpdatePayload({
-        status: AppUpdateEventStatus.Download,
-        earlyAccessProgram: allowPrerelease,
-        updateInfo: latest,
-    });
-    analytics.report({
-        type: EventType.AppUpdate,
-        payload,
-    });
+        const payload = getAppUpdatePayload({
+            status: AppUpdateEventStatus.Download,
+            earlyAccessProgram: allowPrerelease,
+            updateInfo: latest,
+        });
+        extra.services.legacyAnalytics.report({
+            type: EventType.AppUpdate,
+            payload,
+        });
 
-    dispatch({
-        type: DESKTOP_UPDATE.DOWNLOAD,
-    });
-};
+        dispatch({
+            type: DESKTOP_UPDATE.DOWNLOAD,
+        });
+    };
 
 export const downloading = (progress: UpdateProgress): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.DOWNLOADING,
@@ -78,29 +80,30 @@ export const justUpdated = (): DesktopUpdateAction => ({
     type: DESKTOP_UPDATE.JUST_UPDATED,
 });
 
-export const ready = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
-    const { latest, allowPrerelease } = getState().desktopUpdate;
+export const ready =
+    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+        const { latest, allowPrerelease } = getState().desktopUpdate;
 
-    // update can fail even if it was downloaded successfully
-    // TODO: Update successful status from electron layer
-    const payload = getAppUpdatePayload({
-        status: AppUpdateEventStatus.Downloaded,
-        earlyAccessProgram: allowPrerelease,
-        updateInfo: latest,
-    });
-    analytics.report({
-        type: EventType.AppUpdate,
-        payload,
-    });
-    dispatch({
-        type: DESKTOP_UPDATE.READY,
-        payload: info,
-    });
-};
+        // update can fail even if it was downloaded successfully
+        // TODO: Update successful status from electron layer
+        const payload = getAppUpdatePayload({
+            status: AppUpdateEventStatus.Downloaded,
+            earlyAccessProgram: allowPrerelease,
+            updateInfo: latest,
+        });
+        extra.services.legacyAnalytics.report({
+            type: EventType.AppUpdate,
+            payload,
+        });
+        dispatch({
+            type: DESKTOP_UPDATE.READY,
+            payload: info,
+        });
+    };
 
 export const installUpdate =
     ({ installNow }: { installNow: boolean }) =>
-    (_: Dispatch, getState: GetState) => {
+    (_: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const { desktopUpdate } = getState();
 
         const payload = getAppUpdatePayload({
@@ -112,7 +115,7 @@ export const installUpdate =
             isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
         });
 
-        analytics.report({
+        extra.services.legacyAnalytics.report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -127,7 +130,7 @@ export const installUpdate =
         }
     };
 
-export const error = () => (dispatch: Dispatch, getState: GetState) => {
+export const error = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     const { state, latest, allowPrerelease } = getState().desktopUpdate;
 
     // Ignore displaying errors while checking
@@ -139,7 +142,7 @@ export const error = () => (dispatch: Dispatch, getState: GetState) => {
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        analytics.report({
+        extra.services.legacyAnalytics.report({
             type: EventType.AppUpdate,
             payload,
         });

@@ -19,7 +19,9 @@ const ACTION_PREFIX = '@suite-native/analytics';
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report({
+        (
+            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
+        ).report({
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
@@ -31,7 +33,9 @@ export const enableAnalyticsThunk = createThunk(
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report(
+        (
+            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
+        ).report(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
@@ -50,20 +54,19 @@ export const initAnalyticsThunk = createThunk(
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-        (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).init(
-            hasUserAllowedTracking,
-            {
-                instanceId,
-                sessionId,
-                environment: 'mobile',
-                commitId: getCommitHash(),
-                isDev: isDevelopEnv(),
-                callbacks: {
-                    onEnable: () => dispatch(enableAnalyticsThunk()),
-                    onDisable: () => dispatch(disableAnalyticsThunk()),
-                },
+        (
+            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
+        ).init(hasUserAllowedTracking, {
+            instanceId,
+            sessionId,
+            environment: 'mobile',
+            commitId: getCommitHash(),
+            isDev: isDevelopEnv(),
+            callbacks: {
+                onEnable: () => dispatch(enableAnalyticsThunk()),
+                onDisable: () => dispatch(disableAnalyticsThunk()),
             },
-        );
+        });
 
         allowSentryReport(isAnalyticsEnabled);
         setSentryUser(instanceId);

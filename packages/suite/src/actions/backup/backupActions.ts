@@ -1,7 +1,8 @@
+import { EventType } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { BACKUP } from 'src/actions/backup/constants';
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -42,7 +43,7 @@ export const resetReducer = (): BackupAction => ({
 
 export const backupDevice =
     (params: Parameters<typeof TrezorConnect.backupDevice>[0] = {}, skipSuccessToast?: boolean) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const device = selectSelectedDevice(getState());
         if (!device) {
             return dispatch(
@@ -78,7 +79,7 @@ export const backupDevice =
                 type: BACKUP.SET_ERROR,
                 payload: result.payload.error,
             });
-            analytics.report({
+            extra.services.legacyAnalytics.report({
                 type: EventType.CreateBackup,
                 payload: {
                     status: 'error',
@@ -93,7 +94,7 @@ export const backupDevice =
                 type: BACKUP.SET_IN_PROGRESS,
                 payload: false,
             });
-            analytics.report({
+            extra.services.legacyAnalytics.report({
                 type: EventType.CreateBackup,
                 payload: {
                     status: 'finished',

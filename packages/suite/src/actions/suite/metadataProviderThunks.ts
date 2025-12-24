@@ -1,7 +1,9 @@
+import { EventType, SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Analytics } from '@trezor/analytics';
 import { Device } from '@trezor/connect';
-import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
@@ -105,7 +107,7 @@ type DisconnectProviderParams = {
 
 export const disconnectProvider =
     ({ clientId, dataType, removeMetadata = true }: DisconnectProviderParams) =>
-    async (dispatch: Dispatch) => {
+    async (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -135,7 +137,10 @@ export const disconnectProvider =
                 payload: { dataType, clientId: undefined },
             });
 
-            analytics.report({
+            (
+                extra.services
+                    .legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
+            ).report({
                 type: EventType.SettingsGeneralLabelingProvider,
                 payload: {
                     provider: '',

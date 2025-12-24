@@ -6,6 +6,7 @@ import { usePreferredModal } from '../suite/usePreferredModal';
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 
 export const useGuide = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const isGuideOpen = useSelector(state => state.guide.open);
     const dispatch = useDispatch();
 
@@ -20,7 +21,7 @@ export const useGuide = () => {
         isGuideOpen,
         isGuideOnTop,
         isModalOpen,
-        openGuide: () => dispatch(open()),
+        openGuide: () => dispatch(open(legacyAnalytics)),
         closeGuide: () => dispatch(close()),
     };
 };

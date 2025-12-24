@@ -219,7 +219,10 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            (extra.services.legacyAnalytics as Analytics<SuiteNativeLegacyAnalyticsEvents>).report({
+            (
+                extra.services
+                    .legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
+            ).report({
                 type: EventType.SendTransactionDispatched,
                 payload: {
                     symbol: selectedAccount.symbol,
