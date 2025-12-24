@@ -35,9 +35,10 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 ### Desktop
 
-1. `yarn workspace @trezor/suite-desktop build:ui`
+1. `TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui`
 
     Produces `suite-desktop/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
+    TEST_BUILD env variable serves to mock bundled message-system config .
 
     _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
 

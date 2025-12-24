@@ -14,6 +14,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
 
     return (
         <Banner
+            data-testid="@banner/safety-checks"
             icon
             intent="warning"
             rightContent={

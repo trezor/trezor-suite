@@ -7,7 +7,7 @@ import { FLAGS } from '@suite-common/suite-config';
 
 import { NixosInterpreterPlugin } from '../plugins/nixos-interpreter-plugin';
 import ShellSpawnPlugin from '../plugins/shell-spawn-plugin';
-import { isCodesignBuild, isDev, launchElectron } from '../utils/env';
+import { isCodesignBuild, isDev, isTestBuild, launchElectron } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
 const electronArgsIndex = process.argv.indexOf('./webpack.config.ts') + 1;
@@ -15,6 +15,22 @@ const electronArgs = process.argv.slice(electronArgsIndex);
 
 const baseDirUI = getPathForProject('desktop-ui');
 const baseDir = getPathForProject('desktop');
+const messageSystemFile = path.join(
+    __dirname,
+    '../../../',
+    'suite-common',
+    'message-system',
+    'files',
+    'config.v1.ts',
+);
+const messageSystemMockFile = path.join(
+    __dirname,
+    '../../../',
+    'suite-common',
+    'message-system',
+    'mock',
+    'config.v1.ts',
+);
 
 const config: webpack.Configuration = {
     // Electron 39 runs on Chromium 142 https://www.electronjs.org/blog/electron-39-0
@@ -30,6 +46,14 @@ const config: webpack.Configuration = {
         path: path.join(baseDir, 'build'),
         publicPath: './',
     },
+    resolve: {
+        // conditionally mocks message-system config that is being used during build
+        alias: isTestBuild
+            ? {
+                  [messageSystemFile]: messageSystemMockFile,
+              }
+            : {},
+    },
     plugins: [
         new CopyWebpackPlugin({
             patterns: ['bin', 'fonts', 'images', 'videos', 'guide/assets']
@@ -39,14 +63,7 @@ const config: webpack.Configuration = {
                 }))
                 .concat([
                     {
-                        from: path.join(
-                            __dirname,
-                            '../../../',
-                            'suite-common',
-                            'message-system',
-                            'files',
-                            'config.v1.ts',
-                        ),
+                        from: messageSystemFile,
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
                 ])
