@@ -64,7 +64,6 @@
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-icons": "yarn workspace @suite-common/icons generate-icons",
         "generate-package": "yarn workspace @trezor/scripts generate-package",
-        "generate-analytics-docs": "yarn workspace @suite-common/analytics generate-docs",
         "deps": "rimraf **/node_modules && yarn",
         "depcheck": "depcheck && yarn nx affected --target=depcheck",
         "list-outdated": "./scripts/list-outdated-dependencies/list-outdated-dependencies.sh",
