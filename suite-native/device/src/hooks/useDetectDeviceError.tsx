@@ -16,7 +16,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware/src/nativeFirmwareSlice';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -31,6 +31,7 @@ import {
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
 import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
@@ -51,7 +52,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
     const openLink = useOpenLink();
@@ -78,7 +79,7 @@ export const useDetectDeviceError = () => {
         if (selectedDevice) {
             dispatch(deviceActions.deviceDisconnect(selectedDevice));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.EjectDeviceClick,
                 payload: { origin: 'deviceNotReadyModal' },
             });
@@ -87,7 +88,7 @@ export const useDetectDeviceError = () => {
             // so we need to make sure that the error alert won't reappear again before it happens.
             setWasDeviceEjectedByUser(true);
         }
-    }, [selectedDevice, dispatch]);
+    }, [selectedDevice, dispatch, legacyAnalytics]);
 
     // If device is unacquired (restarted app, another app fetched device session, ...),
     // we cannot work with device anymore. Shouldn't happen on mobile app but just in case.
@@ -147,7 +148,7 @@ export const useDetectDeviceError = () => {
                 appendix: <IncompatibleFirmwareModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
-                    analytics.report({
+                    legacyAnalytics.report({
                         type: EventType.UnsupportedDevice,
                         payload: { deviceState: 'unsupportedFirmware' },
                     });
@@ -164,6 +165,7 @@ export const useDetectDeviceError = () => {
         showAlert,
         handleDisconnect,
         isDeviceSetupSupported,
+        legacyAnalytics,
     ]);
 
     useEffect(() => {
@@ -190,7 +192,7 @@ export const useDetectDeviceError = () => {
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
 
-                        analytics.report({
+                        legacyAnalytics.report({
                             type: EventType.UnsupportedDevice,
                             payload: { deviceState: 'noSeedWithFirmware' },
                         });
@@ -209,7 +211,7 @@ export const useDetectDeviceError = () => {
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
 
-                        analytics.report({
+                        legacyAnalytics.report({
                             type: EventType.UnsupportedDevice,
                             payload: { deviceState: 'noSeed' },
                         });
@@ -233,6 +235,7 @@ export const useDetectDeviceError = () => {
         handleDisconnect,
         isDeviceSetupSupported,
         shouldFactoryResetBeVisible,
+        legacyAnalytics,
     ]);
 
     useEffect(() => {

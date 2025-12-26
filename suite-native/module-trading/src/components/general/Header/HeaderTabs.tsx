@@ -3,11 +3,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
-import { EventType, TradingNavigateFrom, analytics } from '@suite-native/analytics';
+import { EventType, TradingNavigateFrom } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import {
     TradingWithFeatureFlagsRootState,
     selectActiveTradingType,
@@ -77,14 +78,14 @@ export const HeaderTabs = () => {
     const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
         selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     );
-
+    const legacyAnalytics = useLegacyAnalytics();
     const onTabPress = (tab: TradingType) => {
         if (tab === activeTab) {
             return;
         }
 
         setActiveTab(tab);
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -11,6 +11,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailSheetProps = {
@@ -71,10 +72,11 @@ export const TransactionDetailSheet = ({
     children,
     sheetName,
 }: TransactionDetailSheetProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const openSheet = () => {
-        analytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
+        legacyAnalytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
         openModal();
     };
 

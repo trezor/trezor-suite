@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
@@ -12,6 +12,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -29,6 +30,7 @@ const titleStyle = prepareNativeStyle(_ => ({
 
 export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { applyStyle } = useNativeStyles();
+    const legacyAnalytics = useLegacyAnalytics();
     const { toggleBiometricsOption } = useBiometricsSettings();
     const exitOnboardingFlow = useExitOnboardingFlow();
 
@@ -37,7 +39,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();
         if (result === 'enabled') {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.BiometricsChange,
                 payload: {
                     enabled: true,

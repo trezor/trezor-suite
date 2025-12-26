@@ -3,12 +3,13 @@ import { useDispatch } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { ERRORS } from '@trezor/connect';
 
 import { checkBackupThunk } from '../checkBackupThunks';
@@ -24,13 +25,13 @@ const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_Ac
 export const useCheckBackupOnMount = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-
+    const legacyAnalytics = useLegacyAnalytics();
     useEffect(() => {
         const startCheckBackup = async () => {
             const response = await dispatch(checkBackupThunk()).unwrap();
 
             if (response.success === true) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.DeviceSettingsCheckBackupFinished,
                     payload: {
                         success: true,
@@ -45,7 +46,7 @@ export const useCheckBackupOnMount = () => {
                 response.success === false &&
                 response.payload.code === 'Failure_ProcessError'
             ) {
-                analytics.report({
+                legacyAnalytics.report({
                     type: EventType.DeviceSettingsCheckBackupFinished,
                     payload: {
                         success: false,

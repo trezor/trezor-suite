@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -13,6 +13,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceAction } from './DeviceAction';
@@ -42,6 +43,7 @@ const contentStyle = prepareNativeStyle<{ showAsFullWidth: boolean }>(
 );
 
 export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
@@ -52,7 +54,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.DeviceSettings,
         });
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'deviceSettings' },
         });

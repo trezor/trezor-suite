@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms';
 import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
@@ -23,7 +24,7 @@ export const PassphraseLoadingScreen = () => {
 
     const handleSuccess = () => {
         if (isDeviceNotEmpty) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
             });

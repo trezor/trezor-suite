@@ -8,7 +8,7 @@ import {
     selectSelectedDevice,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
@@ -19,6 +19,7 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -30,7 +31,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const deviceModel = useSelector(selectDeviceInternalModel);
 
     const navigation = useNavigation<NavigationProp>();
@@ -47,7 +48,7 @@ export const EnterPassphraseOnTrezorButton = () => {
     }, [handleRedirectToEnterOnTrezor]);
 
     const handleSubmitOnDevice = () => {
-        analytics.report({ type: EventType.PassphraseEnterOnTrezor });
+        legacyAnalytics.report({ type: EventType.PassphraseEnterOnTrezor });
         if (!device) return;
         dispatch(setInputPassphraseOnDevice(true));
         dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true }));

@@ -8,10 +8,11 @@ import {
     selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';
@@ -25,6 +26,7 @@ type AmountInputProps = {
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendOutputs>['route'];
 
 export const AmountInputs = ({ index }: AmountInputProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
 
@@ -35,7 +37,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
     const onInputSwitch = (activeView: ActiveView) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SendAmountInputSwitched,
             payload: { changedTo: activeView === 'primary' ? 'crypto' : 'fiat' },
         });

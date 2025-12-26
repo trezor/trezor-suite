@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -16,6 +16,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -25,7 +26,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();
@@ -43,14 +44,14 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
     }, [dispatch, navigation]);
 
     useEffect(() => {
-        analytics.report({ type: EventType.PassphraseDuplicate });
+        legacyAnalytics.report({ type: EventType.PassphraseDuplicate });
         showAlert({
             title: translate('modulePassphrase.passphraseMismatch.title'),
             description: translate('modulePassphrase.passphraseMismatch.subtitle'),
             primaryButtonTitle: translate('modulePassphrase.passphraseMismatch.button'),
             onPressPrimaryButton: () => handleDuplicateDevicePassphrase(),
         });
-    }, [handleDuplicateDevicePassphrase, showAlert, translate]);
+    }, [handleDuplicateDevicePassphrase, legacyAnalytics, showAlert, translate]);
 
     return children ?? null;
 };

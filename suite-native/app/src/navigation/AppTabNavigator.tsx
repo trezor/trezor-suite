@@ -2,7 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
@@ -38,6 +39,7 @@ const getTradingAnalyticsType = (
 };
 
 export const AppTabNavigator = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
     const isTradingExchangeEnabled = useSelector(selectIsTradingExchangeEnabled);
@@ -52,7 +54,7 @@ export const AppTabNavigator = () => {
 
         if (!tradingType) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

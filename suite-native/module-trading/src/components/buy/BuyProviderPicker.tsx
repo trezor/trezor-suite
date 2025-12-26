@@ -9,9 +9,10 @@ import {
     selectTradingBuyProviders,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {
@@ -32,6 +33,7 @@ const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
 
 const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerRightProps) => {
     const { translate } = useTranslate();
+    const legacyAnalytics = useLegacyAnalytics();
     const { exchange } = selectedValue ?? {};
 
     const provider = useSelector((state: TradingRootStateCommon) =>
@@ -79,7 +81,7 @@ export const BuyProviderPicker = () => {
         if (isLoading) return;
 
         showSheet();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'buy',
@@ -92,7 +94,7 @@ export const BuyProviderPicker = () => {
 
         if (selectedValue?.exchange === quote.exchange) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'buy',

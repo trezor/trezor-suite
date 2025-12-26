@@ -8,7 +8,7 @@ import {
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -21,6 +21,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
@@ -57,6 +58,7 @@ type SecondaryCardConfig = {
 };
 
 export const EmptyPortfolioCrossroads = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
 
@@ -67,7 +69,7 @@ export const EmptyPortfolioCrossroads = () => {
 
     const handleConnectDevice = () => {
         onConnectDevicePress();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.EmptyDashboardClick,
             payload: { action: 'connectDevice' },
         });
@@ -77,14 +79,17 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
-        analytics.report({ type: EventType.EmptyDashboardClick, payload: { action: 'syncCoins' } });
+        legacyAnalytics.report({
+            type: EventType.EmptyDashboardClick,
+            payload: { action: 'syncCoins' },
+        });
     };
 
     const handleOpenQuestionnaire = () => {
         navigation.navigate(RootStackRoutes.DemoAccountQuestionnaireStack, {
             screen: DemoAccountQuestionnaireStackRoutes.Intro,
         });
-        analytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
+        legacyAnalytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
     };
 
     const secondaryCardConfig: SecondaryCardConfig = isQuestionnaireEnabled

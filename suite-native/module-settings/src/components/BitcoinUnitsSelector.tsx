@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { PROTO } from '@trezor/connect';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
@@ -17,10 +18,10 @@ const bitcoinUnitsItems = [
 export const BitcoinUnitsSelector = () => {
     const dispatch = useDispatch();
     const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleSelectUnit = (value: PROTO.AmountUnit) => {
         dispatch(setBitcoinAmountUnits(value));
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsChangeBtcUnit,
             payload: { bitcoinUnit: UNIT_ABBREVIATIONS[value] },
         });

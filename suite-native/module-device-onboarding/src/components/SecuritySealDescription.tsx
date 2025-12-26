@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -13,6 +13,7 @@ import {
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_PACKAGING_T3B1_URL, HELP_CENTER_PACKAGING_T3T1_URL } from '@trezor/urls';
 
@@ -20,11 +21,12 @@ import { SecuritySealImages } from './SecuritySealImages';
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
+    const legacyAnalytics = useLegacyAnalytics();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {
         openModal();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupInfo,
             payload: {
                 location: 'securitySeal',

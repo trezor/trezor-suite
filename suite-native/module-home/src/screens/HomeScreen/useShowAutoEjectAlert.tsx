@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, SuiteNativeLegacyAnalyticsEvents, analytics } from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
@@ -14,6 +14,7 @@ import {
     selectShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
 } from '@suite-native/settings';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { useToast } from '@suite-native/toasts';
 
 import { AutoEjectAnimation } from './components/AutoEjectAnimation';
@@ -27,7 +28,7 @@ export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,
@@ -36,12 +37,12 @@ export const useShowAutoEjectAlert = () => {
 
     const reportAutoEjectToAnalytics = useCallback(
         (value: AutoEjectModalEvent['payload']['value']) => {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.AutoEjectModal,
                 payload: { value },
             });
         },
-        [],
+        [legacyAnalytics],
     );
 
     useFocusEffect(

@@ -1,20 +1,19 @@
-import { EventTypeShared } from '@suite-common/analytics';
-import { createMiddleware } from '@suite-common/redux-utils';
+import { EventType } from '@suite-common/analytics';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { thpActions } from '@suite-common/thp';
-import { analytics } from '@suite-native/analytics';
 
-export const thpMiddleware = createMiddleware((action, { next }) => {
+export const thpMiddleware = createMiddlewareWithExtraDeps((action, { next, extra }) => {
     if (thpActions.finishThpFlow.match(action)) {
-        analytics.report({
-            type: EventTypeShared.DeviceConnectionDeviceConfirmation,
+        extra.services.legacyAnalytics.report({
+            type: EventType.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'confirmed',
             },
         });
     }
     if (thpActions.cancelThpFlow.match(action)) {
-        analytics.report({
-            type: EventTypeShared.DeviceConnectionDeviceConfirmation,
+        extra.services.legacyAnalytics.report({
+            type: EventType.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'close',
             },

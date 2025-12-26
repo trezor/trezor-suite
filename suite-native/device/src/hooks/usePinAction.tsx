@@ -5,10 +5,11 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { PinActionType } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -48,7 +49,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const navigation = useNavigation();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
             showToast({
@@ -80,7 +81,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const handleError = onError ?? showErrorFallback;
 
     const handlePinAction = useCallback(async () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSettingsPinProtectionChange,
             payload: { action: type },
         });

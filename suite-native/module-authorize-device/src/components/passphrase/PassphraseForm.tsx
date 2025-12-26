@@ -13,11 +13,12 @@ import {
     selectSelectedDevice,
     submitPassphrase,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { setCheckPassphraseOnDevice } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
@@ -42,6 +43,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const formWrapperView = useRef<View>(null);
 
@@ -79,7 +81,7 @@ export const PassphraseForm = ({
     });
 
     const handleFocusInput = () => {
-        analytics.report({ type: EventType.PassphraseEnterInApp });
+        legacyAnalytics.report({ type: EventType.PassphraseEnterInApp });
         setIsInputFocused(true);
         onFocus?.();
     };

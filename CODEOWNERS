@@ -14,7 +14,7 @@
 /packages/suite-analytics @tomasklim
 
 /suite/analytics @jvaclavik
-/suite/analytics/src/events/ @kolomaznikt
+/suite/analytics/src/events @kolomaznikt
 /suite/analytics/src/constants.ts @kolomaznikt
 /suite/analytics/src/types.ts @kolomaznikt
 

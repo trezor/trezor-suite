@@ -6,7 +6,7 @@ import {
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -18,6 +18,7 @@ import {
 } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
@@ -32,7 +33,7 @@ const cardStyle = prepareNativeStyle(utils => ({
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
 
     const device = useSelector(selectSelectedDevice);
@@ -49,7 +50,7 @@ export const PassphraseEmptyWalletScreen = () => {
             );
             dispatch(runDiscoveryThunk(device));
         }
-        analytics.report({ type: EventType.PassphraseTryAgain });
+        legacyAnalytics.report({ type: EventType.PassphraseTryAgain });
     };
 
     return (

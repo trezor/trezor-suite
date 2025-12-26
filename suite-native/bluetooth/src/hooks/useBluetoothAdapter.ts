@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EventTypeShared } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
-import { analytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
@@ -31,6 +31,7 @@ const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
 });
 
 export const useBluetoothAdapter = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const { translate } = useTranslate();
@@ -84,8 +85,8 @@ export const useBluetoothAdapter = () => {
                         }),
                     );
                     if (['paired', 'connected'].includes(event.connectionStatus.type)) {
-                        analytics.report({
-                            type: EventTypeShared.DeviceConnectionDevicePaired,
+                        legacyAnalytics.report({
+                            type: EventType.DeviceConnectionDevicePaired,
                         });
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({
@@ -102,7 +103,14 @@ export const useBluetoothAdapter = () => {
                 subscriptions.forEach(subscription => subscription.remove());
             };
         }
-    }, [bluetoothPermissionStatus, dispatch, showPairingFailedAlert, showToast, translate]);
+    }, [
+        bluetoothPermissionStatus,
+        dispatch,
+        legacyAnalytics,
+        showPairingFailedAlert,
+        showToast,
+        translate,
+    ]);
 
     useEffect(() => {
         if (bluetoothAdapterStatus === 'enabled' && knownBluetoothDevices.length > 0) {

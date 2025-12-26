@@ -32,11 +32,11 @@ import {
     UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
+import { Analytics } from '@trezor/analytics';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
 
 import { SEND_MODULE_PREFIX } from './constants';
-import { Analytics } from '@trezor/analytics';
 
 export const signTransactionNativeThunk = createThunk<
     BlockbookTransaction | undefined,

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
@@ -20,6 +20,7 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -46,7 +47,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     const { applyStyle } = useNativeStyles();
     const device = useSelector(selectSelectedDevice);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const isDeviceAuthorizationDone = useSelector(isPassphraseDeviceLoadingDone);
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
@@ -72,7 +73,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
             }
             navigateToInitialScreen();
         } else {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.PassphraseExit,
                 payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
             });

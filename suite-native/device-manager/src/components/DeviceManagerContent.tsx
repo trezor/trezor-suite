@@ -14,7 +14,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     AnimatedVStack,
@@ -22,6 +22,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
@@ -53,7 +54,7 @@ const deviceButtonsStyle = prepareNativeStyle(utils => ({
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
@@ -74,7 +75,7 @@ export const DeviceManagerContent = () => {
         setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceManagerClick,
             payload: {
                 action:

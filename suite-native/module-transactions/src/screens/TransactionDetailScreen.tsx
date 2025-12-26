@@ -12,7 +12,7 @@ import {
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
@@ -25,6 +25,7 @@ import {
     TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 
@@ -36,7 +37,7 @@ export const TransactionDetailScreen = ({
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
@@ -58,7 +59,7 @@ export const TransactionDetailScreen = ({
 
     useEffect(() => {
         if (transaction) {
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.TransactionDetail,
                 payload: {
                     assetSymbol: transaction.symbol,
@@ -67,13 +68,13 @@ export const TransactionDetailScreen = ({
                 },
             });
         }
-    }, [transaction, tokenTransfer]);
+    }, [transaction, tokenTransfer, legacyAnalytics]);
 
     if (!transaction) return null;
 
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
-        analytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
+        legacyAnalytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
         const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
         openLink(`${explorerUrl}${transaction.txid}`);
     };

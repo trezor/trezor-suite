@@ -5,13 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
@@ -19,7 +20,7 @@ import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coi
 export const CoinEnablingForm = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
@@ -57,7 +58,7 @@ export const CoinEnablingForm = () => {
             const isEnabled = values.enabledCoins.includes(symbol);
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
 
-            analytics.report({
+            legacyAnalytics.report({
                 type: EventType.SettingsChangeCoinEnabled,
                 payload: {
                     symbol,

@@ -8,7 +8,7 @@ import {
     selectHasDeviceFirmwareInstalled,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -18,6 +18,7 @@ import {
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -64,6 +65,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
@@ -98,7 +100,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause: 'firmwareAlreadyInstalled',
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
@@ -112,7 +114,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause,
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
@@ -122,7 +124,7 @@ export const UninitializedDeviceLandingScreen = ({
 
     useEffect(() => {
         resetOnboardingAnalytics();
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.DeviceSetupStarted,
             payload: {
                 osName: Platform.OS,

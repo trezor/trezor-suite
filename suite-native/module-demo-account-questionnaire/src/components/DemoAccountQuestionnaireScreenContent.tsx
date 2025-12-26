@@ -7,7 +7,6 @@ import {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,
     EventType,
-    analytics,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
@@ -19,6 +18,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 
@@ -41,6 +41,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -52,7 +53,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
         useState<DemoAccountQuestionnaireQuestionOption | null>(null);
 
     const submitOption = (key: DemoAccountQuestionnaireQuestionOption) => {
-        analytics.report(
+        legacyAnalytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireQuestion,
                 payload: {

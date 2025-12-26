@@ -4,9 +4,8 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { EventTypeShared } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics';
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
-import { analytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -17,6 +16,7 @@ import {
     WipeDeviceStackParamList,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 
 type NavigationProps = CompositeNavigationProp<
     NativeStackNavigationProp<WipeDeviceStackParamList, WipeDeviceStackRoutes.WipeDevice>,
@@ -28,6 +28,7 @@ type NavigationProps = CompositeNavigationProp<
 
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
+    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
@@ -51,8 +52,8 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            analytics.report({
-                type: EventTypeShared.SettingsDeviceWipe,
+            legacyAnalytics.report({
+                type: EventType.SettingsDeviceWipe,
             });
             navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
                 screen: DeviceSettingsStackRoutes.WipeDeviceStack,

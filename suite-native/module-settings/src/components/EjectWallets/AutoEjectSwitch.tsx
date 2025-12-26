@@ -6,14 +6,15 @@ import {
     toggleAutoEjectThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {
     const dispatch = useDispatch();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { showAlert, hideAlert } = useAlert();
 
     const { showToast } = useToast();
@@ -33,7 +34,7 @@ export const AutoEjectSwitch = () => {
                 ),
             });
         }
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsAutoEjectToggle,
             payload: {
                 enabled: !isAutoEjectEnabled,

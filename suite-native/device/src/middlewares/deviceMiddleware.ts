@@ -18,6 +18,8 @@ import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { DEVICE } from '@trezor/connect';
 
 import { isDeviceEventAction, reportDeviceConnectionAnalytics } from '../utils';
+import { Analytics } from '@trezor/analytics/libDev/src';
+import { SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics/libDev/src';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -67,7 +69,11 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         switch (action.type) {
             case DEVICE.CONNECT: {
-                reportDeviceConnectionAnalytics(action.payload.device);
+                reportDeviceConnectionAnalytics(
+                    action.payload.device,
+                    extra.services
+                        .legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>,
+                );
                 break;
             }
             case DEVICE.DISCONNECT:

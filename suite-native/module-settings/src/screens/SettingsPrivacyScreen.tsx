@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
@@ -14,6 +14,7 @@ import {
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import { useNativeStyles } from '@trezor/styles';
 
 const DiscreetTextExample = () => {
@@ -34,10 +35,10 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-
+    const legacyAnalytics = useLegacyAnalytics();
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.SettingsDiscreetToggle,
             payload: { discreetMode: value },
         });
@@ -62,15 +63,16 @@ const DiscreetModeSwitchRow = () => {
 };
 
 const AnalyticsSwitchRow = () => {
+    const legacyAnalytics = useLegacyAnalytics();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
-            analytics.enable();
+            legacyAnalytics.enable();
 
             return;
         }
-        analytics.disable();
+        legacyAnalytics.disable();
     };
 
     return (
