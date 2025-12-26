@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { TradingTransaction } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
 import { useLegacyAnalytics } from '@suite-native/state';
+
 import { getTradeStatusStep } from '../../utils/general/utils';
 
 export const useTransactionStateChangeAnalyticsReporting = (deviceTrades: TradingTransaction[]) => {

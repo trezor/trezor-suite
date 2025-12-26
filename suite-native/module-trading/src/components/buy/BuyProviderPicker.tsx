@@ -33,7 +33,6 @@ const PROVIDER_PICKER_TEST_ID = '@trading/buy/provider-picker';
 
 const BuyProviderPickerRight = ({ isLoading, selectedValue }: BuyProviderPickerRightProps) => {
     const { translate } = useTranslate();
-    const legacyAnalytics = useLegacyAnalytics();
     const { exchange } = selectedValue ?? {};
 
     const provider = useSelector((state: TradingRootStateCommon) =>
@@ -67,7 +66,7 @@ export const BuyProviderPicker = () => {
     const form = useBuyFormContext();
     const providers = useSelector(selectTradingBuyProviders);
     const isLoading = useSelector(selectTradingBuyIsLoading);
-
+    const legacyAnalytics = useLegacyAnalytics();
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
         useSheetControls(form, 'quote');
     const { paymentMethod } = selectedValue ?? {};

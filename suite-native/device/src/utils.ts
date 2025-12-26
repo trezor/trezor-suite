@@ -11,6 +11,7 @@ import {
     getIsDevicePinProtected,
 } from '@suite-common/suite-utils';
 import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
+import { Analytics } from '@trezor/analytics';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -18,7 +19,6 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
-import { Analytics } from '@trezor/analytics';
 
 export const minimalSupportedFirmwareVersion = {
     UNKNOWN: [0, 0, 0] as VersionArray,

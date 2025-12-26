@@ -91,7 +91,16 @@ export const useTradingSellHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
-    }, [formValues, network, timer, shouldSendInSats, dispatch, composeRequestCallback, setValue]);
+    }, [
+        dispatch,
+        formValues,
+        network,
+        timer,
+        shouldSendInSats,
+        composeRequestCallback,
+        legacyAnalytics,
+        setValue,
+    ]);
 
     // cleanup signal
     useEffect(

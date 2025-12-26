@@ -9,10 +9,10 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
-    createAnalytics,
-    createLegacyAnalytics,
     NativeAnalyticsDep,
     NativeLegacyAnalyticsDep,
+    createAnalytics,
+    createLegacyAnalytics,
 } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';

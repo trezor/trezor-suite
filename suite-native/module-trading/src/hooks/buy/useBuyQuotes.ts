@@ -174,6 +174,7 @@ const useBuyQuotesThunk = (
         platformInfo,
         debounce,
         dispatch,
+        legacyAnalytics,
     ]);
 };
 

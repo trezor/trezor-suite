@@ -30,7 +30,7 @@ export const DeviceCheckBackupTutorialScreen = () => {
             legacyAnalytics.report({
                 type: EventType.DeviceSettingsCheckBackupEntered,
             });
-        }, []),
+        }, [legacyAnalytics]),
     );
 
     return (

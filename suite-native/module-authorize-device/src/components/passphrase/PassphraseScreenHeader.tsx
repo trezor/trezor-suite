@@ -57,7 +57,7 @@ export const PassphraseScreenHeader = () => {
         if (device) {
             dispatch(cancelDiscoveryThunk(device));
         }
-    }, [dispatch, navigation, route.name, device]);
+    }, [navigation, legacyAnalytics, route.name, device, dispatch]);
 
     const handleCancel = useCallback(() => {
         if (isCreatingNewWalletInstance) {

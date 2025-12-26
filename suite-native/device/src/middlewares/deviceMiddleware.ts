@@ -12,14 +12,14 @@ import {
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
+import { SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
+import { Analytics } from '@trezor/analytics';
 import { DEVICE } from '@trezor/connect';
 
 import { isDeviceEventAction, reportDeviceConnectionAnalytics } from '../utils';
-import { Analytics } from '@trezor/analytics/libDev/src';
-import { SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics/libDev/src';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (

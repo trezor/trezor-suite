@@ -35,5 +35,11 @@ export const useReportOnboardingSuccessAnalytics = () => {
                 ...onboardingAnalytics,
             },
         });
-    }, [deviceModel, isDeviceBackupRequired, isDeviceProtectedByPin, onboardingAnalytics]);
+    }, [
+        deviceModel,
+        isDeviceBackupRequired,
+        isDeviceProtectedByPin,
+        legacyAnalytics,
+        onboardingAnalytics,
+    ]);
 };

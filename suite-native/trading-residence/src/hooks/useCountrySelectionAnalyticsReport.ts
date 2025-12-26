@@ -19,6 +19,6 @@ export const useCountrySelectionAnalyticsReport = () => {
                 },
             });
         },
-        [type],
+        [legacyAnalytics, type],
     );
 };

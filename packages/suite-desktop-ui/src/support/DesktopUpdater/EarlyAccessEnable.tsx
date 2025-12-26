@@ -26,7 +26,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         });
         desktopApi.allowPrerelease(true);
         setEnabled(true);
-    }, []);
+    }, [legacyAnalytics]);
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates({ isManual: true }), []);
 

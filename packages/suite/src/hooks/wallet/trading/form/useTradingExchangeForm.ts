@@ -372,11 +372,12 @@ export const useTradingExchangeForm = ({
             };
         },
         [
-            account,
-            composed,
-            quotesRequest,
-            selectedFee,
             selectedQuote?.quoteId,
+            quotesRequest,
+            account,
+            selectedFee,
+            composed,
+            legacyAnalytics,
             dispatch,
             navigateToExchangeDetail,
         ],

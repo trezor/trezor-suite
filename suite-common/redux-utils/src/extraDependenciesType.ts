@@ -19,6 +19,7 @@ import {
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { Analytics } from '@trezor/analytics';
 import {
     BlockchainBlock,
     BluetoothDeviceId,
@@ -28,8 +29,6 @@ import {
 } from '@trezor/connect';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
-
-import { Analytics } from '@trezor/analytics';
 
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;

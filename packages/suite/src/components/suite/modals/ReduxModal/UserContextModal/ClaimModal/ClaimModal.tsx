@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { EventType } from '@suite/analytics';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { getStakingDataForNetwork } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, InfoItem, Modal, Paragraph, Row, Tooltip } from '@trezor/components';
-import { EventType } from '@suite/analytics';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -20,6 +19,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';

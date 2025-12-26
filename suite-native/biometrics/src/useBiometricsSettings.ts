@@ -67,6 +67,7 @@ export const useBiometricsSettings = () => {
         return 'enabled';
     }, [
         isBiometricsOptionEnabled,
+        legacyAnalytics,
         setIsBiometricsOptionEnabled,
         setIsBiometricsOverlayVisible,
         setIsUserAuthenticated,

@@ -5,10 +5,10 @@ This is the shared analytics package for Trezor Suite, containing all event type
 Depending on your environment, you can choose one of the following packages, each with its own set of events:
 
 // @TODO
-| Package                   | Environment     | Events Defined In                                        |
+| Package | Environment | Events Defined In |
 |---------------------------| --------------- | -------------------------------------------------------- |
-| `@suite-common/analytics` | `@suite-common` | [`./src/events/shared`](./src/events/shared/)            |
-| `@suite/analytics`        | `@trezor/suite` | [`./src/events/suite`](./src/events/suite)               |
+| `@suite-common/analytics` | `@suite-common` | [`./src/events/shared`](./src/events/shared/) |
+| `@suite/analytics` | `@trezor/suite` | [`./src/events/suite`](./src/events/suite) |
 | `@suite-native/analytics` | `@suite-native` | [`./src/events/suite-native`](./src/events/suite-native) |
 
 More details can be found in the [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb) where implemented events with expected attributes and other notes related to analytics can be found.

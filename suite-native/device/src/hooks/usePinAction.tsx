@@ -128,7 +128,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                 navigation.goBack();
             }
         }
-    }, [device, navigation, onSuccess, handleError, showSuccess, type]);
+    }, [legacyAnalytics, type, device?.path, showSuccess, onSuccess, handleError, navigation]);
 
     useFocusEffect(
         useCallback(() => {

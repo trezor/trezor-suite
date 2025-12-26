@@ -1,11 +1,10 @@
-import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { EventType } from '@suite/analytics';
+import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
-import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 test.describe(

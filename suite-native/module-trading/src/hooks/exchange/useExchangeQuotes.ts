@@ -154,6 +154,7 @@ const useExchangeQuotesThunk = (
         quotesPromiseRef,
         debounce,
         shouldSendInSats,
+        waitForPromiseAndReport,
     ]);
 };
 

@@ -49,7 +49,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                 return;
             }
 
-            useLegacyAnalytics.report({
+            legacyAnalytics.report({
                 type: EventType.AccountsTransactionsExport,
                 payload: {
                     format: type,

@@ -71,5 +71,12 @@ export const useRedirectOnPassphraseCompletion = () => {
             dispatch(cancelDiscoveryThunk(device));
             navigateToInitialScreen();
         }
-    }, [dispatch, hasVerificationCancelledError, navigateToInitialScreen, route.name, device]);
+    }, [
+        dispatch,
+        hasVerificationCancelledError,
+        navigateToInitialScreen,
+        route.name,
+        device,
+        legacyAnalytics,
+    ]);
 };

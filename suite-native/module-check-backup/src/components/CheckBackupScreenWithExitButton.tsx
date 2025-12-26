@@ -4,7 +4,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/state';
 import { useTranslate } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
@@ -17,6 +16,7 @@ import {
     StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/state';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
@@ -55,7 +55,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
                 navigation.popTo(DeviceSettingsStackRoutes.DeviceSettings);
             },
         });
-    }, [navigation, showAlert, translate, route.name]);
+    }, [showAlert, translate, legacyAnalytics, route.name, navigation]);
 
     return handleExitButtonPress;
 };

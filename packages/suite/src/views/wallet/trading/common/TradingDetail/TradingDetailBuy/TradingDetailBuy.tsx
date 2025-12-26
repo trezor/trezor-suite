@@ -89,7 +89,7 @@ export const TradingDetailBuy = () => {
                 status: tradeStatusStep,
             },
         });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep]);
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep, legacyAnalytics]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades

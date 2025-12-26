@@ -25,7 +25,7 @@ export const DeviceCheckBackupSupportScreen = () => {
             legacyAnalytics.report({
                 type: EventType.DeviceSettingsCheckBackupSupport,
             });
-        }, []),
+        }, [legacyAnalytics]),
     );
 
     return (

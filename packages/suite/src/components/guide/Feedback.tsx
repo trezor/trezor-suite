@@ -140,7 +140,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, dispatch, type, description, category, rating]);
+    }, [device, type, dispatch, legacyAnalytics, description, category, rating]);
 
     return (
         <GuideViewWrapper>

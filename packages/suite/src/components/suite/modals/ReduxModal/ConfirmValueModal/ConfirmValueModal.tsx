@@ -27,8 +27,6 @@ import {
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { CoinLogo, ConfirmOnDevicePill } from '@trezor/product-components';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
-
 import { spacings } from '@trezor/theme';
 
 import { MODAL } from 'src/actions/suite/constants';
@@ -42,6 +40,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 

@@ -75,14 +75,15 @@ export const useTradingExchangeHandleChange = ({
 
         setIsScheduledQuotesRefresh?.(false);
     }, [
+        setApprovalInitiated,
         dispatch,
         formValues,
         network,
         timer,
         shouldSendInSats,
         composeRequestCallback,
-        setApprovalInitiated,
         setIsScheduledQuotesRefresh,
+        legacyAnalytics,
     ]);
 
     // cleanup signal

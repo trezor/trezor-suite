@@ -42,7 +42,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     }
 
     const handleClick = () => {
-        useDispatch.report({
+        legacyAnalytics.report({
             type: EventType.SettingsMultiShareBackup,
             payload: { action: 'start' },
         });

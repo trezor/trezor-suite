@@ -1,6 +1,7 @@
-import { Account } from '@suite-common/wallet-types';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { EventType } from '@suite/analytics';
+import { Account } from '@suite-common/wallet-types';
+
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { goto } from '../../../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../../../hooks/suite';

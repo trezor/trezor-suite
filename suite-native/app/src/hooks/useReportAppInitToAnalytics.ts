@@ -75,5 +75,6 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         rememberedStandardWallets,
         rememberedHiddenWallets,
         enabledNetworks,
+        legacyAnalytics,
     ]);
 };
