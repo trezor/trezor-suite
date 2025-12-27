@@ -62,6 +62,7 @@
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
+        "@trezor/analytics": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/react-utils": "workspace:*",

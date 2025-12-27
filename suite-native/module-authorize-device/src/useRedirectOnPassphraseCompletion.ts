@@ -53,6 +53,7 @@ export const useRedirectOnPassphraseCompletion = () => {
         navigateToInitialScreen,
         store,
         device?.path,
+        legacyAnalytics,
     ]);
 
     useEffect(() => {

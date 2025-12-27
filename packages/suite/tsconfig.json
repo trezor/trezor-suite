@@ -123,9 +123,7 @@
         {
             "path": "../../suite-common/walletconnect"
         },
-        {
-            "path": "../../suite/analytics-shared"
-        },
+        { "path": "../../suite/analytics" },
         {
             "path": "../../suite/idb-migration-utils"
         },
@@ -154,7 +152,6 @@
         { "path": "../protobuf" },
         { "path": "../react-utils" },
         { "path": "../styles" },
-        { "path": "../suite-analytics" },
         { "path": "../suite-data" },
         { "path": "../suite-desktop-api" },
         { "path": "../suite-storage" },

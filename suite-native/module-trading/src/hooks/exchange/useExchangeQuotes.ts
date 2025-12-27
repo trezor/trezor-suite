@@ -12,12 +12,13 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
 import { useLegacyAnalytics } from '@suite-native/state';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { AbortablePromise, ExchangeFormType } from '@suite-native/trading-types';
+import { Analytics } from '@trezor/analytics';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
@@ -91,6 +92,25 @@ const useShouldFetchExchangeQuotes = (
     };
 };
 
+const waitForPromiseAndReport = async (
+    promise: AbortablePromise | undefined,
+    legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>,
+) => {
+    if (!promise) {
+        return;
+    }
+
+    const action = await promise;
+    if (isFulfilled(action) && (action.payload as ExchangeTrade[]).length > 0) {
+        legacyAnalytics.report({
+            type: EventType.TradingQuoteReceived,
+            payload: {
+                type: 'exchange',
+            },
+        });
+    }
+};
+
 const useExchangeQuotesThunk = (
     getValues: ExchangeFormType['getValues'],
     timer: Timer,
@@ -105,22 +125,6 @@ const useExchangeQuotesThunk = (
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
         selectIsAmountInSats(state, symbol),
     );
-
-    const waitForPromiseAndReport = async (promise: AbortablePromise | undefined) => {
-        if (!promise) {
-            return;
-        }
-
-        const action = await promise;
-        if (isFulfilled(action) && (action.payload as ExchangeTrade[]).length > 0) {
-            legacyAnalytics.report({
-                type: EventType.TradingQuoteReceived,
-                payload: {
-                    type: 'exchange',
-                },
-            });
-        }
-    };
 
     useEffect(() => {
         if (shouldRefetchQuotes) {
@@ -143,7 +147,7 @@ const useExchangeQuotesThunk = (
                 };
 
                 quotesPromiseRef.current = dispatch(exchangeThunks.handleRequestThunk(payload));
-                waitForPromiseAndReport(quotesPromiseRef.current);
+                waitForPromiseAndReport(quotesPromiseRef.current, legacyAnalytics);
             });
         }
     }, [
@@ -154,7 +158,7 @@ const useExchangeQuotesThunk = (
         quotesPromiseRef,
         debounce,
         shouldSendInSats,
-        waitForPromiseAndReport,
+        legacyAnalytics,
     ]);
 };
 

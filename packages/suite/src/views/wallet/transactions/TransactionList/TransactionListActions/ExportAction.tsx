@@ -89,13 +89,14 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         },
         [
             isExportRunning,
+            legacyAnalytics,
             account,
             dispatch,
-            translationString,
-            getAccountTitle,
             accountLabel,
+            getAccountTitle,
             searchQuery,
             accountMetadata,
+            translationString,
         ],
     );
 

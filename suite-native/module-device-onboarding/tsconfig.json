@@ -33,6 +33,7 @@
         { "path": "../swipeable-walkthrough" },
         { "path": "../thp" },
         { "path": "../toasts" },
+        { "path": "../../packages/analytics" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },

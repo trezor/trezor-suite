@@ -1,6 +1,6 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
-import { EventType, analytics } from '@suite/analytics-shared';
+import { EventType } from '@suite-common/analytics';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
@@ -153,6 +153,7 @@ export const connectPopupCallThunkInner = createThunk<
                 );
             }
 
+            // @TODO how to get analytics here?
             analytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {

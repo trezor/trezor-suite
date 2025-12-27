@@ -13,11 +13,11 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite/analytics" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../ipc-proxy" },
         { "path": "../suite" },
-        { "path": "../suite-analytics" },
         { "path": "../suite-desktop-api" },
         { "path": "../theme" },
         { "path": "../urls" },
