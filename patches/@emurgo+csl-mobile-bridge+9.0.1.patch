@@ -1,0 +1,14 @@
+diff --git a/node_modules/@emurgo/csl-mobile-bridge/android/CMakeLists.txt b/node_modules/@emurgo/csl-mobile-bridge/android/CMakeLists.txt
+index 7539091..1191142 100644
+--- a/node_modules/@emurgo/csl-mobile-bridge/android/CMakeLists.txt
++++ b/node_modules/@emurgo/csl-mobile-bridge/android/CMakeLists.txt
+@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.13)
+ project(csl_mobile_bridge_jsi)
+
+ set(CMAKE_VERBOSE_MAKEFILE ON)
+-set(CMAKE_CXX_STANDARD 17)
++set(CMAKE_CXX_STANDARD 20)
++set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+ # Paths
+ set(BUILD_DIR ${CMAKE_CURRENT_LIST_DIR}/build)
