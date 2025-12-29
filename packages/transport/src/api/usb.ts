@@ -251,8 +251,15 @@ export class UsbApi extends AbstractApi {
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
-        const newArray = new Uint8Array(this.chunkSize);
-        newArray.set(new Uint8Array(buffer));
+
+        let newArray: Uint8Array<ArrayBuffer>;
+        if (this.nativeWriteChunking) {
+            // Pass the full buffer for native chunking
+            newArray = new Uint8Array(buffer);
+        } else {
+            newArray = new Uint8Array(this.chunkSize);
+            newArray.set(new Uint8Array(buffer));
+        }
 
         const timeout = setTimeout(() => {
             this.logger?.debug('usb: device.transfer out take suspiciously long. timing out.');
