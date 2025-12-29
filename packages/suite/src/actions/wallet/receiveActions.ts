@@ -1,5 +1,4 @@
-import { EventType } from 'suite/analytics';
-
+import { EventType } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';

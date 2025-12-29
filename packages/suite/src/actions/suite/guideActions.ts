@@ -1,6 +1,4 @@
-import { EventType, SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
-import { Analytics } from '@trezor/analytics';
 
 import { Dispatch } from 'src/types/suite';
 
@@ -14,13 +12,7 @@ export type GuideAction =
     | { type: typeof GUIDE.UNSET_NODE }
     | { type: typeof GUIDE.OPEN_NODE; payload: GuideNode };
 
-export const open = (
-    legacyAnalytics: Analytics<SuiteDesktopLegacyAnalyticsEvents>,
-): GuideAction => {
-    legacyAnalytics.report({
-        type: EventType.MenuGuide,
-    });
-
+export const open = (): GuideAction => {
     return {
         type: GUIDE.OPEN,
     };

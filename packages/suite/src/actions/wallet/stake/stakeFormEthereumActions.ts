@@ -1,4 +1,4 @@
-import { EventType } from 'suite/analytics';
+import { EventType } from '@suite/analytics';
 import { toWei } from 'web3-utils';
 
 import { ExtraDependencies } from '@suite-common/redux-utils';
