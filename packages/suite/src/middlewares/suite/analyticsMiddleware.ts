@@ -1,7 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite/analytics';
-import type { SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { EventType as EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -20,7 +19,6 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
-import { Analytics } from '@trezor/analytics';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -56,10 +54,6 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
-
-const getTypedDesktopLegacyAnalytics = legacyAnalytics =>
-    // @TODO: we have to type dispatch correctly in desktop/native/common
-    legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>;
 
 const analyticsMiddleware = createMiddlewareWithExtraDeps(
     (action: Action, { extra, next, dispatch, getState }) => {

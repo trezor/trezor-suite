@@ -10,9 +10,8 @@
 /scripts/list-outdated-dependencies/wallet-dependencies.txt @tomasklim
 /scripts @karliatto
 
-/packages/analytics @tomasklim
-/packages/suite-analytics @tomasklim
 
+/packages/analytics @jvaclavik
 /suite/analytics @jvaclavik
 /suite/analytics/src/events @kolomaznikt
 /suite/analytics/src/constants.ts @kolomaznikt

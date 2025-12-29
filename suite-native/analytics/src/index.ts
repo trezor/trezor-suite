@@ -24,3 +24,4 @@ export type {
 export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
 export { createLegacyAnalytics, type NativeLegacyAnalyticsDep } from './createLegacyAnalytics';
 export * from './events';
+export { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';

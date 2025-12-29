@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { analytics } from '@suite/analytics-shared';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
@@ -19,12 +19,13 @@ const Content = styled.div`
 
 export const AnalyticsConsentScreen = () => {
     const theme = useTheme();
+    const legacyAnalytics = useLegacyAnalytics();
 
     const onConfirm = (trackingEnabled: boolean) => {
         if (trackingEnabled) {
-            analytics.enable();
+            legacyAnalytics.enable();
         } else {
-            analytics.disable();
+            legacyAnalytics.disable();
         }
     };
 

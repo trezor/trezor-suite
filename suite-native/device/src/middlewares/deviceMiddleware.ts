@@ -12,11 +12,10 @@ import {
     selectDiscoveryByDevicePath,
 } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import { SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
+import { getTypedNativeLegacyAnalytics } from '@suite-native/analytics';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { setShouldShowAutoEjectAlert } from '@suite-native/settings';
-import { Analytics } from '@trezor/analytics';
 import { DEVICE } from '@trezor/connect';
 
 import { isDeviceEventAction, reportDeviceConnectionAnalytics } from '../utils';
@@ -71,9 +70,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             case DEVICE.CONNECT: {
                 reportDeviceConnectionAnalytics(
                     action.payload.device,
-                    // @TODO: we have to type dispatch correctly in desktop/native/common
-                    extra.services
-                        .legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>,
+                    getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics),
                 );
                 break;
             }

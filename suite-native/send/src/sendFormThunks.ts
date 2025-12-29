@@ -219,11 +219,7 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            // @TODO: we have to type dispatch correctly in desktop/native/common
-            (
-                extra.services
-                    .legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
-            ).report({
+            getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.SendTransactionDispatched,
                 payload: {
                     symbol: selectedAccount.symbol,

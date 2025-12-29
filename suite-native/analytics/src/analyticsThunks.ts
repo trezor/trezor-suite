@@ -6,19 +6,15 @@ import {
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
 import { createThunk } from '@suite-common/redux-utils';
+import { getTypedNativeLegacyAnalytics } from '@suite-native/analytics';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
-import { Analytics, getTrackingRandomId } from '@trezor/analytics';
+import { getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
 import { EventType } from './constants';
-import { type SuiteNativeLegacyAnalyticsEvents } from './types';
 
 const ACTION_PREFIX = '@suite-native/analytics';
-
-const getTypedNativeLegacyAnalytics = legacyAnalytics =>
-    // @TODO: we have to type dispatch correctly in desktop/native/common
-    legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>;
 
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,

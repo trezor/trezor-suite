@@ -1,8 +1,7 @@
-import { EventType, SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Analytics } from '@trezor/analytics';
 import { Device } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
@@ -137,11 +136,7 @@ export const disconnectProvider =
                 payload: { dataType, clientId: undefined },
             });
 
-            // @TODO: we have to type dispatch correctly in desktop/native/common
-            (
-                extra.services
-                    .legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-            ).report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.SettingsGeneralLabelingProvider,
                 payload: {
                     provider: '',
