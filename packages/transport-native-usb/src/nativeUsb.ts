@@ -18,5 +18,9 @@ export class NativeUsbTransport extends AbstractApiTransport {
             logger,
             ...rest,
         });
+
+        // Let the native Kotlin code handle the chunking.
+        // It significantly improves the performance of writes during FW update.
+        this.api.nativeWriteChunking = true;
     }
 }
