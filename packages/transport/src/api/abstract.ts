@@ -141,6 +141,11 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     public abstract chunkSize: number;
 
+    /**
+     * send whole data in one chunk and let the native code handle the chunking (used only in React Native)
+     */
+    public nativeWriteChunking: boolean = false;
+
     protected success<T>(payload: T): Success<T> {
         return success(payload);
     }

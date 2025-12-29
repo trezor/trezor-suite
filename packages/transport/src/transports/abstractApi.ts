@@ -247,7 +247,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     thpState,
                 });
                 const [, chunkHeader] = protocol.getHeaders(bytes);
-                const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
+                const chunks = createChunks(
+                    bytes,
+                    chunkHeader,
+                    this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
+                );
                 let progress = 0;
                 const apiWrite = (chunk: Buffer, attemptSignal?: AbortSignal) => {
                     if (chunks.length > 1) {
@@ -341,7 +345,11 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 });
                 const [_, chunkHeader] = protocol.getHeaders(bytes);
 
-                const chunks = createChunks(bytes, chunkHeader, this.api.chunkSize);
+                const chunks = createChunks(
+                    bytes,
+                    chunkHeader,
+                    this.api.nativeWriteChunking ? 0 : this.api.chunkSize,
+                );
                 let progress = 0;
                 const apiWrite = (chunk: Buffer) => {
                     if (chunks.length > 1) {
