@@ -23,7 +23,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@suite-native/accounts": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",

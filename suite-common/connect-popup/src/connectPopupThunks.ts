@@ -153,8 +153,7 @@ export const connectPopupCallThunkInner = createThunk<
                 );
             }
 
-            // @TODO how to get analytics here?
-            analytics.report({
+            extra.services.legacyAnalytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,

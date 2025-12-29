@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 

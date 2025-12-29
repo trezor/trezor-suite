@@ -1,6 +1,10 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import {
+    type AnalyticsSharedEvents,
+    SuiteSharedLegacyAnalyticsEvents,
+} from '@suite-common/analytics';
+import {
     EncryptableBranded,
     EncryptedHex,
     PlatformEncryption,
@@ -15,6 +19,7 @@ import {
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Analytics } from '@trezor/analytics';
 import { ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';
@@ -96,6 +101,23 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
+// @TODO fix mock classes
+const analyticsMock: Analytics<AnalyticsSharedEvents> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+} as unknown as Analytics<AnalyticsSharedEvents>;
+
+const legacyAnalyticsMock: Analytics<SuiteSharedLegacyAnalyticsEvents> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+} as unknown as Analytics<SuiteSharedLegacyAnalyticsEvents>;
+
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
@@ -107,6 +129,8 @@ export const extraDependenciesMock: ExtraDependencies = {
     services: {
         suiteSync: suiteSyncMock,
         platformEncryption: platformEncryptionMock,
+        legacyAnalytics: legacyAnalyticsMock,
+        analytics: analyticsMock,
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: mockSelector(
