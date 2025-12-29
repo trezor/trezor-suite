@@ -1,4 +1,4 @@
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { Modal } from '@trezor/components';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';

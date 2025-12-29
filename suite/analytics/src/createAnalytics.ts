@@ -1,13 +1,13 @@
-import { Analytics } from '@trezor/analytics';
+import { QueuedAnalytics } from '@trezor/analytics';
 
 import { AnalyticsDesktopEvents } from './analyticsEvents';
 
 export type DesktopAnalyticsDep = {
-    analytics: Analytics<AnalyticsDesktopEvents>;
+    analytics: QueuedAnalytics<AnalyticsDesktopEvents>;
 };
 
-export const createAnalytics = (): Analytics<AnalyticsDesktopEvents> =>
-    new Analytics<AnalyticsDesktopEvents>({
+export const createAnalytics = (): QueuedAnalytics<AnalyticsDesktopEvents> =>
+    new QueuedAnalytics<AnalyticsDesktopEvents>({
         version: process.env.VERSION!,
         app: 'suite',
         useQueue: true,

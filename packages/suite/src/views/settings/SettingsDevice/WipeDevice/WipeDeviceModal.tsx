@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';

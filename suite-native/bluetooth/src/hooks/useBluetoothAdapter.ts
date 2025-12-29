@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
 import { useTranslate } from '@suite-native/intl';
 import { useLegacyAnalytics } from '@suite-native/state';

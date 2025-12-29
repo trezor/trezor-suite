@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Card, Checkbox, Column, Icon, List, Modal, Row, Text } from '@trezor/components';

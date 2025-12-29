@@ -1,16 +1,16 @@
-import { Analytics, Event } from '@trezor/analytics';
+import { QueuedAnalytics, Event } from '@trezor/analytics';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { SuiteNativeLegacyAnalyticsEvents } from './types';
 
 /** @deprecated */
 export type NativeLegacyAnalyticsDep = {
-    legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>;
+    legacyAnalytics: QueuedAnalytics<SuiteNativeLegacyAnalyticsEvents>;
 };
 
 /** @deprecated use `createAnalytics` instead */
-export const createLegacyAnalytics = (): Analytics<SuiteNativeLegacyAnalyticsEvents> => {
-    const analytics = new Analytics<SuiteNativeLegacyAnalyticsEvents>({
+export const createLegacyAnalytics = (): QueuedAnalytics<SuiteNativeLegacyAnalyticsEvents> => {
+    const analytics = new QueuedAnalytics<SuiteNativeLegacyAnalyticsEvents>({
         version: getSuiteVersion(),
         app: 'suite',
     });

@@ -10284,6 +10284,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@suite-common/analytics-types@workspace:*, @suite-common/analytics-types@workspace:suite-common/analytics-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/analytics-types@workspace:suite-common/analytics-types"
+  dependencies:
+    "@trezor/analytics": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/analytics@workspace:*, @suite-common/analytics@workspace:suite-common/analytics":
   version: 0.0.0-use.local
   resolution: "@suite-common/analytics@workspace:suite-common/analytics"
@@ -10341,6 +10351,7 @@ __metadata:
   resolution: "@suite-common/connect-popup@workspace:suite-common/connect-popup"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -10614,13 +10625,13 @@ __metadata:
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:*"
     lodash: "npm:^4.17.21"
     react: "npm:19.1.0"
@@ -10822,12 +10833,14 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11060,7 +11073,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@reown/walletkit": "npm:^1.2.8"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
@@ -11140,7 +11153,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics@workspace:suite-native/analytics"
   dependencies:
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/trading": "workspace:*"
@@ -11622,7 +11635,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.18"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
@@ -12377,7 +12390,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.18"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/validators": "workspace:*"
@@ -12457,6 +12470,7 @@ __metadata:
     "@react-navigation/core": "npm:7.12.4"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
@@ -13086,7 +13100,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.18"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13375,7 +13389,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/analytics@workspace:suite/analytics"
   dependencies:
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/analytics": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -14709,7 +14723,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@sentry/core": "npm:10.27.0"
     "@solana/kit": "npm:^2.3.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
     "@suite-common/connect-init": "workspace:*"

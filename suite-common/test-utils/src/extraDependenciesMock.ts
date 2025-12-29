@@ -1,9 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import {
-    type AnalyticsSharedEvents,
+import type {
+    AnalyticsSharedEvents,
     SuiteSharedLegacyAnalyticsEvents,
-} from '@suite-common/analytics';
+} from '@suite-common/analytics-types';
 import {
     EncryptableBranded,
     EncryptedHex,
@@ -101,14 +101,13 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-// @TODO fix mock classes
 const analyticsMock: Analytics<AnalyticsSharedEvents> = {
     report: () => {},
     isEnabled: () => true,
     disable: () => {},
     enable: () => {},
     init: () => {},
-} as unknown as Analytics<AnalyticsSharedEvents>;
+};
 
 const legacyAnalyticsMock: Analytics<SuiteSharedLegacyAnalyticsEvents> = {
     report: () => {},
@@ -116,7 +115,7 @@ const legacyAnalyticsMock: Analytics<SuiteSharedLegacyAnalyticsEvents> = {
     disable: () => {},
     enable: () => {},
     init: () => {},
-} as unknown as Analytics<SuiteSharedLegacyAnalyticsEvents>;
+};
 
 export const extraDependenciesMock: ExtraDependencies = {
     thunks: {

@@ -4,7 +4,7 @@ import { CompositeNavigationProp, useNavigation } from '@react-navigation/native
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';

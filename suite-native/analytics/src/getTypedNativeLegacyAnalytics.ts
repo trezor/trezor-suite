@@ -1,4 +1,4 @@
-import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics';
+import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 import { Analytics } from '@trezor/analytics';
 
 import { SuiteNativeLegacyAnalyticsEvents } from './types';

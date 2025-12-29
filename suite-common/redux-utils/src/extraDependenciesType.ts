@@ -7,7 +7,7 @@ import {
 import type {
     AnalyticsSharedEvents,
     SuiteSharedLegacyAnalyticsEvents,
-} from '@suite-common/analytics';
+} from '@suite-common/analytics-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSync } from '@suite-common/suite-sync-types';

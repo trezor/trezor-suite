@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
-import { EventType as EventTypeShared } from '@suite-common/analytics';
+import { EventType as EventTypeShared } from '@suite-common/analytics-types';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';

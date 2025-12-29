@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics';
+import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import {
     Box,

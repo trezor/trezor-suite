@@ -1,10 +1,9 @@
-export * from './redux/analyticsReducer';
-export * from './redux/analyticsActions';
-export type { AttributeDef, EventDef, EventInstance } from './eventDefinition';
-
-export { EventType } from './sharedEvents/constants';
-export { type SuiteSharedLegacyAnalyticsEvents } from './sharedEvents/types';
-export { type AnalyticsSharedEvents } from './sharedEvents/analyticsEvents';
-
-// do not use this directly, it should be used for generating docs
-export * as sharedEventsData from './sharedEvents/events';
+export {
+    type AnalyticsState,
+    prepareAnalyticsReducer,
+    selectAnalyticsInstanceId,
+    selectIsAnalyticsConfirmed,
+    selectHasUserAllowedTracking,
+    selectIsAnalyticsEnabled,
+} from './redux/analyticsReducer';
+export { disableAnalytics, analyticsActions, ACTION_PREFIX } from './redux/analyticsActions';

@@ -2,7 +2,7 @@ import { UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { isAscii } from '@trezor/utils';

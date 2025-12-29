@@ -19,11 +19,3 @@ export enum EventType {
     DeviceConnectionDevicePaired = 'device-connection/device-paired',
     DeviceConnectionDeviceConfirmation = 'device-connection/device-confirmation',
 }
-
-//suite-native/state/src/index.ts >
-//suite-native/state/src/StoreProvider.tsx >
-//suite-native/state/src/BaseStoreProvider.tsx >
-//suite-native/state/src/store.ts >
-//suite-native/state/src/reducers.ts >
-//suite-native/graph/src/index.ts >
-//suite-native/graph/src/hooks.ts

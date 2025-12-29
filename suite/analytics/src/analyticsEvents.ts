@@ -1,4 +1,4 @@
-import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics';
+import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics-types';
 
 import * as desktopEventsData from './events';
 

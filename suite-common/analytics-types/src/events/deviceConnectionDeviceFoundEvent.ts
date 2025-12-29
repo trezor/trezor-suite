@@ -1,5 +1,5 @@
-import type { AttributeDef, EventDef } from '../../eventDefinition';
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     option: AttributeDef<'connect' | 'close'>;

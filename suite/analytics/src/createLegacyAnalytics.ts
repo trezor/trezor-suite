@@ -1,14 +1,14 @@
-import { Analytics } from '@trezor/analytics';
+import { QueuedAnalytics } from '@trezor/analytics';
 
 import { SuiteDesktopLegacyAnalyticsEvents } from './types';
 
 export type DesktopLegacyAnalyticsDep = {
-    legacyAnalytics: Analytics<SuiteDesktopLegacyAnalyticsEvents>;
+    legacyAnalytics: QueuedAnalytics<SuiteDesktopLegacyAnalyticsEvents>;
 };
 
 /** @deprecated use `createAnalytics` instead */
-export const createLegacyAnalytics = (): Analytics<SuiteDesktopLegacyAnalyticsEvents> =>
-    new Analytics<SuiteDesktopLegacyAnalyticsEvents>({
+export const createLegacyAnalytics = (): QueuedAnalytics<SuiteDesktopLegacyAnalyticsEvents> =>
+    new QueuedAnalytics<SuiteDesktopLegacyAnalyticsEvents>({
         version: process.env.VERSION!,
         app: 'suite',
         useQueue: true,

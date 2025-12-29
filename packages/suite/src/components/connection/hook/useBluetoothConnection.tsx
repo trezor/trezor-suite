@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { EventType } from '@suite-common/analytics';
+import { EventType } from '@suite-common/analytics-types';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { BluetoothDeviceId } from '@trezor/connect';
 

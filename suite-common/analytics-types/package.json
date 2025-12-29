@@ -1,5 +1,5 @@
 {
-    "name": "@suite/analytics",
+    "name": "@suite-common/analytics-types",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,12 +7,12 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
     "dependencies": {
-        "@suite-common/analytics-types": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
         "@trezor/analytics": "workspace:*",
-        "@trezor/device-utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "react": "19.1.0"
     }
 }

@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 
 import { walletSettingsFixtures } from './walletSettingsActions.fixtures';
 import { prepareWalletSettingsReducer } from '../../src';
@@ -16,8 +16,6 @@ const initStore = (state: any) =>
         },
         preloadedState: { wallet: { settings: state } },
     });
-
-jest.doMock('@suite-common/analytics', () => testMocks.getAnalytics());
 
 describe('walletSettings Actions', () => {
     walletSettingsFixtures.forEach(f => {
