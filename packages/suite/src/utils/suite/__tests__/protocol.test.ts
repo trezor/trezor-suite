@@ -4,8 +4,6 @@ import { getProtocolInfo } from 'src/utils/suite/protocol';
 
 import * as fixtures from '../__fixtures__/protocol';
 
-jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
-
 describe('getProtocolInfo', () => {
     fixtures.getProtocolInfo.forEach(f => {
         it(f.description, () => {

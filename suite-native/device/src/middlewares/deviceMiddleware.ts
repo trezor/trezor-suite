@@ -71,6 +71,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             case DEVICE.CONNECT: {
                 reportDeviceConnectionAnalytics(
                     action.payload.device,
+                    // @TODO: we have to type dispatch correctly in desktop/native/common
                     extra.services
                         .legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>,
                 );

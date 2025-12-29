@@ -12,8 +12,6 @@ import fixtures, {
 
 const { getSuiteDevice } = testMocks;
 
-jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
-
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
 const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({

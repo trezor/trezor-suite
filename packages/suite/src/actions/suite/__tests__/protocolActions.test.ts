@@ -7,8 +7,6 @@ import { configureStore } from 'src/support/tests/configureStore';
 import * as protocolConstants from '../constants/protocolConstants';
 import * as protocolActions from '../protocolActions';
 
-jest.doMock('@suite/analytics', () => testMocks.getAnalytics());
-
 const getInitialState = (state?: ProtocolState) => ({
     protocol: {
         ...protocolReducer(undefined, { type: 'foo' } as any),

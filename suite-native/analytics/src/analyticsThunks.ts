@@ -16,12 +16,14 @@ import { type SuiteNativeLegacyAnalyticsEvents } from './types';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 
+const getTypedNativeLegacyAnalytics = legacyAnalytics =>
+    // @TODO: we have to type dispatch correctly in desktop/native/common
+    legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>;
+
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        (
-            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
-        ).report({
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
@@ -33,9 +35,7 @@ export const enableAnalyticsThunk = createThunk(
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        (
-            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
-        ).report(
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
@@ -54,9 +54,7 @@ export const initAnalyticsThunk = createThunk(
         const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
         const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
 
-        (
-            extra.services.legacyAnalytics as unknown as Analytics<SuiteNativeLegacyAnalyticsEvents>
-        ).init(hasUserAllowedTracking, {
+        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).init(hasUserAllowedTracking, {
             instanceId,
             sessionId,
             environment: 'mobile',

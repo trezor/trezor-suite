@@ -137,6 +137,7 @@ export const disconnectProvider =
                 payload: { dataType, clientId: undefined },
             });
 
+            // @TODO: we have to type dispatch correctly in desktop/native/common
             (
                 extra.services
                     .legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>

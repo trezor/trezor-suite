@@ -70,10 +70,10 @@
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
+        { "path": "../../packages/analytics" },
         {
             "path": "../../packages/blockchain-link-types"
         },
-        { "path": "../../packages/analytics" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/styles" },

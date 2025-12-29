@@ -1,6 +1,6 @@
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types/libDev/src';
+import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';

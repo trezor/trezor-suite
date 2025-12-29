@@ -222,7 +222,6 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
-        // @TODO analytics
         extra.services.legacyAnalytics.report({
             type: EventType.SendInitialised,
             payload: {
@@ -239,7 +238,6 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        // @TODO analytics
         extra.services.legacyAnalytics.report({
             type: EventType.SendConfirmerOnDevice,
             payload: {

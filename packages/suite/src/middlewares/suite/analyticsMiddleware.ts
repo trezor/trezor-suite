@@ -4,7 +4,7 @@ import { EventType } from '@suite/analytics';
 import type { SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
 import { EventType as EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils/libDev/src';
+import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getIsDeviceDescriptorApiTypeBluetooth,
@@ -56,6 +56,11 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
     - transport (webusb/bridge) and its version
     - backup type (shamir/bip39)
 */
+
+const getTypedDesktopLegacyAnalytics = legacyAnalytics =>
+    // @TODO: we have to type dispatch correctly in desktop/native/common
+    legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>;
+
 const analyticsMiddleware = createMiddlewareWithExtraDeps(
     (action: Action, { extra, next, dispatch, getState }) => {
         const prevRouterUrl = getState().router.url;
@@ -71,21 +76,19 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
 
             if (device?.features) {
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.DeviceUpdateFirmware,
-                        payload: {
-                            model: device.features.internal_model,
-                            fromFwVersion:
-                                device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
-                            fromBlVersion: getBootloaderVersion(device),
-                            error,
-                            toBtcOnly,
-                            toFwVersion,
-                            firmwareSource: getFirmwareSource(device),
-                        },
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.DeviceUpdateFirmware,
+                    payload: {
+                        model: device.features.internal_model,
+                        fromFwVersion:
+                            device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
+                        fromBlVersion: getBootloaderVersion(device),
+                        error,
+                        toBtcOnly,
+                        toFwVersion,
+                        firmwareSource: getFirmwareSource(device),
                     },
-                );
+                });
             }
         }
 
@@ -98,21 +101,17 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case deviceActions.addAuthorizedDevice.type:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.SelectWalletType,
-                        payload: {
-                            type: action.payload.device.walletNumber ? 'hidden' : 'standard',
-                        },
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.SelectWalletType,
+                    payload: {
+                        type: action.payload.device.walletNumber ? 'hidden' : 'standard',
                     },
-                );
+                });
                 break;
 
             case SUITE.READY:
                 getSuiteReadyPayload(state).then(payload => {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report({
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
                         type: EventType.SuiteReady,
                         payload,
                     });
@@ -120,15 +119,13 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case TRANSPORT.START:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.TransportType,
-                        payload: {
-                            type: action.payload.type,
-                            version: action.payload.version,
-                        },
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.TransportType,
+                    payload: {
+                        type: action.payload.type,
+                        version: action.payload.version,
                     },
-                );
+                });
                 break;
 
             case DEVICE.CONNECT: {
@@ -138,9 +135,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (!features || !mode) return result;
 
                 if (!isDeviceInBootloaderMode(device)) {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report({
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
@@ -164,9 +159,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         },
                     });
                 } else {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report({
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode: 'bootloader',
@@ -180,11 +173,9 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case DEVICE.DISCONNECT:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.DeviceDisconnect,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.DeviceDisconnect,
+                });
                 break;
 
             case discoveryActions.updateDiscovery.type: {
@@ -238,33 +229,25 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.AccountsStatus,
-                        payload: accountsWithTransactions,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.AccountsStatus,
+                    payload: accountsWithTransactions,
+                });
 
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.AccountsNonZeroBalance,
-                        payload: accountsWithNonZeroBalance,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.AccountsNonZeroBalance,
+                    payload: accountsWithNonZeroBalance,
+                });
 
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.AccountsTokensStatus,
-                        payload: accountsWithTokens,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.AccountsTokensStatus,
+                    payload: accountsWithTokens,
+                });
 
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.AccountsActiveStaking,
-                        payload: accountsWithStaking,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.AccountsActiveStaking,
+                    payload: accountsWithStaking,
+                });
 
                 break;
             }
@@ -274,9 +257,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
                 ) {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report({
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -289,9 +270,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report({
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -315,9 +294,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 );
 
                 if (coinjoinAccount && anonymityGainToReport !== null) {
-                    (
-                        legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>
-                    ).report(
+                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report(
                         {
                             type: EventType.CoinjoinAnonymityGain,
                             payload: {
@@ -333,48 +310,40 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case deviceActions.setRememberDevice.type:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: action.payload.remember
-                            ? EventType.SwitchDeviceRemember
-                            : EventType.SwitchDeviceForget,
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: action.payload.remember
+                        ? EventType.SwitchDeviceRemember
+                        : EventType.SwitchDeviceForget,
+                });
                 break;
 
             case WALLET_SETTINGS.SET_HIDE_BALANCE:
                 if (!state.suite.flags.discreetModeCompleted) {
                     dispatch(setFlag('discreetModeCompleted', true));
                 }
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.MenuToggleDiscreet,
-                        payload: { value: action.toggled },
-                    },
-                );
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.MenuToggleDiscreet,
+                    payload: { value: action.toggled },
+                });
                 break;
 
             case WALLET_SETTINGS.CHANGE_COIN_VISIBILITY:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.SettingsCoins,
-                        payload: {
-                            symbol: action.payload.symbol,
-                            value: action.payload.shouldBeVisible,
-                        },
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.SettingsCoins,
+                    payload: {
+                        symbol: action.payload.symbol,
+                        value: action.payload.shouldBeVisible,
                     },
-                );
+                });
                 break;
 
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
-                (legacyAnalytics as unknown as Analytics<SuiteDesktopLegacyAnalyticsEvents>).report(
-                    {
-                        type: EventType.SettingsGeneralChangeBitcoinUnit,
-                        payload: {
-                            unit: UNIT_ABBREVIATIONS[action.payload],
-                        },
+                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    type: EventType.SettingsGeneralChangeBitcoinUnit,
+                    payload: {
+                        unit: UNIT_ABBREVIATIONS[action.payload],
                     },
-                );
+                });
                 break;
 
             default:
