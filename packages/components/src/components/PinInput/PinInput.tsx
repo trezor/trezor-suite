@@ -1,29 +1,30 @@
-import { ChangeEvent, ClipboardEvent, forwardRef, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ClipboardEvent, useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Elevation, borders, spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, typography } from '@trezor/theme';
 
-import { useElevation } from '../ElevationContext/ElevationContext';
 import { Row } from '../Flex/Flex';
-import { baseInputDisabledStyle, baseInputStyle } from '../form/styles';
 
-const SymbolBox = styled.input<{ $elevation: Elevation; $fakeDisabled?: boolean }>`
-    ${baseInputStyle};
-    background-color: ${({ theme }) => theme.baseFillElementNeutralSoft};
-    border-color: ${({ theme }) => theme.borderInputDefault};
-
-    height: ${spacingsPx.xxxxxl};
-    width: ${spacingsPx.xxxxl};
+const SymbolBox = styled.input<{ $fakeDisabled?: boolean }>`
+    height: 60px;
+    width: 50px;
+    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation0};
+    border: 1px solid ${({ theme }) => theme.borderInputDefault};
+    border-radius: ${borders.radii.lg};
+    outline: 0;
     text-align: center;
+    caret-color: transparent;
+    font-feature-settings:
+        'tnum' 1,
+        'zero' 1,
+        'ss03' 1;
 
     ${typography.titleMedium}
-    border-radius: ${borders.radii.lg};
 
     &:focus,
     &:focus-within {
-        border-color: ${({ theme, $fakeDisabled }) =>
-            $fakeDisabled ? 'transparent' : theme.borderInputFocus};
+        border: 2px solid ${({ theme }) => theme.borderSecondary};
     }
 
     ${({ theme, $fakeDisabled }) =>
@@ -32,12 +33,11 @@ const SymbolBox = styled.input<{ $elevation: Elevation; $fakeDisabled?: boolean 
         // it by hitting the enter key.
         $fakeDisabled &&
         `
-        ${baseInputDisabledStyle}
-        border-color: transparent;
+        pointer-events: none;
+        cursor: default;
+        border: 0;
         color: ${theme.textDisabled};
     `}
-
-    caret-color: transparent;
 `;
 
 type Symbol = '' | '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
@@ -46,8 +46,7 @@ const EMPTY_SYMBOL: Symbol = '';
 
 const SYMBOL_PATTERN = /^\d$/;
 
-const isSymbolValid = (newValue: string): newValue is Symbol =>
-    newValue.length !== 0 && SYMBOL_PATTERN.test(newValue);
+const isSymbolValid = (value: string): value is Symbol => SYMBOL_PATTERN.test(value);
 
 const setSymbolAtPosition = (symbols: Symbol[], newSymbol: Symbol, index: number) => [
     ...symbols.slice(0, index),
@@ -61,69 +60,72 @@ type SymbolInputProps = {
     onChange: (value: Symbol) => void;
     onClick: () => void;
     onPaste: (e: ClipboardEvent<HTMLInputElement>) => void;
-    disabled?: boolean;
+    isDisabled?: boolean;
     autoFocus?: boolean;
+    inputRef?: (instance: HTMLInputElement | null) => void;
 };
 
-const SymbolInput = forwardRef<HTMLInputElement, SymbolInputProps>(
-    ({ symbol, onKeyDown, onChange, onClick, onPaste, disabled, autoFocus }, ref) => {
-        const { elevation } = useElevation();
+const SymbolInput = ({
+    symbol,
+    onKeyDown,
+    onChange,
+    onClick,
+    onPaste,
+    isDisabled,
+    autoFocus,
+    inputRef,
+}: SymbolInputProps) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (isDisabled) {
+            e.preventDefault();
 
-        const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-            if (disabled) {
-                e.preventDefault();
+            return;
+        }
 
-                return;
-            }
+        const newValue = e.target.value
+            // This is a trick how to solve the caret issue. Problem is that we do not know
+            // where the caret is in the underlying <input>. It can be before or after the symbol.
+            // But because we only care about exactly one character, we can just remove the old one.
+            // The newly added will then remain regardless if we had caret before or after the old.
+            .replace(symbol, '')
+            .slice(-1); // Just to make sure we end-up with only one character
 
-            const newValue = e.target.value
-                // This is a trick how to solve the caret issue. Problem is that we do not know
-                // where the caret is in the underlying <input>. It can be before or after the symbol.
-                // But because we only care about exactly one character, we can just remove the old one.
-                // The newly added will then remain regardless if we had caret before or after the old.
-                .replace(symbol, '')
-                .slice(-1); // Just to make sure we end-up with only one character
+        if (!isSymbolValid(newValue)) {
+            return;
+        }
 
-            if (!isSymbolValid(newValue)) {
-                return;
-            }
+        onChange(newValue);
+    };
 
-            onChange(newValue);
-        };
-
-        return (
-            <SymbolBox
-                onKeyDown={onKeyDown}
-                value={symbol}
-                ref={ref}
-                onChange={handleChange}
-                onClick={onClick}
-                $elevation={elevation}
-                onPaste={onPaste}
-                disabled={false} // intentionally `false` always use `$fakeDisabled` instead
-                $fakeDisabled={disabled}
-                // eslint-disable-next-line jsx-a11y/no-autofocus
-                autoFocus={autoFocus}
-            />
-        );
-    },
-);
+    return (
+        <SymbolBox
+            onKeyDown={onKeyDown}
+            value={symbol}
+            ref={inputRef}
+            onChange={handleChange}
+            onClick={onClick}
+            onPaste={onPaste}
+            disabled={false} // intentionally `false` always use `$fakeDisabled` instead
+            $fakeDisabled={isDisabled}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus={autoFocus}
+            inputMode="numeric"
+            pattern="[0-9]*"
+        />
+    );
+};
 
 const parseDefaultCode = (code: string, length: number): Symbol[] => {
-    const chars = code.split('').filter(isSymbolValid);
+    const chars = Array.from(code).filter(isSymbolValid);
 
-    while (chars.length < length) {
-        chars.push('');
-    }
-
-    return chars.slice(0, length);
+    return Array.from({ length }, (_, index) => chars[index] ?? EMPTY_SYMBOL);
 };
 
 export type PinInputProps = {
     length: number;
     onComplete: (value: string) => void;
     onChange?: (value: string) => void;
-    disabled?: boolean;
+    isDisabled?: boolean;
     autoFocus?: boolean;
     defaultCode?: string;
 };
@@ -132,12 +134,15 @@ export const PinInput = ({
     length,
     onChange,
     onComplete,
-    disabled,
+    isDisabled,
     autoFocus,
     defaultCode = '',
 }: PinInputProps) => {
     const [symbols, setSymbols] = useState<Symbol[]>(parseDefaultCode(defaultCode, length));
     const refs = useRef<HTMLInputElement[]>([]);
+    const focusAt = (target: number) => {
+        refs.current[target]?.focus();
+    };
 
     useEffect(() => {
         onChange?.(symbols.join(''));
@@ -155,7 +160,7 @@ export const PinInput = ({
     }, [length, defaultCode]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (disabled) {
+        if (isDisabled) {
             e.preventDefault();
 
             return;
@@ -163,51 +168,57 @@ export const PinInput = ({
 
         if (e.key === 'Backspace') {
             e.preventDefault();
+            const shouldMoveToPrevious = index - 1 >= 0 && e.currentTarget.value === EMPTY_SYMBOL;
 
-            if (index - 1 >= 0 && symbols[index] === EMPTY_SYMBOL) {
-                refs.current[index - 1].focus();
-                setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index - 1));
-            } else {
-                setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index));
+            setSymbols(prev =>
+                setSymbolAtPosition(prev, EMPTY_SYMBOL, shouldMoveToPrevious ? index - 1 : index),
+            );
+
+            if (shouldMoveToPrevious) {
+                focusAt(index - 1);
             }
+
+            return;
         }
 
         if (e.key === 'Delete') {
             e.preventDefault();
-            setSymbols(setSymbolAtPosition(symbols, EMPTY_SYMBOL, index));
+            setSymbols(prev => setSymbolAtPosition(prev, EMPTY_SYMBOL, index));
+
+            return;
         }
 
         if (e.key === 'ArrowLeft' && index - 1 >= 0) {
-            refs.current[index - 1].focus();
+            focusAt(index - 1);
         }
 
         if (e.key === 'ArrowRight' && index + 1 < length) {
-            refs.current[index + 1].focus();
+            focusAt(index + 1);
         }
 
         if (e.key === 'Tab' && e.shiftKey && index - 1 >= 0) {
             e.preventDefault();
-            refs.current[index - 1].focus();
+            focusAt(index - 1);
         }
 
         if (e.key === 'Tab' && !e.shiftKey && index + 1 < length) {
             e.preventDefault();
-            refs.current[index + 1].focus();
+            focusAt(index + 1);
         }
     };
 
     const handleCodeChange = (newCode: Symbol, index: number) => {
-        setSymbols(setSymbolAtPosition(symbols, newCode, index));
+        setSymbols(prev => setSymbolAtPosition(prev, newCode, index));
 
         if (newCode.length > 0 && index + 1 < length) {
-            refs.current[index + 1].focus();
+            focusAt(index + 1);
         }
     };
 
     const handleOnPaste = (e: React.ClipboardEvent<HTMLInputElement>, index: number) => {
         e.preventDefault();
-        const clipboardText = e.clipboardData.getData('text');
-        const symbolsToPaste = clipboardText.split('').filter(isSymbolValid);
+        const symbolsToPaste = Array.from(e.clipboardData.getData('text')).filter(isSymbolValid);
+        const newIndex = Math.min(index + symbolsToPaste.length, length - 1);
 
         const newSymbols = [
             ...symbols.slice(0, index),
@@ -216,13 +227,11 @@ export const PinInput = ({
         ].slice(0, length);
 
         setSymbols(newSymbols);
-
-        const newIndex = Math.min(index + symbolsToPaste.length, length - 1);
-        refs.current[newIndex].focus();
+        focusAt(newIndex);
     };
 
     return (
-        <Row gap={spacings.xs}>
+        <Row gap={8}>
             {symbols.map((symbol, index) => (
                 <SymbolInput
                     // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -230,15 +239,15 @@ export const PinInput = ({
                     symbol={symbol}
                     key={index}
                     onKeyDown={e => handleKeyDown(e, index)}
-                    ref={component => {
+                    inputRef={component => {
                         if (component !== null) {
                             refs.current[index] = component;
                         }
                     }}
                     onChange={value => handleCodeChange(value, index)}
-                    onClick={() => refs.current[index].focus()}
+                    onClick={() => focusAt(index)}
                     onPaste={e => handleOnPaste(e, index)}
-                    disabled={disabled}
+                    isDisabled={isDisabled}
                 />
             ))}
         </Row>

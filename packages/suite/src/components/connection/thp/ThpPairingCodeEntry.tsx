@@ -49,7 +49,7 @@ export const ThpPairingCodeEntry = ({ disabled, lastCode }: ThpPairingPinEntryPr
             <PinInput
                 length={6}
                 onComplete={onCodeEntry}
-                disabled={isLoading || disabled === true}
+                isDisabled={isLoading || disabled === true}
                 // eslint-disable-next-line jsx-a11y/no-autofocus
                 autoFocus={true}
                 defaultCode={lastCode}
