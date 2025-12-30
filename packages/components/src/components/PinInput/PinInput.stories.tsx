@@ -1,6 +1,5 @@
-import { useState } from 'react';
-
 import { Meta, StoryObj } from '@storybook/react';
+import { action } from 'storybook/actions';
 
 import { PinInput as PinInputComponent, PinInputProps } from './PinInput';
 
@@ -10,50 +9,26 @@ const meta: Meta<typeof PinInputComponent> = {
 };
 export default meta;
 
-const Component = ({ ...props }: Omit<PinInputProps, 'onChange' | 'onComplete'>) => {
-    const [code, setCode] = useState('');
-    const [isComplete, setIsComplete] = useState(false);
-
-    return (
-        <div>
-            <PinInputComponent
-                {...props}
-                onChange={value => {
-                    setCode(value);
-                    setIsComplete(false);
-                }}
-                onComplete={value => {
-                    setCode(value);
-                    setIsComplete(true);
-                }}
-            />
-            <span style={isComplete ? { color: 'green' } : undefined}>{code}</span>
-        </div>
-    );
-};
-
 export const PinInput: StoryObj<PinInputProps> = {
-    render: Component,
     args: {
         length: 6,
-        disabled: false,
+        isDisabled: false,
         autoFocus: true,
+        onChange: action('onChange'),
+        onComplete: action('onComplete'),
     },
     argTypes: {
         length: {
-            control: {
-                type: 'number',
-            },
+            control: 'number',
         },
-        disabled: {
-            control: {
-                type: 'boolean',
-            },
+        isDisabled: {
+            control: 'boolean',
         },
         autoFocus: {
-            control: {
-                type: 'boolean',
-            },
+            control: 'boolean',
+        },
+        defaultCode: {
+            control: 'text',
         },
     },
 };
