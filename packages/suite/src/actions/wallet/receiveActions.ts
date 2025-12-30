@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -65,7 +65,7 @@ export const showAddress =
                 }),
             );
 
-            extra.services.legacyAnalytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.CreateReceiveAddressShowAddress,
                 payload: {
                     assetSymbol: account.symbol,
@@ -78,7 +78,7 @@ export const showAddress =
 
         dispatch(modalActions.preserve());
 
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.CreateReceiveAddressShowAddress,
             payload: {
                 assetSymbol: account.symbol,
@@ -97,7 +97,7 @@ export const showAddress =
             // show second part of the "confirm address" modal
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
-            analytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.CreateReceiveAddressConfirmOnTrezor,
                 payload: { assetSymbol: account.symbol },
             });

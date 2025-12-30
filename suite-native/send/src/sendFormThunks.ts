@@ -25,14 +25,13 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
+import { EventType, getTypedNativeLegacyAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
     UpdateSelectedFeeLevelThunkParams,
     addTransactionLabelingThunk,
 } from '@suite-native/transaction-management';
-import { Analytics } from '@trezor/analytics';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
 

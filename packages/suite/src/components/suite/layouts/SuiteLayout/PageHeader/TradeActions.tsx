@@ -50,7 +50,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             preserveParams: true,
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
@@ -74,7 +74,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             preserveParams: false,
         });
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

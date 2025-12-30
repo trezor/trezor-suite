@@ -105,7 +105,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         const { receiveAddress } = tradingReceiveAddress;
         if (!receiveAddress) return;
 
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'revoke-modal',
@@ -121,7 +121,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
     };
 
     const onClose = (isSubmitting?: boolean) => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'revoke-modal',
