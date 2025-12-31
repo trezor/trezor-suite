@@ -23,7 +23,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "react": "19.1.0",
         "react-redux": "9.2.0"
     }
