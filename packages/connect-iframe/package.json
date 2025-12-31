@@ -14,7 +14,7 @@
         "test:unit": "yarn g:jest"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/connect-common": "workspace:*"
     },
     "devDependencies": {
