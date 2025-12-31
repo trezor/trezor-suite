@@ -10,7 +10,7 @@
         "build": "webpack --mode production"
     },
     "dependencies": {
-        "@trezor/connect-webextension": "workspace:^"
+        "@trezor/connect-webextension": "9.1.12"
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:^",
