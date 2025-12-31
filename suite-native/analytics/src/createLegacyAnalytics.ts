@@ -1,4 +1,4 @@
-import { Analytics, QueuedAnalytics, Event } from '@trezor/analytics';
+import { Analytics, Event, QueuedAnalytics } from '@trezor/analytics';
 import { getSuiteVersion } from '@trezor/env-utils';
 
 import { SuiteNativeLegacyAnalyticsEvents } from './types';

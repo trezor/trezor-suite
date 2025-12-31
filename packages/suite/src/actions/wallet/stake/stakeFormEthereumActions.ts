@@ -1,6 +1,6 @@
-import { EventType } from '@suite/analytics';
 import { toWei } from 'web3-utils';
 
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     getStakeTxGasLimit,
@@ -217,7 +217,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            extra.services.legacyAnalytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.TransactionCancel,
                 payload: {
                     txType: 'stake',

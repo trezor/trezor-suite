@@ -240,7 +240,7 @@ type ConnectProviderParams = {
 
 export const connectProvider =
     ({ type, dataType = 'labels', clientId }: ConnectProviderParams) =>
-    async (dispatch: Dispatch, getState: GetState) => {
+    async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const providerInstance = createProviderInstance(
             type,
             {},
@@ -277,7 +277,7 @@ export const connectProvider =
             },
         });
 
-        analytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
                 provider: providerDetails.payload.type,

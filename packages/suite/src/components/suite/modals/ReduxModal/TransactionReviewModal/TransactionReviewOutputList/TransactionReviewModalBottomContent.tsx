@@ -108,7 +108,7 @@ export const TransactionReviewModalBottomContent = ({
             );
 
             if (stakeType) {
-                return analytics.report({
+                return legacyAnalytics.report({
                     type: EventType.StakingConfirm,
                     payload: { action: stakeType, networkSymbol: symbol },
                 });

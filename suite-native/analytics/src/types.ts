@@ -22,6 +22,7 @@ import {
     TradingSellAction,
     TradingSellStep,
 } from './definitions';
+import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
@@ -29,6 +30,7 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
+    | SuiteSharedLegacyAnalyticsEvents
     | {
           type: EventType.AppReady;
           payload: {

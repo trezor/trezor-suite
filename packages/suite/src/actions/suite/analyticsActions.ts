@@ -3,7 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { EventType } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
@@ -20,7 +20,7 @@ import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
 export const enableAnalyticsThunk =
     () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.SettingsAnalytics,
             payload: { value: true },
         });
@@ -31,7 +31,7 @@ export const enableAnalyticsThunk =
 
 export const disableAnalyticsThunk =
     () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        extra.services.legacyAnalytics.report(
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report(
             { type: EventType.SettingsAnalytics, payload: { value: false } },
             { force: true },
         );

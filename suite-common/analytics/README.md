@@ -68,6 +68,8 @@ analytics.init(enabled, {
 
 After that, you can use `report` method anywhere in your project scope.
 
+// @TODO fix docs
+
 ```
 analytics.report({
     type: 'event',

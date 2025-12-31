@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -235,7 +235,7 @@ export const toggleTor =
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            extra.services.legacyAnalytics.report({
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                 type: EventType.SettingsTor,
                 payload: {
                     value: shouldEnable,

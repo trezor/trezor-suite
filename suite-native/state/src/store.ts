@@ -41,7 +41,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,
-        thpMiddleware,
+        thpMiddleware(getExtra),
         prepareTradingMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),
         prepareSuiteSyncMiddleware(getExtra),

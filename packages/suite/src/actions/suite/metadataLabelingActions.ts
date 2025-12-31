@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     selectDeviceByStaticSessionId,
@@ -631,7 +631,7 @@ export const init =
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
-                extra.services.legacyAnalytics.report({
+                getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
                     type: EventType.SettingsGeneralLabelingProvider,
                     payload: {
                         provider: 'closed',

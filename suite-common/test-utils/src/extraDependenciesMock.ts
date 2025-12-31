@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { AnalyticsDesktopEvents } from '@suite/analytics';
 import type {
     AnalyticsSharedEvents,
     SuiteSharedLegacyAnalyticsEvents,
@@ -19,6 +20,7 @@ import {
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AnalyticsNativeEvents } from '@suite-native/analytics';
 import { Analytics } from '@trezor/analytics';
 import { ok } from '@trezor/type-utils';
 
@@ -101,7 +103,7 @@ const platformEncryptionMock: PlatformEncryption = {
         Promise.resolve(ok(value as unknown as T)),
 };
 
-const analyticsMock: Analytics<AnalyticsSharedEvents> = {
+const analyticsMock: Analytics<AnalyticsSharedEvents> & Analytics<AnalyticsNativeEvents> = {
     report: () => {},
     isEnabled: () => true,
     disable: () => {},
@@ -109,7 +111,8 @@ const analyticsMock: Analytics<AnalyticsSharedEvents> = {
     init: () => {},
 };
 
-const legacyAnalyticsMock: Analytics<SuiteSharedLegacyAnalyticsEvents> = {
+const legacyAnalyticsMock: Analytics<SuiteSharedLegacyAnalyticsEvents> &
+    Analytics<AnalyticsDesktopEvents> = {
     report: () => {},
     isEnabled: () => true,
     disable: () => {},

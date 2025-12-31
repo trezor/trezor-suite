@@ -2,9 +2,8 @@ import { useCallback, useRef } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
 import { Divider, Link, Modal } from '@trezor/components';
-import { EventType, analytics } from '@trezor/suite-analytics';
+import { EventType } from '@trezor/suite-analytics';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';

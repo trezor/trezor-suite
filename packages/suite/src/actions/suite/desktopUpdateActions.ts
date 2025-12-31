@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus, EventType } from '@suite/analytics';
+import { AppUpdateEventStatus, EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
@@ -25,21 +25,22 @@ export type DesktopUpdateAction =
 
 export const checking = (): DesktopUpdateAction => ({ type: DESKTOP_UPDATE.CHECKING });
 
-export const available = (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState) => {
-    const { allowPrerelease } = getState().desktopUpdate;
+export const available =
+    (info: UpdateInfo) => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
+        const { allowPrerelease } = getState().desktopUpdate;
 
-    const payload = getAppUpdatePayload({
-        status: AppUpdateEventStatus.Available,
-        earlyAccessProgram: allowPrerelease,
-        updateInfo: info,
-    });
-    analytics.report({
-        type: EventType.AppUpdate,
-        payload,
-    });
+        const payload = getAppUpdatePayload({
+            status: AppUpdateEventStatus.Available,
+            earlyAccessProgram: allowPrerelease,
+            updateInfo: info,
+        });
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+            type: EventType.AppUpdate,
+            payload,
+        });
 
-    dispatch({ type: DESKTOP_UPDATE.AVAILABLE, payload: info });
-};
+        dispatch({ type: DESKTOP_UPDATE.AVAILABLE, payload: info });
+    };
 
 export const notAvailable = (info: UpdateInfo) => (dispatch: Dispatch) => {
     if (info.isManualCheck) {
@@ -61,7 +62,7 @@ export const download =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -91,7 +92,7 @@ export const ready =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -115,7 +116,7 @@ export const installUpdate =
             isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
         });
 
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -142,7 +143,7 @@ export const error = () => (dispatch: Dispatch, getState: GetState, extra: Extra
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        extra.services.legacyAnalytics.report({
+        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
             type: EventType.AppUpdate,
             payload,
         });
