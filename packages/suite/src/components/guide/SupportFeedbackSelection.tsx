@@ -47,11 +47,6 @@ const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     }
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledLink = styled(Link)`
-    width: 100%;
-`;
-
 const Details = styled.div`
     padding: 10px 0 0;
     ${typography.label}
@@ -168,7 +163,7 @@ export const SupportFeedbackSelection = () => {
                         <Translation id="TR_GUIDE_VIEW_HEADLINE_NEED_HELP" />
                     </SectionHeader>
 
-                    <StyledLink href={TREZOR_FORUM_URL} variant="nostyle">
+                    <Link href={TREZOR_FORUM_URL}>
                         <SectionButton data-testid="@guide/forum">
                             <Label>
                                 <LabelHeadline>
@@ -180,9 +175,9 @@ export const SupportFeedbackSelection = () => {
                                 </Paragraph>
                             </Label>
                         </SectionButton>
-                    </StyledLink>
+                    </Link>
 
-                    <StyledLink href={TREZOR_SUPPORT_URL} variant="nostyle">
+                    <Link href={TREZOR_SUPPORT_URL}>
                         <SectionButton data-testid="@guide/support">
                             <Label>
                                 <LabelHeadline>
@@ -191,7 +186,7 @@ export const SupportFeedbackSelection = () => {
                                 </LabelHeadline>
                             </Label>
                         </SectionButton>
-                    </StyledLink>
+                    </Link>
                 </Section>
 
                 <Details>

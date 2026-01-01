@@ -6,7 +6,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 
 interface EarlyAccessDisableProps {
@@ -61,11 +60,9 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
             onCancel={hideWindow}
             bottomContent={
                 <>
-                    <TrezorLink variant="nostyle" href={SUITE_URL}>
-                        <Modal.Button iconRight="arrowUpRight">
-                            <Translation id="TR_EARLY_ACCESS_REINSTALL" />
-                        </Modal.Button>
-                    </TrezorLink>
+                    <Modal.Button href={SUITE_URL}>
+                        <Translation id="TR_EARLY_ACCESS_REINSTALL" />
+                    </Modal.Button>
                     <Modal.Button onClick={hideWindow} intent="neutral" priority="secondary">
                         <Translation id="TR_EARLY_ACCESS_SKIP_REINSTALL" />
                     </Modal.Button>

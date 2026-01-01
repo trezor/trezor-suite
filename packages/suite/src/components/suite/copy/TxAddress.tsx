@@ -3,13 +3,12 @@ import { useState } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import { Account } from '@suite-common/wallet-types';
-import { Icon, Text, TextVariant } from '@trezor/components';
+import { Icon, Link, Text, TextVariant } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { TypographyStyle } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
@@ -153,13 +152,9 @@ export const TxAddress = ({
 
                     {explorerUrl && (
                         <IconWrapper>
-                            <TrezorLink
-                                typographyStyle="label"
-                                variant="nostyle"
-                                href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}
-                            >
+                            <Link href={`${explorerUrl}${txAddress}${explorerUrlQueryString}`}>
                                 <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
-                            </TrezorLink>
+                            </Link>
                         </IconWrapper>
                     )}
                 </TextOverflowContainer>

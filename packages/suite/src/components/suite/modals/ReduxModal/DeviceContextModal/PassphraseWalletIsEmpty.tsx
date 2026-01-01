@@ -67,7 +67,6 @@ const PassphraseWalletIsEmptyContent = ({
                         <Button
                             size="small"
                             intent="info"
-                            iconRight="arrowUpRight"
                             data-testid={dataTest}
                             href={HELP_CENTER_PASSPHRASE_URL}
                         >

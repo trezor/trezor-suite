@@ -13,11 +13,7 @@ export const UpdateGoToSettingsDescription = () => {
             id="TR_WIPE_OR_UPDATE_DESCRIPTION"
             values={{
                 a: chunks => (
-                    <TrezorLink
-                        variant="underline"
-                        onClick={gotToDeviceSettings}
-                        data-testid="@goto/settings"
-                    >
+                    <TrezorLink onClick={gotToDeviceSettings} data-testid="@goto/settings">
                         {chunks}
                     </TrezorLink>
                 ),

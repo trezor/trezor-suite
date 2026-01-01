@@ -100,7 +100,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                 intent="info"
                 icon="question"
                 rightContent={
-                    <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">
+                    <Banner.Button href={learnMoreUrl} size="small">
                         <Translation id="TR_LEARN_MORE" />
                     </Banner.Button>
                 }

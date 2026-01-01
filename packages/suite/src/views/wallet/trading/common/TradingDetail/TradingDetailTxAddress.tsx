@@ -1,26 +1,21 @@
 import { useDispatch } from 'react-redux';
 
-import { Link, Text, TextVariant } from '@trezor/components';
+import { Link } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
+import { Address } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
 type TradingDetailTxAddressProps = {
     address: string;
     account: Account;
-    variant?: TextVariant;
 };
 
-export const TradingDetailTxAddress = ({
-    address,
-    account,
-    variant,
-}: TradingDetailTxAddressProps) => {
+export const TradingDetailTxAddress = ({ address, account }: TradingDetailTxAddressProps) => {
     const dispatch = useDispatch();
 
     return (
         <Link
-            variant="underline"
             onClick={() =>
                 dispatch(
                     openModal({
@@ -34,9 +29,7 @@ export const TradingDetailTxAddress = ({
                 )
             }
         >
-            <Text maxWidth={150} ellipsisLineCount={1} variant={variant}>
-                {address}
-            </Text>
+            <Address value={address} isTruncated />
         </Link>
     );
 };

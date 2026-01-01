@@ -45,7 +45,6 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
                         <Button
                             intent="neutral"
                             priority="secondary"
-                            iconRight="arrowUpRight"
                             size="small"
                             href={TREZOR_SUPPORT_URL}
                         >

@@ -192,9 +192,7 @@ export const FirmwareInitialStep = ({ onClose }: FirmwareInitialStepProps) => {
                     values={{
                         i: chunks => <i>{chunks}</i>,
                         button: chunks => (
-                            <Link onClick={() => setBitcoinOnlyOffer(true)} variant="underline">
-                                {chunks}
-                            </Link>
+                            <Link onClick={() => setBitcoinOnlyOffer(true)}>{chunks}</Link>
                         ),
                         bitcoinOnly: translationString('TR_FIRMWARE_TYPE_BITCOIN_ONLY'),
                     }}

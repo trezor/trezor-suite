@@ -1,7 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { Divider, Link, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
@@ -38,7 +36,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
     const acccountModal = useModal(false);
     const dispatch = useDispatch();
-    const theme = useTheme();
 
     const listRef = useRef<HTMLDivElement>(null);
     const accountsOptions = useAccountsOptions();
@@ -64,14 +61,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     id: 'TR_RECEIVE_DESCRIPTION',
                     values: {
                         a: (...chunks) => (
-                            <Link
-                                color={theme.textSubdued}
-                                variant="underline"
-                                target="_blank"
-                                href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
-                            >
-                                {chunks}
-                            </Link>
+                            <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>
                         ),
                     },
                 }}

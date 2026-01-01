@@ -16,7 +16,7 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
 import { ButtonIntent, CommonButtonProps } from '../types';
 import { TextButtonSize } from './types';
-import { mapIntentToCSS, mapSizeToIconSize, mapSizeToTypographyStyle } from './utils';
+import { mapIntentToCSS, mapSizeToGap, mapSizeToIconSize, mapSizeToTypographyStyle } from './utils';
 import { pickButtonProps } from '../utils';
 
 export const allowedTextButtonFrameProps = [
@@ -92,7 +92,7 @@ export const TextButton = ({
             {...buttonProps}
             {...frameProps}
         >
-            <Row gap={8} justifyContent="center" overflow="hidden" width="100%">
+            <Row gap={mapSizeToGap(size)} justifyContent="center" overflow="hidden" width="100%">
                 {props.isLoading && (
                     <Spinner isGrey={true} size={iconSize} data-testid={`${dataTestId}/spinner`} />
                 )}
@@ -106,7 +106,9 @@ export const TextButton = ({
                         {children}
                     </Text>
                 </Box>
-                {iconRight && !props.isLoading && <Icon name={iconRight} size={iconSize} />}
+                {(iconRight || buttonProps.target === '_blank') && (
+                    <Icon name={iconRight ?? 'arrowLineUpRight'} size={iconSize} />
+                )}
             </Row>
         </TextButtonContainer>
     );

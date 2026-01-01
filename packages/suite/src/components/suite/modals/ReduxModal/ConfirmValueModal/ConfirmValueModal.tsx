@@ -168,16 +168,7 @@ export const ConfirmValueModal = ({
                             <Translation
                                 id="DESTINATION_TAG_BANNER_RECEIVE"
                                 values={{
-                                    a: chunks => (
-                                        <Link
-                                            variant="nostyle"
-                                            icon="arrowUpRight"
-                                            typographyStyle="hint"
-                                            onClick={handleOpenGuide}
-                                        >
-                                            {chunks}
-                                        </Link>
-                                    ),
+                                    a: chunks => <Link onClick={handleOpenGuide}>{chunks}</Link>,
                                     displaySymbol: getDisplaySymbol(account.symbol),
                                 }}
                             />

@@ -1,10 +1,9 @@
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
+import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_SOL_SEND } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 type ExpiredTxValidityProps = {
     symbol: NetworkSymbol;
@@ -25,9 +24,9 @@ export const ExpiredTxValidity = ({ symbol }: ExpiredTxValidityProps) => {
                 </Text>
                 <Translation id="TR_TX_SEND_FAILED_DESCRIPTION" values={{ networkName }} />
 
-                <TrezorLink typographyStyle="hint" href={HELP_CENTER_SOL_SEND} icon="arrowUpRight">
+                <TextButton href={HELP_CENTER_SOL_SEND} size="small" isUnderlined>
                     <Translation id="TR_LEARN_MORE" />
-                </TrezorLink>
+                </TextButton>
             </Column>
         </Card>
     );

@@ -49,11 +49,7 @@ export const BridgeDeprecated = () => {
                     <Translation
                         id="TR_STANDALONE_BRIDGE_DEPRECATED_DESCRIPTION"
                         values={{
-                            a: chunks => (
-                                <Link href={uninstallBridgeUrl} icon="arrowUpRight">
-                                    {chunks}
-                                </Link>
-                            ),
+                            a: chunks => <Link href={uninstallBridgeUrl}>{chunks}</Link>,
                         }}
                     />
                 </Paragraph>

@@ -3,12 +3,12 @@ import {
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
-import { Column, H4, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { Column, H4, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
-import { MarkdownWithComponents, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
@@ -89,21 +89,19 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     hasIcon
                     title={
                         parsedChangelog ? (
-                            <Row justifyContent="space-between" width="100%">
-                                <H4>
-                                    <Translation
-                                        id="TR_VERSION"
-                                        values={{ version: parsedChangelog.versionString }}
-                                    />
-                                </H4>
-                                <TrezorLink
-                                    typographyStyle="hint"
-                                    icon="arrowUpRight"
-                                    href={changelogUrl}
-                                >
-                                    <Translation id="TR_VIEW_ALL" />
-                                </TrezorLink>
-                            </Row>
+                            <H4>
+                                <Translation
+                                    id="TR_VERSION"
+                                    values={{ version: parsedChangelog.versionString }}
+                                />
+                            </H4>
+                        ) : undefined
+                    }
+                    addon={
+                        parsedChangelog ? (
+                            <TextButton size="small" intent="neutral" href={changelogUrl}>
+                                <Translation id="TR_VIEW_ALL" />
+                            </TextButton>
                         ) : undefined
                     }
                     content={

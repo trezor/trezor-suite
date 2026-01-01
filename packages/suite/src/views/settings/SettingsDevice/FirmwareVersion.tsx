@@ -1,27 +1,14 @@
-import styled from 'styled-components';
-
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';
-
-const Version = styled.div`
-    span {
-        display: flex;
-        align-items: center;
-
-        > :last-child {
-            margin-left: 6px;
-        }
-    }
-`;
 
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {
     if (!device.firmwareReleaseConfigInfo?.isNewer) {
@@ -55,27 +42,10 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const currentFwVersion = getFirmwareVersion(device);
     const { revision } = device.features;
     const changelogUrl = getChangelogUrl(device, revision);
-    const githubButtonIcon = revision ? 'arrowUpRight' : undefined;
-    const githubButtonText =
-        device.firmware === 'valid'
-            ? `${currentFwVersion} (${translationString('TR_UP_TO_DATE').toLowerCase()})`
-            : currentFwVersion;
 
     const handleUpdate = () => {
         dispatch(goto('firmware-index', { params: { cancelable: true } }));
     };
-
-    const GithubButton = () => (
-        <Button
-            intent="neutral"
-            priority="secondary"
-            size="small"
-            iconRight={githubButtonIcon}
-            isDisabled={!revision}
-        >
-            {githubButtonText}
-        </Button>
-    );
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.FirmwareVersion}>
@@ -83,29 +53,27 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                 title={<Translation id="TR_FIRMWARE_VERSION" />}
                 description={
                     currentFwVersion ? (
-                        <Version>
-                            <Translation
-                                id="TR_YOUR_FIRMWARE_VERSION"
-                                values={{
-                                    version: (
-                                        <Tooltip
-                                            content={revision}
-                                            cursor={!revision ? 'not-allowed' : undefined}
-                                            display="inline-flex"
+                        <Translation
+                            id="TR_YOUR_FIRMWARE_VERSION"
+                            values={{
+                                version: (
+                                    <Tooltip content={revision} display="inline-flex">
+                                        <Button
+                                            intent="neutral"
+                                            priority="secondary"
+                                            size="small"
+                                            isDisabled={!revision}
+                                            href={revision ? changelogUrl : undefined}
+                                            margin={{ left: 4 }}
                                         >
-                                            {revision ? (
-                                                <TrezorLink href={changelogUrl} variant="nostyle">
-                                                    <GithubButton />
-                                                </TrezorLink>
-                                            ) : (
-                                                // remove the link if revision is unknown (in bootloader mode)
-                                                <GithubButton />
-                                            )}
-                                        </Tooltip>
-                                    ),
-                                }}
-                            />
-                        </Version>
+                                            {device.firmware === 'valid'
+                                                ? `${currentFwVersion} (${translationString('TR_UP_TO_DATE').toLowerCase()})`
+                                                : currentFwVersion}
+                                        </Button>
+                                    </Tooltip>
+                                ),
+                            }}
+                        />
                     ) : (
                         <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
                     )

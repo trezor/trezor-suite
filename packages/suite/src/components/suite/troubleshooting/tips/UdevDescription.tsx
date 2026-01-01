@@ -14,11 +14,7 @@ export const UdevDescription = () => {
                 id="TR_TROUBLESHOOTING_TIP_UDEV_INSTALL_DESCRIPTION"
                 values={{
                     a: chunks => (
-                        <TrezorLink
-                            variant="underline"
-                            onClick={handleClick}
-                            data-testid="@goto/udev"
-                        >
+                        <TrezorLink onClick={handleClick} data-testid="@goto/udev">
                             {chunks}
                         </TrezorLink>
                     ),

@@ -1,5 +1,3 @@
-import { useTheme } from 'styled-components';
-
 import { SignValue } from '@suite-common/suite-types';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -35,7 +33,6 @@ export const FormattedNftAmount = ({
     alignMultitoken = 'flex-end',
     linkTypographyStyle,
 }: FormattedNftAmountProps) => {
-    const theme = useTheme();
     const { translationString } = useTranslation();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
     const { network } = selectedAccount;
@@ -75,11 +72,9 @@ export const FormattedNftAmount = ({
                         {isWithLink && network?.networkType === 'ethereum' ? (
                             <TrezorLink
                                 href={`${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${token.id}`}
-                                color={theme.textSecondaryHighlight}
-                                variant="underline"
                                 typographyStyle={linkTypographyStyle}
                             >
-                                <Text maxWidth={145} ellipsisLineCount={1}>
+                                <Text maxWidth={145} ellipsisLineCount={1} variant="primary">
                                     {token.id}
                                 </Text>
                             </TrezorLink>
@@ -107,12 +102,10 @@ export const FormattedNftAmount = ({
                             ? `${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${transfer.amount}`
                             : undefined
                     }
-                    color={theme.textSecondaryHighlight}
-                    variant="underline"
                     typographyStyle={linkTypographyStyle}
                 >
                     <Row gap={spacings.zero}>
-                        <Text maxWidth={145} ellipsisLineCount={1}>
+                        <Text maxWidth={145} ellipsisLineCount={1} variant="primary">
                             <HiddenPlaceholder>
                                 <RedactNumericalValue value={transfer.amount} />
                             </HiddenPlaceholder>

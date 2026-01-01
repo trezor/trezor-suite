@@ -1,40 +1,12 @@
-import styled from 'styled-components';
-
 import type { GuideCategory } from '@suite-common/suite-types';
-import { Text } from '@trezor/components';
+import { Row, Text, TextButton } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { transitions } from '@trezor/theme';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { Translation } from 'src/components/suite/Translation';
-// importing directly, otherwise unit tests fail, seems to be a styled-components issue
-import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
-
-const PreviousCategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.textSubdued};
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    &:hover {
-        color: ${({ theme }) => theme.backgroundNeutralSubdued};
-    }
-`;
-
-const BreadcrumbDelimiter = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    margin: 0 5px;
-`;
-
-const CategoryLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-    transition: background ${transitions.speed.normal} ${transitions.type};
-
-    &:hover {
-        color: ${({ theme }) => theme.textPrimaryPressed};
-    }
-`;
 
 export const HeaderBreadcrumb = () => {
     const language = useSelector(selectLanguage);
@@ -46,11 +18,15 @@ export const HeaderBreadcrumb = () => {
 
     // if no parent available, offer navigation to guide dashboard
     const FallbackBreadcrumb = (
-        <Text typographyStyle="hint" textWrap="normal">
-            <CategoryLink onClick={goToDashboard}>
-                <Translation id="TR_GUIDE_DASHBOARD" />
-            </CategoryLink>
-        </Text>
+        <TextButton
+            onClick={goToDashboard}
+            size="small"
+            isUnderlined
+            intent="neutral"
+            data-testid="@guide/header-breadcrumb/dashboard-link"
+        >
+            <Translation id="TR_GUIDE_DASHBOARD" />
+        </TextButton>
     );
 
     if (!currentNode || !indexNode) return FallbackBreadcrumb;
@@ -89,8 +65,8 @@ export const HeaderBreadcrumb = () => {
     const grandParentNode = parentNodes.pop();
 
     return (
-        <Text typographyStyle="hint" textWrap="normal">
-            <PreviousCategoryLink
+        <Row gap={4}>
+            <TextButton
                 onClick={() => {
                     if (grandParentNode) {
                         navigateToCategory(grandParentNode);
@@ -98,6 +74,9 @@ export const HeaderBreadcrumb = () => {
                         navigateToGuideDashboard();
                     }
                 }}
+                size="small"
+                isUnderlined
+                intent="neutral"
                 data-testid="@guide/header-breadcrumb/previous-category-link"
             >
                 {grandParentNode ? (
@@ -105,9 +84,11 @@ export const HeaderBreadcrumb = () => {
                 ) : (
                     <Translation id="TR_GUIDE_DASHBOARD" />
                 )}
-            </PreviousCategoryLink>
-            <BreadcrumbDelimiter>/</BreadcrumbDelimiter>
-            <CategoryLink
+            </TextButton>
+            <Text typographyStyle="hint" variant="tertiary">
+                /
+            </Text>
+            <TextButton
                 onClick={() => {
                     if (grandParentNode) {
                         navigateToCategory(grandParentNode);
@@ -116,9 +97,12 @@ export const HeaderBreadcrumb = () => {
                     }
                 }}
                 data-testid="@guide/header-breadcrumb/category-link"
+                size="small"
+                isUnderlined
+                intent="brand"
             >
                 {parentNode && getNodeTitle(parentNode, language)}
-            </CategoryLink>
-        </Text>
+            </TextButton>
+        </Row>
     );
 };

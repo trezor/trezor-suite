@@ -1,11 +1,8 @@
-import { HTMLProps, MouseEvent, ReactNode, forwardRef } from 'react';
+import { HTMLProps, MouseEvent, ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
-
-import { spacingsPx, typographyStylesBase } from '@trezor/theme';
+import styled from 'styled-components';
 
 import { TransientProps } from '../../../utils/transientProps';
-import { Icon, IconName } from '../../Icon/Icon';
 import { allowedTextTextProps } from '../Text/Text';
 import {
     TextProps as TextPropsCommon,
@@ -20,107 +17,52 @@ export const allowedLinkTextProps = [
 ] as const satisfies TextPropsKeys[];
 type AllowedLinkTextProps = Pick<TextPropsCommon, (typeof allowedLinkTextProps)[number]>;
 
-type AProps = TransientProps<AllowedLinkTextProps> & {
-    $variant?: 'default' | 'nostyle' | 'underline';
-    $color?: string;
-};
+type AProps = TransientProps<AllowedLinkTextProps>;
 
 const A = styled.a<AProps>`
     background-color: unset;
     border: unset;
-    text-decoration: none;
-    cursor: pointer;
-    color: ${({ $color, theme }) => $color || theme.textDefault};
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
+    text-decoration: underline;
+    color: inherit;
 
-    gap: ${spacingsPx.xxs};
-
-    ${withTextProps}
     &:hover {
-        text-decoration: underline;
+        text-decoration: none;
     }
 
-    ${({ $variant }) =>
-        $variant === 'underline' &&
-        css`
-            text-decoration: underline;
-        `}
-
-    ${({ $variant }) =>
-        $variant === 'nostyle' &&
-        css`
-            color: inherit;
-            font-weight: inherit;
-
-            &:visited,
-            &:active,
-            &:hover {
-                text-decoration: none;
-                color: inherit;
-            }
-        `}
+    ${withTextProps}
 `;
 
-export type LinkProps = HTMLProps<HTMLAnchorElement> &
+export type LinkProps = Pick<HTMLProps<HTMLAnchorElement>, 'href' | 'target' | 'onClick'> &
     AllowedLinkTextProps & {
-        href?: string;
-        target?: string;
-        onClick?: (event: MouseEvent<any>) => void;
         children?: ReactNode;
-        className?: string;
-        variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
-        icon?: IconName;
-        color?: string;
         'data-testid'?: string;
     };
 
-export const Link = forwardRef<HTMLAnchorElement, LinkProps>(
-    (
-        {
-            href,
-            target,
-            icon,
-            onClick,
-            'data-testid': dataTest,
-            children,
-            color,
-            className,
-            variant,
-            typographyStyle = 'inherit',
-            ...rest
-        },
-        ref,
-    ) => {
-        const textProps = pickAndPrepareTextProps(
-            { ...rest, typographyStyle },
-            allowedTextTextProps,
-        );
-        const iconSize =
-            typographyStylesBase[typographyStyle !== 'inherit' ? typographyStyle : 'body'].fontSize;
+export const Link = ({
+    href,
+    target,
+    onClick,
+    'data-testid': dataTest,
+    children,
+    ...rest
+}: LinkProps) => {
+    const textProps = pickAndPrepareTextProps(rest, allowedTextTextProps);
 
-        return (
-            <A
-                ref={ref}
-                href={href}
-                target={target || '_blank'}
-                rel="noreferrer noopener"
-                data-testid={dataTest}
-                onClick={(e: MouseEvent<any>) => {
-                    if (onClick !== undefined) {
-                        e.stopPropagation();
-                        onClick(e);
-                    }
-                }}
-                $variant={variant}
-                className={className}
-                {...textProps}
-                $color={color}
-            >
-                {children}
-                {icon && <Icon size={iconSize} name={icon} />}
-            </A>
-        );
-    },
-);
+    return (
+        <A
+            href={href}
+            target={target ?? '_blank'}
+            rel="noreferrer noopener"
+            data-testid={dataTest}
+            onClick={(e: MouseEvent<any>) => {
+                if (onClick !== undefined) {
+                    e.stopPropagation();
+                    onClick(e);
+                }
+            }}
+            {...textProps}
+        >
+            {children}
+        </A>
+    );
+};

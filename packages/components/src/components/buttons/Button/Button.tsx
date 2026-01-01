@@ -127,7 +127,9 @@ export const Button = ({
                         {children}
                     </Text>
                 </Box>
-                {iconRight && !props.isLoading && <Icon name={iconRight} {...iconProps} />}
+                {(iconRight || buttonProps.target === '_blank') && (
+                    <Icon name={iconRight ?? 'arrowLineUpRight'} {...iconProps} />
+                )}
                 {shortcut?.length && (
                     <Text as="div" color={color}>
                         <ShortcutBadge shortcut={shortcut} />

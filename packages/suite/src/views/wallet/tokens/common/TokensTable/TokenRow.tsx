@@ -140,15 +140,16 @@ export const TokenRow = ({
         address: string;
         type: 'contract' | 'fingerprint' | 'policyId';
     }) => (
-        <InfoItem typographyStyle="label" label={label} gap={spacings.zero}>
-            <Row>
+        <InfoItem typographyStyle="label" label={label} gap={0}>
+            <Row gap={8}>
                 <Text typographyStyle="label" as="div">
-                    <Address isChunked={false} value={address} />
+                    <Address isTruncated value={address} />
                 </Text>
                 <IconButton
                     icon="copy"
                     intent="neutral"
                     priority="secondary"
+                    size="small"
                     onClick={() => {
                         dispatch(
                             shouldShowCopyAddressModal
@@ -254,12 +255,12 @@ export const TokenRow = ({
                     </>
                 )}
                 <Table.Cell align="end">
-                    <Row gap={spacings.xs}>
+                    <Row gap={8}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}
                             content={
                                 <Card paddingType="small">
-                                    <Column maxWidth={200} gap={spacings.md}>
+                                    <Column gap={16}>
                                         {!token.policyId && (
                                             <TokenAddressItem
                                                 label={
@@ -448,7 +449,6 @@ export const TokenRow = ({
                                     }
                                     intent="neutral"
                                     priority="secondary"
-                                    size="small"
                                 >
                                     <Translation id="TR_UNHIDE" />
                                 </Button>

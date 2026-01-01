@@ -1,10 +1,9 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { BulletList, Button } from '@trezor/components';
+import { BulletList, Button, Row } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
-import { TrezorLink } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite';
@@ -39,17 +38,12 @@ export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmware
     return (
         <BulletList isOrdered>
             <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_DOWNLOAD" />}>
-                <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />{' '}
-                <TrezorLink variant="nostyle" href={githubUrl}>
-                    <Button
-                        size="small"
-                        intent="neutral"
-                        priority="secondary"
-                        iconRight="arrowUpRight"
-                    >
+                <Row gap={6}>
+                    <Translation id="TR_CUSTOM_FIRMWARE_GITHUB" />
+                    <Button size="small" href={githubUrl} intent="neutral" priority="secondary">
                         github.com
                     </Button>
-                </TrezorLink>
+                </Row>
             </BulletList.Item>
             <BulletList.Item title={<Translation id="TR_CUSTOM_FIRMWARE_TITLE_UPLOAD" />}>
                 <DropZone

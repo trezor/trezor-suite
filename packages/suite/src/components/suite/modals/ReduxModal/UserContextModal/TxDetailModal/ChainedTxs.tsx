@@ -26,10 +26,6 @@ const Label = styled(Header)`
     padding: 12px 20px;
 `;
 
-const StyledTrezorLink = styled(TrezorLink)`
-    width: 100%;
-`;
-
 const ChainedTransactionItem = styled(TransactionItem)`
     width: 100%;
     cursor: pointer;
@@ -70,7 +66,7 @@ export const ChainedTxs = ({ txs, network, accountType, explorerUrl }: ChainedTx
             </Label>
         )}
         {txs.own.map((tx, index) => (
-            <StyledTrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`} variant="nostyle">
+            <TrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`}>
                 <ChainedTransactionItem
                     key={tx.txid}
                     transaction={tx}
@@ -81,7 +77,7 @@ export const ChainedTxs = ({ txs, network, accountType, explorerUrl }: ChainedTx
                     accountKey={`${tx.descriptor}-${tx.symbol}-${tx.deviceState}`}
                     index={index}
                 />
-            </StyledTrezorLink>
+            </TrezorLink>
         ))}
 
         {txs.others.length > 0 && (
@@ -90,9 +86,9 @@ export const ChainedTxs = ({ txs, network, accountType, explorerUrl }: ChainedTx
             </Label>
         )}
         {txs.others.map(tx => (
-            <StyledTrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`} variant="nostyle">
+            <TrezorLink key={tx.txid} href={`${explorerUrl}${tx.txid}`}>
                 <StyledAffectedTransactionItem tx={tx} />
-            </StyledTrezorLink>
+            </TrezorLink>
         ))}
     </Wrapper>
 );

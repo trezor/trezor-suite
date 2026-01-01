@@ -24,7 +24,6 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
-import { BannerButton } from '@trezor/components/src/components/Banner/BannerButton';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
@@ -260,12 +259,9 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     <Banner
                         intent="warning"
                         rightContent={
-                            <BannerButton
-                                onClick={() => handleGoToCoinSettings()}
-                                iconRight="arrowRight"
-                            >
+                            <Banner.Button onClick={() => handleGoToCoinSettings()}>
                                 <Translation id="TR_COIN_SETTINGS" />
-                            </BannerButton>
+                            </Banner.Button>
                         }
                     >
                         <Translation

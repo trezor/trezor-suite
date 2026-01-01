@@ -1,6 +1,6 @@
 import { NetworkType } from '@suite-common/wallet-config';
 import { RbfTransactionType } from '@suite-common/wallet-types';
-import { Box, Card, Column, IconCircle, Text } from '@trezor/components';
+import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import {
     HELP_CENTER_CANCEL_TRANSACTION,
@@ -10,7 +10,6 @@ import {
 } from '@trezor/urls';
 
 import { Translation, TranslationKey } from '../../../../Translation';
-import { TrezorLink } from '../../../../TrezorLink';
 
 export type ReplaceByFeeFailedOriginalTxConfirmedProps = {
     type: RbfTransactionType;
@@ -64,9 +63,9 @@ export const ReplaceByFeeFailedOriginalTxConfirmed = ({
                 <Translation id={descriptionMap[type]} />
 
                 {link && (
-                    <TrezorLink typographyStyle="hint" href={link} icon="arrowUpRight">
+                    <TextButton href={link} size="small" isUnderlined>
                         <Translation id="TR_LEARN_MORE" />
-                    </TrezorLink>
+                    </TextButton>
                 )}
             </Column>
         </Card>

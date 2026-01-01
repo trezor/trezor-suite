@@ -74,11 +74,7 @@ export const TxDetailModalBase = ({
                             id="TR_ZERO_PHISHING_BANNER"
                             values={{
                                 a: chunks => (
-                                    <TrezorLink
-                                        typographyStyle="hint"
-                                        href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                        variant="underline"
-                                    >
+                                    <TrezorLink href={HELP_CENTER_ZERO_VALUE_ATTACKS}>
                                         {chunks}
                                     </TrezorLink>
                                 ),
