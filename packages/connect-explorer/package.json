@@ -19,7 +19,7 @@
         "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",
-        "@trezor/connect-webextension": "workspace:^",
+        "@trezor/connect-webextension": "9.1.12",
         "@trezor/protobuf": "workspace:^",
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",
