@@ -49,7 +49,7 @@
         "@suite-native/thp": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/protobuf": "workspace:^",
         "@trezor/transport": "workspace:^",
         "@trezor/transport-native-bluetooth": "workspace:*",
