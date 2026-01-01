@@ -22,11 +22,7 @@ export const TROUBLESHOOTING_TIP_UNREADABLE_HID: TroubleshootingTipsItem = {
         <Translation
             id="TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION"
             values={{
-                a: chunks => (
-                    <TrezorLink variant="underline" href={TREZOR_SUPPORT_DEVICE_URL}>
-                        {chunks}
-                    </TrezorLink>
-                ),
+                a: chunks => <TrezorLink href={TREZOR_SUPPORT_DEVICE_URL}>{chunks}</TrezorLink>,
             }}
         />
     ),

@@ -11,13 +11,7 @@ export const TradingFormFeesDisclamer = () => (
         <Paragraph variant="tertiary">
             <Translation id="TR_TRADING_FEES_CALCULATION_DISCLAIMER" />
         </Paragraph>
-        <Button
-            href={INVITY_SCHEDULE_OF_FEES}
-            iconRight="arrowUpRight"
-            intent="neutral"
-            priority="secondary"
-            size="small"
-        >
+        <Button href={INVITY_SCHEDULE_OF_FEES} intent="neutral" priority="secondary" size="small">
             <Translation id="TR_LEARN_MORE" />
         </Button>
     </ContentFlex>

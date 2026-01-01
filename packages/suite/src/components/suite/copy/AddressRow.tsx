@@ -110,19 +110,8 @@ export const AddressRow = ({
                 ) : null}
                 {explorerUrl ? (
                     <IconWrapper>
-                        <Link
-                            typographyStyle="label"
-                            variant="nostyle"
-                            href={explorerUrl}
-                            target="_blank"
-                            onClick={e => e.stopPropagation()}
-                        >
-                            <Icon
-                                pointerEvents="none"
-                                name="arrowUpRight"
-                                size={12}
-                                color={theme.iconOnPrimary}
-                            />
+                        <Link href={explorerUrl}>
+                            <Icon name="arrowUpRight" size={12} color={theme.iconOnPrimary} />
                         </Link>
                     </IconWrapper>
                 ) : null}

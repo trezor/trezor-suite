@@ -7,10 +7,10 @@ import {
     Column,
     Divider,
     Icon,
-    Link,
     RadioCard,
     Row,
     Text,
+    TextButton,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_REPLACE_BY_FEE_BITCOIN } from '@trezor/urls';
@@ -110,15 +110,9 @@ export const DecreasedOutputs = () => {
                 <Text typographyStyle="body">
                     <Translation id="TR_AMOUNT_REDUCED_TXS" />
                 </Text>
-                <Text variant="primary" typographyStyle="hint">
-                    <Link
-                        icon="arrowUpRight"
-                        variant="nostyle"
-                        href={HELP_CENTER_REPLACE_BY_FEE_BITCOIN}
-                    >
-                        <Translation id="TR_LEARN_MORE" />
-                    </Link>
-                </Text>
+                <TextButton href={HELP_CENTER_REPLACE_BY_FEE_BITCOIN} size="small" isUnderlined>
+                    <Translation id="TR_LEARN_MORE" />
+                </TextButton>
             </Row>
 
             <Divider margin={spacings.zero} />

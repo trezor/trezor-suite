@@ -9,11 +9,7 @@ export const SuiteDesktopTip = () => {
         <Translation
             id="TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION"
             values={{
-                a: chunks => (
-                    <TrezorLink variant="underline" onClick={handleClick}>
-                        {chunks}
-                    </TrezorLink>
-                ),
+                a: chunks => <TrezorLink onClick={handleClick}>{chunks}</TrezorLink>,
             }}
         />
     );

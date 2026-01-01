@@ -43,7 +43,6 @@ const CoordinatorVersion = ({ version }: CoordinatorVersionProps) => {
             <Button
                 intent="neutral"
                 priority="secondary"
-                iconRight="arrowUpRight"
                 href={`https://github.com/zkSNACKs/WalletWasabi/commit/${version.commitHash}`}
                 margin={{ left: spacings.xxs }}
             >

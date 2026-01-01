@@ -34,11 +34,9 @@ export const GuideMarkdown = ({ markdown }: GuideMarkdownProps) => {
                             }
 
                             return href.startsWith('http') ? (
-                                <TrezorLink variant="default" href={href} target="_blank">
-                                    {children}
-                                </TrezorLink>
+                                <TrezorLink href={href}>{children}</TrezorLink>
                             ) : (
-                                <TrezorLink variant="default" onClick={() => openNodeById(href)}>
+                                <TrezorLink onClick={() => openNodeById(href)}>
                                     {children}
                                 </TrezorLink>
                             );

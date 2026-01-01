@@ -61,15 +61,9 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
                     id="TR_ONBOARDING_DEVICE_CHECK_2"
                     values={{
                         reseller: link => (
-                            <TrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
-                                {link}
-                            </TrezorLink>
+                            <TrezorLink href={TREZOR_RESELLERS_URL}>{link}</TrezorLink>
                         ),
-                        shop: link => (
-                            <TrezorLink href={TREZOR_URL} variant="underline">
-                                {link}
-                            </TrezorLink>
-                        ),
+                        shop: link => <TrezorLink href={TREZOR_URL}>{link}</TrezorLink>,
                     }}
                 />
             ),

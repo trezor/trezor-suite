@@ -67,21 +67,11 @@ export const Hologram = () => {
                 <Translation
                     id="TR_SECURITY_CHECK_HOLOGRAM"
                     values={{
-                        packaging: link => (
-                            <TrezorLink href={packagingUrl} variant="underline">
-                                {link}
-                            </TrezorLink>
-                        ),
+                        packaging: link => <TrezorLink href={packagingUrl}>{link}</TrezorLink>,
                         reseller: link => (
-                            <TrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
-                                {link}
-                            </TrezorLink>
+                            <TrezorLink href={TREZOR_RESELLERS_URL}>{link}</TrezorLink>
                         ),
-                        support: link => (
-                            <TrezorLink href={TREZOR_SUPPORT_URL} variant="underline">
-                                {link}
-                            </TrezorLink>
-                        ),
+                        support: link => <TrezorLink href={TREZOR_SUPPORT_URL}>{link}</TrezorLink>,
                     }}
                 />
             </Paragraph>

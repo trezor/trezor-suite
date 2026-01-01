@@ -73,7 +73,7 @@ export const Backup = ({
                 {device.features.unfinished_backup ? (
                     <Text variant="tertiary" data-testid="@backup/already-failed-message">
                         <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                        <TrezorLink icon="arrowUpRight" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
+                        <TrezorLink href={HELP_CENTER_RECOVERY_ISSUES_URL}>
                             <Translation id="TR_LEARN_MORE" />
                         </TrezorLink>
                     </Text>

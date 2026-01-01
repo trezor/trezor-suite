@@ -413,23 +413,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
         if (hasAddressChecksummed) {
             return (
-                <Row width="100%" justifyContent="flex-start" gap={spacings.xs}>
-                    <Translation
-                        id="TR_CHECKSUM_CONVERSION_INFO"
-                        values={{
-                            a: chunks => (
-                                <Link
-                                    href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}
-                                    variant="nostyle"
-                                    icon="arrowUpRight"
-                                    typographyStyle="label"
-                                >
-                                    {chunks}
-                                </Link>
-                            ),
-                        }}
-                    />
-                </Row>
+                <Translation
+                    id="TR_CHECKSUM_CONVERSION_INFO"
+                    values={{
+                        a: chunks => <Link href={HELP_CENTER_EVM_ADDRESS_CHECKSUM}>{chunks}</Link>,
+                    }}
+                />
             );
         }
 

@@ -23,7 +23,6 @@ export const LearnMoreButton = ({
         intent="neutral"
         priority="secondary"
         size={size}
-        iconRight="arrowUpRight"
         {...buttonProps}
     >
         {children || <Translation id="TR_LEARN_MORE" />}

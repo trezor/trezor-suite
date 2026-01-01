@@ -1,6 +1,6 @@
 import { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Card, Column, Divider, InfoItem, Row, Text } from '@trezor/components';
+import { Card, Column, Divider, InfoItem, Row, Text, TextButton } from '@trezor/components';
 import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
@@ -10,7 +10,6 @@ import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelT
 import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';
 import { FormattedCryptoAmount } from '../../../../../FormattedCryptoAmount';
 import { Translation } from '../../../../../Translation';
-import { TrezorLink } from '../../../../../TrezorLink';
 
 type CancelTransactionProps = {
     tx: WalletAccountTransaction;
@@ -47,15 +46,9 @@ export const CancelTransaction = ({ tx, selectedAccount }: CancelTransactionProp
                     <Text typographyStyle="highlight">
                         <Translation id="TR_CANCEL_TX_HEADER" />
                     </Text>
-                    <Text typographyStyle="hint">
-                        <TrezorLink
-                            variant="nostyle"
-                            href={HELP_CENTER_CANCEL_TRANSACTION}
-                            icon="arrowUpRight"
-                        >
-                            <Translation id="TR_LEARN_MORE" />
-                        </TrezorLink>
-                    </Text>
+                    <TextButton href={HELP_CENTER_CANCEL_TRANSACTION} isUnderlined size="small">
+                        <Translation id="TR_LEARN_MORE" />
+                    </TextButton>
                 </Row>
             }
         >

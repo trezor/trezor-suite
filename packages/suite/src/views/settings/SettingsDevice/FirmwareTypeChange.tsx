@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { firmwareActions } from '@suite-common/firmware';
 import { Button } from '@trezor/components';
 import {
@@ -11,22 +9,11 @@ import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
-
-const Version = styled.div`
-    span {
-        display: flex;
-        align-items: center;
-
-        > :last-child {
-            margin-left: 6px;
-        }
-    }
-`;
 
 interface FirmwareTypeProps {
     isDeviceLocked: boolean;
@@ -58,25 +45,22 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                 title={<Translation id="TR_FIRMWARE_TYPE" />}
                 description={
                     currentFwVersion && currentFwType ? (
-                        <Version>
-                            <Translation
-                                id="TR_YOUR_FIRMWARE_TYPE"
-                                values={{
-                                    version: (
-                                        <TrezorLink href={HELP_FIRMWARE_TYPE} variant="nostyle">
-                                            <Button
-                                                intent="neutral"
-                                                priority="secondary"
-                                                size="small"
-                                                iconRight="arrowUpRight"
-                                            >
-                                                <Translation id={currentFwType} />
-                                            </Button>
-                                        </TrezorLink>
-                                    ),
-                                }}
-                            />
-                        </Version>
+                        <Translation
+                            id="TR_YOUR_FIRMWARE_TYPE"
+                            values={{
+                                version: (
+                                    <Button
+                                        intent="neutral"
+                                        priority="secondary"
+                                        size="small"
+                                        href={HELP_FIRMWARE_TYPE}
+                                        margin={{ left: 4 }}
+                                    >
+                                        <Translation id={currentFwType} />
+                                    </Button>
+                                ),
+                            }}
+                        />
                     ) : (
                         <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
                     )

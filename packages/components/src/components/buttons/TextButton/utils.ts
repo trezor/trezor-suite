@@ -1,13 +1,22 @@
 import { DefaultTheme, RuleSet, css } from 'styled-components';
 
-import { Color, TypographyStyle } from '@trezor/theme';
+import { Color, SpacingValuesNew, TypographyStyle } from '@trezor/theme';
 
 import { TextButtonSize } from './types';
 import { ButtonIntent } from '../types';
 
+export const mapSizeToGap = (size: TextButtonSize): SpacingValuesNew => {
+    const gapMap: Record<TextButtonSize, SpacingValuesNew> = {
+        large: 8,
+        small: 4,
+    };
+
+    return gapMap[size];
+};
+
 export const mapSizeToIconSize = (size: TextButtonSize): number => {
     const iconSizeMap: Record<TextButtonSize, number> = {
-        large: 24,
+        large: 20,
         small: 16,
     };
 

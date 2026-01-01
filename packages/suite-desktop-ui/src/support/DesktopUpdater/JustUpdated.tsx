@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTheme } from 'styled-components';
-
-import { Card, Modal, Row } from '@trezor/components';
+import { Card, Modal, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { MarkdownWithComponents, TrezorLink } from 'src/components/suite';
+import { MarkdownWithComponents } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { getReleaseUrl } from 'src/services/github';
 
@@ -15,7 +13,6 @@ interface AvailableProps {
 
 export const JustUpdated = ({ onCancel }: AvailableProps) => {
     const [changelog, setChangelog] = useState<string | null>(null);
-    const theme = useTheme();
     const suiteCurrentVersion = process.env.VERSION || '';
 
     const getReleaseNotes = useCallback(async () => {
@@ -50,13 +47,13 @@ export const JustUpdated = ({ onCancel }: AvailableProps) => {
                 label={
                     <Row justifyContent="space-between" gap={spacings.xs}>
                         <Translation id="TR_UPDATE_MODAL_WHATS_NEW" />
-                        <TrezorLink
+                        <TextButton
                             href={getReleaseUrl(suiteCurrentVersion)}
-                            typographyStyle="hint"
-                            color={theme.textSubdued}
+                            size="small"
+                            intent="neutral"
                         >
                             <Translation id="TR_CHANGELOG_ON_GITHUB" />
-                        </TrezorLink>
+                        </TextButton>
                     </Row>
                 }
             >

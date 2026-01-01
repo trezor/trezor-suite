@@ -18,7 +18,7 @@ export const ReadMoreLink = ({ url, message, linkLabel }: ReadMoreLinkProps) =>
             id={message}
             values={{
                 TR_LEARN_MORE: (
-                    <TrezorLink variant="nostyle" href={URLS[url]}>
+                    <TrezorLink href={URLS[url]}>
                         <Translation id={linkLabel || 'TR_LEARN_MORE'} />
                     </TrezorLink>
                 ),

@@ -9,7 +9,7 @@ import {
     setIsVersionInfoModalVisible,
 } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
-import { ActionButton, ActionColumn, TextColumn, TrezorLink } from 'src/components/suite';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
@@ -62,12 +62,7 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                             {buttonLabel}
                         </Button>
                     ) : (
-                        <Button
-                            href={url}
-                            iconRight="arrowUpRight"
-                            margin={{ left: 4 }}
-                            {...commonButtonProps}
-                        >
+                        <Button href={url} margin={{ left: 4 }} {...commonButtonProps}>
                             {buttonLabel}
                         </Button>
                     ),
@@ -83,18 +78,13 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                             id={getUpdateStateMessage(desktopUpdateState.state)}
                             values={{
                                 version: (
-                                    <TrezorLink
+                                    <Button
+                                        intent="critical"
+                                        size="small"
                                         href={getReleaseUrl(desktopUpdateState.latest.version)}
-                                        variant="nostyle"
                                     >
-                                        <Button
-                                            intent="critical"
-                                            size="small"
-                                            iconRight="arrowUpRight"
-                                        >
-                                            {desktopUpdateState.latest.version}
-                                        </Button>
-                                    </TrezorLink>
+                                        {desktopUpdateState.latest.version}
+                                    </Button>
                                 ),
                             }}
                         />

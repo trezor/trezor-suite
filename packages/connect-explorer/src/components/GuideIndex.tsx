@@ -41,7 +41,7 @@ export default function GuideIndex(): ReactNode {
                         intent="neutral"
                         priority="secondary"
                         size="small"
-                        iconRight="arrowUpRight"
+                        iconRight="arrowLineUpRight"
                     >
                         Read more
                     </Button>

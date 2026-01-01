@@ -41,11 +41,7 @@ export const TradingDetailSupportBanner = ({
                     id="TR_TRADING_PROCESSING_SUPPORT"
                     values={{
                         providerName,
-                        link: chunks => (
-                            <Link href={supportUrl} target="_blank" variant="underline">
-                                {chunks}
-                            </Link>
-                        ),
+                        link: chunks => <Link href={supportUrl}>{chunks}</Link>,
                     }}
                 />
             </Paragraph>

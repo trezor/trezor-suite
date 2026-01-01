@@ -1,5 +1,5 @@
 import { ChainedTransactions } from '@suite-common/wallet-types';
-import { Banner, Card, Column, Link, Row, Table, Text } from '@trezor/components';
+import { Banner, Card, Column, Row, Table, Text, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -25,11 +25,9 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
                     <Text typographyStyle="body">
                         <Translation id="TR_CHAINED_TXS" />
                     </Text>
-                    <Text variant="primary" typographyStyle="hint">
-                        <Link onClick={showChained} icon="arrowUpRight" variant="nostyle">
-                            <Translation id="TR_SEE_DETAILS" />
-                        </Link>
-                    </Text>
+                    <TextButton onClick={showChained} size="small" intent="brand" isUnderlined>
+                        <Translation id="TR_SEE_DETAILS" />
+                    </TextButton>
                 </Row>
             }
         >

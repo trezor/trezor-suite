@@ -9,12 +9,12 @@ import {
     getTxOperation,
     isSupportedEthStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Icon, Row, Tooltip } from '@trezor/components';
+import { Icon, Link, Row, Tooltip } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FormattedCryptoAmount, TrezorLink } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
@@ -59,14 +59,6 @@ const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransactio
     ${typography.body}
     white-space: nowrap;
     flex: 0;
-`;
-
-const HelpLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.textAlertYellow};
-
-    path {
-        fill: ${({ theme }) => theme.iconAlertYellow};
-    }
 `;
 
 interface TransactionHeadingProps {
@@ -147,13 +139,9 @@ export const TransactionHeading = ({
                                     id="TR_ZERO_PHISHING_TOOLTIP"
                                     values={{
                                         a: chunks => (
-                                            <HelpLink
-                                                href={HELP_CENTER_ZERO_VALUE_ATTACKS}
-                                                icon="arrowUpRight"
-                                                typographyStyle="hint"
-                                            >
+                                            <Link href={HELP_CENTER_ZERO_VALUE_ATTACKS}>
                                                 {chunks}
-                                            </HelpLink>
+                                            </Link>
                                         ),
                                     }}
                                 />

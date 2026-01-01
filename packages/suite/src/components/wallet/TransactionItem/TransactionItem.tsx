@@ -202,14 +202,7 @@ export const TransactionItem = memo(
                             id="TR_BUMP_FEE_DISABLED_TOOLTIP"
                             values={{
                                 a: chunks => (
-                                    <Link
-                                        href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}
-                                        variant="nostyle"
-                                        icon="arrowUpRight"
-                                        typographyStyle="hint"
-                                    >
-                                        {chunks}
-                                    </Link>
+                                    <Link href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}>{chunks}</Link>
                                 ),
                             }}
                         />

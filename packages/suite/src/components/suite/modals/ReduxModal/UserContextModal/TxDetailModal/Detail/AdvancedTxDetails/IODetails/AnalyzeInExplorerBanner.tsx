@@ -22,7 +22,7 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
             intent="info"
             icon="cube"
             rightContent={
-                <Banner.Button iconRight="arrowUpRight" size="small" href={href}>
+                <Banner.Button size="small" href={href}>
                     <Translation id="TR_ANALYZE_IN_EXPLORER_OPEN" />
                 </Banner.Button>
             }

@@ -106,20 +106,10 @@ export const MultiShareBackupStep2to4 = ({ step }: MultiShareBackupStep2to4Props
                         id="TR_CREATE_SHARES_CARD_1"
                         values={{
                             cardsLink: chunks => (
-                                <TrezorLink
-                                    href={HELP_CENTER_SEED_CARD_URL}
-                                    variant="underline"
-                                    typographyStyle="hint"
-                                >
-                                    {chunks}
-                                </TrezorLink>
+                                <TrezorLink href={HELP_CENTER_SEED_CARD_URL}>{chunks}</TrezorLink>
                             ),
                             keepLink: chunks => (
-                                <TrezorLink
-                                    href={ESHOP_KEEP_METAL_MULTI_SHARE_URL}
-                                    variant="underline"
-                                    typographyStyle="hint"
-                                >
+                                <TrezorLink href={ESHOP_KEEP_METAL_MULTI_SHARE_URL}>
                                     {chunks}
                                 </TrezorLink>
                             ),

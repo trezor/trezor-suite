@@ -2,8 +2,8 @@ import { Link, LinkProps } from '@trezor/components';
 
 import { useExternalLink } from 'src/hooks/suite';
 
-export const TrezorLink = (props: LinkProps) => {
-    const url = useExternalLink(props.href);
+export const TrezorLink = ({ href, ...props }: LinkProps) => {
+    const url = useExternalLink(href);
 
     return <Link {...props} href={url} />;
 };

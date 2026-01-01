@@ -16,20 +16,19 @@ import {
     Card,
     Column,
     Dropdown,
-    Icon,
     IconButton,
     IconCircle,
     InfoItem,
+    Link,
     Row,
     Table,
     Text,
 } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Address, HiddenPlaceholder, TrezorLink } from 'src/components/suite';
+import { Address, HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -85,12 +84,12 @@ const NftsRow = ({
                     />
                 </Table.Cell>
                 <Table.Cell colSpan={1} align="end">
-                    <Row gap={spacings.xs}>
+                    <Row gap={8}>
                         <Dropdown
                             placement={{ position: 'bottom', alignment: 'start' }}
                             content={
                                 <Card paddingType="small">
-                                    <Column maxWidth={200} gap={spacings.md}>
+                                    <Column gap={16}>
                                         <InfoItem
                                             typographyStyle="label"
                                             label={
@@ -100,19 +99,17 @@ const NftsRow = ({
                                                     )}
                                                 />
                                             }
-                                            gap={spacings.zero}
+                                            gap={0}
                                         >
-                                            <Row>
+                                            <Row gap={8}>
                                                 <Text typographyStyle="label" as="div">
-                                                    <Address
-                                                        isChunked={false}
-                                                        value={nft.contract}
-                                                    />
+                                                    <Address isTruncated value={nft.contract} />
                                                 </Text>
                                                 <IconButton
                                                     icon="copy"
                                                     intent="neutral"
                                                     priority="secondary"
+                                                    size="small"
                                                     onClick={() => {
                                                         dispatch(
                                                             shouldShowCopyAddressModal
@@ -194,7 +191,6 @@ const NftsRow = ({
                                 }}
                                 intent="neutral"
                                 priority="secondary"
-                                size="small"
                             >
                                 <Translation id="TR_UNHIDE" />
                             </Button>
@@ -212,27 +208,22 @@ const NftsRow = ({
                         <Table.Cell colSpan={2}>
                             <Text typographyStyle="hint">
                                 <HiddenPlaceholder>
-                                    <Row gap={spacings.xs}>
+                                    <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
                                             paddingType="large"
                                             size={28}
                                             variant="tertiary"
                                         />
-                                        <Text textWrap="nowrap">{NftName}</Text>
-                                        #<RedactNumericalValue value={id} />
+                                        <Link href={getNftExplorerUrl(explorer, nft, id)}>
+                                            <Text textWrap="nowrap">{NftName}</Text>
+                                        </Link>
+                                        <Text>
+                                            #<RedactNumericalValue value={id} />
+                                        </Text>
                                         <Badge size="small">
                                             <RedactNumericalValue value="1x" />
                                         </Badge>
-                                        <TrezorLink
-                                            typographyStyle="label"
-                                            variant="nostyle"
-                                            href={getNftExplorerUrl(explorer, nft, id)}
-                                            target="_blank"
-                                            onClick={e => e.stopPropagation()}
-                                        >
-                                            <Icon name="arrowUpRight" size={12} />
-                                        </TrezorLink>
                                     </Row>
                                 </HiddenPlaceholder>
                             </Text>
@@ -249,27 +240,24 @@ const NftsRow = ({
                         <Table.Cell colSpan={2}>
                             <Text typographyStyle="hint">
                                 <HiddenPlaceholder>
-                                    <Row gap={spacings.xs}>
+                                    <Row gap={8}>
                                         <IconCircle
                                             name="pictureFrame"
                                             paddingType="large"
                                             size={28}
                                             variant="tertiary"
                                         />
-                                        <Text textWrap="nowrap">{NftName}</Text>
-                                        #<RedactNumericalValue value={value.id || ''} />
+                                        <Link
+                                            href={getNftExplorerUrl(explorer, nft, value?.id || '')}
+                                        >
+                                            <Text textWrap="nowrap">{NftName}</Text>
+                                        </Link>
+                                        <Text>
+                                            #<RedactNumericalValue value={value.id || ''} />
+                                        </Text>
                                         <Badge size="small">
                                             <RedactNumericalValue value={value.value || ''} />x
                                         </Badge>
-                                        <TrezorLink
-                                            typographyStyle="label"
-                                            variant="nostyle"
-                                            href={getNftExplorerUrl(explorer, nft, value?.id || '')}
-                                            target="_blank"
-                                            onClick={e => e.stopPropagation()}
-                                        >
-                                            <Icon name="arrowUpRight" size={12} />
-                                        </TrezorLink>
                                     </Row>
                                 </HiddenPlaceholder>
                             </Text>

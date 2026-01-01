@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
@@ -38,7 +36,6 @@ export const EnterPassphrase = ({
     onSubmit,
 }: EnterPassphraseProps) => {
     const [value, setValue] = useState('');
-    const theme = useTheme();
     const deviceModel = useSelector(selectDeviceModel);
     const isUsingNonAsciiCharacters = getNonAsciiChars(value) !== null;
 
@@ -66,9 +63,6 @@ export const EnterPassphrase = ({
                                                     a: text => (
                                                         <TrezorLink
                                                             href={HELP_CENTER_PASSPHRASE_URL}
-                                                            target="_blank"
-                                                            variant="underline"
-                                                            color={theme.textAlertBlue}
                                                         >
                                                             {text}
                                                         </TrezorLink>

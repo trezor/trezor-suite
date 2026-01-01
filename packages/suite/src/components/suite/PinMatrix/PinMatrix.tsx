@@ -117,7 +117,7 @@ export const PinMatrix = ({
                     intent="info"
                     icon="password"
                     rightContent={
-                        <Banner.Button href={learnMoreUrl} iconRight="arrowUpRight" size="small">
+                        <Banner.Button href={learnMoreUrl} size="small">
                             <Translation id="TR_LEARN_MORE" />
                         </Banner.Button>
                     }
