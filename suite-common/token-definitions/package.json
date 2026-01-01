@@ -19,10 +19,10 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link": "1.0.1",
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/blockchain-link-utils": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
