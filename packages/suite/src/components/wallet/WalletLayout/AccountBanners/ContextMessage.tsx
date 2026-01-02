@@ -5,7 +5,7 @@ import {
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { Banner, Row } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -67,7 +67,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
         <Banner
             intent={message.variant}
             rightContent={
-                <Row gap={8}>
+                <>
                     {actionConfig && (
                         <Banner.Button
                             onClick={actionConfig?.onClick}
@@ -84,7 +84,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                             data-testid={dismissalConfig['data-testid']}
                         />
                     )}
-                </Row>
+                </>
             }
         >
             {message.content}

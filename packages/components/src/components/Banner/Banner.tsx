@@ -61,7 +61,7 @@ export const Banner = ({
             {...frameProps}
             width={width}
         >
-            <Row gap={16} padding={{ vertical: 12, horizontal: 20 }}>
+            <Row gap={12} padding={{ vertical: 12, horizontal: 20 }}>
                 {isLoading && <Spinner size={20} />}
                 {!isLoading && withIcon && (
                     <Icon
@@ -71,7 +71,7 @@ export const Banner = ({
                     />
                 )}
 
-                <Row flex="1" flexWrap="wrap" gap={10}>
+                <Row flex="1" flexWrap="wrap" gap={12}>
                     <Column flex="1 1 300px" maxWidth="100%">
                         <Text
                             as="div"
@@ -83,7 +83,7 @@ export const Banner = ({
                     </Column>
                     {rightContent && (
                         <BannerContext.Provider value={{ intent }}>
-                            {rightContent}
+                            <Row gap={10}>{rightContent}</Row>
                         </BannerContext.Provider>
                     )}
                 </Row>

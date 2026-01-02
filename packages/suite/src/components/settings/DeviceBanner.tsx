@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Banner, Column, H4, Paragraph, Row } from '@trezor/components';
+import { Banner, Column, H4, Paragraph } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
@@ -28,12 +28,12 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
             intent="warning"
             icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
             rightContent={
-                <Row gap={12}>
+                <>
                     {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
                     {isWebUsbTransport && !device?.connected && (
                         <WebUsbButton intent="warning" size="small" />
                     )}
-                </Row>
+                </>
             }
         >
             <Column>
