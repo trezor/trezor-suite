@@ -97,8 +97,8 @@
     },
     "resolutions": {
         "typescript": "5.8.3",
-        "react-native": "0.81.4",
         "prettier": "3.7.4",
+        "react-native": "0.81.5",
         "type-fest": "4.24.0",
         "bcrypto": "5.4.0",
         "react": "19.1.0",
@@ -116,7 +116,8 @@
         "@sentry/core": "10.27.0",
         "@sentry/browser": "10.27.0",
         "@sentry/react": "10.27.0",
-        "@sentry/types": "10.27.0"
+        "@sentry/types": "10.27.0",
+        "expo-build-properties": "~1.0.10"
     },
     "devDependencies": {
         "@babel/cli": "7.28.3",

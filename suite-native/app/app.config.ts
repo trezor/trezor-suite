@@ -126,13 +126,13 @@ const getPlugins = (): ExpoPlugins => {
                     minSdkVersion: 28,
                     // this fixes expo-updates build error
                     kotlinVersion: '2.1.20',
+                    ndkVersion: '27.0.12077973',
                 },
                 ios: {
                     deploymentTarget: '15.1',
                 },
             },
         ],
-        ['./plugins/minSdkProjectGradlePatch.js', {}], // Without this patch, the Android properties are not applied correctly in build.gradle when using Expo SDK 53.
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
         [
             './plugins/withAndroidMainActivityAttributes.js',

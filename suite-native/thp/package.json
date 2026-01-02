@@ -22,7 +22,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "19.1.0",
-        "react-native": "0.81.4",
+        "react-native": "0.81.5",
         "react-native-keyboard-controller": "1.19.2",
         "react-redux": "9.2.0"
     }
