@@ -16,7 +16,7 @@
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/device-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/type-utils": "workspace:*",
