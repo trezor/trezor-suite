@@ -1,5 +1,4 @@
 @config-plugins/detox
-@expo/config-plugins
 @mobily/ts-belt
 @react-native-community/cli
 @react-native-community/netinfo
