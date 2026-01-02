@@ -12,7 +12,7 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
         "@suite-native/config": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "react": "19.1.0"
     }
 }
