@@ -210,8 +210,8 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
             device: {
                 instance: 0,
                 state: undefined, // reset state from previous tests on this instance
+                useEmptyPassphrase: true,
             },
-            useEmptyPassphrase: true,
         });
 
         TrezorConnect.on('ui-request_passphrase', () => {
@@ -251,8 +251,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         // authorize no passphrase wallet
         await TrezorConnect.authorizeCoinjoin({
             ...params,
-            device: { instance: 0, state: walletDefault.payload.state },
-            useEmptyPassphrase: true,
+            device: { instance: 0, state: walletDefault.payload.state, useEmptyPassphrase: true },
         });
 
         expect(spy).toHaveBeenCalledTimes(1 * confirmationScreensCount);
@@ -260,8 +259,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         // re-authorize
         await TrezorConnect.authorizeCoinjoin({
             ...params,
-            device: { instance: 0, state: walletDefault.payload.state },
-            useEmptyPassphrase: true,
+            device: { instance: 0, state: walletDefault.payload.state, useEmptyPassphrase: true },
             preauthorized: true,
         });
 
@@ -285,8 +283,7 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
         // re-authorize no passphrase wallet again
         await TrezorConnect.authorizeCoinjoin({
             ...params,
-            device: { instance: 0, state: walletDefault.payload.state },
-            useEmptyPassphrase: true,
+            device: { instance: 0, state: walletDefault.payload.state, useEmptyPassphrase: true },
             preauthorized: true,
         });
 

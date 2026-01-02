@@ -91,8 +91,8 @@ const manageTrustline = async (
             path: device.path,
             instance: device.instance,
             state: device.state,
+            useEmptyPassphrase: device.useEmptyPassphrase,
         },
-        useEmptyPassphrase: device.useEmptyPassphrase,
         path: account.path,
         networkPassphrase: transaction.networkPassphrase,
         transaction: {

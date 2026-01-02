@@ -176,7 +176,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         this.overridePreviousCall = false;
         this.overridden = false;
         this.useEmptyPassphrase =
-            typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : false;
+            typeof payload.device?.useEmptyPassphrase === 'boolean'
+                ? payload.device.useEmptyPassphrase
+                : false;
         this.allowDeviceMode = [UI.SEEDLESS]; // Allow seedless by default
 
         // Determine the type based on the method name

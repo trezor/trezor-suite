@@ -7,7 +7,6 @@ export const showXpubOnDevice = async (device: TrezorDevice, account: Account) =
     const params = {
         device,
         path: account.path,
-        useEmptyPassphrase: device.useEmptyPassphrase,
         showOnTrezor: true,
         derivationType: getDerivationType(account.accountType),
         coin: account.symbol,

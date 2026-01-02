@@ -97,8 +97,8 @@ export const signDataAndConfirmThunk = createThunk(
                 path: device?.path,
                 instance: device?.instance,
                 state: device?.state,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
             },
-            useEmptyPassphrase: device?.useEmptyPassphrase,
         });
 
         if (!result.success) {

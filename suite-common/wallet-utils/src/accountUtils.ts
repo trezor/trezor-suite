@@ -1167,11 +1167,11 @@ export const prepareNewAccountPayload = async ({
     const res = await TrezorConnect.getAccountInfo({
         path: newPath,
         coin: networkSymbol,
-        useEmptyPassphrase: device.useEmptyPassphrase,
         device: {
             path: device.path,
             instance: device.instance,
             state: device.state,
+            useEmptyPassphrase: device.useEmptyPassphrase,
         },
         details: 'txs',
     });

@@ -45,17 +45,14 @@ describe('TrezorConnect passphrase', () => {
             device: {
                 instance: 0,
                 state: undefined, // reset state from previous tests on this instance
+                useEmptyPassphrase: true,
             },
-            useEmptyPassphrase: true,
         });
         if (!walletDefault.success) {
             throw new Error(`default Wallet exception: ${walletDefault.payload.error}`);
         }
         const xpub = await TrezorConnect.getPublicKey({
-            device: {
-                instance: 0,
-            },
-            useEmptyPassphrase: true,
+            device: { instance: 0, useEmptyPassphrase: true },
             path: XPUB_PATH,
         });
         if (!xpub.success) {
@@ -178,8 +175,7 @@ describe('TrezorConnect passphrase', () => {
     it('Using multiple passphrases with device restart', async () => {
         // get standard wallet state
         const standard = await TrezorConnect.getDeviceState({
-            device: { instance: 0, state: undefined },
-            useEmptyPassphrase: true,
+            device: { instance: 0, state: undefined, useEmptyPassphrase: true },
         });
         if (!standard.success) throw new Error(standard.payload.error);
 
@@ -202,8 +198,7 @@ describe('TrezorConnect passphrase', () => {
 
         // try to get standard wallet state, with sessionId now used for passphrase wallet
         const standard2 = await TrezorConnect.getDeviceState({
-            device: { instance: 0, state: standard.payload._state },
-            useEmptyPassphrase: true,
+            device: { instance: 0, state: standard.payload._state, useEmptyPassphrase: true },
         });
         if (!standard2.success) throw new Error(standard2.payload.error);
 

@@ -131,7 +131,6 @@ export const getComposeAddressPlaceholder = async (
                     device,
                     coin: account.symbol,
                     path: `${substituteBip43Path(bip43Path)}/0/0`,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
                     showOnTrezor: false,
                     chunkify,
                 });

@@ -101,8 +101,8 @@ const preCallHook = async <M extends CallMethodKeys>({
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                useEmptyPassphrase: device.useEmptyPassphrase,
                 showOnTrezor: false,
             });
             if (!accountAddress.success) throw new Error(accountAddress.payload.error);

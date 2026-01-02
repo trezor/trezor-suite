@@ -19,11 +19,7 @@ export const getNonce = createThunk<string, void, { rejectValue: TradingSendReje
             });
         }
 
-        const nonceResponse = await TrezorConnect.getNonce({
-            device,
-            useEmptyPassphrase: true,
-            keepSession: true,
-        });
+        const nonceResponse = await TrezorConnect.getNonce({ device, keepSession: true });
 
         if (!nonceResponse.success) {
             return rejectWithValue({

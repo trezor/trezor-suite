@@ -26,9 +26,6 @@ export default class CipherKeyValue extends AbstractMethod<
             ? { ...this.payload, bundle: [this.payload] }
             : this.payload;
 
-        this.useEmptyPassphrase =
-            typeof payload.useEmptyPassphrase === 'boolean' ? payload.useEmptyPassphrase : true;
-
         // validate bundle type
         Assert(Bundle(CipherKeyValueSchema), payload);
         this.params = payload.bundle.map(batch => ({

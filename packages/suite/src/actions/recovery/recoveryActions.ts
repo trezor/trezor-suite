@@ -152,11 +152,7 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
 
     // user might have proceeded with recovery on screen which means that we need to
     // reload fresh features before deciding what to do
-    const response = await TrezorConnect.getFeatures({
-        device: {
-            path: device.path,
-        },
-    });
+    const response = await TrezorConnect.getFeatures({ device: { path: device.path } });
 
     if (!response.success) {
         dispatch(setStatus('finished'));

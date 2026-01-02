@@ -74,7 +74,6 @@ describe('getNonce thunk', () => {
             // Verify TrezorConnect.getNonce was called with correct parameters
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
                 device: mockDevice,
-                useEmptyPassphrase: true,
                 keepSession: true,
             });
         });
@@ -163,7 +162,6 @@ describe('getNonce thunk', () => {
             // Verify TrezorConnect.getNonce was called
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
                 device: mockDevice,
-                useEmptyPassphrase: true,
                 keepSession: true,
             });
         });
@@ -218,7 +216,6 @@ describe('getNonce thunk', () => {
 
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
                 device: minimalDevice,
-                useEmptyPassphrase: true,
                 keepSession: true,
             });
         });
@@ -250,7 +247,6 @@ describe('getNonce thunk', () => {
 
             expect(TrezorConnect.getNonce).toHaveBeenCalledWith({
                 device: trezorOneDevice,
-                useEmptyPassphrase: true,
                 keepSession: true,
             });
         });

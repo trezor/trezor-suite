@@ -70,7 +70,6 @@ const solanaSignTransaction = createThunk<
                 payload: {
                     path: account.path,
                     device,
-                    useEmptyPassphrase: device?.useEmptyPassphrase,
                     serializedTx,
                     serialize: true,
                     additionalInfo: {
