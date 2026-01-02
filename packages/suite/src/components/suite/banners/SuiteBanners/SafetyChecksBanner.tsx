@@ -1,13 +1,13 @@
-import { Banner, Row, Banner as WarningComponent } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 
-interface SafetyChecksBannerProps {
+type SafetyChecksBannerProps = {
     onDismiss?: () => void;
-}
+};
 
 export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
     const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
             icon
             intent="warning"
             rightContent={
-                <Row gap={8}>
+                <>
                     <Banner.Button
                         onClick={() =>
                             dispatch(
@@ -32,13 +32,13 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                         <Translation id="TR_SAFETY_CHECKS_BANNER_CHANGE" />
                     </Banner.Button>
                     {onDismiss && (
-                        <WarningComponent.IconButton
+                        <Banner.IconButton
                             icon="x"
                             onClick={onDismiss}
                             data-testid="@banner/safety-checks/dismiss"
                         />
                     )}
-                </Row>
+                </>
             }
         >
             <Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />

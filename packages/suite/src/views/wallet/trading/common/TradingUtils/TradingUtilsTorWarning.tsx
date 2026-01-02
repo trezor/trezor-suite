@@ -1,5 +1,5 @@
 import { TradingType } from '@suite-common/trading';
-import { Banner, Button, Column } from '@trezor/components';
+import { Banner, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -46,14 +46,17 @@ export const TradingUtilsTorWarning = ({
 
     const translationId = getTorWarningTranslationId(tradingType, noOffer);
 
-    const button = (
-        <Button intent="warning" onClick={handleGoToSettings}>
-            <Translation id="TR_GO_TO_SETTINGS" />
-        </Button>
-    );
-
     return (
-        <Banner intent="warning" rightContent={showButton ? button : undefined}>
+        <Banner
+            intent="warning"
+            rightContent={
+                !showButton && (
+                    <Banner.Button onClick={handleGoToSettings}>
+                        <Translation id="TR_GO_TO_SETTINGS" />
+                    </Banner.Button>
+                )
+            }
+        >
             <Column gap={spacings.sm}>
                 <Translation id={translationId} />
             </Column>

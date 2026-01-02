@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { messageSystemActions, resolveMessageContent } from '@suite-common/message-system';
 import { Message } from '@suite-common/suite-types';
-import { Banner, BannerProps, Row } from '@trezor/components';
+import { Banner, BannerProps } from '@trezor/components';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
@@ -37,7 +37,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
             icon
             intent={variant}
             rightContent={
-                <Row gap={8}>
+                <>
                     <MessageSystemButton cta={cta} id={id} />
                     {dismissalConfig && (
                         <Banner.IconButton
@@ -47,7 +47,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
                             data-testid={dismissalConfig['data-testid']}
                         />
                     )}
-                </Row>
+                </>
             }
             margin={margin}
             width={width}

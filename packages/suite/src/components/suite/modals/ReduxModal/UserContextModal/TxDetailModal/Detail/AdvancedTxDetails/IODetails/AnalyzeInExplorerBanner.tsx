@@ -31,7 +31,7 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
                 <H4>
                     <Translation id="TR_ANALYZE_IN_EXPLORER" />
                 </H4>
-                <Paragraph variant="tertiary">
+                <Paragraph>
                     <Translation id="TR_ANALYZE_IN_EXPLORER_DESC" />
                 </Paragraph>
             </Column>
