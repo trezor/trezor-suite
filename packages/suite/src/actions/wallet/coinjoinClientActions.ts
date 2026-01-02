@@ -336,10 +336,7 @@ export const stopCoinjoinSession =
         }
 
         if (shouldCancelAuthorization) {
-            const result = await TrezorConnect.cancelCoinjoinAuthorization({
-                device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
-            });
+            const result = await TrezorConnect.cancelCoinjoinAuthorization({ device });
 
             if (!result.success) {
                 dispatch(
@@ -522,11 +519,7 @@ const getOwnershipProof =
         // process all bundles in sequence one device by one, fill the response object
         await promiseAllSequence(
             groupParamsByDevice.map(({ device, bundle, utxos }) => async () => {
-                const proof = await TrezorConnect.getOwnershipProof({
-                    device,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                    bundle,
-                });
+                const proof = await TrezorConnect.getOwnershipProof({ device, bundle });
                 if (proof.success) {
                     proof.payload.forEach((p, i) => {
                         if (!utxos[i]) return; // double check if data from Trezor corresponds with request
@@ -651,7 +644,6 @@ const signCoinjoinTx =
                         const signTx = await TrezorConnect.signTransaction({
                             version: 1, // Coinjoin requires the 1, the default is now 2, as most wallets have 2
                             device,
-                            useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,
                             outputs: tx.outputs,
                             coinjoinRequest: tx.coinjoinRequest,

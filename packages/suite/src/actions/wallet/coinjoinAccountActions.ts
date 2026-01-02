@@ -579,11 +579,7 @@ export const createCoinjoinAccount =
         dispatch(coinjoinAccountPreloading(true));
 
         const device = selectSelectedDevice(getState());
-        const unlockPath = await TrezorConnect.unlockPath({
-            path: "m/10025'",
-            device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
-        });
+        const unlockPath = await TrezorConnect.unlockPath({ path: "m/10025'", device });
         if (!unlockPath.success) {
             dispatch(handleError(unlockPath.payload.error));
             dispatch(clearCoinjoinInstances(network.symbol));
@@ -599,7 +595,6 @@ export const createCoinjoinAccount =
             path,
             unlockPath: unlockPath.payload,
             device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
             coin: network.symbol,
             suppressBackupWarning: true,
         });
@@ -700,7 +695,6 @@ const authorizeCoinjoin =
 
         const auth = await TrezorConnect.authorizeCoinjoin({
             device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
             path: account.path,
             coin: account.symbol,
             coordinator,
@@ -812,7 +806,6 @@ export const restoreCoinjoinSession =
 
         const auth = await TrezorConnect.authorizeCoinjoin({
             device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
             path: account.path,
             coin: account.symbol,
             preauthorized: true, // this parameter will check if device is already authorized

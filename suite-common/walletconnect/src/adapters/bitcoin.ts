@@ -93,7 +93,6 @@ const bitcoinRequestThunk = createThunk<
                         message,
                         hex: true,
                         device,
-                        useEmptyPassphrase: device?.useEmptyPassphrase,
                     },
                     ...popupCallCommonParams,
                 }),
@@ -156,7 +155,6 @@ const bitcoinRequestThunk = createThunk<
                 },
                 feeLevels: feeLevels.payload.levels,
                 device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
             });
             if (
                 !precomposedTransaction.success ||

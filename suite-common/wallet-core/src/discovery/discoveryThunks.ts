@@ -266,8 +266,12 @@ export const runDiscoveryThunk = createThunk(
                 : getNewInstanceNumber(selectDevices(getState()), device);
 
             const deviceStateResponse = await TrezorConnect.getDeviceState({
-                device: { path: device.path, instance, state: undefined },
-                useEmptyPassphrase: !isAddingHiddenWallet,
+                device: {
+                    path: device.path,
+                    instance,
+                    state: undefined,
+                    useEmptyPassphrase: !isAddingHiddenWallet,
+                },
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
@@ -313,8 +317,7 @@ export const runDiscoveryThunk = createThunk(
                 if (!standardWallet) {
                     // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
                     const res = await TrezorConnect.getDeviceState({
-                        device: { path: passedDevice.path },
-                        useEmptyPassphrase: true,
+                        device: { path: passedDevice.path, useEmptyPassphrase: true },
                     });
 
                     if (res.success && deviceStateEqualTo(deviceState)(res.payload._state)) {
@@ -397,8 +400,8 @@ export const runDiscoveryThunk = createThunk(
                 device: {
                     instance,
                     state: { staticSessionId: deviceState.staticSessionId },
+                    useEmptyPassphrase: !isAddingHiddenWallet,
                 },
-                useEmptyPassphrase: !isAddingHiddenWallet,
                 coins: accountsParam,
             });
 
@@ -460,7 +463,6 @@ export const runDiscoveryThunk = createThunk(
 
             const getDeviceState2Res = await TrezorConnect.getDeviceState({
                 device: { path: device.path, instance, state: undefined },
-                useEmptyPassphrase: false,
             });
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
@@ -582,8 +584,8 @@ export const runAdditionalDiscoveryThunk = createThunk(
                 path: device.path,
                 instance: device.instance,
                 state: device.state.staticSessionId,
+                useEmptyPassphrase: device.useEmptyPassphrase,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase,
         });
 
         if (!deviceStateResponse.success) {
@@ -636,7 +638,6 @@ export const runAdditionalDiscoveryThunk = createThunk(
 
         const result = await TrezorConnect.discoverAccounts({
             device: updatedDevice,
-            useEmptyPassphrase: updatedDevice.useEmptyPassphrase,
             coins: accountsParam,
         });
 

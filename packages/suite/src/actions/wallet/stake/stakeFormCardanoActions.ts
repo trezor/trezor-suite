@@ -353,7 +353,6 @@ export const signTransaction =
         const signedTx = await TrezorConnect.cardanoSignTransaction({
             signingMode: PROTO.CardanoTxSigningMode.ORDINARY_TRANSACTION,
             device,
-            useEmptyPassphrase: device?.useEmptyPassphrase,
             inputs: txPlan.inputs,
             outputs: txPlan.outputs,
             unsignedTx: txPlan.unsignedTx,

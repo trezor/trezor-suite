@@ -54,8 +54,7 @@ export const EntryForm = ({ onEncrypted, entry, cancel }: Props) => {
         setInProgress(true);
         const nonce = randomBytes(32).toString('hex');
         TrezorConnect.cipherKeyValue({
-            device: { path: device.path },
-            useEmptyPassphrase: true,
+            device: { path: device.path, useEmptyPassphrase: true },
             path: PATH,
             key: getDisplayKey(title, username),
             value: nonce,

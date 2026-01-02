@@ -202,7 +202,6 @@ const ethereumRequestThunk = createThunk<
                     chainId,
                 },
                 device,
-                useEmptyPassphrase: device?.useEmptyPassphrase,
             };
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({

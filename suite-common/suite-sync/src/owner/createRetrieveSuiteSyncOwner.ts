@@ -55,8 +55,8 @@ export const createRetrieveSuiteSyncOwner =
                 path: device.path,
                 state: device.state,
                 instance: device.instance ?? 0,
+                useEmptyPassphrase: device.useEmptyPassphrase ?? false,
             },
-            useEmptyPassphrase: device.useEmptyPassphrase ?? false,
             proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
         });
 

@@ -168,11 +168,7 @@ export const acquireDevice = createThunk(
 
         if (!device) return;
 
-        const response = await TrezorConnect.getFeatures({
-            device,
-            // todo: it shouldn't be needed I think - getFeatures is not touching device.state, is it?
-            useEmptyPassphrase: true,
-        });
+        const response = await TrezorConnect.getFeatures({ device });
 
         if (!response.success) {
             if (response.payload.code === 'Device_ThpPairingTagInvalid') {
@@ -256,7 +252,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
             device,
             path: addressPath,
             unlockPath: account.unlockPath,
-            useEmptyPassphrase: device.useEmptyPassphrase,
             coin: account.symbol,
             chunkify,
             showOnTrezor,
@@ -273,7 +268,6 @@ export const confirmAddressOnDeviceThunk = createThunk(
             case 'cardano':
                 response = TrezorConnect.cardanoGetAddress({
                     device,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
                     addressParameters: {
                         stakingPath: getStakingPath(account),
                         addressType: getAddressType(),
