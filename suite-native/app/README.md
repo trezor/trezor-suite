@@ -11,6 +11,29 @@ Generally it's recommended to follow official [React Native environment setup](h
 2. [iOS Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=ios)
     - Make sure you have the latest version of the Xcode command line tools installed: `xcode-select --install`
 
+### Requirements for Cardano Support
+
+Due to the integration of Cardano via `csl-mobile-bridge`, you need to set up Rust and specific cross-compilation targets:
+
+- **Rust** — [Install rustup](https://rustup.rs/)
+- **Python 3** — Required for Android builds
+- **Rust targets** — Cross-compilation targets for iOS/Android
+
+```bash
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf [https://sh.rustup.rs](https://sh.rustup.rs) | sh
+source $HOME/.cargo/env
+
+# Install Rust targets
+rustup target add aarch64-apple-ios aarch64-apple-ios-sim x86_64-apple-ios \
+    aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+
+# Verify Python 3
+python3 --version
+```
+
+more info: https://github.com/Emurgo/csl-mobile-bridge
+
 ## Before you run the app
 
 1. Run `yarn native:prebuild:clean` to generate `ios/` and `android/` directories.
