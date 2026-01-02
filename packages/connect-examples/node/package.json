@@ -8,7 +8,7 @@
         "start": "tsx  ./src/index.ts"
     },
     "dependencies": {
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "tsx": "^4.20.3"
     }
 }
