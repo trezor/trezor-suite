@@ -13,7 +13,7 @@
     "dependencies": {
         "@react-navigation/native": "7.1.25",
         "@reduxjs/toolkit": "2.11.0",
-        "@shopify/react-native-skia": "2.4.7",
+        "@shopify/react-native-skia": "2.4.14",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/message-system": "workspace:*",
