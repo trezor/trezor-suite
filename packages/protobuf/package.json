@@ -28,6 +28,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "lint:js": "eslint .",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
         "update:protobuf": "./scripts/protobuf-build.sh",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
@@ -40,6 +41,7 @@
     },
     "devDependencies": {
         "protobufjs-cli": "^1.1.3",
+        "eslint": "^9.38.0",
         "tsx": "^4.20.3"
     },
     "peerDependencies": {
