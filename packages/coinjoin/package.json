@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@suite-common/suite-constants": "workspace:*",
-        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link": "1.0.1",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
