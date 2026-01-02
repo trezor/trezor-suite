@@ -16,6 +16,7 @@
         "build:adhoc": "npx eas-cli build --profile adhoc",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
+        "eas-build-pre-install": "./eas-pre-install.sh",
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "npx detox build --configuration",
         "test:e2e": "node ./scripts/cleanArtifacts.js && npx detox test --configuration ",
