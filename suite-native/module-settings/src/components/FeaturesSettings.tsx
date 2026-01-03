@@ -54,7 +54,7 @@ export const FeaturesSettings = () => {
             />
             {isFeatureSuiteSyncAvailable && (
                 <AppSettingsCardWithIconLayout
-                    icon="tag"
+                    icon="arrowsClockwise"
                     title={<Translation id="moduleSettings.items.features.suiteSync.title" />}
                     subtitle={<Translation id="moduleSettings.items.features.suiteSync.subtitle" />}
                     onPress={() => navigateTo(SettingsStackRoutes.SettingsLabeling)}
