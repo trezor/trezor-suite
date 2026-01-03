@@ -50,7 +50,7 @@ export const TradingUtilsTorWarning = ({
         <Banner
             intent="warning"
             rightContent={
-                !showButton && (
+                showButton && (
                     <Banner.Button onClick={handleGoToSettings}>
                         <Translation id="TR_GO_TO_SETTINGS" />
                     </Banner.Button>
