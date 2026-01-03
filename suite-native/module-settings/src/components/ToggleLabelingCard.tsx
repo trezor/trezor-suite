@@ -35,8 +35,10 @@ export const ToggleLabelingCard = () => {
                 icon="arrowsClockwise"
                 isChecked={isSuiteSyncEnabled}
                 onChange={toggleSuiteSync}
-                text={<Translation id="moduleSettings.secureSync.title" />}
-                description={<Translation id="moduleSettings.secureSync.description" />}
+                text={<Translation id="moduleSettings.items.features.suiteSync.title" />}
+                description={
+                    <Translation id="moduleSettings.items.features.suiteSync.toggleDescription" />
+                }
                 accessibilityLabel="Secure sync toggle"
                 testID="settings/secure-sync-touchable-row"
             />

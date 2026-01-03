@@ -8,7 +8,9 @@ export const SettingsSuiteSyncScreen = () => (
         header={
             <DynamicScreenHeader
                 title={<Translation id="moduleSettings.items.features.suiteSync.title" />}
-                subtitle={<Translation id="moduleSettings.items.features.suiteSync.subtitle" />}
+                subtitle={
+                    <Translation id="moduleSettings.items.features.suiteSync.screenSubtitle" />
+                }
             />
         }
     >
