@@ -19,7 +19,7 @@
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/styles": "workspace:*",
         "react": "19.1.0",
         "react-native": "0.81.4",
