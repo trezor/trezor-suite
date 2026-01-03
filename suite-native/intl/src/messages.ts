@@ -77,7 +77,7 @@ export const messages = {
             cta: 'Download latest version',
         },
     },
-    labeling: {
+    suiteSync: {
         label: 'Label',
         addLabel: 'Add label',
         disableAlert: {
@@ -1044,7 +1044,7 @@ export const messages = {
                     subtitle:
                         'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
                 },
-                labeling: {
+                suiteSync: {
                     title: 'Labeling',
                     subtitle: 'Name your wallets, accounts and more',
                     screenSubtitle:

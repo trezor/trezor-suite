@@ -26,9 +26,9 @@ export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutPara
 
     const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
         showAlert({
-            title: <Translation id="labeling.enableAlert.title" />,
-            description: <Translation id="labeling.enableAlert.description" />,
-            primaryButtonTitle: <Translation id="labeling.enableAlert.cta" />,
+            title: <Translation id="suiteSync.enableAlert.title" />,
+            description: <Translation id="suiteSync.enableAlert.description" />,
+            primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
             onPressPrimaryButton: () => {
                 suiteSync.turnOnSuiteSync();
                 onSuccess();
@@ -54,11 +54,11 @@ export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutPara
     return (
         <>
             <TextButton onPress={handleAddLabel} viewRight="pencil" testID="@labeling/addLabel">
-                {label ?? <Translation id="labeling.addLabel" />}
+                {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>
             <BottomSheetModal
                 ref={bottomSheetRef}
-                title={<Translation id="labeling.label" />}
+                title={<Translation id="suiteSync.label" />}
                 onDismiss={closeModal}
                 isCloseDisplayed={false}
             >

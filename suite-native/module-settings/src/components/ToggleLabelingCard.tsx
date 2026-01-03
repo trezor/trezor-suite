@@ -13,9 +13,9 @@ export const ToggleLabelingCard = () => {
 
     const showSuiteSyncDisableConfirmationAlert = () => {
         showAlert({
-            title: <Translation id="labeling.disableAlert.title" />,
-            description: <Translation id="labeling.disableAlert.description" />,
-            primaryButtonTitle: <Translation id="labeling.disableAlert.cta" />,
+            title: <Translation id="suiteSync.disableAlert.title" />,
+            description: <Translation id="suiteSync.disableAlert.description" />,
+            primaryButtonTitle: <Translation id="suiteSync.disableAlert.cta" />,
             onPressPrimaryButton: suiteSync.turnOffSuiteSync,
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
         });
