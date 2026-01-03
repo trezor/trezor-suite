@@ -46,7 +46,7 @@
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
