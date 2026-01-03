@@ -21,7 +21,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/connect": "workspace:*",
+        "@trezor/connect": "9.0.0",
         "@trezor/transport-native-bluetooth": "workspace:*",
         "bs58": "^6.0.0",
         "expo-crypto": "~15.0.7",
