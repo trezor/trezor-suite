@@ -84,10 +84,6 @@ module.exports = {
         files: ['entitlements.mac.inherit.plist'],
         extraResources: [
             {
-                from: 'build/static/bin/bridge/mac-${arch}',
-                to: 'bin/bridge',
-            },
-            {
                 from: 'build/static/bin/tor/mac-${arch}',
                 to: 'bin/tor',
             },
@@ -121,10 +117,6 @@ module.exports = {
     win: {
         extraResources: [
             {
-                from: 'build/static/bin/bridge/win-${arch}',
-                to: 'bin/bridge',
-            },
-            {
                 from: 'build/static/bin/tor/win-${arch}',
                 to: 'bin/tor',
             },
@@ -152,10 +144,6 @@ module.exports = {
     },
     linux: {
         extraResources: [
-            {
-                from: 'build/static/bin/bridge/linux-${arch}',
-                to: 'bin/bridge',
-            },
             {
                 from: 'build/static/bin/tor/linux-${arch}',
                 to: 'bin/tor',
