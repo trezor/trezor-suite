@@ -5,11 +5,11 @@ const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 
 // to be able to use patterns like ${author} and ${arch}
 module.exports = {
-    // distingush between dev and prod builds
+    // distinguish between dev and prod builds
     appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
         version: suiteVersion,
-        // distingush between dev and prod builds so different userDataDir is used
+        // distinguish between dev and prod builds so different userDataDir is used
         name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
     },
     productName: 'Trezor Suite',
@@ -99,7 +99,7 @@ module.exports = {
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
-        hardenedRuntime: true,
+        hardenedRuntime: isCodesignBuild,
         gatekeeperAssess: false,
         darkModeSupport: true,
         entitlements: 'entitlements.mac.inherit.plist',
