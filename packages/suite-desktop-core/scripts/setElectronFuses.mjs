@@ -16,13 +16,8 @@ const binaryExtensionByPlaformNameMap = {
 const afterPackHookSetElectronFuses = async context => {
     const { electronPlatformName, appOutDir } = context;
 
-    /*
-     As of Electron 34.1.0, ASAR integrity:
-     - is not supported on Linux at all
-     - is supported on macOS, but does not work. TODO investigate & reenable
-     So we only set the appropriate fuses for Windows
-    */
-    if (electronPlatformName !== 'win32') {
+    // As of Electron 39, ASAR integrity is not supported on Linux, so we set the appropriate fuses for Windows and macOS
+    if (electronPlatformName !== 'win32' && electronPlatformName !== 'darwin') {
         // eslint-disable-next-line no-console
         console.log('Skipping electron fuses ');
 
