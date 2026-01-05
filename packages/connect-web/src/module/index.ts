@@ -6,8 +6,7 @@ import { CoreInModule } from '@trezor/connect/src/impl/core-in-module';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import type { ConnectSettingsPublic } from '@trezor/connect/src/types';
 
-interface ConnectWebDynamicImplementation
-    extends ConnectFactoryDependencies<ConnectSettingsPublic> {
+interface ConnectWebDynamicImplementation extends ConnectFactoryDependencies<ConnectSettingsPublic> {
     handleCoreMessage: (message: CoreRequestMessage) => void;
 }
 

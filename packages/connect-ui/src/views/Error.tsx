@@ -11,7 +11,7 @@ import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 export interface ErrorViewProps {
     type: 'error';
     detail: // errors that might arise when using connect-ui with connect-popup
-    | 'response-event-error' // Error coming from connect RESPONSE_EVENT
+        | 'response-event-error' // Error coming from connect RESPONSE_EVENT
         | 'handshake-timeout' // communication was not established in a set time period
         | 'iframe-failure' // another (legacy) error, this is sent from popupManager (host) to popup. it means basically the same like handshake-timeout but we might be notified earlier
         | 'core-missing' // core was loaded correctly but became unavailable later

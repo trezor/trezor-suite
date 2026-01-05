@@ -783,7 +783,7 @@
             for (var j = i; j < jlimit; j++) {
                 digit = partial[j] + bi * a[j - i] + carry;
                 carry = (digit / BigInteger_base) | 0;
-                partial[j] = digit % BigInteger_base | 0;
+                partial[j] = (digit % BigInteger_base) | 0;
             }
             if (carry) {
                 digit = partial[j] + carry;
@@ -810,7 +810,7 @@
             digit = this._d[0] * n;
             if (digit >= BigInteger_base) {
                 return new BigInteger(
-                    [digit % BigInteger_base | 0, (digit / BigInteger_base) | 0],
+                    [(digit % BigInteger_base) | 0, (digit / BigInteger_base) | 0],
                     1,
                     CONSTRUCT,
                 );
@@ -838,7 +838,7 @@
         for (var j = 0; j < al; j++) {
             digit = n * a[j] + carry;
             carry = (digit / BigInteger_base) | 0;
-            partial[j] = digit % BigInteger_base | 0;
+            partial[j] = (digit % BigInteger_base) | 0;
         }
         if (carry) {
             partial[j] = carry;
@@ -1061,7 +1061,7 @@
         // divide a single digit by a single digit
         if (this._d.length === 1) {
             var q = new BigInteger([(this._d[0] / n) | 0], 1, CONSTRUCT);
-            r = new BigInteger([this._d[0] % n | 0], 1, CONSTRUCT);
+            r = new BigInteger([(this._d[0] % n) | 0], 1, CONSTRUCT);
             if (sign < 0) {
                 q = q.negate();
             }

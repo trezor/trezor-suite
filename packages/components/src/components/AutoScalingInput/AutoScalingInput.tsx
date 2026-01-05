@@ -41,8 +41,10 @@ const createHandleOnChangeAndApplyNewWidth =
         onChange?.(event);
     };
 
-export interface Props
-    extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+export interface Props extends React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+> {
     minWidth: number;
     updateFlag?: any;
 }

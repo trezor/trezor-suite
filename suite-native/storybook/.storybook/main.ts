@@ -37,9 +37,8 @@ const main: StorybookConfig = {
                         'node_modules',
                         'react-native-web/dist/modules/AssetRegistry',
                     ),
-                    '@trezor/address-validator': require.resolve(
-                        './mocks/address-validator.mock.ts',
-                    ),
+                    '@trezor/address-validator':
+                        require.resolve('./mocks/address-validator.mock.ts'),
                 },
             },
             plugins: [nodePolyfills()],

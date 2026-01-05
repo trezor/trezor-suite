@@ -17,8 +17,7 @@ import {
 } from '../../../types/wallet/sendForm';
 
 interface UtxoSelectionContextProps
-    extends UseFormReturn<FormState>,
-        Pick<UseSendFormState, 'account' | 'composedLevels'> {
+    extends UseFormReturn<FormState>, Pick<UseSendFormState, 'account' | 'composedLevels'> {
     excludedUtxos: ExcludedUtxos;
     composeRequest: SendContextValues['composeTransaction'];
 }

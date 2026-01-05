@@ -114,8 +114,8 @@ jobs:
     timeout-minutes: 30
     continue-on-error: true
     strategy:
-        matrix:
-            test-task: [suite, native]
+      matrix:
+        test-task: [suite, native]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

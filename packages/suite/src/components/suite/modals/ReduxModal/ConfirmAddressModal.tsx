@@ -16,8 +16,10 @@ import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selec
 
 import { ConnectAddressConfirmation } from './UserContextModal/ConnectAddressConfirmation';
 
-interface ConfirmAddressModalProps
-    extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value'> {
+interface ConfirmAddressModalProps extends Pick<
+    ConfirmValueModalProps,
+    'isConfirmed' | 'onCancel' | 'value'
+> {
     addressPath: string;
 }
 

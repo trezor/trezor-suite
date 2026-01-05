@@ -39,8 +39,9 @@ type TLiteralGuard<T extends unknown[]> = {
     [K in keyof T]: T[K] extends TLiteral<string | number> ? T[K] : never;
 };
 
-export interface TKeyOfEnum<T extends Record<string, string | number>>
-    extends TUnion<TLiteralGuard<UnionToTuple<DistributeLiterals<keyof T>>>> {
+export interface TKeyOfEnum<T extends Record<string, string | number>> extends TUnion<
+    TLiteralGuard<UnionToTuple<DistributeLiterals<keyof T>>>
+> {
     [Hint]: 'KeyOfEnum';
 }
 

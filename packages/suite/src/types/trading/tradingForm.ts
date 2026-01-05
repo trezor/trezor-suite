@@ -126,7 +126,8 @@ export type TradingBuyConfirmTradeProps = {
 };
 
 export interface TradingBuyFormContextProps
-    extends UseFormReturn<TradingBuyFormProps>,
+    extends
+        UseFormReturn<TradingBuyFormProps>,
         TradingCommonFormProps,
         TradingCommonFormBuySellProps {
     type: TradingBuyType;
@@ -156,7 +157,8 @@ export interface TradingBuyFormContextProps
 }
 
 export interface TradingSellFormContextProps
-    extends UseFormReturn<TradingSellFormProps>,
+    extends
+        UseFormReturn<TradingSellFormProps>,
         TradingCommonFormProps,
         TradingCommonFormBuySellProps {
     type: TradingSellType;
@@ -200,8 +202,7 @@ export type TradingExchangeConfirmTradeProps = {
 };
 
 export interface TradingExchangeFormContextProps
-    extends UseFormReturn<TradingExchangeFormProps>,
-        TradingCommonFormProps {
+    extends UseFormReturn<TradingExchangeFormProps>, TradingCommonFormProps {
     type: TradingExchangeType;
     // form - additional helpers for form
     form: {
@@ -284,8 +285,9 @@ export interface TradingFormInputDefaultProps {
     'data-testid'?: string;
 }
 
-export interface TradingFormInputCryptoSelectProps<TFieldValues extends TradingAllFormProps>
-    extends TradingFormInputDefaultProps {
+export interface TradingFormInputCryptoSelectProps<
+    TFieldValues extends TradingAllFormProps,
+> extends TradingFormInputDefaultProps {
     cryptoSelectName: FieldPath<TFieldValues>;
     supportedCryptoCurrencies: Set<CryptoId> | undefined;
     methods: UseFormReturn<TFieldValues>;
@@ -369,8 +371,7 @@ export interface TradingUseComposeTransactionStateProps {
     feeInfo: FeeInfo;
 }
 
-export interface TradingUseComposeTransactionReturnProps
-    extends TradingUseComposeTransactionStateProps {
+export interface TradingUseComposeTransactionReturnProps extends TradingUseComposeTransactionStateProps {
     isComposing: boolean;
     composedLevels: PrecomposedLevels | PrecomposedLevelsCardano | undefined;
     feeInfo: FeeInfo;
@@ -397,8 +398,10 @@ export interface TradingOfferSellProps extends TradingOfferCommonProps {
     selectedQuote: SellFiatTrade;
 }
 
-export interface TradingOfferExchangeProps
-    extends Omit<TradingOfferCommonProps, 'paymentMethod' | 'paymentMethodName'> {
+export interface TradingOfferExchangeProps extends Omit<
+    TradingOfferCommonProps,
+    'paymentMethod' | 'paymentMethodName'
+> {
     selectedQuote: ExchangeTrade;
 }
 

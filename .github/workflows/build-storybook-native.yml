@@ -10,8 +10,8 @@ on:
     branches:
       - develop
     paths:
-      - 'suite-native/storybook/**'
-      - 'suite-native/**/*.story.*'
+      - "suite-native/storybook/**"
+      - "suite-native/**/*.story.*"
 
 jobs:
   build-storybook:
@@ -37,18 +37,18 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-  
+
       - name: Setup node_modules cache
         uses: actions/cache@v4
         with:
           path: node_modules
           key: node_modules/${{ github.ref }}/${{github.run_id}}
-  
+
       - name: Install Yarn dependencies
         run: |
-            echo -e "\nenableScripts: false" >> .yarnrc.yml
-            echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-            yarn install
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn install
 
       - name: Build storybook
         working-directory: ./suite-native/storybook

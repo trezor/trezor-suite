@@ -95,7 +95,7 @@ jobs:
           currents-ci-build-id: "nightly-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
           currents-tags: "T3W1,nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-  
+
   run-e2e-suite-web-tests-fw-canary:
     if: github.repository == 'trezor/trezor-suite' && ${{ always() && !cancelled() }} # make sure this job runs even if others fail
     runs-on: ubuntu-latest

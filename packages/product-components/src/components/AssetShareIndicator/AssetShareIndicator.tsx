@@ -24,8 +24,10 @@ export interface AssetShareIndicatorProps extends CoinLogoProps {
     percentageShare?: number;
 }
 
-interface ProgressCircleProps
-    extends Pick<AssetShareIndicatorProps, 'symbol' | 'percentageShare' | 'index'> {
+interface ProgressCircleProps extends Pick<
+    AssetShareIndicatorProps,
+    'symbol' | 'percentageShare' | 'index'
+> {
     size: number;
 }
 
