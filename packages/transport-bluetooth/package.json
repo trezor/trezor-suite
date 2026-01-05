@@ -45,9 +45,9 @@
     "devDependencies": {
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
-        "html-webpack-plugin": "5.6.4",
+        "html-webpack-plugin": "5.6.5",
         "react": "19.1.0",
         "react-dom": "19.1.0",
-        "webpack": "5.102.1"
+        "webpack": "5.104.1"
     }
 }

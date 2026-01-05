@@ -127,7 +127,7 @@
         "tsx": "^4.20.3",
         "vm-browserify": "^1.1.2",
         "web3-utils": "^4.3.2",
-        "webpack": "5.102.1",
+        "webpack": "5.104.1",
         "ws": "^8.18.0"
     },
     "peerDependencies": {
