@@ -44,11 +44,7 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
-import {
-    SuiteServices,
-    createSuiteCompositionRoot,
-    extraDependencies,
-} from '../support/extraDependencies';
+import { createSuiteCompositionRoot, extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -179,8 +175,10 @@ export const initStore = <E extends Partial<ExtraDependencies>>(
         devTools,
     } as const);
 
+    const castedStore = castExtraStore(store, extra);
+
     return {
-        ...castExtraStore(store, extra),
-        services: extra!.services as SuiteServices,
+        ...castedStore,
+        services: castedStore.extra.services,
     };
 };
