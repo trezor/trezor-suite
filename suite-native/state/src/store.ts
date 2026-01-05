@@ -15,7 +15,6 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
-import { NativeServices } from '@suite-native/services';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
@@ -86,9 +85,11 @@ export const initStore = async (preloadedState?: PreloadedState) => {
         enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
     });
 
+    const castedStore = castExtraStore(store, extra);
+
     return {
-        ...castExtraStore(store, extra),
-        services: extra!.services as NativeServices,
+        ...castedStore,
+        services: castedStore.extra.services,
     };
 };
 
