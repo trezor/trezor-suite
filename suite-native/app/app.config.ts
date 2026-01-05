@@ -165,6 +165,7 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         ['expo-localization'],
+        ['@rnrepo/expo-config-plugin'],
     ];
 
     return [
