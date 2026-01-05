@@ -1,0 +1,63 @@
+name: "[Build] suite native storybook"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'suite-native/storybook/**'
+      - 'suite-native/**/*.story.*'
+
+jobs:
+  build-storybook:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+  
+      - name: Setup node_modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules/${{ github.ref }}/${{github.run_id}}
+  
+      - name: Install Yarn dependencies
+        run: |
+            echo -e "\nenableScripts: false" >> .yarnrc.yml
+            echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+            yarn install
+
+      - name: Build storybook
+        working-directory: ./suite-native/storybook
+        run: |
+          yarn storybook:web:build
+
+      - name: Upload suite native storybook to dev.suite.sldev.cz
+        working-directory: ./suite-native/storybook
+        env:
+          COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-mobile/components/develop
+        run: |
+          aws s3 sync --delete .build-storybook ${COMPONENTS_DEPLOY_PATH}
