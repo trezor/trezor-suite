@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NativeServices } from './extraDependencies';
+import { NativeServices } from './nativeServices';
 
 const NativeServicesContext = React.createContext<NativeServices | null>(null);
 

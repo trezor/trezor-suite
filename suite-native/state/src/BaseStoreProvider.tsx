@@ -5,9 +5,9 @@ import { Provider } from 'react-redux';
 import { Persistor, persistStore } from 'redux-persist';
 
 import { captureSentryException } from '@suite-native/sentry';
+import { NativeServicesProvider } from '@suite-native/services';
 import { StorageProvider } from '@suite-native/storage';
 
-import { NativeServicesProvider } from './NativeServicesProvider';
 import { PreloadedState, StoreWithExtra, initStore } from './store';
 
 export type BaseStoreProviderProps = {

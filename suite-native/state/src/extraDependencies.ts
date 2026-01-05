@@ -4,13 +4,14 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { CommonServices, ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
+import { NativeServices } from '@suite-native/services';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
@@ -38,8 +39,6 @@ type NativeAppDeps = {
     getState: () => any;
     dispatch: any;
 };
-
-export type NativeServices = CommonServices;
 
 export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption();

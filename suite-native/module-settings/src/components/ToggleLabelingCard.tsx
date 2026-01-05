@@ -4,7 +4,7 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useNativeServices } from '@suite-native/state';
+import { useNativeServices } from '@suite-native/services';
 
 export const ToggleLabelingCard = () => {
     const { showAlert } = useAlert();
