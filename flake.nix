@@ -12,8 +12,11 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlay = final: prev: {
-          # Overlay playwright packages
-          inherit (playwright-web-flake.packages.${system}) playwright-test playwright-driver;
+          # Overlay playwright packages with chromium from nixpkgs unstable
+          playwright-driver = (playwright-web-flake.packages.${system}.playwright-driver.override {
+            chromium = prev.chromium;
+          });
+          playwright-test = playwright-web-flake.packages.${system}.playwright-test;
           
           # Override GCC with older version
           gccPkgs = import old-gcc-nixpkgs { system = prev.system; };
