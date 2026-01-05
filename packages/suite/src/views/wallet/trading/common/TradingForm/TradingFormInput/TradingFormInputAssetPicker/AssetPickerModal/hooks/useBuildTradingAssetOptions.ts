@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import { TranslationKey } from '@suite-common/intl-types';
-import { TradingAssetOption } from '@suite-common/trading';
+import { TradingAssetOption, getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
@@ -14,7 +16,10 @@ import {
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { useAssetsContext } from '../../AssetOptionsContext';
-import { useAgregatedAccountsWithTokens } from '../../hooks/useAgregatedAccountsWithTokens';
+import {
+    AggregatedAccountWithTokens,
+    useAgregatedAccountsWithTokens,
+} from '../../hooks/useAgregatedAccountsWithTokens';
 
 function createSearchFilter(search: string) {
     return function searchFor(property?: string | null) {
@@ -34,6 +39,21 @@ function assetSearchFilter(asset: TradingAssetOption, search: string) {
         searchFor(asset.contractAddress) ||
         searchFor(asset.symbol)
     );
+}
+
+function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) {
+    return function disabledCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
+        switch (accountOrToken.type) {
+            case 'account':
+                return !disabledCryptoIds.has(getCryptoId(accountOrToken.account));
+            case 'token':
+                return !disabledCryptoIds.has(
+                    getCryptoId(accountOrToken.account, accountOrToken.token),
+                );
+            default:
+                return false;
+        }
+    };
 }
 
 export type TradingAssetListItem =
@@ -77,7 +97,7 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { assetsByTradingVolume } = useAssetsContext();
+    const { assetsByTradingVolume, disabledCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
     return useMemo(() => {
@@ -101,6 +121,7 @@ export function useBuildTradingAssetOptions({
         }
 
         const filteredAccounts = accountsWithTokens
+            .filter(excludeDisabledCryptoIds(disabledCryptoIds))
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
                     case 'account':
@@ -179,5 +200,5 @@ export function useBuildTradingAssetOptions({
         }
 
         return { listItems };
-    }, [accountsWithTokens, assetsByTradingVolume, networkSymbol, search]);
+    }, [accountsWithTokens, assetsByTradingVolume, disabledCryptoIds, networkSymbol, search]);
 }
