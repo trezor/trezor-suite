@@ -2,7 +2,8 @@
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
         "outDir": "lib",
-        "lib": ["webworker", "ES2022"]
+        "lib": ["webworker", "ES2022"],
+        "types": ["w3c-web-usb"]
     },
     "include": ["./src"],
     "references": [
