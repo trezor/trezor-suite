@@ -59,7 +59,7 @@ const serialize = (s?: string) => {
         }
         for (let j = 4; j >= 0; --j) {
             if (bit >= 0) {
-                a[Math.floor(bit / 8)] |= ((c >> j) & 1) << bit % 8;
+                a[Math.floor(bit / 8)] |= ((c >> j) & 1) << (bit % 8);
                 --bit;
             }
         }

@@ -32,8 +32,7 @@ export class TrezorConnectDynamic<
     ImplType,
     SettingsType extends Record<string, any>,
     ImplInterface extends ConnectFactoryDependencies<SettingsType>,
-> implements ConnectFactoryDependencies<SettingsType>
-{
+> implements ConnectFactoryDependencies<SettingsType> {
     public eventEmitter: EventEmitter;
 
     private currentTarget: ImplType;

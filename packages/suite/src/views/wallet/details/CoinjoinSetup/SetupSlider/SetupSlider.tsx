@@ -14,7 +14,8 @@ const StyledSliderInput = styled(SliderInput)<{ $width?: number }>`
 `;
 
 interface SetupSliderProps
-    extends Pick<SliderInputProps, 'isDisabled' | 'max' | 'min' | 'onChange' | 'unit'>,
+    extends
+        Pick<SliderInputProps, 'isDisabled' | 'max' | 'min' | 'onChange' | 'unit'>,
         Pick<RangeProps, 'labels' | 'onLabelClick' | 'trackStyle'> {
     children?: ReactNode;
     description: ReactNode;

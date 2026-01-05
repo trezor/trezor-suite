@@ -45,8 +45,9 @@ type TradingBuyAddressOptionsType = {
     address?: string;
 };
 
-interface TradingAddressOptionsProps<TFieldValues extends TradingBuyAddressOptionsType>
-    extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
+interface TradingAddressOptionsProps<
+    TFieldValues extends TradingBuyAddressOptionsType,
+> extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
     receiveSymbol?: CryptoId;
     account?: Account;
