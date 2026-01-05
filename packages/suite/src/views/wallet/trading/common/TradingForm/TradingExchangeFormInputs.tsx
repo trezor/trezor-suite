@@ -155,6 +155,7 @@ export const TradingExchangeFormInputs = () => {
                     inputLabel="TR_TO"
                     inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
                     enabledCryptoIds={exchangeInfo?.buyCryptoIds}
+                    disabledCryptoId={sendCryptoSelect?.value}
                     onAssetSelect={handleReceiveAssetSelect}
                     dataTestId="@trading/form/select-crypto"
                 />

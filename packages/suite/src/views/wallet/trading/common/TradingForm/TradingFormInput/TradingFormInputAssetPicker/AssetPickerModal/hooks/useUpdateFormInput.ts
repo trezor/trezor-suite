@@ -1,14 +1,11 @@
 import { useCallback } from 'react';
 
-import { CryptoId } from 'invity-api';
-
-import { TradingAssetOption, composeCryptoId } from '@suite-common/trading';
+import { TradingAssetOption, getCryptoId } from '@suite-common/trading';
 import {
     NetworkConfigWithoutTestnets,
     getDisplaySymbol,
     networks,
 } from '@suite-common/wallet-config';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 
 import { TradingAssetListItem } from './useBuildTradingAssetOptions';
 
@@ -25,7 +22,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
                     const network = networks[asset.account.symbol] as NetworkConfigWithoutTestnets;
 
                     onAssetSelect({
-                        id: network.tradeCryptoId as CryptoId,
+                        id: getCryptoId(asset.account),
                         coingeckoId: network.coingeckoId!,
 
                         isNativeToken: true,
@@ -45,13 +42,7 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
                     const network = networks[asset.account.symbol];
 
                     onAssetSelect({
-                        id: composeCryptoId(
-                            network.coingeckoId!,
-                            getContractAddressForNetworkSymbol(
-                                asset.account.symbol,
-                                asset.token.contract,
-                            ),
-                        ),
+                        id: getCryptoId(asset.account, asset.token),
                         coingeckoId: network.coingeckoId!,
 
                         isNativeToken: false,
