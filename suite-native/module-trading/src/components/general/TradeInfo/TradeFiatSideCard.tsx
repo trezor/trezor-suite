@@ -41,11 +41,10 @@ const getPaymentMethodTranslation = (paymentMethod: ExtendedSellCryptoPaymentMet
 
 export const TradeFiatSideCard = ({ paymentMethod, amount, title }: TradeFiatSideCardProps) => (
     <Card noPadding>
-        <TradeInfoHeader title={title} />
-        <TradeInfoRow>
-            <Text variant="hint">{getPaymentMethodTranslation(paymentMethod)}</Text>
-        </TradeInfoRow>
-
+        <TradeInfoHeader
+            title={title}
+            rightContent={<Text variant="hint">{getPaymentMethodTranslation(paymentMethod)}</Text>}
+        />
         <TradeInfoRow>
             <HStack alignItems="center">
                 <FiatCurrencyIcon size="small" />
