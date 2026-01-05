@@ -1,28 +1,77 @@
+import * as crypto from 'crypto';
+
 import {
+    DecryptionFailed,
     EncryptableBranded,
     EncryptedHex,
+    EncryptionUnavailable,
     PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
 import { EnsureMMKVKeyDep } from '@suite-native/storage';
-import { ok } from '@trezor/type-utils';
+import { err, ok } from '@trezor/type-utils';
+
+const CIPHER_TYPE = 'aes-256-gcm';
+const IV_SIZE = 96 / 8;
+const AUTH_TAG_SIZE = 128 / 8;
 
 type NativePlatformEncryptionDeps = EnsureMMKVKeyDep;
+
+// Derive 256-bit key from 128-bit MMKV key using SHA-256
+const deriveKey = (mmkvKey: string): Buffer =>
+    crypto.createHash('sha256').update(mmkvKey, 'hex').digest();
 
 export const createNativePlatformEncryption = (
     deps: NativePlatformEncryptionDeps,
 ): PlatformEncryption => ({
     encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
-        const key = await deps.ensureMMKVKey();
-        console.log('___Do some ENCRYPT MAGIC with KEY', key);
+        const mmkvKey = await deps.ensureMMKVKey();
 
-        return ok(asEncryptedHex(value as T));
+        if (mmkvKey === null) {
+            return err(EncryptionUnavailable('Encryption key not available'));
+        }
+
+        try {
+            const key = deriveKey(mmkvKey);
+            const iv = crypto.randomBytes(IV_SIZE);
+            const cipher = crypto.createCipheriv(CIPHER_TYPE, key, iv);
+
+            const encrypted = Buffer.concat([cipher.update(value, 'utf8'), cipher.final()]);
+            const authTag = cipher.getAuthTag();
+
+            // Format: IV (12 bytes) + authTag (16 bytes) + ciphertext
+            const result = Buffer.concat([iv, authTag, encrypted]);
+
+            return ok(asEncryptedHex<T>(result.toString('hex')));
+        } catch {
+            return err(EncryptionUnavailable('Encryption failed'));
+        }
     },
 
     decrypt: async <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) => {
-        const key = await deps.ensureMMKVKey();
-        console.log('___Do some DECRYPT MAGIC with KEY', key);
+        const mmkvKey = await deps.ensureMMKVKey();
 
-        return Promise.resolve(ok(value as unknown as T));
+        if (mmkvKey === null) {
+            return err(EncryptionUnavailable('Encryption key not available'));
+        }
+
+        try {
+            const key = deriveKey(mmkvKey);
+            const input = Buffer.from(value, 'hex');
+
+            const iv = input.subarray(0, IV_SIZE);
+            const authTag = input.subarray(IV_SIZE, IV_SIZE + AUTH_TAG_SIZE);
+            const ciphertext = input.subarray(IV_SIZE + AUTH_TAG_SIZE);
+
+            const decipher = crypto.createDecipheriv(CIPHER_TYPE, key, iv);
+            decipher.setAuthTag(authTag);
+
+            const decrypted = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
+
+            return ok(decrypted.toString('utf8') as T);
+        } catch {
+            // Could be wrong key or tampered data, cryptographically indistinguishable by design.
+            return err(DecryptionFailed());
+        }
     },
 });
