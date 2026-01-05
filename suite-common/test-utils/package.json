@@ -22,8 +22,8 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "core-js": "^3.46.0",
-        "fake-indexeddb": "^6.2.4",
+        "core-js": "^3.47.0",
+        "fake-indexeddb": "^6.2.5",
         "redux": "^5.0.1",
         "redux-thunk": "^3.1.0"
     }
