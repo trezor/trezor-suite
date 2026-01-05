@@ -49,7 +49,7 @@ import { useTradingSellFormDefaultValues } from 'src/hooks/wallet/trading/form/u
 import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingSellFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
@@ -106,13 +106,17 @@ export const useTradingSellForm = ({
     const { navigateToSellForm, navigateToSellOffers, navigateToSellConfirm } =
         useTradingNavigation(account);
 
-    const isDebug = useSelector(selectIsDebugModeActive);
     // we consider this feature enabled unless disabled by message system
     const isSlip24FeatureEnabled = useSelector(state =>
         selectIsFeatureEnabled(state, Feature.trading.slip24, true),
     );
+    const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
     const isSlip24Active = useSelector(state =>
-        selectTradingIsSlip24Allowed(state, account, isSlip24FeatureEnabled && isDebug),
+        selectTradingIsSlip24Allowed(
+            state,
+            account,
+            isSlip24FeatureEnabled && isSlip24ExperimentalFeatureEnabled,
+        ),
     );
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
