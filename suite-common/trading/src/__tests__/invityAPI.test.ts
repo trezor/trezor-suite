@@ -450,4 +450,19 @@ describe('InvityAPI', () => {
 
         expect(url).toEqual('https://exchange.trezor.io');
     });
+
+    describe('headers', () => {
+        it('should provide X-Suite-Platform header', () => {
+            invityAPI.getInfo();
+
+            expect(fetch).toHaveBeenCalledWith(
+                expect.any(String),
+                expect.objectContaining({
+                    headers: expect.objectContaining({
+                        'X-Suite-Platform': expect.any(String),
+                    }),
+                }),
+            );
+        });
+    });
 });
