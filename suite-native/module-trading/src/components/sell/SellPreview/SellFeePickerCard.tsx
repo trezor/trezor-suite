@@ -2,7 +2,10 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import {
+    selectSellSelectedSendAccount,
+    selectTradingProviderConfirmationStatus,
+} from '@suite-native/trading-state';
 
 import { FeePickerCard } from '../../fees/FeePickerCard';
 
@@ -13,8 +16,11 @@ export type SellFeePickerCardProps = {
 
 export const SellFeePickerCard = ({ quote, isTxnError }: SellFeePickerCardProps) => {
     const fromAccount = useSelector(selectSellSelectedSendAccount);
+    const providerConfirmationStatus = useSelector(selectTradingProviderConfirmationStatus);
 
-    if (!fromAccount || !quote?.cryptoCurrency || isTxnError) {
+    const isTradeConfirmedOnProviderSide = providerConfirmationStatus === 'confirmation_success';
+
+    if (!fromAccount || !quote?.cryptoCurrency || isTxnError || !isTradeConfirmedOnProviderSide) {
         return null;
     }
 

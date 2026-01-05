@@ -22,6 +22,7 @@ describe('SellPreviewView', () => {
         preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
         preloadedState.wallet!.trading!.sell!.selectedQuote = sellQuotes[1]; // Use quote with bank accounts
         preloadedState.wallet!.trading!.trades = [getSellTradeWithBankAccounts()];
+        preloadedState.wallet!.trading!.providerConfirmationStatus = 'confirmation_success';
 
         Object.assign(preloadedState.wallet!.trading!.sell!, overrides);
 
