@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { TradingAssetOption, getCryptoId } from '@suite-common/trading';
+import { TradingAssetOption, createDefaultAssetOption, getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
@@ -56,6 +56,39 @@ function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) 
     };
 }
 
+/**
+ * Note this is going to be replaced soon with more sophisticated top assets logic.
+ */
+function createTopFiveAssets() {
+    return [
+        createDefaultAssetOption('btc'),
+        createDefaultAssetOption('eth'),
+        {
+            isNativeToken: false,
+            id: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+            name: 'Tether',
+            symbol: 'usdt',
+            coingeckoId: 'ethereum',
+            displaySymbol: 'USDT',
+            contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            networkName: 'Ethereum',
+            networkSymbol: 'eth',
+        },
+        {
+            isNativeToken: false,
+            id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+            name: 'USDC',
+            symbol: 'usdc',
+            coingeckoId: 'ethereum',
+            displaySymbol: 'USDC',
+            contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            networkName: 'Ethereum',
+            networkSymbol: 'eth',
+        },
+        createDefaultAssetOption('sol'),
+    ] satisfies TradingAssetOption[];
+}
+
 export type TradingAssetListItem =
     | {
           type: 'top-five-assets';
@@ -97,14 +130,14 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { assetsByTradingVolume, disabledCryptoIds } = useAssetsContext();
+    const { assets, disabledCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
     return useMemo(() => {
         const listItems: TradingAssetListItem[] = [];
 
-        const topFiveAssets =
-            search.length === 0 && !networkSymbol ? assetsByTradingVolume.slice(0, 5) : [];
+        const topFiveAssets = search.length === 0 && !networkSymbol ? createTopFiveAssets() : [];
+        const topFiveAssetIds = new Set(topFiveAssets.map(asset => asset.id));
 
         if (topFiveAssets.length > 0) {
             listItems.push(
@@ -173,8 +206,8 @@ export function useBuildTradingAssetOptions({
             }
         }
 
-        const filteredAssets = assetsByTradingVolume
-            .slice(topFiveAssets.length)
+        const filteredAssets = assets
+            .filter(asset => !topFiveAssetIds.has(asset.id))
             .filter(asset => (networkSymbol ? asset.networkSymbol === networkSymbol : true))
             .filter(asset => assetSearchFilter(asset, search));
 
@@ -200,5 +233,5 @@ export function useBuildTradingAssetOptions({
         }
 
         return { listItems };
-    }, [accountsWithTokens, assetsByTradingVolume, disabledCryptoIds, networkSymbol, search]);
+    }, [accountsWithTokens, assets, disabledCryptoIds, networkSymbol, search]);
 }

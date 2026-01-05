@@ -173,7 +173,7 @@ export function createDefaultAssetOption(
 }
 
 /**
- * Get flat array of all enabled, supported crypto currencies and their tokens sorted by trading volume in descending order.
+ * Get flat array of all enabled, supported crypto currencies and their tokens sorted by market cap in descending order.
  */
 export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
@@ -210,7 +210,7 @@ export function useTradingAssets() {
 
             return {
                 /**
-                 * Flat array of all enabled, supported crypto currencies and their tokens sorted by trading volume in descending order.
+                 * Flat array of all enabled, supported crypto currencies and their tokens sorted by market cap in descending order.
                  */
                 assets,
 
