@@ -5081,6 +5081,14 @@ export const messages = defineMessages({
         defaultMessage:
             'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
     },
+    TR_EXPERIMENTAL_SLIP24: {
+        id: 'TR_EXPERIMENTAL_SLIP24',
+        defaultMessage: 'SLIP-24 (clear signing)',
+    },
+    TR_EXPERIMENTAL_SLIP24_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION',
+        defaultMessage: 'Trezor payment request format',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

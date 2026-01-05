@@ -17,6 +17,7 @@ export type ExperimentalFeature =
     | 'tor-external'
     | 'testnet-networks'
     | 'nft-section'
+    | 'slip24'
     | 'experimental-networks'
     | 'suite-sync';
 
@@ -58,6 +59,10 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     'nft-section': {
         title: { id: 'TR_EXPERIMENTAL_NFT_SECTION' },
         description: { id: 'TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION' },
+    },
+    slip24: {
+        title: { id: 'TR_EXPERIMENTAL_SLIP24' },
+        description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
     },
     'experimental-networks': {
         title: {
