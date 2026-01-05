@@ -74,10 +74,6 @@ const createWorkspaceAliases = () => {
 
 const alias = [
     {
-        find: /@trezor\/connect$/,
-        replacement: '@trezor/connect-web/src/module',
-    },
-    {
         find: 'core-js/actual',
         replacement: 'noop-core-js-actual',
     },
