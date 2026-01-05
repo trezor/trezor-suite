@@ -119,6 +119,10 @@ export const connectPopupCallThunkInner = createThunk<
                 source,
             });
 
+            // refresh device state before call (could have changed during preCallHooks)
+            device = selectSelectedDevice(getState());
+            if (!device) throw TypedError('Device_Disconnected');
+
             const response = await TrezorConnect.call({
                 device: {
                     path: device.path,
