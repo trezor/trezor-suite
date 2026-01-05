@@ -16,7 +16,7 @@ import {
     selectAccountLabel,
     selectIsLabelingEnabled,
 } from '@suite-native/labeling';
-import { useNativeServices } from '@suite-native/state';
+import { useNativeServices } from '@suite-native/services';
 
 type AccountRenameFormProps = {
     accountKey: string;

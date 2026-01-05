@@ -15,15 +15,12 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
+import { NativeServices } from '@suite-native/services';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
-import {
-    NativeServices,
-    createNativeCompositionRoot,
-    extraDependencies,
-} from './extraDependencies';
+import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
 type RootReducerShape = Awaited<ReturnType<typeof prepareRootReducers>>;

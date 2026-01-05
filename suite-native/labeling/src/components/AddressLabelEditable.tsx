@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { useNativeServices } from '@suite-native/state';
+import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';

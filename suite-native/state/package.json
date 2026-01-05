@@ -43,6 +43,7 @@
         "@suite-native/message-system": "workspace:*",
         "@suite-native/send": "workspace:*",
         "@suite-native/sentry": "workspace:*",
+        "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",

@@ -62,6 +62,7 @@
         { "path": "../message-system" },
         { "path": "../send" },
         { "path": "../sentry" },
+        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../suite-sync" },

@@ -12496,7 +12496,7 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/state": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
@@ -12627,7 +12627,7 @@ __metadata:
     "@suite-native/module-device-onboarding": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
-    "@suite-native/state": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -12848,8 +12848,8 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/sentry": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
@@ -13116,8 +13116,8 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/module-connect-popup": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@suite-native/state": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/theme": "workspace:*"
@@ -13438,6 +13438,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/services@workspace:*, @suite-native/services@workspace:suite-native/services":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/services@workspace:suite-native/services"
+  dependencies:
+    "@suite-common/redux-utils": "workspace:*"
+    react: "npm:19.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/settings@workspace:*, @suite-native/settings@workspace:suite-native/settings":
   version: 0.0.0-use.local
   resolution: "@suite-native/settings@workspace:suite-native/settings"
@@ -13502,6 +13511,7 @@ __metadata:
     "@suite-native/message-system": "workspace:*"
     "@suite-native/send": "workspace:*"
     "@suite-native/sentry": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
