@@ -111,7 +111,7 @@ describe('buySelectors', () => {
             expect(selectBuyFormDefaultValues(state)).toEqual({
                 fiatCurrency: 'czk',
                 country: {
-                    label: '🇨🇿 Czech Republic',
+                    label: '🇨🇿 Czechia',
                     value: 'CZ',
                 },
                 amountInCrypto: false,

@@ -28,7 +28,7 @@ describe('useLocationForm', () => {
         const { result } = await renderUseLocationForm();
 
         expect(result.current.getValues('country')).toEqual({
-            label: '🇨🇿 Czech Republic',
+            label: '🇨🇿 Czechia',
             value: 'CZ',
         });
     });
