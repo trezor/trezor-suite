@@ -18,7 +18,6 @@ import {
     getNetwork,
     getNetworkByCoingeckoId,
     getNetworkByTradeCryptoId,
-    networks,
     networksCollection,
 } from '@suite-common/wallet-config';
 import type { Account, FormStateTrading } from '@suite-common/wallet-types';
@@ -70,10 +69,10 @@ export function composeCryptoId(coingeckoId: string, contractAddress?: string | 
 }
 
 /**
- * Get the crypto id for an account or token
+ * Get the crypto id for an account or token of non-testnet network
  */
 export function getCryptoId(account: Account, token?: TokenInfo): CryptoId {
-    const network = networks[account.symbol];
+    const network = getNetwork(account.symbol);
 
     if (token) {
         return composeCryptoId(
