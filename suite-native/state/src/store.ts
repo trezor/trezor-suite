@@ -49,8 +49,8 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         enhancers.push(rozeniteDevToolsEnhancer());
 
         if (ENABLE_REDUX_LOGGER) {
-            const logger = require('redux-logger');
-            middlewares.push(logger);
+            const { createLogger } = require('redux-logger');
+            middlewares.push(createLogger());
         }
     }
 
