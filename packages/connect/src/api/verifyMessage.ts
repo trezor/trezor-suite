@@ -6,6 +6,7 @@ import { ERRORS, PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
+import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { VerifyMessage as VerifyMessageSchema } from '../types';
 import { messageToHex } from '../utils/formatUtils';
 import { getLabel } from '../utils/pathUtils';
@@ -49,6 +50,8 @@ export default class VerifyMessage extends AbstractMethod<'verifyMessage', PROTO
     }
 
     async run() {
+        validateModelOneMessageSize(this.device, this.params.message);
+
         const cmd = this.device.getCommands();
         const response = await cmd.typedCall('VerifyMessage', 'Success', this.params);
 

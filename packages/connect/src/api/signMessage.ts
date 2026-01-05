@@ -8,6 +8,7 @@ import type { BitcoinNetworkInfo } from '../types';
 import { SignMessage as SignMessageSchema } from '../types';
 import { getFirmwareRange, validateCoinPath } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
+import { validateModelOneMessageSize } from '../device/validateMessageSize';
 import { hexToText, messageToHex } from '../utils/formatUtils';
 import { getLabel, getScriptType, getSerializedPath, validatePath } from '../utils/pathUtils';
 
@@ -69,6 +70,8 @@ export default class SignMessage extends AbstractMethod<'signMessage', PROTO.Sig
     }
 
     async run() {
+        validateModelOneMessageSize(this.device, this.params.message);
+
         const cmd = this.device.getCommands();
         const { message } = await cmd.typedCall('SignMessage', 'MessageSignature', this.params);
         // convert signature to base64
