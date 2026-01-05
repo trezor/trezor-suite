@@ -162,7 +162,7 @@ describe('sellSelectors', () => {
             expect(selectSellFormDefaultValues(state)).toEqual({
                 fiatCurrency: 'usd',
                 country: {
-                    label: '🇨🇿 Czech Republic',
+                    label: '🇨🇿 Czechia',
                     value: 'CZ',
                 },
                 amountInCrypto: false,

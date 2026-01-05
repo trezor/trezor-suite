@@ -64,7 +64,7 @@ describe('quoteUtils', () => {
                     },
                 ],
                 countrySelect: {
-                    label: '🇨🇿 Czech Republic',
+                    label: '🇨🇿 Czechia',
                     value: 'CZ',
                 },
                 sendCryptoSelect: {
@@ -90,7 +90,7 @@ describe('quoteUtils', () => {
                     },
                 ],
                 countrySelect: {
-                    label: '🇨🇿 Czech Republic',
+                    label: '🇨🇿 Czechia',
                     value: 'CZ',
                 },
                 sendCryptoSelect: {
