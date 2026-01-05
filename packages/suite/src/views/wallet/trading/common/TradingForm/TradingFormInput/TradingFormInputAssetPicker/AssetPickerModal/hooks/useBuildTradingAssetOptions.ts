@@ -162,9 +162,7 @@ export function useBuildTradingAssetOptions({
                 type: 'group-space',
                 height: ASSET_ROW_HEIGHTS_BY_SIZE['lg'],
             });
-        }
 
-        if (filteredAssets.length > 0) {
             listItems.push({
                 type: 'group-label',
                 label: 'TR_ASSET_PICKER_ALL_ASSETS',
