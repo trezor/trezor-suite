@@ -2294,10 +2294,10 @@ export const messages = {
             selectedRate: 'Selected rate',
             footer: {
                 termsAndConditionsProvider:
-                    "Invity doesn't provide this service. It's governed by <link>{companyName}'s Terms & Conditions</link>.",
+                    "Trezor doesn't provide this service. It's governed by <link>{companyName}'s Terms & Conditions</link>.",
                 termsAndConditionsGeneral:
-                    "Invity doesn't provide this service. It's governed by provider's Terms & Conditions.",
-                termsOfUse: "Invity's Terms of Use",
+                    "Trezor doesn't provide this service. It's governed by provider's Terms & Conditions.",
+                termsOfUse: "Trezor's Terms of Use",
                 learnMore: 'Learn more',
             },
             balance: 'Balance:',

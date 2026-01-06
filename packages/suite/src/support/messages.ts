@@ -794,7 +794,7 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
-            'Trezor is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
+            'Trezor Suite is a comparison tool that connects you to the best exchange providers. It only uses location in order to show the most relevant offers.',
         id: 'TR_BUY_FOOTER_TEXT_1',
     },
     TR_BUY_FOOTER_TEXT_2: {

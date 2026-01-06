@@ -3,7 +3,7 @@ import { Linking } from 'react-native';
 import type { CryptoId } from 'invity-api';
 
 import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
-import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
+import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
 import { Footer } from '../Footer';
 
@@ -20,7 +20,7 @@ describe('Footer', () => {
     it('should render footer links', async () => {
         const { getByText } = await renderFooter({});
 
-        expect(getByText("Invity's Terms of Use")).toBeOnTheScreen();
+        expect(getByText("Trezor's Terms of Use")).toBeOnTheScreen();
         expect(getByText('Learn more')).toBeOnTheScreen();
     });
 
@@ -96,11 +96,11 @@ describe('Footer', () => {
     it('pressing links should lead to correct URLs', async () => {
         const { getByText } = await renderFooter({});
 
-        await userEvent.press(getByText("Invity's Terms of Use"));
+        await userEvent.press(getByText("Trezor's Terms of Use"));
         await userEvent.press(getByText('Learn more'));
 
         expect(mockOpenLink).toHaveBeenCalledTimes(2);
-        expect(mockOpenLink).toHaveBeenNthCalledWith(1, DATA_TOS_INVITY_URL);
-        expect(mockOpenLink).toHaveBeenNthCalledWith(2, INVITY_URL);
+        expect(mockOpenLink).toHaveBeenNthCalledWith(1, TREZOR_SUITE_TOS_URL);
+        expect(mockOpenLink).toHaveBeenNthCalledWith(2, TREZOR_TRADING_LEARN_MORE_URL);
     });
 });
