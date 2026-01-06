@@ -117,7 +117,6 @@ export function Menu({
         binance: 'bsc',
         bitcoin: 'btc',
         cardano: 'ada',
-        eos: 'eos',
         ethereum: 'eth',
         litecoin: 'ltc',
         monero: 'xmr',

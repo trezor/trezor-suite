@@ -8,8 +8,6 @@ export { default as cardanoSignTransaction } from './cardanoSignTransaction';
 export { default as cardanoSignMessage } from './cardanoSignMessage';
 export { default as changeLanguage } from './changeLanguage';
 export { default as composeTransaction } from './composeTransaction';
-export { default as eosGetPublicKey } from './eosGetPublicKey';
-export { default as eosSignTransaction } from './eosSignTransaction';
 export { default as ethereumGetAddress } from './ethereumGetAddress';
 export { default as ethereumGetPublicKey } from './ethereumGetPublicKey';
 export { default as ethereumSignMessage } from './ethereumSignMessage';

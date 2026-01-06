@@ -33,8 +33,6 @@ import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
 import { discoverAccounts } from './discoverAccounts';
 import { dispose } from './dispose';
-import { eosGetPublicKey } from './eosGetPublicKey';
-import { eosSignTransaction } from './eosSignTransaction';
 import { ethereumGetAddress } from './ethereumGetAddress';
 import { ethereumGetPublicKey } from './ethereumGetPublicKey';
 import { ethereumSignMessage } from './ethereumSignMessage';
@@ -210,12 +208,6 @@ export interface TrezorConnect {
 
     // todo: link docs
     dispose: typeof dispose;
-
-    // https://connect.trezor.io/9/methods/eos/eosGetPublicKey/
-    eosGetPublicKey: typeof eosGetPublicKey;
-
-    // https://connect.trezor.io/9/methods/eos/eosSignTransaction/
-    eosSignTransaction: typeof eosSignTransaction;
 
     // https://connect.trezor.io/9/methods/ethereum/ethereumGetAddress/
     ethereumGetAddress: typeof ethereumGetAddress;

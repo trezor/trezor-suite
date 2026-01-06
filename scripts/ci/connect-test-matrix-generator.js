@@ -51,11 +51,6 @@ const groups = {
         includeFilter:
             'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction,cardanoSignMessage',
     },
-    eos: {
-        name: 'eos',
-        pattern: 'methods',
-        includeFilter: 'eosGetPublicKey,eosSignTransaction',
-    },
     ethereum: {
         name: 'ethereum',
         pattern: 'methods',
@@ -111,9 +106,6 @@ const inputs = [
             return Object.values(groups).filter(group => {
                 if (group.name === 'thp') {
                     return firmware !== '2.3.0' && model === 'T3W1';
-                }
-                if (['eos'].includes(group.name)) {
-                    return !['T3W1', 'T3T1', 'T3B1'].includes(model);
                 }
                 return true;
             });
