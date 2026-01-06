@@ -38,6 +38,11 @@ export async function receive<T extends Receiver>(receiver: T, protocol: Transpo
 
         return success({ messageType, payload: result, header, length });
     } catch (e) {
+        console.warn('Protocol decode failed', {
+            error: e.message,
+            payload: readResult.payload.toString('hex'),
+        });
+
         return error({ error: PROTOCOL_MALFORMED, message: e.message });
     }
 }
