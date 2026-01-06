@@ -50,8 +50,6 @@ export const connectCallableMethods = [
     'cipherKeyValue',
     'composeTransaction',
     'discoverAccounts',
-    'eosGetPublicKey',
-    'eosSignTransaction',
     'ethereumGetAddress',
     'ethereumGetPublicKey',
     'ethereumSignMessage',

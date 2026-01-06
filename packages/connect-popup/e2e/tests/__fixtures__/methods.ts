@@ -471,24 +471,6 @@ const tezosSignTransaction = [
     },
 ];
 
-const eosGetPublicKey = [
-    {
-        ...getPublicKey[0],
-        dir: 'eos',
-        url: 'eosGetPublicKey',
-        views: [confirmExportAddressScreen, followDevice],
-    },
-];
-
-const eosSignTransaction = [
-    {
-        device: initializedDevice,
-        dir: 'eos',
-        url: 'eosSignTransaction',
-        views: [followDevice, confirmOutput],
-    },
-];
-
 const stellarGetAddress = [
     {
         ...getAddress[0],
@@ -554,8 +536,6 @@ export const fixtures = [
     ...tezosGetPublicKey,
     ...tezosGetAddress,
     ...tezosSignTransaction,
-    ...eosGetPublicKey,
-    ...eosSignTransaction,
     ...stellarGetAddress,
     // todo: error in params. probably we should implement @trezor/connect-stellar-plugin
     // ...stellarSignTransaction,
