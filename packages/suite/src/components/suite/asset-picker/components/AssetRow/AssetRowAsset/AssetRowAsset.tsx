@@ -19,7 +19,7 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
             }}
         >
             <Row
-                data-testid={`${dataTestId}/${asset.id}`}
+                data-testid={dataTestId ? `${dataTestId}/${asset.id}` : undefined}
                 gap={12}
                 overflow="hidden"
                 maxWidth="100%"
