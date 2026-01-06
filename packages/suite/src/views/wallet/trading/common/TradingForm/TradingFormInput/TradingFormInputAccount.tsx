@@ -108,7 +108,7 @@ export const TradingFormInputAccount = ({
                                 symbol={fiatValues.symbol}
                                 tokenAddress={fiatValues.tokenAddress}
                                 displaySymbol={selectedOption?.label}
-                                sendCryptoSelect={selectedOption}
+                                decimals={selectedOption?.decimals}
                             />
                         )
                     }
