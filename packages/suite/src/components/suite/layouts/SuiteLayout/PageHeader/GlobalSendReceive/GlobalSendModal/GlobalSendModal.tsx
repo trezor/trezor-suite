@@ -15,16 +15,16 @@ import {
     AssetsListEmpty,
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
-import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks';
+import {
+    AssetPickerListItem,
+    useAccountWithTokensOptions,
+    useDataFingerprint,
+    useFilterAccountsWithTokens,
+    useInsertGroupLabelsAndSpaces,
+} from 'src/components/suite/asset-picker/hooks';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
-import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
-import { useFilterAccountsWithTokens } from './hooks/useFilterAccountsWithTokens';
-import {
-    GlobalSendListItem,
-    useInsertGroupLabelsAndSpaces,
-} from './hooks/useInsertGroupLabelsAndSpaces';
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 
 type GlobalSendModalProps = {
@@ -37,8 +37,14 @@ const LIST_HEIGHT = 480;
 export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const dispatch = useDispatch();
 
-    const accountsWithTokens = useAccountWithTokensOptions();
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens);
+    const networkSymbolFilter = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
+    const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
+
+    const accountsWithTokens = useAccountWithTokensOptions({ networkSymbolFilter });
+    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
+        accountsWithTokens,
+        searchFilter,
+    );
     const fingerprintWithTokens = useDataFingerprint(filteredAccountsWithTokens);
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
@@ -61,13 +67,13 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     );
 
     const renderItem = useCallback(
-        (item: GlobalSendListItem) => {
+        (item: AssetPickerListItem) => {
             switch (item.type) {
                 case 'group-label':
                     return <AssetGroupLabel label={item.label} />;
 
                 case 'group-space':
-                    return <AssetGroupSpace size="md" />;
+                    return <AssetGroupSpace size={item.size} />;
 
                 case 'account':
                     return (

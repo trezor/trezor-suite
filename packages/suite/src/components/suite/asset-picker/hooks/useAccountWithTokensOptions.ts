@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -16,27 +16,13 @@ import {
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
+import { AccountWithTokensOption } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import {
-    TokensWithRates,
     enhanceTokensWithRates,
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
-
-export type AccountWithTokensOption =
-    | {
-          type: 'account';
-          account: Account;
-          height: number;
-      }
-    | {
-          type: 'token';
-          account: Account;
-          token: TokensWithRates;
-          height: number;
-      };
 
 function filterAccountsByNetworkSymbol(
     accounts: Account[],
@@ -44,9 +30,15 @@ function filterAccountsByNetworkSymbol(
 ): Account[] {
     return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
 }
+export interface UseAccountWithTokensOptionsProps {
+    networkSymbolFilter: NetworkSymbol | undefined;
+    includeTestnets?: boolean;
+}
 
-export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
-    const networkSymbol = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
+export function useAccountWithTokensOptions({
+    networkSymbolFilter,
+    includeTestnets = true,
+}: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
     const accounts = useSelector(selectAllAccountsToList);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -63,9 +55,15 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
             return [];
         }
 
-        const networkAccounts = filterAccountsByNetworkSymbol(throttledAccounts, networkSymbol);
+        const networkAccounts = filterAccountsByNetworkSymbol(
+            throttledAccounts,
+            networkSymbolFilter,
+        );
+
+        const mainnets = new Set(getMainnets().map(network => network.symbol));
 
         const accountsAndTokensSortedByFiatBalance = networkAccounts
+            .filter(account => (includeTestnets ? true : mainnets.has(account.symbol)))
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,
@@ -115,5 +113,12 @@ export function useAccountWithTokensOptions(): AccountWithTokensOption[] {
             ]);
 
         return accountsWithTokensOptions;
-    }, [throttledAccounts, baseCurrencyCode, fiatRatesRef, networkSymbol, tokenDefinitions]);
+    }, [
+        fiatRatesRef,
+        throttledAccounts,
+        networkSymbolFilter,
+        includeTestnets,
+        baseCurrencyCode,
+        tokenDefinitions,
+    ]);
 }

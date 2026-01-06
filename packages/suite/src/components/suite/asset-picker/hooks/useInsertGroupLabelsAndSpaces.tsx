@@ -2,15 +2,26 @@ import { ReactNode, useMemo } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
 
-import { AccountLabel } from 'src/components/suite/AccountLabel';
-import {
-    ASSET_ROW_GROUP_LABEL_HEIGHT,
-    ASSET_ROW_HEIGHTS_BY_SIZE,
-} from 'src/components/suite/asset-picker/constants';
+import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
-import { AccountWithTokensOption } from './useAccountWithTokensOptions';
+import { AccountLabel } from '../../AccountLabel';
+import { ASSET_ROW_GROUP_LABEL_HEIGHT, ASSET_ROW_HEIGHTS_BY_SIZE } from '../constants';
+import { AssetGroupSpaceSize } from '../types';
 
-export type GlobalSendListItem =
+export type AccountWithTokensOption =
+    | {
+          type: 'account';
+          account: Account;
+          height: number;
+      }
+    | {
+          type: 'token';
+          account: Account;
+          token: TokensWithRates;
+          height: number;
+      };
+
+export type AssetPickerListItem =
     | AccountWithTokensOption
     | {
           type: 'group-label';
@@ -20,13 +31,14 @@ export type GlobalSendListItem =
     | {
           type: 'group-space';
           height: number;
+          size: AssetGroupSpaceSize;
       };
 
 export function useInsertGroupLabelsAndSpaces(
     accountsWithTokens: AccountWithTokensOption[],
-): GlobalSendListItem[] {
+): AssetPickerListItem[] {
     return useMemo(() => {
-        const list: GlobalSendListItem[] = [];
+        const list: AssetPickerListItem[] = [];
         let currentAccount: Account | null = null;
 
         for (const item of accountsWithTokens) {
@@ -38,6 +50,7 @@ export function useInsertGroupLabelsAndSpaces(
                             list.push({
                                 type: 'group-space',
                                 height: ASSET_ROW_HEIGHTS_BY_SIZE['md'],
+                                size: 'md',
                             });
                         }
 

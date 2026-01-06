@@ -89,6 +89,13 @@ export const TradingExchangeFormInputs = () => {
     return (
         <Card paddingType="none">
             <Column gap={spacings.lg} padding={spacings.lg}>
+                {/* TODO: finish integration to trading exchange form */}
+                {/* <TradingFormInputSellAsset
+                    inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    inputLabel="TR_FROM"
+                    dataTestId="@trading/form/trade-from/select-crypto"
+                    onAssetSelect={handleSellAssetSelect}
+                /> */}
                 <TradingFormInputAccount
                     accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     label="TR_FROM"
