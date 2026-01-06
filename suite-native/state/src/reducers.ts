@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { getStoredState } from 'redux-persist';
 
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
@@ -125,8 +126,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         key: 'walletSettings',
         version: 1,
         migrations: {
-            1: initialMigrateAppSettingsAndDiscoveryConfig(deps.mmkvStorage),
-            2: migrateAutoEjectToWalletSettings(deps.mmkvStorage),
+            1: initialMigrateAppSettingsAndDiscoveryConfig({
+                mmkvStorage: deps.mmkvStorage,
+                getStoredState,
+            }),
+            2: migrateAutoEjectToWalletSettings({
+                mmkvStorage: deps.mmkvStorage,
+                getStoredState,
+            }),
         },
         storage: deps.mmkvStorage,
     });

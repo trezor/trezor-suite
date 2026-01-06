@@ -6,7 +6,7 @@ import { WalletSettings } from '@suite-common/wallet-types';
 import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { MMKVStorage } from '../../mmkvStorage';
+import { MMKVStorageDep } from '../../mmkvStorage';
 
 const getFiatCurrencyCode = (appSettings: object): string | undefined => {
     if ('fiatCurrencyCode' in appSettings && typeof appSettings.fiatCurrencyCode === 'string') {
@@ -81,39 +81,44 @@ const migrateDiscoveryConfigToWalletSettings = (
     );
 };
 
-export const initialMigrateAppSettingsAndDiscoveryConfig = (storage: MMKVStorage) => async (walletSettingsState: unknown) => {
-    const appSettings = await getStoredState({
-        key: 'appSettings',
-        storage,
-    });
-    const discoveryConfig = await getStoredState({
-        key: 'discoveryConfig',
-        storage,
-    });
-
-    const newState = walletSettingsState as Partial<WalletSettings> & PersistedState;
-
-    if (!appSettings && !discoveryConfig) return newState;
-
-    if (appSettings) {
-        const localCurrency = migrateLocalCurrency(appSettings);
-        const bitcoinAmountUnit = migrateBitcoinAmountUnit(appSettings);
-
-        if (localCurrency) {
-            newState.localCurrency = localCurrency;
-        }
-        if (bitcoinAmountUnit) {
-            newState.bitcoinAmountUnit = bitcoinAmountUnit;
-        }
-    }
-
-    if (discoveryConfig) {
-        const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
-
-        if (enabledNetworks) {
-            newState.enabledNetworks = enabledNetworks;
-        }
-    }
-
-    return newState;
+export type MigrationDeps = MMKVStorageDep & {
+    getStoredState: typeof getStoredState;
 };
+
+export const initialMigrateAppSettingsAndDiscoveryConfig =
+    (deps: MigrationDeps) => async (walletSettingsState: unknown) => {
+        const appSettings = await deps.getStoredState({
+            key: 'appSettings',
+            storage: deps.mmkvStorage,
+        });
+        const discoveryConfig = await deps.getStoredState({
+            key: 'discoveryConfig',
+            storage: deps.mmkvStorage,
+        });
+
+        const newState = walletSettingsState as Partial<WalletSettings> & PersistedState;
+
+        if (!appSettings && !discoveryConfig) return newState;
+
+        if (appSettings) {
+            const localCurrency = migrateLocalCurrency(appSettings);
+            const bitcoinAmountUnit = migrateBitcoinAmountUnit(appSettings);
+
+            if (localCurrency) {
+                newState.localCurrency = localCurrency;
+            }
+            if (bitcoinAmountUnit) {
+                newState.bitcoinAmountUnit = bitcoinAmountUnit;
+            }
+        }
+
+        if (discoveryConfig) {
+            const enabledNetworks = migrateDiscoveryConfigToWalletSettings(discoveryConfig);
+
+            if (enabledNetworks) {
+                newState.enabledNetworks = enabledNetworks;
+            }
+        }
+
+        return newState;
+    };

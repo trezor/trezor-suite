@@ -4,34 +4,26 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { initialMigrateAppSettingsAndDiscoveryConfig } from '../../migrations/walletSettings/v1';
-
-jest.mock('../../storage', () => ({
-    initMmkvStorage: jest.fn().mockResolvedValue({}),
-}));
-
-jest.mock('redux-persist', () => ({
-    getStoredState: jest.fn(),
-}));
-
-const mockGetStoredState = getStoredState as jest.MockedFunction<typeof getStoredState>;
+import { createMMKVStorageMock } from '../../mmkvStorage.mock';
 
 describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('should migrate local currency from fiatCurrencyCode', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    fiatCurrencyCode: 'czk',
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        fiatCurrencyCode: 'czk',
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({
             localCurrency: 'czk',
@@ -39,33 +31,43 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     });
 
     it('should ignore non-existent currency from fiatCurrencyCode', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    fiatCurrencyCode: 'mycoin',
-                });
-            }
+        const mockGetStoreState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        fiatCurrencyCode: 'mycoin',
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoreState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({});
     });
 
     it('should migrate local currency from fiatCurrency.label', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    fiatCurrency: { label: 'czk', value: 'Czech koruna' },
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        fiatCurrency: { label: 'czk', value: 'Czech koruna' },
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({
             localCurrency: 'czk',
@@ -73,17 +75,22 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     });
 
     it('should migrate bitcoin amount satoshi units', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    bitcoinUnits: PROTO.AmountUnit.SATOSHI,
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        bitcoinUnits: PROTO.AmountUnit.SATOSHI,
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({
             bitcoinAmountUnit: 3,
@@ -91,56 +98,71 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     });
 
     it('should not migrate invalid bitcoin amount units', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    bitcoinUnits: 'btc', // invalid value
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        bitcoinUnits: 'btc', // invalid value
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({});
     });
 
     it('should not migrate not implemented bitcoin amount units', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'appSettings') {
-                return Promise.resolve({
-                    bitcoinUnits: PROTO.AmountUnit.MILLIBITCOIN,
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'appSettings') {
+                    return Promise.resolve({
+                        bitcoinUnits: PROTO.AmountUnit.MILLIBITCOIN,
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({});
     });
 
     it('should migrate enabled network symbols by changing bnb to bsc and removing deprecated coins', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'discoveryConfig') {
-                return Promise.resolve({
-                    enabledDiscoveryNetworkSymbols: [
-                        'btc',
-                        'eth',
-                        'nmc',
-                        'bnb',
-                        'test',
-                        'dash',
-                    ] as NetworkSymbol[],
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'discoveryConfig') {
+                    return Promise.resolve({
+                        enabledDiscoveryNetworkSymbols: [
+                            'btc',
+                            'eth',
+                            'nmc',
+                            'bnb',
+                            'test',
+                            'dash',
+                        ] as NetworkSymbol[],
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({
             enabledNetworks: ['btc', 'eth', 'bsc', 'test'],
@@ -148,30 +170,35 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     });
 
     it('should migrate enabled network symbols but exclude unknown values', async () => {
-        mockGetStoredState.mockImplementation(({ key }) => {
-            if (key === 'discoveryConfig') {
-                return Promise.resolve({
-                    enabledDiscoveryNetworkSymbols: [
-                        // invalid
-                        'foo',
-                        'bar',
-                        // valid
-                        'btc',
-                        'eth',
-                        'test',
-                        // renamed
-                        'bnb',
-                        // removed
-                        'nmc',
-                        'dash',
-                    ] as NetworkSymbol[],
-                });
-            }
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(({ key }) => {
+                if (key === 'discoveryConfig') {
+                    return Promise.resolve({
+                        enabledDiscoveryNetworkSymbols: [
+                            // invalid
+                            'foo',
+                            'bar',
+                            // valid
+                            'btc',
+                            'eth',
+                            'test',
+                            // renamed
+                            'bnb',
+                            // removed
+                            'nmc',
+                            'dash',
+                        ] as NetworkSymbol[],
+                    });
+                }
 
-            return Promise.resolve(undefined);
-        });
+                return Promise.resolve(undefined);
+            });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({});
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })({});
 
         expect(migratedState).toEqual({
             enabledNetworks: ['btc', 'eth', 'test', 'bsc'],
@@ -179,12 +206,16 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     });
 
     it('should keep previous state if both appSettings and discoveryConfig are missing', async () => {
-        mockGetStoredState.mockImplementation(() => Promise.resolve(undefined));
+        const mockGetStoredState = jest
+            .fn<ReturnType<typeof getStoredState>, Parameters<typeof getStoredState>>()
+            .mockImplementation(() => Promise.resolve(undefined));
 
         const walletSettingsState = { someProperty: 'value' };
 
-        const migratedState =
-            await initialMigrateAppSettingsAndDiscoveryConfig(walletSettingsState);
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+            getStoredState: mockGetStoredState,
+            mmkvStorage: createMMKVStorageMock(),
+        })(walletSettingsState);
 
         expect(migratedState).toEqual(walletSettingsState);
     });
