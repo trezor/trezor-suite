@@ -338,8 +338,9 @@ const showEditOption = (variant: LabelingVariant) => variant === 'text';
 type LabelingProps = {
     payload: MetadataAddPayload;
     deviceStaticSessionId: StaticSessionId;
-    children: ReactNode;
+    children?: ReactNode;
     isDisabled?: boolean;
+    onSubmit?: (value: string) => Promise<boolean>;
 } & Partial<EditableTextProps>;
 
 export const Labeling = ({
@@ -347,6 +348,7 @@ export const Labeling = ({
     deviceStaticSessionId,
     children,
     isDisabled,
+    onSubmit,
     ...rest
 }: LabelingProps) => {
     const dispatch = useDispatch();
@@ -433,7 +435,7 @@ export const Labeling = ({
 
     return (
         <EditableText
-            onSubmit={handleSubmit}
+            onSubmit={onSubmit ?? handleSubmit}
             onEdit={handleEdit}
             isDisabled={
                 isDisabled ||

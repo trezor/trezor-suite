@@ -16,7 +16,6 @@ import {
     Card,
     Column,
     Dropdown,
-    IconButton,
     IconCircle,
     InfoItem,
     Link,
@@ -101,16 +100,13 @@ const NftsRow = ({
                                             }
                                             gap={0}
                                         >
-                                            <Row gap={8}>
-                                                <Text typographyStyle="label" as="div">
-                                                    <Address isTruncated value={nft.contract} />
-                                                </Text>
-                                                <IconButton
-                                                    icon="copy"
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    size="small"
-                                                    onClick={() => {
+                                            <Link href={getNftContractExplorerUrl(explorer, nft)}>
+                                                <Address
+                                                    typographyStyle="label"
+                                                    isTruncated
+                                                    value={nft.contract}
+                                                    isCopyAllowed
+                                                    onCopy={() => {
                                                         dispatch(
                                                             shouldShowCopyAddressModal
                                                                 ? showCopyAddressModal(
@@ -123,7 +119,7 @@ const NftsRow = ({
                                                         );
                                                     }}
                                                 />
-                                            </Row>
+                                            </Link>
                                         </InfoItem>
                                     </Column>
                                 </Card>

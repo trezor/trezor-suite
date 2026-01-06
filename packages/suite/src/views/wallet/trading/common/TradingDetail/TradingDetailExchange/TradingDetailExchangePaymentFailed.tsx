@@ -47,7 +47,7 @@ export const TradingDetailExchangePaymentFailed = ({
                             orderId={trade.orderId}
                             provider={provider}
                             trade={trade}
-                            txAddress={trade.receiveTxHash}
+                            txId={trade.receiveTxHash}
                         />
                     )}
                     <TradingDetailSupportBanner provider={provider} orderId={trade.orderId} />

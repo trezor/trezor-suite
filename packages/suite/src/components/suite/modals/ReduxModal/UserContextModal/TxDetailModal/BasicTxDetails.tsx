@@ -13,6 +13,7 @@ import {
     InfoItem,
     InfoItemProps,
     InfoSegments,
+    Link,
     Row,
     Text,
     useElevation,
@@ -23,8 +24,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { Translation } from 'src/components/suite/Translation';
-import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
+import { useExternalLink } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
@@ -77,6 +78,7 @@ export const BasicTxDetails = ({
     explorerUrlQueryString,
 }: BasicTxDetailsProps) => {
     const { elevation } = useElevation();
+    const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);
     // all solana txs which are fetched are already confirmed
     const isConfirmed = confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
 
@@ -129,7 +131,7 @@ export const BasicTxDetails = ({
 
             <Divider />
 
-            <Grid columns={2} gap={spacings.sm} forceEqualColumns>
+            <Grid columns={2} columnGap={32} rowGap={4} forceEqualColumns>
                 {/* MINED TIME */}
                 <Item
                     label={
@@ -146,15 +148,6 @@ export const BasicTxDetails = ({
                     ) : (
                         <Translation id="TR_UNKNOWN_CONFIRMATION_TIME" />
                     )}
-                </Item>
-
-                {/* TX ID */}
-                <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
-                    <TxAddress
-                        txAddress={tx.txid}
-                        explorerUrl={explorerUrl}
-                        explorerUrlQueryString={explorerUrlQueryString}
-                    />
                 </Item>
 
                 {/* Fee level */}
@@ -278,6 +271,17 @@ export const BasicTxDetails = ({
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}
+
+                {/* TX ID */}
+                <Item label={<Translation id="TR_TXID" />} iconName="fingerprint">
+                    <Link
+                        href={explorerLink}
+                        data-testid="@tx-detail/txid-value"
+                        wordBreak="break-all"
+                    >
+                        {tx.txid}
+                    </Link>
+                </Item>
             </Grid>
         </Card>
     );

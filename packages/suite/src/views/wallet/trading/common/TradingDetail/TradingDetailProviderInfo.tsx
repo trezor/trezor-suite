@@ -15,8 +15,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 
+import { TradingDetailTxId } from './TradingDetailTxId';
 import { TradingProviderInfo } from '../TradingProviderInfo';
-import { TradingDetailTxAddress } from './TradingDetailTxAddress';
 
 type TradingDetailProviderInfoProps = {
     account?: Account;
@@ -24,7 +24,7 @@ type TradingDetailProviderInfoProps = {
     orderId?: string;
     provider: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
     trade: BuyTrade | ExchangeTrade | SellFiatTrade;
-    txAddress?: string;
+    txId?: string;
 };
 
 export const TradingDetailProviderInfo = ({
@@ -33,7 +33,7 @@ export const TradingDetailProviderInfo = ({
     orderId,
     provider,
     trade,
-    txAddress,
+    txId,
 }: TradingDetailProviderInfoProps) => {
     const dispatch = useDispatch();
 
@@ -52,9 +52,9 @@ export const TradingDetailProviderInfo = ({
                         {estimatedTime}
                     </InfoItem>
                 )}
-                {account && txAddress && (
+                {account && txId && (
                     <InfoItem label={<Translation id="TR_TXID" />} direction="row">
-                        <TradingDetailTxAddress address={txAddress} account={account} />
+                        <TradingDetailTxId value={txId} account={account} />
                     </InfoItem>
                 )}
                 <InfoItem label={<Translation id="TR_BUY_PROVIDER" />} direction="row">

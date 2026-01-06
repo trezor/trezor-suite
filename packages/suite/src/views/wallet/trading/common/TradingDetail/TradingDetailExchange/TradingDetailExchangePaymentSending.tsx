@@ -5,7 +5,7 @@ import { formatDurationStrict } from '@suite-common/suite-utils';
 import { TradingComposedTransactionInfo } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { BulletListItemState, Card, Column, InfoItem, Text } from '@trezor/components';
+import { BulletListItemState, Card, Column, InfoItem } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useLocales } from 'src/hooks/suite';
@@ -13,7 +13,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { Account } from 'src/types/wallet';
 
 import { TradingDetailStep } from '../TradingDetailStep';
-import { TradingDetailTxAddress } from '../TradingDetailTxAddress';
+import { TradingDetailTxId } from '../TradingDetailTxId';
 import { getTxEstimatedTimeSeconds } from '../utils';
 
 const getState = (trade: ExchangeTrade): BulletListItemState => {
@@ -62,20 +62,22 @@ export const TradingDetailExchangePaymentSending = ({
         ? `~${formatDurationStrict(estimatedTimeSeconds, locale)}`
         : undefined;
 
-    const txAddress =
+    const txId =
         trade.receiveTxHash && account ? (
-            <Text variant={state === 'done' ? 'tertiary' : 'default'} as="div">
-                <TradingDetailTxAddress address={trade.receiveTxHash} account={account} />
-            </Text>
+            <TradingDetailTxId
+                variant={state === 'done' ? 'tertiary' : 'default'}
+                value={trade.receiveTxHash}
+                account={account}
+            />
         ) : null;
 
     return (
         <TradingDetailStep
-            doneContent={txAddress}
+            doneContent={txId}
             state={state}
             title={<Translation id={getTitleId(state)} />}
         >
-            {txAddress || estimatedTime ? (
+            {txId || estimatedTime ? (
                 <Card>
                     <Column gap={8}>
                         {estimatedTime && (
@@ -86,9 +88,9 @@ export const TradingDetailExchangePaymentSending = ({
                                 {estimatedTime}
                             </InfoItem>
                         )}
-                        {txAddress && (
+                        {txId && (
                             <InfoItem label={<Translation id="TR_TXID" />} direction="row">
-                                {txAddress}
+                                {txId}
                             </InfoItem>
                         )}
                     </Column>

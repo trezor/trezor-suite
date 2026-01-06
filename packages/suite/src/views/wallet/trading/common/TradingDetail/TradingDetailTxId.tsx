@@ -1,17 +1,18 @@
 import { useDispatch } from 'react-redux';
 
-import { Link } from '@trezor/components';
+import { Link, TextProps } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Address } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 
-type TradingDetailTxAddressProps = {
-    address: string;
+type TradingDetailTxIdProps = {
+    value: string;
     account: Account;
+    variant?: TextProps['variant'];
 };
 
-export const TradingDetailTxAddress = ({ address, account }: TradingDetailTxAddressProps) => {
+export const TradingDetailTxId = ({ value, account, variant }: TradingDetailTxIdProps) => {
     const dispatch = useDispatch();
 
     return (
@@ -20,7 +21,7 @@ export const TradingDetailTxAddress = ({ address, account }: TradingDetailTxAddr
                 dispatch(
                     openModal({
                         type: 'transaction-detail',
-                        txid: address,
+                        txid: value,
                         descriptor: account.descriptor,
                         symbol: account.symbol,
                         deviceState: account.deviceState,
@@ -29,7 +30,7 @@ export const TradingDetailTxAddress = ({ address, account }: TradingDetailTxAddr
                 )
             }
         >
-            <Address value={address} isTruncated />
+            <Address isTruncated isChunked={false} isCopyAllowed value={value} variant={variant} />
         </Link>
     );
 };

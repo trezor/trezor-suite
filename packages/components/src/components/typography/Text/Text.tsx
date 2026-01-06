@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { HTMLProps, ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -81,7 +81,6 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 type StyledTextProps = ExclusiveColorOrVariant & {
     $isMonospaced?: boolean;
     $isHighlighted?: boolean;
-    $breakAll?: boolean;
 } & TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
@@ -103,24 +102,16 @@ const StyledText = styled.span<StyledTextProps>`
             box-decoration-break: clone;
         `}
 
-    ${({ $breakAll }) =>
-        $breakAll &&
-        css`
-            overflow-wrap: break-word;
-        `}
-
     ${withTextProps}
     ${withFrameProps}
 `;
 
-export type TextProps = {
+export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     children: ReactNode;
     className?: string;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
-    breakAll?: boolean;
     as?: string;
-    onClick?: () => void;
     'data-testid'?: string;
     role?: string;
 } & ExclusiveColorOrVariant &
@@ -135,9 +126,9 @@ export const Text = ({
     as = 'span',
     'data-testid': dataTest,
     onClick,
+    onCopy,
     isMonospaced,
     isHighlighted,
-    breakAll,
     role,
     ...rest
 }: TextProps) => {
@@ -150,11 +141,10 @@ export const Text = ({
             className={className}
             as={as}
             onClick={onClick}
+            onCopy={onCopy}
             data-testid={dataTest}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}
-            $breakAll={breakAll}
-            role={role}
             {...textProps}
             {...frameProps}
         >

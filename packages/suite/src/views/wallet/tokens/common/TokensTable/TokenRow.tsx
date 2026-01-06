@@ -30,6 +30,7 @@ import {
     Dropdown,
     IconButton,
     InfoItem,
+    Link,
     Row,
     Table,
     Text,
@@ -141,16 +142,13 @@ export const TokenRow = ({
         type: 'contract' | 'fingerprint' | 'policyId';
     }) => (
         <InfoItem typographyStyle="label" label={label} gap={0}>
-            <Row gap={8}>
-                <Text typographyStyle="label" as="div">
-                    <Address isTruncated value={address} />
-                </Text>
-                <IconButton
-                    icon="copy"
-                    intent="neutral"
-                    priority="secondary"
-                    size="small"
-                    onClick={() => {
+            <Link href={explorerUrl}>
+                <Address
+                    isTruncated
+                    typographyStyle="label"
+                    value={address}
+                    isCopyAllowed
+                    onCopy={() => {
                         dispatch(
                             shouldShowCopyAddressModal
                                 ? showCopyAddressModal(address, type)
@@ -158,7 +156,7 @@ export const TokenRow = ({
                         );
                     }}
                 />
-            </Row>
+            </Link>
         </InfoItem>
     );
 

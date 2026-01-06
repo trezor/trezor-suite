@@ -42,7 +42,7 @@ export const TradingDetailExchangePaymentKYC = ({
                     orderId={trade.orderId}
                     provider={provider}
                     trade={trade}
-                    txAddress={trade.receiveTxHash}
+                    txId={trade.receiveTxHash}
                 />
             )}
         </Card>

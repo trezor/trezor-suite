@@ -2,9 +2,11 @@ import styled, { RuleSet, css } from 'styled-components';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { IconButton, Row, Text, TextProps, Tooltip } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { useSelector } from 'src/hooks/suite';
+import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 const TRUNCATION_PLACEHOLDER = ' ... ';
@@ -30,7 +32,7 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
+const AddressWrapper = styled.span<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
     letter-spacing: 0;
     word-break: ${({ $isChunked }) => ($isChunked ? 'normal' : 'break-all')};
     white-space: ${({ $isChunked }) => ($isChunked ? 'pre-line' : 'break-all')};
@@ -48,6 +50,10 @@ export type AddressProps = {
     isChunked?: boolean;
     isDeviceRendered?: boolean;
     'data-testid'?: string;
+    typographyStyle?: TextProps['typographyStyle'];
+    variant?: TextProps['variant'];
+    isCopyAllowed?: boolean;
+    onCopy?: () => void;
 };
 
 export const Address = ({
@@ -55,8 +61,13 @@ export const Address = ({
     isTruncated,
     isChunked,
     isDeviceRendered = false,
+    typographyStyle,
+    variant,
     'data-testid': dataTestId,
+    isCopyAllowed = false,
+    onCopy,
 }: AddressProps) => {
+    const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);
@@ -68,12 +79,13 @@ export const Address = ({
     );
 
     const formattedValueBase = prefix + (isTruncated ? beginning + placeholder + end : rest);
+    const formattedValueFull = prefix + rest;
     const formattedValue =
         isAddressChunked && isDeviceRendered && !isTruncated
             ? addNewlineAfterEveryFourthChunk(formattedValueBase)
             : formattedValueBase;
 
-    const handleCopy = (e: React.ClipboardEvent) => {
+    const onManualCopy = (e: React.ClipboardEvent) => {
         const selection = window.getSelection()?.toString();
 
         e.preventDefault();
@@ -81,13 +93,41 @@ export const Address = ({
     };
 
     return (
-        <AddressWrapper
-            onCopy={handleCopy}
-            data-testid={dataTestId}
-            $device={isDeviceRendered ? deviceModelInternal : undefined}
-            $isChunked={isAddressChunked}
+        <Tooltip
+            isActive={isTruncated && isCopyAllowed}
+            content={
+                <Row gap={8}>
+                    <Text onCopy={onManualCopy}>{formattedValueFull}</Text>
+                    <IconButton
+                        icon="copy"
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={e => {
+                            e.stopPropagation();
+
+                            if (onCopy) {
+                                onCopy();
+                            } else {
+                                dispatch(copyAddressToClipboard(value));
+                            }
+                        }}
+                    />
+                </Row>
+            }
+            display="inline-flex"
         >
-            {formattedValue ?? value}
-        </AddressWrapper>
+            <Text typographyStyle={typographyStyle} variant={variant}>
+                <AddressWrapper
+                    onCopy={onManualCopy}
+                    data-testid={dataTestId}
+                    id={value}
+                    $device={isDeviceRendered ? deviceModelInternal : undefined}
+                    $isChunked={isAddressChunked}
+                >
+                    {formattedValue}
+                </AddressWrapper>
+            </Text>
+        </Tooltip>
     );
 };

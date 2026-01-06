@@ -29,8 +29,8 @@ export const CollapsibleIOSection = ({
                 tx={tx}
                 inputs={inputs}
                 outputs={outputs}
-                isPhishingTransaction={isPhishingTransaction}
                 isUtxoBased
+                isPhishingTransaction={isPhishingTransaction}
             />
         </CollapsibleBox>
     ) : null;

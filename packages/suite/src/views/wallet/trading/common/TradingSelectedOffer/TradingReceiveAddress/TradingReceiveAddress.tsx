@@ -3,9 +3,8 @@ import { ReactNode } from 'react';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { AccountLabeling } from 'src/components/suite';
+import { AccountLabeling, Address } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { AddressRow } from 'src/components/suite/copy/AddressRow';
 
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
@@ -67,25 +66,21 @@ export const TradingReceiveAddress = () => {
                                     accountTypeBadgeSize="small"
                                     showAccountTypeBadge
                                 />
-                                <AddressRow
-                                    address={receiveAddress}
-                                    shouldAllowCopy={false}
-                                    variant="tertiary"
+                                <Address
+                                    value={receiveAddress}
                                     typographyStyle="hint"
-                                    showStart={10}
-                                    showEnd={4}
+                                    variant="tertiary"
+                                    isTruncated
                                 />
                             </>
                         ) : (
                             <>
                                 {receiveAddress ? (
-                                    <AddressRow
-                                        address={receiveAddress}
-                                        shouldAllowCopy={false}
-                                        variant="default"
-                                        typographyStyle="body"
-                                        showStart={10}
-                                        showEnd={4}
+                                    <Address
+                                        value={receiveAddress}
+                                        typographyStyle="hint"
+                                        variant="tertiary"
+                                        isTruncated
                                     />
                                 ) : (
                                     <Text typographyStyle="hint" variant="tertiary">

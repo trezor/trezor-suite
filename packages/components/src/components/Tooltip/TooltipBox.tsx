@@ -38,7 +38,7 @@ export const TooltipBox = ({ addon, tooltipMaxWidth, content, title }: TooltipBo
                     </Row>
                 )}
 
-                <Text typographyStyle="hint" as="div" variant="default" breakAll>
+                <Text typographyStyle="hint" as="div" variant="default" wordBreak="break-all">
                     {content}
                 </Text>
             </Column>

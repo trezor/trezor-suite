@@ -329,8 +329,8 @@ export const EditableText = ({
             position={{ type: 'relative' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            onClick={handleContainerClick}
-            cursor={isEmpty && !defaultValueTextContent ? 'pointer' : undefined}
+            onClick={isDisabled ? undefined : handleContainerClick}
+            cursor={isEmpty && !defaultValueTextContent && !isDisabled ? 'pointer' : undefined}
             maxWidth={maxWidth}
             minHeight={minHeight}
             margin={margin}

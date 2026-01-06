@@ -45,7 +45,7 @@ export const TradingDetailExchangePaymentSuccessful = ({
                         orderId={trade.orderId}
                         provider={provider}
                         trade={trade}
-                        txAddress={trade.receiveTxHash}
+                        txId={trade.receiveTxHash}
                     />
                 </Card>
             )}
