@@ -5,15 +5,15 @@ import * as SecureStore from 'expo-secure-store';
 
 import { Branded } from '@trezor/type-utils';
 
-export type MMKVStorageKey = string & Branded<'MMKVStorageKey'>;
+export type StorageEncryptionKey = string & Branded<'StorageEncryptionKey'>;
 
-export type EnsureMMKVKey = () => Promise<MMKVStorageKey | null>;
+export type EnsureEncryptionKey = () => Promise<StorageEncryptionKey | null>;
 
-export type EnsureMMKVKeyDep = {
-    ensureMMKVKey: EnsureMMKVKey;
+export type EnsureEncryptionKeyDep = {
+    ensureEncryptionKey: EnsureEncryptionKey;
 };
 
-export const createEnsureMMKVKey = (): EnsureMMKVKey => {
+export const createEnsureEncryptionKey = (): EnsureEncryptionKey => {
     const secureKeyPromise = SecureStore.getItemAsync(ENCRYPTION_KEY)
         .catch(error => {
             // If there is an error, report it and try to read one more time.
@@ -33,11 +33,13 @@ export const createEnsureMMKVKey = (): EnsureMMKVKey => {
                 });
         })
         .then(secureKey => {
-            if (secureKey != null) return secureKey as MMKVStorageKey;
+            if (secureKey != null) return secureKey as StorageEncryptionKey;
 
             // If we are here, it means that we have no encryption key in storage.
             // We need to generate a new one. This should happen only once on first app start.
-            const newSecureKey = Buffer.from(getRandomBytes(16)).toString('hex') as MMKVStorageKey;
+            const newSecureKey = Buffer.from(getRandomBytes(16)).toString(
+                'hex',
+            ) as StorageEncryptionKey;
 
             return SecureStore.setItemAsync(ENCRYPTION_KEY, newSecureKey)
                 .then(() => newSecureKey)

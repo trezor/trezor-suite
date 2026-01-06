@@ -15,7 +15,7 @@ import { deviceConnectionMiddleware, prepareDeviceMiddleware } from '@suite-nati
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
-import { createEnsureMMKVKey, createMMKVStorage } from '@suite-native/storage';
+import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import { thpMiddleware } from '@suite-native/thp';
 import { prepareTradingMiddleware } from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
@@ -63,14 +63,14 @@ export const initStore = (preloadedState?: PreloadedState) => {
         typeof extraFactory
     > | null;
 
-    const ensureMMKVKey = createEnsureMMKVKey();
-    const mmkvStorage = createMMKVStorage({ ensureMMKVKey });
+    const ensureEncryptionKey = createEnsureEncryptionKey();
+    const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
 
     const extraFactory = (api: MiddlewareAPI) => ({
         ...extraDependencies,
         services: createNativeCompositionRoot({
             ...api,
-            ensureMMKVKey,
+            ensureEncryptionKey,
             mmkvStorage,
         }),
     });

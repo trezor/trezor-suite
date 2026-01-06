@@ -1,8 +1,8 @@
 export * from './typedPersistReducer';
 export * from './contexts';
 export * from './StorageProvider';
-export { createEnsureMMKVKey } from './ensureMMKVKey';
-export type { EnsureMMKVKeyDep } from './ensureMMKVKey';
+export { createEnsureEncryptionKey } from './createEnsureEncryptionKey';
+export type { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 export { createMMKVStorage, clearStorage } from './mmkvStorage';
 export type { MMKVStorageDep, MMKVStorage } from './mmkvStorage';
 export * from './atomWithUnecryptedStorage';

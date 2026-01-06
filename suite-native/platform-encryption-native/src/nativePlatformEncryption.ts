@@ -8,14 +8,14 @@ import {
     PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
-import { EnsureMMKVKeyDep } from '@suite-native/storage';
+import { EnsureEncryptionKeyDep } from '@suite-native/storage';
 import { err, ok } from '@trezor/type-utils';
 
 const CIPHER_TYPE = 'aes-256-gcm';
 const IV_SIZE = 96 / 8;
 const AUTH_TAG_SIZE = 128 / 8;
 
-type NativePlatformEncryptionDeps = EnsureMMKVKeyDep;
+type NativePlatformEncryptionDeps = EnsureEncryptionKeyDep;
 
 // Derive 256-bit key from 128-bit MMKV key using SHA-256
 const deriveKey = (mmkvKey: string): Buffer =>
@@ -25,14 +25,14 @@ export const createNativePlatformEncryption = (
     deps: NativePlatformEncryptionDeps,
 ): PlatformEncryption => ({
     encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
-        const mmkvKey = await deps.ensureMMKVKey();
+        const encryptionKey = await deps.ensureEncryptionKey();
 
-        if (mmkvKey === null) {
+        if (encryptionKey === null) {
             return err(EncryptionUnavailable('Encryption key not available'));
         }
 
         try {
-            const key = deriveKey(mmkvKey);
+            const key = deriveKey(encryptionKey);
             const iv = crypto.randomBytes(IV_SIZE);
             const cipher = crypto.createCipheriv(CIPHER_TYPE, key, iv);
 
@@ -49,14 +49,14 @@ export const createNativePlatformEncryption = (
     },
 
     decrypt: async <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) => {
-        const mmkvKey = await deps.ensureMMKVKey();
+        const encryptionKey = await deps.ensureEncryptionKey();
 
-        if (mmkvKey === null) {
+        if (encryptionKey === null) {
             return err(EncryptionUnavailable('Encryption key not available'));
         }
 
         try {
-            const key = deriveKey(mmkvKey);
+            const key = deriveKey(encryptionKey);
             const input = Buffer.from(value, 'hex');
 
             const iv = input.subarray(0, IV_SIZE);
