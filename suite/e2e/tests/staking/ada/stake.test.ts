@@ -1,0 +1,216 @@
+import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
+import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
+
+import { toADA } from '../../../support/common';
+import { expect, test } from '../../../support/fixtures';
+import { ADA_MOCKED_ACCOUNT } from '../../../support/mocks/ada-endpoints';
+import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
+
+// mocked and expected values
+const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
+const startingBalanceFormatted = toADA(startingBalance);
+const feeAmount = 177601; // mocked 44 lovelace/byte
+const finalBalance =
+    startingBalance - feeAmount - Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
+const finalBalanceFormatted = toADA(finalBalance);
+
+test.describe('Staking - Cardano', { tag: ['@group=staking', '@specificModel'] }, () => {
+    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic' } });
+
+    test.beforeEach(
+        async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {
+            await onboardingPage.completeOnboarding();
+
+            await test.step('Enable Cardano and set mocked backend', async () => {
+                await settingsPage.navigateTo('coins');
+                await blockbookMock.start('ada', 'blockfrost');
+
+                await settingsPage.coins.disableNetwork('btc');
+                await settingsPage.coins.enableNetwork('ada');
+                await settingsPage.coins.openNetworkAdvanceSettings('ada');
+                await settingsPage.coins.changeBackend('blockfrost', blockbookMock.url);
+
+                await dashboardPage.dashboardMenuButton.click();
+                await page.discoveryShouldFinish();
+            });
+        },
+    );
+
+    test(
+        'Stake Cardano',
+        {
+            annotation: createTestAnnotation({
+                testCase: 'Verifies that a user can stake from his Cardano account.',
+                category: TestCategory.Staking,
+                priority: TestPriority.Critical,
+                stream: TestStream.Trends,
+            }),
+        },
+        async ({ page, devicePrompt, walletPage, feeSection, stakingSection, blockbookMock }) => {
+            const stakingAccountItemInLeftSection = walletPage.accountButton({
+                symbol: 'ada',
+                type: 'normal',
+                atIndex: 0,
+                subAccount: 'staking',
+            });
+
+            await test.step('Verify inactive staking account', async () => {
+                await page.clock.install();
+                await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
+                await stakingSection.stakingTabButton.click();
+                await expect(walletPage.discoveryWarning).toBeHidden();
+                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
+                    startingBalanceFormatted,
+                );
+                await expect(stakingSection.claimRewardsButton).toBeHidden();
+                await expect(stakingSection.unstakeToClaimButton).toBeHidden();
+                await expect(stakingAccountItemInLeftSection).toBeHidden();
+            });
+
+            await test.step('Initiate staking flow', async () => {
+                await stakingSection.startStakingButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKING_IN_A_NUTSHELL');
+                await expect(page.modal).toContainTranslation(
+                    'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+                    {
+                        values: { networkDisplaySymbol: 'ADA' },
+                    },
+                );
+
+                await stakingSection.continueButton.click();
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                    values: { symbol: 'ADA' },
+                });
+                await stakingSection.everstakeAcknowledgeCheckbox.click();
+                await stakingSection.confirmButton.click();
+                await expect(stakingSection.cardanoDepositAmount).toHaveText(
+                    `${CARDANO_STAKING_REGISTRATION_DEPOSIT} ADA`,
+                );
+                await expect(feeSection.maxFeeWithSymbol).toHaveText(
+                    toADA(feeAmount, { maxDecimals: 4 }),
+                );
+            });
+
+            await test.step('Confirm staking on device', async () => {
+                await stakingSection.continueButton.click();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['Confirm:'],
+                        ['Stake key', '\n', 'registration'],
+                        ['for account #1:'],
+                        ["m/1852'/1815'/0'/2", '\n', '/0'],
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['Confirm:'],
+                        ['Stake delegation'],
+                        ['for account #1:'],
+                        ["m/1852'/1815'/0'/2", '\n', '/0'],
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['to pool:'],
+                        splitStringByDisplayLimit(
+                            'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                        ),
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['Confirm:'],
+                        ['Vote delegation'],
+                        ['for account #1:'],
+                        ["m/1852'/1815'/0'/2", '\n', '/0'],
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['Delegating to key hash:'],
+                        splitStringByDisplayLimit(
+                            'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
+                        ),
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                await devicePrompt.waitForPromptAndClick();
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    header: { title: 'Confirm transaction' },
+                    body: [
+                        ['Transaction fee:'],
+                        [toADA(feeAmount)],
+                        ['Network: Mainnet'],
+                        ['Valid since: n/a'],
+                        [/^TTL: \d{9}$/],
+                    ],
+                    footer: 'Tap to continue',
+                });
+
+                // staked account
+                blockbookMock.updateAccountState({
+                    balance: finalBalance.toString(),
+                    availableBalance: finalBalance.toString(),
+                    misc: {
+                        staking: {
+                            address: 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
+                            rewards: '0',
+                            isActive: true,
+                            poolId: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                            drep: {
+                                drep_id: 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
+                                hex: '22ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
+                                amount: finalBalance.toString(),
+                                active: true,
+                                active_epoch: 573,
+                                has_script: false,
+                                retired: false,
+                                expired: false,
+                                last_active_epoch: 601,
+                            },
+                        },
+                    },
+                });
+                await devicePrompt.waitForPromptAndConfirm();
+                await expect(stakingSection.stakedToast).toContainTranslation('TOAST_TX_STAKED', {
+                    values: {
+                        amount: finalBalanceFormatted,
+                        account: 'Cardano #1',
+                    },
+                });
+            });
+
+            await test.step('Verify account is staked', async () => {
+                await page.clock.fastForward(stakingSection.watchPeriod);
+                await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
+                    finalBalanceFormatted,
+                );
+                await expect(stakingSection.cardanoRewardAmount).toHaveText('0 ADA');
+                await expect(stakingSection.claimRewardsButton).toBeDisabled();
+                await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
+                await expect(stakingAccountItemInLeftSection).toBeVisible();
+                await expect(stakingSection.cardanoStakedFullBalanceText).toHaveTranslation(
+                    'TR_STAKE_FULL_BALANCE',
+                );
+            });
+        },
+    );
+});

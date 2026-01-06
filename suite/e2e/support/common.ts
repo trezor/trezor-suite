@@ -237,3 +237,6 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
         null,
         2,
     );
+
+export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
+    `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;

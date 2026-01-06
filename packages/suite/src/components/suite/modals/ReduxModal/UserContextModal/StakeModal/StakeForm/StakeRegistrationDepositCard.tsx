@@ -48,7 +48,10 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                         <Paragraph typographyStyle="body">
                             <Translation id="TR_STAKE_REGISTRATION_DEPOSIT" />
                         </Paragraph>
-                        <Paragraph typographyStyle="highlight">
+                        <Paragraph
+                            data-testid="@modal/staking/registration-deposit-amount-with-symbol"
+                            typographyStyle="highlight"
+                        >
                             {CARDANO_STAKING_REGISTRATION_DEPOSIT} {getNetworkDisplaySymbol(symbol)}
                         </Paragraph>
                     </Row>

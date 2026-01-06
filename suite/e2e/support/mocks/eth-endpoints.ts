@@ -1,6 +1,6 @@
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 
-export const ETH_ACC = {
+export const ETH_MOCKED_ACCOUNT = {
     page: 1,
     totalPages: 1,
     itemsOnPage: 25,
@@ -30,7 +30,7 @@ export const ETH_ACC = {
     addressAliases: {},
 };
 
-const isFirstAccount = (descriptor: string) => descriptor === ETH_ACC.address;
+const isFirstAccount = (descriptor: string) => descriptor === ETH_MOCKED_ACCOUNT.address;
 
 export const fixtures = [
     {
@@ -60,7 +60,7 @@ export const fixtures = [
         default: true,
         response: ({ params }: any) => {
             if (isFirstAccount(params.descriptor)) {
-                return { data: ETH_ACC };
+                return { data: ETH_MOCKED_ACCOUNT };
             }
         },
     },

@@ -58,7 +58,12 @@ export class StakingSection {
     readonly stakedToast: Locator;
     readonly unstakedToast: Locator;
     readonly claimedToast: Locator;
-    readonly modalHeader: Locator;
+    readonly claimRewardsButton: Locator;
+    readonly cardanoRewardAmount: Locator;
+    readonly cardanoDepositAmount: Locator;
+    readonly cardanoModalRewardAmount: Locator;
+    readonly cardanoStakedFullBalanceText: Locator;
+    readonly claimWarningBanner: Locator;
 
     constructor(private readonly page: Page) {
         this.rewardList = new RewardsList(page);
@@ -125,7 +130,16 @@ export class StakingSection {
         this.stakedToast = this.page.getByTestId('@toast/tx-staked');
         this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
-        this.modalHeader = this.page.getByTestId('@modal/header');
+        this.claimRewardsButton = this.page.getByTestId('@account/staking/claim-rewards-button');
+        this.cardanoRewardAmount = this.page.getByTestId('@account/staking/rewards-with-symbol');
+        this.cardanoDepositAmount = this.page.getByTestId(
+            '@modal/staking/registration-deposit-amount-with-symbol',
+        );
+        this.cardanoModalRewardAmount = this.page.getByTestId(
+            '@modal/claim/rewards-amount-with-symbol',
+        );
+        this.cardanoStakedFullBalanceText = this.page.getByTestId('@account/staking/full-balance');
+        this.claimWarningBanner = this.page.getByTestId('@modal/claim/fee-warning-banner');
     }
 
     @step()

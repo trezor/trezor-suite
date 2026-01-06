@@ -6,12 +6,12 @@ import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/walle
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import messages from '@trezor/suite/src//support/messages';
 
-import { Fees } from './fees';
-import { getCompanyNameFromList, invityEndpoint } from '../../../fixtures/invity';
-import { calculatePercentageOfBalance, getCountryLabel, step } from '../../common';
-import { expect } from '../../testExtends/customMatchers';
-import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
-import { DevicePrompt } from '../devicePrompt';
+import { FeeSection } from './feeSection';
+import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';
+import { calculatePercentageOfBalance, getCountryLabel, step } from '../common';
+import { expect } from '../testExtends/customMatchers';
+import { PaymentMethods, PercentageOfBalanceParams } from '../types';
+import { DevicePrompt } from './devicePrompt';
 
 const quoteProviderLocator = '@trading/offers/quote/provider';
 
@@ -27,7 +27,7 @@ const paymentMethodNameMap: Record<string, PaymentMethods> = {
 type AccountTabFilter = 'all-networks' | NetworkConfigWithoutTestnets['symbol'];
 
 export class TradingPage {
-    readonly fees: Fees;
+    readonly fees: FeeSection;
 
     // Input and general
     readonly offerSpinner: Locator;
@@ -152,7 +152,7 @@ export class TradingPage {
         private page: Page,
         private readonly devicePrompt: DevicePrompt,
     ) {
-        this.fees = new Fees(page);
+        this.fees = new FeeSection(page);
 
         this.offerSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
         this.section = this.page.getByTestId('@trading');
@@ -199,7 +199,7 @@ export class TradingPage {
         this.refreshTime = this.page.getByTestId('@trading/refresh-time-text');
         this.selectThisQuoteButton = this.page.getByTestId('@trading/offers/get-this-deal-button');
         // Confirmation modal
-        this.modal = this.page.getByTestId('@modal');
+        this.modal = this.page.modal;
         this.confirmOnTrezorButton = this.page.getByTestId(
             '@trading/offer/confirm-on-trezor-button',
         );

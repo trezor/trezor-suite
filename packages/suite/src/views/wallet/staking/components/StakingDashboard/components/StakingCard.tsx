@@ -46,6 +46,7 @@ type ItemProps = {
     description: React.ReactNode;
     isReward?: boolean;
     isLoading?: boolean;
+    'data-testid'?: string;
 };
 
 const Item = ({
@@ -55,6 +56,7 @@ const Item = ({
     isLoading = false,
     title,
     description,
+    'data-testid': dataTestId,
 }: ItemProps) => (
     <InfoItem label={label} iconName={iconName}>
         {isLoading ? (
@@ -64,7 +66,11 @@ const Item = ({
             </>
         ) : (
             <>
-                <Paragraph typographyStyle="titleSmall" variant={isReward ? 'primary' : 'default'}>
+                <Paragraph
+                    data-testid={dataTestId}
+                    typographyStyle="titleSmall"
+                    variant={isReward ? 'primary' : 'default'}
+                >
                     {title}
                 </Paragraph>
                 <Paragraph typographyStyle="hint" variant="tertiary">
@@ -367,6 +373,7 @@ export const StakingCard = ({
                             onClick={openClaimModal}
                             isDisabled={!canClaimRewards}
                             intent="brand"
+                            data-testid="@account/staking/claim-rewards-button"
                         >
                             <Translation id="TR_STAKE_CLAIM_REWARDS" />
                         </Button>

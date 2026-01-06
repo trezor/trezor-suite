@@ -58,7 +58,7 @@ export class DashboardPage {
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.deviceSwitchingCloseButton = this.page.getByTestId('@modal/backdrop').first();
-        this.modal = this.page.getByTestId('@modal');
+        this.modal = this.page.modal;
         this.deviceSwitcherModal = this.page.getByTestId('@modal/switch-device');
         this.confirmDeviceEjectButton = this.page.getByTestId('@switch-device/eject');
         this.addStandardWalletButton = this.page.getByTestId('@switch-device/add-wallet-button');

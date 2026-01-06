@@ -48,11 +48,9 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.startStakingButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation(
-                    'TR_STAKE_STAKING_IN_A_NUTSHELL',
-                );
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKING_IN_A_NUTSHELL');
                 await stakingSection.continueButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await stakingSection.everstakeAcknowledgeCheckbox.click();
@@ -62,7 +60,7 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
             });
 
             await test.step('Initiate staking and confirm on device', async () => {
-                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await stakingSection.continueButton.click();

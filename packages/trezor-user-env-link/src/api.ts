@@ -335,6 +335,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
     }
 
     async getDebugState() {
+        await new Promise(resolve => setTimeout(resolve, EMU_RACE_CONDITION_WORKAROUND_DELAY));
         const { response } = await this.client.send({ type: 'emulator-get-debug-state' });
 
         return response;

@@ -11,13 +11,14 @@ import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
+import { FeeSection } from './pageObjects/feeSection';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
-import { TradingPage } from './pageObjects/trading/tradingPage';
+import { TradingPage } from './pageObjects/tradingPage';
 import { TrezorInput } from './pageObjects/trezorInput';
 import { WalletPage } from './pageObjects/walletPage';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
@@ -32,6 +33,7 @@ type Fixtures = {
     devicePrompt: DevicePrompt;
     recoveryModal: RecoveryModal;
     tradingPage: TradingPage;
+    feeSection: FeeSection;
     assetsSection: AssetsSection;
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
@@ -85,6 +87,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     tradingPage: async ({ page, devicePrompt }, use) => {
         await use(new TradingPage(page, devicePrompt));
+    },
+    feeSection: async ({ page }, use) => {
+        await use(new FeeSection(page));
     },
     assetsSection: async ({ page }, use) => {
         await use(new AssetsSection(page));

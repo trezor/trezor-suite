@@ -47,7 +47,7 @@ export class DevicePrompt {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
         this.modalCloseButton = page.getByTestId('@modal/close-button');
-        this.modal = page.getByTestId('@modal');
+        this.modal = page.modal;
         this.paginatedText = page.locator("[data-testid-alt='@device-display/paginated-text']");
         this.paginatedTextSeparator = page.getByTestId('@device-display/paginated-text/separator');
         this.chunkedText = page.getByTestId('@device-display/chunked-text');
@@ -170,7 +170,14 @@ export class DevicePrompt {
     @step()
     async getDisplayContent(): Promise<NormalizedDisplayContent> {
         const debugState = await TrezorUserEnvLinkProxy.getDebugState();
-        const raw = JSON.parse(debugState.tokens.join(''));
+        let raw: any;
+        try {
+            raw = JSON.parse(debugState.tokens.join(''));
+        } catch (error) {
+            throw new Error(`Failed to parse display content JSON: ${debugState.tokens.join('')}`, {
+                cause: error as Error,
+            });
+        }
 
         return parseDisplayContent(raw);
     }
