@@ -7,6 +7,8 @@ import { TranslationKey } from '@suite-common/intl-types';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    TradingBuyFormProps,
+    TradingExchangeFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
 import { Icon, Input, Spinner, Text } from '@trezor/components';
@@ -15,7 +17,8 @@ import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
-import { TradingFormValues } from './types';
+
+type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps;
 
 const OpenModalButton = styled.button`
     border: unset;

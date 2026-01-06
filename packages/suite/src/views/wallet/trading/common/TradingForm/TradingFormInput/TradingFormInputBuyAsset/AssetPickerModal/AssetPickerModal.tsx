@@ -17,9 +17,9 @@ import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { useAssetsContext } from '../AssetOptionsContext';
-import { AssetSearchWithNetworkFilter } from './AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { TradingAssetListItem } from './hooks/useBuildTradingAssetOptions';
 import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
+import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker';
 
 export type AssetPickerModalProps = {
     closeModal: () => void;

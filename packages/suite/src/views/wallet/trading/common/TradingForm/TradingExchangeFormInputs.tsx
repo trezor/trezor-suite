@@ -29,9 +29,9 @@ import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/Trad
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import {
-    TradingFormInputAssetPicker,
-    TradingFormInputAssetPickerProps,
-} from './TradingFormInput/TradingFormInputAssetPicker/TradingFormInputAssetPicker';
+    TradingFormInputBuyAsset,
+    TradingFormInputBuyAssetProps,
+} from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
@@ -74,7 +74,7 @@ export const TradingExchangeFormInputs = () => {
     const setValueRef = useCurrentRef(setValue);
     const resetSelectedOfferRef = useCurrentRef(resetSelectedOffer);
 
-    const handleReceiveAssetSelect = useCallback<TradingFormInputAssetPickerProps['onAssetSelect']>(
+    const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
             setValueRef.current(TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT, asset, {
                 shouldDirty: true,
@@ -150,7 +150,7 @@ export const TradingExchangeFormInputs = () => {
                     />
                 )}
 
-                <TradingFormInputAssetPicker
+                <TradingFormInputBuyAsset
                     inputPlaceholder="TR_SELECT_TOKEN"
                     inputLabel="TR_TO"
                     inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}

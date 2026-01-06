@@ -5,10 +5,10 @@ import { CryptoId } from 'invity-api';
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetOptionsProvider } from './AssetOptionsContext';
-import { AssetPickerInput, AssetPickerInputProps } from './AssetPickerInput';
+import { AssetPickerInput, AssetPickerInputProps } from '../TradingFormInputAssetPicker';
 import { AssetPickerModal, AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 
-export interface TradingFormInputAssetPickerProps {
+export interface TradingFormInputBuyAssetProps {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];
     inputLabel: AssetPickerInputProps['label'];
     inputName: AssetPickerInputProps['name'];
@@ -24,7 +24,7 @@ export interface TradingFormInputAssetPickerProps {
     dataTestId?: string;
 }
 
-export const TradingFormInputAssetPicker = memo(function TradingFormInputAssetPickerInner({
+export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetInner({
     inputPlaceholder,
     inputLabel,
     inputName,
@@ -33,7 +33,7 @@ export const TradingFormInputAssetPicker = memo(function TradingFormInputAssetPi
     enabledCryptoIds,
     disabledCryptoId,
     onAssetSelect,
-}: TradingFormInputAssetPickerProps) {
+}: TradingFormInputBuyAssetProps) {
     const modal = useModal();
     const disabledCryptoIds = useMemo(
         () => (disabledCryptoId ? new Set([disabledCryptoId]) : undefined),

@@ -24,11 +24,7 @@ export const AssetListWrapper = memo(function AssetListWrapperInner({
     renderItem,
 }: AssetListWrapperProps) {
     const listRef = useRef<HTMLDivElement>(null);
-
-    const { listItems } = useBuildTradingAssetOptions({
-        search,
-        networkSymbol,
-    });
+    const { listItems } = useBuildTradingAssetOptions({ search, networkSymbol });
     const listItemsFingerprint = useDataFingerprint(listItems);
 
     useListScrollReset(listRef, listItemsFingerprint);
