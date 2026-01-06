@@ -72,11 +72,9 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.startStakingButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation(
-                    'TR_STAKE_STAKING_IN_A_NUTSHELL',
-                );
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKING_IN_A_NUTSHELL');
                 await stakingSection.continueButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
                     values: { symbol: 'ETH' },
                 });
                 await stakingSection.everstakeAcknowledgeCheckbox.click();

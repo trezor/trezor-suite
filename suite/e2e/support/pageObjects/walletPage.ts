@@ -50,6 +50,7 @@ export class WalletPage {
         this.page.getByTestId(`@account-menu/filter/${symbol}`);
     readonly showMoreButton: Locator;
     readonly topPanelBalance: Locator;
+    readonly topPanelBalanceWithSymbol: Locator;
     readonly segwitGroupButton: Locator;
     readonly addAccountButton: Locator;
     readonly copyToCliboardToast: Locator;
@@ -60,6 +61,7 @@ export class WalletPage {
     readonly swapButton: Locator;
     readonly overviewTabButton: Locator;
     readonly deviceDisconnectedStatus: Locator;
+    readonly discoveryWarning: Locator;
 
     constructor(private readonly page: Page) {
         this.transactionSearch = this.page.getByTestId('@wallet/accounts/search-icon');
@@ -94,6 +96,9 @@ export class WalletPage {
         this.fiatAmount = this.page.getByTestId('@wallet/account-top-panel/fiat-amount');
         this.showMoreButton = this.page.getByTestId('@wallet/receive/used-address/show-more');
         this.topPanelBalance = this.page.getByTestId('@wallet/account-top-panel/crypto-balance');
+        this.topPanelBalanceWithSymbol = this.page.getByTestId(
+            '@wallet/account-top-panel/crypto-balance-with-symbol',
+        );
         this.copyToCliboardToast = this.page.getByTestId('@toast/copy-to-clipboard');
         this.segwitGroupButton = this.page.getByTestId('@account-menu/segwit');
         this.addAccountButton = this.page.getByTestId('@account-menu/add-account');
@@ -106,6 +111,7 @@ export class WalletPage {
         this.deviceDisconnectedStatus = page
             .getByTestId('@menu/switch-device')
             .getByTestId('@deviceStatus-disconnected');
+        this.discoveryWarning = this.page.getByTestId('@warning/trezorDiscovery');
     }
 
     accountButton = ({

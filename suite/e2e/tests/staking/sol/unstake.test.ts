@@ -55,10 +55,9 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
 
             await test.step('Open unstaking form', async () => {
                 await stakingSection.unstakeToClaimButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation(
-                    'TR_STAKE_UNSTAKE_TOKEN',
-                    { values: { symbol: 'SOL' } },
-                );
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_UNSTAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText(
                     stakedAmountFormatted,
                 );
@@ -67,10 +66,9 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
 
             await test.step('Initiate unstaking and confirm on device', async () => {
                 await stakingSection.unstakeButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation(
-                    'TR_STAKE_UNSTAKE_TOKEN',
-                    { values: { symbol: 'SOL' } },
-                );
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_UNSTAKE_TOKEN', {
+                    values: { symbol: 'SOL' },
+                });
                 await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(
                     'TR_UNSTAKE_FROM_STAKE_ACCOUNT',
                     { values: { symbol: 'SOL' } },
@@ -133,12 +131,12 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
             });
 
             await test.step('Finish claiming', async () => {
-                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await expect(stakingSection.claimModalAmount).toHaveText(unstakingAmountFormatted);
                 await stakingSection.claimModalButton.click();
-                await expect(stakingSection.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_CLAIM_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await expect(devicePrompt.outputValueOf('data')).toHaveTranslation(

@@ -6,6 +6,9 @@ import { join } from 'path';
 declare module '@playwright/test' {
     interface Page {
         // Locators
+        modal: Locator;
+        modalHeader: Locator;
+        modalCloseButton: Locator;
 
         // Methods
         discoveryShouldFinish(): Promise<void>;
@@ -45,6 +48,9 @@ declare module '@playwright/test' {
 // It is not specific to any particular test or feature.
 export const enhancePage = (page: Page): Page => {
     // Locators
+    page.modal = page.getByTestId('@modal');
+    page.modalHeader = page.getByTestId('@modal/header');
+    page.modalCloseButton = page.getByTestId('@modal/close-button');
 
     // Methods
     page.discoveryShouldFinish = async function () {
@@ -94,6 +100,7 @@ export const enhancePage = (page: Page): Page => {
                 expect(testedObject).toBeDefined();
                 expect(testedObject).not.toBeNull();
                 expect(testedObject).not.toEqual({});
+                expect(testedObject).not.toEqual([]);
             }).toPass({ timeout: options.timeout });
         });
     };

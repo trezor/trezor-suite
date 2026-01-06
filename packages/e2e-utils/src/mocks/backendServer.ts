@@ -58,6 +58,10 @@ export class BackendWebsocketServerMock extends WebSocketServer {
     }
 
     getFixtures() {
+        if (!this.fixtures) {
+            throw new Error('No fixtures set in BackendWebsocketServerMock');
+        }
+
         return this.fixtures;
     }
 

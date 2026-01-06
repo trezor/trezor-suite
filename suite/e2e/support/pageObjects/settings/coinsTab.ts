@@ -22,7 +22,7 @@ export class CoinsTab {
         this.coinBackendSelector = this.page.getByTestId('@settings/advance/select-type/input');
         this.coinAddressInput = this.page.getByTestId('@settings/advance/url');
         this.coinAdvanceSettingSaveButton = this.page.getByTestId('@settings/advance/button/save');
-        this.modal = this.page.getByTestId('@modal');
+        this.modal = this.page.modal;
         this.activateCoinsButton = this.page.getByTestId('@settings-coins/discovery-button');
     }
 

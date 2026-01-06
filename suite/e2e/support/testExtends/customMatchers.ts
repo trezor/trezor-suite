@@ -2,7 +2,7 @@ import { createIntl, createIntlCache } from 'react-intl';
 
 import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
-import { isEqual } from 'lodash';
+import { isEqualWith } from 'lodash';
 
 import { TranslationKey } from '@trezor/suite/src//components/suite/Translation';
 import messages from '@trezor/suite/src//support/messages';
@@ -47,8 +47,17 @@ const compareDisplayContent = async (
     const content = normalizeWhitespace(contentRaw);
     const debugInfo = JSON.stringify(await devicePrompt.getAnalyzedDisplayContent(), null, 2);
 
+    const regexAndStringComparator = (expectedValue: any, actualValue: any) => {
+        if (expectedValue instanceof RegExp && typeof actualValue === 'string') {
+            return expectedValue.test(actualValue);
+        }
+
+        // Let default comparison handle all other cases
+        return undefined;
+    };
+
     return {
-        pass: isEqual(expectedContent, content),
+        pass: isEqualWith(expectedContent, content, regexAndStringComparator),
         message: () =>
             `${errorMessage}. Diff:\n${diff(expectedContent, content)}\n\nAnalysis:\n${debugInfo}`,
     };
@@ -82,7 +91,11 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
     // bc1q pyfv fvm5 2zx7
     // gek8 6ajj 5pkk ne3h
     // 385a da8r 2y
-    // 1. Full lines (18 chars) of address:
+    // 2. EVM tetragrams of address:
+    // 0x12as 34ab cdef 5678
+    // 9abc def0 1234 5678
+    // 9abc def0
+    // 3. Full lines (18 chars) of address:
     // bc1qpyfvfvm52zx7ge
     // k86ajj5pkkne3h385a
     // da8r2y

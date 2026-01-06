@@ -2,13 +2,13 @@ import { Locator, Page, Response } from '@playwright/test';
 
 import { BigNumber } from '@trezor/utils';
 
-import { TrezorUserEnvLinkProxy, step } from '../../common';
-import { solanaUrlPattern } from '../../mocks/tradingMock';
-import { expect } from '../../testExtends/customMatchers';
+import { TrezorUserEnvLinkProxy, step } from '../common';
+import { solanaUrlPattern } from '../mocks/tradingMock';
+import { expect } from '../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
 
-export class Fees {
+export class FeeSection {
     readonly switchModeButton = (feeMode: 'standard' | 'custom') =>
         this.page.getByTestId(`@wallet/fees/select-${feeMode}-fee`);
     readonly card = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-card`);
@@ -19,6 +19,7 @@ export class Fees {
     readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
+    readonly maxFeeWithSymbol: Locator;
     readonly maxFeeFiat: Locator;
     readonly swapDetails: Locator;
     readonly dustPreventionNotice: Locator;
@@ -32,6 +33,9 @@ export class Fees {
         this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
+        this.maxFeeWithSymbol = this.page.getByTestId(
+            '@trading/quote/maximum-fee-amount-with-symbol',
+        );
         this.maxFeeFiat = this.page.getByTestId('@trading/quote/maximum-fee-fiat-amount');
         this.swapDetails = this.page.getByTestId('@wallet/fee-details');
         this.dustPreventionNotice = this.page.getByTestId('@wallet/fees/dust-prevention-notice');
