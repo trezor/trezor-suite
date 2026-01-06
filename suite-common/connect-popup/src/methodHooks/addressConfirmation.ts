@@ -12,6 +12,7 @@ const methodsAddress = [
     'rippleGetAddress',
     'solanaGetAddress',
     'tezosGetAddress',
+    'tronGetAddress',
     'eosGetAddress',
     'stellarGetAddress',
     'moneroGetAddress',

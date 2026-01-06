@@ -25,6 +25,7 @@ const select = [
     { value: 'xmr', label: 'Monero' },
     { value: 'xlm', label: 'Stellar' },
     { value: 'txlm', label: 'Stellar Testnet' },
+    { value: 'trx', label: 'Tron' },
 ];
 
 const json = `[

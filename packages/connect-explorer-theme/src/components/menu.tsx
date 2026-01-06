@@ -123,6 +123,7 @@ export function Menu({
         solana: 'sol',
         stellar: 'xlm',
         tezos: 'xtz',
+        tron: 'trx',
     };
     const defaultActiveCoin = Object.keys(coinSymbols).includes(route.split('/')[2])
         ? route.split('/')[2]
