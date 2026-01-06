@@ -56,6 +56,7 @@ export { default as stellarSignTransaction } from './stellarSignTransaction';
 export { default as tezosGetAddress } from './tezosGetAddress';
 export { default as tezosGetPublicKey } from './tezosGetPublicKey';
 export { default as tezosSignTransaction } from './tezosSignTransaction';
+export { default as tronGetAddress } from './tronGetAddress';
 export { default as verifyMessage } from './verifyMessage';
 export { default as verifyMessageSegwit } from './verifyMessageSegwit';
 export { default as verifyMessageSegwitNative } from './verifyMessageSegwitNative';

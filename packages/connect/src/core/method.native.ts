@@ -11,6 +11,7 @@ const moduleMethods = {
     solana: require('../api/solana/api'),
     stellar: require('../api/stellar/api'),
     tezos: require('../api/tezos/api'),
+    tron: require('../api/tron/api'),
 } as const satisfies Record<ModuleName, any>;
 
 const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
