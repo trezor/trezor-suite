@@ -1,30 +1,30 @@
-import { PersistedState, getStoredState } from 'redux-persist';
+import { PersistedState } from 'redux-persist';
 
 import { WalletSettings } from '@suite-common/wallet-types';
 
+import type { MigrationDeps } from './v1';
 import { isPersistedState } from '../../migrationTypes';
-import { MMKVStorage } from '../../mmkvStorage';
 
 type MigratedState = Partial<WalletSettings> & PersistedState;
 
-export const migrateAutoEjectToWalletSettings = (storage: MMKVStorage) => async (
-    oldState: unknown,
-): Promise<MigratedState> => {
-    if (!oldState || !isPersistedState(oldState)) {
-        return oldState as MigratedState;
-    }
+export const migrateAutoEjectToWalletSettings =
+    (deps: MigrationDeps) =>
+    async (oldState: unknown): Promise<MigratedState> => {
+        if (!oldState || !isPersistedState(oldState)) {
+            return oldState as MigratedState;
+        }
 
-    const devicesState = await getStoredState({
-        key: 'devices',
-        storage,
-    });
+        const devicesState = await deps.getStoredState({
+            key: 'devices',
+            storage: deps.mmkvStorage,
+        });
 
-    if (!devicesState || !('isDeviceAutoEjectEnabled' in devicesState)) {
-        return oldState as MigratedState; // no new migration, just pass the previous one
-    }
+        if (!devicesState || !('isDeviceAutoEjectEnabled' in devicesState)) {
+            return oldState as MigratedState; // no new migration, just pass the previous one
+        }
 
-    return {
-        ...oldState,
-        isAutoEjectEnabled: devicesState.isDeviceAutoEjectEnabled === true,
+        return {
+            ...oldState,
+            isAutoEjectEnabled: devicesState.isDeviceAutoEjectEnabled === true,
+        };
     };
-};
