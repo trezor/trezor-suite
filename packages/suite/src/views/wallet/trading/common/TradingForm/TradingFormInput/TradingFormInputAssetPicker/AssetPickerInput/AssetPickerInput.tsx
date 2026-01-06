@@ -9,6 +9,7 @@ import {
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
     TradingExchangeFormProps,
+    TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
 import { Icon, Input, Spinner, Text } from '@trezor/components';
@@ -18,7 +19,7 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 
-type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps;
+type TradingFormValues = TradingExchangeFormProps | TradingBuyFormProps | TradingSellFormProps;
 
 const OpenModalButton = styled.button`
     border: unset;
@@ -43,6 +44,8 @@ export interface AssetPickerInputProps {
     name:
         | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
         | typeof TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT;
+    // TODO: finish integration to trading exchange and sell form
+    // | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     label: TranslationKey;
     placeholder?: TranslationKey;
     isDisabled?: boolean;

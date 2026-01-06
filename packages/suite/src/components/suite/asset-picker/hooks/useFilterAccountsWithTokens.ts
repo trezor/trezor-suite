@@ -2,14 +2,12 @@ import { useMemo } from 'react';
 
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import { useSelector } from 'src/hooks/suite';
-import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
+import { AccountWithTokensOption } from './useInsertGroupLabelsAndSpaces';
 
-import { AccountWithTokensOption } from './useAccountWithTokensOptions';
-
-export function useFilterAccountsWithTokens(accountsWithTokens: AccountWithTokensOption[]) {
-    const search = useSelector(globalSendReceiveFilters.selectors.selectSearch);
-
+export function useFilterAccountsWithTokens(
+    accountsWithTokens: AccountWithTokensOption[],
+    search: string,
+) {
     return useMemo(
         () =>
             accountsWithTokens.filter(accountOrToken => {
