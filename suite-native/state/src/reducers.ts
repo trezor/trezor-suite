@@ -125,8 +125,8 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         key: 'walletSettings',
         version: 1,
         migrations: {
-            1: initialMigrateAppSettingsAndDiscoveryConfig,
-            2: migrateAutoEjectToWalletSettings,
+            1: initialMigrateAppSettingsAndDiscoveryConfig(deps.mmkvStorage),
+            2: migrateAutoEjectToWalletSettings(deps.mmkvStorage),
         },
         storage: deps.mmkvStorage,
     });
