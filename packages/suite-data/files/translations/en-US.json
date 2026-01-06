@@ -489,7 +489,7 @@
   "TR_BUY_DETAIL_WAITING_FOR_USER_GATE": "Go to the provider's website",
   "TR_BUY_DETAIL_WAITING_FOR_USER_TEXT": "{providerName} needs some final details to finish this transaction. Visit their site to proceed.",
   "TR_BUY_DETAIL_WAITING_FOR_USER_TITLE": "Complete your transaction",
-  "TR_BUY_FOOTER_TEXT_1": "Trezor is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.",
+  "TR_BUY_FOOTER_TEXT_1": "Trezor Suite is a comparison tool that connects you to the best exchange providers. It only uses location in order to show the most relevant offers.",
   "TR_BUY_FOOTER_TEXT_2": "Trezor doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
   "TR_BUY_HEADER_TITLE": "Your buy",
   "TR_BUY_LEARN_MORE": "Learn more",

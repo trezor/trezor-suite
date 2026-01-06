@@ -17,7 +17,7 @@ import { AnimatedBox, Divider, HStack, Text, VStack } from '@suite-native/atoms'
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectIsAmountInputActive } from '@suite-native/trading-state';
-import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
+import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
 export type FooterProps = {
     type?: TradingType;
@@ -128,7 +128,7 @@ export const Footer = ({ type, isFormMountedRecently }: FooterProps) => {
                         textVariant="hint"
                         textColor="textSubdued"
                         textPressedColor="textDisabled"
-                        href={DATA_TOS_INVITY_URL}
+                        href={TREZOR_SUITE_TOS_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.termsOfUse" />}
                     />
 
@@ -140,7 +140,7 @@ export const Footer = ({ type, isFormMountedRecently }: FooterProps) => {
                         textVariant="hint"
                         textColor="textSubdued"
                         textPressedColor="textDisabled"
-                        href={INVITY_URL}
+                        href={TREZOR_TRADING_LEARN_MORE_URL}
                         label={<Translation id="moduleTrading.tradingScreen.footer.learnMore" />}
                     />
                 </HStack>
