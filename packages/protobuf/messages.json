@@ -4682,7 +4682,8 @@
                         "Capability_Brightness": 20,
                         "Capability_Haptic": 21,
                         "Capability_BLE": 22,
-                        "Capability_NFC": 23
+                        "Capability_NFC": 23,
+                        "Capability_Tron": 24
                     }
                 }
             }
@@ -7894,6 +7895,231 @@
                 }
             }
         },
+        "TronSignTx": {
+            "fields": {
+                "address_n": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 1,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "ref_block_bytes": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "ref_block_hash": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                },
+                "expiration": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 4
+                },
+                "data": {
+                    "type": "bytes",
+                    "id": 5
+                },
+                "timestamp": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 6
+                },
+                "fee_limit": {
+                    "type": "uint64",
+                    "id": 7
+                }
+            }
+        },
+        "TronContractRequest": {
+            "fields": {}
+        },
+        "TronTransferContract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "to_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "amount": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 3
+                }
+            }
+        },
+        "TronTriggerSmartContract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "contract_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 4
+                }
+            }
+        },
+        "TronFreezeBalanceV2Contract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "balance": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "resource": {
+                    "type": "TronResourceCode",
+                    "id": 3,
+                    "options": {
+                        "default": "BANDWIDTH"
+                    }
+                }
+            }
+        },
+        "TronUnfreezeBalanceV2Contract": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "balance": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 2
+                },
+                "resource": {
+                    "type": "TronResourceCode",
+                    "id": 3,
+                    "options": {
+                        "default": "BANDWIDTH"
+                    }
+                }
+            }
+        },
+        "TronWithdrawUnfreeze": {
+            "fields": {
+                "owner_address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "TronResourceCode": {
+            "values": {
+                "BANDWIDTH": 0,
+                "ENERGY": 1
+            }
+        },
+        "TronSignature": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "TronRawTransaction": {
+            "fields": {
+                "ref_block_bytes": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "ref_block_hash": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 4
+                },
+                "expiration": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 8
+                },
+                "data": {
+                    "type": "bytes",
+                    "id": 10
+                },
+                "contract": {
+                    "rule": "repeated",
+                    "type": "TronRawContract",
+                    "id": 11
+                },
+                "timestamp": {
+                    "rule": "required",
+                    "type": "uint64",
+                    "id": 14
+                },
+                "fee_limit": {
+                    "type": "uint64",
+                    "id": 18
+                }
+            },
+            "nested": {
+                "TronRawContract": {
+                    "fields": {
+                        "type": {
+                            "rule": "required",
+                            "type": "TronRawContractType",
+                            "id": 1
+                        },
+                        "parameter": {
+                            "rule": "required",
+                            "type": "TronRawParameter",
+                            "id": 2
+                        }
+                    },
+                    "nested": {
+                        "TronRawParameter": {
+                            "fields": {
+                                "type_url": {
+                                    "rule": "required",
+                                    "type": "string",
+                                    "id": 1
+                                },
+                                "value": {
+                                    "rule": "required",
+                                    "type": "bytes",
+                                    "id": 2
+                                }
+                            }
+                        },
+                        "TronRawContractType": {
+                            "values": {
+                                "TransferContract": 1,
+                                "TriggerSmartContract": 31,
+                                "FreezeBalanceV2Contract": 54,
+                                "UnfreezeBalanceV2Contract": 55,
+                                "WithdrawExpireUnfreezeContract": 56
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "MessageType": {
             "options": {
                 "(has_bitcoin_only_values)": true,
@@ -8148,7 +8374,15 @@
                 "EvoluGetDelegatedIdentityKey": 2104,
                 "EvoluDelegatedIdentityKey": 2105,
                 "TronGetAddress": 2200,
-                "TronAddress": 2201
+                "TronAddress": 2201,
+                "TronSignTx": 2202,
+                "TronSignature": 2203,
+                "TronContractRequest": 2204,
+                "TronTransferContract": 2205,
+                "TronTriggerSmartContract": 2206,
+                "TronFreezeBalanceV2Contract": 2207,
+                "TronUnfreezeBalanceV2Contract": 2208,
+                "TronWithdrawUnfreeze": 2209
             }
         }
     }

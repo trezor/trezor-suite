@@ -1526,6 +1526,7 @@ export enum Enum_Capability {
     Capability_Haptic = 21,
     Capability_BLE = 22,
     Capability_NFC = 23,
+    Capability_Tron = 24,
 }
 
 export type Capability = keyof typeof Enum_Capability;
@@ -2658,6 +2659,83 @@ export type TronAddress = {
     mac?: string;
 };
 
+export type TronSignTx = {
+    address_n: number[];
+    ref_block_bytes: string;
+    ref_block_hash: string;
+    expiration: number;
+    data?: string;
+    timestamp: number;
+    fee_limit?: number;
+};
+
+export type TronContractRequest = {};
+
+export type TronTransferContract = {
+    owner_address: string;
+    to_address: string;
+    amount: UintType;
+};
+
+export type TronTriggerSmartContract = {
+    owner_address: string;
+    contract_address: string;
+    data: string;
+};
+
+export enum TronResourceCode {
+    BANDWIDTH = 0,
+    ENERGY = 1,
+}
+
+export type TronFreezeBalanceV2Contract = {
+    owner_address: string;
+    balance: number;
+    resource?: TronResourceCode;
+};
+
+export type TronUnfreezeBalanceV2Contract = {
+    owner_address: string;
+    balance: number;
+    resource?: TronResourceCode;
+};
+
+export type TronWithdrawUnfreeze = {
+    owner_address: string;
+};
+
+export type TronSignature = {
+    signature: string;
+};
+
+export type TronRawParameter = {
+    type_url: string;
+    value: string;
+};
+
+export enum TronRawContractType {
+    TransferContract = 1,
+    TriggerSmartContract = 31,
+    FreezeBalanceV2Contract = 54,
+    UnfreezeBalanceV2Contract = 55,
+    WithdrawExpireUnfreezeContract = 56,
+}
+
+export type TronRawContract = {
+    type: TronRawContractType;
+    parameter: TronRawParameter;
+};
+
+export type TronRawTransaction = {
+    ref_block_bytes: string;
+    ref_block_hash: string;
+    expiration: number;
+    data?: string;
+    contract: TronRawContract[];
+    timestamp: number;
+    fee_limit?: number;
+};
+
 // custom connect definitions
 export type MessageType = {
     TextMemo: TextMemo;
@@ -2998,6 +3076,17 @@ export type MessageType = {
     TezosSignedTx: TezosSignedTx;
     TronGetAddress: TronGetAddress;
     TronAddress: TronAddress;
+    TronSignTx: TronSignTx;
+    TronContractRequest: TronContractRequest;
+    TronTransferContract: TronTransferContract;
+    TronTriggerSmartContract: TronTriggerSmartContract;
+    TronFreezeBalanceV2Contract: TronFreezeBalanceV2Contract;
+    TronUnfreezeBalanceV2Contract: TronUnfreezeBalanceV2Contract;
+    TronWithdrawUnfreeze: TronWithdrawUnfreeze;
+    TronSignature: TronSignature;
+    TronRawParameter: TronRawParameter;
+    TronRawContract: TronRawContract;
+    TronRawTransaction: TronRawTransaction;
 };
 
 // @COPY from this marker to the EOF, types are copied into messages-schema
