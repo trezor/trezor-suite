@@ -43,6 +43,7 @@ export const EIP1559CustomInputs = ({
                 keyboardType="decimal-pad"
                 rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                 onChangeText={handleFieldChangeValue(MAX_FEE_PER_GAS_FIELD_NAME, 'crypto')}
+                asBottomSheetInput
             />
             <HStack paddingLeft="sp12" alignItems="center" spacing="sp4" paddingBottom="sp8">
                 <Icon name="gasPump" size="medium" color="textSubdued" />
@@ -65,6 +66,7 @@ export const EIP1559CustomInputs = ({
                 rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                 keyboardType="decimal-pad"
                 onChangeText={handleFieldChangeValue(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME, 'crypto')}
+                asBottomSheetInput
             />
         </>
     );
