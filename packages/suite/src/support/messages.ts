@@ -279,33 +279,25 @@ export default defineMessages({
         id: 'TR_TRADING_INVALID_RESPONSE',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL: {
-        defaultMessage: 'No offers found, try different currency, assets, or amounts.',
+        defaultMessage: 'No offers found. Adjust the currency, assets, or amounts.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
     },
     TR_TRADING_NO_OFFER_SWAP: {
-        defaultMessage: 'No {offers} found. Try different rate, assets or amounts.',
+        defaultMessage: 'No {offers} found. Adjust the rate type, assets, or amounts.',
         id: 'TR_TRADING_NO_OFFER_SWAP',
-    },
-    TR_TRADING_SWAP_FIXED_RATE_OFFER: {
-        defaultMessage: 'fixed-rate offers',
-        id: 'TR_TRADING_SWAP_FIXED_RATE_OFFER',
-    },
-    TR_TRADING_SWAP_FLOATING_RATE_OFFER: {
-        defaultMessage: 'floating-rate offers',
-        id: 'TR_TRADING_SWAP_FLOATING_RATE_OFFER',
     },
     TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
         defaultMessage:
-            'No offers found. Adjust the currency, assets, or amounts, or disable Tor to see more offers.',
+            'No offers found. Adjust the currency, assets, amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR',
     },
     TR_TRADING_NO_OFFER_SWAP_TOR: {
         defaultMessage:
-            'No offers found. Adjust the assets or amounts, or disable Tor to see more offers.',
+            'No offers found. Adjust the assets, amounts, or disable Tor to see more offers.',
         id: 'TR_TRADING_NO_OFFER_SWAP_TOR',
     },
     TR_TRADING_DISABLE_TOR: {
-        defaultMessage: 'You may see more offers with Tor disabled.',
+        defaultMessage: 'Disable Tor to see better offers.',
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_CHECKED_BALANCES_ON: {
@@ -313,7 +305,7 @@ export default defineMessages({
         id: 'TR_CHECKED_BALANCES_ON',
     },
     TR_ALL_NETWORKS: {
-        defaultMessage: 'All networks',
+        defaultMessage: 'All networks ({networkCount})',
         id: 'TR_ALL_NETWORKS',
     },
     TR_ALL_NETWORKS_TOOLTIP: {
@@ -324,14 +316,6 @@ export default defineMessages({
     TR_SELECT_TOKEN: {
         defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
-    },
-    TR_SELECT_ASSET_OF_NETWORKS_PLACEHOLDER: {
-        defaultMessage: 'Search by name, symbol, network, or contract address',
-        id: 'TR_SELECT_ASSET_OF_NETWORKS_PLACEHOLDER',
-    },
-    TR_SELECT_ASSET_OF_NETWORK_PLACEHOLDER: {
-        defaultMessage: 'Search by name, symbol, or contract address',
-        id: 'TR_SELECT_ASSET_OF_NETWORK_PLACEHOLDER',
     },
     TR_SEARCH_TOKEN_IN_SEND_FORM_MODAL: {
         defaultMessage: 'Search by name, symbol, or contract address',
@@ -348,10 +332,6 @@ export default defineMessages({
     TR_TOKEN_TRY_DIFFERENT_SEARCH: {
         defaultMessage: 'Try a different search.',
         id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH',
-    },
-    TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH: {
-        defaultMessage: 'Try a different search or switch to another network.',
-        id: 'TR_TOKEN_TRY_DIFFERENT_SEARCH_OR_SWITCH',
     },
     TR_EXCHANGE_STATUS_ERROR: {
         defaultMessage: 'Rejected',
@@ -394,10 +374,6 @@ export default defineMessages({
             'Sorry, your transaction failed or was rejected. Your coins have not been exchanged.',
         id: 'TR_EXCHANGE_DETAIL_ERROR_TEXT',
     },
-    TR_EXCHANGE_DETAIL_ERROR_SUPPORT: {
-        defaultMessage: "Open partner's support site",
-        id: 'TR_EXCHANGE_DETAIL_ERROR_SUPPORT',
-    },
     TR_EXCHANGE_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Swap',
         id: 'TR_EXCHANGE_DETAIL_ERROR_BUTTON',
@@ -415,18 +391,6 @@ export default defineMessages({
         defaultMessage: 'Go to provider support',
         id: 'TR_EXCHANGE_DETAIL_KYC_SUPPORT',
     },
-    TR_EXCHANGE_DETAIL_KYC_INFO_LINK: {
-        defaultMessage: 'Go to provider KYC details',
-        id: 'TR_EXCHANGE_DETAIL_KYC_INFO_LINK',
-    },
-    TR_EXCHANGE_DETAIL_KYC_BUTTON: {
-        defaultMessage: 'Back to account',
-        id: 'TR_EXCHANGE_DETAIL_KYC_BUTTON',
-    },
-    TR_EXCHANGE_DETAIL_SENDING_TITLE: {
-        defaultMessage: 'Pending',
-        id: 'TR_EXCHANGE_DETAIL_SENDING_TITLE',
-    },
     TR_EXCHANGE_DETAIL_SENDING_TRANSACTION: {
         defaultMessage: 'Sending transaction',
         id: 'TR_EXCHANGE_DETAIL_SENDING_TRANSACTION',
@@ -434,18 +398,6 @@ export default defineMessages({
     TR_EXCHANGE_DETAIL_TRANSACTION_SENT: {
         defaultMessage: 'Transaction sent',
         id: 'TR_EXCHANGE_DETAIL_TRANSACTION_SENT',
-    },
-    TR_EXCHANGE_DETAIL_SENDING_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_EXCHANGE_DETAIL_SENDING_SUPPORT',
-    },
-    TR_EXCHANGE_DETAIL_CONVERTING_TITLE: {
-        defaultMessage: 'Converting',
-        id: 'TR_EXCHANGE_DETAIL_CONVERTING_TITLE',
-    },
-    TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_EXCHANGE_DETAIL_CONVERTING_SUPPORT',
     },
     TR_EXCHANGE_HEADER_TITLE: {
         defaultMessage: 'Your swap',
@@ -795,26 +747,6 @@ export default defineMessages({
         defaultMessage: 'Proceed',
         id: 'TR_SELL_GO_TO_TRANSACTION',
     },
-    TR_SELL_DETAIL_SUCCESS_TITLE: {
-        defaultMessage: 'Sell successful',
-        id: 'TR_SELL_DETAIL_SUCCESS_TITLE',
-    },
-    TR_SELL_DETAIL_SUCCESS_TEXT: {
-        defaultMessage: 'Transaction finished successfully',
-        id: 'TR_SELL_DETAIL_SUCCESS_TEXT',
-    },
-    TR_SELL_DETAIL_SUCCESS_BUTTON: {
-        defaultMessage: 'Make another Sell',
-        id: 'TR_SELL_DETAIL_SUCCESS_BUTTON',
-    },
-    TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER: {
-        defaultMessage: '✓ This rate is locked in',
-        id: 'TR_SELL_DETAIL_SUCCESS_FIXED_RATE_HEADER',
-    },
-    TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE: {
-        defaultMessage: "Your payment is still processing, but what you see is what you'll get.",
-        id: 'TR_SELL_DETAIL_SUCCESS_FIXED_RATE_MESSAGE',
-    },
     TR_SELL_DETAIL_ERROR_TITLE: {
         defaultMessage: 'Transaction failed',
         id: 'TR_SELL_DETAIL_ERROR_TITLE',
@@ -823,17 +755,9 @@ export default defineMessages({
         defaultMessage: 'Unfortunately, your transaction was rejected or has failed.',
         id: 'TR_SELL_DETAIL_ERROR_TEXT',
     },
-    TR_SELL_DETAIL_ERROR_SUPPORT: {
-        defaultMessage: "Open partner's support site",
-        id: 'TR_SELL_DETAIL_ERROR_SUPPORT',
-    },
     TR_SELL_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Sell',
         id: 'TR_SELL_DETAIL_ERROR_BUTTON',
-    },
-    TR_SELL_DETAIL_PENDING_TITLE: {
-        defaultMessage: 'Trade in progress...',
-        id: 'TR_SELL_DETAIL_PENDING_TITLE',
     },
     TR_SELL_DETAIL_WAITING_FOR_SEND_CRYPTO: {
         defaultMessage: "Waiting for {providerName}'s address",
@@ -846,10 +770,6 @@ export default defineMessages({
     TR_SELL_EXTRA_FIELD: {
         defaultMessage: '{extraFieldName}',
         id: 'TR_SELL_EXTRA_FIELD',
-    },
-    TR_SELL_DETAIL_PENDING_SUPPORT: {
-        defaultMessage: "Open partner's support site",
-        id: 'TR_SELL_DETAIL_PENDING_SUPPORT',
     },
     TR_SELL_HEADER_TITLE: {
         defaultMessage: 'Your sell',
@@ -1022,25 +942,9 @@ export default defineMessages({
             "Your transaction failed or was rejected. Your payment method hasn't been charged.",
         id: 'TR_BUY_DETAIL_ERROR_TEXT',
     },
-    TR_BUY_DETAIL_ERROR_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_BUY_DETAIL_ERROR_SUPPORT',
-    },
     TR_BUY_DETAIL_ERROR_BUTTON: {
         defaultMessage: 'Back to Buy',
         id: 'TR_BUY_DETAIL_ERROR_BUTTON',
-    },
-    TR_BUY_DETAIL_PENDING_TITLE: {
-        defaultMessage: 'Processing your transaction...',
-        id: 'TR_BUY_DETAIL_PENDING_TITLE',
-    },
-    TR_BUY_DETAIL_PENDING_SUPPORT: {
-        defaultMessage: 'Go to provider support',
-        id: 'TR_BUY_DETAIL_PENDING_SUPPORT',
-    },
-    TR_BUY_DETAIL_SUBMITTED_TITLE: {
-        defaultMessage: 'Waiting for your payment...',
-        id: 'TR_BUY_DETAIL_SUBMITTED_TITLE',
     },
     TR_BUY_DETAIL_SUBMITTED_TEXT: {
         defaultMessage: "Click to complete your details on the provider's website.",
@@ -1133,25 +1037,9 @@ export default defineMessages({
         defaultMessage: 'Country of residence',
         id: 'TR_TRADING_COUNTRY',
     },
-    TR_TRADING_YOUR_BEST_OFFER: {
-        defaultMessage: 'Your best offer',
-        id: 'TR_TRADING_YOUR_BEST_OFFER',
-    },
-    TR_TRADING_YOUR_SELECTED_OFFER: {
-        defaultMessage: 'Your selected offer',
-        id: 'TR_TRADING_YOUR_SELECTED_OFFER',
-    },
-    TR_TRADING_COMPARE_OFFERS: {
-        defaultMessage: 'Compare all offers',
-        id: 'TR_TRADING_COMPARE_OFFERS',
-    },
     TR_TRADING_OFFER_LOOKING: {
         defaultMessage: 'Searching for your best offer',
         id: 'TR_TRADING_OFFER_LOOKING',
-    },
-    TR_TRADING_BEST_RATE: {
-        defaultMessage: 'Best rate',
-        id: 'TR_TRADING_BEST_RATE',
     },
     TR_TRADING_FEES_INCLUDED: {
         defaultMessage: 'Fees included',
@@ -1214,14 +1102,6 @@ export default defineMessages({
         id: 'TR_TRADING_RATE',
         defaultMessage: 'Rate',
     },
-    TR_TRADING_FIX_RATE: {
-        id: 'TR_TRADING_FIX_RATE',
-        defaultMessage: 'Fixed rate',
-    },
-    TR_TRADING_FLOATING_RATE: {
-        id: 'TR_TRADING_FLOATING_RATE',
-        defaultMessage: 'Floating rate',
-    },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
         defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
@@ -1239,14 +1119,6 @@ export default defineMessages({
         id: 'TR_TRADING_DEX_TOOLTIP',
         defaultMessage: 'Decentralized exchange',
         dynamic: true,
-    },
-    TR_TRADING_NO_CEX_PROVIDER_FOUND: {
-        id: 'TR_TRADING_NO_CEX_PROVIDER_FOUND',
-        defaultMessage: 'No CEX provider found',
-    },
-    TR_TRADING_NO_DEX_PROVIDER_FOUND: {
-        id: 'TR_TRADING_NO_DEX_PROVIDER_FOUND',
-        defaultMessage: 'No DEX provider found',
     },
     TR_TRADING_FEATURED_OFFERS_HEADING: {
         defaultMessage: 'Featured offers',
@@ -2514,7 +2386,7 @@ export default defineMessages({
         id: 'TR_FIRMWARE_INSTALLED_TEXT',
     },
     TR_INSTALL_FIRMWARE: {
-        defaultMessage: 'Installing firmware',
+        defaultMessage: 'Install firmware',
         description: 'Heading in onboarding when user is about to install a new firmware',
         id: 'TR_INSTALL_FIRMWARE',
     },
@@ -2528,7 +2400,7 @@ export default defineMessages({
         id: 'TR_INSTALL_BITCOIN_ONLY_FW',
     },
     TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES: {
-        defaultMessage: 'Installing firmware with multiple devices connected is not allowed.',
+        defaultMessage: "Installing firmware with multiple devices connected isn't allowed.",
         id: 'TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES',
     },
     TR_FIRMWARE_SUBHEADING_NONE: {
@@ -2736,7 +2608,7 @@ export default defineMessages({
     },
     TR_AUTO_EJECT_DESCRIPTION: {
         defaultMessage:
-            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be hidden from Trezor Suite until you reconnect your device.',
+            'Automatically eject all wallets when you disconnect your Trezor.\nYour balances will be hidden in Trezor Suite until you reconnect your device.',
         id: 'TR_AUTO_EJECT_DESCRIPTION',
     },
     TR_AUTO_EJECT_CONFIRMATION_DESCRIPTION: {
@@ -3803,7 +3675,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC: {
         id: 'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',
         defaultMessage:
-            'Shelley-era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
+            'Cardano addresses have introduced a new type of wallet that can support stake delegation and earning rewards.',
     },
     TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_CARDANO_LEGACY_DESC',
@@ -3831,7 +3703,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_HEADER',
-        defaultMessage: 'Export Labels (BIP 329)',
+        defaultMessage: 'Export labels (BIP 329)',
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_BUTTON',
@@ -3839,7 +3711,7 @@ export default defineMessages({
     },
     TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION: {
         id: 'TR_ACCOUNT_DETAILS_EXPORT_LABELS_DESCRIPTION',
-        defaultMessage: 'Export label files to your computer using the standard BIP 329',
+        defaultMessage: 'Export label files to your computer using the BIP-329 standard.',
     },
     TR_ACCOUNT_DETAILS_XPUB: {
         id: 'TR_ACCOUNT_DETAILS_XPUB',
@@ -4594,7 +4466,7 @@ export default defineMessages({
     },
     MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY: {
         id: 'MODAL_ADD_ACCOUNT_COINJOIN_DESKTOP_ONLY',
-        defaultMessage: 'Coinjoin account only available on the Trezor Suite desktop app.',
+        defaultMessage: 'Coinjoin account only available in the Trezor Suite desktop app.',
     },
     TR_DEVICE_IN_RECOVERY_MODE: {
         id: 'TR_DEVICE_IN_RECOVERY_MODE',
@@ -4627,11 +4499,6 @@ export default defineMessages({
     TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
         defaultMessage: 'Connect your device to add new accounts.',
-    },
-    TR_EJECT_HEADING: {
-        id: 'TR_EJECT_HEADING',
-        defaultMessage: 'Eject this wallet',
-        description: 'Heading above col with "eject wallet" buttons in switch wallets modal',
     },
     TR_FORGET_DEVICE_HEADING: {
         id: 'TR_FORGET_DEVICE_HEADING',
@@ -4912,7 +4779,7 @@ export default defineMessages({
     },
     TR_REBOOT_INTO_BOOTLOADER: {
         id: 'TR_REBOOT_INTO_BOOTLOADER',
-        defaultMessage: 'Update Trezor firmware',
+        defaultMessage: "Update your Trezor's firmware",
     },
     TR_RECONNECT_IN_BOOTLOADER: {
         id: 'TR_RECONNECT_IN_BOOTLOADER',
@@ -5717,7 +5584,7 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_ADDRESS_DUPLICATE: {
         id: 'TR_ADD_TOKEN_ADDRESS_DUPLICATE',
-        defaultMessage: 'Token address is already added',
+        defaultMessage: 'Token address is already activated',
     },
     TR_ADD_TOKEN_TOAST_SUCCESS: {
         id: 'TR_ADD_TOKEN_TOAST_SUCCESS',
@@ -6819,10 +6686,6 @@ export default defineMessages({
     TR_LOADING: {
         id: 'TR_LOADING',
         defaultMessage: 'Loading...',
-    },
-    TR_SAVED: {
-        id: 'TR_SAVED',
-        defaultMessage: 'Saved',
     },
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
@@ -7989,29 +7852,9 @@ export default defineMessages({
         defaultMessage:
             'Your recent rewards are securely on the blockchain and may take more time to appear in Trezor Suite.',
     },
-    TR_STAKING_REWARDS_TITLE: {
-        id: 'TR_STAKING_REWARDS_TITLE',
-        defaultMessage: 'Cardano staking is active',
-    },
-    TR_STAKING_STAKE_TITLE: {
-        id: 'TR_STAKING_STAKE_TITLE',
-        defaultMessage: "Cardano staking isn't active",
-    },
     TR_STAKING_STAKE_ADDRESS: {
         id: 'TR_STAKING_STAKE_ADDRESS',
         defaultMessage: 'Your stake address',
-    },
-    TR_STAKING_DELEGATE: {
-        id: 'TR_STAKING_DELEGATE',
-        defaultMessage: 'Delegate',
-    },
-    TR_STAKING_REDELEGATE: {
-        id: 'TR_STAKING_REDELEGATE',
-        defaultMessage: 'Redelegate',
-    },
-    TR_STAKING_WITHDRAW: {
-        id: 'TR_STAKING_WITHDRAW',
-        defaultMessage: 'Withdraw',
     },
     TR_STAKING_ESTIMATED_GAINS: {
         id: 'TR_STAKING_ESTIMATED_GAINS',
@@ -8056,63 +7899,15 @@ export default defineMessages({
         defaultMessage: 'Deposit',
         description: 'Label for a deposit amount in transaction detail',
     },
-    TR_STAKING_DEPOSIT: {
-        id: 'TR_STAKING_DEPOSIT',
-        defaultMessage: 'Refundable Deposit',
-    },
-    TR_STAKING_FEE: {
-        id: 'TR_STAKING_FEE',
-        defaultMessage: 'Fee',
-    },
-    TR_STAKING_REWARDS: {
-        id: 'TR_STAKING_REWARDS',
-        defaultMessage: 'Available rewards',
-    },
-    TR_STAKING_REWARDS_DESCRIPTION: {
-        id: 'TR_STAKING_REWARDS_DESCRIPTION',
-        defaultMessage:
-            "It may take up to 20 days after your initial stake registration and delegation to begin receiving rewards. Once this period has passed, you'll receive rewards every 5 days.",
-    },
-    TR_STAKING_STAKE_DESCRIPTION: {
-        id: 'TR_STAKING_STAKE_DESCRIPTION',
-        defaultMessage:
-            'Staking your ADA lets you earn rewards while simply holding your Cardano—it’s a great way to grow your balance passively. By staking, you also help secure and support the Cardano network.',
-    },
     TR_STAKING_DEPOSIT_FEE_DECRIPTION: {
         id: 'TR_STAKING_DEPOSIT_FEE_DECRIPTION',
         defaultMessage:
             'To start staking, a deposit of {feeAmount} ADA is required to register your address. If you decide to unstake later, the full deposit will be returned to you.',
     },
-    TR_STAKING_NOT_ENOUGH_FUNDS: {
-        id: 'TR_STAKING_NOT_ENOUGH_FUNDS',
-        defaultMessage: "You don't have enough funds.",
-    },
-    TR_STAKING_TREZOR_POOL_FAIL: {
-        id: 'TR_STAKING_TREZOR_POOL_FAIL',
-        defaultMessage: "Couldn't reach Trezor staking pool to delegate on.",
-    },
     TR_STAKING_TX_PENDING: {
         id: 'TR_STAKING_TX_PENDING',
         defaultMessage:
             'Your transaction {txid} was sent successfully to the blockchain and is waiting for confirmation.',
-    },
-    TR_STAKING_ON_3RD_PARTY_TITLE: {
-        id: 'TR_STAKING_ON_3RD_PARTY_TITLE',
-        defaultMessage: "You're delegating on a third-party staking pool",
-    },
-    TR_STAKING_ON_3RD_PARTY_DESCRIPTION: {
-        id: 'TR_STAKING_ON_3RD_PARTY_DESCRIPTION',
-        defaultMessage:
-            "By staking with Trezor, you're directly supporting Trezor and the Cardano ecosystem within Trezor Suite.",
-    },
-    TR_STAKING_POOL_OVERSATURATED_TITLE: {
-        id: 'TR_STAKING_POOL_OVERSATURATED_TITLE',
-        defaultMessage: 'Staking pool is oversaturated',
-    },
-    TR_STAKING_POOL_OVERSATURATED_DESCRIPTION: {
-        id: 'TR_STAKING_POOL_OVERSATURATED_DESCRIPTION',
-        defaultMessage:
-            "The staking pool you're delegating on is oversaturated. Redelegate your stake to maximize your staking rewards.",
     },
     TR_STAKING_IS_NOT_SUPPORTED: {
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
@@ -8239,27 +8034,6 @@ export default defineMessages({
     TR_CARDANO_FINGERPRINT_HEADLINE: {
         id: 'TR_CARDANO_FINGERPRINT_HEADLINE',
         defaultMessage: 'Fingerprint',
-    },
-    TR_CARDANO_WITHDRAW_MODAL_TITLE: {
-        id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE',
-        defaultMessage: 'Delegate your voting rights',
-    },
-    TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION: {
-        id: 'TR_CARDANO_WITHDRAW_MODAL_TITLE_DESCRIPTION',
-        defaultMessage:
-            "When withdrawing your rewards, you can choose to support the Cardano ecosystem by delegating your community voting rights. Your votes will be delegated to Five Binaries, the operators of Cardano staking in Trezor Suite. This helps strengthen the network's resilience, sustainability, and community-driven governance. If you prefer, you can easily opt out.",
-    },
-    TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE: {
-        id: 'TR_CARDANO_WITHDRAW_MODAL_SUB_TITLE',
-        defaultMessage: 'Delegate Representative (DRep)',
-    },
-    TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN: {
-        id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_ABSTAIN',
-        defaultMessage: 'Opt out',
-    },
-    TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE: {
-        id: 'TR_CARDANO_WITHDRAW_MODAL_BUTTON_DELEGATE',
-        defaultMessage: 'Delegate',
     },
     TR_EXCEEDS_MAX: {
         id: 'TR_EXCEEDS_MAX',
@@ -9343,7 +9117,7 @@ export default defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            'Action required: Your ADA staking will stop earning rewards on 31.12.2025 unless you update your provider. Switch to Everstake now to earn ~{apy}% APY.',
+            'Your current provider is reducing its ADA rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your funds and past rewards stay safe.',
     },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
@@ -10493,7 +10267,7 @@ export default defineMessages({
     TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT: {
         id: 'TR_BLUETOOTH_REQUIRE_MANUAL_PAIRING_TEXT',
         defaultMessage:
-            'Your system doesn’t support automatic pairing via Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
+            'Your system doesn’t support automatic pairing in Trezor Suite. To connect, open your Bluetooth settings and pair your Trezor device manually.',
     },
     TR_DONE: {
         id: 'TR_DONE',
@@ -10967,7 +10741,7 @@ export default defineMessages({
     TR_DYK_ITEM_11: {
         id: 'TR_DYK_ITEM_11',
         defaultMessage:
-            'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 units.',
+            'In January 2025, Trezor introduced the Trezor Safe 5 Freedom Edition, a limited release of just 2,100 devices.',
     },
     TR_FIRMWARE_UPDATE_TIME_WARNING: {
         id: 'TR_FIRMWARE_UPDATE_TIME_WARNING',
@@ -10976,7 +10750,7 @@ export default defineMessages({
     TR_FIRMWARE_DONT_CLOSE_APP: {
         id: 'TR_FIRMWARE_DONT_CLOSE_APP',
         defaultMessage:
-            "<highlight>Don't close the app</highlight> during installation. Doing so will corrupt the firmware.",
+            '<highlight>Keep the app open</highlight> while installing—closing it may corrupt the firmware.',
     },
     TR_PUBLIC_KEY: {
         id: 'TR_PUBLIC_KEY',
@@ -11051,10 +10825,6 @@ export default defineMessages({
     TR_REINSTALL: {
         id: 'TR_REINSTALL',
         defaultMessage: 'Reinstall',
-    },
-    TR_SWAP_ASSET_PICKER_HEADING: {
-        id: 'TR_SWAP_ASSET_PICKER_HEADING',
-        defaultMessage: 'To',
     },
     TR_ASSET_PICKER_SEARCH_PLACEHOLDER: {
         id: 'TR_ASSET_PICKER_SEARCH_PLACEHOLDER',
