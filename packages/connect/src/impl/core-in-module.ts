@@ -20,7 +20,7 @@ import {
     UiResponseEvent,
     createErrorMessage,
 } from '../events';
-import { ConnectFactoryDependencies, factory } from '../factory';
+import { ConnectFactoryDependencies } from '../factory';
 import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
 import type { SetTransports } from '../types/api/setTransports';
 import { Log, initLog } from '../utils/debug';
@@ -225,17 +225,3 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         this.handleCoreMessage(response);
     }
 }
-
-const impl = new CoreInModule();
-
-// Exported to enable using directly
-export const TrezorConnect = factory({
-    eventEmitter: impl.eventEmitter,
-    manifest: impl.manifest.bind(impl),
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    setTransports: impl.setTransports.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
