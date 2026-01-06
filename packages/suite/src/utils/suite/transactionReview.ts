@@ -58,7 +58,7 @@ export const getTransactionReviewModalActionTranslation = ({
                         source === 'heading'
                             ? 'TR_TRADING_APPROVE_TOKEN'
                             : 'TR_TRADING_APPROVE_TOKEN_BUTTON',
-                    values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
+                    values: { tokenSymbol: tradingToken?.symbol },
                 };
             case 'revoke':
                 return {
@@ -66,7 +66,7 @@ export const getTransactionReviewModalActionTranslation = ({
                         source === 'heading'
                             ? 'TR_TRADING_REVOKE_TOKEN'
                             : 'TR_TRADING_REVOKE_TOKEN_BUTTON',
-                    values: { tokenSymbol: tradingToken?.symbol?.toUpperCase() },
+                    values: { tokenSymbol: tradingToken?.symbol },
                 };
             default:
                 return { id: 'TR_TRADING_SWAP' };

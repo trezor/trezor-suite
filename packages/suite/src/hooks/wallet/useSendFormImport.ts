@@ -149,7 +149,9 @@ export const useSendFormImport = ({
                     output.amount = cryptoAmount;
                 } else if (tokens) {
                     // csv amount in ERC20 currency
-                    const token = tokens.find(t => t.symbol === itemCurrency);
+                    const token = tokens.find(
+                        t => t.symbol?.toLowerCase() === itemCurrency.toLowerCase(),
+                    );
                     if (token) {
                         output.token = token.contract;
                         output.amount = item.amount || '';

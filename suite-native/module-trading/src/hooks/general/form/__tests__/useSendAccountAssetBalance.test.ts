@@ -37,7 +37,7 @@ describe('useSendAccountAssetBalance', () => {
         });
 
         expect(setBalance).toHaveBeenCalledWith('0.01');
-        expect(setSendSymbol).toHaveBeenCalledWith('btc');
+        expect(setSendSymbol).toHaveBeenCalledWith('BTC');
     });
 
     it('should set balance to undefined when account is undefined', async () => {

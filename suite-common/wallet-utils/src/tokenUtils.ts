@@ -4,7 +4,7 @@ import {
     type NetworkType,
     getExplorerUrl,
 } from '@suite-common/wallet-config';
-import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link-types';
+import { TokenInfo, TokenStandard, TokenTransfer } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
@@ -91,3 +91,15 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
+
+const EVM_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
+    'ERC20',
+    'ERC721',
+    'ERC1155',
+    'BEP20',
+    'BEP721',
+    'BEP1155',
+]);
+
+export const isEvmTokenStandard = (token: TokenInfo) =>
+    token.standard ? EVM_TOKEN_STANDARDS.has(token.standard) : false;

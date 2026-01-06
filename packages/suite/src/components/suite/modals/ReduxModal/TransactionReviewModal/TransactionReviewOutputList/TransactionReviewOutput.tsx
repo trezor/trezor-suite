@@ -358,7 +358,7 @@ const getOutputLines = ({
             const type = isMaxApproval || !isApprovalTx ? 'data' : 'amount';
             const getValue = () => {
                 if (!isApprovalTx && token?.symbol) {
-                    return token.symbol.toUpperCase();
+                    return token.symbol;
                 }
 
                 return isMaxApproval ? translationString('TR_APPROVE_AMOUNT_UNLIMITED', {}) : value;

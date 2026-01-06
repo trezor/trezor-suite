@@ -48,7 +48,7 @@ export const getTradingSymbolAndContractAddressByCryptoId = (
     }
 
     return {
-        coinSymbol: getTradingCoinInfoByCryptoId(coins ?? {}, cryptoId)?.symbol,
+        coinSymbol: getTradingCoinInfoByCryptoId(coins ?? {}, cryptoId)?.symbol.toUpperCase(),
         contractAddress: parseCryptoId(cryptoId).contractAddress,
     };
 };

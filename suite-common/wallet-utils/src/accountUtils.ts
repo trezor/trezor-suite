@@ -49,6 +49,7 @@ import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
+import { isEvmTokenStandard } from './tokenUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
 const { SYSTEM_PROGRAM_PUBLIC_KEY } = solanaUtils;
@@ -388,7 +389,7 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
         return {
             ...t,
             name: t.name || symbol,
-            symbol: symbol.toLowerCase(),
+            symbol: isEvmTokenStandard(t) ? symbol : symbol.toUpperCase(),
             balance: convertAmountSubunitsToUnits(t.balance || 0, t.decimals),
         };
     });

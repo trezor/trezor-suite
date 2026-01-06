@@ -38,7 +38,7 @@ export function AssetRowToken({ token, account, dataTestId, onClick }: AssetRowT
                 />
                 <AssetDetails
                     name={token.name!}
-                    symbol={token.symbol!}
+                    displaySymbol={token.symbol!}
                     networkSymbol={account.symbol}
                 />
             </Row>

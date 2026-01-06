@@ -31,7 +31,7 @@ export const sortTokensWithRates = (a: TokensWithRates, b: TokensWithRates) => {
         // If USD rate is equal or missing, sort by symbol length
         (a.symbol || '').length - (b.symbol || '').length ||
         // If symbol length is equal, sort by symbol name alphabetically
-        (a.symbol || '').localeCompare(b.symbol || '');
+        (a.symbol || '').localeCompare(b.symbol || '', undefined, { sensitivity: 'base' });
 
     return balanceSort;
 };
@@ -67,10 +67,9 @@ export const enhanceTokensWithRates = (
 export type EnahncedTokenInfoWithFiat = ReturnType<typeof enhanceTokensWithRates>[number];
 
 export const formatTokenSymbol = (symbol: string) => {
-    const upperCasedSymbol = symbol.toUpperCase();
-    const isTokenSymbolLong = upperCasedSymbol.length > 7;
+    const isTokenSymbolLong = symbol.length > 7;
 
-    return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
+    return isTokenSymbolLong ? `${symbol.slice(0, 7)}...` : symbol;
 };
 
 type GetTokens<T extends EnhancedTokenInfo | TokenInfo | EnahncedTokenInfoWithFiat> = {

@@ -96,7 +96,7 @@ export function createAssetOption({ cryptoId, coinInfo, platformInfo }: CreateAs
 
     network = getNetwork(networkSymbol)!;
 
-    const coinInfoSymbol = coinInfo.symbol.toLowerCase();
+    const coinInfoSymbol = coinInfo.symbol;
 
     return {
         isNativeToken,
@@ -104,7 +104,7 @@ export function createAssetOption({ cryptoId, coinInfo, platformInfo }: CreateAs
         name: coinInfo.name,
         symbol: coinInfoSymbol,
         coingeckoId: networkId as string,
-        displaySymbol: getDisplaySymbol(coinInfoSymbol, contractAddress),
+        displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
         contractAddress,
         networkName: network.name,
         networkSymbol: network.symbol,

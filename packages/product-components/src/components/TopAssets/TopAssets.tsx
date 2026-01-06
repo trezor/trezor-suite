@@ -1,11 +1,12 @@
 import { Box, Column, Row, Text } from '@trezor/components';
 
-import { AssetLogo, AssetLogoProps, shouldShowNetworkIcon } from '../AssetLogo/AssetLogo';
+import { AssetLogo, AssetLogoProps } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
 
 export type Asset = {
     id: string;
     symbol: string;
+    displaySymbol: string;
     contractAddress: string | null;
     coingeckoId: string;
     isNativeToken: boolean;
@@ -35,46 +36,38 @@ export function TopAssets({
             data-testid={dataTestId}
         >
             <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
-                {assets.map(asset => {
-                    const displaySymbol = asset.symbol.toUpperCase();
-
-                    return (
-                        <Box
-                            key={asset.id}
-                            onClick={() => onAssetClick(asset)}
-                            padding={{ top: 10, horizontal: 12, bottom: 6 }}
-                            flex="1"
-                            backgroundColorOnInteraction="stateFillElementGhostHovered"
-                            cursor="pointer"
-                        >
-                            <Column alignItems="center" justifyContent="center" gap={4}>
-                                {asset.isNativeToken ? (
-                                    <CoinLogo
-                                        size={logoSize}
-                                        // @ts-expect-error
-                                        symbol={asset.symbol}
-                                        type="tokenWithNetwork"
-                                        showNetworkIcon={shouldShowNetworkIcon(
-                                            asset.symbol,
-                                            asset.contractAddress,
-                                        )}
-                                    />
-                                ) : (
-                                    <AssetLogo
-                                        size={logoSize}
-                                        coingeckoId={asset.coingeckoId}
-                                        symbol={asset.symbol}
-                                        contractAddress={asset.contractAddress}
-                                        placeholder={displaySymbol}
-                                    />
-                                )}
-                                <Text typographyStyle="hint" variant="default">
-                                    {displaySymbol}
-                                </Text>
-                            </Column>
-                        </Box>
-                    );
-                })}
+                {assets.map(asset => (
+                    <Box
+                        key={asset.id}
+                        onClick={() => onAssetClick(asset)}
+                        padding={{ top: 10, horizontal: 12, bottom: 6 }}
+                        flex="1"
+                        backgroundColorOnInteraction="stateFillElementGhostHovered"
+                        cursor="pointer"
+                    >
+                        <Column alignItems="center" justifyContent="center" gap={4}>
+                            {asset.isNativeToken ? (
+                                <CoinLogo
+                                    size={logoSize}
+                                    // @ts-expect-error
+                                    symbol={asset.symbol}
+                                    type="tokenWithNetwork"
+                                />
+                            ) : (
+                                <AssetLogo
+                                    size={logoSize}
+                                    coingeckoId={asset.coingeckoId}
+                                    symbol={asset.symbol}
+                                    contractAddress={asset.contractAddress}
+                                    placeholder={asset.displaySymbol}
+                                />
+                            )}
+                            <Text typographyStyle="hint" variant="default">
+                                {asset.displaySymbol}
+                            </Text>
+                        </Column>
+                    </Box>
+                ))}
             </Row>
         </Box>
     );

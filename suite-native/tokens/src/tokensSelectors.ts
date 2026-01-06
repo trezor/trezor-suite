@@ -8,7 +8,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -48,12 +48,22 @@ export const selectAccountTokenInfo = createMemoizedSelector(
 
         const lowerCaseTokenAddress = tokenAddress?.toLowerCase();
 
-        return (
-            (A.find(
-                account.tokens,
-                (token: TokenInfo) => token.contract.toLowerCase() === lowerCaseTokenAddress,
-            ) as TokenInfoBranded) ?? null
+        const token = A.find(
+            account.tokens,
+            (t: TokenInfo) => t.contract.toLowerCase() === lowerCaseTokenAddress,
         );
+
+        if (!token) {
+            return null;
+        }
+
+        const isEvmNetwork = getNetworkType(account.symbol) === 'ethereum';
+        const symbol = isEvmNetwork ? token.symbol : token.symbol?.toUpperCase();
+
+        return {
+            ...token,
+            symbol,
+        } as TokenInfoBranded;
     },
 );
 
@@ -64,10 +74,7 @@ export const selectAccountTokenSymbol = createMemoizedSelector(
             return null;
         }
 
-        // FIXME: This is the only place in the codebase where we change case of token symbol.
-        // The `toUpperCase()` operation is necessary because we are receiving wrongly formatted token symbol from connect.
-        // Can be removed at the moment when desktop issue https://github.com/trezor/trezor-suite/issues/8037 is resolved.
-        return tokenInfo.symbol.toUpperCase() as TokenSymbol;
+        return tokenInfo.symbol as TokenSymbol;
     },
 );
 

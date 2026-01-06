@@ -278,7 +278,7 @@ export const tradingBuildAccountOptions = ({
 
                 options.push({
                     value: tokenCryptoId,
-                    label: symbol.toUpperCase(),
+                    label: symbol,
                     cryptoName: name,
                     contractAddress: contract,
                     descriptor,

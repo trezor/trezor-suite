@@ -98,7 +98,7 @@ describe('MyAssetListItem', () => {
 
         expect(onPress).toHaveBeenCalledWith(
             expect.objectContaining({
-                symbol: 'btc',
+                symbol: 'BTC',
                 name: 'Bitcoin',
                 cryptoId: 'bitcoin',
             }),
@@ -191,7 +191,7 @@ describe('MyAssetListItem', () => {
 
             expect(onPress).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    symbol: 'btc',
+                    symbol: 'BTC',
                     name: 'Bitcoin',
                     cryptoId: 'bitcoin',
                 }),

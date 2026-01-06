@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.2.0
+
+- remove saved transactions to force refetch with correct token symbol casing
+
 ## 26.1.0
 
 - remove TADA network

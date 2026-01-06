@@ -29,7 +29,7 @@ export const AccountBalanceScreenHeader = ({
         return;
     }
 
-    const assetName = (tokenInfo?.symbol ?? getNetworkDisplaySymbol(account.symbol)).toUpperCase();
+    const assetName = tokenInfo?.symbol ?? getNetworkDisplaySymbol(account.symbol);
 
     return (
         <ScreenHeader

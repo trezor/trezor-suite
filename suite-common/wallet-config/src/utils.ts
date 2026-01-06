@@ -140,7 +140,7 @@ export const getDisplaySymbol = (coinSymbol: string, contractAddress?: string | 
         return getNetworkDisplaySymbol(symbol);
     }
 
-    return coinSymbol.toUpperCase();
+    return coinSymbol;
 };
 
 export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol) => {

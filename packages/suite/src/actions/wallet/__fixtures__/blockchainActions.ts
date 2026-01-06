@@ -587,7 +587,7 @@ export const onNotification = [
         actions: [
             {
                 type: notificationsActions.addEvent.type,
-                payload: { formattedAmount: '0.001 ERC20' },
+                payload: { formattedAmount: '0.001 erc20' },
             },
         ],
         getAccountInfo: 2,

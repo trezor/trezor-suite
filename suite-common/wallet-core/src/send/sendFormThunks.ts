@@ -368,7 +368,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         type: evmApprovalData.type === 'approve' ? 'tx-approved' : 'tx-revoked',
                         isInfiniteApproval,
                         formattedAmount: amount,
-                        tokenSymbol: token.symbol?.toUpperCase(),
+                        tokenSymbol: token.symbol,
                         device,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
@@ -398,7 +398,7 @@ export const pushSendFormTransactionThunk = createThunk<
                 // get total amount without fee OR token amount
                 const formattedAmount =
                     token && amount
-                        ? `${amount} ${token.symbol?.toUpperCase()}`
+                        ? `${amount} ${token.symbol}`
                         : formatNetworkAmount(
                               spentWithoutFee,
                               selectedAccount.symbol,
