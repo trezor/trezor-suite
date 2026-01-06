@@ -20,7 +20,7 @@ export function AssetRowAccountWithBalance({
     return (
         <ItemClickableContainer onClick={() => onClick(account)}>
             <Row
-                data-testid={`${dataTestId}/${account.symbol}`}
+                data-testid={dataTestId ? `${dataTestId}/${account.symbol}` : undefined}
                 gap={12}
                 alignItems="center"
                 overflow="hidden"
