@@ -11774,9 +11774,9 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/receive": "workspace:*"
     "@suite-native/sentry": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/state": "workspace:*"
-    "@suite-native/storage": "workspace:*"
     "@suite-native/storybook": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/theme": "workspace:*"
@@ -13438,6 +13438,7 @@ __metadata:
   dependencies:
     "@suite-common/redux-utils": "workspace:*"
     react: "npm:19.1.0"
+    react-native-mmkv: "npm:~4.0.0"
   languageName: unknown
   linkType: soft
 
@@ -13545,6 +13546,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     bs58: "npm:^6.0.0"
     expo-crypto: "npm:~15.0.7"
     expo-secure-store: "npm:~15.0.7"

@@ -23,6 +23,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native-bluetooth": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "bs58": "^6.0.0",
         "expo-crypto": "~15.0.7",
         "expo-secure-store": "~15.0.7",
