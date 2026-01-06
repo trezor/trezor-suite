@@ -1,45 +1,69 @@
 import { ERRORS } from './constants';
 import { config } from './data/config';
-import { TRANSPORT } from './events';
-import { CoreRequestMessage } from './events/core';
-import { type ConnectFactoryDependencies, factory } from './factory';
+import { CallMethodPayload, TRANSPORT, createErrorMessage } from './events';
+import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';
-import { TrezorConnectDynamic } from './impl/dynamic';
-import { type ConnectSettingsPublic } from './types';
+import type { ConnectSettingsPublic, Manifest } from './types';
+import { type InitFullSettings } from './types/api/init';
+import { SetTransports } from './types/api/setTransports';
 
-interface ConnectWebDynamicImplementation
-    extends ConnectFactoryDependencies<ConnectSettingsPublic> {
-    handleCoreMessage: (message: CoreRequestMessage) => void;
-}
+let lastSettings: InitFullSettings<ConnectSettingsPublic> | undefined;
+const impl = new CoreInModule();
 
-const impl = new TrezorConnectDynamic<
-    'core-in-module',
-    ConnectSettingsPublic,
-    ConnectWebDynamicImplementation
->({
-    implementations: [
-        {
-            type: 'core-in-module',
-            impl: new CoreInModule(),
-        },
-    ],
-    getInitTarget: () => 'core-in-module',
-    handleBeforeCall: () => new Promise(resolve => resolve()),
-    handleErrorFallback: () => new Promise(resolve => resolve(false)),
-});
+const manifest = (m: Manifest) => {
+    lastSettings = { ...lastSettings, m } as typeof lastSettings;
+
+    impl.manifest(m);
+};
+
+const dispose = () => {
+    impl.eventEmitter.removeAllListeners();
+
+    return impl.dispose();
+};
+
+const init = async (settings: InitFullSettings<ConnectSettingsPublic>) => {
+    if (!settings?.manifest) {
+        throw ERRORS.TypedError('Init_ManifestMissing');
+    }
+    // Save settings for later use
+    lastSettings = settings;
+
+    return await impl.init(lastSettings);
+};
+
+const call = async (params: CallMethodPayload) => {
+    try {
+        const response = await impl.call(params);
+
+        return response;
+    } catch (error) {
+        // Don't throw but return error payload
+        return createErrorMessage(error);
+    }
+};
+
+const setTransports = ({ transports }: SetTransports) => {
+    lastSettings = { ...lastSettings, transports } as typeof lastSettings;
+    impl.setTransports({ transports });
+};
+
+const uiResponse = (params: any) => impl.uiResponse(params);
+
+const cancel = (error?: string) => impl.cancel(error);
 
 const disableWebUSB = () => {
-    if (!impl.lastSettings) {
+    if (!lastSettings) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
 
-    impl.getTarget().handleCoreMessage({ type: TRANSPORT.DISABLE_WEBUSB });
+    impl.handleCoreMessage({ type: TRANSPORT.DISABLE_WEBUSB });
 };
 
 const requestWebUSBDevice = async () => {
     try {
         await window.navigator.usb.requestDevice({ filters: config.webusb });
-        impl.getTarget().handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
+        impl.handleCoreMessage({ type: TRANSPORT.REQUEST_DEVICE });
     } catch {
         // empty
     }
@@ -48,17 +72,17 @@ const requestWebUSBDevice = async () => {
 const TrezorConnect = factory(
     {
         eventEmitter: impl.eventEmitter,
-        init: impl.init.bind(impl),
-        call: impl.call.bind(impl),
-        setTransports: impl.setTransports.bind(impl),
-        manifest: impl.manifest.bind(impl),
-        uiResponse: impl.uiResponse.bind(impl),
-        cancel: impl.cancel.bind(impl),
-        dispose: impl.dispose.bind(impl),
+        init,
+        call,
+        setTransports,
+        manifest,
+        uiResponse,
+        cancel,
+        dispose,
     },
     {
-        disableWebUSB: disableWebUSB.bind(impl),
-        requestWebUSBDevice: requestWebUSBDevice.bind(impl),
+        disableWebUSB,
+        requestWebUSBDevice,
     },
 );
 
@@ -69,7 +93,5 @@ export default TrezorConnect;
 export * from './exports';
 
 if (typeof window !== 'undefined') {
-    window.addEventListener('beforeunload', () => {
-        impl.dispose();
-    });
+    window.addEventListener('beforeunload', dispose);
 }
