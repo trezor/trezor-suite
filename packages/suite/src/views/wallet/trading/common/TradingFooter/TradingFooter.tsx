@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 
 import { Column, Link, Row, Text, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-import { DATA_TOS_INVITY_URL } from '@trezor/urls';
+import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
 import { Translation } from 'src/components/suite/Translation';
 
@@ -55,8 +55,8 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => (
 
             <Text typographyStyle="hint" variant="tertiary">
                 <Row gap={spacings.xs} alignItems="center">
-                    <StyledLink href={DATA_TOS_INVITY_URL} variant="nostyle">
-                        <Translation id="TR_TERMS_OF_USE_INVITY" />
+                    <StyledLink href={TREZOR_SUITE_TOS_URL} variant="nostyle">
+                        <Translation id="TR_TERMS_OF_USE_TREZOR" />
                     </StyledLink>
                     <Text>|</Text>
                     <Tooltip
@@ -68,7 +68,7 @@ export const TradingFooter = ({ provider }: TradingFooterProps) => (
                         }
                         cursor="default"
                     >
-                        <StyledLink variant="nostyle">
+                        <StyledLink href={TREZOR_TRADING_LEARN_MORE_URL} variant="nostyle">
                             <Translation id="TR_BUY_LEARN_MORE" />
                         </StyledLink>
                     </Tooltip>

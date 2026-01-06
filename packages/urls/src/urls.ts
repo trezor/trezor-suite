@@ -23,7 +23,6 @@ export const TREZOR_COINS_URL: Url = 'https://trezor.io/coins';
 
 export const DATA_URL: Url = 'https://data.trezor.io/';
 export const DATA_TOS_URL: Url = 'https://data.trezor.io/legal/wallet-terms.pdf';
-export const DATA_TOS_INVITY_URL: Url = 'https://data.trezor.io/legal/invity-terms-of-use.pdf';
 
 export const DATA_TOS_MOBILE_URL: Url = 'https://data.trezor.io/legal/mobile-wallet-terms.pdf';
 
@@ -32,6 +31,9 @@ export const DATA_PRIVACY_URL: Url = 'https://data.trezor.io/legal/privacy-polic
 export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
     'https://docs.trezor.io/trezor-suite/analytics/',
 );
+
+export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
+export const TREZOR_TRADING_LEARN_MORE_URL: Url = 'https://trezor.io/trade-features';
 
 // =====================
 // 🆘 SUPPORT
