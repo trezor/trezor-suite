@@ -1,3 +1,5 @@
+import { HTMLProps } from 'react';
+
 import styled, { css } from 'styled-components';
 
 import { BorderWidths, Color, Elevation, mapElevationToBorder } from '@trezor/theme';
@@ -101,21 +103,21 @@ type BorderWidth =
       }
     | BorderWidths;
 
-export type BoxProps = AllowedFrameProps & {
-    children?: React.ReactNode;
-    borderWidth?: BorderWidth;
-    backgroundColor?: Color;
-    backgroundColorOnInteraction?: Color;
-    borderColor?: Color;
-    shadow?: string;
-    'data-testid'?: string;
-    'aria-hidden'?: boolean;
-    as?: React.ElementType;
-    onClick?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    onMouseEnter?: () => void;
-    onMouseLeave?: () => void;
-    tabIndex?: number;
-};
+export type BoxProps = Pick<
+    HTMLProps<HTMLElement>,
+    'onClick' | 'onMouseEnter' | 'onMouseLeave' | 'tabIndex'
+> &
+    AllowedFrameProps & {
+        children?: React.ReactNode;
+        borderWidth?: BorderWidth;
+        backgroundColor?: Color;
+        backgroundColorOnInteraction?: Color;
+        borderColor?: Color;
+        shadow?: string;
+        'data-testid'?: string;
+        'aria-hidden'?: boolean;
+        as?: React.ElementType;
+    };
 
 export const Box = ({
     children,

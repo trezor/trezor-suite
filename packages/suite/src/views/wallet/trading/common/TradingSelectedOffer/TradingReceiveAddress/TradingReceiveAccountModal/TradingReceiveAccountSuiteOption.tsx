@@ -9,8 +9,7 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings, typography } from '@trezor/theme';
 
-import { AccountLabeling, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { AddressRow } from 'src/components/suite/copy/AddressRow';
+import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
@@ -82,13 +81,11 @@ export const TradingReceiveAccountSuiteOption = ({
                         />
                     </AccountName>
                     {!isUtxoBasedNetwork && (
-                        <AddressRow
-                            address={address ?? null}
-                            shouldAllowCopy={false}
+                        <Address
+                            value={address ?? null}
                             variant="tertiary"
                             typographyStyle="hint"
-                            showStart={10}
-                            showEnd={4}
+                            isTruncated
                         />
                     )}
                 </Column>

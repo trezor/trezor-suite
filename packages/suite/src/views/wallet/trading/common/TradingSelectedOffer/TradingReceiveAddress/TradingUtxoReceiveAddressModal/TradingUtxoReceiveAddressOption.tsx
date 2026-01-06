@@ -3,14 +3,13 @@ import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { Address } from '@trezor/blockchain-link-types';
+import { Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
-import { CoinBalance } from 'src/components/suite';
-import { AddressRow } from 'src/components/suite/copy/AddressRow';
+import { Address, CoinBalance } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
@@ -20,7 +19,7 @@ import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValue
 
 interface TradingUtxoReceiveAddressOptionProps {
     account: Account;
-    address: Address;
+    address: BlockchainLinkAddress;
 }
 
 export const TradingUtxoReceiveAddressOption = ({
@@ -60,17 +59,7 @@ export const TradingUtxoReceiveAddressOption = ({
                 <Row gap={spacings.sm}>
                     <CoinLogo size={24} symbol={account.symbol} />
                     <Column alignItems="flex-start">
-                        <AddressRow
-                            address={address.address}
-                            shouldAllowCopy={false}
-                            variant="default"
-                            typographyStyle="body"
-                            showStart={10}
-                            showEnd={4}
-                        />
-                        <Text typographyStyle="hint" variant="tertiary">
-                            {address.path}
-                        </Text>
+                        <Address isTruncated value={address.address} />
                     </Column>
                 </Row>
 

@@ -9,13 +9,14 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Banner, Button, Column, Icon, Paragraph, Row } from '@trezor/components';
+import { Banner, Button, Column, Icon, Link, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
+import { openModal } from 'src/actions/suite/modalActions';
+import { Address } from 'src/components/suite/Address';
 import { Translation } from 'src/components/suite/Translation';
-import { TxAddress } from 'src/components/suite/copy/TxAddress';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
@@ -73,7 +74,7 @@ export const TradingFormApproval = ({
     setIsManuallyApproved,
 }: TradingFormApprovalProps) => {
     const context = useTradingFormContext<TradingExchangeType>();
-
+    const dispatch = useDispatch();
     const {
         selectQuote,
         approveTransaction,
@@ -458,13 +459,27 @@ export const TradingFormApproval = ({
                             </Paragraph>
 
                             {selectedQuote?.approvalSendTxHash && (
-                                <TxAddress
-                                    variant="primary"
-                                    typographyStyle="body"
-                                    txAddress={selectedQuote.approvalSendTxHash}
-                                    account={account}
-                                    shouldAllowCopy={false}
-                                />
+                                <Link
+                                    onClick={() =>
+                                        dispatch(
+                                            openModal({
+                                                type: 'transaction-detail',
+                                                txid: selectedQuote.approvalSendTxHash ?? '',
+                                                descriptor: account.descriptor,
+                                                symbol: account.symbol,
+                                                deviceState: account.deviceState,
+                                                flow: 'detail',
+                                            }),
+                                        )
+                                    }
+                                >
+                                    <Address
+                                        isTruncated
+                                        value={selectedQuote.approvalSendTxHash}
+                                        variant="primary"
+                                        typographyStyle="body"
+                                    />
+                                </Link>
                             )}
                         </Column>
                     </Row>

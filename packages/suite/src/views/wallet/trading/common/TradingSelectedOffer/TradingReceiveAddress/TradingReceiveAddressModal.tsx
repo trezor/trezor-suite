@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import addressValidator from '@trezor/address-validator';
-import { Button, Column, Input, Modal, Text } from '@trezor/components';
+import { Column, Input, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -106,7 +106,7 @@ export const TradingReceiveAddressModal = () => {
             onCancel={onCancel}
             onBackClick={onBackClick}
             bottomContent={
-                <Button
+                <Modal.Button
                     data-testid="@trading/receive-address-modal/confirm-button"
                     onClick={onConfirmClick}
                     isDisabled={
@@ -116,7 +116,7 @@ export const TradingReceiveAddressModal = () => {
                     }
                 >
                     <Translation id="TR_CONFIRM" />
-                </Button>
+                </Modal.Button>
             }
         >
             <Column gap={spacings.sm}>

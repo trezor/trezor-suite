@@ -54,6 +54,18 @@ const argTypes: Partial<ArgTypes<GridProps>> = {
             type: 'select',
         },
     },
+    rowGap: {
+        options: Object.values(spacings),
+        control: {
+            type: 'select',
+        },
+    },
+    columnGap: {
+        options: Object.values(spacings),
+        control: {
+            type: 'select',
+        },
+    },
     forceEqualColumns: {
         control: {
             type: 'boolean',

@@ -15,15 +15,19 @@ import {
     hasNetworkFeatures,
     isNftToken,
 } from '@suite-common/wallet-utils';
-import { Card, Column, IconButton, Row, Text } from '@trezor/components';
+import { Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/copyAddressActions';
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
-import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import {
+    Address,
+    BaseCurrencyValue,
+    FormattedCryptoAmount,
+    HiddenPlaceholder,
+} from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
-import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
@@ -164,29 +168,34 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                     account.networkType,
                                                 )}
                                             />
-                                            <AddressRow
-                                                typographyStyle="hint"
-                                                variant="tertiary"
-                                                address={networkTokenContractAddress}
-                                                shouldAllowCopy={true}
-                                                explorerUrl={getTokenExplorerUrl(
+                                            <Link
+                                                href={getTokenExplorerUrl(
                                                     explorer,
                                                     getNetwork(account.symbol).networkType,
                                                     selectedToken,
                                                 )}
-                                                onCopy={() =>
-                                                    dispatch(
-                                                        shouldShowCopyAddressModal
-                                                            ? showCopyAddressModal(
-                                                                  networkTokenContractAddress,
-                                                                  'contract',
-                                                              )
-                                                            : copyAddressToClipboard(
-                                                                  networkTokenContractAddress,
-                                                              ),
-                                                    )
-                                                }
-                                            />
+                                                onClick={ev => ev.stopPropagation()}
+                                            >
+                                                <Address
+                                                    isTruncated
+                                                    value={networkTokenContractAddress}
+                                                    typographyStyle="hint"
+                                                    variant="tertiary"
+                                                    isCopyAllowed
+                                                    onCopy={() => {
+                                                        dispatch(
+                                                            shouldShowCopyAddressModal
+                                                                ? showCopyAddressModal(
+                                                                      networkTokenContractAddress,
+                                                                      'contract',
+                                                                  )
+                                                                : copyAddressToClipboard(
+                                                                      networkTokenContractAddress,
+                                                                  ),
+                                                        );
+                                                    }}
+                                                />
+                                            </Link>
                                         </Row>
                                     </Text>
                                 </Row>

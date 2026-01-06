@@ -36,6 +36,7 @@ const Content = styled.div<TransientProps<AllowedFrameProps>>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
+    text-decoration: inherit;
 
     ${withFrameProps}
 `;

@@ -53,8 +53,8 @@ export const TokenSpecificBalanceDetailsRow = ({
                             tx={tx}
                             inputs={[{ addresses: [from], value: amount }] as IODetails[]}
                             outputs={[{ addresses: [to] }] as IODetails[]}
-                            isPhishingTransaction={isPhishingTransaction}
                             hasHeadings={false}
+                            isPhishingTransaction={isPhishingTransaction}
                         />
                     ))}
                 </Column>
@@ -97,8 +97,8 @@ export const TokenSpecificBalanceDetailsRow = ({
                                     contractAddress={transfer.contract}
                                     inputs={[{ addresses: [transfer.from], value }] as IODetails[]}
                                     outputs={[{ addresses: [transfer.to] }] as IODetails[]}
-                                    isPhishingTransaction={isPhishingTransaction}
                                     hasHeadings={false}
+                                    isPhishingTransaction={isPhishingTransaction}
                                 />
                             );
                         })}

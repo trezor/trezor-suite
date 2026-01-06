@@ -1,4 +1,6 @@
+import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getAccountKey } from '@suite-common/wallet-utils';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -14,12 +16,15 @@ export type IODetails = WalletAccountTransaction['details']['vin'][number];
 
 type IODetailsProps = {
     tx: WalletAccountTransaction;
-    isPhishingTransaction: boolean;
 };
 
 // Not ready for Cardano tokens, they will not be visible, probably
-export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
+export const IODetails = ({ tx }: IODetailsProps) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
+    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const isPhishingTransaction = useSelector(state =>
+        selectIsPhishingTransaction(state, tx.txid, accountKey),
+    );
 
     const getContent = () => {
         if (network?.networkType === 'ethereum') {
@@ -61,6 +66,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
                         tx={tx}
                         inputs={tx.details.vin?.filter(vin => vin.isAccountOwned)}
                         outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
+                        isPhishingTransaction={isPhishingTransaction}
                     />
                     <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
                     <CollapsibleIOSection
@@ -68,20 +74,27 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
                         tx={tx}
                         inputs={tx.details.vin?.filter(vin => !vin.isAccountOwned)}
                         outputs={tx.details.vout?.filter(vout => !vout.isAccountOwned)}
+                        isPhishingTransaction={isPhishingTransaction}
                     />
                 </>
             );
         } else {
             return (
-                <IOGroup tx={tx} inputs={tx.details.vin} outputs={tx.details.vout} isUtxoBased />
+                <IOGroup
+                    tx={tx}
+                    inputs={tx.details.vin}
+                    outputs={tx.details.vout}
+                    isUtxoBased
+                    isPhishingTransaction={isPhishingTransaction}
+                />
             );
         }
     };
 
     return (
-        <Column gap={spacings.xxl}>
+        <Column gap={24}>
             <AnalyzeInExplorerBanner txid={tx.txid} symbol={tx.symbol} />
-            <Column gap={spacings.lg}>{getContent()}</Column>
+            <Column gap={20}>{getContent()}</Column>
         </Column>
     );
 };

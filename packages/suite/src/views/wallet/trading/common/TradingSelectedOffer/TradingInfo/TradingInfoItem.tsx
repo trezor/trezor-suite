@@ -6,11 +6,9 @@ import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
-import { copyAddressToClipboard } from 'src/actions/suite/copyAddressActions';
-import { AccountLabel, BaseCurrencyValue } from 'src/components/suite';
+import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Translation } from 'src/components/suite/Translation';
-import { AddressRow } from 'src/components/suite/copy/AddressRow';
 import { useTranslation } from 'src/hooks/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
@@ -56,11 +54,7 @@ export const TradingInfoItem = ({
                         <Row>
                             {accountLabelPrefix}&nbsp;
                             {isExternalExchange && (
-                                <AddressRow
-                                    address={receiveAddress}
-                                    shouldAllowCopy={true}
-                                    onCopy={() => copyAddressToClipboard(receiveAddress)}
-                                />
+                                <Address isCopyAllowed isTruncated value={receiveAddress} />
                             )}
                             {!isExternalExchange && account && (
                                 <AccountLabel

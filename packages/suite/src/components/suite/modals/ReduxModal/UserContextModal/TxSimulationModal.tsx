@@ -36,12 +36,12 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
+import { Address } from 'src/components/suite/Address';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Translation } from 'src/components/suite/Translation';
-import { TxAddress } from 'src/components/suite/copy/TxAddress';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
@@ -212,6 +212,9 @@ export const TxSimulationModal = () => {
     const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
         useTxSimulationConnectPopup(popupCall);
     const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+    const explorerLink = useExternalLink(
+        `${getExplorerUrl(explorer, 'address')}${targetContract}${explorer?.queryString ?? ''}`,
+    );
     const defaultGasLimit =
         (popupCall?.state === 'tx-simulation' && popupCall.payload?.transaction?.gasLimit) ||
         ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
@@ -458,18 +461,14 @@ export const TxSimulationModal = () => {
                                                                 />
                                                             ),
                                                             value: (
-                                                                <TxAddress
-                                                                    txAddress={targetContract}
-                                                                    explorerUrl={getExplorerUrl(
-                                                                        explorer,
-                                                                        'address',
-                                                                    )}
-                                                                    explorerUrlQueryString={
-                                                                        explorer?.queryString
-                                                                    }
-                                                                    shouldAllowCopy
-                                                                    typographyStyle="label"
-                                                                />
+                                                                <Link href={explorerLink}>
+                                                                    <Address
+                                                                        value={targetContract}
+                                                                        isTruncated
+                                                                        isCopyAllowed
+                                                                        typographyStyle="label"
+                                                                    />
+                                                                </Link>
                                                             ),
                                                         },
                                                         {

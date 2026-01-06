@@ -5,7 +5,7 @@ import { TypographyStyle, typography, typographyStyles } from '@trezor/theme';
 import { UIAlignment, uiAlignments } from '../../config/types';
 import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
-export const textWraps = ['normal', 'balance', 'break-word', 'pretty', 'nowrap'];
+export const textWraps = ['normal', 'balance', 'pretty', 'nowrap'];
 export type TextWrap = (typeof textWraps)[number];
 
 export const textCase = ['uppercase', 'lowercase', 'titlecase', 'capitalize'] as const;
