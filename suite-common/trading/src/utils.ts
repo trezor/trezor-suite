@@ -71,13 +71,16 @@ export function composeCryptoId(coingeckoId: string, contractAddress?: string | 
 /**
  * Get the crypto id for an account or token of non-testnet network
  */
-export function getCryptoId(account: Account, token?: TokenInfo): CryptoId {
-    const network = getNetwork(account.symbol);
+export function getCryptoId(
+    networkSymbol: NetworkSymbol,
+    tokenContract?: TokenInfo['contract'],
+): CryptoId {
+    const network = getNetwork(networkSymbol);
 
-    if (token) {
+    if (tokenContract) {
         return composeCryptoId(
             network.coingeckoId!,
-            getContractAddressForNetworkSymbol(account.symbol, token.contract),
+            getContractAddressForNetworkSymbol(networkSymbol, tokenContract),
         );
     }
 

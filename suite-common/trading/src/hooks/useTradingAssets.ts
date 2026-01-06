@@ -4,15 +4,18 @@ import { CoinInfo, Coins, CryptoId, Platforms, PlatformsInfo } from 'invity-api'
 
 import {
     NetworkConfigWithoutTestnets,
+    NetworkSymbol,
     getDisplaySymbol,
     getMainnets,
     getNetwork,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getCurrencies } from '@trezor/address-validator';
+import { TokenInfo } from '@trezor/connect';
 
 import {
     cryptoIdToNetwork,
+    getCryptoId,
     isCryptoIdForNativeToken,
     parseCryptoId,
     testnetToProdCryptoId,
@@ -154,14 +157,14 @@ export function createAssetOption({ cryptoId, coinInfo, platformInfo }: CreateAs
  */
 export type TradingAssetOption = NonNullable<ReturnType<typeof createAssetOption>>;
 
-export function createDefaultAssetOption(
+export function createAssetNativeTokenOption(
     networkSymbol: NetworkConfigWithoutTestnets['symbol'],
 ): TradingAssetOption {
     const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
 
     return {
         isNativeToken: true,
-        id: network.tradeCryptoId as CryptoId,
+        id: getCryptoId(networkSymbol),
         name: network.name,
         coingeckoId: network.coingeckoId,
         symbol: networkSymbol,
@@ -170,6 +173,27 @@ export function createDefaultAssetOption(
         networkName: network.name,
         networkSymbol: network.symbol,
     } as const;
+}
+
+export function createAssetTokenOption<
+    Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
+>(networkSymbol: NetworkSymbol, token: Token): TradingAssetOption {
+    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+
+    return {
+        id: getCryptoId(networkSymbol, token.contract),
+        coingeckoId: network.coingeckoId!,
+
+        isNativeToken: false,
+
+        contractAddress: token.contract,
+        symbol: token.symbol!,
+        name: token.name!,
+        displaySymbol: getDisplaySymbol(token.symbol!, token.contract),
+
+        networkSymbol,
+        networkName: network.name,
+    };
 }
 
 /**
@@ -231,7 +255,7 @@ export function useTradingAssets() {
     >(
         (cryptoId, defaultNetworkSymbol = TRADING_DEFAULT_CRYPTO_CURRENCY) => {
             const { coins, platforms } = getCoinsAndPlatforms();
-            const defaultAssetOption = createDefaultAssetOption(defaultNetworkSymbol);
+            const defaultAssetOption = createAssetNativeTokenOption(defaultNetworkSymbol);
 
             if (cryptoId && coins[cryptoId]) {
                 return (
