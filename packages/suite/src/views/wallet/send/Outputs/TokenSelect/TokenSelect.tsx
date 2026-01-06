@@ -123,9 +123,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
-                                placeholder={(
-                                    selectedToken?.symbol || account.symbol
-                                ).toUpperCase()}
+                                placeholder={selectedToken?.symbol || account.symbol}
                                 placeholderWithTooltip={false}
                                 shouldTryToFetch={isTokenKnown}
                             />

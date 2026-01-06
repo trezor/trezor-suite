@@ -72,10 +72,9 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
 
 // should be aligned with "formatTokenSymbol" in suite
 export const formatTokenSymbol = (symbol: string) => {
-    const upperCasedSymbol = symbol.toUpperCase();
-    const isTokenSymbolLong = upperCasedSymbol.length > 7;
+    const isTokenSymbolLong = symbol.length > 7;
 
-    return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
+    return isTokenSymbolLong ? `${symbol.slice(0, 7)}...` : symbol;
 };
 
 const isOutgoing = (lowerCasedDescriptor: string, tx: Transaction) =>

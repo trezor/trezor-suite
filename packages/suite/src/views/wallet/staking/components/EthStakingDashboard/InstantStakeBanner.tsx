@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { fromWei } from 'web3-utils';
 
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Banner, Column, H3, Paragraph } from '@trezor/components';
 import { InternalTransfer } from '@trezor/connect';
@@ -65,6 +66,7 @@ export const InstantStakeBanner = ({
 
     if (!stakeType || stakeType === 'claim') return null; // claim is not supported
 
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
     const remainingDays = stakeType === 'stake' ? daysToAddToPool : daysToUnstake;
 
     return (
@@ -88,7 +90,7 @@ export const InstantStakeBanner = ({
                         id={getHeadingTranslationId(stakeType)}
                         values={{
                             amount,
-                            symbol: symbol?.toUpperCase(),
+                            symbol: displaySymbol,
                         }}
                     />
                 </H3>
@@ -97,7 +99,7 @@ export const InstantStakeBanner = ({
                         id={getSubheadingTranslationId(stakeType)}
                         values={{
                             amount,
-                            symbol: symbol?.toUpperCase(),
+                            symbol: displaySymbol,
                             days: remainingDays ?? 0,
                         }}
                     />

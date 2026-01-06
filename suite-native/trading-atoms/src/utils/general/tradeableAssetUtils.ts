@@ -1,7 +1,7 @@
 import type { CoinInfo, CryptoId } from 'invity-api';
 
 import { cryptoIdToSymbol, isCryptoIdForNativeToken, parseCryptoId } from '@suite-common/trading';
-import { NetworkSymbolExtended } from '@suite-common/wallet-config';
+import { NetworkSymbolExtended, getDisplaySymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { TradeableAsset } from '@suite-native/trading-types';
 
@@ -13,10 +13,15 @@ export const coinInfoToTradeableAsset = (
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const isEthNativeCoin = symbol === 'eth' && isCryptoIdForNativeToken(cryptoId);
 
+    const tokenContractAddress = isEthNativeCoin ? undefined : (contractAddress as TokenAddress);
+
     return {
         cryptoId,
-        symbol: symbol as NetworkSymbolExtended,
-        contractAddress: isEthNativeCoin ? undefined : (contractAddress as TokenAddress),
+        symbol: getDisplaySymbol(
+            symbol.toUpperCase(),
+            tokenContractAddress,
+        ) as NetworkSymbolExtended,
+        contractAddress: tokenContractAddress,
         networkId,
         ...info,
     };

@@ -135,7 +135,6 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
         tokenTransfer.amount,
         tokenTransfer.decimals,
     );
-    const formattedTokenSymbol = tokenTransfer.symbol?.toUpperCase();
 
-    return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
+    return tokenTransfer.symbol ? `${formattedAmount} ${tokenTransfer.symbol}` : formattedAmount;
 };

@@ -54,7 +54,7 @@ export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
                 coingeckoId={coingeckoId ?? ''}
                 symbol={symbol}
                 contractAddress={token.contract}
-                placeholder={token.symbol?.toUpperCase() ?? ''}
+                placeholder={token.symbol ?? ''}
                 placeholderWithTooltip={false}
             />
         ));

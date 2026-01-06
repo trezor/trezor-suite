@@ -245,7 +245,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
 
                             return {
                                 symbol: account.symbol,
-                                name: token.name ?? token.symbol ?? '',
+                                name: token.name ?? tokenSymbol ?? '',
                                 balance: token.balance ?? '0',
                                 fiatBalance,
                                 tokenSymbol,

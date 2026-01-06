@@ -36,11 +36,7 @@ const TokenBalance = ({ accountKey, tokenAddress, symbol, testID }: TokenBalance
     );
 
     return (
-        <TokenAmountFormatter
-            value={balance}
-            tokenSymbol={symbol.toUpperCase() as TokenSymbol}
-            testID={testID}
-        />
+        <TokenAmountFormatter value={balance} tokenSymbol={symbol as TokenSymbol} testID={testID} />
     );
 };
 
@@ -93,7 +89,7 @@ export const TradeableAssetAccountBalance = ({
                 <AssetBalance account={account} asset={asset} testID={balanceTestID} />
             ) : (
                 <Text variant="hint" color="textSubdued" testID={noBalanceTestID}>
-                    - {asset.symbol.toUpperCase()}
+                    - {asset.symbol}
                 </Text>
             )}
         </HStack>

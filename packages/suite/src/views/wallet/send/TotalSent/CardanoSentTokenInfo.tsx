@@ -31,7 +31,7 @@ export const CardanoSentTokenInfo = () => {
                     tokenAmountsMap.has(token.contract) &&
                     new BigNumber(tokenAmountsMap.get(token.contract) ?? 0).gt(0),
             )
-            .map(token => [token.symbol?.toUpperCase(), tokenAmountsMap.get(token.contract)]);
+            .map(token => [token.symbol, tokenAmountsMap.get(token.contract)]);
     }, [tokens, formOutputs]);
 
     if (networkType !== 'cardano' || !hasTransactionInfo) return null;

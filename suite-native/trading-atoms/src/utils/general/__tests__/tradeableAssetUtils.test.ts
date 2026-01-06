@@ -12,7 +12,7 @@ describe('tradeableAssetUtils', () => {
                 coinInfoToTradeableAsset(cryptoId as CryptoId, coins[cryptoId] as CoinInfo),
             ).toEqual({
                 cryptoId: 'bitcoin',
-                symbol: 'btc',
+                symbol: 'BTC',
                 name: 'Bitcoin',
                 coingeckoId: 'bitcoin',
                 networkId: 'bitcoin',
@@ -23,7 +23,7 @@ describe('tradeableAssetUtils', () => {
             const cryptoId = 'base--0x0000000000000000000000000000000000000000' as const;
             expect(coinInfoToTradeableAsset(cryptoId as CryptoId, coins[cryptoId])).toEqual({
                 cryptoId: 'base--0x0000000000000000000000000000000000000000',
-                symbol: 'eth',
+                symbol: 'ETH',
                 name: 'Ethereum',
                 coingeckoId: 'ethereum',
                 networkId: 'base',
@@ -34,7 +34,7 @@ describe('tradeableAssetUtils', () => {
             const cryptoId = 'ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc' as const;
             expect(coinInfoToTradeableAsset(cryptoId as CryptoId, coins[cryptoId])).toEqual({
                 cryptoId: 'ethereum--0x07150e919b4de5fd6a63de1f9384828396f25fdc',
-                symbol: 'base',
+                symbol: 'BASE',
                 name: 'Base Protocol',
                 coingeckoId: 'base-protocol',
                 contractAddress: '0x07150e919b4de5fd6a63de1f9384828396f25fdc',

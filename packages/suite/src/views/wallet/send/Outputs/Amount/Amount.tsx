@@ -220,7 +220,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         control={control}
                         rightContent={
                             <Text variant="tertiary">
-                                {withTokens && token ? token?.symbol?.toUpperCase() : displayTicker}
+                                {withTokens && token ? token?.symbol : displayTicker}
                             </Text>
                         }
                     />

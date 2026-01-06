@@ -41,7 +41,7 @@ export function AssetRowAsset({ asset, dataTestId, onClick }: AssetRowAssetProps
                 )}
                 <AssetDetails
                     name={asset.name}
-                    symbol={asset.symbol}
+                    displaySymbol={asset.displaySymbol}
                     networkName={asset.networkName}
                 />
             </Row>

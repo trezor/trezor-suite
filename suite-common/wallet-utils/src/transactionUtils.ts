@@ -3,7 +3,7 @@ import { fromWei, toWei } from 'web3-utils';
 
 import { AccountLabels } from '@suite-common/metadata-types';
 import { SignOperator } from '@suite-common/suite-types';
-import { NetworkType } from '@suite-common/wallet-config';
+import { NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -751,6 +751,28 @@ export const getRbfParams = (
     }
 };
 
+const enhanceTokenTransfers = (
+    tokenTransfers: AccountTransaction['tokens'],
+    accountSymbol: Account['symbol'],
+) => {
+    if (!tokenTransfers || tokenTransfers.length === 0) {
+        return tokenTransfers;
+    }
+
+    const isEvmNetwork = getNetworkType(accountSymbol) === 'ethereum';
+
+    return tokenTransfers.map(transfer => {
+        if (!transfer.symbol) {
+            return transfer;
+        }
+
+        return {
+            ...transfer,
+            symbol: isEvmNetwork ? transfer.symbol : transfer.symbol.toUpperCase(),
+        };
+    });
+};
+
 /**
  * Attaches fields from the account (descriptor, deviceState, symbol) to the tx object
  *
@@ -766,6 +788,7 @@ export const enhanceTransaction = (
     deviceState: account.deviceState,
     symbol: account.symbol,
     ...origTx,
+    tokens: enhanceTokenTransfers(origTx.tokens, account.symbol),
     rbfParams: getRbfParams(origTx, account),
     hex: (origTx.blockHeight ?? 0) <= 0 && origTx.rbf ? origTx.hex : undefined, // store tx hex **only** for pending transactions (used by rbf)
 });
