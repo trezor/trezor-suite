@@ -62,6 +62,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     accessibilityLabel="address input"
                     keyboardType="number-pad"
                     onChangeText={handleFieldChangeValue(FEE_LIMIT_FIELD_NAME, 'integer')}
+                    asBottomSheetInput
                 />
             )}
             {isEip1559Fee ? (
@@ -87,6 +88,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     keyboardType={networkType === 'bitcoin' ? 'decimal-pad' : 'number-pad'}
                     rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                     onChangeText={handleFieldChangeValue(FEE_PER_UNIT_FIELD_NAME, 'crypto')}
+                    asBottomSheetInput
                 />
             )}
             {networkType !== 'ethereum' && !hasFeePerByteError && (
