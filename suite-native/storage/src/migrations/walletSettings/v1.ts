@@ -6,8 +6,7 @@ import { WalletSettings } from '@suite-common/wallet-types';
 import { BaseCurrencyCode, isBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
 
-import { createEnsureMMKVKey } from '../../ensureMMKVKey';
-import { createMMKVStorage } from '../../mmkvStorage';
+import { MMKVStorage } from '../../mmkvStorage';
 
 const getFiatCurrencyCode = (appSettings: object): string | undefined => {
     if ('fiatCurrencyCode' in appSettings && typeof appSettings.fiatCurrencyCode === 'string') {
@@ -82,9 +81,7 @@ const migrateDiscoveryConfigToWalletSettings = (
     );
 };
 
-export const initialMigrateAppSettingsAndDiscoveryConfig = async (walletSettingsState: unknown) => {
-    const ensureMMKVKey = await createEnsureMMKVKey();
-    const storage = await createMMKVStorage({ ensureMMKVKey });
+export const initialMigrateAppSettingsAndDiscoveryConfig = (storage: MMKVStorage) => async (walletSettingsState: unknown) => {
     const appSettings = await getStoredState({
         key: 'appSettings',
         storage,
