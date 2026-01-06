@@ -22,17 +22,13 @@ module.exports = {
     npmRebuild: false,
     files: [
         // defaults are https://www.electron.build/configuration#files
-        'build/**/*',
-        'dist/**/*.{js,wasm}',
-        '!**/{tsconfig}*',
-        '!**/*.{md,js.map}',
-        'build/release-notes.md',
-        '!**/node_modules/**/*.{js.flow,ts}',
-        '!build/static/**/{favicon,icons,bin,browsers}',
-        '!node_modules/@sentry/**/esm',
-        '!node_modules/ajv/lib',
-        '!node_modules/blake-hash/**/{build,src}',
-        '!node_modules/usb/**/{libusb,libusb_config,src}',
+        'build/**/*', // Electron renderer process
+        'dist/**/*.{js,wasm}', // Electron main+preload process
+        '!**/*.{md,js.map}', // exclude files unnecessary for runtime
+        'build/release-notes.md', // this one is dynamically loaded in runtime
+        '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
+        '!node_modules/blake-hash/**/{build,src}', // exclude files unnecessary for runtime
+        '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
         '!node_modules/@trezor/**', // exclude @trezor/suite-desktop, which would recurse. Other @trezor packages are bundled by bundler.
     ],
     extraResources: [
