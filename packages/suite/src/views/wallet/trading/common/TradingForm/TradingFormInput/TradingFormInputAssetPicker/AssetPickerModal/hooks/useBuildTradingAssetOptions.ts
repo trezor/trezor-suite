@@ -3,7 +3,12 @@ import { useMemo } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { TranslationKey } from '@suite-common/intl-types';
-import { TradingAssetOption, createDefaultAssetOption, getCryptoId } from '@suite-common/trading';
+import {
+    TradingAssetOption,
+    createAssetNativeTokenOption,
+    createAssetTokenOption,
+    getCryptoId,
+} from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
@@ -45,10 +50,10 @@ function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) 
     return function disabledCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
         switch (accountOrToken.type) {
             case 'account':
-                return !disabledCryptoIds.has(getCryptoId(accountOrToken.account));
+                return !disabledCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
             case 'token':
                 return !disabledCryptoIds.has(
-                    getCryptoId(accountOrToken.account, accountOrToken.token),
+                    getCryptoId(accountOrToken.account.symbol, accountOrToken.token.contract),
                 );
             default:
                 return false;
@@ -61,31 +66,19 @@ function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) 
  */
 function createTopFiveAssets() {
     return [
-        createDefaultAssetOption('btc'),
-        createDefaultAssetOption('eth'),
-        {
-            isNativeToken: false,
-            id: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
-            name: 'Tether',
+        createAssetNativeTokenOption('btc'),
+        createAssetNativeTokenOption('eth'),
+        createAssetTokenOption('eth', {
+            contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
             symbol: 'usdt',
-            coingeckoId: 'ethereum',
-            displaySymbol: 'USDT',
-            contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            networkName: 'Ethereum',
-            networkSymbol: 'eth',
-        },
-        {
-            isNativeToken: false,
-            id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
-            name: 'USDC',
+            name: 'Tether',
+        }),
+        createAssetTokenOption('eth', {
+            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             symbol: 'usdc',
-            coingeckoId: 'ethereum',
-            displaySymbol: 'USDC',
-            contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            networkName: 'Ethereum',
-            networkSymbol: 'eth',
-        },
-        createDefaultAssetOption('sol'),
+            name: 'USDC',
+        }),
+        createAssetNativeTokenOption('sol'),
     ] satisfies TradingAssetOption[];
 }
 

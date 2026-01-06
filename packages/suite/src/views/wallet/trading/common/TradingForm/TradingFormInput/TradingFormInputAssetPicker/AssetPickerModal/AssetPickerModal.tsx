@@ -13,11 +13,12 @@ import {
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
 import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
+import { useSearchFilter } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetListWrapper } from './AssetListWrapper';
+import { useAssetsContext } from '../AssetOptionsContext';
 import { AssetSearchWithNetworkFilter } from './AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { TradingAssetListItem } from './hooks/useBuildTradingAssetOptions';
-import { useSearchFilter } from './hooks/useSearchFilter';
 import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
 
 export type AssetPickerModalProps = {
@@ -33,6 +34,8 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     onAssetSelect,
     dataTestId,
 }: AssetPickerModalProps) {
+    const { networks } = useAssetsContext();
+
     const { search, throttledSearch, setSearch } = useSearchFilter();
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
 
@@ -101,6 +104,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 setSearch={setSearch}
                 networkFilter={networkFilter}
                 setNetworkFilter={setNetworkFilter}
+                networks={networks}
             />
 
             <Divider margin={{ top: 16 }} />

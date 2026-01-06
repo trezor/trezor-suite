@@ -1,9 +1,9 @@
-import { ReactNode, memo, useEffect, useRef } from 'react';
+import { ReactNode, memo, useRef } from 'react';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { AssetsList, AssetsListEmpty } from 'src/components/suite/asset-picker/components';
-import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks';
+import { useDataFingerprint, useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 
 import {
     TradingAssetListItem,
@@ -31,9 +31,7 @@ export const AssetListWrapper = memo(function AssetListWrapperInner({
     });
     const listItemsFingerprint = useDataFingerprint(listItems);
 
-    useEffect(() => {
-        listRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-    }, [listRef, listItemsFingerprint]);
+    useListScrollReset(listRef, listItemsFingerprint);
 
     return (
         <AssetsListEmpty

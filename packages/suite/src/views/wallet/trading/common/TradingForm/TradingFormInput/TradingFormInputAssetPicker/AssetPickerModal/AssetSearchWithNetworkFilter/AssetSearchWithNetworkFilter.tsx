@@ -8,14 +8,13 @@ import { spacings } from '@trezor/theme';
 
 import { useTranslation } from 'src/hooks/suite';
 
-import { useAssetsContext } from '../../AssetOptionsContext';
-
 export interface AssetSearchWithNetworkFilterProps {
     placeholder: TranslationKey;
     search: string;
     setSearch: (search: string) => void;
     networkFilter: NetworkSymbol | undefined;
     setNetworkFilter: (networkFilter: NetworkSymbol | undefined) => void;
+    networks: NetworkSymbol[];
 }
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
@@ -24,8 +23,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     setSearch,
     networkFilter,
     setNetworkFilter,
+    networks,
 }: AssetSearchWithNetworkFilterProps) {
-    const { networks } = useAssetsContext();
     const { translationString } = useTranslation();
 
     return (
