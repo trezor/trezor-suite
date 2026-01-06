@@ -85,6 +85,11 @@ const groups = {
         pattern: 'methods',
         includeFilter: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
     },
+    tron: {
+        name: 'tron',
+        pattern: 'methods',
+        includeFilter: 'tronGetAddress',
+    },
     solana: {
         name: 'solana',
         pattern: 'methods',
