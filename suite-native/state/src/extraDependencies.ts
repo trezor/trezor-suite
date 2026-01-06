@@ -12,7 +12,7 @@ import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import { NativeServices } from '@suite-native/services';
-import type { EnsureMMKVKeyDep, MMKVStorageDep } from '@suite-native/storage';
+import type { EnsureEncryptionKeyDep, MMKVStorageDep } from '@suite-native/storage';
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradingEnvironment } from '@suite-native/trading-state';
 import TrezorConnect from '@trezor/connect';
@@ -39,12 +39,12 @@ const transports = transportsPerDeviceType[deviceType];
 type NativeAppDeps = {
     getState: () => any;
     dispatch: any;
-} & EnsureMMKVKeyDep &
+} & EnsureEncryptionKeyDep &
     MMKVStorageDep;
 
 export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
-        ensureMMKVKey: deps.ensureMMKVKey,
+        ensureEncryptionKey: deps.ensureEncryptionKey,
     });
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,

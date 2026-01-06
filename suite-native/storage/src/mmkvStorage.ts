@@ -7,7 +7,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { Storage } from 'redux-persist';
 
 import { unecryptedJotaiStorage } from './atomWithUnecryptedStorage';
-import { EnsureMMKVKeyDep } from './ensureMMKVKey';
+import { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 
 export const ENCRYPTED_STORAGE_ID = 'trezorSuite-app-storage';
 
@@ -61,7 +61,7 @@ type GetMMKVRaw = {
 export type MMKVStorage = Storage & GetMMKVRaw;
 export type MMKVStorageDep = { mmkvStorage: MMKVStorage };
 
-type CreateMMKVStorageDeps = EnsureMMKVKeyDep;
+type CreateMMKVStorageDeps = EnsureEncryptionKeyDep;
 
 export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
     let mmkv: MMKV | null = null;
@@ -72,7 +72,7 @@ export const createMMKVStorage = (deps: CreateMMKVStorageDeps): MMKVStorage => {
         }
 
         // storage may be already initialized (for example in dev useEffect fire twice)
-        const encryptionKey = await deps.ensureMMKVKey();
+        const encryptionKey = await deps.ensureEncryptionKey();
 
         if (encryptionKey === null) {
             alertUser({ mmkvInstance: mmkv });
