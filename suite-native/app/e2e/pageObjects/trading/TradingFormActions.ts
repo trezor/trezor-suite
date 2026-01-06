@@ -96,20 +96,21 @@ export abstract class TradingFormActions extends TradingActions {
         );
     }
 
-    async setFiatAmount(amount: string) {
-        await this.getFiatAmountElement().replaceText(amount);
+    async setAmountValue(amount: string, getElement: () => Detox.IndexableNativeElement) {
+        await getElement().tap();
         await wait(100);
-        await this.getFiatAmountElement().tapReturnKey();
+        await getElement().replaceText(amount);
+        await wait(100);
+        await getElement().tapReturnKey();
         await this.waitForQuotesToLoad();
     }
 
-    async setSendCryptoAmount(amount: string) {
-        await this.getSendCryptoAmountElement().tap();
-        await wait(100);
-        await this.getSendCryptoAmountElement().replaceText(amount);
-        await wait(100);
-        await this.getSendCryptoAmountElement().tapReturnKey();
-        await this.waitForQuotesToLoad();
+    setFiatAmount(amount: string) {
+        return this.setAmountValue(amount, this.getFiatAmountElement.bind(this));
+    }
+
+    setSendCryptoAmount(amount: string) {
+        return this.setAmountValue(amount, this.getSendCryptoAmountElement.bind(this));
     }
 
     async viewProviders() {
