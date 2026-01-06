@@ -80,7 +80,7 @@ export const TradingSellFormInputs = () => {
                                 tokenAddress={tokenAddress as TokenAddress}
                                 showOnlyAmount
                                 amountInCrypto={amountInCrypto}
-                                sendCryptoSelect={sendCryptoSelect}
+                                decimals={sendCryptoSelect?.decimals}
                             />
                         </Row>
                     )}

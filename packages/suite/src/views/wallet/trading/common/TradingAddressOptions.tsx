@@ -129,7 +129,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
                                         balance={balance}
                                         displaySymbol={displaySymbol}
                                         symbol={account.symbol}
-                                        sendCryptoSelect={sendCryptoSelect}
+                                        decimals={sendCryptoSelect?.decimals}
                                     />
                                     {accountAddress.path}
                                 </InfoSegments>
