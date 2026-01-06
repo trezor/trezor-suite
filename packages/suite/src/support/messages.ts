@@ -79,6 +79,11 @@ export default defineMessages({
             'A watch-only account is a public address you’ve imported into your wallet, allowing the wallet to watch for outputs but not spend them.',
         id: 'TR_ACCOUNT_IMPORTED_ANNOUNCEMENT',
     },
+    TR_ANY_TREZOR: {
+        defaultMessage: 'any Trezor',
+        description: 'Used as a variable for device name',
+        id: 'TR_ANY_TREZOR',
+    },
     TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP: {
         defaultMessage: 'Hide suspicious transactions for a cleaner view.',
         id: 'TR_HIDE_SCAM_TRANSACTIONS_TOOLTIP',

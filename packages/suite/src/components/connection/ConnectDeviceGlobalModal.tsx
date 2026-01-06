@@ -188,7 +188,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
                         <Translation
                             id="TR_CONNECT_DEVICE_NAME"
                             values={{
-                                deviceName: 'any Trezor',
+                                deviceName: <Translation id="TR_ANY_TREZOR" />,
                                 b: chunks => (
                                     <Text textWrap="nowrap">
                                         <strong>{chunks}</strong>
