@@ -26,6 +26,7 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-native-bluetooth"
-        }
+        },
+        { "path": "../../packages/type-utils" }
     ]
 }
