@@ -27,9 +27,9 @@ import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
-    TradingFormInputAssetPicker,
-    TradingFormInputAssetPickerProps,
-} from './TradingFormInput/TradingFormInputAssetPicker/TradingFormInputAssetPicker';
+    TradingFormInputBuyAsset,
+    TradingFormInputBuyAssetProps,
+} from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
 
 export const TradingBuyFormInputs = () => {
     const context = useTradingFormContext<TradingBuyType>();
@@ -50,7 +50,7 @@ export const TradingBuyFormInputs = () => {
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
 
-    const handleCryptoSelect = useCallback<TradingFormInputAssetPickerProps['onAssetSelect']>(
+    const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
             setAmountLimitsRef.current(undefined);
@@ -113,7 +113,7 @@ export const TradingBuyFormInputs = () => {
                             )}
                         </Column>
 
-                        <TradingFormInputAssetPicker
+                        <TradingFormInputBuyAsset
                             inputLabel="TR_TRADING_YOU_BUY"
                             inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                             inputDisabled={hasBitcoinOnlyFirmware(device)}
