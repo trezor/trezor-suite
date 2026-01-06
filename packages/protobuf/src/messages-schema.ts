@@ -2349,6 +2349,7 @@ export enum Enum_Capability {
     Capability_Haptic = 21,
     Capability_BLE = 22,
     Capability_NFC = 23,
+    Capability_Tron = 24,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -3928,6 +3929,91 @@ export const TronAddress = Type.Object(
     { $id: 'TronAddress' },
 );
 
+export type TronSignTx = Static<typeof TronSignTx>;
+export const TronSignTx = Type.Object(
+    {
+        address_n: Type.Array(Type.Number()),
+        ref_block_bytes: Type.String(),
+        ref_block_hash: Type.String(),
+        expiration: Type.Number(),
+        data: Type.Optional(Type.String()),
+        timestamp: Type.Number(),
+        fee_limit: Type.Optional(Type.Number()),
+    },
+    { $id: 'TronSignTx' },
+);
+
+export type TronContractRequest = Static<typeof TronContractRequest>;
+export const TronContractRequest = Type.Object({}, { $id: 'TronContractRequest' });
+
+export type TronTransferContract = Static<typeof TronTransferContract>;
+export const TronTransferContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        to_address: Type.String(),
+        amount: Type.Uint(),
+    },
+    { $id: 'TronTransferContract' },
+);
+
+export type TronTriggerSmartContract = Static<typeof TronTriggerSmartContract>;
+export const TronTriggerSmartContract = Type.Object(
+    {
+        owner_address: Type.String(),
+        contract_address: Type.String(),
+        data: Type.String(),
+    },
+    { $id: 'TronTriggerSmartContract' },
+);
+
+export type TronSignature = Static<typeof TronSignature>;
+export const TronSignature = Type.Object(
+    {
+        signature: Type.String(),
+    },
+    { $id: 'TronSignature' },
+);
+
+export type TronRawParameter = Static<typeof TronRawParameter>;
+export const TronRawParameter = Type.Object(
+    {
+        type_url: Type.String(),
+        value: Type.String(),
+    },
+    { $id: 'TronRawParameter' },
+);
+
+export enum TronRawContractType {
+    TransferContract = 1,
+    TriggerSmartContract = 31,
+}
+
+export type EnumTronRawContractType = Static<typeof EnumTronRawContractType>;
+export const EnumTronRawContractType = Type.Enum(TronRawContractType);
+
+export type TronRawContract = Static<typeof TronRawContract>;
+export const TronRawContract = Type.Object(
+    {
+        type: EnumTronRawContractType,
+        parameter: TronRawParameter,
+    },
+    { $id: 'TronRawContract' },
+);
+
+export type TronRawTransaction = Static<typeof TronRawTransaction>;
+export const TronRawTransaction = Type.Object(
+    {
+        ref_block_bytes: Type.String(),
+        ref_block_hash: Type.String(),
+        expiration: Type.Number(),
+        data: Type.Optional(Type.String()),
+        contract: Type.Array(TronRawContract),
+        timestamp: Type.Number(),
+        fee_limit: Type.Optional(Type.Number()),
+    },
+    { $id: 'TronRawTransaction' },
+);
+
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -4254,6 +4340,14 @@ export const MessageType = Type.Object(
         TezosSignedTx,
         TronGetAddress,
         TronAddress,
+        TronSignTx,
+        TronContractRequest,
+        TronTransferContract,
+        TronTriggerSmartContract,
+        TronSignature,
+        TronRawParameter,
+        TronRawContract,
+        TronRawTransaction,
     },
     { $id: 'MessageType' },
 );
