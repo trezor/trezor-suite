@@ -9,6 +9,9 @@
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
     },
+    "tui": {
+        "autoExit": true
+    },
     "targetDefaults": {
         "build:lib": {
             "dependsOn": [],
@@ -54,9 +57,7 @@
             "cache": true
         }
     },
-    "affected": {
-        "defaultBase": "origin/develop"
-    },
+    "defaultBase": "origin/develop",
     "$schema": "./node_modules/nx/schemas/nx-schema.json",
     "nxCloudAccessToken": "NmE2NmFlYTUtN2JhZi00ZmQ3LWEyYzMtYWRkNzc3MTg0YmUyfHJlYWQ=",
     "parallel": 4

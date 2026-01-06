@@ -144,7 +144,7 @@
         "jest-expo": "^54.0.12",
         "node-fetch": "^2.6.4",
         "node-gyp": "10.2.0",
-        "nx": "^18.0.3",
+        "nx": "^22.3.3",
         "patch-package": "8.0.1",
         "prettier": "^3.7.4",
         "rimraf": "^6.0.1",
