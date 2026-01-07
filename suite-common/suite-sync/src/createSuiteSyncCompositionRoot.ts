@@ -14,12 +14,11 @@ import { StaticSessionId } from '@trezor/connect';
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
+import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
+import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
+import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
-import { createUpdateAccountLabel } from './labeling/createUpdateAccountLabel';
-import { createUpdateAddressLabel } from './labeling/createUpdateAddressLabel';
-import { createUpdateOutputLabel } from './labeling/createUpdateOutputLabel';
-import { createUpdateWalletLabel } from './labeling/createUpdateWalletLabel';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
@@ -92,17 +91,17 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    const subscribeLabeling = createSubscribeLabeling({
-        subscriptionStorage,
-        dispatch: deps.dispatch,
-        ensureStorage,
-    });
+    // const subscribeLabeling = createSubscribeLabeling({
+    //     subscriptionStorage,
+    //     dispatch: deps.dispatch,
+    //     ensureStorage,
+    // });
 
     const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeLabeling,
+        // subscribeLabeling,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
@@ -137,5 +136,6 @@ export const createSuiteSyncCompositionRoot = (
             updateOutputLabel: createUpdateOutputLabel({ ensureStorage }),
             updateAddressLabel: createUpdateAddressLabel({ ensureStorage }),
         },
+        suiteSyncStorageRepository,
     };
 };

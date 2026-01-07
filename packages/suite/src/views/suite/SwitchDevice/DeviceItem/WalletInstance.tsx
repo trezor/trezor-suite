@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { selectWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -40,6 +39,7 @@ import { EjectConfirmation } from './EjectConfirmation';
 import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 import { METADATA_LABELING } from '../../../../actions/suite/constants';
 import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
+import { useSuiteSyncQuery } from '../../../../suiteSync/useSuiteSyncQuery';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;
@@ -78,8 +78,12 @@ export const WalletInstance = ({
         selectLabelingDataForWallet(state, instance.state),
     );
 
-    const suiteSyncWalletLabel = useSelector(state =>
-        selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
+    // const suiteSyncWalletLabel = useSelector(state =>
+    //     selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
+    // );
+
+    const result = useSuiteSyncQuery(instance?.state?.staticSessionId ?? null, evolu =>
+        evolu.createQuery(db => db.selectFrom('wallet').selectAll()),
     );
 
     const walletLabel = suiteSyncWalletLabel ?? oldWalletLabel;

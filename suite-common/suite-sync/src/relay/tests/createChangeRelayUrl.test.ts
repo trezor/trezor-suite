@@ -13,10 +13,12 @@ describe(createChangeRelayUrl.name, () => {
         const actions: UnknownAction[] = [];
 
         const mockStorage: SuiteSyncStorage = {
-            accountLabels: {} as any,
-            addressLabels: {} as any,
-            outputLabels: {} as any,
-            walletLabels: {} as any,
+            data: {
+                accounts: {} as any,
+                addresses: {} as any,
+                outputs: {} as any,
+                wallets: {} as any,
+            },
             dispose: mockNotExpected('dispose'),
             updateRelayUrl: jest.fn(),
         };
