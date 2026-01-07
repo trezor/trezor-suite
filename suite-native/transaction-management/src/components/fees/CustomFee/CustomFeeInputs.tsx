@@ -7,7 +7,7 @@ import { FeesRootState, selectConvertedNetworkFeeInfo } from '@suite-common/wall
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Hint, Text, VStack } from '@suite-native/atoms';
 import { TextInputField, useFormContext } from '@suite-native/forms';
-import { integerTransformer, useAmountInputTransformers } from '@suite-native/helpers';
+import { decimalTransformer, integerTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 
@@ -24,7 +24,6 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, symbol),
     );
-    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const debounce = useDebounce();
     const {
         formState: { errors },
@@ -43,7 +42,7 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
         (fieldName: keyof FeesFormValues, transformerType: 'crypto' | 'integer') =>
         (value: string) => {
             const transformer =
-                transformerType === 'crypto' ? cryptoAmountTransformer : integerTransformer;
+                transformerType === 'crypto' ? decimalTransformer : integerTransformer;
             const transformedValue = transformer(value);
             setValue(fieldName, transformedValue);
 
@@ -62,7 +61,6 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     accessibilityLabel="address input"
                     keyboardType="number-pad"
                     onChangeText={handleFieldChangeValue(FEE_LIMIT_FIELD_NAME, 'integer')}
-                    asBottomSheetInput
                 />
             )}
             {isEip1559Fee ? (
@@ -88,7 +86,6 @@ export const CustomFeeInputs = ({ symbol }: CustomFeeInputsProps) => {
                     keyboardType={networkType === 'bitcoin' ? 'decimal-pad' : 'number-pad'}
                     rightIcon={<Text color="textSubdued">{feeUnits}</Text>}
                     onChangeText={handleFieldChangeValue(FEE_PER_UNIT_FIELD_NAME, 'crypto')}
-                    asBottomSheetInput
                 />
             )}
             {networkType !== 'ethereum' && !hasFeePerByteError && (
