@@ -1,6 +1,6 @@
-import type { CryptoId } from 'invity-api';
+import type { CryptoId, ProviderMetadata } from 'invity-api';
 
-import {
+import type {
     TradingBuyState as CommonTradingBuyState,
     TradingExchangeState as CommonTradingExchangeState,
     TradingSellState as CommonTradingSellState,
@@ -10,7 +10,7 @@ import {
     TradingType,
 } from '@suite-common/trading';
 
-import { ProviderConfirmationStatus } from './general';
+import type { ProviderConfirmationStatus } from './general';
 
 export interface TradingBuyState extends CommonTradingBuyState {}
 
@@ -42,6 +42,7 @@ export interface TradingState extends CommonTradingState {
     isAmountInputActive: boolean;
     activeTradingType: TradingType | undefined;
     providerConfirmationStatus: ProviderConfirmationStatus;
+    currentProviderMetadata: ProviderMetadata | undefined;
 }
 
 export type TradingRootState = {

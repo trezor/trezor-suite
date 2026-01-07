@@ -389,3 +389,6 @@ export const selectAccountLabelWithNetworkFallback = (
 
 export const selectTradingProviderConfirmationStatus = (state: TradingRootState) =>
     state.wallet.trading.providerConfirmationStatus;
+
+export const selectTradingProviderMetadata = (state: TradingRootState) =>
+    state.wallet.trading.currentProviderMetadata;
