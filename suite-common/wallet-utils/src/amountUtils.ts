@@ -139,12 +139,27 @@ export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
     return tokenTransfer.symbol ? `${formattedAmount} ${tokenTransfer.symbol}` : formattedAmount;
 };
 
-type FormatBigNumberToLEParams = { value: BigNumber; bytesLength: number };
+type formatBigUintToLEParams = {
+    /** The BigNumber value to format, must be non-negative and an integer. */
+    value: BigNumber;
+    /** The byte length of the output string. */
+    bytesLength: number;
+};
 
 /**
- * Formats BigNumber to little-endian hex string of given byte length
+ * Formats BigNumber to little-endian hex string of given byte length.
+ * @returns A little-endian hex string.
+ * @throws {Error} If the value is negative, not an integer, or exceeds the specified byte length.
  */
-export const formatBigNumberToLE = (params: FormatBigNumberToLEParams): string => {
+export const formatBigUintToLE = (params: formatBigUintToLEParams): string => {
+    if (params.value.isNegative()) {
+        throw new Error('Value cannot be negative');
+    }
+
+    if (!params.value.isInteger()) {
+        throw new Error('Value must be an integer');
+    }
+
     const paddingLength = params.bytesLength * 2;
     let hexString = params.value.toString(16);
 

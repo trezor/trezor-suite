@@ -5,11 +5,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { Address, PROTO } from '@trezor/connect';
+import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { tradingGetCoinSlip44 } from '../../../utils/signature/signatureUtils';
 import { createPaymentRequestsThunk } from '../createPaymentRequestsThunk';
 import { getNonce } from '../getNonce';
 import { getPurchaseAddress } from '../getPurchaseAddress';
@@ -195,7 +195,7 @@ describe('createPaymentRequestsThunk', () => {
             createThunk(getPurchaseAddress.typePrefix, (_, { fulfillWithValue }) =>
                 fulfillWithValue({
                     mac: mockMac,
-                    path: "m/44'/0'/0'",
+                    path: "m/84'/2'/0'",
                 }),
             ),
         );
@@ -204,8 +204,6 @@ describe('createPaymentRequestsThunk', () => {
             success: true,
             payload: { address: '1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2' } as Address,
         });
-
-        (tradingGetCoinSlip44 as jest.Mock).mockReturnValue(Promise.resolve(2));
     });
 
     const createMockStore = (preloadedState = {}) =>
@@ -266,14 +264,14 @@ describe('createPaymentRequestsThunk', () => {
                         amount: '0.05 LTC',
                         coin_type: 2,
                         mac: 'test-mac-456',
-                        address_n: [2147483692, 2147483648, 2147483648],
+                        address_n: validatePath("m/84'/2'/0'"),
                     },
                 },
                 {
                     refund_memo: {
                         address: '1RefundAddress456',
                         mac: mockMac,
-                        address_n: [2147483692, 2147483648, 2147483648],
+                        address_n: validatePath("m/44'/0'/0'"),
                     },
                 },
             ],
@@ -436,7 +434,7 @@ describe('createPaymentRequestsThunk', () => {
                     refund_memo: {
                         address: '1RefundAddress789',
                         mac: mockMac,
-                        address_n: [2147483692, 2147483648, 2147483648],
+                        address_n: validatePath("m/44'/0'/0'"),
                     },
                 },
             ],

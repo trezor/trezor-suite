@@ -9,6 +9,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Account, GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+import { getSlip44ByPath, validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getNonce } from './getNonce';
@@ -31,7 +32,6 @@ import { TradingSendRejectedProps, TradingTradeSellExchangeType } from '../../ty
 import { cryptoIdToNetwork } from '../../utils';
 import {
     tradingExchangeCreatePaymentRequest,
-    tradingGetCoinSlip44,
     tradingSellCreatePaymentRequest,
 } from '../../utils/signature/signatureUtils';
 
@@ -72,8 +72,6 @@ export const createPaymentRequestsThunk = createThunk<
             case 'exchange': {
                 const quote = selectTradingExchangeSelectedQuote(getState());
                 const providers = selectTradingExchangeProviders(getState());
-                const sendSlip44 = await tradingGetCoinSlip44(quote?.send);
-                const receiveSlip44 = await tradingGetCoinSlip44(quote?.receive);
                 const receiveDisplaySymbol = selectTradingCoinSymbolByCryptoId(
                     getState(),
                     quote?.receive,
@@ -82,12 +80,10 @@ export const createPaymentRequestsThunk = createThunk<
                 const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
                 const receiveAddress = selectTradingExchangeReceiveAddress(getState());
                 const receiveAccount = selectAccountByKey(getState(), receiveAccountKey);
-                const sendNetwork = quote?.send ? cryptoIdToNetwork(quote.send) : undefined;
+                const sendNetwork = cryptoIdToNetwork(quote?.send);
 
                 if (
                     !quote?.orderId ||
-                    sendSlip44 === undefined ||
-                    receiveSlip44 === undefined ||
                     receiveAddress === undefined ||
                     !receiveAccount ||
                     !receiveDisplaySymbol ||
@@ -108,6 +104,9 @@ export const createPaymentRequestsThunk = createThunk<
                 const outputs = await dispatch(
                     getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
                 ).unwrap();
+
+                const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
+                const receiveSlip44 = getSlip44ByPath(validatePath(pathPurchase));
 
                 const trade = await invityAPI.getSignedTrade<
                     ExchangeTradeSigned,
@@ -161,9 +160,8 @@ export const createPaymentRequestsThunk = createThunk<
             case 'sell': {
                 const quote = selectTradingSellSelectedQuote(getState());
                 const providers = selectTradingSellProviders(getState());
-                const sendSlip44 = await tradingGetCoinSlip44(quote?.cryptoCurrency);
 
-                if (!quote?.paymentId || sendSlip44 === undefined || !quote.cryptoCurrency) {
+                if (!quote?.paymentId || !quote.cryptoCurrency) {
                     return rejectWithValue({
                         type: 'sign-tx-error',
                         error: {
@@ -193,6 +191,8 @@ export const createPaymentRequestsThunk = createThunk<
                 const outputs = await dispatch(
                     getPaymentRequestOutputs({ network: sendNetwork, composedLevels }),
                 ).unwrap();
+
+                const sendSlip44 = getSlip44ByPath(validatePath(pathRefund));
 
                 const trade = await invityAPI.getSignedTrade<
                     SellFiatTradeSigned,

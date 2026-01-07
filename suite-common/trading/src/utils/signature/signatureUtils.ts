@@ -1,6 +1,4 @@
-import { isRejected } from '@reduxjs/toolkit';
 import {
-    CryptoId,
     ExchangeProviderInfo,
     ExchangeTradeSigned,
     SellFiatTradeSigned,
@@ -8,12 +6,12 @@ import {
 } from 'invity-api';
 
 import type { Network } from '@suite-common/wallet-config';
-import { asAmountUnit, formatBigNumberToLE, unitsToSubunits } from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
+import { asAmountUnit, formatBigUintToLE, unitsToSubunits } from '@suite-common/wallet-utils';
+import { PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect/src/utils/pathUtils';
 import { BigNumber } from '@trezor/utils';
 
-import { cryptoIdToNetwork, cryptoIdToNetworkAndContractAddress } from '../../utils';
+import { cryptoIdToNetworkAndContractAddress } from '../../utils';
 
 export const formatSlip24SendAmountByNetwork = ({
     value,
@@ -22,28 +20,13 @@ export const formatSlip24SendAmountByNetwork = ({
     value: string | number;
     network: Network;
 }): string => {
+    // SLIP-24: 8 bytes for Bitcoin-like coins and 32 bytes for EVM assets
     const bytesLength = network.networkType === 'ethereum' ? 32 : 8;
 
-    return formatBigNumberToLE({
+    return formatBigUintToLE({
         value: new BigNumber(value),
         bytesLength,
     });
-};
-
-export const tradingGetCoinSlip44 = async (cryptoId: CryptoId | undefined) => {
-    if (!cryptoId) return;
-
-    const network = cryptoIdToNetwork(cryptoId);
-
-    if (!network) return;
-
-    const coinInfo = await TrezorConnect.getCoinInfo({
-        coin: network.symbol,
-    });
-
-    if (isRejected(coinInfo) || 'error' in coinInfo.payload) return;
-
-    return coinInfo.payload.slip44;
 };
 
 type TradingExchangeCreatePaymentRequestProps = {
