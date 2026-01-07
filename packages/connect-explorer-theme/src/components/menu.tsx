@@ -114,7 +114,6 @@ export function Menu({
     const prevRoute = useRef(route);
 
     const coinSymbols = {
-        binance: 'bsc',
         bitcoin: 'btc',
         cardano: 'ada',
         ethereum: 'eth',
