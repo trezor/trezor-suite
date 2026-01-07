@@ -84,6 +84,7 @@ export * from './components/skeletons/SkeletonStack';
 export * from './components/skeletons/types';
 export * from './components/Timerange/Timerange';
 export * from './components/Toast/Toast';
+export * from './components/Toast/types';
 export * from './components/Tooltip/Tooltip';
 export * from './components/Tooltip/TooltipDelay';
 export * from './components/typography/Heading/Heading';

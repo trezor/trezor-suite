@@ -57,7 +57,8 @@ export type ToastProps = {
     icon?: IconName;
     content: ReactNode;
     intent: ToastIntent;
-    actions?: ToastAction | ToastAction[];
+    actions?: ToastAction[];
+    dataTestId?: string;
     dismissible?: boolean;
     onDismiss?: () => void;
 };
@@ -68,11 +69,12 @@ export const Toast = ({
     intent,
     actions,
     dismissible = true,
+    dataTestId,
     onDismiss,
 }: ToastProps) => {
     const theme = useTheme();
 
-    const dataTestBase = `@toast/${intent}`;
+    const dataTestBase = `@toast/${dataTestId ?? intent}`;
     const showIcon = intent !== 'neutral' || icon != null;
 
     const { bottomActions, rightActions } = normalizeToastActions(actions, intent);
