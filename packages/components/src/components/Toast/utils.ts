@@ -28,17 +28,8 @@ export const mapToastVariantToColor = (variant: ToastIntent, theme: DefaultTheme
     return colorMap[variant];
 };
 
-export const normalizeToastActions = (
-    actions: ToastAction | ToastAction[] | undefined,
-    toastIntent: ToastIntent,
-) => {
-    let list: ToastAction[] = [];
-
-    if (actions) {
-        list = Array.isArray(actions) ? actions : [actions];
-    }
-
-    return list.reduce(
+export const normalizeToastActions = (actions: ToastAction[] = [], toastIntent: ToastIntent) =>
+    actions.reduce(
         (acc, action) => {
             const normalized = {
                 ...action,
@@ -56,8 +47,7 @@ export const normalizeToastActions = (
             return acc;
         },
         {
-            bottomActions: [] as typeof list,
-            rightActions: [] as typeof list,
+            bottomActions: [] as typeof actions,
+            rightActions: [] as typeof actions,
         },
     );
-};
