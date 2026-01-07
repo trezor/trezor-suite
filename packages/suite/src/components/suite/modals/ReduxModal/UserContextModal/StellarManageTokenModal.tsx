@@ -10,7 +10,12 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { fetchAndUpdateAccountThunk, selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
+import {
+    activateStellarTokenThunk,
+    deactivateStellarTokenThunk,
+    fetchAndUpdateAccountThunk,
+    selectRawNetworkFeeInfo,
+} from '@suite-common/wallet-core';
 import { FormState, PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
@@ -18,7 +23,6 @@ import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { activateTokenThunk, deactivateTokenThunk } from 'src/actions/wallet/token';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
@@ -163,7 +167,8 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 customFeePerUnit: resolvedSelectedFee === 'custom' ? feePerUnit : undefined,
             };
 
-            const thunk = mode === 'activate' ? activateTokenThunk : deactivateTokenThunk;
+            const thunk =
+                mode === 'activate' ? activateStellarTokenThunk : deactivateStellarTokenThunk;
             const result = await dispatch(thunk(thunkPayload));
 
             const isSuccess = thunk.fulfilled.match(result);
