@@ -16,7 +16,7 @@ const providerConfirmationStatusTransitions: Record<
     ProviderConfirmationStatus,
     ProviderConfirmationStatus[]
 > = {
-    // inactive is the initial state, providerConfirmationStatus becomes inactive when transaction prview is closed
+    // inactive is the initial state, providerConfirmationStatus becomes inactive when transaction preview is closed
     inactive: ['window_opened'],
     // window_opened is set when the webview is opened
     window_opened: ['window_closed_incomplete', 'window_closed_with_success', 'inactive'],
