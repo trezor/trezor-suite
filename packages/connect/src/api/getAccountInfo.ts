@@ -95,10 +95,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         this.useDevice = willUseDevice;
         this.useDeviceState = willUseDevice;
         this.useUi = willUseDevice;
-
-        this.noBackupConfirmationMode = this.params.every(batch => batch.suppressBackupWarning)
-            ? 'popup-only'
-            : 'always';
+        this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
     }
 
     get info() {

@@ -16,7 +16,7 @@ export default class TronGetAddress extends AbstractMethod<'tronGetAddress', Par
     progress = 0;
 
     init() {
-        this.noBackupConfirmationMode = 'always';
+        this.confirmMissingBackup = true;
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Tron'];
 

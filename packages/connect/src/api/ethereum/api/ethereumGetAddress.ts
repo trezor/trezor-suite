@@ -30,7 +30,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     progress = 0;
 
     init() {
-        this.noBackupConfirmationMode = 'always';
+        this.confirmMissingBackup = true;
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Ethereum'];
 

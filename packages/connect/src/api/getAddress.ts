@@ -22,7 +22,7 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     progress = 0;
 
     init() {
-        this.noBackupConfirmationMode = 'always';
+        this.confirmMissingBackup = true;
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists

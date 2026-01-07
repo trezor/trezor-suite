@@ -55,9 +55,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
             };
         });
 
-        this.noBackupConfirmationMode = this.params.every(batch => batch.suppressBackupWarning)
-            ? 'popup-only'
-            : 'always';
+        this.confirmMissingBackup = !this.params.every(batch => batch.suppressBackupWarning);
     }
 
     get info() {
