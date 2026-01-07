@@ -105,6 +105,23 @@ export enum DeviceNameStackRoutes {
     DeviceNameLoadingScreen = 'DeviceNameLoadingScreen',
 }
 
+export enum FirmwareUpdateStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
+    FirmwareInstallation = 'FirmwareInstallation',
+    ThpConfirmation = 'ThpConfirmation',
+}
+
+export enum FirmwareLanguageStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ConfirmLanguageChange = 'ConfirmLanguageChange',
+}
+
+export enum DeviceAutoConnectStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ConfirmAutoConnect = 'ConfirmAutoConnect',
+}
+
 export enum DevicePinProtectionStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
@@ -135,33 +152,11 @@ export enum DeviceAuthenticityStackRoutes {
     AuthenticitySuccess = 'AuthenticitySuccess',
 }
 
-export enum FirmwareUpdateStackRoutes {
-    DeviceConnectionGuard = 'DeviceConnectionGuard',
-    ConfirmFirmwareUpdate = 'ConfirmFirmwareUpdate',
-    FirmwareInstallation = 'FirmwareInstallation',
-    ThpConfirmation = 'ThpConfirmation',
-}
-
-export enum FirmwareLanguageStackRoutes {
-    DeviceConnectionGuard = 'DeviceConnectionGuard',
-    ConfirmLanguageChange = 'ConfirmLanguageChange',
-}
-
-export enum DeviceAutoConnectStackRoutes {
-    DeviceConnectionGuard = 'DeviceConnectionGuard',
-    ConfirmAutoConnect = 'ConfirmAutoConnect',
-}
-
 export enum WipeDeviceStackRoutes {
     DeviceConnectionGuard = 'DeviceConnectionGuard',
     ContinueOnTrezor = 'ContinueOnTrezor',
     WipeDeviceLoadingScreen = 'WipeDeviceLoadingScreen',
     FactoryReset = 'FactoryReset',
-}
-
-export enum BackupAndPassphraseStackRoutes {
-    BackupAndPassphrase = 'BackupAndPassphrase',
-    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum AuthorizeDeviceStackRoutes {
