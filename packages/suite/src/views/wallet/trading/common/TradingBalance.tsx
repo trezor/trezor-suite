@@ -1,3 +1,4 @@
+import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
@@ -7,10 +8,7 @@ import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import {
-    getNetworkDecimalsWithFallback,
-    tradingGetAccountLabel,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingBalanceProps {
     balance: string | undefined;

@@ -1,7 +1,5 @@
 import { memo } from 'react';
 
-import { CryptoId } from 'invity-api';
-
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetPickerInput, AssetPickerInputProps } from '../TradingFormInputAssetPicker';
@@ -18,7 +16,6 @@ export interface TradingFormInputSellAssetProps {
      * Make to sure to use `useCallback` to avoid breaking the `memo`
      */
     onAssetSelect: AssetPickerModalProps['onAssetSelect'];
-    enabledCryptoIds?: Set<CryptoId> | undefined;
 
     dataTestId?: string;
 }
@@ -31,7 +28,6 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
     inputBottomText,
     dataTestId,
     onAssetSelect,
-    enabledCryptoIds,
 }: TradingFormInputSellAssetProps) {
     const modal = useModal();
 
@@ -52,7 +48,6 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
                     closeModal={modal.closeModal}
                     dataTestId={dataTestId}
                     onAssetSelect={onAssetSelect}
-                    enabledCryptoIds={enabledCryptoIds}
                 />
             )}
         </>

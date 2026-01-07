@@ -10,7 +10,6 @@ import {
     TradingExchangeFormProps,
     TradingExchangeType,
     selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
@@ -113,12 +112,7 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
-    const supportedExchangeSellCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
     const supportedExchangeBuyCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
-    const supportedExchangeSellCryptoIdsSet = useMemo(
-        () => new Set(supportedExchangeSellCryptoIds),
-        [supportedExchangeSellCryptoIds],
-    );
     const supportedExchangeBuyCryptoIdsSet = useMemo(
         () => new Set(supportedExchangeBuyCryptoIds),
         [supportedExchangeBuyCryptoIds],
@@ -135,7 +129,6 @@ export const TradingExchangeFormInputs = () => {
                     }
                     dataTestId="@trading/form/trade-from/select-crypto"
                     onAssetSelect={handleSellAssetSelect}
-                    enabledCryptoIds={supportedExchangeSellCryptoIdsSet}
                 />
                 <Column gap={spacings.xs}>
                     <TradingFormInputFiatCrypto

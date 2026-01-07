@@ -1,17 +1,13 @@
 import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
-import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Account } from '@suite-common/wallet-types';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
 import * as SELL_FIXTURE from '../__fixtures__/sellUtils';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
-import type {
-    TradingAccountOptionsGroupOptionProps,
-    TradingExchangeType,
-    TradingSellType,
-} from '../types';
+import type { TradingExchangeType, TradingSellType } from '../types';
 import {
     addIdsToQuotes,
     cryptoIdToNetwork,
@@ -22,7 +18,6 @@ import {
     getDefaultCountry,
     getTagAndInfoNote,
     getTradingFormState,
-    getTradingNetworkDecimals,
     getTradingPaymentMethods,
     getTradingQuotesByPaymentMethod,
     getUnusedAddressFromAccount,
@@ -194,40 +189,6 @@ describe('getTradingQuotesByPaymentMethod', () => {
         const allQuotesApplePay = quotes?.find(quote => quote.paymentMethod === 'applePay');
 
         expect(allQuotesApplePay).toBeDefined();
-    });
-});
-
-describe('getTradingNetworkDecimals', () => {
-    it('should select network decimals according to network or select', () => {
-        const network = getNetwork('base');
-        const decimals = getTradingNetworkDecimals({
-            network,
-        });
-
-        expect(decimals).toEqual(network.decimals);
-
-        const decimalsDefault = getTradingNetworkDecimals({
-            network: null,
-        });
-
-        expect(decimalsDefault).toEqual(8);
-
-        const sendCryptoSelect: TradingAccountOptionsGroupOptionProps = {
-            value: 'ethereum' as CryptoId,
-            label: 'ETH',
-            cryptoName: 'Ethereum',
-            balance: '0.0022992',
-            descriptor: 'ethereum',
-            decimals: 18,
-            accountType: 'normal',
-        };
-
-        const decimalsWithAccount = getTradingNetworkDecimals({
-            network,
-            sendCryptoSelect,
-        });
-
-        expect(decimalsWithAccount).toEqual(sendCryptoSelect.decimals);
     });
 });
 

@@ -2,8 +2,6 @@ import { useCallback } from 'react';
 
 import { TradingExchangeType } from '@suite-common/trading';
 
-import { getTradingCryptoInfo } from 'src/utils/wallet/trading/tradingUtils';
-
 import { useTradingFormContext } from './useTradingCommonForm';
 
 export const useTradingExchangeCryptoAndProviderInfo = () => {
@@ -17,16 +15,10 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
         const quoteProviderName =
             quoteExchange && exchangeInfo?.providerInfos[quoteExchange]?.companyName;
 
-        const {
-            label: sendCryptoLabel,
-            networkSymbol: sendCryptoNetworkSymbol,
-            contractAddress: sendCryptoContractAddress,
-        } = getTradingCryptoInfo(sendCryptoSelect);
-
         return {
-            sendCryptoLabel,
-            sendCryptoNetworkSymbol,
-            sendCryptoContractAddress,
+            sendCryptoLabel: sendCryptoSelect?.displaySymbol,
+            sendCryptoNetworkSymbol: sendCryptoSelect?.networkSymbol,
+            sendCryptoContractAddress: sendCryptoSelect?.contractAddress ?? undefined,
 
             receiveCryptoLabel: receiveCryptoSelect?.displaySymbol,
             receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,

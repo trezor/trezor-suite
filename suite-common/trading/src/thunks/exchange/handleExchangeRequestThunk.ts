@@ -13,7 +13,7 @@ import {
     MinimalExchangeFormProps,
     TradingExchangeType,
 } from '../../types';
-import { addIdsToQuotes, getTradingNetworkDecimals } from '../../utils';
+import { addIdsToQuotes, getNetworkDecimalsWithFallback } from '../../utils';
 import { exchangeUtils } from '../../utils/exchange/exchangeUtils';
 
 type GetQuotesRequest = {
@@ -37,7 +37,7 @@ export const getQuoteRequestData = ({
 }: GetQuoteRequestData): ExchangeTradeQuoteRequest | undefined => {
     const { outputs, receiveCryptoSelect, sendCryptoSelect, receiveAddress, fromAddress } =
         formValues;
-    const decimals = getTradingNetworkDecimals({ network });
+    const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
     const unformattedOutputAmount = outputs[0].amount ?? '';
     const sendStringAmount =

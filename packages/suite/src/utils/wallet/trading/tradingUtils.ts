@@ -5,7 +5,6 @@ import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-defi
 import {
     type TradingType,
     cryptoIdToNetworkAndContractAddress,
-    cryptoIdToSymbol,
     toTokenCryptoId,
 } from '@suite-common/trading';
 import {
@@ -40,11 +39,6 @@ import {
 } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
 
-interface TradingGetDecimalsProps {
-    sendCryptoSelect?: TradingAccountOptionsGroupOptionProps;
-    network?: Network | null;
-}
-
 export const translationKeys: Record<
     TradingType,
     Extract<ExtendedMessageDescriptor['id'], 'TR_BUY' | 'TR_TRADING_SELL' | 'TR_TRADING_SWAP'>
@@ -53,30 +47,6 @@ export const translationKeys: Record<
     sell: 'TR_TRADING_SELL',
     exchange: 'TR_TRADING_SWAP',
 };
-
-export const getTradingCryptoInfo = (
-    cryptoSelect: TradingAccountOptionsGroupOptionProps | null | undefined,
-) => {
-    const label = cryptoSelect?.label ?? undefined;
-    const networkSymbol = cryptoSelect ? cryptoIdToSymbol(cryptoSelect.value) : undefined;
-    const contractAddress = cryptoSelect?.contractAddress ?? undefined;
-
-    return { label, networkSymbol, contractAddress };
-};
-
-export const getTradingNetworkDecimals = ({
-    sendCryptoSelect,
-    network,
-}: TradingGetDecimalsProps) => {
-    if (sendCryptoSelect) {
-        return sendCryptoSelect.decimals;
-    }
-
-    return network?.decimals ?? 8;
-};
-
-export const getNetworkDecimalsWithFallback = (symbol?: NetworkSymbol, fallback = 8) =>
-    symbol ? (getNetwork(symbol)?.decimals ?? fallback) : fallback;
 
 export const buildTradingFiatOption = (currency: FiatCurrencyCode) => ({
     value: currency,

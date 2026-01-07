@@ -229,23 +229,10 @@ export const addIdsToQuotes = <T extends TradingType>(
     return quotes;
 };
 
-interface TradingGetDecimalsProps {
-    sendCryptoSelect?: { value: CryptoId; decimals: number };
-    network?: Network | null;
-}
-
-export const getTradingNetworkDecimals = ({
-    sendCryptoSelect,
-    network,
-}: TradingGetDecimalsProps) => {
-    const defaultDecimals = getNetwork('btc').decimals;
-
-    if (sendCryptoSelect) {
-        return sendCryptoSelect.decimals;
-    }
-
-    return network?.decimals ?? defaultDecimals;
-};
+export const getNetworkDecimalsWithFallback = (
+    symbol: NetworkSymbol | undefined,
+    fallback = getNetwork('btc').decimals,
+) => (symbol ? (getNetwork(symbol)?.decimals ?? fallback) : fallback);
 
 export const getTradingPaymentMethods = <T extends TradingTradeBuySellType>(
     quotes: TradingTradeMapProps[T][],

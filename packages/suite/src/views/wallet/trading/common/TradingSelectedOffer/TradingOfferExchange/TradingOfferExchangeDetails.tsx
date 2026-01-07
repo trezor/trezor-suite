@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { FormattedList } from 'react-intl';
 
-import { CryptoId, ExchangeTrade } from 'invity-api';
+import { ExchangeTrade } from 'invity-api';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeType,
     cryptoIdToNetwork,
-    getTradingNetworkDecimals,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeFormStep,
     useTradingUtils,
@@ -23,6 +22,7 @@ import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
+import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 
@@ -69,14 +69,16 @@ export const TradingOfferExchangeDetails = ({
     const formattedNetworkFee = formatNetworkAmount(networkFee || '0', symbol);
 
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
-    const decimals = getTradingNetworkDecimals({
-        sendCryptoSelect,
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const decimals = getAssetDecimals({
+        tradingAccountKey: sendCryptoSelect?.accountKey,
+        cryptoId: sendCryptoSelect?.id,
     });
 
     const supportedMevProtectionNetworks = networksCollection
         .filter(network => network.features.includes('mev-protection'))
         .map(network => network.name);
-    const sendNetwork = cryptoIdToNetwork(sendCryptoSelect?.value as CryptoId);
+    const sendNetwork = sendCryptoSelect?.id ? cryptoIdToNetwork(sendCryptoSelect.id) : undefined;
     const isMevProtectionSupported = sendNetwork?.features.includes('mev-protection') ?? false;
 
     const { coinSymbol: receiveCoinSymbol, contractAddress: receiveContractAddress } =

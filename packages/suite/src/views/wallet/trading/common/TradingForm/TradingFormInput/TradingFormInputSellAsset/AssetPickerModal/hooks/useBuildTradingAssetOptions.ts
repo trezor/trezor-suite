@@ -1,7 +1,5 @@
 import { useCallback } from 'react';
 
-import { CryptoId } from 'invity-api';
-
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -19,13 +17,11 @@ import { getTokens } from 'src/utils/wallet/tokenUtils';
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
     networkSymbol: NetworkSymbol | undefined;
-    enabledCryptoIds?: Set<CryptoId>;
 }
 
 export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
-    enabledCryptoIds,
 }: UseBuildTradingAssetOptionsProps) {
     const tokenDefinitions = useSelector(selectTokenDefinitions);
     const accountFilter = useCallback(
@@ -51,7 +47,6 @@ export function useBuildTradingAssetOptions({
     const { networks, accountsWithTokens } = useAccountWithTokensOptions({
         networkSymbolFilter: networkSymbol,
         accountFilter,
-        enabledCryptoIds,
     });
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens, search);
     const listItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);

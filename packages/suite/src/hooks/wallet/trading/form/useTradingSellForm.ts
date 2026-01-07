@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
+import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -46,17 +46,11 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import {
-    TradingAccountOptionsGroupOptionProps,
-    UseTradingFormProps,
-} from 'src/types/trading/trading';
+import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
-import {
-    getTradingCryptoInfo,
-    getTradingNetworkDecimals,
-} from 'src/utils/wallet/trading/tradingUtils';
 
+import { useTradingAssetDecimals } from './common/useTradingAssetDecimals';
 import { useTradingInitializer } from './common/useTradingInitializer';
 
 export const useTradingSellForm = ({
@@ -122,8 +116,12 @@ export const useTradingSellForm = ({
     );
 
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingSellFormDefaultValues(account, sellInfo);
-    const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
+        useTradingSellFormDefaultValues(account, sellInfo?.country);
+    const redirectValues = useTradingSellFormRedirectValues(
+        isFromRedirect,
+        quotesRequest,
+        accountKey,
+    );
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {
         if (!draft) return null;
@@ -151,7 +149,7 @@ export const useTradingSellForm = ({
     const isDraft = !!draft;
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues || (draftUpdated ? draftUpdated : defaultValues),
+        defaultValues: redirectValues ?? draftUpdated ?? defaultValues,
     });
     const { register, setValue, reset, control, formState } = methods;
     const values = useWatch<TradingSellFormProps>({ control });
@@ -169,12 +167,15 @@ export const useTradingSellForm = ({
         quotes,
         values?.paymentMethod?.value ?? '',
     );
-    const decimals = getTradingNetworkDecimals({
-        sendCryptoSelect: values.sendCryptoSelect as
-            | TradingAccountOptionsGroupOptionProps
-            | undefined,
-        network,
-    });
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const decimals = useMemo(
+        () =>
+            getAssetDecimals({
+                tradingAccountKey: values.sendCryptoSelect?.accountKey,
+                cryptoId: values.sendCryptoSelect?.id as CryptoId,
+            }),
+        [getAssetDecimals, values.sendCryptoSelect?.accountKey, values.sendCryptoSelect?.id],
+    );
 
     const setAmountLimits = (limits: TradingAmountLimitProps | undefined) => {
         dispatch(tradingSellActions.setAmountLimits(limits));
@@ -199,7 +200,6 @@ export const useTradingSellForm = ({
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
         account,
         methods,
-        network,
         inputNames: {
             cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
             fiatInput: TRADING_FORM_OUTPUT_FIAT,
@@ -308,12 +308,6 @@ export const useTradingSellForm = ({
 
         if (!quotesRequest || !provider) return;
 
-        const {
-            label: cryptoLabel,
-            networkSymbol: cryptoNetworkSymbol,
-            contractAddress: cryptoContractAddress,
-        } = getTradingCryptoInfo(draftUpdated?.sendCryptoSelect);
-
         switch (pageType) {
             case 'form': {
                 analytics.report({
@@ -321,9 +315,10 @@ export const useTradingSellForm = ({
                     payload: {
                         action: 'continue',
                         step: 'sell-form',
-                        cryptoLabel,
-                        cryptoNetworkSymbol,
-                        cryptoContractAddress,
+                        cryptoLabel: draftUpdated?.sendCryptoSelect?.displaySymbol,
+                        cryptoNetworkSymbol: draftUpdated?.sendCryptoSelect?.networkSymbol,
+                        cryptoContractAddress:
+                            draftUpdated?.sendCryptoSelect?.contractAddress ?? undefined,
                         exchangeName: quote?.exchange,
                         receiveMethod: draftUpdated?.paymentMethod?.value,
                         countryOfResidence: draftUpdated?.countrySelect?.value,

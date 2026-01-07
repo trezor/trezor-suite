@@ -13,22 +13,25 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 
 export interface UseTradingDefaultSellAssetProps {
-    tradingAccountKey: AccountKey;
-    cryptoId: CryptoId;
+    accountKey?: AccountKey;
+    cryptoId?: CryptoId;
 }
 
 /**
- * Based on `tradingAccountKey` and `cryptoId` find corresponding account or its token and create default asset option or fallback to default crypto currency.
+ * Based on `accountKey` and `cryptoId` find corresponding account or its token and create default asset option or fallback to default crypto currency.
  */
 export function useTradingDefaultSellAsset({
-    tradingAccountKey,
+    accountKey,
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const accountOrToken = useMemo(
-        () => findAccountOrToken.current({ tradingAccountKey, cryptoId }),
-        [findAccountOrToken, tradingAccountKey, cryptoId],
-    );
+    const accountOrToken = useMemo(() => {
+        if (!cryptoId || !accountKey) {
+            return null;
+        }
+
+        return findAccountOrToken.current({ accountKey, cryptoId });
+    }, [findAccountOrToken, accountKey, cryptoId]);
     const account = accountOrToken?.account ?? null;
 
     const defaultAsset: TradingAssetSellOption | undefined = useMemo(() => {
