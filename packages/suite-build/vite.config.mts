@@ -27,6 +27,31 @@ const staticAliasPlugin = (): Plugin => ({
     },
 });
 
+const trezorLogosRequirePlugin = (): Plugin => ({
+    name: 'trezor-logos-require',
+    enforce: 'pre',
+    transform(code, id) {
+        const cleanId = id.split('?')[0];
+        if (
+            !cleanId.includes(
+                'packages/product-components/src/components/TrezorLogo/trezorLogos.ts',
+            )
+        ) {
+            return null;
+        }
+
+        const transformed = code.replace(
+            /require\((['"`])([^'"`]+\.svg)\1\)/g,
+            'new URL($1$2$1, import.meta.url).href',
+        );
+
+        return {
+            code: transformed,
+            map: null,
+        };
+    },
+});
+
 // Function to process the HTML template with template variables
 const processTemplate = (template: string): string =>
     template
@@ -387,6 +412,7 @@ export default defineConfig({
         bufferPolyfillPlugin(),
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
+        trezorLogosRequirePlugin(),
         staticAliasPlugin(),
         serveCorePlugin(),
         sessionsSharedWorkerPlugin(),
