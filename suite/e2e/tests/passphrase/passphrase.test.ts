@@ -25,7 +25,15 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 priority: TestPriority.High,
             }),
         },
-        async ({ page, analytics, devicePrompt, dashboardPage, walletPage, trezorUserEnvLink }) => {
+        async ({
+            page,
+            analytics,
+            devicePrompt,
+            dashboardPage,
+            walletPage,
+            metadataPage,
+            trezorUserEnvLink,
+        }) => {
             await test.step('Add passphrase wallet #1', async () => {
                 await dashboardPage.openDeviceSwitcher();
                 await dashboardPage.addUnusedHiddenWallet('abc');
@@ -41,15 +49,13 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
                 await walletPage.receiveButton.click();
                 await walletPage.revealAddressButton.click();
-                await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                    formatAddress(abcAddr),
-                );
+                await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
                 await trezorUserEnvLink.pressYes(); // confirm address
 
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
 
                 await devicePrompt.closeModal();
             });
@@ -69,20 +75,18 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Open receive address of wallet #2', async () => {
                 await walletPage.receiveButton.click();
                 await test.step('Verify no address is yet in table', async () => {
-                    await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
+                    await expect(walletPage.usedAddress(0)).toBeHidden();
                 });
 
                 await expect(walletPage.revealAddressButton).toBeEnabled();
                 await walletPage.revealAddressButton.click();
-                await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                    formatAddress(defAddr),
-                );
+                await expect(devicePrompt.outputValue).toHaveText(formatAddress(defAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(devicePrompt).toDisplayReceiveAddress(defAddr);
                 await trezorUserEnvLink.pressYes(); // confirm address
 
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
 
                 await devicePrompt.closeModal();
             });
@@ -94,38 +98,30 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('No address is yet in table of wallet #1', async () => {
-                await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
+                await expect(walletPage.usedAddress(0)).toBeHidden();
                 await expect(walletPage.revealAddressButton).toBeEnabled();
 
                 await walletPage.revealAddressButton.click();
-                await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                    formatAddress(abcAddr),
-                );
+                await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
                 await trezorUserEnvLink.pressYes(); // confirm address
 
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-                await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+                await expect(metadataPage.copyAddressButton).toBeVisible();
+                await expect(metadataPage.copyAddressButton).toBeEnabled();
 
                 await devicePrompt.closeModal();
             });
         },
     );
 
-    test('Errors to confirm passphrase and retry', async ({
-        page,
-        dashboardPage,
-        devicePrompt,
-    }) => {
+    test('Errors to confirm passphrase and retry', async ({ dashboardPage, devicePrompt }) => {
         await test.step('Initiate adding passphrase wallet', async () => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet('abc', { skipDiscovery: true });
 
-            await page
-                .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
-                .click();
-            await page.getByTestId('@passphrase-confirmation/step2-button').click();
+            await dashboardPage.openUnusedWalletButton1.click();
+            await dashboardPage.openUnusedWalletButton2.click();
         });
 
         await test.step('Confirm wrong passphrase', async () => {
@@ -151,18 +147,22 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.passphraseSubmitButton.click();
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
             await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
+            await expect(dashboardPage.passphraseMismatchHeader).toContainTranslation(
+                'TR_PASSPHRASE_MISMATCH',
+            );
+            await expect(dashboardPage.passphraseMismatchDesc).toContainTranslation(
+                'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
+            );
         });
 
         await test.step('Retry passphrase confirmation', async () => {
-            await page.getByTestId('@passphrase-mismatch/start-over').click();
+            await dashboardPage.passphraseMismatchStartOverButton.click();
             await dashboardPage.passphraseInput.fill('abc');
             await dashboardPage.passphraseSubmitButton.click();
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
             await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
-            await page
-                .getByTestId('@passphrase-confirmation/step1-open-unused-wallet-button')
-                .click();
-            await page.getByTestId('@passphrase-confirmation/step2-button').click();
+            await dashboardPage.openUnusedWalletButton1.click();
+            await dashboardPage.openUnusedWalletButton2.click();
         });
 
         await test.step('Confirm correct passphrase', async () => {

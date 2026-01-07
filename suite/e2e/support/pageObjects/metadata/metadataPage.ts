@@ -11,6 +11,7 @@ import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {
     readonly metadataModal: Locator;
+    readonly copyAddressButton: Locator;
     readonly account: AccountMetadata;
     readonly output: OutputMetadata;
     readonly wallet: WalletMetadata;
@@ -25,6 +26,7 @@ export class MetadataPage {
         private readonly devicePrompt: DevicePrompt,
     ) {
         this.metadataModal = page.getByTestId('@modal/metadata-provider');
+        this.copyAddressButton = page.getByTestId('@metadata/copy-address-button');
 
         this.account = new AccountMetadata(page);
         this.output = new OutputMetadata(page);

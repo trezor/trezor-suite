@@ -4,7 +4,6 @@ test.describe('Passphrase cancel', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
 
     test('possible to cancel passphrase', async ({
-        page,
         devicePrompt,
         onboardingPage,
         dashboardPage,
@@ -13,11 +12,11 @@ test.describe('Passphrase cancel', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWalletButton.click();
-        await page.getByTestId('@switch-device/add-existing-hidden-wallet-button').click();
+        await dashboardPage.addExistingHiddenWalletButton.click();
         await dashboardPage.passphraseInput.fill('abc');
         await dashboardPage.passphraseSubmitButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
 
-        await page.getByTestId('@confirm-on-device/close-button').click();
+        await devicePrompt.closeButton.click();
     });
 });

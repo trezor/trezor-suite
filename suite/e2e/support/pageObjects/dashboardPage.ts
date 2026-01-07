@@ -29,18 +29,24 @@ export class DashboardPage {
     readonly addStandardWalletButton: Locator;
     readonly addHiddenWalletButton: Locator;
     readonly addNewHiddenWalletButton: Locator;
+    readonly addExistingHiddenWalletButton: Locator;
     readonly hideBalanceButton: Locator;
     readonly portfolioFiatAmount: Locator;
     readonly deviceStatus: Locator;
     readonly deviceStatusOnSwitchDevice: Locator;
     readonly solveIssuesButton: Locator;
+    readonly passphraseDuplicateHeader: Locator;
+    readonly passphraseDuplicateDesc: Locator;
+    readonly passphraseMismatchHeader: Locator;
+    readonly passphraseMismatchDesc: Locator;
     readonly passphraseInput: Locator;
     readonly passphraseSubmitButton: Locator;
     readonly passphraseShowButton: Locator;
-    readonly loading: Locator;
-    readonly notificationNoBackupButton: Locator;
+    readonly passphraseMismatchStartOverButton: Locator;
     readonly openUnusedWalletButton1: Locator;
     readonly openUnusedWalletButton2: Locator;
+    readonly loading: Locator;
+    readonly notificationNoBackupButton: Locator;
     readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
     readonly walletReady: Locator;
@@ -68,24 +74,34 @@ export class DashboardPage {
         this.addNewHiddenWalletButton = this.page.getByTestId(
             '@switch-device/add-new-hidden-wallet-button',
         );
+        this.addExistingHiddenWalletButton = this.page.getByTestId(
+            '@switch-device/add-existing-hidden-wallet-button',
+        );
         this.hideBalanceButton = this.page.getByTestId('@quickActions/hideBalances');
         this.portfolioFiatAmount = this.page.getByTestId('@dashboard/portfolio/fiat-amount');
         this.deviceStatus = this.page.locator("[data-testid-alt='@deviceStatus']");
         this.deviceStatusOnSwitchDevice = this.page
             .getByTestId('@menu/switch-device')
             .locator("[data-testid-alt='@deviceStatus']");
+        this.passphraseDuplicateHeader = this.page.getByTestId('@passphrase-duplicate-header');
+        this.passphraseDuplicateDesc = this.page.getByTestId('@passphrase-duplicate-description');
+        this.passphraseMismatchHeader = this.page.getByTestId('@passphrase-mismatch-header');
+        this.passphraseMismatchDesc = this.page.getByTestId('@passphrase-mismatch-description');
         this.solveIssuesButton = this.page.getByTestId('@switch-device/solve-issue-button');
         this.passphraseInput = this.page.getByTestId('@passphrase/input');
         this.passphraseSubmitButton = this.page.getByTestId('@passphrase/hidden/submit-button');
         this.passphraseShowButton = this.page.getByTestId('@passphrase/show-toggle');
-        this.loading = this.page.getByTestId('@dashboard/loading');
-        this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
+        this.passphraseMismatchStartOverButton = this.page.getByTestId(
+            '@passphrase-mismatch/start-over',
+        );
         this.openUnusedWalletButton1 = this.page.getByTestId(
             '@passphrase-confirmation/step1-open-unused-wallet-button',
         );
         this.openUnusedWalletButton2 = this.page.getByTestId(
             '@passphrase-confirmation/step2-button',
         );
+        this.loading = this.page.getByTestId('@dashboard/loading');
+        this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
         this.walletReady = this.page.getByTestId('@dashboard/wallet-ready');
         this.discoveryEmptyHeader = this.page.getByTestId('@exception/discovery-empty/header');
         this.discoveryEmptyDesc = this.page.getByTestId('@exception/discovery-empty/description');
@@ -125,7 +141,7 @@ export class DashboardPage {
     @step()
     async addHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
         await this.addHiddenWalletButton.click();
-        await this.page.getByTestId('@switch-device/add-existing-hidden-wallet-button').click();
+        await this.addExistingHiddenWalletButton.click();
 
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
@@ -152,7 +168,7 @@ export class DashboardPage {
     async addUnusedHiddenWallet(passphrase: string) {
         await this.addHiddenWalletButton.click();
         await this.addNewHiddenWalletButton.click();
-        await this.page.getByTestId('@passphrase-confirmation/step2-button').click();
+        await this.openUnusedWalletButton2.click();
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).toBeHidden();
