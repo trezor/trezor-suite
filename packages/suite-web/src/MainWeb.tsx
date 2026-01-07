@@ -8,7 +8,13 @@ import { createRoot } from 'react-dom/client';
 
 import { RouterServices } from '@suite-common/redux-utils';
 
-import { AppRouter, BundleLoader, Metadata, Preloader, ToastContainer } from 'src/components/suite';
+import {
+    AppRouter,
+    BundleLoader,
+    Metadata,
+    Preloader,
+    ToasterProvider,
+} from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { initStore } from 'src/reducers/store';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
@@ -32,7 +38,7 @@ const MainWeb = ({ routerServices }: { routerServices: RouterServices }) => {
     return (
         <Main routerServices={routerServices}>
             <Metadata />
-            <ToastContainer />
+            <ToasterProvider />
             <Preloader>
                 <Suspense fallback={<BundleLoader />}>
                     <AppRouter components={webComponents} />

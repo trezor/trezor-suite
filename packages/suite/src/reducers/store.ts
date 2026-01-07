@@ -32,7 +32,7 @@ import backupMiddlewares from 'src/middlewares/backup';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import recoveryMiddlewares from 'src/middlewares/recovery';
 import { getSuiteMiddleware } from 'src/middlewares/suite';
-import toastMiddleware from 'src/middlewares/suite/toastMiddleware';
+import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { getWalletMiddlewares } from 'src/middlewares/wallet';
 import backupReducers from 'src/reducers/backup';
 import onboardingReducers from 'src/reducers/onboarding';
