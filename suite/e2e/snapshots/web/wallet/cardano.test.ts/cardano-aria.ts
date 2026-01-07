@@ -1,29 +1,23 @@
+import messages from '@trezor/suite/src/support/messages';
+
 export const cardanoAccountDetails = (platform: string) => `
     - text: Account type
     - paragraph:
-      - paragraph: Shelley-era addresses have introduced a new type of wallet that can support stake delegation and earning rewards.
+      - paragraph: ${messages['TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC'].defaultMessage}
     - text: Default
     - paragraph: (Shelley)
     - text: Derivation path
-    - paragraph: The derivation path is a way to navigate and generate specific keys within the organized structure of an HD (Hierarchical Deterministic) wallet.
+    - paragraph: ${messages['TR_ACCOUNT_DETAILS_PATH_DESC'].defaultMessage}
     - link "Learn more":
       - /url: https://trezor.io/learn/advanced/standards-proposals/what-is-bip32?utm_medium=${platform}
       - text: Learn more
       - img
     - paragraph: m/1852'/1815'/0'
     - text: Public key (XPUB)
-    - paragraph: Handle your account public key (XPUB) carefully. When exposed, a third party will be able to see your entire transaction history.
+    - paragraph: ${messages['TR_ACCOUNT_DETAILS_XPUB'].defaultMessage}
     - link "Learn more":
       - /url: https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub?utm_medium=${platform}
       - text: Learn more
       - img
     - button "Show public key"
-`;
-
-export const cardanoStaking = `
-    - heading "Cardano staking isn't active" [level=2]:
-      - img
-    - text: Staking Cardano is a great way to earn ADA staking rewards as a form of passive income for holding Cardano. By staking your ADA, you actively support the Cardano network and contribute to the stability of the network. Your stake address stake_test1uqyuj8h935q6panx0klttu026rzam0y9c2v97pv3l56uk3s5v5fjr You don't have enough funds on your account. The deposit fee is 2 ADA and is required to register your address to start staking. If you choose to unstake your Cardano you will get the deposit back.
-    - button "Delegate" [disabled]:
-      - img
 `;
