@@ -12,12 +12,13 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
+    exchangeMercuryo,
     exchangeQuotes,
     getBtcAccount,
     getWalletState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { exchangeActions } from '@suite-native/trading-state';
+import { exchangeActions, selectTradingProviderMetadata } from '@suite-native/trading-state';
 import { ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -119,6 +120,15 @@ describe('useExchangeForm', () => {
             });
 
             expect(result.current.getValues('receiveCryptoAmount')).toBe('83554');
+        });
+
+        it('should persist provider metadata to redux', async () => {
+            await renderUseExchangeForm();
+            act(() => {
+                store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+            });
+
+            expect(selectTradingProviderMetadata(store.getState())).toBe(exchangeMercuryo);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
