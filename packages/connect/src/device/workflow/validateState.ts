@@ -32,7 +32,7 @@ const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId
     // Ignore instance ID, it doesn't necessarily need to match the current instance
     expected && current && expected.split(':')[0] !== current.split(':')[0];
 
-const getState = async (context: WorkflowContext) => {
+const validate = async (context: WorkflowContext) => {
     const { device } = context;
     if (!device.features) return;
 
@@ -50,7 +50,7 @@ const getState = async (context: WorkflowContext) => {
     }
 
     if (isUnexpectedState(expectedState, uniqueState)) {
-        return uniqueState;
+        throw ERRORS.TypedError('Device_InvalidState');
     }
     if (!expectedState || expectedState !== uniqueState) {
         device.setState({ staticSessionId: uniqueState });
@@ -60,12 +60,10 @@ const getState = async (context: WorkflowContext) => {
 const MAX_PIN_TRIES = 3;
 
 /** Including up to 3 pin tries **/
-const getInvalidDeviceState = async (
-    context: WorkflowContext,
-): Promise<StaticSessionId | undefined> => {
+const validateDeviceState = async (context: WorkflowContext) => {
     for (let i = 0; i < MAX_PIN_TRIES - 1; ++i) {
         try {
-            return await getState(context);
+            return await validate(context);
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 context.method.postMessage(
@@ -77,8 +75,7 @@ const getInvalidDeviceState = async (
         }
     }
 
-    // eslint-disable-next-line no-restricted-syntax
-    return getState(context).catch(error => {
+    return validate(context).catch(error => {
         if (error.message.includes('PIN invalid')) {
             context.method.postMessage(
                 createUiMessage(UI.INVALID_PIN_ATTEMPTS_DEPLETED, {
@@ -90,7 +87,7 @@ const getInvalidDeviceState = async (
     });
 };
 
-const getInvalidThpDeviceState = async (context: WorkflowContext) => {
+const validateThpDeviceState = async (context: WorkflowContext) => {
     const { device, method } = context;
     const currentState = device.getState();
     const expectedState = currentState?.staticSessionId;
@@ -143,7 +140,7 @@ const getInvalidThpDeviceState = async (context: WorkflowContext) => {
     }
 
     if (isUnexpectedState(expectedState, uniqueState)) {
-        return uniqueState;
+        throw ERRORS.TypedError('Device_InvalidState');
     }
 
     if (!expectedState) {
@@ -157,16 +154,14 @@ export const validateState = async (context: WorkflowContext) => {
         return;
     }
 
-    const validate =
-        device.protocol.name === 'v2' ? getInvalidThpDeviceState : getInvalidDeviceState;
-
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
 
     try {
-        const invalidDeviceState = await validate(context);
-        if (invalidDeviceState) {
-            throw ERRORS.TypedError('Device_InvalidState');
+        if (device.protocol.name === 'v2') {
+            await validateThpDeviceState(context);
+        } else {
+            await validateDeviceState(context);
         }
     } catch (error) {
         // other error
