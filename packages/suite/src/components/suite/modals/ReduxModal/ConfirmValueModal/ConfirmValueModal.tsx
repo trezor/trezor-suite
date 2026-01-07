@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
+import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -86,9 +86,7 @@ export const ConfirmValueModal = ({
         (!legacyMetadataState.enabled || legacyMetadataState.providers.length === 0);
 
     const suiteSyncAddressLabels = useSelector(state =>
-        account
-            ? selectAddressLabels({ state, deviceStaticSessionId: account.deviceState })
-            : undefined,
+        account ? selectSuiteSyncAddressLabels(state, account.deviceState) : undefined,
     );
 
     const canConfirmOnDevice = !!(device?.connected && device?.available);

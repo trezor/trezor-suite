@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
+import { SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -16,12 +16,8 @@ type AddressLabelEProps = {
 export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: AddressLabelEProps) => {
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
-    const label = useSelector((state: WithLabelingState) =>
-        selectAddressLabel({
-            state,
-            address,
-            deviceStaticSessionId,
-        }),
+    const label = useSelector((state: SuiteSyncDataRootState) =>
+        selectSuiteSyncAddressLabel(state, deviceStaticSessionId, address),
     );
 
     if (!isLabelingEnabled || label === null) {

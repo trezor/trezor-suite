@@ -13,14 +13,12 @@ describe(createSubscriptionStorage.name, () => {
 
         storage.add({
             storageId: storageId1,
-            name: 'labeling',
             unsubscribe: () => {
                 isOwnerID1Unsubscribed = true;
             },
         });
         storage.add({
             storageId: storageId2,
-            name: 'labeling',
             unsubscribe: () => {
                 isOwnerID2Unsubscribed = true;
             },
@@ -38,7 +36,6 @@ describe(createSubscriptionStorage.name, () => {
 
         storage.add({
             storageId: storageId1,
-            name: 'labeling',
             unsubscribe: () => {
                 isUnsubscribed = true;
             },
@@ -47,7 +44,6 @@ describe(createSubscriptionStorage.name, () => {
 
         storage.add({
             storageId: storageId1,
-            name: 'labeling',
             unsubscribe: () => {},
         });
         expect(isUnsubscribed).toBe(true);

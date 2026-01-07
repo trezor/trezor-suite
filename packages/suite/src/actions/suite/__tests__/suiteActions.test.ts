@@ -2,7 +2,7 @@
 // data provided by TrezorConnect are mocked
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
-import { labelingReducer, suiteSyncReducer } from '@suite-common/suite-sync';
+import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
@@ -69,7 +69,7 @@ const getInitialState = (
     device?: Partial<DevicesState>,
     router?: RouterState,
     firmware?: Partial<FirmwareState>,
-    labeling?: Partial<ReturnType<typeof labelingReducer>>,
+    suiteSyncData?: Partial<ReturnType<typeof suiteSyncReducer>>,
 ) => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
@@ -88,12 +88,11 @@ const getInitialState = (
         ...firmwareReducer(undefined, { type: 'foo' } as any),
         ...firmware,
     },
-    labeling: {
-        ...labelingReducer(undefined, { type: 'foo' } as any),
-        ...labeling,
-    },
     suiteSync: {
         ...suiteSyncReducer(undefined, { type: 'foo' } as any),
+    },
+    suiteSyncData: {
+        ...(suiteSyncData ?? {}),
     },
     wallet: {
         settings: {

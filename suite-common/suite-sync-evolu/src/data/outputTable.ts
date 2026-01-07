@@ -1,0 +1,109 @@
+import {
+    Evolu,
+    NonEmptyString1000,
+    NonNegativeNumber,
+    QueryRows,
+    createIdFromString,
+    id,
+    nullOr,
+} from '@evolu/common';
+
+import {
+    EntityListener,
+    OutputTable,
+    SuiteSyncOutput,
+    createSuiteSyncOutputId,
+    createSuiteSyncUpdateError,
+} from '@suite-common/suite-sync-storage';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
+import { err, ok } from '@trezor/type-utils';
+
+import { UnwrapQuery } from '../evoluUtils';
+import { normalizeLabel } from './normalizeLabel';
+
+export const OutputEvoluId = id('OutputLabelId');
+export type OutputEvoluId = typeof OutputEvoluId.Type;
+
+export const OutputLabelSchema = {
+    output: {
+        id: OutputEvoluId,
+        label: nullOr(NonEmptyString1000),
+        txId: NonEmptyString1000,
+        outputIndex: NonNegativeNumber,
+        accountDescriptor: NonEmptyString1000,
+        networkSymbol: NonEmptyString1000,
+    },
+};
+
+export class OutputEvoluTable implements OutputTable {
+    constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
+
+    update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
+        const idResult = OutputEvoluId.from(
+            createIdFromString(createSuiteSyncOutputId(txId, outputIndex)),
+        );
+
+        if (!idResult.ok) {
+            return err(createSuiteSyncUpdateError(idResult.error));
+        }
+
+        const result = this.evolu.upsert('output', {
+            id: idResult.value,
+            txId,
+            outputIndex,
+            label: normalizeLabel(label),
+            accountDescriptor: accountDescriptor as AccountDescriptor,
+            networkSymbol: networkSymbol as NetworkSymbol,
+        });
+
+        if (!result.ok) {
+            return err(createSuiteSyncUpdateError(result.error));
+        }
+
+        return ok();
+    };
+
+    private getQuery = () => this.evolu.createQuery(db => db.selectFrom('output').selectAll());
+
+    subscribe = ({ onChange }: EntityListener<SuiteSyncOutput>) => {
+        const query = this.getQuery();
+
+        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            const acc: SuiteSyncOutput[] = [];
+
+            for (const label of labels) {
+                if (
+                    label.txId === null ||
+                    label.outputIndex === null ||
+                    label.accountDescriptor === null
+                ) {
+                    continue;
+                }
+
+                const accountDescriptor = asAccountDescriptor(label.accountDescriptor);
+
+                acc.push({
+                    id: createSuiteSyncOutputId(label.txId, label.outputIndex),
+                    txId: label.txId,
+                    outputIndex: label.outputIndex,
+                    label: label.label,
+                    accountDescriptor,
+                    networkSymbol: label.networkSymbol as NetworkSymbol,
+                });
+            }
+
+            if (acc.length > 0) {
+                onChange(acc);
+            }
+        };
+
+        const unsubscribe = this.evolu.subscribeQuery(query)(() => {
+            const deviceLabels = this.evolu.getQueryRows(query);
+            process(deviceLabels);
+        });
+        this.evolu.loadQuery(query).then(process);
+
+        return unsubscribe;
+    };
+}

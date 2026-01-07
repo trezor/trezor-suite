@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
+import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -107,7 +107,7 @@ export const UsedAddresses = ({
     const dispatch = useDispatch();
     const { addressLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
+        selectSuiteSyncAddressLabels(state, account.deviceState),
     );
 
     if (

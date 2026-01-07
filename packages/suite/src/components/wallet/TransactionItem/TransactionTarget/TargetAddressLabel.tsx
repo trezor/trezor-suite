@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectAddressLabels } from '@suite-common/suite-sync';
+import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 import { ArrayElement } from '@trezor/type-utils';
@@ -36,7 +36,7 @@ export const TargetAddressLabel = ({
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
 
     const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId }),
+        selectSuiteSyncAddressLabels(state, deviceStaticSessionId),
     );
 
     if (isLocalTarget) {

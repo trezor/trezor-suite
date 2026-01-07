@@ -1,7 +1,7 @@
-import { UpdateAccountLabelDep } from './labeling/updateAccountLabel';
-import { UpdateAddressLabelDep } from './labeling/updateAddressLabel';
-import { UpdateOutputLabelDep } from './labeling/updateOutputLabel';
-import { UpdateWalletLabelDep } from './labeling/updateWalletLabel';
+import { UpdateAccountLabelDep } from './data/updateAccountLabel';
+import { UpdateAddressLabelDep } from './data/updateAddressLabel';
+import { UpdateOutputLabelDep } from './data/updateOutputLabel';
+import { UpdateWalletLabelDep } from './data/updateWalletLabel';
 import { ChangeRelayUrlDep } from './relay/changeRelayUrl';
 import { TurnOffSuiteSyncForWalletDep } from './storage/turnOffSuiteSyncForWallet';
 import { TurnOnSuiteSyncForWalletDep } from './storage/turnOnSuiteSyncForWallet';

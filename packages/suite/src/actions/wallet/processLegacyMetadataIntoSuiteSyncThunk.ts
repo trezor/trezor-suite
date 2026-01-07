@@ -1,6 +1,7 @@
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types/libDev/src';
+import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceCancelledErrType,
@@ -22,7 +23,13 @@ type ProcessMetadataMessageThunkParams = {
  * @deprecated This shall be removed, once we phase out the old Metadata code.
  */
 export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
-    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>,
+    Result<
+        void,
+        | RefreshSuiteKeysUnavailableType
+        | DeviceErrorType
+        | DeviceCancelledErrType
+        | SuiteSyncUpdateError
+    >,
     ProcessMetadataMessageThunkParams,
     void
 >(
@@ -61,7 +68,7 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
                     txId: payload.txid,
                     outputIndex: Number(payload.outputIndex),
                     label: value ?? null,
-                    accountDescriptor: payload.accountDescriptor,
+                    accountDescriptor: asAccountDescriptor(payload.accountDescriptor),
                     networkSymbol: payload.networkSymbol as NetworkSymbol,
                 });
 

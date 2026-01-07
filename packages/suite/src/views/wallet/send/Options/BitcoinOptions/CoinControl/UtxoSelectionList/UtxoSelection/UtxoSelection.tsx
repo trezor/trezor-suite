@@ -1,6 +1,9 @@
 import { MouseEventHandler, ReactNode } from 'react';
 
-import { selectAddressLabels, selectOutputLabels } from '@suite-common/suite-sync';
+import {
+    selectSuiteSyncAddressLabels,
+    selectSuiteSyncOutputLabels,
+} from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
 import {
@@ -78,10 +81,10 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     const { addressLabels, outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const suiteSyncAddressLabels = useSelector(state =>
-        selectAddressLabels({ state, deviceStaticSessionId: account.deviceState }),
+        selectSuiteSyncAddressLabels(state, account.deviceState),
     );
     const suiteSyncOutputLabels = useSelector(state =>
-        selectOutputLabels(state, account.deviceState),
+        selectSuiteSyncOutputLabels(state, account.deviceState),
     );
     const { translationString } = useTranslation();
 

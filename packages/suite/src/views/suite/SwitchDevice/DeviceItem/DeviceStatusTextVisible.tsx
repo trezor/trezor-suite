@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { selectWalletLabel } from '@suite-common/suite-sync';
+import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import { TrezorDevice } from '@suite-common/suite-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
@@ -30,9 +31,13 @@ export const DeviceStatusTextVisible = ({
     const defaultWalletLabel =
         device !== undefined ? defaultAccountLabelString({ device }) : undefined;
 
-    const suiteSyncWalletLabel = useSelector(state =>
-        selectWalletLabel({ state, deviceStaticSessionId: device?.state?.staticSessionId }),
-    );
+    const suiteSyncWalletLabel = useSelector(state => {
+        if (!device?.state?.staticSessionId) return null;
+
+        const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
+
+        return selectSuiteSyncWalletLabel(state, walletDescriptor);
+    });
 
     const walletLabel = suiteSyncWalletLabel ?? walletLabelOld;
     const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';

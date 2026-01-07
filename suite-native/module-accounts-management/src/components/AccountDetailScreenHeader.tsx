@@ -26,9 +26,17 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+    const accountLabel = useSelector((state: CombinedLabelingState) => {
+        if (!account) return null;
+
+        return selectAccountLabel(
+            state,
+            account.deviceState,
+            account.descriptor,
+            account.symbol,
+            account.key,
+        );
+    });
 
     return (
         <HStack alignItems="center">

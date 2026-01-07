@@ -1,16 +1,14 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    selectAccountLabel,
     selectIsSuiteSyncEnabled,
+    selectSuiteSyncAccountAddressesByAccount,
+    selectSuiteSyncAccountLabel,
+    selectSuiteSyncOutputLabelsByAccount,
     suiteSyncToBip329,
 } from '@suite-common/suite-sync';
-import {
-    selectAddressLabelsByAccount,
-    selectOutputLabelsByAccount,
-} from '@suite-common/suite-sync/src/labeling/labelingSelectors';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectAccounts, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { sanitizeFilename } from '@trezor/utils';
 
@@ -53,8 +51,9 @@ export const disposeMetadata = () => (dispatch: Dispatch, getState: GetState) =>
 
 export const disposeMetadataKeys = () => (dispatch: Dispatch, getState: GetState) => {
     const devices = selectDevices(getState());
+    const accounts = selectAccounts(getState());
 
-    getState().wallet.accounts.forEach(account => {
+    accounts.forEach(account => {
         const updatedAccount = JSON.parse(JSON.stringify(account));
 
         delete updatedAccount.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
@@ -174,28 +173,29 @@ export const exportMetadataToBip329File = createThunk<
                 selectedAccount.account.deviceState,
             );
 
-            const suiteSyncAccountLabel = selectAccountLabel({
+            const suiteSyncAccountLabel = selectSuiteSyncAccountLabel(
                 state,
                 walletDescriptor,
-                accountKey: selectedAccount.account.key,
-            });
+                selectedAccount.account.descriptor,
+                selectedAccount.account.symbol,
+            );
             if (suiteSyncAccountLabel) {
                 finalAccountLabel = suiteSyncAccountLabel;
             }
 
-            const suiteSyncAddressLabels = selectAddressLabelsByAccount({
+            const suiteSyncAddressLabels = selectSuiteSyncAccountAddressesByAccount(
                 state,
-                deviceStaticSessionId: staticSessionId,
-                accountDescriptor: selectedAccount.account.descriptor,
-                networkSymbol: selectedAccount.account.symbol,
-            });
+                walletDescriptor,
+                selectedAccount.account.descriptor,
+                selectedAccount.account.symbol,
+            );
 
-            const suiteSyncOutputLabels = selectOutputLabelsByAccount({
+            const suiteSyncOutputLabels = selectSuiteSyncOutputLabelsByAccount(
                 state,
-                deviceStaticSessionId: staticSessionId,
-                accountDescriptor: selectedAccount.account.descriptor,
-                networkSymbol: selectedAccount.account.symbol,
-            });
+                walletDescriptor,
+                selectedAccount.account.descriptor,
+                selectedAccount.account.symbol,
+            );
 
             labelsToExport = suiteSyncToBip329({
                 outputLabels: suiteSyncOutputLabels,

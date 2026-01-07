@@ -14,12 +14,13 @@ import { StaticSessionId } from '@trezor/connect';
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { createSuiteSyncListener } from './data/createSuiteSyncListener';
+import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
+import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
+import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
+import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
+import { createSubscribeSuiteSyncData } from './data/subscribeSuiteSyncData';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
-import { createSubscribeLabeling } from './labeling/createSubscribeLabeling';
-import { createUpdateAccountLabel } from './labeling/createUpdateAccountLabel';
-import { createUpdateAddressLabel } from './labeling/createUpdateAddressLabel';
-import { createUpdateOutputLabel } from './labeling/createUpdateOutputLabel';
-import { createUpdateWalletLabel } from './labeling/createUpdateWalletLabel';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
 import {
@@ -92,17 +93,21 @@ export const createSuiteSyncCompositionRoot = (
         getDeviceForStaticSessionId,
     });
 
-    const subscribeLabeling = createSubscribeLabeling({
-        subscriptionStorage,
+    const suiteSyncListener = createSuiteSyncListener({
         dispatch: deps.dispatch,
+    });
+
+    const subscribeSuiteSyncData = createSubscribeSuiteSyncData({
+        subscriptionStorage,
         ensureStorage,
+        suiteSyncListener,
     });
 
     const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeLabeling,
+        subscribeSuiteSyncData,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
