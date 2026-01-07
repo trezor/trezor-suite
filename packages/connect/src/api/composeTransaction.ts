@@ -231,7 +231,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async selectAccount() {
         const { coinInfo } = this.params;
         const blockchain = await this.getBlockchain();
-        const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT);
+        const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT, this.device);
 
         if (this.discovery && this.discovery.completed) {
             const { discovery } = this;
@@ -361,7 +361,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     async _selectFeeUiResponse(
         composer: TransactionComposer,
     ): Promise<SignedTransaction | 'change-account'> {
-        const resp = await this.createUiPromise(UI.RECEIVE_FEE).promise;
+        const resp = await this.createUiPromise(UI.RECEIVE_FEE, this.device).promise;
         switch (resp.payload.type) {
             case 'compose-custom':
                 // recompose custom fee level with requested value
