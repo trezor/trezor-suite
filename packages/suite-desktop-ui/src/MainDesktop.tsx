@@ -14,7 +14,7 @@ import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import {
     AppRouter,
     Preloader,
-    ToastContainer,
+    ToasterProvider,
     TrafficLightDraggableWindowHeader,
 } from 'src/components/suite';
 import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
@@ -51,7 +51,7 @@ const MainDesktop = ({ routerServices }: { routerServices: RouterServices }) => 
             <GlobalStyle />
             <DesktopUpdater />
             <Metadata />
-            <ToastContainer />
+            <ToasterProvider />
             <BioAuthGuard>
                 <Preloader>
                     <AppRouter components={desktopComponents} />
