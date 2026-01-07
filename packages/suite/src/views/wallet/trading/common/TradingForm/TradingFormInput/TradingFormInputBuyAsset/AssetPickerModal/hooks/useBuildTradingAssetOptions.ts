@@ -64,22 +64,28 @@ function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) 
 /**
  * Note this is going to be replaced soon with more sophisticated top assets logic.
  */
-function createTopFiveAssets() {
-    return [
-        createAssetNativeTokenOption('btc'),
-        createAssetNativeTokenOption('eth'),
-        createAssetTokenOption('eth', {
-            contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            symbol: 'usdt',
-            name: 'Tether',
-        }),
-        createAssetTokenOption('eth', {
-            contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            symbol: 'usdc',
-            name: 'USDC',
-        }),
-        createAssetNativeTokenOption('sol'),
-    ] satisfies TradingAssetOption[];
+function createTopFiveAssets(disabledCryptoIds: Set<CryptoId> = new Set()) {
+    return (
+        (
+            [
+                createAssetNativeTokenOption('btc'),
+                createAssetNativeTokenOption('eth'),
+                createAssetTokenOption('eth', {
+                    contract: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+                    symbol: 'usdt',
+                    name: 'Tether',
+                }),
+                createAssetTokenOption('eth', {
+                    contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    symbol: 'usdc',
+                    name: 'USDC',
+                }),
+                createAssetNativeTokenOption('sol'),
+            ] satisfies TradingAssetOption[]
+        )
+            // E.g. filter out "from" field value
+            .filter(asset => !disabledCryptoIds.has(asset.id))
+    );
 }
 
 export type TradingAssetListItem =
@@ -129,7 +135,8 @@ export function useBuildTradingAssetOptions({
     return useMemo(() => {
         const listItems: TradingAssetListItem[] = [];
 
-        const topFiveAssets = search.length === 0 && !networkSymbol ? createTopFiveAssets() : [];
+        const topFiveAssets =
+            search.length === 0 && !networkSymbol ? createTopFiveAssets(disabledCryptoIds) : [];
         const topFiveAssetIds = new Set(topFiveAssets.map(asset => asset.id));
 
         if (topFiveAssets.length > 0) {
