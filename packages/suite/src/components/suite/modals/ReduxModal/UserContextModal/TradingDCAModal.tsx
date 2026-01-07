@@ -3,7 +3,7 @@ import { ReactElement, useState } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { cryptoIdToNetwork, getTradingNetworkDecimals } from '@suite-common/trading/src/utils';
+import { cryptoIdToNetwork, getNetworkDecimalsWithFallback } from '@suite-common/trading/src/utils';
 import { Network, getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -126,10 +126,7 @@ const AddressSelect = ({
     addressLabels,
     network,
 }: AddressSelectProps) => {
-    const networkDecimals = getTradingNetworkDecimals({
-        sendCryptoSelect: undefined,
-        network,
-    });
+    const networkDecimals = getNetworkDecimalsWithFallback(network.symbol);
 
     return (
         <Select

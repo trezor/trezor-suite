@@ -10,18 +10,18 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { useSelector } from 'src/hooks/suite';
 
 export interface UseTradingFindAccountOrTokenProps {
-    tradingAccountKey: string;
+    accountKey: string;
     cryptoId: CryptoId;
 }
 
 /**
- * Based on `tradingAccountKey` and `cryptoId` find corresponding account or its token
+ * Based on `accountKey` and `cryptoId` find corresponding account or its token
  */
 export function useTradingFindAccountOrToken() {
     const accounts = useSelector(selectDeviceMainnetAccounts);
     const findAccountOrToken = useCallback(
-        ({ tradingAccountKey, cryptoId }: UseTradingFindAccountOrTokenProps) => {
-            const account = accounts.find(account => account.key === tradingAccountKey);
+        ({ accountKey, cryptoId }: UseTradingFindAccountOrTokenProps) => {
+            const account = accounts.find(account => account.key === accountKey);
 
             if (!account) {
                 return null;

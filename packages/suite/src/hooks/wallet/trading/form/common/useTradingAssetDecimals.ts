@@ -11,7 +11,7 @@ import { useTradingFindAccountOrToken } from './useTradingFindAccountOrToken';
 /**
  * Get decimals for the given asset
  */
-export function useTradingAssetDecimals(defaultDecimals = 8) {
+export function useTradingAssetDecimals(defaultDecimals = getNetwork('btc').decimals) {
     const findAccountOrToken = useTradingFindAccountOrToken();
 
     const getAssetDecimals = useCallback(

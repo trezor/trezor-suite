@@ -31,7 +31,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingExchangeFormDefaultValues = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { tradingAccountKey, cryptoId } = useTradingFormAccount();
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount();
 
     const defaultCurrency = useMemo(
         () =>
@@ -44,7 +44,7 @@ export const useTradingExchangeFormDefaultValues = () => {
             ),
         [baseCurrencyCode],
     );
-    const { account, defaultAsset } = useTradingDefaultSellAsset({ tradingAccountKey, cryptoId });
+    const { account, defaultAsset } = useTradingDefaultSellAsset({ accountKey, cryptoId });
     const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
     const defaultPayment: Output = useMemo(

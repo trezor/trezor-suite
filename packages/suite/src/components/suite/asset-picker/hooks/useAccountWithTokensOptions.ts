@@ -4,7 +4,7 @@ import { useThrottle } from 'react-use';
 import { CryptoId } from 'invity-api';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { getCryptoId } from '@suite-common/trading';
+import { getCryptoId, selectTradingExchangeSellCryptoIds } from '@suite-common/trading';
 import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
@@ -42,7 +42,6 @@ export interface UseAccountWithTokensOptionsProps {
 export function useAccountWithTokensOptions({
     networkSymbolFilter,
     accountFilter = () => true,
-    enabledCryptoIds = new Set(),
 }: UseAccountWithTokensOptionsProps): {
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
@@ -51,6 +50,11 @@ export function useAccountWithTokensOptions({
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
+    const supportedExchangeSellCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
+    const supportedCryptoIds = useMemo(
+        () => new Set(supportedExchangeSellCryptoIds),
+        [supportedExchangeSellCryptoIds],
+    );
 
     // Accounts are constantly being updated in Redux. So throttle them to significantly reduce re-renders
     const throttledAccounts = useThrottle(accounts, 1000);
@@ -128,7 +132,7 @@ export function useAccountWithTokensOptions({
                     ? getCryptoId(option.account.symbol)
                     : getCryptoId(option.account.symbol, option.token?.contract);
 
-            return enabledCryptoIds.has(cryptoId);
+            return supportedCryptoIds.has(cryptoId);
         });
 
         return {
@@ -142,6 +146,6 @@ export function useAccountWithTokensOptions({
         accountFilter,
         baseCurrencyCode,
         tokenDefinitions,
-        enabledCryptoIds,
+        supportedCryptoIds,
     ]);
 }

@@ -16,7 +16,7 @@ import type { HandleBuyRequestThunkProps, TradingBuyFormProps, TradingBuyType } 
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
-    getTradingNetworkDecimals,
+    getNetworkDecimalsWithFallback,
     getTradingPaymentMethods,
     tradingGetSuccessQuotes,
 } from '../../utils';
@@ -46,7 +46,7 @@ const getQuoteRequestData = ({
     const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect, amountInCrypto } =
         formValues;
 
-    const decimals = getTradingNetworkDecimals({ network });
+    const decimals = getNetworkDecimalsWithFallback(network.symbol);
     const cryptoStringAmount =
         cryptoInput && shouldSendInSats
             ? convertAmountSubunitsToUnits(cryptoInput, decimals)

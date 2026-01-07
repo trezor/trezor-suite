@@ -7,6 +7,7 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
+    getNetworkDecimalsWithFallback,
     useTradingUtils,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -39,11 +40,7 @@ import {
     isTradingExchangeContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import {
-    getFeeInUnits,
-    getNetworkDecimalsWithFallback,
-    tradingGetAccountLabel,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
 
 export const TradingFormInputCryptoAmount = ({
     cryptoInputName,

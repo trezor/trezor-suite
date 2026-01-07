@@ -6,7 +6,6 @@ import { TranslationKey } from '@suite-common/intl-types';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeType,
-    getTradingNetworkDecimals,
     useTradingUtils,
 } from '@suite-common/trading';
 import { Column, InfoItem, Input, Modal, Row, SelectBar, Text } from '@trezor/components';
@@ -16,6 +15,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
+import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const SLIPPAGE_MIN = '0.01';
@@ -67,8 +67,10 @@ export const TradingOfferExchangeSlippageModal = ({
     >();
 
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
-    const decimals = getTradingNetworkDecimals({
-        sendCryptoSelect,
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const decimals = getAssetDecimals({
+        tradingAccountKey: sendCryptoSelect?.accountKey,
+        cryptoId: sendCryptoSelect?.id,
     });
 
     useEffect(() => {

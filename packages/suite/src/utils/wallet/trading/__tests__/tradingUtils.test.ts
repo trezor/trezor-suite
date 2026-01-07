@@ -1,7 +1,5 @@
 import { CryptoId } from 'invity-api';
 
-import { TradingAccountOptionsGroupOptionProps } from '@suite-common/trading';
-
 import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 import { Account } from 'src/types/wallet';
 import {
@@ -13,7 +11,6 @@ import {
     buildTradingFiatOption,
     getCountryLabelParts,
     getTradeTypeByRoute,
-    getTradingCryptoInfo,
     resolveAddressAndToken,
     tradingBuildAccountOptions,
     tradingGetAccountLabel,
@@ -40,41 +37,6 @@ describe('trading utils', () => {
         expect(getCountryLabelParts('aaa')).toStrictEqual({
             flag: '',
             text: 'aaa',
-        });
-    });
-
-    describe('getTradingCryptoInfo', () => {
-        it('should return default values for undefined or null input parameters', () => {
-            expect(getTradingCryptoInfo(undefined)).toStrictEqual({
-                label: undefined,
-                networkSymbol: undefined,
-                contractAddress: undefined,
-            });
-
-            expect(getTradingCryptoInfo(null)).toStrictEqual({
-                label: undefined,
-                networkSymbol: undefined,
-                contractAddress: undefined,
-            });
-        });
-
-        it('should return correct values for token', () => {
-            const cryptoSelect: TradingAccountOptionsGroupOptionProps = {
-                accountType: 'normal',
-                balance: '5',
-                contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-                cryptoName: 'USD Coin',
-                decimals: 6,
-                descriptor: '0x3338dAad2eA599016E1e59b8B66799228ac76F3b',
-                label: 'USDC',
-                value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
-            };
-
-            expect(getTradingCryptoInfo(cryptoSelect)).toStrictEqual({
-                label: 'USDC',
-                networkSymbol: 'eth',
-                contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-            });
         });
     });
 

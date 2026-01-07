@@ -13,7 +13,7 @@ import { HandleSellRequestThunkProps, MinimalSellFormProps, TradingSellType } fr
 import {
     addIdsToQuotes,
     filterQuotesAccordingTags,
-    getTradingNetworkDecimals,
+    getNetworkDecimalsWithFallback,
     getTradingPaymentMethods,
     tradingGetSuccessQuotes,
 } from '../../utils';
@@ -39,7 +39,7 @@ const getQuoteRequestData = ({
     shouldSendInSats,
 }: GetQuoteRequestData): SellFiatTradeQuoteRequest | null => {
     const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = formValues;
-    const decimals = getTradingNetworkDecimals({ network });
+    const decimals = getNetworkDecimalsWithFallback(network.symbol);
 
     const fiatStringAmount = outputs[0].fiat;
     const unformattedOutputAmount = outputs[0].amount;

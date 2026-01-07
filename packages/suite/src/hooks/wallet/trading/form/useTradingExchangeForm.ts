@@ -240,7 +240,6 @@ export const useTradingExchangeForm = ({
     const { toggleAmountInCrypto } = useTradingCurrencySwitcher({
         account,
         methods,
-        network,
         inputNames: {
             cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
             fiatInput: TRADING_FORM_OUTPUT_FIAT,
