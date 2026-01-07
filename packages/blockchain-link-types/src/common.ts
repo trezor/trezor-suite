@@ -233,6 +233,10 @@ export interface TokenInfo {
     // transfers: number, // total transactions?
 }
 
+/**
+ * This is Backend data for the account. Data can change over time as transactions happen.
+ * Suite is subscribed to this and updates Account regularly.
+ */
 export interface AccountInfo {
     descriptor: string;
     balance: string;

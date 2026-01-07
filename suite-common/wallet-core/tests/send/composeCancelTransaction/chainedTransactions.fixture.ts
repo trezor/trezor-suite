@@ -1,10 +1,11 @@
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { ChainedTransactions, asAccountDescriptor } from '@suite-common/wallet-types';
 
 export const chainedTxsFixture: ChainedTransactions = {
     own: [
         {
-            descriptor:
+            descriptor: asAccountDescriptor(
                 'vpub5Z9LPnVj4bx9zqAjLJvRgnaUrcwXaW1H48VYtizkQeP2vLDxqWTNKqeYujfqquxuUEXdAfwtdVuCKYscvz4EXH9cADxKFHyvdapGXQnhvWf',
+            ),
             deviceState: 'mk9cuzrhHk5qy4K4u5tu3aiwD6DXo13zuy@8806280C47785970FA58D555:1',
             symbol: 'regtest',
             type: 'sent',

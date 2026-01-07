@@ -2,7 +2,11 @@ import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { RefreshSuiteKeysUnavailableType } from '@suite-common/suite-sync-types/libDev/src';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import {
+    DeviceCancelledErrType,
+    DeviceErrorType,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { Result, exhaustive } from '@trezor/type-utils';
 
@@ -47,7 +51,7 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
                     address: payload.defaultValue, // `payload.defaultValue` is the Address. For example: `"bc1q9mnl3ae6dra54uu2n9hp3d4jwkt0c2ux5l79ja"`
                     // The `payload.entityKey` is something else. For example `zpub6rY6av7j6m7Lnd6rgqw5jffjX2rgeirDWWivEmFDMCKxt7FkWD5XQSrXCSW2Vsh3vnqUo1r9XjoGZiW41jqfEBkrxxdPnS15QhwJFjwfZ1U-btc-momP8m1p6w1nteR3hNREZjNc48buvpPv8K@BCCD2503E021276E78A8EBB2:2`
                     label: value ?? null,
-                    accountDescriptor: payload.accountDescriptor,
+                    accountDescriptor: asAccountDescriptor(payload.accountDescriptor),
                     networkSymbol: payload.networkSymbol as NetworkSymbol,
                 });
 

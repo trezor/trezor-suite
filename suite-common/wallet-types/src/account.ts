@@ -127,7 +127,7 @@ export type Account = {
     index: number;
     path: Bip43Path;
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
-    descriptor: string;
+    descriptor: AccountDescriptor;
     descriptorChecksum?: string;
     accountType: AccountType;
     symbol: NetworkSymbol;

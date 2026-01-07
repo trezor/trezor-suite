@@ -1,12 +1,13 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { AccountHistoryMovementItem } from '../../types';
 
 export const btcAccountTransactions: WalletAccountTransaction[] = [
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -61,8 +62,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -116,8 +118,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -183,8 +186,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -260,8 +264,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -337,8 +342,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -465,8 +471,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -541,8 +548,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -610,8 +618,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'joint',
@@ -701,8 +710,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -779,8 +789,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -849,8 +860,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -918,8 +930,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -985,8 +998,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1072,8 +1086,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1142,8 +1157,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1200,8 +1216,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1268,8 +1285,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1325,8 +1343,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1393,8 +1412,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1457,8 +1477,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1514,8 +1535,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1597,8 +1619,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'self',
@@ -1698,8 +1721,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1766,8 +1790,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1842,8 +1867,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',
@@ -1899,8 +1925,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -1968,8 +1995,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'sent',
@@ -2036,8 +2064,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'self',
@@ -2107,8 +2136,9 @@ export const btcAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+        ),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'btc',
         type: 'recv',

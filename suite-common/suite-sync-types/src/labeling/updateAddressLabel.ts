@@ -1,5 +1,9 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+import {
+    AccountDescriptor,
+    DeviceCancelledErrType,
+    DeviceErrorType,
+} from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
@@ -9,7 +13,7 @@ export type UpdateAddressLabelParams = {
     deviceStaticSessionId: StaticSessionId;
     address: string;
     label: string | null;
-    accountDescriptor: Account['descriptor'];
+    accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
 };
 

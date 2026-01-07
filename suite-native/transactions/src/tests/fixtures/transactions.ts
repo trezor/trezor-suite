@@ -1,8 +1,9 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 
 export const transactionWithTargetInOutputs: WalletAccountTransaction = {
-    descriptor:
+    descriptor: asAccountDescriptor(
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+    ),
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
     symbol: 'btc',
     type: 'recv',
@@ -61,8 +62,9 @@ export const transactionWithTargetInOutputs: WalletAccountTransaction = {
 };
 
 export const transactionWithChangeAddress: WalletAccountTransaction = {
-    descriptor:
+    descriptor: asAccountDescriptor(
         'zpub6rjNNddoAVvuYaD6WPdxiqFEToQHgrERjWMg7kM9gGGk6rhPMWNEmL5X745FGqBq8Wp136LfA3A7UjRGEYdJrf8dUfshzNrb5rvaryNfVJf',
+    ),
     deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
     symbol: 'btc',
     type: 'sent',

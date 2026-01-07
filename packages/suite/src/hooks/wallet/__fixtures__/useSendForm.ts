@@ -6,7 +6,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { SendState, accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
-import { FeesState, SelectedAccountStatus } from '@suite-common/wallet-types';
+import { FeesState, SelectedAccountStatus, asAccountDescriptor } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -61,7 +61,7 @@ export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Pa
     account: testMocks.getWalletAccount({
         symbol: 'btc',
         networkType: 'bitcoin',
-        descriptor: 'xpub',
+        descriptor: asAccountDescriptor('xpub'),
         deviceState: '1stTestnetAddress@device_id:0',
         key: 'xpub-btc-1stTestnetAddress@device_id:0',
         addresses: {
@@ -133,7 +133,7 @@ export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     account: testMocks.getWalletAccount({
         symbol: 'eth',
         networkType: 'ethereum',
-        descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+        descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
         deviceState: '1stTestnetAddress@device_id:0',
         key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0',
         balance: '10000000000000000000', // 10 ETH
@@ -157,7 +157,7 @@ export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     account: testMocks.getWalletAccount({
         symbol: 'xrp',
         networkType: 'ripple',
-        descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+        descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
         deviceState: '1stTestnetAddress@device_id:0',
         key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0',
         balance: '100000000', // 100 XRP
@@ -172,7 +172,7 @@ export const SOL_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     account: {
         symbol: 'sol',
         networkType: 'solana',
-        descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+        descriptor: asAccountDescriptor('ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF'),
         deviceState: '1stTestnetAddress@device_id:0',
         key: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-1stTestnetAddress@device_id:0',
         balance: '10000000000', // 10 SOL

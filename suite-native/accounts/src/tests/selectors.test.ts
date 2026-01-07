@@ -1,4 +1,4 @@
-import { Account, TokenInfoBranded } from '@suite-common/wallet-types';
+import { Account, TokenInfoBranded, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { getAccountListSections, selectFreshAccountAddress } from '../selectors';
 import {
@@ -167,7 +167,7 @@ describe('selectFreshAccountAddress', () => {
         deviceState: 'device@state:1',
         index: 0,
         path: "m/44'/0'/0'",
-        descriptor: 'descriptor',
+        descriptor: asAccountDescriptor('descriptor'),
         accountType: 'normal',
         empty: false,
         visible: true,

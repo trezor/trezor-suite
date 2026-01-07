@@ -6,6 +6,7 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { AccountDescriptor } from '@suite-common/wallet-types';
 import { Box, Card, InlineAlertBoxProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AddressQRCode } from '@suite-native/qr-code';
@@ -17,7 +18,7 @@ type ReceiveAddressCardProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
     isReceiveApproved: boolean;
-    accountDescriptor: string;
+    accountDescriptor: AccountDescriptor;
     isUnverifiedAddressRevealed: boolean;
     symbol: NetworkSymbol;
     onShowAddress: () => void;

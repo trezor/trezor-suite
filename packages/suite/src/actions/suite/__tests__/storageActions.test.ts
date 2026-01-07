@@ -10,6 +10,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
@@ -61,14 +62,14 @@ const dev2Instance1 = getSuiteDevice({
 const acc1 = getWalletAccount({
     deviceState: dev1.state?.staticSessionId,
     symbol: 'btc',
-    descriptor: 'desc1',
+    descriptor: asAccountDescriptor('desc1'),
     key: `desc1-btc-${dev1.state?.staticSessionId}`,
     networkType: 'bitcoin',
 });
 const acc2 = getWalletAccount({
     deviceState: dev2.state?.staticSessionId,
     symbol: 'btc',
-    descriptor: 'desc2',
+    descriptor: asAccountDescriptor('desc2'),
     key: `desc2-btc-${dev2.state?.staticSessionId}`,
     networkType: 'bitcoin',
 });
@@ -76,13 +77,13 @@ const acc2 = getWalletAccount({
 const tx1 = getWalletTransaction({
     deviceState: dev1.state?.staticSessionId,
     txid: 'txid1',
-    descriptor: 'desc1',
+    descriptor: asAccountDescriptor('desc1'),
     symbol: 'btc',
 });
 const tx2 = getWalletTransaction({
     deviceState: dev2.state?.staticSessionId,
     txid: 'txid2',
-    descriptor: 'desc2',
+    descriptor: asAccountDescriptor('desc2'),
     symbol: 'btc',
 });
 
@@ -408,7 +409,7 @@ describe('Storage actions', () => {
         const accLtc = getWalletAccount({
             deviceState: dev1.state!.staticSessionId!,
             symbol: 'ltc',
-            descriptor: 'desc2',
+            descriptor: asAccountDescriptor('desc2'),
             key: `desc2-ltc-${dev1.state}`,
             networkType: 'bitcoin',
         });

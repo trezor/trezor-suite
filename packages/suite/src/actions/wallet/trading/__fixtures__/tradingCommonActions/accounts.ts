@@ -1,9 +1,11 @@
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+
 import { Account } from 'src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc',
-    descriptor: 'btc-descriptor',
+    descriptor: asAccountDescriptor('btc-descriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
@@ -51,7 +53,7 @@ export const BTC_ACCOUNT: Account = {
 export const ETH_ACCOUNT: Account = {
     symbol: 'eth',
     networkType: 'ethereum',
-    descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+    descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-deviceState',
     accountType: 'normal',
@@ -90,7 +92,7 @@ export const ETH_ACCOUNT: Account = {
 export const XRP_ACCOUNT: Account = {
     symbol: 'xrp',
     networkType: 'ripple',
-    descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
+    descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-deviceState',
     availableBalance: '100000000000',

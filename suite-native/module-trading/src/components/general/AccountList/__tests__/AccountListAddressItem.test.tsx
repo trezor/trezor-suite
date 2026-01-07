@@ -1,4 +1,4 @@
-import { Account } from '@suite-common/wallet-types';
+import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { ReceiveAccount } from '@suite-native/trading-types';
 
@@ -19,7 +19,7 @@ const createAccount = (
     deviceState: 'a@b:1',
     index: 0,
     path: `m/0'/0'/0'`,
-    descriptor: '',
+    descriptor: asAccountDescriptor(''),
     accountType: 'normal',
     empty: false,
     visible: false,

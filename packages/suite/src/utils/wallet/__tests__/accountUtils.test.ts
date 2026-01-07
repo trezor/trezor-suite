@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import * as accountUtils from '../accountUtils';
 
@@ -16,14 +17,15 @@ describe('account utils', () => {
                 '1stTestnetAddress@device_id:0',
                 [
                     getWalletAccount({
-                        descriptor:
+                        descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        ),
                         symbol: 'btc',
                         index: 0,
                     }),
                     getWalletAccount({
                         symbol: 'btc',
-                        descriptor: '123',
+                        descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
@@ -37,7 +39,7 @@ describe('account utils', () => {
         ).toEqual(
             getWalletAccount({
                 symbol: 'btc',
-                descriptor: '123',
+                descriptor: asAccountDescriptor('123'),
                 accountType: 'normal',
                 index: 1,
             }),
@@ -48,14 +50,15 @@ describe('account utils', () => {
                 '1stTestnetAddress@device_id:0',
                 [
                     getWalletAccount({
-                        descriptor:
+                        descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        ),
                         symbol: 'btc',
                         index: 0,
                     }),
                     getWalletAccount({
                         symbol: 'btc',
-                        descriptor: '123',
+                        descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
@@ -69,14 +72,15 @@ describe('account utils', () => {
                 undefined,
                 [
                     getWalletAccount({
-                        descriptor:
+                        descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        ),
                         symbol: 'btc',
                         index: 0,
                     }),
                     getWalletAccount({
                         symbol: 'btc',
-                        descriptor: '123',
+                        descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
@@ -94,14 +98,15 @@ describe('account utils', () => {
                 '1stTestnetAddress@device_id:0',
                 [
                     getWalletAccount({
-                        descriptor:
+                        descriptor: asAccountDescriptor(
                             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+                        ),
                         symbol: 'btc',
                         index: 0,
                     }),
                     getWalletAccount({
                         symbol: 'btc',
-                        descriptor: '123',
+                        descriptor: asAccountDescriptor('123'),
                         accountType: 'normal',
                         index: 1,
                     }),
