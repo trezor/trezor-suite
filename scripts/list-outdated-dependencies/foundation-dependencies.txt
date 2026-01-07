@@ -79,7 +79,6 @@ vm-browserify
 webpack
 webpack-bundle-analyzer
 webpack-cli
-webpack-dev-server
 webpack-merge
 webpack-plugin-serve
 yargs

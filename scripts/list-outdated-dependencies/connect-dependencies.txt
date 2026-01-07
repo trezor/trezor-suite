@@ -42,7 +42,6 @@ crypto-browserify
 es6-promise
 esbuild
 escape-string-regexp
-eth-phishing-detect
 flexsearch
 focus-visible
 git-url-parse

@@ -1,5 +1,5 @@
 name: "Connect Deploy Action"
-description: "Releases connect with connect explorer and popup"
+description: "Releases connect with connect explorer"
 inputs:
   awsRoleToAssume:
     description: "AWS role to assume"
@@ -78,14 +78,6 @@ runs:
       run: |
         yarn workspace @trezor/connect-iframe build
 
-    - name: Build connect-popup
-      shell: bash
-      env:
-        NODE_ENV: ${{ inputs.nodeEnv }}
-        ASSET_PREFIX: /${{ inputs.serverPath }}
-      run: |
-        yarn workspace @trezor/connect-popup build
-
     - name: Build connect-webextension
       shell: bash
       run: |
@@ -116,7 +108,6 @@ runs:
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory
         cp -R ./packages/connect-iframe/build/* tmp_build_directory/
-        cp -R ./packages/connect-popup/build/* tmp_build_directory/
         cp -R ./packages/connect-web/build/* tmp_build_directory/
         cp -R ./packages/connect-explorer/build/* tmp_build_directory/
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"

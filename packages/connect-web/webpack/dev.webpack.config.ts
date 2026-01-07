@@ -6,7 +6,6 @@ import { WebpackPluginServe } from 'webpack-plugin-serve';
 // todo: https://github.com/trezor/trezor-suite/issues/5305
 import prod from './prod.webpack.config';
 import iframe from '../../connect-iframe/webpack/iframe.webpack.config';
-import popup from '../../connect-popup/webpack/prod.webpack.config';
 // todo: https://github.com/trezor/trezor-suite/issues/5305
 
 const dev = {
@@ -37,11 +36,10 @@ const dev = {
                       },
             static: [
                 path.join(__dirname, '../build'),
-                path.join(__dirname, '../../connect-popup/build'),
                 path.join(__dirname, '../../connect-iframe/build'),
             ],
         }),
     ],
 };
 
-export default merge([iframe, popup, prod, dev]);
+export default merge([iframe, prod, dev]);

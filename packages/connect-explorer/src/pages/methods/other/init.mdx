@@ -23,9 +23,7 @@ export const InitSchema = Type.Object({
             ]),
         ),
     ),
-    coreMode: Type.Optional(
-        Type.Union([Type.Literal('auto'), Type.Literal('iframe'), Type.Literal('popup')]),
-    ),
+    coreMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('iframe')])),
 });
 
 export const paramDescriptions = {
@@ -39,6 +37,7 @@ export const paramDescriptions = {
     interactionTimeout: 'default `600`. Time in seconds after which popup automatically closes.',
     lazyLoad:
         'default `false`. Postpone iframe creation until TrezorConnect is called for the first time.',
+        // todo: when we are doing params
     popup: 'default `true`. Projects running on trusted domains (trezor.io) are not required to use popup. For other domains this option is ignored.',
     transports:
         'Array of transports that should be use. If not provided, TrezorConnect will choose a reasonable default based on your environment.',
