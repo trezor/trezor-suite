@@ -1,5 +1,4 @@
 import { ERRORS } from '../../constants';
-import { DataManager } from '../../data/DataManager';
 import { DEVICE, UI, createDeviceMessage, createUiMessage } from '../../events';
 import { StaticSessionId } from '../../types';
 import { WorkflowContext } from '../../types/workflow';
@@ -163,34 +162,10 @@ export const validateState = async (context: WorkflowContext) => {
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
-    const isUsingPopup = false;
+
     try {
-        let invalidDeviceState = await validate(context);
-        if (isUsingPopup) {
-            while (invalidDeviceState) {
-                const uiPromise = method.createUiPromise(UI.INVALID_PASSPHRASE_ACTION, device);
-                // request action view
-                method.postMessage(
-                    createUiMessage(UI.INVALID_PASSPHRASE, {
-                        device: device.toMessageObject(),
-                    }),
-                );
-
-                // wait for user response
-                const uiResp = await uiPromise.promise;
-                if (uiResp.payload) {
-                    // reset sessionId and try again
-                    device.setState({ sessionId: undefined });
-                    await device.initialize(method.useCardanoDerivation);
-
-                    invalidDeviceState = await validate(context);
-                } else {
-                    // set new state as requested
-                    device.setState({ staticSessionId: invalidDeviceState });
-                    break;
-                }
-            }
-        } else if (invalidDeviceState) {
+        const invalidDeviceState = await validate(context);
+        if (invalidDeviceState) {
             throw ERRORS.TypedError('Device_InvalidState');
         }
     } catch (error) {
