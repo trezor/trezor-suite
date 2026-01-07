@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { selectWalletLabel } from '@suite-common/suite-sync';
+import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -8,7 +8,7 @@ import {
     selectCurrentFiatRates,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { getAllAccounts } from '@suite-common/wallet-utils';
+import { getAllAccounts, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import {
     Box,
     Card,
@@ -21,6 +21,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -34,7 +35,7 @@ import { useStore } from 'src/hooks/suite/useStore';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
-import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
@@ -47,6 +48,24 @@ type WalletInstanceProps = {
     index: number; // used only in data-test
     onCancel?: ForegroundAppProps['onCancel'];
 };
+
+const selectCombinedWalletLabel =
+    (deviceStaticSessionId: StaticSessionId | null) => (state: AppState) => {
+        if (!deviceStaticSessionId) return '';
+
+        const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+        const walletLabel = selectSuiteSyncWalletLabel(state, walletDescriptor);
+        if (walletLabel) {
+            return walletLabel;
+        }
+
+        const oldWalletLabel = selectLabelingDataForWallet(
+            state,
+            deviceStaticSessionId,
+        ).walletLabel;
+
+        return oldWalletLabel ?? '';
+    };
 
 export const WalletInstance = ({
     instance,
@@ -78,11 +97,9 @@ export const WalletInstance = ({
         selectLabelingDataForWallet(state, instance.state),
     );
 
-    const suiteSyncWalletLabel = useSelector(state =>
-        selectWalletLabel({ state, deviceStaticSessionId: instance?.state?.staticSessionId }),
+    const walletLabel = useSelector(
+        selectCombinedWalletLabel(instance?.state?.staticSessionId ?? null),
     );
-
-    const walletLabel = suiteSyncWalletLabel ?? oldWalletLabel;
 
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 

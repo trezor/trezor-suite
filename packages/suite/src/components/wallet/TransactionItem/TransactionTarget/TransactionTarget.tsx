@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { selectOutputLabels } from '@suite-common/suite-sync';
+import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectBaseCurrency,
@@ -74,7 +74,7 @@ export const TransactionTarget = ({
     );
     const labelingValueBeingEdited = useSelector(selectLabelingValueBeingEdited);
     const suiteSyncOutputLabels = useSelector(state =>
-        selectOutputLabels(state, transaction.deviceState),
+        selectSuiteSyncOutputLabels(state, transaction.deviceState),
     );
     const isSolanaUnstakeTx = transaction?.solanaSpecific?.stakeOperation?.type === 'unstake';
 

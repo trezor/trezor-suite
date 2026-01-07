@@ -65,9 +65,18 @@ export const AccountSettingsScreen = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, accountKey),
     );
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+
+    const accountLabel = useSelector((state: CombinedLabelingState) => {
+        if (!account) return null;
+
+        return selectAccountLabel(
+            state,
+            account.deviceState,
+            account.descriptor,
+            account.symbol,
+            accountKey,
+        );
+    });
 
     if (!account) return null;
 

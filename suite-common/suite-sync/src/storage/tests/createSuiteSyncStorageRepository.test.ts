@@ -5,10 +5,12 @@ import { asStorageId, createSuiteSyncStorageRepository } from '../createSuiteSyn
 
 const storageId1 = asStorageId('1');
 const storage: SuiteSyncStorage = {
-    accountLabels: {} as any,
-    addressLabels: {} as any,
-    outputLabels: {} as any,
-    walletLabels: {} as any,
+    data: {
+        accounts: {} as any,
+        addresses: {} as any,
+        outputs: {} as any,
+        wallets: {} as any,
+    },
     dispose: jest.fn(),
     updateRelayUrl: mockNotExpected('updateRelayUrl'),
 };

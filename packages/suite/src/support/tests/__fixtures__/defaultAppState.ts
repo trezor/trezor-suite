@@ -1,7 +1,6 @@
 import { FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { MetadataState } from '@suite-common/metadata-types';
-import { initialLabelingState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager/src/quotaManagerReducer';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -27,7 +26,9 @@ export const initialAppState: AppState = {
         lastThpCode: undefined,
         credentials: [],
     },
-    labeling: initialLabelingState,
+    suiteSyncData: {
+        wallets: {},
+    },
     suiteSync: initialSuiteSyncState,
     suiteSyncQuotaManager: quotaManagerInitialState,
     window: {

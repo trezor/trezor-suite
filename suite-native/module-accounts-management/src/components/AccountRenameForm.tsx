@@ -33,9 +33,17 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const inputRef = useRef<InputType>(null);
 
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+    const accountLabel = useSelector((state: CombinedLabelingState) => {
+        if (!account) return null;
+
+        return selectAccountLabel(
+            state,
+            account.deviceState,
+            account.descriptor,
+            account.symbol,
+            accountKey,
+        );
+    });
 
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {

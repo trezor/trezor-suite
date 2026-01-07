@@ -1,4 +1,4 @@
-import { selectAccountLabel } from '@suite-common/suite-sync';
+import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { BadgeSize, Row, Text } from '@trezor/components';
@@ -22,11 +22,7 @@ export const AccountLabel = ({
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
     const suiteSyncAccountLabel = useSelector(state =>
-        selectAccountLabel({
-            state,
-            walletDescriptor,
-            accountKey: account.key,
-        }),
+        selectSuiteSyncAccountLabel(state, walletDescriptor, account.descriptor, account.symbol),
     );
     const { accountLabel: legacyAccountLabel } = useSelector(state =>
         selectLabelingDataForAccount(state, account.key),

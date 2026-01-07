@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { WithLabelingState, selectOutputLabel } from '@suite-common/suite-sync';
+import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-common/suite-sync';
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -19,13 +19,8 @@ export const TransactionOutputLabel = ({
 }: TransactionOutputLabelProps) => {
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
 
-    const label = useSelector((state: WithLabelingState) =>
-        selectOutputLabel({
-            state,
-            txId,
-            outputIndex,
-            deviceStaticSessionId,
-        }),
+    const label = useSelector((state: SuiteSyncDataRootState) =>
+        selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
     );
 
     return isLabelingEnabled ? <Text>{label}</Text> : null;
