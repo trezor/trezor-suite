@@ -27,6 +27,7 @@ import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema
 import { truncateDecimals } from '../../utils/general/amountUtils';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
+import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 
 const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: BuyFormType) => {
@@ -231,6 +232,7 @@ export const useBuyForm = (): BuyFormType => {
     useBuyQuoteChangeEffect(form);
     useValidations(form, limits);
     useCountryChangeEffect(watch);
+    useProviderMetadataChangeEffect(watch, 'buy');
 
     return form;
 };

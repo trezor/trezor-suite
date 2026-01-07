@@ -29,6 +29,7 @@ import { truncateDecimals } from '../../utils/general/amountUtils';
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
+import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
 
@@ -222,6 +223,7 @@ export const useSellForm = (): SellFormType => {
     useSellQuoteChangeEffect(form);
     useValidations(form, limits);
     useCountryChangeEffect(watch);
+    useProviderMetadataChangeEffect(watch, 'sell');
 
     return form;
 };

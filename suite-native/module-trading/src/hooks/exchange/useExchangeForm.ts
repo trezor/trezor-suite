@@ -28,6 +28,7 @@ import { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-type
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
+import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
 import { useSendAccountAssetBalance } from '../general/form/useSendAccountAssetBalance';
 import { useSendAccountChangeEffect } from '../general/form/useSendAccountChangeEffect';
@@ -182,7 +183,7 @@ export const useExchangeForm = () => {
         validation: exchangeFormValidationSchema,
         context,
     });
-    const { setValue } = form;
+    const { setValue, watch } = form;
 
     useExchangeQuotesChangeEffect(form);
     useExchangeQuoteChangeEffect(form);
@@ -191,6 +192,7 @@ export const useExchangeForm = () => {
     useAmountAndCurrencyFieldsChangeEffect(form);
     useSendAccountAssetBalance(form, setBalance, setSendSymbol);
     useValidations(form, limits);
+    useProviderMetadataChangeEffect(watch, 'exchange');
 
     return form;
 };
