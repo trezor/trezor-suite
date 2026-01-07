@@ -13,6 +13,9 @@ import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { CryptoIconPlaceholder } from './CryptoIconPlaceholder';
+
 export interface CryptoIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
     contractAddress?: string;
@@ -45,6 +48,11 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
     const [showPlaceholder, setShowPlaceholder] = useState(false);
 
     const sizeNumber = typeof size === 'number' ? size : cryptoIconSizes[size];
+    const iconContainerStyle = useMemo(
+        () => applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber }),
+        [applyStyle, sizeNumber],
+    );
+
     const key = `${symbol}${contractAddress ?? ''}`;
 
     const sourceUrls = useMemo(() => {
@@ -84,8 +92,14 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
         }
     };
 
-    // TODO: display Placeholder
-    if (showPlaceholder) return <></>;
+    if (showPlaceholder) {
+        return (
+            <CryptoIconPlaceholder
+                placeholder={symbol.toUpperCase()}
+                containerStyle={iconContainerStyle}
+            />
+        );
+    }
 
     return (
         <Image
@@ -93,7 +107,7 @@ export const CryptoIcon = ({ symbol, contractAddress, size = 'small' }: CryptoIc
             accessibilityHint={translate('icons.cryptoIconHint')}
             accessibilityLabel={key}
             recyclingKey={key}
-            style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
+            style={iconContainerStyle}
             placeholder={genericTokenIcon}
             onError={handleLoadError}
             cachePolicy="memory-disk"
