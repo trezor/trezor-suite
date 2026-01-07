@@ -182,6 +182,7 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
     CoinEnablingInit = 'CoinEnablingInit',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum DevUtilsStackRoutes {

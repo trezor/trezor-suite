@@ -12,6 +12,7 @@ import {
 } from '@suite-native/navigation';
 
 import { PassphraseStackNavigator } from './PassphraseStackNavigator';
+import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectBluetoothDeviceScreen } from '../screens/connect/ConnectBluetoothDeviceScreen';
 import { ConnectDeviceCrossroadsScreen } from '../screens/connect/ConnectDeviceCrossroadsScreen';
@@ -72,7 +73,7 @@ export const AuthorizeDeviceStackNavigator = () => {
                     </AuthorizeDeviceStack.Group>
                 )
             }
-            {!isDeviceThpRequired && hasDeviceRequestedPin && (
+            {!isDeviceThpRequired && (
                 <AuthorizeDeviceStack.Screen
                     name={AuthorizeDeviceStackRoutes.PinMatrix}
                     component={PinScreen}
@@ -109,6 +110,10 @@ export const AuthorizeDeviceStackNavigator = () => {
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.CoinEnablingInit}
                 component={CoinEnablingInitScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.ContinueOnTrezor}
+                component={ContinueOnTrezorScreen}
             />
         </AuthorizeDeviceStack.Navigator>
     );

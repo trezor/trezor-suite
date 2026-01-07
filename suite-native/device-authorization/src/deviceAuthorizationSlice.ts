@@ -7,92 +7,120 @@ import {
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import { isPinButtonRequestCode } from './utils';
+import {
+    isFlowEndingButtonRequest,
+    isPinButtonRequestCode,
+    isSuiteSyncButtonRequest,
+} from './utils';
+
+export enum DeviceAuthorizationStep {
+    Idle = 'Idle', // Default state, AuthorizeDeviceStack should not be focused.
+
+    // Custom continue on your trezor
+    PinRequested = 'PinRequested',
+    AddPassphraseWallet = 'AddPassphraseWallet', // When adding a new passphrase wallet
+    PassphraseRequested = 'PassphraseRequested',
+    CheckPassphraseOnDevice = 'CheckPassphraseOnDevice',
+    InputPassphraseOnDevice = 'InputPassphraseOnDevice',
+
+    // Default continue on your trezor
+    ContinueOnTrezorRequested = 'ContinueOnTrezorRequested',
+}
+
+export enum DeviceAuthorizationIntent {
+    AddHiddenWallet = 'addHiddenWallet',
+}
 
 export type DeviceAuthorizationState = {
-    hasDeviceRequestedPin: boolean;
-    hasDeviceRequestedPassphrase: boolean;
-    checkPassphraseOnDevice: boolean;
-    inputPassphraseOnDevice: boolean;
+    deviceAuthorizationStep: DeviceAuthorizationStep;
+    deviceAuthorizationIntent: DeviceAuthorizationIntent | null;
 };
 
-type DeviceAuthorizationRootState = {
+export type DeviceAuthorizationRootState = {
     deviceAuthorization: DeviceAuthorizationState;
 };
 
 export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
-    hasDeviceRequestedPin: false,
-    hasDeviceRequestedPassphrase: false,
-    checkPassphraseOnDevice: false,
-    inputPassphraseOnDevice: false,
+    deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
+    deviceAuthorizationIntent: null,
 };
 
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
     reducers: {
-        setCheckPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
-            state.checkPassphraseOnDevice = action.payload;
+        changeDeviceAuthorizationStep: (
+            state,
+            { payload }: PayloadAction<DeviceAuthorizationStep>,
+        ) => {
+            state.deviceAuthorizationStep = payload;
         },
-        setInputPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
-            state.inputPassphraseOnDevice = action.payload;
+        changeDeviceAuthorizationIntent: (
+            state,
+            { payload }: PayloadAction<DeviceAuthorizationIntent | null>,
+        ) => {
+            state.deviceAuthorizationIntent = payload;
         },
     },
     extraReducers: builder => {
         builder
             .addCase(UI.REQUEST_PIN, state => {
-                state.hasDeviceRequestedPin = true;
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
             })
             .addCase(UI.REQUEST_PASSPHRASE, state => {
-                state.hasDeviceRequestedPin = false;
-                state.hasDeviceRequestedPassphrase = true;
-            })
-            .addCase(UI.REQUEST_BUTTON, (state, action) => {
-                if (isPinButtonRequestCode(action)) {
-                    state.hasDeviceRequestedPin = true;
+                // Adding passphrase wallet is handled by separate screen
+                if (state.deviceAuthorizationIntent === DeviceAuthorizationIntent.AddHiddenWallet) {
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.AddPassphraseWallet;
                 } else {
-                    state.hasDeviceRequestedPin = false;
-                }
-
-                // @ts-expect-error Actions are not typed properly
-                if (action.payload.code !== 'ButtonRequest_Other') {
-                    state.hasDeviceRequestedPassphrase = false;
-                } else {
-                    state.checkPassphraseOnDevice = true;
-                }
-
-                // @ts-expect-error Actions are not typed properly
-                if (action.payload.code === 'ButtonRequest_Address') {
-                    state.inputPassphraseOnDevice = false;
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
                 }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
-                state.hasDeviceRequestedPin = false;
-                state.hasDeviceRequestedPassphrase = false;
-                state.checkPassphraseOnDevice = false;
-                state.inputPassphraseOnDevice = false;
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+                state.deviceAuthorizationIntent = null;
             })
             .addCase(UI.REQUEST_PASSPHRASE_ON_DEVICE, state => {
-                state.inputPassphraseOnDevice = true;
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.InputPassphraseOnDevice;
+            })
+            .addMatcher(isFlowEndingButtonRequest, state => {
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+                state.deviceAuthorizationIntent = null;
+            })
+            .addMatcher(isSuiteSyncButtonRequest, state => {
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.ContinueOnTrezorRequested;
+            })
+            .addMatcher(isPinButtonRequestCode, state => {
+                state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
             });
     },
 });
 
+export const selectDeviceAuthorizationStep = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.deviceAuthorizationStep;
+
+export const selectDeviceAuthorizationIntent = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.deviceAuthorizationIntent;
+
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.hasDeviceRequestedPin;
+    state.deviceAuthorization.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested;
 
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.hasDeviceRequestedPassphrase;
+    state.deviceAuthorization.deviceAuthorizationStep ===
+        DeviceAuthorizationStep.PassphraseRequested ||
+    state.deviceAuthorization.deviceAuthorizationStep ===
+        DeviceAuthorizationStep.CheckPassphraseOnDevice ||
+    state.deviceAuthorization.deviceAuthorizationStep ===
+        DeviceAuthorizationStep.InputPassphraseOnDevice;
 
 export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.inputPassphraseOnDevice;
+    state.deviceAuthorization.deviceAuthorizationStep ===
+    DeviceAuthorizationStep.InputPassphraseOnDevice;
 
 export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.checkPassphraseOnDevice;
+    state.deviceAuthorization.deviceAuthorizationStep ===
+    DeviceAuthorizationStep.CheckPassphraseOnDevice;
 
-export const selectHasPassphraseError = (
-    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
-) => {
+export const selectHasPassphraseError = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
     return (
@@ -136,7 +164,10 @@ export const isPassphraseDeviceLoadingDone = (
         return false;
     }
 
-    return !state.deviceAuthorization.hasDeviceRequestedPassphrase;
+    return (
+        state.deviceAuthorization.deviceAuthorizationStep !==
+        DeviceAuthorizationStep.PassphraseRequested
+    );
 };
 
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
@@ -169,7 +200,7 @@ export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & D
     );
 };
 
-export const { setCheckPassphraseOnDevice, setInputPassphraseOnDevice } =
+export const { changeDeviceAuthorizationStep, changeDeviceAuthorizationIntent } =
     deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

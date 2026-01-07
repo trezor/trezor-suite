@@ -18,6 +18,8 @@ import {
 } from '@suite-native/navigation';
 
 import {
+    DeviceAuthorizationStep,
+    selectDeviceAuthorizationStep,
     selectDeviceRequestedPassphrase,
     selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
@@ -46,6 +48,7 @@ export const useHandleDeviceAuthorization = () => {
     );
     const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
+    const deviceAuthorizationStep = useSelector(selectDeviceAuthorizationStep);
 
     const handleRequestPassphrase = useCallback(() => {
         // NOTE: if the passphrase flow IS NOT in the beginning skip these calls
@@ -90,4 +93,12 @@ export const useHandleDeviceAuthorization = () => {
             });
         }
     }, [hasDeviceRequestedPin, isOnPinMatrixBlacklistedRoute, navigation]);
+
+    useEffect(() => {
+        if (deviceAuthorizationStep === DeviceAuthorizationStep.ContinueOnTrezorRequested) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.ContinueOnTrezor,
+            });
+        }
+    }, [deviceAuthorizationStep, navigation]);
 };

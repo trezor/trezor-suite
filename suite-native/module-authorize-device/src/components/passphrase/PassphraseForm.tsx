@@ -15,7 +15,10 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
-import { setCheckPassphraseOnDevice } from '@suite-native/device-authorization';
+import {
+    DeviceAuthorizationStep,
+    changeDeviceAuthorizationStep,
+} from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -71,7 +74,7 @@ export const PassphraseForm = ({
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         if (!device) return;
         dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false }));
-        dispatch(setCheckPassphraseOnDevice(true));
+        dispatch(changeDeviceAuthorizationStep(DeviceAuthorizationStep.CheckPassphraseOnDevice));
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
         // NOTE: useful for redirets from different contexts eg. passphrase feature unlock

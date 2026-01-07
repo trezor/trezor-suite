@@ -25,4 +25,5 @@ export * from './components/EmptyWalletSvg';
 export * from './components/ConfirmOnTrezorAnimation';
 export * from './components/TrezorDeviceSvg';
 export * from './components/ConfirmOnTrezor';
+export * from './components/DeviceInteractionScreenWrapper';
 export * from './hooks/useDeviceLowBatteryAlert';
