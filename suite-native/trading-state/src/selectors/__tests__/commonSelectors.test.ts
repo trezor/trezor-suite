@@ -44,6 +44,7 @@ import {
     selectTradesToWatchByAccount,
     selectTradingEnvironment,
     selectTradingProviderConfirmationStatus,
+    selectTradingProviderMetadata,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from '../commonSelectors';
 
@@ -1290,6 +1291,32 @@ describe('commonSelectors', () => {
             const result = selectTradingProviderConfirmationStatus(state);
 
             expect(result).toBe('window_closed_with_success');
+        });
+    });
+
+    describe('selectTradingProviderMetadata', () => {
+        it('should return currentProviderMetadata', () => {
+            const state = {
+                wallet: {
+                    trading: {
+                        currentProviderMetadata: {
+                            name: 'TEST_PROVIDER_NAME',
+                            companyName: 'TEST_COMPANY_NAME',
+                            logo: 'TEST_LOGO',
+                            isActive: true,
+                        },
+                    },
+                },
+            } as TradingRootState;
+
+            const result = selectTradingProviderMetadata(state);
+
+            expect(result).toEqual({
+                name: 'TEST_PROVIDER_NAME',
+                companyName: 'TEST_COMPANY_NAME',
+                logo: 'TEST_LOGO',
+                isActive: true,
+            });
         });
     });
 });
