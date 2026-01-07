@@ -41,7 +41,6 @@ bs58
 bs58check
 cashaddrjs
 create-hmac
-eth-phishing-detect
 event-target-shim
 golomb
 immer

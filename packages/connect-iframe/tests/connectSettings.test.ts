@@ -44,49 +44,6 @@ describe('connect-iframe parseConnectSettings', () => {
         });
     });
 
-    it('trustedHost + popup + debug (iframe localhost location)', () => {
-        window.location = {
-            protocol: 'http:',
-            hostname: 'localhost',
-        };
-
-        expect(parseConnectSettings({ popup: false, debug: true }, '')).toMatchObject({
-            trustedHost: true,
-            popup: false,
-            debug: true,
-        });
-
-        expect(parseConnectSettings({ popup: true, debug: true }, '')).toMatchObject({
-            trustedHost: true,
-            popup: true,
-            debug: true,
-        });
-    });
-
-    it('trustedHost + popup + debug (iframe online location)', () => {
-        expect(
-            parseConnectSettings({ popup: false, debug: true }, 'https://connect.trezor.io'),
-        ).toMatchObject({
-            trustedHost: true,
-            popup: false,
-            debug: true,
-        });
-
-        expect(
-            parseConnectSettings({ popup: true, debug: true }, 'https://connect.trezor.io'),
-        ).toMatchObject({
-            trustedHost: true, // because of whitelisted origin
-            popup: true,
-            debug: true, // because of whitelisted origin
-        });
-
-        expect(parseConnectSettings({ popup: false, debug: true }, '')).toMatchObject({
-            trustedHost: false,
-            popup: true,
-            debug: false,
-        });
-    });
-
     it('priority', () => {
         expect(parseConnectSettings({}, 'https://connect.trezor.io')).toMatchObject({
             origin: 'https://connect.trezor.io',

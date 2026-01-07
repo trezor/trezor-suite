@@ -46,11 +46,6 @@ export const parseConnectSettings = (
         settings.trustedHost = isIframeLocalhost || !!whitelist;
     }
 
-    // ensure that popup will be used
-    if (!settings.trustedHost) {
-        settings.popup = true;
-    }
-
     // ensure that debug is disabled
     if (!settings.trustedHost && !isIframeLocalhost) {
         settings.debug = false;
@@ -86,6 +81,8 @@ export const parseConnectSettings = (
     if (knownHost) {
         settings.hostLabel = knownHost.label;
     }
+
+    settings.popup = false;
 
     return settings;
 };

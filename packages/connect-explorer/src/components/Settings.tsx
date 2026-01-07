@@ -54,7 +54,6 @@ export const Settings = () => {
             data: [
                 { value: 'auto', label: 'Auto' },
                 { value: 'iframe', label: 'Iframe' },
-                { value: 'popup', label: 'Popup' },
                 { value: 'deeplink', label: 'Deeplink (mobile)' },
                 { value: 'suite-desktop', label: 'Suite desktop' },
                 { value: 'suite-web', label: 'Suite web' },

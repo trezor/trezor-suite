@@ -13,7 +13,7 @@ const MESSAGES_SRC = '../../packages/protobuf/messages.json';
 
 const project = process.env.PROJECT || 'iframe';
 
-if (project !== 'iframe' && project !== 'suite-web' && project !== 'popup') {
+if (project !== 'iframe' && project !== 'suite-web') {
     throw new Error(`Unsupported project: ${project}`);
 }
 const DIST = getDistPathForProject(project);

@@ -2,13 +2,9 @@ import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect'
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 
-import { getEnv } from './connectSettings';
 import { CoreInIframe } from './impl/core-in-iframe';
-import { CoreInPopup } from './impl/core-in-popup';
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
-
-const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
 type ConnectWebExtraMethods = {
     renderWebUSBButton: (className?: string) => void;
@@ -17,7 +13,7 @@ type ConnectWebExtraMethods = {
 };
 
 const impl = new TrezorConnectDynamic<
-    'iframe' | 'core-in-popup' | 'core-in-suite-desktop' | 'core-in-suite-web',
+    'iframe' | 'core-in-suite-desktop' | 'core-in-suite-web',
     ConnectSettingsWeb,
     ConnectFactoryDependencies<ConnectSettingsWeb> & ConnectWebExtraMethods
 >({
@@ -25,10 +21,6 @@ const impl = new TrezorConnectDynamic<
         {
             type: 'iframe',
             impl: new CoreInIframe(),
-        },
-        {
-            type: 'core-in-popup',
-            impl: new CoreInPopup(),
         },
         {
             type: 'core-in-suite-desktop',
@@ -42,8 +34,6 @@ const impl = new TrezorConnectDynamic<
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWeb>) => {
         if (settings.coreMode === 'iframe') {
             return 'iframe';
-        } else if (settings.coreMode === 'popup') {
-            return 'core-in-popup';
         } else if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else if (settings.coreMode === 'suite-web') {
@@ -53,7 +43,7 @@ const impl = new TrezorConnectDynamic<
                 console.warn(`Invalid coreMode: ${settings.coreMode}`);
             }
 
-            return 'iframe';
+            return 'core-in-suite-web';
         }
     },
     handleBeforeCall: async () => {
@@ -66,37 +56,12 @@ const impl = new TrezorConnectDynamic<
         }
     },
     handleErrorFallback: async (errorCode: string) => {
-        const env = getEnv();
-
-        const isCoreModeDisabled = impl.lastSettings?.popup === false || env === 'webextension';
-        const isCoreModeAuto =
-            impl.lastSettings?.coreMode === 'auto' || impl.lastSettings?.coreMode === undefined;
-
         // Handle desktop errors
         if (
             impl.getTargetType() === 'core-in-suite-desktop' &&
             (errorCode === 'Desktop_ConnectionMissing' || errorCode === 'Method_Unsupported')
         ) {
-            await impl.switchTarget('iframe');
-
-            return true;
-        }
-
-        // Handle iframe errors by switching to core-in-popup
-        if (!isCoreModeDisabled && isCoreModeAuto && IFRAME_ERRORS.includes(errorCode)) {
-            // Check if WebUSB is available and enabled
-            const webUsbUnavailableInBrowser = !(navigator as any)?.usb;
-            const webUsbDisabledInSettings =
-                impl.lastSettings?.transports?.includes('WebUsbTransport') === false;
-            if (
-                errorCode === 'Transport_Missing' &&
-                (webUsbUnavailableInBrowser || webUsbDisabledInSettings)
-            ) {
-                // WebUSB not available, no benefit in switching to core-in-popup
-                return false;
-            }
-
-            await impl.switchTarget('core-in-popup');
+            await impl.switchTarget('core-in-suite-web');
 
             return true;
         }

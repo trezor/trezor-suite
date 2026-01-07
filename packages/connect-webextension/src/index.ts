@@ -12,24 +12,16 @@ import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 
 import { parseConnectSettings } from './connectSettings';
-import {
-    CoreInPopupWebextension,
-    CoreInSuiteDesktopWebextension,
-    CoreInSuiteWebWebextension,
-} from './impl';
+import { CoreInSuiteDesktopWebextension, CoreInSuiteWebWebextension } from './impl';
 
 const _settings = parseConnectSettings();
 
 const impl = new TrezorConnectDynamic<
-    'core-in-popup' | 'core-in-suite-desktop' | 'core-in-suite-web',
+    'core-in-suite-desktop' | 'core-in-suite-web',
     ConnectSettingsWebextension,
     ConnectFactoryDependencies<ConnectSettingsWebextension>
 >({
     implementations: [
-        {
-            type: 'core-in-popup',
-            impl: new CoreInPopupWebextension(),
-        },
         {
             type: 'core-in-suite-desktop',
             impl: new CoreInSuiteDesktopWebextension(),
@@ -42,10 +34,8 @@ const impl = new TrezorConnectDynamic<
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
         if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
-        } else if (settings.coreMode === 'suite-web') {
-            return 'core-in-suite-web';
         } else {
-            return 'core-in-popup';
+            return 'core-in-suite-web';
         }
     },
     handleBeforeCall: async () => {
@@ -63,7 +53,7 @@ const impl = new TrezorConnectDynamic<
             impl.getTargetType() === 'core-in-suite-desktop' &&
             errorCode === 'Desktop_ConnectionMissing'
         ) {
-            await impl.switchTarget('core-in-popup');
+            await impl.switchTarget('core-in-suite-web');
 
             return true;
         }

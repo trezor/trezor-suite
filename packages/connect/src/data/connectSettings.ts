@@ -120,9 +120,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.transports = input.transports;
     }
 
-    if (typeof input.popup === 'boolean') {
-        settings.popup = input.popup;
-    }
+    settings.popup = false;
 
     if (typeof input.lazyLoad === 'boolean') {
         settings.lazyLoad = input.lazyLoad;
@@ -158,7 +156,7 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (
         typeof input.coreMode === 'string' &&
-        ['auto', 'popup', 'iframe', 'suite-desktop', 'suite-web'].includes(input.coreMode)
+        ['auto', 'iframe', 'suite-desktop', 'suite-web'].includes(input.coreMode)
     ) {
         settings.coreMode = input.coreMode;
     }
