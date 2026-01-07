@@ -2,7 +2,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import messages from '@trezor/suite/src/support/messages';
 import { BigNumber } from '@trezor/utils';
 
-import { formatAddress } from '../../support/common';
+import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import {
     splitStringByDisplayLimit,
@@ -11,7 +11,7 @@ import {
 
 const networkName = 'Base #1';
 const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
-const formattedSendAddress = formatAddress(sendAddress);
+const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 const sendAmount = '0.000008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 
