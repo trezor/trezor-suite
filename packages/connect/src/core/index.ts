@@ -72,7 +72,7 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
-    const isUsingPopup = DataManager.getSettings('popup');
+    const isUsingPopup = false;
     const origin = DataManager.getSettings('origin')!;
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
@@ -188,7 +188,7 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
 const inner = async (context: CoreContext, method: AbstractMethod<any>, device: Device) => {
     const { uiPromises, sendCoreMessage } = context;
     const trustedHost = DataManager.getSettings('trustedHost');
-    const isUsingPopup = DataManager.getSettings('popup') ?? false;
+    const isUsingPopup = false;
 
     const firmwareException = method.checkFirmwareRange();
     if (firmwareException) {
