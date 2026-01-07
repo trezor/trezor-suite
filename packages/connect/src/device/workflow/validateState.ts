@@ -163,7 +163,7 @@ export const validateState = async (context: WorkflowContext) => {
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
-    const isUsingPopup = DataManager.getSettings('popup');
+    const isUsingPopup = false;
     try {
         let invalidDeviceState = await validate(context);
         if (isUsingPopup) {
