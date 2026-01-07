@@ -10,7 +10,7 @@ import {
     getNetwork,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getCurrencies } from '@trezor/address-validator';
+import addressValidator from '@trezor/address-validator';
 import { TokenInfo } from '@trezor/connect';
 
 import {
@@ -27,7 +27,9 @@ import {
     getTradingPlatformsInfoByCryptoId,
 } from '../utils/infoUtils';
 
-const supportedAddressValidatorSymbols = new Set(getCurrencies().map(c => c.symbol));
+const supportedAddressValidatorSymbols = new Set(
+    addressValidator.getCurrencies().map(c => c.symbol),
+);
 const mainnets = new Set(getMainnets().map(network => network.symbol));
 
 function hasSupportedAddressValidator(platforms: Platforms, coins: Coins, cryptoId: CryptoId) {
