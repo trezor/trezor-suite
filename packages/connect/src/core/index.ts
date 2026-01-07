@@ -72,7 +72,6 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
-    const isUsingPopup = false;
     const origin = DataManager.getSettings('origin')!;
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
@@ -101,10 +100,10 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     }
 
     if (device) {
-        showDeviceSelection = device.isUnreadable() || (device.isUnacquired() && !!isUsingPopup);
+        showDeviceSelection = device.isUnreadable();
     } else {
         const onlyDevice = deviceList.getOnlyDevice();
-        if (onlyDevice && (!isWebUsb || !isUsingPopup)) {
+        if (onlyDevice) {
             // there is only one device available. use it
             device = onlyDevice;
             // Show device selection if device is unreadable or unacquired
@@ -188,58 +187,16 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
 const inner = async (context: CoreContext, method: AbstractMethod<any>, device: Device) => {
     const { uiPromises, sendCoreMessage } = context;
     const trustedHost = DataManager.getSettings('trustedHost');
-    const isUsingPopup = false;
 
     const firmwareException = method.checkFirmwareRange();
     if (firmwareException) {
-        if (isUsingPopup) {
-            if (firmwareException === UI.FIRMWARE_NOT_COMPATIBLE) {
-                // wait for popup handshake
-                await waitForPopup(context);
-                // initialize user response promise
-                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
-                // show unexpected state information and wait for confirmation
-                sendCoreMessage(
-                    createUiMessage(UI.FIRMWARE_NOT_COMPATIBLE, device.toMessageObject()),
-                );
-
-                const uiResp = await uiPromise.promise;
-                if (!uiResp.payload) {
-                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
-                }
-            } else {
-                await waitForPopup(context);
-                // show unexpected state information
-                sendCoreMessage(createUiMessage(firmwareException, device.toMessageObject()));
-
-                // wait for device disconnect
-                await uiPromises.create(DEVICE.DISCONNECT, device).promise;
-
-                // interrupt process and go to "final" block
-                return Promise.reject(ERRORS.TypedError('Method_Cancel'));
-            }
-        } else {
-            // return error if not using popup
-            return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
-        }
+        // return error if not using popup
+        return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
     }
 
     // check if device is in unexpected mode [bootloader, not-initialized, required firmware]
     const unexpectedMode = device.hasUnexpectedMode(method.allowDeviceMode);
     if (unexpectedMode) {
-        if (isUsingPopup) {
-            // wait for popup handshake
-            await waitForPopup(context);
-            // show unexpected state information
-            sendCoreMessage(createUiMessage(unexpectedMode, device.toMessageObject()));
-
-            // wait for device disconnect
-            await uiPromises.create(DEVICE.DISCONNECT, device).promise;
-
-            // interrupt process and go to "final" block
-            return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
-        }
-
         // throw error if not using popup
         return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
     }
@@ -272,10 +229,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
-        if (
-            method.noBackupConfirmationMode === 'always' ||
-            (method.noBackupConfirmationMode === 'popup-only' && isUsingPopup)
-        ) {
+        if (method.noBackupConfirmationMode === 'always') {
             // wait for popup window
             await waitForPopup(context);
             // initialize user response promise
