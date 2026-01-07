@@ -15,12 +15,17 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
+    buyMercuryo,
     buyQuotes,
     getBtcAccount,
     getInitializedTradingState,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { buyActions, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    buyActions,
+    selectTradingProviderMetadata,
+    selectTradingResidenceCountry,
+} from '@suite-native/trading-state';
 import { BuyFormType, TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -366,6 +371,19 @@ describe('useBuyForm', () => {
 
             expect(result.current.getValues('cryptoValue')).toEqual('100');
             expect(result.current.getValues('fiatValue')).toEqual('10.123');
+        });
+
+        it('should persist provider metadata to redux', async () => {
+            const store = await getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            initFormAndQuotes(result.current, store);
+
+            act(() => {
+                result.current.setValue('quote', buyQuotes[0]);
+            });
+
+            expect(selectTradingProviderMetadata(store.getState())).toBe(buyMercuryo);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
