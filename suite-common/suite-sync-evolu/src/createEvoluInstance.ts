@@ -8,7 +8,7 @@ import { Schema } from './schema';
 // This is a way how to force change of the SQL files. It was useful for development
 // so not everybody had to delete SQLite file manually:
 // See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
-const VERSION = 5;
+const VERSION = 6;
 
 type CreateEvoluInstanceFactoryDeps = EvoluDeps;
 
@@ -46,6 +46,9 @@ export const createEvoluInstanceFactory =
             // later on, so we can change the RelayUrl at any time.
             transports: [],
             externalAppOwner: owner.value,
+
+            // This turns on the Encryption-at-rest (encryption of the SQLLite file),
+            encryptionKey: owner.value.encryptionKey,
         });
 
         evolu.subscribeError(() => {
