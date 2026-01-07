@@ -58,13 +58,15 @@ export const getSelectedQuote = (
     context: TradingFormContextValues<TradingType>,
     bestScoredQuote: TradingTradeType | undefined,
 ) => {
-    if (isTradingExchangeContext(context)) {
-        return context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX
-            ? context.dexQuotes?.[0]
-            : context.cexQuotes?.[0];
-    } else {
+    if (!isTradingExchangeContext(context)) {
         return bestScoredQuote;
     }
+
+    const isDex = context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX;
+
+    const selectedQuote = isDex ? context.dexQuotes?.[0] : context.cexQuotes?.[0];
+
+    return selectedQuote ?? bestScoredQuote;
 };
 
 export const TradingFormOffer = () => {

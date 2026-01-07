@@ -211,7 +211,6 @@ export const useTradingExchangeForm = ({
 
     const { cexQuotes, dexQuotes } = useTradingExchangeQuotesFilter({
         exchangeType,
-        rateType,
         quotes,
         exchangeInfo,
         setValue,

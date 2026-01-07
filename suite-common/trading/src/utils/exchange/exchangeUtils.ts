@@ -1,8 +1,8 @@
 import { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
 
-import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN, TRADING_EXCHANGE_RATE_FIXED } from '../../constants';
+import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../../constants';
 import { ExchangeInfo } from '../../reducers/exchangeReducer';
-import { TradingExchangeAmountLimitProps, TradingExchangeRateType } from '../../types';
+import { TradingExchangeAmountLimitProps } from '../../types';
 import { cryptoIdToNetwork, parseCryptoId } from '../../utils';
 
 type GetAmountLimitsProps = {
@@ -88,14 +88,11 @@ const floatRateCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo 
         return provider && !provider.isFixedRate && !q.isDex && !isQuoteError(q);
     });
 
-const getCexQuotesByRateType = (
-    rateType: TradingExchangeRateType,
-    quotes: ExchangeTrade[],
-    exchangeInfo: ExchangeInfo | undefined,
-) => {
-    if (rateType === TRADING_EXCHANGE_RATE_FIXED) return fixedRateCexQuotes(quotes, exchangeInfo);
+// Prefer floating-rate quotes, fallback to fixed-rate if none available
+const getPreferredCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo | undefined) => {
+    const floatQuotes = floatRateCexQuotes(quotes, exchangeInfo);
 
-    return floatRateCexQuotes(quotes, exchangeInfo);
+    return floatQuotes.length > 0 ? floatQuotes : fixedRateCexQuotes(quotes, exchangeInfo);
 };
 
 const getSuccessQuotesOrdered = (quotes: ExchangeTrade[]): ExchangeTrade[] =>
@@ -131,7 +128,7 @@ export const exchangeUtils = {
     isQuoteError,
     fixedRateCexQuotes,
     floatRateCexQuotes,
-    getCexQuotesByRateType,
+    getPreferredCexQuotes,
     getSuccessQuotesOrdered,
     getStatusMessage,
     tokenSupportsIncreasingAllowance,
