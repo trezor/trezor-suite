@@ -15,4 +15,5 @@ export const tradingInitialState: TradingState = {
     isAmountInputActive: false,
     activeTradingType: undefined,
     providerConfirmationStatus: 'inactive',
+    currentProviderMetadata: undefined,
 };

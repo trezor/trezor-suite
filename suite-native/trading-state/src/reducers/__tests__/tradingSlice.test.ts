@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { CryptoId } from 'invity-api';
+import type { CryptoId, ProviderMetadata } from 'invity-api';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
@@ -644,6 +644,27 @@ describe('tradingSlice', () => {
 
                 expect(state.providerConfirmationStatus).toBe(newStatus);
             });
+        });
+    });
+
+    describe('currentProviderMetadata', () => {
+        const testProvider: ProviderMetadata = {
+            name: 'TEST_PROVIDER_NAME',
+            companyName: 'TEST_COMPANY_NAME',
+            logo: 'TEST_LOGO',
+            isActive: true,
+        };
+
+        it('setCurrentProviderMetadata should set currentProviderMetadata', () => {
+            const actions = [tradingActions.setCurrentProviderMetadata(testProvider)];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state).toEqual(
+                expect.objectContaining({
+                    currentProviderMetadata: testProvider,
+                }),
+            );
         });
     });
 });
