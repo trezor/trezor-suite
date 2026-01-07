@@ -63,6 +63,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     slip24: {
         title: { id: 'TR_EXPERIMENTAL_SLIP24' },
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
+        isDisabled: ({ isDebug }) => !isDebug,
     },
     'experimental-networks': {
         title: {

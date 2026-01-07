@@ -1,7 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit, asAmountUnit } from '../AmountTypes';
-import { formatBigNumberToLE, subunitsToUnits, unitsToSubunits } from '../amountUtils';
+import { formatBigUintToLE, subunitsToUnits, unitsToSubunits } from '../amountUtils';
 
 describe(subunitsToUnits.name, () => {
     it('converts Sats->BTC', () => {
@@ -30,8 +30,8 @@ describe(unitsToSubunits.name, () => {
     });
 });
 
-describe(formatBigNumberToLE.name, () => {
-    it('formatBigNumberToLE 8 bytes (bitcoin-like)', () => {
+describe(formatBigUintToLE.name, () => {
+    it('format 8 bytes (bitcoin-like)', () => {
         const value = new BigNumber('123456789');
         const bytesLength = 8;
 
@@ -40,25 +40,49 @@ describe(formatBigNumberToLE.name, () => {
         const byteArray = Buffer.alloc(bytesLength);
         byteArray.writeBigUInt64LE(amountBigInt, 0);
 
-        expect(formatBigNumberToLE({ value, bytesLength })).toEqual('15cd5b0700000000');
-        expect(formatBigNumberToLE({ value, bytesLength })).toEqual(byteArray.toString('hex'));
+        expect(formatBigUintToLE({ value, bytesLength })).toEqual('15cd5b0700000000');
+        expect(formatBigUintToLE({ value, bytesLength })).toEqual(byteArray.toString('hex'));
     });
 
-    it('formatBigNumberToLE 32 bytes (evm)', () => {
+    it('format 32 bytes (evm)', () => {
         const value = new BigNumber('12345678901234567890');
         const bytesLength = 32;
 
-        expect(formatBigNumberToLE({ value, bytesLength })).toEqual(
+        expect(formatBigUintToLE({ value, bytesLength })).toEqual(
             'd20a1feb8ca954ab000000000000000000000000000000000000000000000000',
         );
     });
 
-    it('formatBigNumberToLE throws if number exceeds byte length', () => {
+    it('throws if number exceeds byte length', () => {
         expect(() =>
-            formatBigNumberToLE({ value: new BigNumber('4294967296'), bytesLength: 4 }),
+            formatBigUintToLE({
+                value: new BigNumber('4294967296'),
+                bytesLength: 4,
+            }),
         ).toThrow('Exceeds 4 bytes');
         expect(() =>
-            formatBigNumberToLE({ value: new BigNumber('18446744073709551616'), bytesLength: 8 }),
+            formatBigUintToLE({
+                value: new BigNumber('18446744073709551616'),
+                bytesLength: 8,
+            }),
         ).toThrow('Exceeds 8 bytes');
+    });
+
+    it('throws if number is negative', () => {
+        expect(() =>
+            formatBigUintToLE({
+                value: new BigNumber('-1'),
+                bytesLength: 4,
+            }),
+        ).toThrow('Value cannot be negative');
+    });
+
+    it('throws if number is not an integer', () => {
+        expect(() =>
+            formatBigUintToLE({
+                value: new BigNumber('1.1'),
+                bytesLength: 4,
+            }),
+        ).toThrow('Value must be an integer');
     });
 });
