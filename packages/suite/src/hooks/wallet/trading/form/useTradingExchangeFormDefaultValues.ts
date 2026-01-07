@@ -18,16 +18,15 @@ import {
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { FormState, Output } from '@suite-common/wallet-types';
-import { parseAccountKey } from '@suite-common/wallet-utils';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import {
     buildTradingFiatOption,
-    getAddressAndTokenFromAccountOptionsGroupProps,
+    resolveAddressAndToken,
 } from 'src/utils/wallet/trading/tradingUtils';
 
+import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
 import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingExchangeFormDefaultValues = () => {
@@ -45,24 +44,8 @@ export const useTradingExchangeFormDefaultValues = () => {
             ),
         [baseCurrencyCode],
     );
-    const cryptoGroups = useTradingBuildAccountGroups('exchange');
-    const cryptoOptions = useMemo(
-        () => cryptoGroups.flatMap(group => group.options),
-        [cryptoGroups],
-    );
-
-    const defaultSendCryptoSelect = useMemo(
-        () =>
-            cryptoOptions.find(
-                option =>
-                    option.value === cryptoId &&
-                    option.descriptor === parseAccountKey(tradingAccountKey).accountDescriptor,
-            ),
-        [cryptoId, cryptoOptions, tradingAccountKey],
-    );
-
-    const { address, token } =
-        getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
+    const { account, defaultAsset } = useTradingDefaultSellAsset({ tradingAccountKey, cryptoId });
+    const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
     const defaultPayment: Output = useMemo(
         () => ({
@@ -86,7 +69,7 @@ export const useTradingExchangeFormDefaultValues = () => {
         () => ({
             ...defaultFormState,
             amountInCrypto: true,
-            sendCryptoSelect: defaultSendCryptoSelect,
+            sendCryptoSelect: defaultAsset,
             receiveCryptoSelect: null,
             receiveAddress: undefined,
             [TRADING_EXCHANGE_RATE]: TRADING_EXCHANGE_RATE_FLOATING as TradingExchangeRateType,
@@ -96,7 +79,7 @@ export const useTradingExchangeFormDefaultValues = () => {
             [TRADING_EXCHANGE_COMPARATOR_RATE_FILTER]:
                 TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_ALL as TradingExchangeRateFilter,
         }),
-        [defaultFormState, defaultSendCryptoSelect],
+        [defaultAsset, defaultFormState],
     );
 
     return { defaultValues, defaultCurrency };

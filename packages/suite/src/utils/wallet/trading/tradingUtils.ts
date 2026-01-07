@@ -25,7 +25,7 @@ import {
     substituteBip43Path,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { FeeLevel } from '@trezor/connect';
+import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import { Route, TrezorDevice } from 'src/types/suite';
@@ -75,8 +75,8 @@ export const getTradingNetworkDecimals = ({
     return network?.decimals ?? 8;
 };
 
-export const getNetworkDecimalsWithFallback = (symbol: NetworkSymbol) =>
-    getNetwork(symbol)?.decimals ?? 8;
+export const getNetworkDecimalsWithFallback = (symbol?: NetworkSymbol, fallback = 8) =>
+    symbol ? (getNetwork(symbol)?.decimals ?? fallback) : fallback;
 
 export const buildTradingFiatOption = (currency: FiatCurrencyCode) => ({
     value: currency,
@@ -371,34 +371,33 @@ export const tradingGetSectionActionLabel = (
     return 'TR_TRADING_SWAP';
 };
 
-interface GetAddressAndTokenFromAccountOptionsGroupProps {
+interface ResolveAddressAndTokenProps {
     address: string;
     token: string | null;
 }
 
-export const getAddressAndTokenFromAccountOptionsGroupProps = (
-    selected: TradingAccountOptionsGroupOptionProps | undefined,
-): GetAddressAndTokenFromAccountOptionsGroupProps => {
-    if (!selected) {
+export const resolveAddressAndToken = <A extends Pick<Account, 'symbol' | 'descriptor'>>(
+    account: A | undefined | null,
+    tokenContractAddress: TokenInfo['contract'] | undefined | null,
+): ResolveAddressAndTokenProps => {
+    if (!account) {
         return { address: '', token: null };
     }
-
-    const symbol = cryptoIdToSymbol(selected.value);
-    const networkType = symbol ? getNetworkType(symbol) : null;
+    const networkType = getNetworkType(account.symbol);
 
     // set token address for ERC20 transaction to estimate the fees more precisely
     if (networkType === 'ethereum') {
         return {
-            address: selected.contractAddress ?? '',
-            token: selected.contractAddress ?? null,
+            address: tokenContractAddress ?? '',
+            token: tokenContractAddress ?? null,
         };
     }
 
-    if (networkType === 'solana' && !selected.contractAddress) {
-        return { address: selected.descriptor, token: null };
+    if (networkType === 'solana' && !tokenContractAddress) {
+        return { address: account.descriptor, token: null };
     }
 
-    return { address: '', token: selected.contractAddress ?? null };
+    return { address: '', token: tokenContractAddress ?? null };
 };
 
 export const getTradeTypeByRoute = (

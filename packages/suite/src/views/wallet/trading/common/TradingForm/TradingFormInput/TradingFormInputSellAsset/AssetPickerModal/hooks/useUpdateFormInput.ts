@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-    TradingAssetOption,
+    TradingAssetSellOption,
     createAssetNativeTokenOption,
     createAssetTokenOption,
 } from '@suite-common/trading';
@@ -11,7 +11,7 @@ import { AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
 
 export interface UseUpdateFormInputProps {
     closeModal: () => void;
-    onAssetSelect: (asset: TradingAssetOption) => void;
+    onAssetSelect: (asset: TradingAssetSellOption) => void;
 }
 
 export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormInputProps) {
@@ -19,16 +19,20 @@ export function useUpdateFormInput({ closeModal, onAssetSelect }: UseUpdateFormI
         (asset: AssetPickerListItem) => {
             switch (asset.type) {
                 case 'account': {
-                    onAssetSelect(
-                        createAssetNativeTokenOption(
+                    onAssetSelect({
+                        ...createAssetNativeTokenOption(
                             asset.account.symbol as NetworkConfigWithoutTestnets['symbol'],
                         ),
-                    );
+                        accountKey: asset.account.key,
+                    });
                     break;
                 }
 
                 case 'token': {
-                    onAssetSelect(createAssetTokenOption(asset.account.symbol, asset.token));
+                    onAssetSelect({
+                        ...createAssetTokenOption(asset.account.symbol, asset.token),
+                        accountKey: asset.account.key,
+                    });
                     break;
                 }
             }

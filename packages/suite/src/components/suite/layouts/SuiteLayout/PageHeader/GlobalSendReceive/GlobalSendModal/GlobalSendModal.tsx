@@ -39,7 +39,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     const networkSymbolFilter = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
 
-    const accountsWithTokens = useAccountWithTokensOptions({ networkSymbolFilter });
+    const { accountsWithTokens } = useAccountWithTokensOptions({ networkSymbolFilter });
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(
         accountsWithTokens,
         searchFilter,

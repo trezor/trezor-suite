@@ -7,12 +7,13 @@ import { TranslationKey } from '@suite-common/intl-types';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingBuyFormProps,
     TradingExchangeFormProps,
     TradingSellFormProps,
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
-import { Icon, Input, Spinner, Text } from '@trezor/components';
+import { Icon, Input, InputProps, Spinner, Text } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector, useTranslation } from 'src/hooks/suite';
@@ -43,14 +44,14 @@ const SpinnerWrapper = styled.div`
 export interface AssetPickerInputProps {
     name:
         | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
-        | typeof TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT;
-    // TODO: finish integration to trading exchange and sell form
-    // | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
+        | typeof TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT
+        | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     label: TranslationKey;
     placeholder?: TranslationKey;
     isDisabled?: boolean;
     dataTestId?: string;
     onClick: () => void;
+    bottomText?: InputProps['bottomText'];
 }
 
 export const AssetPickerInput = memo(function AssetPickerInputInner({
@@ -60,6 +61,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     isDisabled,
     dataTestId,
     onClick,
+    bottomText,
 }: AssetPickerInputProps) {
     const { watch } = useFormContext<TradingFormValues>();
     const value = watch(name);
@@ -68,17 +70,21 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     const disabled = isDisabled || isLoading;
 
     const leftContent = useMemo(() => {
-        if (value) return <AssetPickerInputContent value={value} dataTestId={dataTestId} />;
+        if (value) {
+            // @ts-expect-error
+            return <AssetPickerInputContent name={name} value={value} dataTestId={dataTestId} />;
+        }
 
-        if (isLoading)
+        if (isLoading) {
             return (
                 <SpinnerWrapper>
                     <Spinner size={24} isGrey={false} />
                 </SpinnerWrapper>
             );
+        }
 
         return undefined;
-    }, [value, dataTestId, isLoading]);
+    }, [value, isLoading, name, dataTestId]);
 
     return (
         <OpenModalButton
@@ -107,6 +113,7 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
                 }
                 rightContent={<Icon name="caretDown" size={20} />}
                 leftContent={leftContent}
+                bottomText={bottomText}
                 // Disable the blinking cursor when the input is focused
                 readOnly
             />

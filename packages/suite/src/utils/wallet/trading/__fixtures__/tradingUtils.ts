@@ -1,9 +1,7 @@
-import { CryptoId } from 'invity-api';
-
 import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
 import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
+import { resolveAddressAndToken } from '../tradingUtils';
 
 export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
     error: false,
@@ -148,24 +146,22 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     },
 ];
 
-const accountOptionPlaceholder = {
-    label: '',
-    cryptoName: '',
-    balance: '',
-    decimals: 0,
-    accountType: 'normal' as const,
-};
+type ResolveAddressAndTokenArgs = Parameters<typeof resolveAddressAndToken>;
 
 export const FIXTURE_ACCOUNT_OPTIONS: Array<{
-    option: TradingAccountOptionsGroupOptionProps | undefined;
+    option: {
+        account: ResolveAddressAndTokenArgs[0];
+        tokenContractAddress: ResolveAddressAndTokenArgs[1];
+    };
     result: { address: string; token: string | null };
 }> = [
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'bitcoin' as CryptoId,
-            contractAddress: undefined,
-            descriptor: 'bbb',
+            account: {
+                symbol: 'btc',
+                descriptor: 'bbb',
+            },
+            tokenContractAddress: undefined,
         },
         result: {
             address: '',
@@ -174,10 +170,11 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     },
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'ethereum' as CryptoId,
-            contractAddress: undefined,
-            descriptor: 'eee',
+            account: {
+                symbol: 'eth',
+                descriptor: 'eee',
+            },
+            tokenContractAddress: undefined,
         },
         result: {
             address: '',
@@ -186,10 +183,11 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     },
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'ethereum--0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' as CryptoId,
-            contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-            descriptor: 'aaa',
+            account: {
+                symbol: 'eth',
+                descriptor: 'aaa',
+            },
+            tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
         },
         result: {
             address: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
@@ -198,10 +196,11 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     },
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'solana' as CryptoId,
-            contractAddress: undefined,
-            descriptor: 'sss',
+            account: {
+                symbol: 'sol',
+                descriptor: 'sss',
+            },
+            tokenContractAddress: undefined,
         },
         result: {
             address: 'sss',
@@ -210,10 +209,11 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     },
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'solana' as CryptoId,
-            contractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
-            descriptor: 'ddd',
+            account: {
+                symbol: 'sol',
+                descriptor: 'ddd',
+            },
+            tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
         },
         result: {
             address: '',
@@ -222,10 +222,11 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     },
     {
         option: {
-            ...accountOptionPlaceholder,
-            value: 'cardano' as CryptoId,
-            contractAddress: undefined,
-            descriptor: 'ccc',
+            account: {
+                symbol: 'ada',
+                descriptor: 'ccc',
+            },
+            tokenContractAddress: undefined,
         },
         result: {
             address: '',

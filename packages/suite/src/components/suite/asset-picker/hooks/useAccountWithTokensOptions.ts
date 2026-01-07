@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { CryptoId } from 'invity-api';
+
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
+import { getCryptoId } from '@suite-common/trading';
+import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
-    selectAllAccountsToList,
     selectBaseCurrency,
     selectCurrentFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -32,38 +35,45 @@ function filterAccountsByNetworkSymbol(
 }
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
-    includeTestnets?: boolean;
+    accountFilter?: (account: Account) => boolean;
+    enabledCryptoIds?: Set<CryptoId>;
 }
 
 export function useAccountWithTokensOptions({
     networkSymbolFilter,
-    includeTestnets = true,
-}: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
-    const accounts = useSelector(selectAllAccountsToList);
+    accountFilter = () => true,
+    enabledCryptoIds = new Set(),
+}: UseAccountWithTokensOptionsProps): {
+    accountsWithTokens: AccountWithTokensOption[];
+    networks: NetworkSymbol[];
+} {
+    const accounts = useSelector(selectVisibleDeviceAccounts);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     // Accounts are constantly being updated in Redux. So throttle them to significantly reduce re-renders
-    const throttledAccounts = useThrottle(accounts, 500);
+    const throttledAccounts = useThrottle(accounts, 1000);
     const fiatRatesRef = useCurrentRef(fiatRates);
 
     return useMemo(() => {
         const fiatRates = fiatRatesRef.current;
 
         if (!fiatRates) {
-            return [];
+            return {
+                accountsWithTokens: [],
+                networks: [],
+            };
         }
 
-        const networkAccounts = filterAccountsByNetworkSymbol(
-            throttledAccounts,
-            networkSymbolFilter,
-        );
+        const validAccounts = throttledAccounts.filter(accountFilter);
 
-        const mainnets = new Set(getMainnets().map(network => network.symbol));
+        const networks = new Set(validAccounts.map(account => account.symbol));
+        const orderedNetworks = networkSymbolCollection.filter(network => networks.has(network));
+
+        const networkAccounts = filterAccountsByNetworkSymbol(validAccounts, networkSymbolFilter);
 
         const accountsAndTokensSortedByFiatBalance = networkAccounts
-            .filter(account => (includeTestnets ? true : mainnets.has(account.symbol)))
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,
@@ -112,13 +122,26 @@ export function useAccountWithTokensOptions({
                 ),
             ]);
 
-        return accountsWithTokensOptions;
+        const supportedAccountsWithTokens = accountsWithTokensOptions.filter(option => {
+            const cryptoId =
+                option.type === 'account'
+                    ? getCryptoId(option.account.symbol)
+                    : getCryptoId(option.account.symbol, option.token?.contract);
+
+            return enabledCryptoIds.has(cryptoId);
+        });
+
+        return {
+            accountsWithTokens: supportedAccountsWithTokens,
+            networks: orderedNetworks,
+        };
     }, [
         fiatRatesRef,
         throttledAccounts,
         networkSymbolFilter,
-        includeTestnets,
+        accountFilter,
         baseCurrencyCode,
         tokenDefinitions,
+        enabledCryptoIds,
     ]);
 }

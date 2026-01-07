@@ -20,6 +20,7 @@ import type {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingAssetSellOption,
     TradingBuyFormProps,
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -52,7 +53,6 @@ import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradi
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import {
-    TradingAccountOptionsGroupOptionProps,
     TradingGetCryptoQuoteAmountProps,
     TradingGetProvidersInfoProps,
     TradingPageType,
@@ -348,7 +348,7 @@ export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormPro
 export interface TradingUseFormActionsReturnProps {
     isBalanceZero: boolean;
 
-    onCryptoCurrencyChange: (selected: TradingAccountOptionsGroupOptionProps) => Promise<void>;
+    onCryptoCurrencyChange: (selected: TradingAssetSellOption) => Promise<void>;
     onFiatCurrencyChange: (value: FiatCurrencyCode) => void;
     setRatioAmount: (divisor: number) => void;
     setAllAmount: () => void;

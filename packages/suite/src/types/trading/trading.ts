@@ -119,6 +119,7 @@ export interface TradingBuildAccountOptionsProps extends TradingGetSortedAccount
     excludeCryptoId?: CryptoId;
 }
 
+// FIXME: remove this type
 export interface TradingAccountOptionsGroupOptionProps {
     value: CryptoId;
     label: string; // token shortcut
