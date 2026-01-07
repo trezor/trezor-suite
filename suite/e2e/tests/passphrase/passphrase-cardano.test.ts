@@ -12,10 +12,10 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test('verify cardano address behind passphrase', async ({
-        page,
         settingsPage,
         dashboardPage,
         walletPage,
+        metadataPage,
         devicePrompt,
         trezorUserEnvLink,
         emulatorStartConf,
@@ -23,9 +23,9 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
         async function restartEmulator() {
             await test.step('Restart emulator', async () => {
                 await trezorUserEnvLink.stopEmu();
-                await expect(page.getByTestId('@deviceStatus-disconnected')).toBeVisible();
+                await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
                 await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
-                await expect(page.getByTestId('@deviceStatus-connected')).toBeVisible({
+                await expect(walletPage.deviceConnectedStatus).toBeVisible({
                     timeout: 15_000,
                 });
             });
@@ -51,9 +51,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
             await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-            await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                formatAddress(correctPassphraseAddr),
-            );
+            await expect(devicePrompt.outputValue).toHaveText(formatAddress(correctPassphraseAddr));
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(correctPassphraseAddr, {
@@ -61,7 +59,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await trezorUserEnvLink.pressYes(); // Confirm receive address
 
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
+            await expect(metadataPage.copyAddressButton).toBeVisible();
             await devicePrompt.closeModal();
             await expect(walletPage.revealAddressButton).toBeVisible();
         });
@@ -75,7 +73,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await devicePrompt.waitForPromptAndConfirm(); // Confirm next screen shows your passphrase
             await devicePrompt.waitForPromptAndConfirm(); // Confirm passphrase
 
-            await expect(page.getByTestId('@toast/verify-address-error')).toBeVisible();
+            await expect(walletPage.verifyAddressErrorToast).toBeVisible();
         });
     });
 });

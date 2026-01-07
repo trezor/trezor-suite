@@ -13,7 +13,6 @@ test.describe('Passphrase duplicate', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test('attempt to add the same hidden wallet twice results in warning', async ({
-        page,
         dashboardPage,
     }) => {
         const passphraseToType = 'taxation is theft';
@@ -26,11 +25,11 @@ test.describe('Passphrase duplicate', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Attempt to add another wallet with the same passphrase', async () => {
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(passphraseToType, { skipDiscovery: true });
-            await expect(page.getByTestId('@passphrase-duplicate-header')).toBeVisible();
-            await expect(page.getByTestId('@passphrase-duplicate-header')).toHaveTranslation(
+            await expect(dashboardPage.passphraseDuplicateHeader).toBeVisible();
+            await expect(dashboardPage.passphraseDuplicateHeader).toHaveTranslation(
                 'TR_WALLET_DUPLICATE_TITLE',
             );
-            await expect(page.getByTestId('@passphrase-duplicate-description')).toHaveTranslation(
+            await expect(dashboardPage.passphraseDuplicateDesc).toHaveTranslation(
                 'TR_WALLET_DUPLICATE_DESC',
             );
         });

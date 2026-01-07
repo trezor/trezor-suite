@@ -13,6 +13,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         page,
         dashboardPage,
         walletPage,
+        metadataPage,
         devicePrompt,
         trezorUserEnvLink,
         emulatorStartConf,
@@ -30,15 +31,13 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await walletPage.receiveButton.click();
             await walletPage.revealAddressButton.click();
-            await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                formatAddress(abcAddr),
-            );
+            await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
 
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+            await expect(metadataPage.copyAddressButton).toBeVisible();
+            await expect(metadataPage.copyAddressButton).toBeEnabled();
 
             await devicePrompt.closeModal();
         });
@@ -76,8 +75,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Displaying receive address should prompt for passphrase', async () => {
             await dashboardPage.walletAtIndex(1).click();
             await walletPage.receiveButton.click();
-            await expect(page.getByTestId('@wallet/receive/used-address/0')).toBeHidden();
-            await expect(walletPage.revealAddressButton).toBeEnabled();
+            await expect(walletPage.usedAddress(0)).toBeHidden();
             await walletPage.revealAddressButton.click();
             await expect(page.getByText('Confirm passphrase')).toBeVisible();
             await dashboardPage.passphraseInput.fill('abc');
@@ -87,27 +85,25 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Verify displayed receive address', async () => {
-            await expect(page.getByTestId('@modal/output-value')).toHaveText(
-                formatAddress(abcAddr),
-            );
+            await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
             await trezorUserEnvLink.pressYes(); // confirm address
 
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+            await expect(metadataPage.copyAddressButton).toBeVisible();
+            await expect(metadataPage.copyAddressButton).toBeEnabled();
             await devicePrompt.closeModal();
         });
 
         await test.step('Second displaying receive address after reconnect should NOT prompt for passphrase', async () => {
             await walletPage.revealAddressButton.click();
-            await expect(page.getByTestId('@modal/output-value')).toBeVisible();
+            await expect(devicePrompt.outputValue).toBeVisible();
 
             await trezorUserEnvLink.pressYes(); // confirm address
 
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeVisible();
-            await expect(page.getByTestId('@metadata/copy-address-button')).toBeEnabled();
+            await expect(metadataPage.copyAddressButton).toBeVisible();
+            await expect(metadataPage.copyAddressButton).toBeEnabled();
         });
     });
 });
