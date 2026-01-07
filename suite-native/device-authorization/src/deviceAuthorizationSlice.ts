@@ -7,13 +7,19 @@ import {
 } from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 
-import { isPinButtonRequestCode } from './utils';
+import { isFlowEndingButtonRequest, isPinButtonRequestCode } from './utils';
+
+export enum DeviceState {
+    Idle = 'Idle', // Default state, AuthorizeDeviceStack should not be focused.
+    PinRequested = 'PinRequested',
+    PassphraseRequested = 'PassphraseRequested',
+    CheckPassphraseOnDevice = 'CheckPassphraseOnDevice',
+    InputPassphraseOnDevice = 'InputPassphraseOnDevice',
+    ContinueOnTrezorRequested = 'ContinueOnTrezorRequested',
+}
 
 export type DeviceAuthorizationState = {
-    hasDeviceRequestedPin: boolean;
-    hasDeviceRequestedPassphrase: boolean;
-    checkPassphraseOnDevice: boolean;
-    inputPassphraseOnDevice: boolean;
+    deviceState: DeviceState;
 };
 
 type DeviceAuthorizationRootState = {
@@ -21,78 +27,58 @@ type DeviceAuthorizationRootState = {
 };
 
 export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
-    hasDeviceRequestedPin: false,
-    hasDeviceRequestedPassphrase: false,
-    checkPassphraseOnDevice: false,
-    inputPassphraseOnDevice: false,
+    deviceState: DeviceState.Idle,
 };
 
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
     reducers: {
-        setCheckPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
-            state.checkPassphraseOnDevice = action.payload;
-        },
-        setInputPassphraseOnDevice: (state, action: PayloadAction<boolean>) => {
-            state.inputPassphraseOnDevice = action.payload;
+        changeDeviceAuthorizationState: (state, { payload }: PayloadAction<DeviceState>) => {
+            state.deviceState = payload;
         },
     },
     extraReducers: builder => {
         builder
             .addCase(UI.REQUEST_PIN, state => {
-                state.hasDeviceRequestedPin = true;
+                state.deviceState = DeviceState.PassphraseRequested;
             })
             .addCase(UI.REQUEST_PASSPHRASE, state => {
-                state.hasDeviceRequestedPin = false;
-                state.hasDeviceRequestedPassphrase = true;
-            })
-            .addCase(UI.REQUEST_BUTTON, (state, action) => {
-                if (isPinButtonRequestCode(action)) {
-                    state.hasDeviceRequestedPin = true;
-                } else {
-                    state.hasDeviceRequestedPin = false;
-                }
-
-                // @ts-expect-error Actions are not typed properly
-                if (action.payload.code !== 'ButtonRequest_Other') {
-                    state.hasDeviceRequestedPassphrase = false;
-                } else {
-                    state.checkPassphraseOnDevice = true;
-                }
-
-                // @ts-expect-error Actions are not typed properly
-                if (action.payload.code === 'ButtonRequest_Address') {
-                    state.inputPassphraseOnDevice = false;
-                }
+                state.deviceState = DeviceState.PassphraseRequested;
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
-                state.hasDeviceRequestedPin = false;
-                state.hasDeviceRequestedPassphrase = false;
-                state.checkPassphraseOnDevice = false;
-                state.inputPassphraseOnDevice = false;
+                state.deviceState = DeviceState.Idle;
             })
             .addCase(UI.REQUEST_PASSPHRASE_ON_DEVICE, state => {
-                state.inputPassphraseOnDevice = true;
+                state.deviceState = DeviceState.InputPassphraseOnDevice;
+            })
+            .addMatcher(isFlowEndingButtonRequest, state => {
+                state.deviceState = DeviceState.Idle;
+            })
+            .addMatcher(isPinButtonRequestCode, state => {
+                state.deviceState = DeviceState.PinRequested;
             });
     },
 });
 
+export const selectIsIdleDeviceAuthorization = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.deviceState === DeviceState.Idle;
+
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.hasDeviceRequestedPin;
+    state.deviceAuthorization.deviceState === DeviceState.PinRequested;
 
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.hasDeviceRequestedPassphrase;
+    state.deviceAuthorization.deviceState === DeviceState.PassphraseRequested ||
+    state.deviceAuthorization.deviceState === DeviceState.CheckPassphraseOnDevice ||
+    state.deviceAuthorization.deviceState === DeviceState.InputPassphraseOnDevice;
 
 export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.inputPassphraseOnDevice;
+    state.deviceAuthorization.deviceState === DeviceState.InputPassphraseOnDevice;
 
 export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.checkPassphraseOnDevice;
+    state.deviceAuthorization.deviceState === DeviceState.CheckPassphraseOnDevice;
 
-export const selectHasPassphraseError = (
-    state: DiscoveryRootState & DeviceRootState & DeviceAuthorizationState,
-) => {
+export const selectHasPassphraseError = (state: DiscoveryRootState & DeviceRootState) => {
     const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
 
     return (
@@ -136,7 +122,7 @@ export const isPassphraseDeviceLoadingDone = (
         return false;
     }
 
-    return !state.deviceAuthorization.hasDeviceRequestedPassphrase;
+    return state.deviceAuthorization.deviceState !== DeviceState.PassphraseRequested;
 };
 
 export const selectPassphraseDeviceNotEmpty = (state: DiscoveryRootState & DeviceRootState) => {
@@ -169,7 +155,6 @@ export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & D
     );
 };
 
-export const { setCheckPassphraseOnDevice, setInputPassphraseOnDevice } =
-    deviceAuthorizationSlice.actions;
+export const { changeDeviceAuthorizationState } = deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

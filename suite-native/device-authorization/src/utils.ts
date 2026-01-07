@@ -1,5 +1,26 @@
-import { AnyAction } from '@reduxjs/toolkit';
+import { G } from '@mobily/ts-belt';
+import { UnknownAction } from '@reduxjs/toolkit';
 
-export const isPinButtonRequestCode = (action: AnyAction) =>
-    action.payload.code === 'ButtonRequest_PinEntry' || // T2 with PIN entry on device
-    action.payload.code === 'PinMatrixRequestType_Current'; // T1 with PIN matrix in app
+import { UI } from '@trezor/connect';
+
+export const isPinButtonRequestCode = (action: UnknownAction) =>
+    action.type === UI.REQUEST_BUTTON &&
+    G.isNotNullable(action.payload) &&
+    'code' in action.payload &&
+    ['ButtonRequest_PinEntry', 'PinMatrixRequestType_Current'].includes(
+        action.payload.code as string,
+    );
+
+const flowEndingButtonRequests = [
+    'ButtonRequest_ConfirmOutput',
+    'ButtonRequest_SignTx',
+    'ButtonRequest_Address',
+] as const;
+
+export const isFlowEndingButtonRequest = (action: UnknownAction) =>
+    action.type === UI.REQUEST_BUTTON &&
+    G.isNotNullable(action.payload) &&
+    'code' in action.payload &&
+    // TODO fix types
+    // @ts-expect-error
+    flowEndingButtonRequests.includes(action.payload.code);

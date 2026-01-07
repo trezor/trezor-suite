@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
-import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
+import { DeviceState, changeDeviceAuthorizationState } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -49,7 +49,7 @@ export const EnterPassphraseOnTrezorButton = () => {
     const handleSubmitOnDevice = () => {
         analytics.report({ type: EventType.PassphraseEnterOnTrezor });
         if (!device) return;
-        dispatch(setInputPassphraseOnDevice(true));
+        dispatch(changeDeviceAuthorizationState(DeviceState.InputPassphraseOnDevice));
         dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true }));
     };
 

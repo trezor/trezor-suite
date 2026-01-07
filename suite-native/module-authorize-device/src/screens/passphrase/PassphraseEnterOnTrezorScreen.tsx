@@ -8,9 +8,10 @@ import { EventType, analytics } from '@suite-native/analytics';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import {
+    DeviceState,
+    changeDeviceAuthorizationState,
     isPassphraseDeviceLoadingDone,
     selectIsCreatingNewPassphraseWallet,
-    setInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
@@ -65,7 +66,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
     }, [isDeviceAuthorizationDone, navigation]);
 
     const handleCancel = () => {
-        dispatch(setInputPassphraseOnDevice(false));
+        dispatch(changeDeviceAuthorizationState(DeviceState.Idle));
         if (isCreatingNewWalletInstance) {
             if (device) {
                 dispatch(cancelDiscoveryThunk(device));

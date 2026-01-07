@@ -72,7 +72,7 @@ export const AuthorizeDeviceStackNavigator = () => {
                     </AuthorizeDeviceStack.Group>
                 )
             }
-            {!isDeviceThpRequired && hasDeviceRequestedPin && (
+            {!isDeviceThpRequired && (
                 <AuthorizeDeviceStack.Screen
                     name={AuthorizeDeviceStackRoutes.PinMatrix}
                     component={PinScreen}
