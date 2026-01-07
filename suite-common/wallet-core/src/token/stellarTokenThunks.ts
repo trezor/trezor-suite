@@ -1,7 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { selectRawNetworkFeeInfo, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
@@ -15,6 +14,9 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { StellarAssetType } from '@trezor/protobuf/src/messages';
 
+import { selectSelectedDevice } from '../device/deviceSelectors';
+import { selectRawNetworkFeeInfo } from '../fees/feesReducer';
+
 export interface TokenThunkPayload {
     account: Account;
     contractAddress: string;
@@ -22,7 +24,7 @@ export interface TokenThunkPayload {
     customFeePerUnit?: string;
 }
 
-const MODULE_PREFIX = '@wallet-actions/token';
+const STELLAR_TOKEN_MODULE_PREFIX = '@common/wallet-core/stellar-token';
 
 const manageTrustline = async (
     payload: TokenThunkPayload,
@@ -142,18 +144,22 @@ const manageTrustline = async (
     }
 };
 
-export const activateTokenThunk = createThunk<
+export const activateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
     { rejectValue: { error: string; message: string } }
->(`${MODULE_PREFIX}/activateTokenThunk`, (payload, { getState, rejectWithValue }) =>
-    manageTrustline(payload, 'activate', getState, rejectWithValue),
+>(
+    `${STELLAR_TOKEN_MODULE_PREFIX}/activateStellarTokenThunk`,
+    (payload, { getState, rejectWithValue }) =>
+        manageTrustline(payload, 'activate', getState, rejectWithValue),
 );
 
-export const deactivateTokenThunk = createThunk<
+export const deactivateStellarTokenThunk = createThunk<
     void,
     TokenThunkPayload,
     { rejectValue: { error: string; message: string } }
->(`${MODULE_PREFIX}/deactivateTokenThunk`, (payload, { getState, rejectWithValue }) =>
-    manageTrustline(payload, 'deactivate', getState, rejectWithValue),
+>(
+    `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,
+    (payload, { getState, rejectWithValue }) =>
+        manageTrustline(payload, 'deactivate', getState, rejectWithValue),
 );
