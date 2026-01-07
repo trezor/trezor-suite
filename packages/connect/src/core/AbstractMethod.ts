@@ -153,7 +153,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     useCardanoDerivation: boolean;
 
-    noBackupConfirmationMode: 'never' | 'always' | 'popup-only';
+    confirmMissingBackup: boolean;
 
     getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
@@ -199,7 +199,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.useCardanoDerivation === 'boolean'
                 ? payload.useCardanoDerivation
                 : payload.method.startsWith('cardano');
-        this.noBackupConfirmationMode = 'never';
+        this.confirmMissingBackup = false;
     }
 
     // Used in *getAddress methods

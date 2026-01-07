@@ -50,11 +50,9 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
             };
         });
 
-        this.noBackupConfirmationMode = this.params.every(
+        this.confirmMissingBackup = !this.params.every(
             batch => batch.suppressBackupWarning || !batch.show_display,
-        )
-            ? 'popup-only'
-            : 'always';
+        );
     }
 
     get info() {

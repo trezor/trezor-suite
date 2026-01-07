@@ -229,7 +229,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
-        if (method.noBackupConfirmationMode === 'always') {
+        if (method.confirmMissingBackup) {
             // wait for popup window
             await waitForPopup(context);
             // initialize user response promise

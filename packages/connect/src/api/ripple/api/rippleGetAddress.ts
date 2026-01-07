@@ -20,7 +20,7 @@ export default class RippleGetAddress extends AbstractMethod<'rippleGetAddress',
     progress = 0;
 
     init() {
-        this.noBackupConfirmationMode = 'always';
+        this.confirmMissingBackup = true;
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Ripple'];
         this.firmwareRange = getFirmwareRange(

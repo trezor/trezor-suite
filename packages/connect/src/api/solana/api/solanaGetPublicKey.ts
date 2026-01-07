@@ -17,7 +17,7 @@ export default class SolanaGetPublicKey extends AbstractMethod<
     hasBundle?: boolean;
 
     init() {
-        this.noBackupConfirmationMode = 'always';
+        this.confirmMissingBackup = true;
         this.requiredPermissions = ['read'];
         this.requiredDeviceCapabilities = ['Capability_Solana'];
         this.firmwareRange = getFirmwareRange(
