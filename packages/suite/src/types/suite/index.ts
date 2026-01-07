@@ -7,7 +7,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
-import { labelingActions, suiteSyncActions } from '@suite-common/suite-sync';
+import { suiteSyncActions, suiteSyncDataSlice } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import type { Route } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
@@ -83,6 +83,9 @@ type BluetoothActionDesktop = ReturnType<
     (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
 >;
 type SuiteSyncAction = ReturnType<(typeof suiteSyncActions)[keyof typeof suiteSyncActions]>;
+type SuiteSyncDataAction = ReturnType<
+    (typeof suiteSyncDataSlice.actions)[keyof typeof suiteSyncDataSlice.actions]
+>;
 type SuiteSyncActionDesktop = ReturnType<
     (typeof suiteSyncSlice.actions)[keyof typeof suiteSyncSlice.actions]
 >;
@@ -93,7 +96,6 @@ type DeviceActionDesktop = ReturnType<
     (typeof deviceSlice.actions)[keyof typeof deviceSlice.actions]
 >;
 type ThpAction = ReturnType<(typeof thpActions)[keyof typeof thpActions]>;
-type LabelingAction = ReturnType<(typeof labelingActions)[keyof typeof labelingActions]>;
 type GeolocationAction = ReturnType<(typeof geolocationActions)[keyof typeof geolocationActions]>;
 type FeeAction = ReturnType<(typeof feesActions)[keyof typeof feesActions]>;
 
@@ -112,7 +114,6 @@ export type Action =
     | FirmwareAction
     | GeolocationAction
     | GuideAction
-    | LabelingAction
     | MessageSystemAction
     | MetadataAction
     | ModalAction
@@ -125,6 +126,7 @@ export type Action =
     | StorageAction
     | SuiteAction
     | SuiteSyncAction
+    | SuiteSyncDataAction
     | SuiteSyncActionDesktop
     | SuiteSyncQuotaManagerAction
     | ThpAction

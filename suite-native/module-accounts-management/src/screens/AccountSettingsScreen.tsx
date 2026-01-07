@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
@@ -8,10 +9,10 @@ import {
     selectFormattedAccountType,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -65,9 +66,18 @@ export const AccountSettingsScreen = ({
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, accountKey),
     );
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+    const accountLabel = useSelector((state: SuiteSyncDataRootState) => {
+        if (!account) return null;
+
+        const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
+        return selectSuiteSyncAccountLabel(
+            state,
+            walletDescriptor,
+            account.descriptor,
+            account.symbol,
+        );
+    });
 
     if (!account) return null;
 

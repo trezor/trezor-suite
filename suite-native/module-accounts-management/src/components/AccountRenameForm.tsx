@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import {
     AccountFormValues,
     AccountLabelFieldHint,
@@ -11,11 +13,7 @@ import {
 import { Box, Button, InputType, VStack } from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    CombinedLabelingState,
-    selectAccountLabel,
-    selectIsLabelingEnabled,
-} from '@suite-native/labeling';
+import { selectIsLabelingEnabled } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
 
 type AccountRenameFormProps = {
@@ -33,9 +31,18 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const inputRef = useRef<InputType>(null);
 
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+    const accountLabel = useSelector((state: SuiteSyncDataRootState) => {
+        if (!account) return null;
+
+        const { walletDescriptor } = parseDeviceStaticSessionId(account?.deviceState);
+
+        return selectSuiteSyncAccountLabel(
+            state,
+            walletDescriptor,
+            account?.descriptor,
+            account?.symbol,
+        );
+    });
 
     const form = useAccountLabelForm(accountLabel ?? undefined);
     const {

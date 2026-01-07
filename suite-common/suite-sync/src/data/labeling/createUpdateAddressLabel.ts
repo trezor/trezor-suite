@@ -1,7 +1,7 @@
 import { UpdateAddressLabel } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureStorageDep } from '../storage/createEnsureStorage';
+import { EnsureStorageDep } from '../../storage/createEnsureStorage';
 
 export type UpdateAddressLabelDeps = EnsureStorageDep;
 
@@ -20,7 +20,7 @@ export const createUpdateAddressLabel =
             return storageResult;
         }
 
-        storageResult.value.addressLabels.update({
+        storageResult.value.data.addresses.update({
             address,
             label,
             accountDescriptor,

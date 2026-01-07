@@ -17,7 +17,7 @@ import {
     castExtraStore,
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
-import { labelingReducer } from '@suite-common/suite-sync';
+import { suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -65,9 +65,9 @@ const rootReducer = combineReducers({
     tokenDefinitions: tokenDefinitionsReducer,
     bluetooth: bluetoothReducer,
     thp: thpReducer,
-    labeling: labelingReducer,
     suiteSync: suiteSyncReducer,
     suiteSyncQuotaManager: suiteSyncQuotaManagerReducer,
+    suiteSyncData: suiteSyncDataReducer,
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFilters.reducer,
 });

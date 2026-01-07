@@ -2,7 +2,7 @@ import { UpdateAccountLabel } from '@suite-common/suite-sync-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureStorageDep } from '../storage/createEnsureStorage';
+import { EnsureStorageDep } from '../../storage/createEnsureStorage';
 
 export type UpdateAccountLabelDeps = EnsureStorageDep;
 
@@ -17,7 +17,7 @@ export const createUpdateAccountLabel =
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-        storageResult.value.accountLabels.update({ accountDescriptor, networkSymbol, label });
+        storageResult.value.data.accounts.update({ accountDescriptor, networkSymbol, label });
 
         return ok();
     };

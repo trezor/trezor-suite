@@ -2,10 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { HStack, IconButton, Text } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     AccountsStackParamList,
     RootStackParamList,
@@ -26,9 +27,16 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => {
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account?.key, account?.deviceState),
-    );
+    const accountLabel = useSelector((state: SuiteSyncDataRootState) => {
+        const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
+        return selectSuiteSyncAccountLabel(
+            state,
+            walletDescriptor,
+            account.descriptor,
+            account.symbol,
+        );
+    });
 
     return (
         <HStack alignItems="center">

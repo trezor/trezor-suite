@@ -1,30 +1,31 @@
-import { AddressLabel, OutputLabel } from '@suite-common/suite-sync-storage';
+import { SuiteSyncAddress, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { suiteSyncToBip329 } from '../suiteSyncToBip329';
 
 describe(suiteSyncToBip329.name, () => {
     it('transform properly', () => {
-        const outputLabels: OutputLabel[] = [
+        const outputLabels: SuiteSyncOutput[] = [
             {
                 txId: '50e4fa9ebfca7d510feae7226a7d5d046114f54a7918cdd83e40c98d70d17e4d',
                 outputIndex: 0,
                 label: 'this is expending transaction output or just tx',
-                accountDescriptor: 'xpub...',
+                accountDescriptor: asAccountDescriptor('xpub...'),
                 networkSymbol: 'btc',
             },
             {
                 txId: '519e17d6f3eb87cc8c4bf450d0dc2bad83a1387713680bec609bcb5d8e53335e',
                 outputIndex: 0,
                 label: 'this is receive tx label',
-                accountDescriptor: 'xpub...',
+                accountDescriptor: asAccountDescriptor('xpub...'),
                 networkSymbol: 'btc',
             },
         ];
-        const addressLabels: AddressLabel[] = [
+        const addressLabels: SuiteSyncAddress[] = [
             {
                 address: 'bc1qq46pg2kafgjvsh7me3puv0jujdl77a5829xlrs',
                 label: 'This address is labeled',
-                accountDescriptor: 'xpub...',
+                accountDescriptor: asAccountDescriptor('xpub...'),
                 networkSymbol: 'btc',
             },
         ];

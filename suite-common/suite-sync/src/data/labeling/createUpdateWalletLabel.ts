@@ -2,7 +2,7 @@ import { UpdateWalletLabel } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { ok } from '@trezor/type-utils';
 
-import { EnsureStorageDep } from '../storage/createEnsureStorage';
+import { EnsureStorageDep } from '../../storage/createEnsureStorage';
 
 export type UpdateWalletLabelDeps = EnsureStorageDep;
 
@@ -17,7 +17,7 @@ export const createUpdateWalletLabel =
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        storageResult.value.walletLabels.update({ walletDescriptor, label });
+        storageResult.value.data.wallets.update({ walletDescriptor, label });
 
         return ok();
     };

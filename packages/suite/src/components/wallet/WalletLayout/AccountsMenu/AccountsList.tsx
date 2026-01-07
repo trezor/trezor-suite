@@ -1,4 +1,4 @@
-import { findAccountLabel, selectAccountLabels } from '@suite-common/suite-sync';
+import { findSuiteSyncAccountLabel, selectSuiteSyncAccountLabels } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -57,7 +57,7 @@ const Accounts = ({
     const params = useSelector(selectRouterParams) as RouteParams;
 
     const suiteSyncAccountLabels = useSelector(state =>
-        selectAccountLabels({ state, deviceStaticSessionId }),
+        selectSuiteSyncAccountLabels(state, deviceStaticSessionId),
     );
 
     return (
@@ -74,7 +74,7 @@ const Accounts = ({
                 const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
 
                 const label =
-                    findAccountLabel({
+                    findSuiteSyncAccountLabel({
                         accountLabels: suiteSyncAccountLabels,
                         accountDescriptor,
                         networkSymbol,
@@ -111,11 +111,11 @@ export const AccountsList = ({
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
 
-    const suiteSyncAccountLabels = useSelector(state =>
-        device?.state?.staticSessionId !== undefined
-            ? selectAccountLabels({ state, deviceStaticSessionId: device?.state?.staticSessionId })
-            : [],
-    );
+    const suiteSyncAccountLabels = useSelector(state => {
+        if (!device?.state?.staticSessionId) return [];
+
+        return selectSuiteSyncAccountLabels(state, device.state.staticSessionId);
+    });
 
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { isSidebarCollapsed } = useResponsiveContext();
@@ -138,7 +138,7 @@ export const AccountsList = ({
                   const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
 
                   const accountLabel =
-                      findAccountLabel({
+                      findSuiteSyncAccountLabel({
                           accountLabels: suiteSyncAccountLabels,
                           accountDescriptor,
                           networkSymbol,

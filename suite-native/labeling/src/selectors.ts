@@ -1,19 +1,20 @@
 import {
-    WithLabelingState,
+    SuiteSyncDataRootState,
     WithSuiteSyncAndDeviceState,
-    selectAccountLabel as selectAccountLabelLocalFirst,
+    selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
     selectIsFeatureSuiteSyncAvailable,
 } from '@suite-common/suite-sync';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     selectIsPortfolioTrackerDevice,
     selectAccountLabel as selectReduxAccountLabel,
 } from '@suite-common/wallet-core';
-import type { AccountKey } from '@suite-common/wallet-types';
+import { AccountDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
-export type CombinedLabelingState = WithLabelingState &
+export type CombinedLabelingState = SuiteSyncDataRootState &
     WithSuiteSyncAndDeviceState &
     AccountsRootState;
 
@@ -26,22 +27,22 @@ export const selectIsLabelingEnabled = (state: WithSuiteSyncAndDeviceState) => {
 
 export const selectAccountLabel = (
     state: CombinedLabelingState,
-    accountKey?: AccountKey,
-    deviceState?: StaticSessionId,
+    deviceStaticSessionId: StaticSessionId,
+    accountDescriptor: AccountDescriptor,
+    networkSymbol: NetworkSymbol,
 ) => {
     const isLabelingEnabled = selectIsLabelingEnabled(state);
 
-    const { walletDescriptor } = deviceState
-        ? parseDeviceStaticSessionId(deviceState)
-        : { walletDescriptor: null };
+    const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-    const syncedLabel = selectAccountLabelLocalFirst({
+    const syncedLabel = selectAccountLabelLocalFirst(
         state,
         walletDescriptor,
-        accountKey: accountKey ?? null,
-    });
+        accountDescriptor,
+        networkSymbol,
+    );
 
-    const storeLabel = selectReduxAccountLabel(state, accountKey);
+    const storeLabel = selectReduxAccountLabel(state, accountDescriptor);
 
     return isLabelingEnabled && syncedLabel !== null ? syncedLabel : storeLabel;
 };

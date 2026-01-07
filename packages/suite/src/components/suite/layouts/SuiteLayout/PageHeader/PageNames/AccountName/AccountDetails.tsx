@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
-import { selectAccountLabel } from '@suite-common/suite-sync';
+import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -40,11 +40,12 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const { walletDescriptor } = parseDeviceStaticSessionId(selectedAccount.deviceState);
 
     const suiteSyncAccountLabel = useSelector(state =>
-        selectAccountLabel({
+        selectSuiteSyncAccountLabel(
             state,
             walletDescriptor,
-            accountKey: selectedAccount.key,
-        }),
+            selectedAccount.descriptor,
+            selectedAccount.symbol,
+        ),
     );
 
     const { symbol, key, path, index, accountType, formattedBalance, deviceState, networkType } =

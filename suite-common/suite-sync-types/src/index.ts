@@ -5,13 +5,21 @@ export type {
     SuiteSyncStorageRepository,
     StorageId,
 } from './storage/suiteSyncStorageRepository';
+
 export type { RefreshSuiteSyncKeys, RefreshSuiteSyncKeysDep } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export type { RefreshSuiteKeysUnavailableType } from './refreshSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
+export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
+
 export type {
-    SubscriptionName,
+    EnsureSuiteSyncOwnerDep,
+    EnsureSuiteSyncOwnerParams,
+    EnsureSuiteSyncOwner,
+} from './owner/ensureSuiteSyncOwner';
+
+export type {
     SubscriptionStorageDep,
     SubscriptionStorage,
     SubscriptionStorageParams,
@@ -25,27 +33,29 @@ export type {
     TurnOnSuiteSyncForWalletDep,
     TurnOnSuiteSyncForWalletParams,
 } from './storage/turnOnSuiteSyncForWallet';
+
+export type {
+    Subscriptions,
+    SuiteSyncListener,
+    SubscribeSuiteSyncData,
+    SubscribeSuiteSyncDataDep,
+    SuiteSyncListenerDep,
+} from './data/subscribeSuiteSyncData';
+
+// Labeling
 export type {
     UpdateAccountLabel,
     UpdateAccountLabelDep,
     UpdateAccountLabelParams,
-} from './labeling/updateAccountLabel';
+} from './data/updateAccountLabel';
 export type {
     UpdateAddressLabel,
     UpdateAddressLabelDep,
     UpdateAddressLabelParams,
-} from './labeling/updateAddressLabel';
-export type { SubscribeLabeling } from './labeling/subscribeLabeling';
-export type { UpdateOutputLabelDep, UpdateOutputLabel } from './labeling/updateOutputLabel';
+} from './data/updateAddressLabel';
+export type { UpdateOutputLabelDep, UpdateOutputLabel } from './data/updateOutputLabel';
 export type {
     UpdateWalletLabel,
     UpdateWalletLabelDep,
     UpdateWalletLabelParams,
-} from './labeling/updateWalletLabel';
-
-export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
-export type {
-    EnsureSuiteSyncOwnerDep,
-    EnsureSuiteSyncOwnerParams,
-    EnsureSuiteSyncOwner,
-} from './owner/ensureSuiteSyncOwner';
+} from './data/updateWalletLabel';

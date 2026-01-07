@@ -95,7 +95,7 @@ export const AccountsListItem = ({
     );
 
     const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(state, account.key, account.deviceState),
+        selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol),
     );
 
     const doesCoinSupportTokens = isCoinWithTokens(account.symbol);

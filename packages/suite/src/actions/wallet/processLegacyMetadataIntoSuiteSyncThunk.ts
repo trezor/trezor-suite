@@ -61,7 +61,7 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
                     txId: payload.txid,
                     outputIndex: Number(payload.outputIndex),
                     label: value ?? null,
-                    accountDescriptor: payload.accountDescriptor,
+                    accountDescriptor: asAccountDescriptor(payload.accountDescriptor),
                     networkSymbol: payload.networkSymbol as NetworkSymbol,
                 });
 

@@ -3,10 +3,10 @@ import { Evolu, SyncOwner, createOwnerWebSocketTransport } from '@evolu/common';
 import { CreateSuiteStorage, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 
 import { CreateEvoluInstanceDep } from './createEvoluInstance';
-import { AccountLabelSchema, AccountLabels } from './labeling/accountLabels';
-import { AddressLabelSchema, AddressLabels } from './labeling/addressLabels';
-import { OutputLabelSchema, OutputLabels } from './labeling/outputLabels';
-import { WalletLabelSchema, WalletLabels } from './labeling/walletLabels';
+import { AccountSchema, EvoluAccountTable } from './data/accountTable';
+import { AddressEvoluTable, AddressLabelSchema } from './data/addressTable';
+import { OutputEvoluTable, OutputLabelSchema } from './data/outputTable';
+import { EvoluWalletTable, WalletLabelSchema } from './data/walletTable';
 
 export type CreateEvoluStorageFactoryDeps = CreateEvoluInstanceDep;
 
@@ -46,10 +46,14 @@ export const createEvoluStorageFactory =
         updateRelayUrl(relayUrl); // This updates the relay
 
         return {
-            accountLabels: new AccountLabels(evolu as unknown as Evolu<typeof AccountLabelSchema>),
-            walletLabels: new WalletLabels(evolu as unknown as Evolu<typeof WalletLabelSchema>),
-            outputLabels: new OutputLabels(evolu as unknown as Evolu<typeof OutputLabelSchema>),
-            addressLabels: new AddressLabels(evolu as unknown as Evolu<typeof AddressLabelSchema>),
+            data: {
+                accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountSchema>),
+                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletLabelSchema>),
+                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputLabelSchema>),
+                addresses: new AddressEvoluTable(
+                    evolu as unknown as Evolu<typeof AddressLabelSchema>,
+                ),
+            },
 
             updateRelayUrl,
             dispose: async () => {
