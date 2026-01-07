@@ -1,6 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { networks } from '@suite-common/wallet-config';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { DeviceRootState } from '../../device/deviceReducer';
 import { AccountsRootState } from '../accountsReducer';
@@ -36,7 +37,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 tokens: [],
                 symbol: 'btc',
                 path: "m/84'/0'/0'",
-                descriptor: '1BitcoinAddress',
+                descriptor: asAccountDescriptor('1BitcoinAddress'),
                 addresses: {
                     unused: [
                         {
@@ -81,7 +82,7 @@ const mockState: AccountsRootState & DeviceRootState = {
             {
                 symbol: 'eth',
                 networkType: 'ethereum',
-                descriptor: '0xEthereumAddress',
+                descriptor: asAccountDescriptor('0xEthereumAddress'),
                 deviceState: ETH_DEVICE_SSID,
                 key: '0xEthereumAddress-eth-deviceState',
                 accountType: 'normal',

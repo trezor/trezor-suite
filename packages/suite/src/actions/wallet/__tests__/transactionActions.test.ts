@@ -7,6 +7,7 @@ import {
     transactionsActions,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { transactionsReducer } from 'src/reducers/wallet';
@@ -42,8 +43,8 @@ describe('Transaction Actions', () => {
     });
 
     it('Remove txs for a given account', () => {
-        const account1 = testMocks.getWalletAccount({ descriptor: 'xpub1' });
-        const account2 = testMocks.getWalletAccount({ descriptor: 'xpub2' });
+        const account1 = testMocks.getWalletAccount({ descriptor: asAccountDescriptor('xpub1') });
+        const account2 = testMocks.getWalletAccount({ descriptor: asAccountDescriptor('xpub2') });
         const store = initStore({
             transactions: {
                 [account1.key]: [getWalletTransaction()],

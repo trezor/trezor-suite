@@ -1,11 +1,11 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AccountHistoryMovementItem } from '../../types';
 
 export const xrpAccountTransactions: WalletAccountTransaction[] = [
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',
@@ -28,7 +28,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -51,7 +51,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -74,7 +74,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',
@@ -97,7 +97,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -120,7 +120,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',
@@ -143,7 +143,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -166,7 +166,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',
@@ -189,7 +189,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -212,7 +212,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'sent',
@@ -235,7 +235,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',
@@ -258,7 +258,7 @@ export const xrpAccountTransactions: WalletAccountTransaction[] = [
         details: { vin: [], vout: [], size: 0, totalInput: '0', totalOutput: '0' },
     },
     {
-        descriptor: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+        descriptor: asAccountDescriptor('r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'xrp',
         type: 'recv',

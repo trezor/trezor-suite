@@ -1,9 +1,11 @@
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+
 import { Account } from 'src/types/wallet';
 
 export const ACCOUNT: Account = {
     networkType: 'bitcoin',
     symbol: 'btc' as Account['symbol'],
-    descriptor: 'btc-descriptor',
+    descriptor: asAccountDescriptor('btc-descriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",

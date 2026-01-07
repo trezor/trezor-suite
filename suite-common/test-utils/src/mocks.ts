@@ -14,6 +14,7 @@ import {
     BlockchainNetworks,
     FeeInfo,
     WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import {
     AccountUtxo,
@@ -36,7 +37,7 @@ const getWalletAccount = (account?: Partial<Account>): Account => ({
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/44'/60'/0'/0/1",
-    descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
+    descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
     key: `${account?.descriptor ?? '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'}-${
         account?.symbol ?? 'eth'
     }-${account?.deviceState ?? '1stTestnetAddress@device_id:0'}`,
@@ -258,8 +259,9 @@ export const getSuiteDevice = (
 };
 
 const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAccountTransaction => ({
-    descriptor:
+    descriptor: asAccountDescriptor(
         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+    ),
     deviceState: '1stTestnetAddress@device_id:0',
     symbol: 'btc',
     type: 'sent',

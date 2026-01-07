@@ -376,7 +376,7 @@ describe('transaction utils', () => {
     });
 
     describe('advancedSearchTransactions', () => {
-        const transactions = stMock.transactions as WalletAccountTransaction[];
+        const transactions = stMock.transactions as unknown as WalletAccountTransaction[];
         const metadata = stMock.labels;
         fixtures.searchTransactions.forEach(f => {
             it(f.description, () => {

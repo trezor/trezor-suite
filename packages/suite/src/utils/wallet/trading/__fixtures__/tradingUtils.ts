@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 
 import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
-import { Account } from '@suite-common/wallet-types';
+import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 
@@ -21,7 +21,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0',
         tokens: [],
-        descriptor: 'descriptor1',
+        descriptor: asAccountDescriptor('descriptor1'),
         symbol: 'btc',
         visible: true,
         accountType: 'normal',
@@ -30,7 +30,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0.101213',
         tokens: [],
-        descriptor: 'descriptor2',
+        descriptor: asAccountDescriptor('descriptor2'),
         symbol: 'ltc',
         visible: true,
         accountType: 'normal',
@@ -38,7 +38,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
     {
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '0',
-        descriptor: 'descriptor3',
+        descriptor: asAccountDescriptor('descriptor3'),
         symbol: 'eth',
         visible: true,
         accountType: 'normal',
@@ -76,7 +76,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
         deviceState: '1stTestnet@device_id:0',
         formattedBalance: '0.101213',
         tokens: [],
-        descriptor: 'descriptor4',
+        descriptor: asAccountDescriptor('descriptor4'),
         symbol: 'btc',
         visible: true,
         accountType: 'normal',
@@ -96,7 +96,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 standard: 'ERC20',
             },
         ],
-        descriptor: 'descriptor5',
+        descriptor: asAccountDescriptor('descriptor5'),
         accountType: 'normal',
     },
     {
@@ -115,7 +115,7 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 standard: 'ERC20',
             },
         ],
-        descriptor: 'descriptor6',
+        descriptor: asAccountDescriptor('descriptor6'),
         accountType: 'normal',
     },
     {
@@ -134,14 +134,14 @@ export const FIXTURE_ACCOUNTS: Partial<Account>[] = [
                 standard: 'ERC20',
             },
         ],
-        descriptor: 'descriptor6',
+        descriptor: asAccountDescriptor('descriptor6'),
         accountType: 'normal',
     },
     {
         deviceState: '1stTestnetAddress@device_id:0',
         formattedBalance: '1',
         tokens: [],
-        descriptor: 'descriptor7',
+        descriptor: asAccountDescriptor('descriptor7'),
         symbol: 'btc',
         visible: true,
         accountType: 'coinjoin',

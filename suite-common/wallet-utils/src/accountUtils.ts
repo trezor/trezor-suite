@@ -373,14 +373,12 @@ export const getAllAccounts = (
 
 /**
  * Returns a string used as an index to separate txs for given account inside a transactions reducer
- *
- * @param {string} descriptor
- * @param {string} symbol
- * @param {string} deviceState
- * @returns {string}
  */
-export const getAccountKey = (descriptor: string, symbol: string, deviceState: string) =>
-    `${descriptor}-${symbol}-${deviceState}`;
+export const getAccountKey = (
+    descriptor: AccountDescriptor,
+    symbol: NetworkSymbol,
+    deviceStaticSessionId: StaticSessionId,
+): AccountKey => `${descriptor}-${symbol}-${deviceStaticSessionId}`;
 
 /**
  * Clear invalid tokens and formats amounts

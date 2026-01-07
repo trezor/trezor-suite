@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { WithLabelingState, selectAddressLabel } from '@suite-common/suite-sync';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountDescriptor } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -12,7 +13,7 @@ import { selectIsLabelingEnabled } from '../selectors';
 type AddressLabelEditableProps = {
     address: string;
     deviceStaticSessionId: StaticSessionId;
-    accountDescriptor: string;
+    accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
 };
 

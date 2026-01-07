@@ -19,6 +19,7 @@ export interface AccountInfo extends AccountInfoBase {
     utxo?: AccountUtxo[]; // bitcoin utxo
     descriptorChecksum?: string;
 }
+
 export interface DiscoveryAccount {
     type: DiscoveryAccountType;
     label: string;

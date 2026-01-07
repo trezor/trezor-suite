@@ -19,7 +19,7 @@ import {
 } from '@trezor/connect';
 import { RequiredKey } from '@trezor/type-utils';
 
-import { Account } from './account';
+import { Account, AccountDescriptor } from './account';
 import { FormStateTradingCryptoCurrency, FormStateTradingFiatCurrency } from './sendForm';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
@@ -231,7 +231,7 @@ export type RbfTransactionParams = RbfTransactionParamsBitcoin | RbfTransactionP
 
 export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: StaticSessionId;
-    descriptor: string;
+    descriptor: AccountDescriptor;
     symbol: NetworkSymbol;
     rbfParams?: RbfTransactionParams;
     /**

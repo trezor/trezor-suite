@@ -110,7 +110,7 @@ describe('labelingReducer', () => {
             }),
         );
 
-        const accountKey = getAccountKey('accdesc1', 'btc', 'ignored');
+        const accountKey = getAccountKey(asAccountDescriptor('accdesc1'), 'btc', 'ignored@1:2');
         expect(
             selectAccountLabel({
                 state: store.getState(),

@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
 import { AccountTransaction } from '@trezor/connect';
 
@@ -467,8 +467,9 @@ export const enhanceTransaction = [
         },
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor:
+            descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            ),
             symbol: 'btc',
             networkType: 'bitcoin',
         }),
@@ -559,8 +560,9 @@ export const enhanceTransaction = [
         },
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor:
+            descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            ),
             symbol: 'btc',
             networkType: 'bitcoin',
         }),
@@ -622,8 +624,9 @@ export const enhanceTransaction = [
         },
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor:
+            descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            ),
             symbol: 'btc',
             networkType: 'bitcoin',
         }),
@@ -1278,8 +1281,9 @@ export const getAccountTransactions = [
         transactions: TXS,
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor:
+            descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+            ),
             symbol: 'btc',
         }),
         result: [
@@ -1326,7 +1330,7 @@ export const getAccountTransactions = [
         transactions: TXS,
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
+            descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
             symbol: 'txrp',
         }),
         result: [
@@ -1377,7 +1381,7 @@ export const getAccountTransactions = [
         transactions: TXS,
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
+            descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
             symbol: 'eth',
         }),
         result: [
@@ -1525,7 +1529,7 @@ export const getAccountTransactions = [
         transactions: TXS,
         account: getWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
-            descriptor: '0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2',
+            descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
             symbol: 'eth',
         }),
         result: [],
@@ -1538,8 +1542,9 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         blockHash: '00000000000000000017277948d61a631dae6cce1d7fb501301b825599189f51',
         blockHeight: 590093,
         blockTime: 1565797979,
-        descriptor:
+        descriptor: asAccountDescriptor(
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
+        ),
         deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
         symbol: 'btc',
@@ -1592,8 +1597,9 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         },
     },
     'Received and pending transaction': {
-        descriptor:
+        descriptor: asAccountDescriptor(
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
+        ),
         deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
         symbol: 'test',
         type: 'recv',

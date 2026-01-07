@@ -6,6 +6,7 @@ import {
     AccountBackendSpecific,
     AccountFailureSpecific,
     SelectedAccountStatus,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
@@ -67,13 +68,13 @@ const createAccount = createAction(
 
             const payload: Account = {
                 ...account,
-                descriptor,
+                descriptor: asAccountDescriptor(descriptor),
                 descriptorChecksum,
                 empty,
                 balance,
                 availableBalance,
                 history,
-                key: getAccountKey(descriptor, symbol, deviceState),
+                key: getAccountKey(asAccountDescriptor(descriptor), symbol, deviceState),
                 formattedBalance: formatNetworkAmount(
                     // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                     isArrayMember(networkType, ['ripple', 'stellar']) ? balance : availableBalance,
@@ -121,6 +122,7 @@ const updateAccount = createAction(
                 payload: {
                     ...account,
                     ...accountInfo,
+                    descriptor: asAccountDescriptor(accountInfo.descriptor),
                     path: account.path,
                     empty: accountInfo.empty,
                     visible: account.visible || !accountInfo.empty,

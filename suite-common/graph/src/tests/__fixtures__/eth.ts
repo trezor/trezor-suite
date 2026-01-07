@@ -1,11 +1,11 @@
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { AccountHistoryMovementItem } from '../../types';
 
 export const ethAccountTransactions: WalletAccountTransaction[] = [
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -66,7 +66,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'failed',
@@ -128,7 +128,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -181,7 +181,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -253,7 +253,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -315,7 +315,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -381,7 +381,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -435,7 +435,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -511,7 +511,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -565,7 +565,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -627,7 +627,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -691,7 +691,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'bsc',
         type: 'sent',
@@ -758,7 +758,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -832,7 +832,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -888,7 +888,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -955,7 +955,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1013,7 +1013,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1110,7 +1110,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1175,7 +1175,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1239,7 +1239,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -1293,7 +1293,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1346,7 +1346,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1399,7 +1399,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -1463,7 +1463,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -1527,7 +1527,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1580,7 +1580,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',
@@ -1644,7 +1644,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1697,7 +1697,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'sent',
@@ -1750,7 +1750,7 @@ export const ethAccountTransactions: WalletAccountTransaction[] = [
         },
     },
     {
-        descriptor: '0x62270860B9a5337e46bE8563c512c9137AFa0384',
+        descriptor: asAccountDescriptor('0x62270860B9a5337e46bE8563c512c9137AFa0384'),
         deviceState: 'state@hiddenDeviceWithImportedAccounts:1',
         symbol: 'eth',
         type: 'recv',

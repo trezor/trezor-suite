@@ -6,7 +6,7 @@ import { prepareTransactionsReducer, transactionsInitialState } from '../transac
 
 const transactionsReducer = prepareTransactionsReducer(extraDependenciesMock);
 
-describe('transactionsReducer', () => {
+describe(transactionsReducer.name, () => {
     describe('addTransaction', () => {
         fixtures.addTransaction.forEach(f => {
             it(f.description, () => {
