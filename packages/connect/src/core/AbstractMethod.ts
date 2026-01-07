@@ -215,9 +215,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     setDevice(device: Device) {
         this.device = device;
-        // NOTE: every method should always send "device" parameter
-        const originalFn = this.createUiPromise;
-        this.createUiPromise = (t, d) => originalFn(t, d || device);
     }
 
     private getOriginPermissions({ origin }: Pick<ConnectSettings, 'origin'>) {
