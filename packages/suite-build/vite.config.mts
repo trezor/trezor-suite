@@ -261,18 +261,14 @@ const workerPlugin = (): Plugin => ({
 const serveCorePlugin = () => ({
     name: 'serve-core',
     configureServer(server: ViteDevServer) {
-        server.middlewares.use(async (req, res, next) => {
-            if (req.url?.endsWith('/js/core.js')) {
-                const code = await server.transformRequest(
-                    resolve(__dirname, '../connect/src/core/index.ts'),
-                    { ssr: false },
-                );
-                if (code?.code) {
-                    res.setHeader('Content-Type', 'application/javascript');
-                    res.end(code.code);
+        server.middlewares.use((req, res, next) => {
+            if (req.url?.includes('/js/core.js')) {
+                const coreEntryPath = resolve(__dirname, '../connect/src/core/index.ts');
+                const moduleSpecifier = `/@fs/${coreEntryPath}`;
+                res.setHeader('Content-Type', 'application/javascript');
+                res.end(`export { initCoreState } from ${JSON.stringify(moduleSpecifier)};\n`);
 
-                    return;
-                }
+                return;
             }
             next();
         });
