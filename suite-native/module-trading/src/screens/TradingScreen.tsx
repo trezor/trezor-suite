@@ -50,7 +50,7 @@ const TradingScreenContent = () => {
             <Header isFormMountedRecently={isScreenMountedRecently} />
             <TradingTabContent />
             <HistoryButton isFormMountedRecently={isScreenMountedRecently} />
-            <Footer type={activeTradingType} isFormMountedRecently={isScreenMountedRecently} />
+            <Footer isFormMountedRecently={isScreenMountedRecently} />
         </VStack>
     );
 };
