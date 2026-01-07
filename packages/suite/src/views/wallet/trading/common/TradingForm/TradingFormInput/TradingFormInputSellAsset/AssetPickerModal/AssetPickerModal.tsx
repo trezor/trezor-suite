@@ -1,5 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import { TranslationKey } from '@suite-common/intl-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Divider } from '@trezor/components';
@@ -23,6 +25,7 @@ export type AssetPickerModalProps = {
     heading: TranslationKey;
     dataTestId?: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
+    enabledCryptoIds?: Set<CryptoId>;
 };
 
 export const AssetPickerModal = memo(function AssetPickerModalInner({
@@ -30,6 +33,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     heading,
     onAssetSelect,
     dataTestId,
+    enabledCryptoIds,
 }: AssetPickerModalProps) {
     const { search, throttledSearch, setSearch } = useSearchFilter();
 
@@ -38,6 +42,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     const { listItems, networks } = useBuildTradingAssetOptions({
         search: throttledSearch,
         networkSymbol: networkFilter,
+        enabledCryptoIds,
     });
 
     const handleAssetClick = useUpdateFormInput({ closeModal, onAssetSelect });

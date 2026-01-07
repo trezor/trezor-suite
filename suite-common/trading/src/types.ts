@@ -22,6 +22,7 @@ import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import {
     Account,
+    AccountKey,
     BaseCurrencyOption,
     FormState,
     GeneralPrecomposedTransactionFinal,
@@ -140,6 +141,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
+// FIXME: remove this type
 export interface TradingAccountOptionsGroupOptionProps {
     value: CryptoId;
     label: string; // token shortcut
@@ -196,11 +198,13 @@ export type TradingExchangeRateFilter =
     | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_FLOATING_CEX
     | typeof constants.TRADING_EXCHANGE_COMPARATOR_RATE_FILTER_DEX;
 
+export type TradingAssetSellOption = TradingAssetOption & {
+    accountKey: AccountKey;
+};
+
 export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingAssetOption | null;
-    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]:
-        | TradingAccountOptionsGroupOptionProps
-        | undefined;
+    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
     [constants.TRADING_EXCHANGE_RATE]: TradingExchangeRateType;
     [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
@@ -249,9 +253,7 @@ export type TradingSignAndPushSendFormTransactionProps = {
 export type TradingSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
 export interface TradingSellFormProps extends FormState {
-    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]:
-        | TradingAccountOptionsGroupOptionProps
-        | undefined;
+    [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;

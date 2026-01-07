@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { ExperimentId } from '@suite-common/message-system';
@@ -9,6 +9,8 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeFormProps,
     TradingExchangeType,
+    selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
@@ -21,13 +23,13 @@ import { spacings } from '@trezor/theme';
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { getTradingNetworkDecimals } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputAccount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAccount';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputBuyAsset,
     TradingFormInputBuyAssetProps,
@@ -36,6 +38,10 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
+import {
+    TradingFormInputSellAsset,
+    TradingFormInputSellAssetProps,
+} from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
@@ -47,7 +53,6 @@ export const TradingExchangeFormInputs = () => {
         account,
         composedLevels,
         form: { helpers },
-        exchangeInfo,
         changeFeeLevel,
         shouldSendInSats,
         showReserveBanner,
@@ -55,17 +60,29 @@ export const TradingExchangeFormInputs = () => {
         setAmountLimits,
     } = context;
     const { getValues, setValue } = useFormContext<TradingExchangeFormProps>();
-    const { sendCryptoSelect, receiveCryptoSelect, outputs, amountInCrypto } = getValues();
+    const {
+        [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: sendCryptoSelect,
+        [TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: receiveCryptoSelect,
+        outputs,
+        amountInCrypto,
+    } = getValues();
 
     const output = outputs[0];
     const currencySelect = output.currency;
     const tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const sendAssetDecimals = useMemo(
+        () =>
+            getAssetDecimals({
+                tradingAccountKey: sendCryptoSelect?.accountKey,
+                cryptoId: sendCryptoSelect?.id,
+            }),
+        [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
+    );
     const outputAmount =
         shouldSendInSats && output.amount
-            ? convertAmountSubunitsToUnits(
-                  output.amount,
-                  getTradingNetworkDecimals({ sendCryptoSelect }),
-              )
+            ? convertAmountSubunitsToUnits(output.amount, sendAssetDecimals)
             : output.amount;
 
     const dispatch = useDispatch();
@@ -73,6 +90,16 @@ export const TradingExchangeFormInputs = () => {
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
     const setValueRef = useCurrentRef(setValue);
     const resetSelectedOfferRef = useCurrentRef(resetSelectedOffer);
+
+    const onCryptoCurrencyChangeRef = useCurrentRef(helpers.onCryptoCurrencyChange);
+    const handleSellAssetSelect = useCallback<TradingFormInputSellAssetProps['onAssetSelect']>(
+        async asset => {
+            await onCryptoCurrencyChangeRef.current(asset);
+
+            resetSelectedOfferRef.current();
+        },
+        [onCryptoCurrencyChangeRef, resetSelectedOfferRef],
+    );
 
     const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
@@ -86,21 +113,29 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
+    const supportedExchangeSellCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
+    const supportedExchangeBuyCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
+    const supportedExchangeSellCryptoIdsSet = useMemo(
+        () => new Set(supportedExchangeSellCryptoIds),
+        [supportedExchangeSellCryptoIds],
+    );
+    const supportedExchangeBuyCryptoIdsSet = useMemo(
+        () => new Set(supportedExchangeBuyCryptoIds),
+        [supportedExchangeBuyCryptoIds],
+    );
+
     return (
         <Card paddingType="none">
             <Column gap={spacings.lg} padding={spacings.lg}>
-                {/* TODO: finish integration to trading exchange form */}
-                {/* <TradingFormInputSellAsset
+                <TradingFormInputSellAsset
                     inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     inputLabel="TR_FROM"
+                    inputBottomText={
+                        <AssetPickerInputBalance name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT} />
+                    }
                     dataTestId="@trading/form/trade-from/select-crypto"
                     onAssetSelect={handleSellAssetSelect}
-                /> */}
-                <TradingFormInputAccount
-                    accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                    excludeCryptoId={receiveCryptoSelect?.id}
-                    label="TR_FROM"
-                    data-testid="@trading/form/trade-from/select-crypto"
+                    enabledCryptoIds={supportedExchangeSellCryptoIdsSet}
                 />
                 <Column gap={spacings.xs}>
                     <TradingFormInputFiatCrypto
@@ -108,7 +143,7 @@ export const TradingExchangeFormInputs = () => {
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                         cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                         currencySelectLabel={currencySelect.label}
-                        cryptoCurrencyLabel={sendCryptoSelect?.value}
+                        cryptoCurrencyLabel={sendCryptoSelect?.id}
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
@@ -136,12 +171,12 @@ export const TradingExchangeFormInputs = () => {
                                         element: (
                                             <TradingBalance
                                                 balance={outputAmount}
-                                                displaySymbol={sendCryptoSelect?.value}
+                                                displaySymbol={sendCryptoSelect?.displaySymbol}
                                                 symbol={account.symbol}
                                                 tokenAddress={tokenAddress}
                                                 showOnlyAmount
                                                 amountInCrypto={amountInCrypto}
-                                                sendCryptoSelect={sendCryptoSelect}
+                                                decimals={sendAssetDecimals}
                                             />
                                         ),
                                     },
@@ -162,8 +197,8 @@ export const TradingExchangeFormInputs = () => {
                     inputPlaceholder="TR_SELECT_TOKEN"
                     inputLabel="TR_TO"
                     inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                    enabledCryptoIds={exchangeInfo?.buyCryptoIds}
-                    disabledCryptoId={sendCryptoSelect?.value}
+                    enabledCryptoIds={supportedExchangeBuyCryptoIdsSet}
+                    disabledCryptoId={sendCryptoSelect?.id}
                     onAssetSelect={handleReceiveAssetSelect}
                     dataTestId="@trading/form/select-crypto"
                 />

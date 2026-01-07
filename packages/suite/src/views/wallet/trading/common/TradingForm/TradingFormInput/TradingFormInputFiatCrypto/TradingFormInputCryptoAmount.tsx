@@ -15,9 +15,9 @@ import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
-import { hasOwn } from '@trezor/utils';
 
 import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
@@ -41,7 +41,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 import {
     getFeeInUnits,
-    getTradingNetworkDecimals,
+    getNetworkDecimalsWithFallback,
     tradingGetAccountLabel,
 } from 'src/utils/wallet/trading/tradingUtils';
 
@@ -85,19 +85,18 @@ export const TradingFormInputCryptoAmount = ({
             ? (errors as FieldErrors<TradingSellExchangeFormProps>)?.outputs?.[0]?.amount
             : (errors as FieldErrors<TradingBuyFormProps>).cryptoInput;
 
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(
-        cryptoSelect && hasOwn(cryptoSelect, 'id') ? cryptoSelect.id : cryptoSelect?.value,
-    );
+    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
     const displaySymbol = tradingGetAccountLabel(
         getDisplaySymbol(coinSymbol ?? '', contractAddress),
         shouldSendInSats,
     );
-    const decimals = getTradingNetworkDecimals({
-        sendCryptoSelect: !isTradingBuyContext(context)
-            ? getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)
-            : undefined,
-        network,
-    });
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const decimals = isTradingBuyContext(context)
+        ? getNetworkDecimalsWithFallback(network.symbol)
+        : getAssetDecimals({
+              tradingAccountKey: getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)?.accountKey,
+              cryptoId: cryptoSelect?.id,
+          });
 
     const isNetworkReserveError =
         (isTradingExchangeContext(context) || isTradingSellContext(context)) &&

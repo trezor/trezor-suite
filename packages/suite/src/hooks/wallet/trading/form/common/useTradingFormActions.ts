@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormReturn, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
@@ -11,15 +11,15 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingAssetSellOption,
     type TradingExchangeFormProps,
     type TradingSellFormProps,
-    cryptoIdToSymbol,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import {
-    selectAccounts,
+    selectAccountByKey,
     selectIsNetworkReserveEnabled,
-    selectSelectedDevice,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -34,18 +34,14 @@ import { BigNumber, isChanged } from '@trezor/utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingAccountOptionsGroupOptionProps } from 'src/types/trading/trading';
 import {
     TradingSellExchangeFormProps,
     TradingUseFormActionsProps,
     TradingUseFormActionsReturnProps,
 } from 'src/types/trading/tradingForm';
-import {
-    getAddressAndTokenFromAccountOptionsGroupProps,
-    getFeeInUnits,
-    getTradingNetworkDecimals,
-    tradingGetSortedAccounts,
-} from 'src/utils/wallet/trading/tradingUtils';
+import { getFeeInUnits, resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
+
+import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 
 /**
  * shareable sub-hook used in useTradingSellForm & useTradingExchangeForm
@@ -71,13 +67,8 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const dispatch = useDispatch();
     const { symbol } = account;
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
-    const accounts = useSelector(selectAccounts);
-    const device = useSelector(selectSelectedDevice);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
-    const accountsSorted = tradingGetSortedAccounts({
-        accounts,
-        deviceState: device?.state?.staticSessionId,
-    });
+    const accounts = useSelector(selectVisibleDeviceAccounts);
     const isNotFormPage = pageType !== 'form';
     const [fractionButtonState, setFractionButtonState] = useState<number | undefined>(undefined);
 
@@ -91,14 +82,25 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const isBalanceZero = tokenData
         ? isZero(tokenData.balance || '0')
         : isZero(account.formattedBalance);
+
+    const sendCryptoAccount = useSelector(state =>
+        selectAccountByKey(state, sendCryptoSelect?.accountKey),
+    );
     const tradingFiatValues = useTradingFiatValues({
-        cryptoId: sendCryptoSelect?.value,
-        amount: sendCryptoSelect?.balance,
+        cryptoId: sendCryptoSelect?.id,
+        amount: sendCryptoAccount?.balance,
         fiatCurrency: getValues().outputs?.[0]?.currency?.value as FiatCurrencyCode,
     });
-    const networkDecimals = getTradingNetworkDecimals({
-        sendCryptoSelect,
-    });
+
+    const { getAssetDecimals } = useTradingAssetDecimals();
+    const networkDecimals = useMemo(
+        () =>
+            getAssetDecimals({
+                tradingAccountKey: sendCryptoSelect?.accountKey,
+                cryptoId: sendCryptoSelect?.id,
+            }),
+        [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],
+    );
 
     const feeInUnits = getFeeInUnits({
         symbol: account.symbol,
@@ -164,20 +166,17 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
         [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
     );
 
-    const onCryptoCurrencyChange = async (selected: TradingAccountOptionsGroupOptionProps) => {
-        const symbol = cryptoIdToSymbol(selected.value);
+    const onCryptoCurrencyChange = async (selected: TradingAssetSellOption) => {
         const cryptoSelectedCurrent = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
         const isSameCryptoSelected =
             cryptoSelectedCurrent &&
-            cryptoSelectedCurrent.descriptor === selected.descriptor &&
-            cryptoSelectedCurrent.value === selected.value;
-        const account = accountsSorted.find(
-            item => item.descriptor === selected.descriptor && item.symbol === symbol,
-        );
+            cryptoSelectedCurrent.accountKey === selected.accountKey &&
+            cryptoSelectedCurrent.id === selected.id;
+        const account = accounts.find(item => item.key === selected.accountKey);
 
         if (!account || isSameCryptoSelected) return;
 
-        const { token } = getAddressAndTokenFromAccountOptionsGroupProps(selected);
+        const { token } = resolveAddressAndToken(account, selected.contractAddress);
 
         // setValue(TRADING_FORM_OUTPUT_ADDRESS, address);
         setValue(TRADING_FORM_CRYPTO_TOKEN, token);

@@ -11,10 +11,10 @@ import {
 } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     buildTradingFiatOption,
-    getAddressAndTokenFromAccountOptionsGroupProps,
     getCountryLabelParts,
     getTradeTypeByRoute,
     getTradingCryptoInfo,
+    resolveAddressAndToken,
     tradingBuildAccountOptions,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
@@ -226,10 +226,10 @@ describe('trading utils', () => {
         expect(tradingGetAccountLabel('USDT', false)).toBe('USDT');
     });
 
-    it('getAddressAndTokenFromAccountOptionsGroupProps - testing correct returning value fot setting FormState to send currency', () => {
-        FIXTURE_ACCOUNT_OPTIONS.forEach(item => {
-            expect(getAddressAndTokenFromAccountOptionsGroupProps(item.option)).toEqual(
-                item.result,
+    it('resolveAddressAndToken - testing correct returning value fot setting FormState to send currency', () => {
+        FIXTURE_ACCOUNT_OPTIONS.forEach(({ option, result }) => {
+            expect(resolveAddressAndToken(option.account, option.tokenContractAddress)).toEqual(
+                result,
             );
         });
     });

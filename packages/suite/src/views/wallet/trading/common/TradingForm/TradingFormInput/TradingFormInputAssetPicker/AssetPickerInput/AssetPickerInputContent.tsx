@@ -1,14 +1,32 @@
-import { TradingAssetOption } from '@suite-common/trading';
+import {
+    TRADING_FORM_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    TradingAssetOption,
+    TradingAssetSellOption,
+} from '@suite-common/trading';
 import { Badge, Row, Text } from '@trezor/components';
 import { AssetLogo, CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-export type AssetPickerInputContentProps = {
-    value: TradingAssetOption;
-    dataTestId?: string;
-};
+import { AssetPickerAccountLabel } from './AssetPickerAccountLabel';
 
-export function AssetPickerInputContent({ value, dataTestId }: AssetPickerInputContentProps) {
+export type AssetPickerInputContentProps = {
+    dataTestId?: string;
+} & (
+    | {
+          name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
+          value: TradingAssetSellOption;
+      }
+    | {
+          name:
+              | typeof TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT
+              | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT;
+          value: TradingAssetOption;
+      }
+);
+
+export function AssetPickerInputContent({ name, value, dataTestId }: AssetPickerInputContentProps) {
     return (
         <Row gap={spacings.sm}>
             {value.isNativeToken ? (
@@ -23,10 +41,15 @@ export function AssetPickerInputContent({ value, dataTestId }: AssetPickerInputC
                     showNetworkIcon={false}
                 />
             )}
-            <Text data-testid={`${dataTestId}/display-symbol`}>{value.displaySymbol}</Text>
+            <Text data-testid={dataTestId ? `${dataTestId}/display-symbol` : undefined}>
+                {value.displaySymbol}
+            </Text>
             <Text variant="tertiary" typographyStyle="label">
                 {value.name}
             </Text>
+            {name === TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT && (
+                <AssetPickerAccountLabel accountKey={value.accountKey} />
+            )}
             {!value.isNativeToken ? <Badge size="small">{value.networkName}</Badge> : null}
         </Row>
     );

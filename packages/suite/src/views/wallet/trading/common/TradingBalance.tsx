@@ -29,11 +29,10 @@ export const TradingBalance = ({
     tokenAddress,
     showOnlyAmount,
     amountInCrypto,
-    decimals,
+    decimals: networkDecimals = getNetworkDecimalsWithFallback(symbol),
 }: TradingBalanceProps) => {
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
     const balanceCurrency = tradingGetAccountLabel(displaySymbol ?? '', shouldSendInSats);
-    const networkDecimals = decimals ?? getNetworkDecimalsWithFallback(symbol);
     const stringBalance = !isNaN(Number(balance)) ? balance : '0';
     const formattedBalance =
         stringBalance && shouldSendInSats

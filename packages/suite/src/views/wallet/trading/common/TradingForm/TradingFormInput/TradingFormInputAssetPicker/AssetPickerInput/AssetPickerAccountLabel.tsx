@@ -1,0 +1,26 @@
+import { selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
+
+import { AccountLabel } from 'src/components/suite';
+import { useSelector } from 'src/hooks/suite';
+
+interface AssetPickerAccountLabelProps {
+    accountKey?: AccountKey;
+}
+
+export function AssetPickerAccountLabel({ accountKey }: AssetPickerAccountLabelProps) {
+    const account = useSelector(state => selectAccountByKey(state, accountKey));
+
+    if (!account) {
+        return null;
+    }
+
+    return (
+        <AccountLabel
+            account={account}
+            showAccountTypeBadge={true}
+            variant="tertiary"
+            typographyStyle="label"
+        />
+    );
+}
