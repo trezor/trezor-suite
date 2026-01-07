@@ -23,7 +23,7 @@ import { UnpairBluetoothDeviceCard } from '../components/UnpairBluetoothDeviceCa
 import { WipeDeviceCard } from '../components/WipeDeviceCard';
 import { useDeviceChangedCheck } from '../hooks/useDeviceChangedCheck';
 
-export const DeviceSettingsModalScreen = () => {
+export const DeviceSettingsScreen = () => {
     useDeviceChangedCheck();
 
     const deviceModel = useSelector(selectDeviceModel);

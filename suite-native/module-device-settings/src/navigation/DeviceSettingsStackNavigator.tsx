@@ -26,7 +26,7 @@ import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { DeviceAuthenticityScreen } from '../screens/DeviceAuthenticityScreen';
 import { DeviceAutoConnectScreen } from '../screens/DeviceAutoConnectScreen';
 import { DeviceFirmwareScreen } from '../screens/DeviceFirmwareScreen';
-import { DeviceSettingsModalScreen } from '../screens/DeviceSettingsModalScreen';
+import { DeviceSettingsScreen } from '../screens/DeviceSettingsScreen';
 import { PinProtectionScreen } from '../screens/PinProtectionScreen';
 import { UnpairBluetoothDeviceScreen } from '../screens/UnpairBluetoothDeviceScreen';
 import { WipeDeviceScreen } from '../screens/WipeDeviceScreen';
@@ -43,7 +43,7 @@ export const DeviceSettingsStackNavigator = () => {
         >
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.DeviceSettings}
-                component={DeviceSettingsModalScreen}
+                component={DeviceSettingsScreen}
             />
             <DeviceSettingsStack.Screen
                 name={DeviceSettingsStackRoutes.DeviceFirmware}
