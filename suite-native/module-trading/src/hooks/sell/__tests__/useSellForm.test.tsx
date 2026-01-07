@@ -17,10 +17,15 @@ import {
     btcAsset,
     getBtcAccount,
     getWalletState,
+    sellBanxa,
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { selectTradingResidenceCountry, sellActions } from '@suite-native/trading-state';
+import {
+    selectTradingProviderMetadata,
+    selectTradingResidenceCountry,
+    sellActions,
+} from '@suite-native/trading-state';
 import { SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -536,6 +541,17 @@ describe('useSellForm', () => {
             });
 
             expect(result.current.getValues('quote')).toEqual(sellQuotes[0]);
+        });
+
+        it('should persist provider metadata to redux', async () => {
+            const { result } = await renderUseSellForm();
+            initFormAndQuoteRequest(result.current);
+
+            act(() => {
+                store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
+            });
+
+            expect(selectTradingProviderMetadata(store.getState())).toBe(sellBanxa);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {

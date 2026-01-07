@@ -361,8 +361,10 @@ describe('useExchangeQuotes', () => {
             form.setValue('sendCryptoAmount', undefined);
         });
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(1);
-        expect(dispatchSpy).toHaveBeenLastCalledWith({
+        // The 2nd call ("trading/setCurrentProviderMetadata") is out of scope of this test,
+        // we care only about the "tradingBuy/clearQuotesAndQuotesRequest" call.
+        expect(dispatchSpy).toHaveBeenCalledTimes(2);
+        expect(dispatchSpy).toHaveBeenNthCalledWith(1, {
             payload: undefined,
             type: 'tradingExchange/clearQuotesAndQuotesRequest',
         });
