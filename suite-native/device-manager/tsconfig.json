@@ -23,6 +23,7 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
