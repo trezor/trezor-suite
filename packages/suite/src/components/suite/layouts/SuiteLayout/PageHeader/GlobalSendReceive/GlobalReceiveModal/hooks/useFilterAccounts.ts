@@ -14,7 +14,7 @@ export function useFilterAccounts(accounts: AccountOption[]) {
         () =>
             accounts.filter(account =>
                 search || networkSymbol
-                    ? accountSearchFn(account.account, search, networkSymbol)
+                    ? accountSearchFn(account.account, search, { coinsFilter: networkSymbol })
                     : true,
             ),
         [accounts, networkSymbol, search],

@@ -188,7 +188,9 @@ export function useBuildTradingAssetOptions({
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
                     case 'account':
-                        return accountSearchFn(accountOrToken.account, search);
+                        return accountSearchFn(accountOrToken.account, search, {
+                            tokensMatch: false,
+                        });
                     case 'token':
                         return isTokenMatchesSearch(accountOrToken.token, search);
                     default:

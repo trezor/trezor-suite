@@ -811,11 +811,19 @@ export const getAccountIdentifier = (account: Account) => ({
     deviceState: account.deviceState,
 });
 
+export type AccountSearchParams = {
+    coinsFilter?: NetworkSymbol[] | NetworkSymbol;
+    metadataAccountLabel?: string;
+    /**
+     * Return true if the account has token that match the search string
+     */
+    tokensMatch?: boolean;
+};
+
 export const accountSearchFn = (
     account: Account,
-    rawSearchString?: string,
-    coinsFilter?: NetworkSymbol[] | NetworkSymbol,
-    metadataAccountLabel?: string,
+    rawSearchString: string | undefined,
+    { coinsFilter, metadataAccountLabel, tokensMatch = true }: AccountSearchParams = {},
 ) => {
     let coinsFilterArray: NetworkSymbol[] = [];
 
@@ -865,7 +873,8 @@ export const accountSearchFn = (
         token.symbol?.toLowerCase().includes(searchString) ||
         token.contract.toLowerCase().includes(searchString);
 
-    const tokenMatch = !!account.tokens && !!account.tokens.filter(filterTokens).length;
+    const tokenMatch =
+        tokensMatch && !!account.tokens && !!account.tokens.filter(filterTokens).length;
 
     return (
         accountNumberMatch ||
