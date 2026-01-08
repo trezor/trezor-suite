@@ -4,7 +4,6 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { Feature, selectFeatureConfig } from '@suite-common/message-system';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -19,17 +18,16 @@ import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailExchangePaymentConverting } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentConverting';
 import { TradingDetailExchangePaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentFailed';
 import { TradingDetailExchangePaymentKYC } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentKYC';
 import { TradingDetailExchangePaymentSending } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSending';
 import { TradingDetailExchangePaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailExchange/TradingDetailExchangePaymentSuccessful';
-import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
 import { TradingDetailStepList } from '../TradingDetailStepList';
-import { TradingDetailSurvey } from '../TradingDetailSurvey';
 
 const Wrapper = styled.div`
     ${TradingWrapper}
@@ -58,9 +56,6 @@ const getTradeStatusStep = (tradeStatus: ExchangeTradeStatus) => {
 export const TradingDetailExchange = () => {
     const accounts = useSelector(selectAccounts);
     const { trade, info } = useTradingDetailContext<TradingExchangeType>();
-    const tradingSurveyFeature = useSelector(state =>
-        selectFeatureConfig(state, Feature.trading.survey),
-    );
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -179,17 +174,13 @@ export const TradingDetailExchange = () => {
                 <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
                     {getContent()}
                 </Card>
-                {tradingSurveyFeature ? (
-                    <TradingDetailSurvey />
-                ) : (
-                    <TradingDetailFeedback
-                        status={tradeStatus}
-                        type={trade.tradeType}
-                        provider={provider?.name}
-                        id={trade.data.id}
-                        quoteAmounts={quoteAmounts}
-                    />
-                )}
+                <AfterTradeExperiment
+                    status={tradeStatus}
+                    type={trade.tradeType}
+                    provider={provider?.name}
+                    id={trade.data.id}
+                    quoteAmounts={quoteAmounts}
+                />
             </Column>
             <Card>
                 <TradingSelectedOfferInfo

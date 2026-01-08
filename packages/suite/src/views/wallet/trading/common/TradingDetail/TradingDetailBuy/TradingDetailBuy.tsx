@@ -14,11 +14,11 @@ import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
+import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
 import { TradingDetailBuyPaymentProcessingStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentProcessingStep';
 import { TradingDetailBuyPaymentPaymentSuccessful } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentSuccessful';
 import { TradingDetailBuyPaymentWaitingForUserStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentWaitingForUserStep';
-import { TradingDetailFeedback } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailFeedback';
 import { TradingSelectedOfferInfo } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingSelectedOfferInfo';
 import { TradingWrapper } from 'src/views/wallet/trading/common/TradingWrapper';
 
@@ -163,7 +163,7 @@ export const TradingDetailBuy = () => {
                 <Card paddingType="large" data-testid="@trading/transaction/detail/status-card">
                     {getContent()}
                 </Card>
-                <TradingDetailFeedback
+                <AfterTradeExperiment
                     status={tradeStatus}
                     type={trade.tradeType}
                     provider={provider?.name}
