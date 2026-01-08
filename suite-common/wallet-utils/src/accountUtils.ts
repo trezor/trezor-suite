@@ -131,13 +131,6 @@ export const parseBIP44Path = (path: string) => {
     };
 };
 
-export const getFiatValue = (amount: string, rate: string, fixedTo = 2) => {
-    const fiatValueBigNumber = new BigNumber(amount).multipliedBy(new BigNumber(rate));
-    const fiatValue = fiatValueBigNumber.isNaN() ? '' : fiatValueBigNumber.toFixed(fixedTo);
-
-    return fiatValue;
-};
-
 export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
     switch (symbol) {
         case 'test':

@@ -10,7 +10,6 @@ import {
     getAccountIdentifier,
     getAccountKey,
     getBip43Type,
-    getFiatValue,
     getFirstFreshAddress,
     getNetworkAccountFeatures,
     getTitleForCoinjoinAccount,
@@ -91,12 +90,6 @@ describe('account utils', () => {
                 expect(substituteBip43Path(f.pathTemplate, f.index)).toBe(f.result);
             });
         });
-    });
-
-    it('get fiat value', () => {
-        expect(getFiatValue('1', '10')).toEqual('10.00');
-        expect(getFiatValue('1', '10', 5)).toEqual('10.00000');
-        expect(getFiatValue('s', '10')).toEqual('');
     });
 
     it('format network amount', () => {
