@@ -310,7 +310,6 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Trezor Suite'in en son sürümünü arka planda otomatik olarak indirin ve uygulamayı yeniden başlatırken yükleyin. Bu sayede en son özellikler ve güvenlik yamalarıyla her zaman güncel kalırsınız. Güncellemeler izniniz istenmeden gerçekleşir.",
   "TR_ALLOW_BLUETOOTH_CTA": "İzin ver",
   "TR_ALL_NETWORKS": "Tüm ağlar ({networkCount})",
-  "TR_ALL_NETWORKS_TOOLTIP": "Tüm {networkCount} ağlarındaki token'ları görüntüleyin. En popüler ağlara göre filtreleyin.",
   "TR_ALL_TRANSACTIONS": "İşlemler",
   "TR_AMOUNT_REDUCED_TXS": "Düşülen tutar",
   "TR_AMOUNT_SENT": "Tutar gönderildi",

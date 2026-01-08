@@ -340,7 +340,6 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Descarga automáticamente la versión más reciente de Trezor Suite en segundo plano e instálala al reiniciar la aplicación. De este modo, siempre estarás al día de las últimas funciones y medidas de seguridad. Las actualizaciones se producen sin solicitar tu permiso.",
   "TR_ALLOW_BLUETOOTH_CTA": "Permitir",
   "TR_ALL_NETWORKS": "Todas las redes ({networkCount})",
-  "TR_ALL_NETWORKS_TOOLTIP": "Ve los tokens de todas las {networkCount} redes. Filtra por las redes más populares.",
   "TR_ALL_TRANSACTIONS": "Transacciones",
   "TR_AMOUNT_REDUCED_TXS": "Importe reducido",
   "TR_AMOUNT_SENT": "Importe a enviar",

@@ -303,7 +303,6 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "A Trezor Suite automatikusan letölti a legújabb verziót a háttérben, és az alkalmazás újraindításakor telepíti azt. Ez biztosítja, hogy mindig naprakész legyél a legújabb funkciókkal és biztonsági javításokkal. A frissítések az engedélyed nélkül történnek.",
   "TR_ALLOW_BLUETOOTH_CTA": "Engedélyez",
   "TR_ALL_NETWORKS": "Minden hálózat ({networkCount})",
-  "TR_ALL_NETWORKS_TOOLTIP": "Mind a(z) {networkCount} hálózat tokenjeinek megtekintése. A legnépszerűbb hálózatok alapján a jobb oldalon tudsz szűrni.",
   "TR_ALL_TRANSACTIONS": "Tranzakciók",
   "TR_AMOUNT_SENT": "Küldött összeg",
   "TR_AMOUNT_TOO_BIG_FOR_COINJOIN": "Nem elérhető a coinjoin számára - az összeg túl nagy.",

@@ -340,7 +340,6 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Trezor Suite의 최신 버전이 백그라운드에서 자동으로 다운로드되고 앱 재시작 시 설치됩니다. 항상 최신 기능과 보안 패치를 유지할 수 있습니다. 업데이트는 별도의 승인 없이 자동으로 진행됩니다.",
   "TR_ALLOW_BLUETOOTH_CTA": "허용",
   "TR_ALL_NETWORKS": "모든 네트워크 ({networkCount})",
-  "TR_ALL_NETWORKS_TOOLTIP": "모든 {networkCount} 네트워크의 토큰을 확인하세요. 가장 인기 있는 네트워크로 필터링하세요.",
   "TR_ALL_TRANSACTIONS": "거래",
   "TR_AMOUNT_REDUCED_TXS": "감소된 금액",
   "TR_AMOUNT_SENT": "송금할 금액",
