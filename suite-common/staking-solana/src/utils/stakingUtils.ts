@@ -15,7 +15,7 @@ import {
     PrepareStakeSolTxResponse,
     PriorityFees,
 } from '@suite-common/wallet-types';
-import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
+import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils/src/amountUtils';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
 import { SolanaTx } from '../types';
