@@ -46,6 +46,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const renderItem = useCallback(
         (item: FilteredAccountOption) => (
             <AssetRowReceiveToAccount
+                dataTestId={`@global-receive-account/${item.account.accountType}/${item.account.symbol}/${item.account.index}`}
                 account={item.account}
                 onClick={account => onSubmit(account, 'coin', filledSearch)}
             />

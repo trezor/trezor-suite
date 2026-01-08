@@ -99,7 +99,7 @@ export const SendHeader = () => {
 
     return (
         <>
-            <WalletSubpageHeading title="TR_NAV_SEND">
+            <WalletSubpageHeading data-testid="@wallet/send-header" title="TR_NAV_SEND">
                 {isDirty && (
                     <ClearButtonWrapper>
                         <Button
