@@ -1,4 +1,3 @@
-export { TradingAddressOptions } from 'src/views/wallet/trading/common/TradingAddressOptions';
 export { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 export { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 export { TradingFooter } from 'src/views/wallet/trading/common/TradingFooter/TradingFooter';
