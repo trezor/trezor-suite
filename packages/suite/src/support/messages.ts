@@ -794,7 +794,7 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
-            'Trezor Suite is a comparison tool that connects you to the best exchange providers. It only uses location in order to show the most relevant offers.',
+            'Trezor Suite helps you compare trusted exchange providers to find the best offers. Your location is used only to show options that are relevant to you.',
         id: 'TR_BUY_FOOTER_TEXT_1',
     },
     TR_BUY_FOOTER_TEXT_2: {
@@ -3218,7 +3218,7 @@ export default defineMessages({
     TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
         id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
         defaultMessage:
-            'Trezor will connect automatically without having to confirm every connection.',
+            'Trezor will connect automatically, so you don’t need to approve each connection.',
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
@@ -4458,7 +4458,7 @@ export default defineMessages({
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
         defaultMessage:
-            'Permanently deletes all data related to your Trezor from this computer, including Bluetooth pairing and connection settings.',
+            'Permanently delete all data related to your Trezor from this computer, including Bluetooth pairing and connection settings.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
