@@ -8,13 +8,13 @@ import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer
 
 import { AccountTypeBadge } from './AccountTypeBadge';
 
-interface AccountLabelProps {
+type AccountLabelProps = {
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
     account: Account;
     variant?: TextProps['variant'];
     typographyStyle?: TextProps['typographyStyle'];
-}
+};
 
 export const AccountLabel = ({
     showAccountTypeBadge,
@@ -35,7 +35,6 @@ export const AccountLabel = ({
     const accountLabel =
         suiteSyncAccountLabel ||
         legacyAccountLabel ||
-        account.accountLabel ||
         getDefaultAccountLabel({ accountType, symbol, index });
 
     return (

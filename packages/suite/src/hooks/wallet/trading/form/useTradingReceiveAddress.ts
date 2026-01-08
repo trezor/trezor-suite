@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form';
 
 import { CryptoId } from 'invity-api';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import {
     TradingType,
     cryptoIdToSymbol,
@@ -25,40 +24,14 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { TradingPageType } from 'src/types/trading/trading';
 import {
-    TradingAccountType,
     TradingGetTranslationIdsProps,
-    TradingVerifyFormAccountOptionProps,
     TradingVerifyFormProps,
 } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
 
-const getSelectAccountOptions = (
-    suiteReceiveAccounts: Account[] | undefined,
-    device: TrezorDevice | undefined,
-    isSupportedNetwork: boolean,
-    nonSuiteAccount: boolean,
-): TradingVerifyFormAccountOptionProps[] => {
-    const selectAccountOptions: TradingVerifyFormAccountOptionProps[] = [];
-
-    suiteReceiveAccounts?.forEach(account => {
-        selectAccountOptions.push({ type: 'SUITE', account });
-    });
-
-    // have to be signed by private key
-    if (device?.connected && isSupportedNetwork) {
-        selectAccountOptions.push({ type: 'ADD_SUITE' });
-    }
-
-    if (nonSuiteAccount) {
-        selectAccountOptions.push({ type: 'NON_SUITE' });
-    }
-
-    return selectAccountOptions;
-};
-
-const getTranslationIds = (type: TradingAccountType | undefined): TradingGetTranslationIdsProps => {
-    if (type === 'NON_SUITE') {
+const getTranslationIds = (selectedAccount: Account | null): TradingGetTranslationIdsProps => {
+    if (selectedAccount === null) {
         return {
             accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
             addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
@@ -113,9 +86,7 @@ export const useTradingReceiveAddress = ({
         mode: 'onChange',
     });
 
-    const [selectedAccountOption, setSelectedAccountOption] = useState<
-        TradingVerifyFormAccountOptionProps | undefined
-    >();
+    const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [isMenuOpen, setIsMenuOpen] = useState<boolean | undefined>(undefined);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
@@ -133,54 +104,43 @@ export const useTradingReceiveAddress = ({
         [accounts, symbol, device?.state?.staticSessionId, isDebug],
     );
 
-    const selectAccountOptions = useMemo(
-        () =>
-            getSelectAccountOptions(
-                suiteReceiveAccounts,
-                device,
-                isSupportedNetwork,
-                nonSuiteAccount,
-            ),
-        [device, suiteReceiveAccounts, isSupportedNetwork, nonSuiteAccount],
+    // Conditions for showing action buttons in the modal
+    const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);
+    const canUseNonSuiteAccount = nonSuiteAccount;
+
+    const selectSuiteAccount = useCallback(
+        (account: Account) => {
+            setSelectedAccount(account);
+            const { address } = getUnusedAddressFromAccount(account);
+            methods.setValue('address', address, { shouldValidate: true });
+        },
+        [methods],
     );
 
-    const selectAccountOption = useCallback(
-        (option: TradingVerifyFormAccountOptionProps, receiveAddress?: string) => {
-            setSelectedAccountOption(option);
+    const onChangeAccount = (account: Account) => {
+        setIsMenuOpen(undefined);
+        selectSuiteAccount(account);
+    };
 
-            if (option.account) {
-                const { address } = getUnusedAddressFromAccount(option.account);
-                methods.setValue('address', address, { shouldValidate: true });
-            } else {
-                methods.setValue('address', receiveAddress, { shouldValidate: true });
+    const selectNonSuiteAddress = useCallback(
+        (address: string, extraFieldValue?: string) => {
+            setSelectedAccount(null);
+            methods.setValue('address', address, { shouldValidate: true });
+            if (extraFieldValue !== undefined) {
+                methods.setValue('extraField', extraFieldValue, { shouldValidate: true });
             }
         },
         [methods],
     );
 
-    const onChangeAccount = (
-        account: TradingVerifyFormAccountOptionProps,
-        receiveAddress?: string,
-    ) => {
-        if (account.type === 'ADD_SUITE') {
-            return;
-        }
-
-        setIsMenuOpen(undefined);
-        selectAccountOption(account, receiveAddress);
-    };
-
     useEffect(() => {
         if (!symbol) return;
 
-        const suiteOption = selectAccountOptions.find(option => option.type === 'SUITE');
-        const nonSuiteOption = selectAccountOptions.find(option => option.type === 'NON_SUITE');
+        const firstAccount = suiteReceiveAccounts?.[0];
 
-        const option = suiteOption ?? nonSuiteOption;
+        if (!firstAccount) return;
 
-        if (!option) return;
-
-        selectAccountOption(option);
+        selectSuiteAccount(firstAccount);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [symbol]);
 
@@ -195,16 +155,15 @@ export const useTradingReceiveAddress = ({
 
         if (sendAccount?.symbol !== symbol) return;
 
-        const option = selectAccountOptions.find(
-            accountOption =>
-                (accountOption?.account?.key === sendAccountKey ||
-                    accountOption?.account?.symbol === symbol) &&
-                accountOption?.account?.index === sendAccount?.index,
+        const matchingAccount = suiteReceiveAccounts?.find(
+            account =>
+                (account.key === sendAccountKey || account.symbol === symbol) &&
+                account.index === sendAccount?.index,
         );
 
-        if (!option) return;
+        if (!matchingAccount) return;
 
-        selectAccountOption(option);
+        selectSuiteAccount(matchingAccount);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sendAccountKey, symbol]);
 
@@ -218,23 +177,20 @@ export const useTradingReceiveAddress = ({
         persistedReceiveDataLoadedRef.current = true;
 
         if (isPreviousRouteFromTradeSection && persistedReceiveAccountKey) {
-            const suiteOption = selectAccountOptions.find(
-                option => option.account?.key === persistedReceiveAccountKey,
+            const matchingAccount = suiteReceiveAccounts?.find(
+                account => account.key === persistedReceiveAccountKey,
             );
-            if (suiteOption) {
-                selectAccountOption(suiteOption);
+            if (matchingAccount) {
+                selectSuiteAccount(matchingAccount);
 
                 return;
             }
         }
 
-        if (isPreviousRouteFromTradeSection && persistedReceiveAddress) {
-            const nonSuiteOption = selectAccountOptions.find(option => option.type === 'NON_SUITE');
-            if (nonSuiteOption) {
-                selectAccountOption(nonSuiteOption, persistedReceiveAddress);
+        if (isPreviousRouteFromTradeSection && persistedReceiveAddress && canUseNonSuiteAccount) {
+            selectNonSuiteAddress(persistedReceiveAddress);
 
-                return;
-            }
+            return;
         }
 
         const sendAccount =
@@ -242,36 +198,33 @@ export const useTradingReceiveAddress = ({
                 ? accounts.find(account => account.key === sendAccountKey)
                 : undefined;
 
-        const suiteOption = selectAccountOptions.find(
-            option =>
-                option.type === 'SUITE' &&
-                (sendAccount && sendAccount.symbol === option.account?.symbol
-                    ? option.account?.key === sendAccount.key
-                    : true),
+        const matchingAccount = suiteReceiveAccounts?.find(account =>
+            sendAccount && sendAccount.symbol === account.symbol
+                ? account.key === sendAccount.key
+                : true,
         );
-        const nonSuiteOption = selectAccountOptions.find(option => option.type === 'NON_SUITE');
 
-        const option = suiteOption ?? nonSuiteOption;
+        if (!matchingAccount) return;
 
-        if (!option) return;
-
-        selectAccountOption(option);
+        selectSuiteAccount(matchingAccount);
     }, [
         type,
         symbol,
         accounts,
         sendAccountKey,
-        selectAccountOptions,
+        suiteReceiveAccounts,
         persistedReceiveAccountKey,
         persistedReceiveAddress,
         isPreviousRouteFromTradeSection,
-        selectAccountOption,
+        selectSuiteAccount,
+        selectNonSuiteAddress,
+        canUseNonSuiteAccount,
     ]);
 
     const receiveAddressValue = methods.watch('address');
     const extraFieldValue = methods.watch('extraField');
 
-    const addressDictionary = useAccountAddressDictionary(selectedAccountOption?.account);
+    const addressDictionary = useAccountAddressDictionary(selectedAccount ?? undefined);
     const accountAddress = receiveAddressValue ? addressDictionary[receiveAddressValue] : undefined;
 
     const receiveAddress = useMemo(() => {
@@ -317,29 +270,28 @@ export const useTradingReceiveAddress = ({
         if (pageType === 'retry') return;
 
         if (type === 'exchange') {
-            dispatch(
-                tradingExchangeActions.setReceiveAccountKey(selectedAccountOption?.account?.key),
-            );
+            dispatch(tradingExchangeActions.setReceiveAccountKey(selectedAccount?.key));
         }
 
         if (type === 'buy') {
-            dispatch(tradingBuyActions.setTradingAccountKey(selectedAccountOption?.account?.key));
+            dispatch(tradingBuyActions.setTradingAccountKey(selectedAccount?.key));
         }
-    }, [selectedAccountOption, pageType, type, dispatch]);
+    }, [selectedAccount, pageType, type, dispatch]);
 
     return {
         form: {
             ...methods,
         },
         suiteReceiveAccounts,
-        selectedAccountOption,
-        selectAccountOptions,
+        selectedAccount,
         accountAddress,
-        selectAccountOption,
         isMenuOpen,
         onChangeAccount,
         getTranslationIds,
         receiveAddress,
         extraField,
+        canAddSuiteAccount,
+        canUseNonSuiteAccount,
+        selectNonSuiteAddress,
     };
 };

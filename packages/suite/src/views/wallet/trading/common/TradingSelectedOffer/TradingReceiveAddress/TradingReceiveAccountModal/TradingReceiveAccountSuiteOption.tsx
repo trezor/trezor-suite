@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -7,30 +5,26 @@ import { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings, typography } from '@trezor/theme';
 
-import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
+import {
+    AccountLabeling,
+    AddressLabel,
+    CoinBalance,
+    HiddenPlaceholder,
+} from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { TradingVerifyFormAccountOptionProps } from 'src/types/trading/tradingVerify';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
+import { TradingReceiveOptionRow } from '../TradingReceiveOptionRow';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
-
-const AccountName = styled.div`
-    display: flex;
-    ${typography.body}
-`;
 
 interface TradingReceiveAccountSuiteOptionProps {
     account: Account;
-    option: TradingVerifyFormAccountOptionProps;
 }
 
 export const TradingReceiveAccountSuiteOption = ({
     account,
-    option,
 }: TradingReceiveAccountSuiteOptionProps) => {
     const { tradingReceiveAddress, extraFieldDescription } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
@@ -51,7 +45,7 @@ export const TradingReceiveAccountSuiteOption = ({
     if (!address) return null;
 
     const onOptionClick = () => {
-        tradingReceiveAddress.onChangeAccount(option);
+        tradingReceiveAddress.onChangeAccount(account);
         modalControls.close();
 
         if (isUtxoBasedNetwork) {
@@ -64,37 +58,36 @@ export const TradingReceiveAccountSuiteOption = ({
     };
 
     return (
-        <TradingReceiveAccountOptionRow
+        <TradingReceiveOptionRow
             data-testid="@trading/receive-account-modal/option/suite"
-            justifyContent="space-between"
             onClick={onOptionClick}
         >
-            <Row gap={spacings.sm}>
-                <CoinLogo size={24} symbol={account.symbol} />
-
-                <Column>
-                    <AccountName>
+            <Row gap={12}>
+                <CoinLogo size={40} symbol={account.symbol} />
+                <Column alignItems="flex-start">
+                    <Text typographyStyle="body">
                         <AccountLabeling
                             account={account}
                             accountTypeBadgeSize="small"
                             showAccountTypeBadge
                         />
-                    </AccountName>
+                    </Text>
                     {!isUtxoBasedNetwork && (
-                        <Address
-                            value={address ?? null}
-                            variant="tertiary"
+                        <AddressLabel
                             typographyStyle="hint"
-                            isTruncated
+                            variant="tertiary"
+                            account={account}
+                            address={address}
                         />
                     )}
                 </Column>
             </Row>
 
-            <Row gap={spacings.sm} alignItems="center">
+            <Row gap={12}>
                 <Column alignItems="flex-end">
-                    <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
-
+                    <Text typographyStyle="body">
+                        <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
+                    </Text>
                     <Text typographyStyle="hint" variant="tertiary">
                         <HiddenPlaceholder>
                             <BaseCurrencyAmountFormatter
@@ -109,6 +102,6 @@ export const TradingReceiveAccountSuiteOption = ({
                     <Icon name="caretRight" size={20} variant="tertiary" />
                 )}
             </Row>
-        </TradingReceiveAccountOptionRow>
+        </TradingReceiveOptionRow>
     );
 };

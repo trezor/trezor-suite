@@ -2,16 +2,15 @@ import { ReactNode } from 'react';
 
 import { Account } from '@suite-common/wallet-types';
 import { Address } from '@trezor/blockchain-link-types';
-import { Card, Column, Divider, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, Text } from '@trezor/components';
 
 import { TradingUtxoReceiveAddressOption } from './TradingUtxoReceiveAddressOption';
 
-interface TradingUtxoReceiveAddressListProps {
+type TradingUtxoReceiveAddressListProps = {
     addresses: Address[];
     title: ReactNode;
     account: Account;
-}
+};
 
 export const TradingUtxoReceiveAddressList = ({
     addresses,
@@ -21,19 +20,17 @@ export const TradingUtxoReceiveAddressList = ({
     if (addresses.length === 0) return null;
 
     return (
-        <Column gap={spacings.sm}>
-            <Text typographyStyle="body" variant="tertiary">
-                {title}
-            </Text>
-
-            <Card paddingType="none">
-                {addresses.map((address, index) => (
-                    <>
-                        <TradingUtxoReceiveAddressOption account={account} address={address} />
-                        {index < addresses.length - 1 && <Divider margin={0} />}
-                    </>
+        <Column gap={8}>
+            <Text variant="tertiary">{title}</Text>
+            <Column gap={8}>
+                {addresses.map(address => (
+                    <TradingUtxoReceiveAddressOption
+                        key={address.address}
+                        account={account}
+                        address={address}
+                    />
                 ))}
-            </Card>
+            </Column>
         </Column>
     );
 };

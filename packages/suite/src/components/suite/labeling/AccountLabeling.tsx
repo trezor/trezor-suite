@@ -15,6 +15,7 @@ interface AccountProps {
     showAccountTypeBadge?: boolean;
 }
 
+// TODO: Consolidate with AccountLabel component
 export const AccountLabeling = ({
     account,
     accountTypeBadgeSize,

@@ -1,38 +1,97 @@
-import { Fragment } from 'react';
-
 import { Translation } from '@suite/intl';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Card, Column, Divider, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { cryptoIdToSymbol } from '@suite-common/trading';
+import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Column, Modal } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { openModal } from 'src/actions/suite/modalActions';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountOption } from './TradingReceiveAccountOption';
+import { TradingReceiveAccountSuiteOption } from './TradingReceiveAccountSuiteOption';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 export const TradingReceiveAccountModal = () => {
-    const { tradingReceiveAddress } = useTradingReceiveAddressValues();
+    const { tradingReceiveAddress, cryptoId } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
-
+    const dispatch = useDispatch();
+    const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { selectAccountOptions } = tradingReceiveAddress;
 
-    const hasSuiteAccounts = !!selectAccountOptions.find(option => option.type === 'SUITE');
+    const { suiteReceiveAccounts, canAddSuiteAccount, canUseNonSuiteAccount } =
+        tradingReceiveAddress;
+
+    const symbol = cryptoIdToSymbol(cryptoId);
+
+    const hasSuiteAccounts = suiteReceiveAccounts && suiteReceiveAccounts.length > 0;
 
     const onCancel = () => {
         modalControls.close();
     };
+
+    const onAddAccountClick = () => {
+        if (!device || !symbol) return;
+
+        modalControls.close();
+
+        dispatch(
+            openModal({
+                type: 'add-account',
+                device,
+                symbol,
+                noRedirect: true,
+                isCoinjoinDisabled: true,
+                isBackClickDisabled: true,
+                onConfirm: () => {
+                    modalControls.open('accountModal');
+                },
+            }),
+        );
+    };
+
+    const onUseExternalAddressClick = () => {
+        modalControls.open('customAddressModal');
+    };
+
+    const showBottomContent = canAddSuiteAccount || canUseNonSuiteAccount;
 
     return (
         <Modal
             data-testid="@trading/receive-account-modal"
             heading={<Translation id="TR_BUY_RECEIVING_ACCOUNT" />}
             onCancel={onCancel}
+            width={480}
+            bottomContent={
+                showBottomContent ? (
+                    <>
+                        {canAddSuiteAccount && (
+                            <Modal.Button
+                                data-testid="@trading/receive-account-modal/option/add-suite"
+                                onClick={onAddAccountClick}
+                                intent="neutral"
+                                priority="secondary"
+                            >
+                                Add account
+                            </Modal.Button>
+                        )}
+                        {canUseNonSuiteAccount && (
+                            <Modal.Button
+                                data-testid="@trading/receive-account-modal/option/non-suite"
+                                onClick={onUseExternalAddressClick}
+                                iconLeft="arrowSquareOut"
+                                intent="neutral"
+                                priority="secondary"
+                                flex="1"
+                            >
+                                Use external address
+                            </Modal.Button>
+                        )}
+                    </>
+                ) : undefined
+            }
         >
-            <Column gap={spacings.sm}>
+            <Column gap={12}>
                 {isDiscoveryRunning && <DiscoveryWarning />}
 
                 {!hasSuiteAccounts && !isDiscoveryRunning && (
@@ -42,16 +101,11 @@ export const TradingReceiveAccountModal = () => {
                     />
                 )}
 
-                {selectAccountOptions.length > 0 && (
-                    <Card paddingType="none">
-                        {selectAccountOptions.map((option, index) => (
-                            <Fragment key={index}>
-                                <TradingReceiveAccountOption option={option} />
-                                {index < selectAccountOptions.length - 1 && <Divider margin={0} />}
-                            </Fragment>
-                        ))}
-                    </Card>
-                )}
+                <Column gap={8}>
+                    {suiteReceiveAccounts?.map(account => (
+                        <TradingReceiveAccountSuiteOption key={account.key} account={account} />
+                    ))}
+                </Column>
             </Column>
         </Modal>
     );

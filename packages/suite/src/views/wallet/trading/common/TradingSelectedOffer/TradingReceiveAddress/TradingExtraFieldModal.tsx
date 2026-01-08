@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { Button, Input, Modal } from '@trezor/components';
+import { Input, Modal } from '@trezor/components';
 
 import { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
@@ -73,12 +73,12 @@ export const TradingExtraFieldModal = () => {
             onCancel={onCancel}
             onBackClick={onBackClick}
             bottomContent={
-                <Button
+                <Modal.Button
                     data-testid="@trading/extra-field-modal/confirm-button"
                     onClick={onConfirmClick}
                 >
                     <Translation id="TR_CONFIRM" />
-                </Button>
+                </Modal.Button>
             }
         >
             <TradingExtraField

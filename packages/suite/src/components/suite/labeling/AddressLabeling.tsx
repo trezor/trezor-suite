@@ -11,6 +11,7 @@ type AddressLabelingProps = {
     knownOnly?: boolean;
 };
 
+// TODO: Consolidate with AddressLabel component
 export const AddressLabeling = ({ symbol, address, knownOnly }: AddressLabelingProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
 
