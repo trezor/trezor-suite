@@ -18,6 +18,23 @@ export const WipeData = () => {
     const userDataDir = useSelector(state => state.desktop?.paths.userDir);
     const dispatch = useDispatch();
 
+    const openUserDataDir = async () => {
+        const result = await desktopApi.openUserDataDirectory();
+        if (!result.success) {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error }));
+        }
+    };
+
+    const clearUserData = async () => {
+        const result = await desktopApi.clearUserData();
+        if (!result.success) {
+            dispatch(notificationsActions.addToast({ type: 'error', error: result.error }));
+
+            return;
+        }
+        desktopApi.appRestart();
+    };
+
     return (
         <SectionItem>
             <TextColumn
@@ -26,33 +43,12 @@ export const WipeData = () => {
                     <span>
                         Clicking this button restarts your application and wipes all your data
                         including locally saved labels. Your local folder is:{' '}
-                        <UserDataLink
-                            onClick={async () => {
-                                const result = await desktopApi.openUserDataDirectory();
-
-                                if (!result.success) {
-                                    dispatch(
-                                        notificationsActions.addToast({
-                                            type: 'error',
-                                            error: result.error,
-                                        }),
-                                    );
-                                }
-                            }}
-                        >
-                            {userDataDir}
-                        </UserDataLink>
+                        <UserDataLink onClick={openUserDataDir}>{userDataDir}</UserDataLink>
                     </span>
                 }
             />
             <ActionColumn>
-                <ActionButton
-                    intent="critical"
-                    onClick={async () => {
-                        await desktopApi.clearUserData();
-                        desktopApi.appRestart();
-                    }}
-                >
+                <ActionButton intent="critical" onClick={clearUserData}>
                     Wipe data
                 </ActionButton>
             </ActionColumn>

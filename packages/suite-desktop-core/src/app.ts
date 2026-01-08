@@ -10,7 +10,7 @@ import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { hangDetect } from './hang-detect';
+import { handshakeAndHangDetect } from './handshake-and-hang-detect';
 import { processStatePatch, removeElectronAppData, restartApp } from './libs/app-utils';
 import { APP_NAME } from './libs/constants';
 import { getBuildInfo, getComputerInfo } from './libs/info';
@@ -399,7 +399,7 @@ const init = async () => {
             loadIndex(mainWindow);
         });
 
-        const { handshake, cleanup } = hangDetect(mainWindow, statePatch);
+        const { handshake, cleanup } = handshakeAndHangDetect({ mainWindow, statePatch });
         mainWindowProxy.once('destroy', cleanup);
         const handshakeResult = await handshake;
 
