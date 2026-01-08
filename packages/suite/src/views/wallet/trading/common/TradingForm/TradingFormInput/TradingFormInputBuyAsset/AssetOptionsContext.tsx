@@ -3,16 +3,13 @@ import { ReactNode, createContext, useContext, useMemo } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { TradingAssetOption, useTradingAssets } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const AssetOptionsContext = createContext<{
-    networks: NetworkSymbol[];
     assets: TradingAssetOption[];
     disabledCryptoIds: Set<CryptoId> | undefined;
 }>({
-    networks: [],
     assets: [],
-    disabledCryptoIds: undefined,
+    disabledCryptoIds: new Set(),
 });
 
 export interface AssetOptionsContextProps {
@@ -27,18 +24,17 @@ export function AssetOptionsProvider({
     children,
 }: AssetOptionsContextProps) {
     const { buildAssetOptions } = useTradingAssets();
-    const { assets, networks } = useMemo(
-        () => buildAssetOptions({ enabledCryptoIds, disabledCryptoIds }),
-        [buildAssetOptions, enabledCryptoIds, disabledCryptoIds],
+    const { assets } = useMemo(
+        () => buildAssetOptions({ enabledCryptoIds }),
+        [buildAssetOptions, enabledCryptoIds],
     );
 
     const contextValue = useMemo(
         () => ({
-            networks,
             assets,
-            disabledCryptoIds,
+            disabledCryptoIds: disabledCryptoIds ?? new Set(),
         }),
-        [networks, assets, disabledCryptoIds],
+        [assets, disabledCryptoIds],
     );
 
     return (

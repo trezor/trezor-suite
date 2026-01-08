@@ -9,7 +9,7 @@ import {
     createAssetTokenOption,
     getCryptoId,
 } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
@@ -88,6 +88,22 @@ function createTopFiveAssets(disabledCryptoIds: Set<CryptoId> = new Set()) {
     );
 }
 
+type GetOrderNetworksProps = {
+    topFiveAssets: TradingAssetOption[];
+    assets: TradingAssetOption[];
+    accountsWithTokens: AggregatedAccountWithTokens[];
+};
+
+function getOrderNetworks({ topFiveAssets, assets, accountsWithTokens }: GetOrderNetworksProps) {
+    const networks: Set<NetworkSymbol> = new Set();
+
+    topFiveAssets.forEach(asset => networks.add(asset.networkSymbol));
+    assets.forEach(asset => networks.add(asset.networkSymbol));
+    accountsWithTokens.forEach(item => networks.add(item.account.symbol));
+
+    return networkSymbolCollection.filter(networkSymbol => networks.has(networkSymbol));
+}
+
 export type TradingAssetListItem =
     | {
           type: 'top-five-assets';
@@ -153,8 +169,11 @@ export function useBuildTradingAssetOptions({
             );
         }
 
-        const filteredAccounts = accountsWithTokens
-            .filter(excludeDisabledCryptoIds(disabledCryptoIds))
+        const allAccountsWithTokens = accountsWithTokens.filter(
+            excludeDisabledCryptoIds(disabledCryptoIds),
+        );
+
+        const filteredAccounts = allAccountsWithTokens
             .filter(accountOrToken => {
                 switch (accountOrToken.type) {
                     case 'account':
@@ -206,8 +225,11 @@ export function useBuildTradingAssetOptions({
             }
         }
 
-        const filteredAssets = assets
-            .filter(asset => !topFiveAssetIds.has(asset.id))
+        const allAssets = assets.filter(
+            asset => !topFiveAssetIds.has(asset.id) && !disabledCryptoIds?.has(asset.id),
+        );
+
+        const filteredAssets = allAssets
             .filter(asset => (networkSymbol ? asset.networkSymbol === networkSymbol : true))
             .filter(asset => assetSearchFilter(asset, search));
 
@@ -232,6 +254,12 @@ export function useBuildTradingAssetOptions({
             });
         }
 
-        return { listItems };
+        const orderedNetworks = getOrderNetworks({
+            topFiveAssets,
+            assets: allAssets,
+            accountsWithTokens: allAccountsWithTokens,
+        });
+
+        return { listItems, networks: orderedNetworks };
     }, [accountsWithTokens, assets, disabledCryptoIds, networkSymbol, search]);
 }
