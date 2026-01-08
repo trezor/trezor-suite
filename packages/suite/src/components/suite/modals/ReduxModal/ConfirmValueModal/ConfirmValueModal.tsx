@@ -77,7 +77,7 @@ export const ConfirmValueModal = ({
     const { translationString } = useTranslation();
 
     const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
-        deviceStaticSessionId: account!.deviceState,
+        deviceStaticSessionId: account?.deviceState,
     });
     // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
     const isMetadataBlockedByDeviceCall =
