@@ -313,11 +313,6 @@ export default defineMessages({
         defaultMessage: 'All networks ({networkCount})',
         id: 'TR_ALL_NETWORKS',
     },
-    TR_ALL_NETWORKS_TOOLTIP: {
-        defaultMessage:
-            'View tokens from all {networkCount} networks. Filter by the most popular networks.',
-        id: 'TR_ALL_NETWORKS_TOOLTIP',
-    },
     TR_SELECT_TOKEN: {
         defaultMessage: 'Select asset',
         id: 'TR_SELECT_TOKEN',
