@@ -39,6 +39,53 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
         });
     });
 
+    conditionalDescribe(isCIRun || passphrase, 'with device disconnected [@fixT3W1]', () => {
+        beforeAll(() => {
+            if (!passphrase) {
+                throw new Error(
+                    'TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE environment variable is required',
+                );
+            }
+        });
+
+        beforeEach(async () => {
+            await openApp({ args: { preloadedState: preloadedStateWithTrezor } });
+            await prepareTrezorEmulator({
+                seed: MNEMONICS.mnemonic_academic,
+                passphrase_protection: true,
+            });
+            await waitForVisible(by.text('Connected'));
+            await onPassphrase.openPassphraseWallet(passphrase);
+            // TODO 23425 update
+            // await TrezorUserEnvLink.disconnect();
+            // await openApp({ newInstance: false, wipeData: false });
+            // await tradingExchangeActions.openSwapForm();
+        });
+
+        it.skip('should request trezor connect before review', async () => {
+            await tradingExchangeActions.selectSendAsset('USDC');
+            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
+            await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
+            await tradingExchangeActions.setSendCryptoAmount('10');
+            await tradingExchangeActions.waitForQuotesToLoad();
+
+            await tradingExchangeActions.scrollScreenToBottom();
+            await tradingExchangeActions.expectValidExchangeForm();
+
+            await tradingExchangeActions.confirmTradingForm();
+
+            await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
+            await exchangePreviewActions.waitForFeesToLoad();
+            await exchangePreviewActions.scrollScreenToBottom();
+            await exchangePreviewActions.goToTransactionSigning();
+
+            await exchangeOutputsReviewActions.expectConnectTrezorInfo();
+            await exchangeOutputsReviewActions.cancelTransaction();
+
+            await tradingExchangeActions.waitForTradeDataToLoad();
+        });
+    });
+
     conditionalDescribe(isCIRun || passphrase, 'with device connected [@fixT3W1]', () => {
         beforeAll(() => {
             if (!passphrase) {

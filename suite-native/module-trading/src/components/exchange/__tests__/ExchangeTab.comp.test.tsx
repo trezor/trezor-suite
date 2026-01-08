@@ -70,10 +70,10 @@ describe('ExchangeTab', () => {
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
-    it('should display View-only info with view-only wallet', async () => {
+    it('should display exchange form for view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText } = await renderExchangeTab();
 
-        expect(getByText('View-only wallet')).toBeOnTheScreen();
+        expect(getByText('You pay')).toBeOnTheScreen();
     });
 });

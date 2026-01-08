@@ -49,6 +49,7 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device" },
+        { "path": "../device-authorization" },
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../discovery" },
