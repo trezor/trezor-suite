@@ -1,12 +1,6 @@
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import ReactSelect, { Props as ReactSelectProps, SelectInstance, StylesConfig } from 'react-select';
 
-// Todo: hack to workaround the issue, see:
-//      - https://github.com/JedWatson/react-select/issues/4631
-// eslint-disable-next-line import/no-extraneous-dependencies
-import createCache from '@emotion/cache';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { CacheProvider, EmotionCache } from '@emotion/react';
 import styled, { CSSObject, DefaultTheme, css, useTheme } from 'styled-components';
 
 import {
@@ -326,13 +320,6 @@ export const Select = ({
 
     const [selectedOption, setSelectedOption] = useState<OptionType | undefined>(rest.value);
 
-    // Todo: hack to workaround the issue, see: https://github.com/JedWatson/react-select/issues/4631
-    const cache: EmotionCache = createCache({
-        key: 'react-select-nonce-hack',
-        // window may be undefined during SSR, for example in Connect Explorer
-        nonce: typeof window !== 'undefined' && window?.cspNonce ? window.cspNonce : '',
-    });
-
     const handleOnChange = useCallback<Required<ReactSelectProps<OptionType>>['onChange']>(
         (value, { action }) => {
             if (value) {
@@ -384,55 +371,53 @@ export const Select = ({
     );
 
     return (
-        <CacheProvider value={cache}>
-            <FormCell {...formCellProps}>
-                <SelectWrapper
-                    $isClean={isClean}
-                    $elevation={elevation}
-                    $isSearchable={isSearchable}
-                    $size={size}
-                    $minValueWidth={minValueWidth}
-                    $isDisabled={isDisabled}
-                    $isLoading={isLoading}
-                    $isMenuOpen={isMenuOpen}
-                    $isWithLabel={!!label}
-                    $isWithPlaceholder={!!placeholder}
-                >
-                    <ReactSelect
-                        ref={selectRef}
-                        onKeyDown={onKeyDown}
-                        classNamePrefix={reactSelectClassNamePrefix}
-                        openMenuOnFocus={openMenuOnFocus}
-                        closeMenuOnScroll={closeMenuOnScroll}
-                        menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
-                        menuPortalTarget={menuPortalTarget}
-                        onChange={handleOnChange}
-                        isSearchable={isSearchable}
-                        menuIsOpen={isMenuOpen}
-                        isDisabled={isDisabled ?? false}
-                        menuPlacement="auto"
-                        placeholder={placeholder || ''}
-                        {...rest}
-                        styles={{
-                            ...createSelectStyle(theme, isRenderedInModal, isClean),
-                            ...(rest.styles || {}),
-                        }}
-                        components={memoizedComponents}
-                    />
+        <FormCell {...formCellProps}>
+            <SelectWrapper
+                $isClean={isClean}
+                $elevation={elevation}
+                $isSearchable={isSearchable}
+                $size={size}
+                $minValueWidth={minValueWidth}
+                $isDisabled={isDisabled}
+                $isLoading={isLoading}
+                $isMenuOpen={isMenuOpen}
+                $isWithLabel={!!label}
+                $isWithPlaceholder={!!placeholder}
+            >
+                <ReactSelect
+                    ref={selectRef}
+                    onKeyDown={onKeyDown}
+                    classNamePrefix={reactSelectClassNamePrefix}
+                    openMenuOnFocus={openMenuOnFocus}
+                    closeMenuOnScroll={closeMenuOnScroll}
+                    menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={handleOnChange}
+                    isSearchable={isSearchable}
+                    menuIsOpen={isMenuOpen}
+                    isDisabled={isDisabled ?? false}
+                    menuPlacement="auto"
+                    placeholder={placeholder || ''}
+                    {...rest}
+                    styles={{
+                        ...createSelectStyle(theme, isRenderedInModal, isClean),
+                        ...(rest.styles || {}),
+                    }}
+                    components={memoizedComponents}
+                />
 
-                    {isLoading && (
-                        <SpinnerWrapper>
-                            <Spinner size={24} isGrey={false} />
-                        </SpinnerWrapper>
-                    )}
+                {isLoading && (
+                    <SpinnerWrapper>
+                        <Spinner size={24} isGrey={false} />
+                    </SpinnerWrapper>
+                )}
 
-                    {label && (
-                        <SelectLabel $size={size} $isDisabled={isDisabled}>
-                            {label}
-                        </SelectLabel>
-                    )}
-                </SelectWrapper>
-            </FormCell>
-        </CacheProvider>
+                {label && (
+                    <SelectLabel $size={size} $isDisabled={isDisabled}>
+                        {label}
+                    </SelectLabel>
+                )}
+            </SelectWrapper>
+        </FormCell>
     );
 };
