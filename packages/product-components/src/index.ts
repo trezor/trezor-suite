@@ -16,10 +16,6 @@ export { isCoinSymbol } from './constants/coins';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TokenTabs, type TokenTab } from './components/SelectAssetModal/TokenTabs';
-export {
-    NetworkTabs,
-    type SelectAssetSearchCategory,
-} from './components/SelectAssetModal/NetworkTabs';
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
