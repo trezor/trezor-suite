@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { type History } from 'history';
 
 import { FormatterProvider } from '@suite-common/formatters';
+import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -43,9 +44,11 @@ export const Main = ({
                         <OnlineStatus />
                         <RouterHandler history={history} />
                         <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                {children}
-                            </FormatterProvider>
+                            <SelectCacheProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    {children}
+                                </FormatterProvider>
+                            </SelectCacheProvider>
                         </ConnectedIntlProvider>
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
