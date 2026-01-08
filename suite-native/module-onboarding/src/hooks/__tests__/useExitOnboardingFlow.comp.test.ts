@@ -18,6 +18,13 @@ jest.mock('@react-navigation/core', () => ({
     }),
 }));
 
+jest.mock('@suite-native/app-init', () => ({
+    ...jest.requireActual('@suite-native/app-init'),
+    postOnboardingInit: () => ({
+        type: 'postOnboardingInitMock',
+    }),
+}));
+
 describe('useExitOnboardingFlow', () => {
     let store: TestStore;
 
@@ -40,6 +47,9 @@ describe('useExitOnboardingFlow', () => {
 
         // assert that onboarding finished action was dispatched
         expect(dispatchSpy).toHaveBeenCalledWith(setIsOnboardingFinished());
+        expect(dispatchSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ type: 'postOnboardingInitMock' }),
+        );
 
         // assert that navigation.reset was dispatched to navigate to AppTabs -> Home
         expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);

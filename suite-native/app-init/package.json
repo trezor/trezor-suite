@@ -1,0 +1,24 @@
+{
+    "name": "@suite-native/app-init",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.11.0",
+        "@suite-common/connect-init": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-common/walletconnect": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/settings": "workspace:*",
+        "@suite-native/state": "workspace:*"
+    }
+}

@@ -12,24 +12,10 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { initAnalyticsThunk } from '@suite-native/analytics';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { setIsAppReady } from '@suite-native/state';
 
 const ACTION_PREFIX = '@suite-native/app';
-
-export const applicationInit = createThunk(
-    `${ACTION_PREFIX}/applicationInit`,
-    async (_, { dispatch }) => {
-        await prepareCachedEnvData();
-        dispatch(initAnalyticsThunk());
-        dispatch(initMessageSystemThunk());
-
-        // Select latest remembered device or Portfolio Tracker device.
-        dispatch(initDevices());
-
-        // Tell the application to render
-        dispatch(setIsAppReady(true));
-    },
-);
 
 export const postOnboardingInit = createThunk(
     `${ACTION_PREFIX}/postOnboardingInit`,
@@ -40,7 +26,13 @@ export const postOnboardingInit = createThunk(
             console.error(`Connect init error: ${JSON.stringify(error)}`);
         }
 
-        dispatch(initBlockchainThunk());
+        try {
+            // Needs to be finished before any TrezorConnect.blockchain* calls.
+            await dispatch(initBlockchainThunk()).unwrap();
+        } catch (error) {
+            console.error(`Blockchain init error: ${JSON.stringify(error)}`);
+        }
+
         dispatch(periodicCheckTokenDefinitionsThunk());
         dispatch(initStakeDataThunk());
 
@@ -55,5 +47,24 @@ export const postOnboardingInit = createThunk(
         dispatch(createImportedDeviceThunk());
 
         dispatch(walletConnectInitThunk());
+    },
+);
+
+export const applicationInit = createThunk(
+    `${ACTION_PREFIX}/applicationInit`,
+    async (_, { dispatch, getState }) => {
+        await prepareCachedEnvData();
+        dispatch(initAnalyticsThunk());
+        dispatch(initMessageSystemThunk());
+
+        // Select latest remembered device or Portfolio Tracker device.
+        dispatch(initDevices());
+
+        if (selectIsOnboardingFinished(getState())) {
+            await dispatch(postOnboardingInit());
+        }
+
+        // Tell the application to render
+        dispatch(setIsAppReady(true));
     },
 );

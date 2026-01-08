@@ -11559,6 +11559,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/app-init@workspace:*, @suite-native/app-init@workspace:suite-native/app-init":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/app-init@workspace:suite-native/app-init"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/connect-init": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/walletconnect": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
+    "@suite-native/settings": "workspace:*"
+    "@suite-native/state": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/app@workspace:suite-native/app":
   version: 0.0.0-use.local
   resolution: "@suite-native/app@workspace:suite-native/app"
@@ -11589,20 +11606,16 @@ __metadata:
     "@shopify/flash-list": "npm:2.2.0"
     "@shopify/react-native-skia": "npm:2.2.12"
     "@storybook/react-native": "npm:^10.0.7"
-    "@suite-common/connect-init": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:^"
-    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/walletconnect": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/bluetooth": "workspace:*"
@@ -12859,6 +12872,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/icons": "workspace:*"

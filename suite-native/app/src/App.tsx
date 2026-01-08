@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
+import { applicationInit } from '@suite-native/app-init';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 import { configureNetInfo } from '@suite-native/connection-status';
 import { useFormattersConfig } from '@suite-native/formatters-config';
@@ -17,7 +18,6 @@ import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
 import { initSentry } from '@suite-native/sentry';
-import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { StoreProvider, selectIsAppReady } from '@suite-native/state';
 
 import { BannersRenderer } from './BannersRenderer';
@@ -25,7 +25,6 @@ import { ModalsRenderer } from './ModalsRenderer';
 import { StylesProvider } from './StylesProvider';
 import { InitRosenitePlugin } from './devtools/InitRoseniteDevTools';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
-import { applicationInit, postOnboardingInit } from './initActions';
 import { RootStackNavigator } from './navigation/RootStackNavigator';
 import { disableRTL } from './rtl';
 
@@ -52,13 +51,11 @@ SplashScreen.preventAutoHideAsync();
 configureNetInfo();
 
 let isApplicationInitDispatched = false;
-let isPostOnboardingInitDispatched = false;
 
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
     const isAppReady = useSelector(selectIsAppReady);
-    const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
@@ -75,13 +72,6 @@ const AppComponent = () => {
             SplashScreen.hideAsync();
         }
     }, [isAppReady]);
-
-    useEffect(() => {
-        if (isAppReady && isOnboardingFinished && !isPostOnboardingInitDispatched) {
-            dispatch(postOnboardingInit());
-            isPostOnboardingInitDispatched = true;
-        }
-    }, [isAppReady, isOnboardingFinished, dispatch]);
 
     if (!isAppReady) return null;
 
