@@ -495,6 +495,8 @@ export const onCallFirmwareUpdate = async ({
             await device.release();
             // wait for device-change
             await waitForBluetoothReboot({ device, target: 'bootloader', postMessage });
+            // Bootloader always uses V1 protocol.
+            device.reset();
         } else {
             await disconnectedPromise;
 
