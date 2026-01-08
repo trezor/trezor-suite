@@ -290,17 +290,6 @@ export const getInputState = (
 export const isLowAnonymityWarning = (error?: Merge<FieldError, FieldErrorsImpl<Output>>) =>
     error?.amount?.type === COMPOSE_ERROR_TYPES.ANONYMITY;
 
-const mapNetworkTypeToFeeUnits: Record<NetworkType, string> = {
-    bitcoin: 'sat/vB',
-    cardano: 'Lovelaces/B',
-    ethereum: 'Gwei',
-    ripple: 'Drops',
-    solana: 'Lamports',
-    stellar: 'Stroops',
-};
-
-export const getFeeUnits = (networkType: NetworkType) => mapNetworkTypeToFeeUnits[networkType];
-
 export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
     if (networkType === 'solana') {
         return tx.fee;
