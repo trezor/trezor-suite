@@ -84,18 +84,17 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
         // Thanks to our mocked responses, the crypto is actually not send.
         await test.step('Send crypto to provider', async () => {
             await devicePrompt.sendButton.click();
-            await expect(page.getByTestId('@toast/tx-exchange')).toHaveTranslation(
-                'TOAST_TX_EXCHANGE_BROADCASTED',
-                {
-                    values: {
-                        sendAmount,
-                        sendAsset: 'SOL',
-                        sendAccount: 'Solana #1',
-                        receiveAmount,
-                        receiveAsset: 'USDC',
-                        receiveAccount: 'Ethereum #1',
-                    },
-                },
+            await expect(page.getByTestId('@toast/tx-exchange/send-account')).toContainText(
+                'Solana #1',
+            );
+            await expect(page.getByTestId('@toast/tx-exchange/receive-account')).toContainText(
+                'Ethereum #1',
+            );
+            await expect(page.getByTestId('@toast/tx-exchange/send-amount')).toContainText(
+                sendAmount,
+            );
+            await expect(page.getByTestId('@toast/tx-exchange/receive-amount')).toContainText(
+                receiveAmount,
             );
             await expect(tradingPage.transactionDetailStatus).toHaveTranslation(
                 'TR_EXCHANGE_DETAIL_SUCCESS_TITLE',

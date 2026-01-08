@@ -1,9 +1,11 @@
+import { type CSSProperties } from 'react';
+
 import { TranslationKey } from '@suite/intl';
 import { DesktopAppUpdateState, Protocol } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FormStateTradingExchange } from '@suite-common/wallet-types';
-import { DEVICE } from '@trezor/connect';
+import { DEVICE, TokenInfo } from '@trezor/connect';
 
 export type NotificationId = number;
 
@@ -11,6 +13,7 @@ export interface NotificationOptions {
     seen?: boolean;
     resolved?: boolean;
     autoClose?: number | false;
+    style?: CSSProperties;
 }
 
 type TransactionNotificationPayload = {
@@ -26,12 +29,12 @@ type SentTransactionNotification = {
 
 type RevokeTransactionNotification = {
     type: 'tx-revoked';
-    tokenSymbol?: string;
+    token: TokenInfo;
 } & TransactionNotificationPayload;
 
 type ApproveTransactionNotification = {
     type: 'tx-approved';
-    tokenSymbol?: string;
+    token: TokenInfo;
     isInfiniteApproval: boolean;
 } & TransactionNotificationPayload;
 

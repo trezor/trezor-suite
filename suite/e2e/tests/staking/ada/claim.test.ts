@@ -248,9 +248,10 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify claimed and staked account', async () => {
-                await expect(stakingSection.claimedToast).toContainTranslation('TOAST_TX_CLAIMED', {
-                    values: { amount: bigRewardAmountFormatted },
-                });
+                await expect(stakingSection.claimedToastAccount).toContainText('Cardano #1');
+                await expect(stakingSection.claimedToastAmount).toContainText(
+                    bigRewardAmountFormatted,
+                );
                 await expect(stakingSection.claimRewardsButton).toBeDisabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();
                 await expect(stakingSection.startStakingButton).toBeHidden();

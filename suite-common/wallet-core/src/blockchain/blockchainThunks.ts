@@ -342,6 +342,7 @@ export const onBlockchainNotificationThunk = createThunk(
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: tx.txid,
+                    style: { maxWidth: 'auto' },
                 }),
             );
         }

@@ -1,7 +1,7 @@
 import { isSelectedDevice } from '@suite-common/suite-utils';
 import { selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
 import { findAccountDevice } from '@suite-common/wallet-utils';
-import { BadgeProps } from '@trezor/components';
+import { BadgeProps, FlexProps } from '@trezor/components';
 
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { useSelector } from 'src/hooks/suite';
@@ -13,12 +13,14 @@ interface AccountProps {
     account: WalletAccount | WalletAccount[];
     accountTypeBadgeSize?: BadgeProps['size'];
     showAccountTypeBadge?: boolean;
+    accountLabelRowProps?: Omit<FlexProps, 'children'>;
 }
 
 export const AccountLabeling = ({
     account,
     accountTypeBadgeSize,
     showAccountTypeBadge,
+    accountLabelRowProps,
 }: AccountProps) => {
     const device = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
@@ -32,6 +34,7 @@ export const AccountLabeling = ({
             account={accounts[0]}
             showAccountTypeBadge={showAccountTypeBadge}
             accountTypeBadgeSize={accountTypeBadgeSize}
+            rowProps={accountLabelRowProps}
         />
     );
 

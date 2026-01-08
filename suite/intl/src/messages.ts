@@ -3703,6 +3703,10 @@ export const messages = defineMessages({
         id: 'TOAST_COPY_TO_CLIPBOARD',
         defaultMessage: 'Copied',
     },
+    TOAST_TX_COMPOSED: {
+        id: 'TOAST_TX_COMPOSED',
+        defaultMessage: '{content}',
+    },
     TOAST_TX_REVOKED: {
         id: 'TOAST_TX_REVOKED',
         defaultMessage: 'Revoke transaction was broadcast',
@@ -3710,10 +3714,6 @@ export const messages = defineMessages({
     TOAST_TX_APPROVED: {
         id: 'TOAST_TX_APPROVED',
         defaultMessage: 'Approve transaction was broadcast',
-    },
-    TOAST_TX_APPROVED_MAX: {
-        id: 'TOAST_TX_APPROVED_MAX',
-        defaultMessage: 'Approve transaction of unlimited {tokenSymbol} was broadcast',
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
@@ -3733,7 +3733,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction in {account} confirmed',
+        defaultMessage: 'Transaction in {account} confirmed successfully',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -9595,11 +9595,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: '{amount} unstaked',
+        defaultMessage: 'Unstaked from {account}',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
-        defaultMessage: '{amount} claimed',
+        defaultMessage: 'Claimed from {account}',
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
