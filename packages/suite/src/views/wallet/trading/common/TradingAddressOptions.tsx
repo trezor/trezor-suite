@@ -45,9 +45,8 @@ type TradingBuyAddressOptionsType = {
     address?: string;
 };
 
-interface TradingAddressOptionsProps<
-    TFieldValues extends TradingBuyAddressOptionsType,
-> extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
+interface TradingAddressOptionsProps<TFieldValues extends TradingBuyAddressOptionsType>
+    extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
     receiveSymbol?: CryptoId;
     account?: Account;
@@ -82,7 +81,7 @@ export const TradingAddressOptions = <TFieldValues extends TradingBuyAddressOpti
         ? context.getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)
         : undefined;
     const networkDecimals = getAssetDecimals({
-        tradingAccountKey: sendCryptoSelect?.accountKey,
+        accountKey: sendCryptoSelect?.accountKey,
         cryptoId: sendCryptoSelect?.id,
     });
 

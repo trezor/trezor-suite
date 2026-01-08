@@ -96,7 +96,7 @@ export const useTradingFormActions = <T extends TradingSellExchangeFormProps>({
     const networkDecimals = useMemo(
         () =>
             getAssetDecimals({
-                tradingAccountKey: sendCryptoSelect?.accountKey,
+                accountKey: sendCryptoSelect?.accountKey,
                 cryptoId: sendCryptoSelect?.id,
             }),
         [getAssetDecimals, sendCryptoSelect?.accountKey, sendCryptoSelect?.id],

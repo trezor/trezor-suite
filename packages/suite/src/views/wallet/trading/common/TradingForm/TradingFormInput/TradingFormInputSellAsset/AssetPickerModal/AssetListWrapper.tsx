@@ -1,17 +1,27 @@
 import { ReactNode, useRef } from 'react';
 
 import { AssetsList, AssetsListEmpty } from 'src/components/suite/asset-picker/components';
-import { AssetPickerListItem } from 'src/components/suite/asset-picker/hooks';
+import { AssetPickerListItem, useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 
 const LIST_HEIGHT = 530;
 
 export interface AssetListWrapperProps {
     listItems: AssetPickerListItem[];
     renderItem: (item: AssetPickerListItem) => ReactNode;
+    /**
+     * Trigger to reset scroll position when this prop. changes
+     */
+    resetScrollTrigger: string;
 }
 
-export function AssetListWrapper({ listItems, renderItem }: AssetListWrapperProps) {
+export function AssetListWrapper({
+    listItems,
+    renderItem,
+    resetScrollTrigger,
+}: AssetListWrapperProps) {
     const listRef = useRef<HTMLDivElement>(null);
+
+    useListScrollReset(listRef, resetScrollTrigger);
 
     return (
         <AssetsListEmpty

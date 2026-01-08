@@ -167,7 +167,7 @@ export const useTradingSellForm = ({
     const decimals = useMemo(
         () =>
             getAssetDecimals({
-                tradingAccountKey: values.sendCryptoSelect?.accountKey,
+                accountKey: values.sendCryptoSelect?.accountKey,
                 cryptoId: values.sendCryptoSelect?.id as CryptoId,
             }),
         [getAssetDecimals, values.sendCryptoSelect?.accountKey, values.sendCryptoSelect?.id],
