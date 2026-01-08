@@ -27,11 +27,6 @@ const navigationItems: NavigationItem[] = [
         icon: 'minus',
         translationId: 'TR_NAV_SELL',
     },
-    {
-        id: 'wallet-trading-dca',
-        icon: 'clock',
-        translationId: 'TR_NAV_DCA',
-    },
 ];
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
