@@ -310,7 +310,7 @@ export default defineMessages({
         id: 'TR_CHECKED_BALANCES_ON',
     },
     TR_ALL_NETWORKS: {
-        defaultMessage: 'All networks ({networkCount})',
+        defaultMessage: 'All networks',
         id: 'TR_ALL_NETWORKS',
     },
     TR_ALL_NETWORKS_TOOLTIP: {
@@ -3227,7 +3227,7 @@ export default defineMessages({
     TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION: {
         id: 'TR_THP_SETTINGS_AUTO_CONNECT_DESCRIPTION',
         defaultMessage:
-            'Use this computer regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
+            'Trezor will connect automatically without having to confirm every connection.',
     },
     TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER: {
         id: 'TR_THP_AUTO_CONNECT_INFO_MODAL_HEADER',
@@ -4462,11 +4462,12 @@ export default defineMessages({
     },
     TR_FORGET_DEVICE_HEADING: {
         id: 'TR_FORGET_DEVICE_HEADING',
-        defaultMessage: 'Forget this device',
+        defaultMessage: 'Forget device',
     },
     TR_FORGET_DEVICE_DESCRIPTION: {
         id: 'TR_FORGET_DEVICE_DESCRIPTION',
-        defaultMessage: 'Remove all device-related data from Trezor Suite.',
+        defaultMessage:
+            'Permanently deletes all data related to your Trezor from this computer, including Bluetooth pairing and connection settings.',
     },
     TR_DEVICE_CONNECTION: {
         id: 'TR_DEVICE_CONNECTION',
@@ -5202,7 +5203,7 @@ export default defineMessages({
     },
     TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION: {
         id: 'TR_EXPERIMENTAL_TESTNET_NETWORKS_DESCRIPTION',
-        defaultMessage: 'Send and receive transactions on the testnet networks.',
+        defaultMessage: 'Send and receive transactions on testnet networks.',
     },
     TR_EXPERIMENTAL_SUITE_SYNC_TITLE: {
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
@@ -6239,7 +6240,7 @@ export default defineMessages({
     },
     TR_CUSTOM_BACKEND_CONNECTION_ERROR: {
         id: 'TR_CUSTOM_BACKEND_CONNECTION_ERROR',
-        defaultMessage: 'Could not connect to {url}',
+        defaultMessage: "Couldn't connect to {url}",
     },
     TR_CUSTOM_BACKEND_CHAIN_MISMATCH: {
         id: 'TR_CUSTOM_BACKEND_CHAIN_MISMATCH',
@@ -6251,7 +6252,7 @@ export default defineMessages({
     },
     TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID: {
         id: 'TR_CUSTOM_BACKEND_NETWORK_MISSING_CHAIN_ID',
-        defaultMessage: 'Network does not have a chain ID configured',
+        defaultMessage: "Network doesn't have a chain ID configured",
     },
     TR_VALIDATING: {
         id: 'TR_VALIDATING',
@@ -6388,7 +6389,7 @@ export default defineMessages({
     },
     TR_LABELING_ERROR: {
         id: 'TR_LABELING_ERROR',
-        defaultMessage: 'There was an error saving the label. Please try again.',
+        defaultMessage: 'There was an error saving your label. Try again.',
     },
     TR_GRAPH_MISSING_DATA_WITH_TOKENS: {
         id: 'TR_GRAPH_MISSING_DATA_WITH_TOKENS',
@@ -9251,7 +9252,8 @@ export default defineMessages({
     },
     TR_STAKING_CARD_KEEP_EARNING_TEXT: {
         id: 'TR_STAKING_CARD_KEEP_EARNING_TEXT',
-        defaultMessage: '<t>APY</t> is your yearly return on staked funds, with compounding.',
+        defaultMessage:
+            '<t>APY</t> is your yearly return on staked funds, with compounding (excludes the 2 ADA deposit).',
     },
     TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT: {
         id: 'TR_STAKING_CARD_KEEP_EARNING_CARDANO_TEXT',
@@ -10175,11 +10177,11 @@ export default defineMessages({
             "To unpair completely, make sure you remove your Trezor from your computer's Bluetooth settings. If not, your Trezor won't appear in Trezor Suite when you try to pair it again.",
     },
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS: {
-        defaultMessage: 'Manage Bluetooth pairing',
+        defaultMessage: 'Unpair Bluetooth connection',
         id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS',
     },
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION: {
-        defaultMessage: '{deviceName} is paired via Bluetooth',
+        defaultMessage: 'This removes your Trezor from the list of paired devices in Trezor Suite.',
         id: 'TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION',
     },
     TR_BLUETOOTH_ERASE_BONDS_SETTINGS_UNPAIR: {
@@ -10804,6 +10806,6 @@ export default defineMessages({
     },
     TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION: {
         id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION',
-        defaultMessage: 'Check the spelling or browse the list to select an option.',
+        defaultMessage: 'Check the spelling or browse the list to select an asset.',
     },
 } as const);
