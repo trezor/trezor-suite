@@ -6,10 +6,11 @@ import { Color } from '@trezor/theme';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type Variant = 'info' | 'success' | 'critical';
+export const INLINE_ALERT_TEXT_VARIANTS = ['info', 'success', 'critical'] as const;
+export type InlineAlertTextVariant = (typeof INLINE_ALERT_TEXT_VARIANTS)[number];
 
 export type InlineAlertTextProps = {
-    variant: Variant;
+    variant: InlineAlertTextVariant;
     children: ReactNode;
 };
 
@@ -31,7 +32,7 @@ const variants = {
         icon: 'warningCircle',
         color: 'textAlertRed',
     },
-} as const satisfies Record<Variant, VariantConfig>;
+} as const satisfies Record<InlineAlertTextVariant, VariantConfig>;
 
 export const InlineAlertText = ({ variant, children }: InlineAlertTextProps) => {
     const { color, icon } = variants[variant];

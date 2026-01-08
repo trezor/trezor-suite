@@ -15,7 +15,7 @@ import { Color } from '@trezor/theme';
 
 import { ENDLESS_ANIMATION_VALUE } from './constants';
 
-type CircularSpinnerProps = {
+export type CircularSpinnerProps = {
     size: number;
     color: Color;
     width: number;

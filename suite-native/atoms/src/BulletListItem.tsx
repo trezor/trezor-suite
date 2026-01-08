@@ -7,7 +7,7 @@ import { Text } from './Text';
 
 const INDENTED_BULLET_POINT_SYMBOL = ' \u2022 ';
 
-type BulletListItemProps = {
+export type BulletListItemProps = {
     children: ReactNode;
     variant?: NativeTypographyStyle;
     color?: Color;

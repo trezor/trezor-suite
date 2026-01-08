@@ -12,10 +12,22 @@ import { HStack } from './Stack';
 import { Text } from './Text';
 import { SurfaceElevation } from './types';
 
-export type BadgeVariant = 'neutral' | 'green' | 'greenSubtle' | 'yellow' | 'red' | 'blue' | 'bold';
-export type BadgeSize = 'small' | 'medium';
+export const BADGE_VARIANTS = [
+    'neutral',
+    'green',
+    'greenSubtle',
+    'yellow',
+    'red',
+    'blue',
+    'bold',
+] as const;
+export type BadgeVariant = (typeof BADGE_VARIANTS)[number];
+
+export const BADGE_SIZES = ['small', 'medium'] as const;
+export type BadgeSize = (typeof BADGE_SIZES)[number];
+
 type IconType = IconName | NetworkSymbol;
-type BadgeProps = {
+export type BadgeProps = {
     label: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;

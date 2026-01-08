@@ -7,4 +7,5 @@ export type TestProps = {
     ['testID']?: string;
 };
 
-export type SurfaceElevation = '0' | '1';
+export const SURFACE_ELEVATIONS = ['0', '1'] as const;
+export type SurfaceElevation = (typeof SURFACE_ELEVATIONS)[number];

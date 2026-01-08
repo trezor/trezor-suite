@@ -7,7 +7,7 @@ import { Color } from '@trezor/theme';
 import { Box } from './Box';
 import { Text } from './Text';
 
-type LoaderProps = {
+export type LoaderProps = {
     size?: ActivityIndicatorProps['size'];
     title?: ReactNode;
     color?: Color;

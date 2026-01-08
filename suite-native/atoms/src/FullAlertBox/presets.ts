@@ -2,7 +2,15 @@ import { IconName } from '@suite-native/icons';
 import { Color } from '@trezor/theme';
 
 import { ButtonColorScheme } from '../Button/Button';
-export type AlertVariant = 'info' | 'critical' | 'neutral' | 'success' | 'warning';
+
+export const FULL_ALERT_BOX_VARIANTS = [
+    'info',
+    'critical',
+    'neutral',
+    'success',
+    'warning',
+] as const;
+export type AlertVariant = (typeof FULL_ALERT_BOX_VARIANTS)[number];
 
 export type FullAlertStyles = {
     backgroundColor: Color;

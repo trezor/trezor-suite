@@ -20,7 +20,11 @@ import {
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { Loader } from '../Loader';
 import { AnimatedPressable } from '../Pressable';
-type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
+
+export type IconButtonProps = Omit<
+    PressableProps,
+    'style' | 'onPressIn' | 'onPressOut' | 'children'
+> & {
     iconName: IconName;
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;

@@ -9,7 +9,10 @@ import { OrderedListIcon } from './OrderedListIcon';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type Variant = 'default' | 'blue' | 'red' | 'yellow' | 'primary';
+export const ICON_LIST_ITEM_VARIANTS = ['default', 'blue', 'red', 'yellow', 'primary'] as const;
+
+export type IconListItemVariant = (typeof ICON_LIST_ITEM_VARIANTS)[number];
+
 type IconColors = {
     iconColor: Color;
     iconBorderColor: Color;
@@ -42,18 +45,18 @@ const iconColorsMap = {
         iconBorderColor: 'backgroundPrimaryDefault',
         iconBackgroundColor: 'backgroundPrimaryDefault',
     },
-} as const satisfies Record<Variant, IconColors>;
+} as const satisfies Record<IconListItemVariant, IconColors>;
 
-type IconListItemProps = {
+export type IconListItemProps = {
     children: ReactNode;
     icon: IconName;
     iconSize?: IconSize;
-    variant?: Variant;
+    variant?: IconListItemVariant;
     verticalAlign?: FlexAlignType;
     spacing?: NativeSpacing | number;
 };
 
-type IconListTextItemProps = IconListItemProps & {
+export type IconListTextItemProps = IconListItemProps & {
     textVariant?: NativeTypographyStyle;
     textColor?: Color;
 };

@@ -7,9 +7,10 @@ import { Color } from '@trezor/theme';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type HintVariant = 'hint' | 'error' | 'info';
+export const HINT_VARIANTS = ['hint', 'error', 'info'] as const;
+export type HintVariant = (typeof HINT_VARIANTS)[number];
 
-type HintProps = {
+export type HintProps = {
     variant?: HintVariant;
     style?: NativeStyleObject;
     children?: ReactNode;

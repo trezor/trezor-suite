@@ -6,7 +6,7 @@ import { Box } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type NumberedListItemProps = {
+export type NumberedListItemProps = {
     children: ReactNode;
     variant?: NativeTypographyStyle;
     color?: Color;

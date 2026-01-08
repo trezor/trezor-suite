@@ -11689,6 +11689,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-svg: "npm:15.14.0"
     react-redux: "npm:9.2.0"
+    storybook: "npm:^10.1.0"
     type-fest: "npm:4.24.0"
   languageName: unknown
   linkType: soft

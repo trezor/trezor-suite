@@ -15,7 +15,7 @@ import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } fro
 
 export type TextButtonVariant = 'primary' | 'tertiary' | 'blue';
 
-type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
+export type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     isUnderlined?: boolean;
     variant?: TextButtonVariant;
     isBold?: boolean;

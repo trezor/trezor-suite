@@ -4,7 +4,7 @@ import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/
 import { PressableOpacity } from './Pressable';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
-type CheckBoxProps = {
+export type CheckBoxProps = {
     isChecked: boolean;
     isDisabled?: boolean;
     onChange: (value: boolean) => void;

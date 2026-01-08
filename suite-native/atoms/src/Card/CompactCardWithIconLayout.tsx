@@ -14,7 +14,8 @@ import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 import { Card } from './Card';
 
-type CardVariant = 'normal' | 'danger' | 'primary';
+export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
+type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];
 
 export type CompactCardWithIconLayoutProps = {
     icon: IconName;
@@ -23,7 +24,7 @@ export type CompactCardWithIconLayoutProps = {
     isDisabled?: boolean;
     alertBoxProps?: Omit<InlineAlertBoxProps, 'borderRadius'>;
     onPress?: () => void;
-    variant?: CardVariant;
+    variant?: CompactCardVariant;
     noShadow?: boolean;
     borderColor?: Color | null;
 } & PressableProps;
@@ -58,7 +59,7 @@ export const cardVariantToColorsMap = {
         subtitleColor: 'textSecondaryHighlight',
         caretColor: 'iconPrimaryDefault',
     },
-} as const satisfies Record<CardVariant, CardColorScheme>;
+} as const satisfies Record<CompactCardVariant, CardColorScheme>;
 
 const contentStyle = prepareNativeStyle(() => ({
     flexGrow: 1,

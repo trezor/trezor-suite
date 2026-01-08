@@ -3,7 +3,6 @@ import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
 import { SHARED_DECORATORS } from '../decorators/decorators';
 
-
 import './fonts.css';
 
 const preview: Preview = {

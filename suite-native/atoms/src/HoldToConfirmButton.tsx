@@ -35,7 +35,7 @@ const LOADER_ARC_OVAL_CONFIG = {
     height: CANVAS_SIZE - BORDER_WIDTH * 2,
 };
 
-type HoldToConfirmButtonProps = {
+export type HoldToConfirmButtonProps = {
     onSuccess: () => void;
     isDisplayed?: SharedValue<boolean>;
     buttonLabelId?: TxKeyPath;

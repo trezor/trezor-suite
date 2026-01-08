@@ -13,7 +13,7 @@ import { paletteV1 } from '@trezor/theme';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
-type SwitchProps = {
+export type SwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
     isDisabled?: boolean; // Functionality of disabled works but styles are not implemented yet (waiting for design)

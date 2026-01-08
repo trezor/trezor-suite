@@ -6,7 +6,7 @@ import { Box } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type TextDividerProps = {
+export type TextDividerProps = {
     title?: TxKeyPath;
     horizontalMargin?: number;
     lineColor?: Color;

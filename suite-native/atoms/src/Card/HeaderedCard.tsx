@@ -10,7 +10,7 @@ import { Headered } from '../Headered';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 
-type HeaderedCardProps = CardProps & CardHeaderProps;
+export type HeaderedCardProps = CardProps & CardHeaderProps;
 
 type CardHeaderProps = RequireAllOrNone<
     {
