@@ -67,10 +67,8 @@ export const isAccountDiscoverable = ({ accountType }: Account) =>
 export const isEvmLedger = (networkType: NetworkType, accountType: AccountType) =>
     networkType === 'ethereum' && accountType === 'ledger';
 
-export const getAccountIndexOffset = (
-    networkType: NetworkType,
-    accountType: AccountType,
-): number => (isEvmLedger(networkType, accountType) ? 1 : 0);
+const getAccountIndexOffset = (networkType: NetworkType, accountType: AccountType): number =>
+    isEvmLedger(networkType, accountType) ? 1 : 0;
 
 export const getFirstFreshAddress = (
     account: Account,
@@ -143,7 +141,7 @@ export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
     }
 };
 
-export const getAccountTypePrefix = (path: string) => {
+const getAccountTypePrefix = (path: string) => {
     if (typeof path !== 'string') return null;
     const coinType = path.split('/')[2];
     switch (coinType) {
@@ -565,7 +563,7 @@ export const getAccountTokensFiatBalance = (
         }, new BigNumber(0)),
     );
 
-export const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
+const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
     const balance = getAccountTotalStakingBalance(account) ?? '0';
 
     return toFiatCurrency({ amount: balance, rate });

@@ -54,10 +54,7 @@ export const getIsUpdatedEthereumSendFlow = (
     return versionUtils.isNewer(firmwareVersion, '2.6.0') || !!stakeType;
 };
 
-export const getIsUpdatedStellarSendFlow = (
-    device: TrezorDevice,
-    network: Account['networkType'],
-) => {
+const getIsUpdatedStellarSendFlow = (device: TrezorDevice, network: Account['networkType']) => {
     if (network !== 'stellar') return false;
 
     const firmwareVersion = getFirmwareVersion(device);
