@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/react-native';
 
-import { themeDecorator } from '../themeDecorator';
+import { SHARED_DECORATORS } from '../decorators/decorators';
 
 const preview: Preview = {
     argTypes: {
@@ -20,7 +20,7 @@ const preview: Preview = {
             },
         },
     },
-    decorators: [themeDecorator],
+    decorators: [...SHARED_DECORATORS],
 };
 
 export default preview;

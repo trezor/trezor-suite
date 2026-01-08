@@ -1,6 +1,8 @@
 import { Preview } from '@storybook/react';
+import { INITIAL_VIEWPORTS } from 'storybook/viewport';
 
-import { themeDecorator } from '../themeDecorator';
+import { SHARED_DECORATORS } from '../decorators/decorators';
+
 
 import './fonts.css';
 
@@ -12,6 +14,19 @@ const preview: Preview = {
                 date: /Date$/,
             },
         },
+        layout: 'fullscreen',
+        options: {
+            showPanel: true,
+            showInfo: true,
+            panelPosition: 'right',
+        },
+
+        viewport: {
+            options: INITIAL_VIEWPORTS,
+        },
+    },
+    initialGlobals: {
+        viewport: { value: 'iphonex', isRotated: false },
     },
     globalTypes: {
         theme: {
@@ -25,7 +40,7 @@ const preview: Preview = {
             },
         },
     },
-    decorators: [themeDecorator],
+    decorators: [...SHARED_DECORATORS],
 };
 
 export default preview;
