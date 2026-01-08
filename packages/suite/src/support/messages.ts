@@ -794,17 +794,17 @@ export default defineMessages({
     },
     TR_BUY_FOOTER_TEXT_1: {
         defaultMessage:
-            'Invity is a comparison tool that connects you to the best exchange providers. They only use location in order to show the most relevant offers.',
+            'Trezor Suite is a comparison tool that connects you to the best exchange providers. It only uses location in order to show the most relevant offers.',
         id: 'TR_BUY_FOOTER_TEXT_1',
     },
     TR_BUY_FOOTER_TEXT_2: {
         defaultMessage:
-            "Invity doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
+            "Trezor doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
     TR_TRADING_TERMS_1: {
         id: 'TR_TRADING_TERMS_1',
-        defaultMessage: "Invity doesn't provide this service. It's governed by ",
+        defaultMessage: "Trezor doesn't provide this service. It's governed by ",
     },
     TR_TRADING_TERMS_2: {
         id: 'TR_TRADING_TERMS_2',
