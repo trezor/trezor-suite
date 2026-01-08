@@ -15,18 +15,12 @@ export function useTradingAssetDecimals(defaultDecimals = getNetwork('btc').deci
     const findAccountOrToken = useTradingFindAccountOrToken();
 
     const getAssetDecimals = useCallback(
-        ({
-            tradingAccountKey,
-            cryptoId,
-        }: {
-            tradingAccountKey?: AccountKey;
-            cryptoId?: CryptoId;
-        }) => {
-            if (!tradingAccountKey || !cryptoId) {
+        ({ accountKey, cryptoId }: { accountKey?: AccountKey; cryptoId?: CryptoId }) => {
+            if (!accountKey || !cryptoId) {
                 return defaultDecimals;
             }
 
-            const accountOrToken = findAccountOrToken.current({ tradingAccountKey, cryptoId });
+            const accountOrToken = findAccountOrToken.current({ accountKey, cryptoId });
             const network = cryptoIdToNetwork(cryptoId);
             const fallbackDecimals = network?.decimals ?? defaultDecimals;
 

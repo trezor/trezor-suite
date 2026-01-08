@@ -87,7 +87,15 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
             <Divider margin={{ top: 16 }} />
 
-            <AssetListWrapper listItems={listItems} renderItem={renderItem} />
+            <AssetListWrapper
+                listItems={listItems}
+                renderItem={renderItem}
+                /**
+                 * The listItems` contain fiat rates which are being frequently updated causing unwanted scroll position to be reset.
+                 * Instead, hint the `useListScrollReset` hook to reset scroll position when network filter, search, or list items size changes.
+                 */
+                resetScrollTrigger={`${networkFilter}${search}${listItems.length}`}
+            />
         </AssetsModal>
     );
 });

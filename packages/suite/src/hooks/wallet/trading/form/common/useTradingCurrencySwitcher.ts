@@ -58,7 +58,7 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
     const currencySelect = getValues(TRADING_FORM_OUTPUT_CURRENCY);
     const { getAssetDecimals } = useTradingAssetDecimals();
     const networkDecimals = getAssetDecimals({
-        tradingAccountKey: sendCryptoSelect?.accountKey,
+        accountKey: sendCryptoSelect?.accountKey,
         cryptoId: sendCryptoSelect?.id,
     });
 

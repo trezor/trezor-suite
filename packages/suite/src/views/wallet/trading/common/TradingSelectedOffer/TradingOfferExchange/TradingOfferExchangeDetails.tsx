@@ -71,7 +71,7 @@ export const TradingOfferExchangeDetails = ({
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const { getAssetDecimals } = useTradingAssetDecimals();
     const decimals = getAssetDecimals({
-        tradingAccountKey: sendCryptoSelect?.accountKey,
+        accountKey: sendCryptoSelect?.accountKey,
         cryptoId: sendCryptoSelect?.id,
     });
 

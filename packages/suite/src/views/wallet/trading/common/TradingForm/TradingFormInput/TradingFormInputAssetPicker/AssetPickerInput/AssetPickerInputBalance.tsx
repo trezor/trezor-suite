@@ -45,7 +45,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     const assetDecimals = useMemo(() => {
         if (!value) return undefined;
 
-        return getAssetDecimals({ tradingAccountKey: value.accountKey, cryptoId: value.id });
+        return getAssetDecimals({ accountKey: value.accountKey, cryptoId: value.id });
     }, [getAssetDecimals, value]);
 
     const fiatValues = useTradingFiatValues({

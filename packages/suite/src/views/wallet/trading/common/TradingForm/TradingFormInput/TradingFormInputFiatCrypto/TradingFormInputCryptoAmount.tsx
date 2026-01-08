@@ -91,7 +91,7 @@ export const TradingFormInputCryptoAmount = ({
     const decimals = isTradingBuyContext(context)
         ? getNetworkDecimalsWithFallback(network.symbol)
         : getAssetDecimals({
-              tradingAccountKey: getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)?.accountKey,
+              accountKey: getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT)?.accountKey,
               cryptoId: cryptoSelect?.id,
           });
 
