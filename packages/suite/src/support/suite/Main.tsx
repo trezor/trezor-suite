@@ -2,6 +2,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { RouterServices } from '@suite-common/redux-utils';
+import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';
 import Autodetect from 'src/support/suite/Autodetect';
@@ -42,9 +43,11 @@ export const Main = ({
                         <OnlineStatus />
                         <RouterHandler routerServices={routerServices} />
                         <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                {children}
-                            </FormatterProvider>
+                            <SelectCacheProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    {children}
+                                </FormatterProvider>
+                            </SelectCacheProvider>
                         </ConnectedIntlProvider>
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
