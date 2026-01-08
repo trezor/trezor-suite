@@ -144,7 +144,10 @@ export const AccountsList = ({
                           networkSymbol,
                       })?.label ?? accountLabelOld;
 
-                  return accountSearchFn(account, searchString, coinFilter, accountLabel);
+                  return accountSearchFn(account, searchString, {
+                      coinsFilter: coinFilter,
+                      metadataAccountLabel: accountLabel,
+                  });
               })
             : accounts;
 
