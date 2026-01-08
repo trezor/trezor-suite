@@ -112,7 +112,7 @@ export class DevicePrompt {
     }
 
     @step()
-    async getAddress() {
+    async getAddressFromDisplay() {
         // may not work for multi page addresses
         await this.confirmOnDevicePromptIsShown();
         const addressRaw = (await this.device.getDisplayContent()).body;

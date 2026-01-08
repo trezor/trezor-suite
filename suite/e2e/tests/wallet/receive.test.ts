@@ -40,7 +40,7 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
                 await walletPage.accountButton({ symbol: coin }).click();
                 await walletPage.receiveButton.click();
                 await walletPage.revealAddressButton.click();
-                const address = await devicePrompt.getAddress();
+                const address = await devicePrompt.getAddressFromDisplay();
                 await devicePrompt.waitForPromptAndConfirm();
                 await walletPage.copyAddressButton.click();
                 await expect(walletPage.copyToCliboardToast).toBeVisible();

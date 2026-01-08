@@ -51,7 +51,7 @@ export const SearchAsset = ({
 
     return (
         <Input
-            data-testid={dataTestId}
+            data-testid={dataTestId ?? '@search-asset-input'}
             placeholder={searchPlaceholder}
             value={search}
             onChange={event => setSearch(event.target.value)}

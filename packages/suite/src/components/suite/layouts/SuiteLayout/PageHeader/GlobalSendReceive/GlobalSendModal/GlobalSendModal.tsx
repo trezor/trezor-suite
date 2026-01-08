@@ -83,6 +83,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 case 'account':
                     return (
                         <AssetRowAccountWithBalance
+                            dataTestId={`@global-send-account/${item.account.accountType}/${item.account.symbol}/${item.account.index}`}
                             account={item.account}
                             onClick={handleAccountClick}
                         />

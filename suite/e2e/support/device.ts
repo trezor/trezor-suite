@@ -253,35 +253,17 @@ export class DeviceFixture {
         const EMULATOR_BURGER_MENU_COORDINATES: Record<Model, { x: number; y: number }> = {
             [Model.T3T1]: { x: 200, y: 20 },
             [Model.T3W1]: { x: 300, y: 20 },
-            [Model.T1B1]: {
-                x: 0,
-                y: 0,
-            },
-            [Model.T2T1]: {
-                x: 0,
-                y: 0,
-            },
-            [Model.T3B1]: {
-                x: 0,
-                y: 0,
-            },
+            [Model.T1B1]: { x: 0, y: 0 },
+            [Model.T2T1]: { x: 0, y: 0 },
+            [Model.T3B1]: { x: 0, y: 0 },
         };
         await TrezorUserEnvLink.clickEmu(EMULATOR_BURGER_MENU_COORDINATES[this.model]);
         const EMULATOR_FEE_INFO_COORDINATES: Record<Model, { x: number; y: number }> = {
             [Model.T3T1]: { x: 125, y: buttonIndexT3T1 * 100 },
             [Model.T3W1]: { x: 125, y: buttonIndexT3W1 * 100 },
-            [Model.T1B1]: {
-                x: 0,
-                y: 0,
-            },
-            [Model.T2T1]: {
-                x: 0,
-                y: 0,
-            },
-            [Model.T3B1]: {
-                x: 0,
-                y: 0,
-            },
+            [Model.T1B1]: { x: 0, y: 0 },
+            [Model.T2T1]: { x: 0, y: 0 },
+            [Model.T3B1]: { x: 0, y: 0 },
         };
         await TrezorUserEnvLink.clickEmu(EMULATOR_FEE_INFO_COORDINATES[this.model]);
     }
