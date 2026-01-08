@@ -407,7 +407,7 @@ export const NotificationRenderer = ({
                     variant="success"
                     message="TOAST_TX_REVOKED"
                     messageValues={{
-                        tokenSymbol: notification.tokenSymbol,
+                        tokenSymbol: notification.token.symbol,
                     }}
                 />
             );
@@ -419,14 +419,10 @@ export const NotificationRenderer = ({
                     notification={notification}
                     icon="arrowUp"
                     variant="success"
-                    message={
-                        notification.isInfiniteApproval
-                            ? 'TOAST_TX_APPROVED_MAX'
-                            : 'TOAST_TX_APPROVED'
-                    }
+                    message="TOAST_TX_APPROVED"
                     messageValues={{
                         amount: notification.formattedAmount,
-                        tokenSymbol: notification.tokenSymbol,
+                        tokenSymbol: notification.token.symbol,
                     }}
                 />
             );

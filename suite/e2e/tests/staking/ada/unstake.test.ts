@@ -159,14 +159,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify unstaked account', async () => {
-                await expect(stakingSection.unstakedToast).toContainTranslation(
-                    'TOAST_TX_UNSTAKED',
-                    {
-                        values: {
-                            amount: unstakedAmountFormatted,
-                            account: 'Cardano #1',
-                        },
-                    },
+                await expect(stakingSection.unstakedToastAccount).toContainText('Cardano #1');
+                await expect(stakingSection.unstakedToastAmount).toContainText(
+                    unstakedAmountFormatted,
                 );
                 await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
                     finalBalanceFormatted,

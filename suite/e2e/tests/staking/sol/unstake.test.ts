@@ -103,9 +103,9 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             await test.step('Send Unstake and verify on dashboard', async () => {
                 solanaStakingMock.enableRoutesForTransactions();
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.unstakedToast).toContainTranslation(
-                    'TOAST_TX_UNSTAKED',
-                    { values: { amount: stakedAmountFormatted } },
+                await expect(stakingSection.unstakedToastAccount).toContainText('Solana #1');
+                await expect(stakingSection.unstakedToastAmount).toContainText(
+                    stakedAmountFormatted,
                 );
                 await solanaStakingMock.setupUnstakingAccount();
                 await page.clock.fastForward(stakingSection.solanaEpochCachePeriod);
@@ -188,9 +188,10 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await solanaStakingMock.setProgramAccounts([]);
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.claimedToast).toContainTranslation('TOAST_TX_CLAIMED', {
-                    values: { amount: unstakingAmountFormatted },
-                });
+                await expect(stakingSection.claimedToastAccount).toContainText('Solana #1');
+                await expect(stakingSection.claimedToastAmount).toContainText(
+                    unstakingAmountFormatted,
+                );
             });
 
             await test.step('Verify dashboard is back to initial state', async () => {

@@ -1,7 +1,7 @@
 import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import { BadgeSize, Row, Text, TextProps } from '@trezor/components';
+import { BadgeSize, FlexProps, Row, Text, TextProps } from '@trezor/components';
 
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
@@ -14,6 +14,7 @@ interface AccountLabelProps {
     account: Account;
     variant?: TextProps['variant'];
     typographyStyle?: TextProps['typographyStyle'];
+    rowProps?: Omit<FlexProps, 'children'>;
 }
 
 export const AccountLabel = ({
@@ -22,6 +23,7 @@ export const AccountLabel = ({
     account,
     typographyStyle,
     variant,
+    rowProps,
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
@@ -39,7 +41,7 @@ export const AccountLabel = ({
         getDefaultAccountLabel({ accountType, symbol, index });
 
     return (
-        <Row gap={12} overflow="hidden" maxWidth="100%">
+        <Row gap={12} overflow="hidden" maxWidth="100%" {...rowProps}>
             <Text variant={variant} typographyStyle={typographyStyle} ellipsisLineCount={1}>
                 {accountLabel}
             </Text>

@@ -119,12 +119,8 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 solanaStakingMock.enableRoutesForTransactions();
                 await solanaStakingMock.setProgramAccounts([solStakingAccountFirst.payload]);
                 await devicePrompt.sendButton.click();
-                await expect(stakingSection.stakedToast).toHaveTranslation('TOAST_TX_STAKED', {
-                    values: {
-                        amount: stakedAmountFormatted,
-                        account: 'Solana #1',
-                    },
-                });
+                await expect(stakingSection.stakedToastAccount).toContainText('Solana #1');
+                await expect(stakingSection.stakedToastAmount).toContainText(stakedAmountFormatted);
             });
 
             await test.step('Verify pending on dashboard', async () => {

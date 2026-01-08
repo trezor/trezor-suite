@@ -370,11 +370,12 @@ export const pushSendFormTransactionThunk = createThunk<
                         type: evmApprovalData.type === 'approve' ? 'tx-approved' : 'tx-revoked',
                         isInfiniteApproval,
                         formattedAmount: amount,
-                        tokenSymbol: token.symbol,
+                        token,
                         device,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
                         txid,
+                        style: { maxWidth: 'auto' },
                     }),
                 );
             } else if (isExchangeTradingForm(precomposedForm?.trading)) {
@@ -387,6 +388,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
                         txid,
+                        style: { maxWidth: 'auto' },
                     }),
                 );
             } else {
@@ -415,6 +417,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
                         txid,
+                        style: { maxWidth: 'auto' },
                     }),
                 );
             }

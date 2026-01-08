@@ -56,8 +56,14 @@ export class StakingSection {
     readonly fiatTicker: Locator;
     readonly cryptoTicker: Locator;
     readonly stakedToast: Locator;
+    readonly stakedToastAccount: Locator;
+    readonly stakedToastAmount: Locator;
     readonly unstakedToast: Locator;
+    readonly unstakedToastAccount: Locator;
+    readonly unstakedToastAmount: Locator;
     readonly claimedToast: Locator;
+    readonly claimedToastAccount: Locator;
+    readonly claimedToastAmount: Locator;
     readonly claimRewardsButton: Locator;
     readonly cardanoRewardAmount: Locator;
     readonly cardanoDepositAmount: Locator;
@@ -128,8 +134,14 @@ export class StakingSection {
         this.fiatTicker = this.page.getByTestId('@staking/form/fiat-input/input-addon');
         this.cryptoTicker = this.page.getByTestId('@staking/form/crypto-input/input-addon');
         this.stakedToast = this.page.getByTestId('@toast/tx-staked');
+        this.stakedToastAccount = this.page.getByTestId('@toast/tx-staked/account');
+        this.stakedToastAmount = this.page.getByTestId('@toast/tx-staked/amount');
         this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
+        this.unstakedToastAccount = this.page.getByTestId('@toast/tx-unstaked/account');
+        this.unstakedToastAmount = this.page.getByTestId('@toast/tx-unstaked/amount');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
+        this.claimedToastAccount = this.page.getByTestId('@toast/tx-claimed/account');
+        this.claimedToastAmount = this.page.getByTestId('@toast/tx-claimed/amount');
         this.claimRewardsButton = this.page.getByTestId('@account/staking/claim-rewards-button');
         this.cardanoRewardAmount = this.page.getByTestId('@account/staking/rewards-with-symbol');
         this.cardanoDepositAmount = this.page.getByTestId(

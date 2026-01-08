@@ -20,6 +20,7 @@ export const showToast = (payload: NotificationEntry) => {
     toast(renderToast(entry), {
         toastId: entry.id,
         autoClose: entry.autoClose ?? 5000,
+        style: entry.style,
     });
 };
 
