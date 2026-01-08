@@ -38,7 +38,6 @@ export { default as signTransaction } from './signTransaction';
 export { default as signTransactionBcash } from './signTransactionBcash';
 export { default as signTransactionBech32 } from './signTransactionBech32';
 export { default as signTransactionBgold } from './signTransactionBgold';
-export { default as signTransactionDash } from './signTransactionDash';
 export { default as signTransactionDoge } from './signTransactionDoge';
 export { default as signTransactionExternal } from './signTransactionExternal';
 export { default as signTransactionMultisig } from './signTransactionMultisig';
