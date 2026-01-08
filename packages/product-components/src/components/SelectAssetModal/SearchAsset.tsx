@@ -61,6 +61,13 @@ export const SearchAsset = ({
             rightContent={networkSelect}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={autoFocus}
+            onBlur={() => {
+                const trimmedSearch = search.trim();
+
+                if (trimmedSearch !== search) {
+                    setSearch(trimmedSearch);
+                }
+            }}
         />
     );
 };
