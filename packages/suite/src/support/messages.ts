@@ -198,9 +198,7 @@ export default defineMessages({
         defaultMessage: '10%',
         id: 'TR_FRACTION_BUTTONS_10_PERCENT',
     },
-    TR_FRACTION_BUTTONS_25_PERCENT: {
-        defaultMessage: '25%',
-    },
+    TR_FRACTION_BUTTONS_25_PERCENT: {},
     TR_FRACTION_BUTTONS_50_PERCENT: {
         defaultMessage: '50%',
         id: 'TR_FRACTION_BUTTONS_50_PERCENT',
