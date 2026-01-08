@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../intl" },
         { "path": "../../packages/eslint" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

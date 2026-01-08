@@ -11,8 +11,8 @@ const renderer = createRenderer();
 
 const storyContainerStyle = prepareNativeStyle(utils => ({
     flex: 1,
-    alignItems: 'center',
     paddingTop: utils.spacings.sp32,
+    paddingHorizontal: utils.spacings.sp16,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     ...StyleSheet.absoluteFillObject,
 }));
