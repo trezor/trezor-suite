@@ -9,7 +9,7 @@ import {
 
 import { AddressLabel, AddressLabelsStore } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountDescriptor } from '@suite-common/wallet-types';
+import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { normalizeLabel } from './normalizeLabel';
 import { UnwrapQuery } from '../evoluUtils';
@@ -17,8 +17,8 @@ import { UnwrapQuery } from '../evoluUtils';
 export const AddressLabelId = id('AddressLabelId');
 export type AddressLabelId = typeof AddressLabelId.Type;
 
-export const createAddressLabelId = (address: string) =>
-    AddressLabelId.from(createIdFromString(address));
+export const createAddressLabelId = (address: string, networkSymbol: NetworkSymbol) =>
+    AddressLabelId.from(createIdFromString(`${address}-${networkSymbol}`));
 
 export const AddressLabelSchema = {
     addressLabel: {
@@ -34,7 +34,7 @@ export class AddressLabels implements AddressLabelsStore {
     constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
 
     update = ({ address, label, accountDescriptor, networkSymbol }: AddressLabel) => {
-        const idResult = createAddressLabelId(address);
+        const idResult = createAddressLabelId(address, networkSymbol);
 
         if (!idResult.ok) {
             console.error('AddressLabels:id error:', idResult.error);
@@ -73,10 +73,24 @@ export class AddressLabels implements AddressLabelsStore {
                     continue;
                 }
 
+                /**
+                 * This needs to be checked due to compatibility issue as we had a bug,
+                 * and generated ID without a `networkSymbol`. In some testing accounts,
+                 * you still can have then old data for same address => this may result
+                 * in wrong state of label as the old one may end-up as last one.
+                 */
+                const idToTest = createAddressLabelId(
+                    label.address,
+                    label.networkSymbol as NetworkSymbol,
+                );
+                if (idToTest.ok && label.id !== idToTest.value) {
+                    continue;
+                }
+
                 onChange({
                     address: label.address,
                     label: label.label,
-                    accountDescriptor: label.accountDescriptor,
+                    accountDescriptor: asAccountDescriptor(label.accountDescriptor),
                     networkSymbol: label.networkSymbol as NetworkSymbol,
                 });
             }
