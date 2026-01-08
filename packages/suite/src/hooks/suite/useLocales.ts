@@ -17,6 +17,7 @@ const getDateFnsLocale = (locale: SuiteLocale): DateFnsLocale['code'] => {
         'hu-HU': 'hu',
         'it-IT': 'it',
         'ja-JP': 'ja',
+        'ko-KR': 'ko',
         'pt-BR': 'ptBR',
         'ru-RU': 'ru',
         'tr-TR': 'tr',
