@@ -1,5 +1,5 @@
 import { FeatureFlag } from '@suite-native/feature-flags';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, act, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { SellTab } from '../SellTab';
 
@@ -21,8 +21,14 @@ jest.mock('../../../hooks/sell/useSellData', () => ({
 }));
 
 describe('SellTab', () => {
-    const renderSellTab = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<SellTab />, { preloadedState });
+    const renderSellTab = async (preloadedState: PreloadedState = {}) => {
+        const result = await renderWithStoreProviderAsync(<SellTab />, { preloadedState });
+
+        // wait for form reactions to run
+        await act(() => Promise.resolve());
+
+        return result;
+    };
 
     beforeEach(() => {
         mockIsDeviceInViewOnlyMode = false;
@@ -78,7 +84,7 @@ describe('SellTab', () => {
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
-    it('should display View-only info with view-only wallet', async () => {
+    it('should display form even with view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText } = await renderSellTab({
             featureFlags: {
@@ -86,6 +92,16 @@ describe('SellTab', () => {
             },
         });
 
-        expect(getByText('View-only wallet')).toBeOnTheScreen();
+        expect(getByText('Select asset')).toBeOnTheScreen();
+    });
+
+    it('should display form otherwise', async () => {
+        const { getByText } = await renderSellTab({
+            featureFlags: {
+                [FeatureFlag.IsTradingSellEnabled]: true,
+            },
+        });
+
+        expect(getByText('Select asset')).toBeOnTheScreen();
     });
 });

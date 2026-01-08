@@ -2,21 +2,15 @@ import { useSelector } from 'react-redux';
 
 import {
     selectHasBitcoinOnlyFirmware,
-    selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import {
-    BtcOnlyFirmwareInfo,
-    PortfolioTrackerInfo,
-    ViewOnlyWalletInfo,
-} from '@suite-native/trading-atoms';
+import { BtcOnlyFirmwareInfo, PortfolioTrackerInfo } from '@suite-native/trading-atoms';
 import { selectIsTradingExchangeEnabled } from '@suite-native/trading-state';
 
 import { ExchangeTabContent } from './ExchangeTabContent';
 import { TradingTypeDisabled } from '../general/Error/TradingTypeDisabled';
 
 const ExchangeTabEnabled = () => {
-    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const hasBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
@@ -26,10 +20,6 @@ const ExchangeTabEnabled = () => {
 
     if (hasBitcoinOnlyFirmware) {
         return <BtcOnlyFirmwareInfo />;
-    }
-
-    if (isDeviceInViewOnlyMode) {
-        return <ViewOnlyWalletInfo />;
     }
 
     return <ExchangeTabContent />;
