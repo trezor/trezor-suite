@@ -6,6 +6,7 @@ import {
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TradingBuyType,
+    selectTradingBuySupportedCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
@@ -36,7 +37,7 @@ export const TradingBuyFormInputs = () => {
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
-    const { buyInfo, device, setAmountLimits, getValues, setValue } = context;
+    const { device, setAmountLimits, getValues, setValue } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
@@ -58,6 +59,8 @@ export const TradingBuyFormInputs = () => {
         },
         [dispatch, setAmountLimitsRef, setValueRef],
     );
+
+    const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
 
     return (
         <Column gap={spacings.lg}>
@@ -117,9 +120,9 @@ export const TradingBuyFormInputs = () => {
                             inputLabel="TR_TRADING_YOU_BUY"
                             inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
                             inputDisabled={hasBitcoinOnlyFirmware(device)}
-                            enabledCryptoIds={buyInfo?.supportedCryptoCurrencies}
                             onAssetSelect={handleCryptoSelect}
-                            dataTestId="@trading/form/select-crypto"
+                            includedCryptoIds={buySupportedCryptoIds}
+                            dataTestId="@trading/form/select-crypto-for-buy"
                         />
                     </Column>
 

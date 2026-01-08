@@ -19,7 +19,7 @@ import type {
 
 import { CountryCode } from '@suite-common/geolocation';
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { AccountType, Network } from '@suite-common/wallet-config';
+import { Network } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -141,18 +141,6 @@ export type TradingBuyFormProps = {
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
-// FIXME: remove this type
-export interface TradingAccountOptionsGroupOptionProps {
-    value: CryptoId;
-    label: string; // token shortcut
-    cryptoName: string | undefined; // full name
-    balance: string;
-    descriptor: string;
-    decimals: number;
-    contractAddress?: string;
-    accountType?: AccountType;
-}
-
 export interface OTCLink {
     name: string;
     url: string;
@@ -217,10 +205,8 @@ export interface TradingExchangeFormProps extends FormState {
 
 export type MinimalExchangeFormProps = {
     outputs: { amount?: string }[];
-    receiveCryptoSelect?: {
-        id: CryptoId;
-    } | null;
-    sendCryptoSelect?: { value: CryptoId } | null;
+    receiveCryptoSelect?: Pick<TradingAssetOption, 'id'> | null;
+    sendCryptoSelect?: Pick<TradingAssetSellOption, 'id'> | null;
     setMaxOutputId?: number;
     receiveAddress?: string;
     fromAddress?: string;
@@ -261,7 +247,7 @@ export interface TradingSellFormProps extends FormState {
 
 export type MinimalSellFormProps = {
     outputs: { amount?: string; fiat?: string; currency: Pick<BaseCurrencyOption, 'value'> }[];
-    sendCryptoSelect: { value: CryptoId } | undefined;
+    sendCryptoSelect: Pick<TradingAssetSellOption, 'id'> | undefined;
     countrySelect: TradingCountryOption;
     amountInCrypto: boolean;
     setMaxOutputId?: number;

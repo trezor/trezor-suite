@@ -1,25 +1,11 @@
-import { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import { BuyTrade, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import {
-    type TradingType,
-    cryptoIdToNetworkAndContractAddress,
-    toTokenCryptoId,
-} from '@suite-common/trading';
-import {
-    Network,
-    NetworkSymbol,
-    getNetwork,
-    getNetworkDisplaySymbol,
-    getNetworkDisplaySymbolName,
-    getNetworkFeatures,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { type TradingType } from '@suite-common/trading';
+import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    getContractAddressForNetworkSymbol,
     sortByCoin,
     substituteBip43Path,
     subunitsToUnits,
@@ -29,9 +15,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { Route, TrezorDevice } from 'src/types/suite';
 import {
-    TradingAccountOptionsGroupOptionProps,
-    TradingAccountsOptionsGroupProps,
-    TradingBuildAccountOptionsProps,
     TradingGetAmountLabelsProps,
     TradingGetAmountLabelsReturnProps,
     TradingGetProvidersInfoProps,
@@ -142,139 +125,6 @@ export const tradingGetSortedAccounts = ({
             a => a.deviceState === deviceState && a.visible && a.accountType !== 'coinjoin',
         ),
     );
-};
-
-export const tradingBuildAccountOptions = ({
-    deviceState,
-    accounts,
-    accountLabels,
-    tokenDefinitions,
-    supportedCryptoIds,
-    getDefaultAccountLabel,
-    excludeCryptoId,
-}: TradingBuildAccountOptionsProps): TradingAccountsOptionsGroupProps[] => {
-    const accountsSorted = tradingGetSortedAccounts({
-        accounts,
-        deviceState,
-    });
-
-    const groups: TradingAccountsOptionsGroupProps[] = [];
-
-    const excludeNetworkAndContractAddress = cryptoIdToNetworkAndContractAddress(excludeCryptoId);
-
-    accountsSorted.forEach(account => {
-        const {
-            descriptor,
-            tokens,
-            symbol: accountSymbol,
-            formattedBalance,
-            index,
-            accountType,
-        } = account;
-
-        const network = getNetwork(accountSymbol);
-
-        if (!network.tradeCryptoId) {
-            return;
-        }
-
-        if (
-            !excludeNetworkAndContractAddress.contractAddress &&
-            excludeNetworkAndContractAddress.network?.symbol === accountSymbol
-        ) {
-            return;
-        }
-
-        const groupLabel =
-            accountLabels[account.key] ??
-            getDefaultAccountLabel({
-                accountType,
-                symbol: accountSymbol,
-                index,
-            });
-
-        const accountDecimals = network.decimals;
-        const option: TradingAccountOptionsGroupOptionProps = {
-            value: network.tradeCryptoId as CryptoId,
-            label: getNetworkDisplaySymbol(accountSymbol),
-            cryptoName: getNetworkDisplaySymbolName(accountSymbol),
-            descriptor,
-            balance: formattedBalance ?? '',
-            accountType: account.accountType,
-            decimals: accountDecimals,
-        };
-        const options: TradingAccountOptionsGroupOptionProps[] = [option];
-
-        const hasNativeToken = options.length > 0;
-
-        // add crypto tokens to options
-        if (tokens && tokens.length > 0) {
-            const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes(
-                'coin-definitions',
-            );
-            const coinDefinitions = tokenDefinitions?.[account.symbol]?.[DefinitionType.COIN];
-
-            tokens.forEach(token => {
-                const { symbol, balance, contract, name } = token;
-                if (!symbol || !balance || balance === '0') {
-                    return;
-                }
-
-                const contractAddress = getContractAddressForNetworkSymbol(accountSymbol, contract);
-
-                const tokenCryptoId = toTokenCryptoId(accountSymbol, contractAddress);
-                if (supportedCryptoIds && !supportedCryptoIds.has(tokenCryptoId)) {
-                    return;
-                }
-
-                if (
-                    excludeCryptoId &&
-                    excludeNetworkAndContractAddress.network &&
-                    tokenCryptoId ===
-                        getContractAddressForNetworkSymbol(
-                            excludeNetworkAndContractAddress.network?.symbol,
-                            excludeCryptoId,
-                        )
-                ) {
-                    return;
-                }
-
-                // exclude unknown tokens
-                if (
-                    hasCoinDefinitions &&
-                    coinDefinitions &&
-                    !isTokenDefinitionKnown(coinDefinitions.data, account.symbol, token.contract)
-                ) {
-                    return;
-                }
-
-                options.push({
-                    value: tokenCryptoId,
-                    label: symbol,
-                    cryptoName: name,
-                    contractAddress: contract,
-                    descriptor,
-                    accountType,
-                    balance: balance ?? '',
-                    decimals: token.decimals,
-                });
-            });
-        }
-
-        const hasTokens = hasNativeToken && options.length > 1;
-
-        // exclude account if the native token has 0 balance and has no other tokens
-        if (!hasTokens && hasNativeToken && options[0].balance === '0') {
-            return;
-        }
-
-        groups.push({
-            label: groupLabel,
-            options,
-        });
-    });
-
-    return groups.filter(group => group.options.length > 0);
 };
 
 export const tradingGetAmountLabels = ({

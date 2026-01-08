@@ -1,8 +1,11 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
+
+import { CryptoId } from 'invity-api';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
 import { AssetPickerInput, AssetPickerInputProps } from '../TradingFormInputAssetPicker';
+import { AssetOptionsProvider } from './AssetOptionsContext';
 import { AssetPickerModal, AssetPickerModalProps } from './AssetPickerModal/AssetPickerModal';
 
 export interface TradingFormInputSellAssetProps {
@@ -17,6 +20,9 @@ export interface TradingFormInputSellAssetProps {
      */
     onAssetSelect: AssetPickerModalProps['onAssetSelect'];
 
+    includedCryptoIds: CryptoId[] | undefined;
+    excludedCryptoId?: CryptoId | undefined;
+
     dataTestId?: string;
 }
 
@@ -28,11 +34,21 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
     inputBottomText,
     dataTestId,
     onAssetSelect,
+    includedCryptoIds,
+    excludedCryptoId,
 }: TradingFormInputSellAssetProps) {
     const modal = useModal();
+    const includedCryptoIdsSet = useMemo(() => new Set(includedCryptoIds), [includedCryptoIds]);
+    const excludedCryptoIdsSet = useMemo(
+        () => (excludedCryptoId ? new Set([excludedCryptoId]) : new Set<CryptoId>()),
+        [excludedCryptoId],
+    );
 
     return (
-        <>
+        <AssetOptionsProvider
+            includedCryptoIds={includedCryptoIdsSet}
+            excludedCryptoIds={excludedCryptoIdsSet}
+        >
             <AssetPickerInput
                 name={inputName}
                 label={inputLabel}
@@ -50,6 +66,6 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
                     onAssetSelect={onAssetSelect}
                 />
             )}
-        </>
+        </AssetOptionsProvider>
     );
 });

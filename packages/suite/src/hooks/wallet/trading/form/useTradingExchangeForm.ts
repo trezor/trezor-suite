@@ -93,7 +93,7 @@ export const useTradingExchangeForm = ({
     const exchangeInfo = useSelector(selectTradingExchangeInfo);
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { selectedFee, composed } = composedTransactionInfo;
-    const { account } = useTradingFormAccount();
+    const { account } = useTradingFormAccount(type);
 
     const isPreviousRouteFromTradeSection = useTradingPreviousRoute(type);
 

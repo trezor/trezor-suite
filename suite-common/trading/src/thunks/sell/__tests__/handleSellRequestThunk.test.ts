@@ -12,6 +12,7 @@ import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
     HandleSellRequestThunkProps,
     MinimalSellFormProps,
+    TradingAssetSellOption,
     TradingSellFormProps,
 } from '../../../types';
 import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
@@ -85,14 +86,17 @@ describe('handleSellRequestThunk', () => {
             ],
             countrySelect: { value: 'US', label: 'United States' },
             sendCryptoSelect: {
-                value: 'bitcoin' as CryptoId,
-                label: 'BTC',
-                cryptoName: 'Bitcoin',
-                descriptor: 'descriptor',
-                balance: '0.00297589',
-                accountType: 'normal',
-                decimals: 8,
-            },
+                id: 'bitcoin' as CryptoId,
+                isNativeToken: true,
+                name: 'Bitcoin',
+                coingeckoId: 'bitcoin',
+                contractAddress: null,
+                symbol: 'btc',
+                displaySymbol: 'BTC',
+                networkName: 'Bitcoin',
+                networkSymbol: 'btc',
+                accountKey: 'descriptor-btc-123',
+            } satisfies TradingAssetSellOption,
             amountInCrypto: true,
             feePerUnit: '',
             feeLimit: '',
@@ -220,15 +224,9 @@ describe('handleSellRequestThunk', () => {
                         })),
                         sendCryptoSelect: {
                             ...input.formValues.sendCryptoSelect,
-                            value: 'ethereum' as CryptoId,
-                            label: 'ETH',
-                            cryptoName: 'Ethereum',
-                            descriptor: 'descriptor',
-                            balance: '0.00297589',
-                            accountType: 'normal',
-                            decimals: 8,
+                            id: 'ethereum' as CryptoId,
                         },
-                    } as MinimalSellFormProps,
+                    } satisfies MinimalSellFormProps,
                 }),
             )
             .unwrap();

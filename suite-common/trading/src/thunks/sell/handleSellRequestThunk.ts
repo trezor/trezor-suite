@@ -59,7 +59,7 @@ const getQuoteRequestData = ({
 
     const request = {
         amountInCrypto,
-        cryptoCurrency: sendCryptoSelect.value,
+        cryptoCurrency: sendCryptoSelect.id,
         fiatCurrency: currencySelect.value.toUpperCase(),
         country: countrySelect.value,
         cryptoStringAmount,

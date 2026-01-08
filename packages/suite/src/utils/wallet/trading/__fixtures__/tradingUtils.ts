@@ -159,7 +159,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'btc',
-                descriptor: 'bbb',
+                descriptor: asAccountDescriptor('bbb'),
             },
             tokenContractAddress: undefined,
         },
@@ -172,7 +172,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'eth',
-                descriptor: 'eee',
+                descriptor: asAccountDescriptor('eee'),
             },
             tokenContractAddress: undefined,
         },
@@ -185,7 +185,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'eth',
-                descriptor: 'aaa',
+                descriptor: asAccountDescriptor('aaa'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
         },
@@ -198,7 +198,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'sol',
-                descriptor: 'sss',
+                descriptor: asAccountDescriptor('sss'),
             },
             tokenContractAddress: undefined,
         },
@@ -211,7 +211,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'sol',
-                descriptor: 'ddd',
+                descriptor: asAccountDescriptor('ddd'),
             },
             tokenContractAddress: '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
         },
@@ -224,7 +224,7 @@ export const FIXTURE_ACCOUNT_OPTIONS: Array<{
         option: {
             account: {
                 symbol: 'ada',
-                descriptor: 'ccc',
+                descriptor: asAccountDescriptor('ccc'),
             },
             tokenContractAddress: undefined,
         },

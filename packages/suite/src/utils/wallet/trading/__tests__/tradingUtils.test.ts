@@ -1,18 +1,13 @@
-import { CryptoId } from 'invity-api';
-
-import { useDefaultAccountLabel } from 'src/hooks/suite/useDefaultAccountLabel';
 import { Account } from 'src/types/wallet';
 import {
     FIXTURE_ACCOUNTS,
     FIXTURE_ACCOUNT_OPTIONS,
-    coinDefinitions,
 } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     buildTradingFiatOption,
     getCountryLabelParts,
     getTradeTypeByRoute,
     resolveAddressAndToken,
-    tradingBuildAccountOptions,
     tradingGetAccountLabel,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
@@ -51,83 +46,6 @@ describe('trading utils', () => {
             FIXTURE_ACCOUNTS[2],
             FIXTURE_ACCOUNTS[5],
             FIXTURE_ACCOUNTS[1],
-        ]);
-    });
-
-    it('tradingBuildAccountOptions', () => {
-        const label = 'mocked label';
-        const getDefaultAccountLabel = (useDefaultAccountLabel as jest.Mock).mockImplementation(
-            () => label,
-        );
-
-        const sortedAccounts = tradingBuildAccountOptions({
-            accounts: FIXTURE_ACCOUNTS as Account[],
-            deviceState: '1stTestnetAddress@device_id:0',
-            accountLabels: {},
-            getDefaultAccountLabel,
-            tokenDefinitions: { eth: { coin: coinDefinitions } },
-            supportedCryptoIds: new Set([
-                'bitcoin',
-                'litecoin',
-                'ethereum',
-                'polygon-ecosystem-token',
-                'ethereum--0x1234123412341234123412341234123412341236',
-            ]) as Set<CryptoId>,
-        });
-
-        expect(sortedAccounts).toStrictEqual([
-            {
-                label,
-                options: [
-                    {
-                        accountType: 'normal',
-                        balance: '0',
-                        cryptoName: 'Ethereum',
-                        descriptor: 'descriptor3',
-                        label: 'ETH',
-                        value: 'ethereum',
-                        decimals: 18,
-                    },
-                    {
-                        accountType: 'normal',
-                        balance: '2230',
-                        contractAddress: '0x1234123412341234123412341234123412341236',
-                        cryptoName: 'VeChain',
-                        descriptor: 'descriptor3',
-                        label: 'VEE',
-                        value: 'ethereum--0x1234123412341234123412341234123412341236',
-                        decimals: 6,
-                    },
-                ],
-            },
-            {
-                label,
-                options: [
-                    {
-                        accountType: 'normal',
-                        balance: '250',
-                        cryptoName: 'Polygon',
-                        descriptor: 'descriptor6',
-                        label: 'POL',
-                        value: 'polygon-ecosystem-token',
-                        decimals: 18,
-                    },
-                ],
-            },
-            {
-                label,
-                options: [
-                    {
-                        accountType: 'normal',
-                        balance: '0.101213',
-                        cryptoName: 'Litecoin',
-                        descriptor: 'descriptor2',
-                        label: 'LTC',
-                        value: 'litecoin',
-                        decimals: 8,
-                    },
-                ],
-            },
         ]);
     });
 
@@ -173,7 +91,7 @@ describe('trading utils', () => {
         });
     });
 
-    it('tradingBuildAccountOptions: basic', () => {
+    it('tradingGetRoundedFiatAmount', () => {
         expect(tradingGetRoundedFiatAmount('0.23923')).toBe('0.24');
         expect(tradingGetRoundedFiatAmount('0.24423')).toBe('0.24');
         expect(tradingGetRoundedFiatAmount('0.2')).toBe('0.20');

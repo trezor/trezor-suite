@@ -1,3 +1,6 @@
+import { CryptoId } from 'invity-api';
+
+import { MinimalSellFormProps } from '@suite-common/trading';
 import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { btcAsset, getWalletState } from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
@@ -68,9 +71,9 @@ describe('quoteUtils', () => {
                     value: 'CZ',
                 },
                 sendCryptoSelect: {
-                    value: 'bitcoin',
+                    id: 'bitcoin' as CryptoId,
                 },
-            });
+            } satisfies MinimalSellFormProps);
         });
 
         it('should return correct MinimalSellFormProps when all values are specified and amountInCrypto is false', () => {
@@ -94,9 +97,9 @@ describe('quoteUtils', () => {
                     value: 'CZ',
                 },
                 sendCryptoSelect: {
-                    value: 'bitcoin',
+                    id: 'bitcoin' as CryptoId,
                 },
-            });
+            } satisfies MinimalSellFormProps);
         });
     });
 });

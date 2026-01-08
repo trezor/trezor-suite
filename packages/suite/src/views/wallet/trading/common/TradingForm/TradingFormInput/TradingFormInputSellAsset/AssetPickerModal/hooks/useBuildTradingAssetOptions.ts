@@ -1,6 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -13,6 +14,8 @@ import {
 } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
+
+import { useAssetsContext } from '../../AssetOptionsContext';
 
 export interface UseBuildTradingAssetOptionsProps {
     search: string;
@@ -48,7 +51,33 @@ export function useBuildTradingAssetOptions({
         networkSymbolFilter: networkSymbol,
         accountFilter,
     });
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens, search);
+    const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
+    const supportedCryptoIds = useMemo(() => {
+        const supportedCryptoIds = new Set(includedCryptoIds);
+
+        excludedCryptoIds.forEach(cryptoId => {
+            supportedCryptoIds.delete(cryptoId);
+        });
+
+        return supportedCryptoIds;
+    }, [includedCryptoIds, excludedCryptoIds]);
+    const supportedAccountsWithTokens = useMemo(
+        () =>
+            accountsWithTokens.filter(option => {
+                const cryptoId =
+                    option.type === 'account'
+                        ? getCryptoId(option.account.symbol)
+                        : getCryptoId(option.account.symbol, option.token?.contract);
+
+                return supportedCryptoIds.has(cryptoId);
+            }),
+        [accountsWithTokens, supportedCryptoIds],
+    );
+
+    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
+        supportedAccountsWithTokens,
+        search,
+    );
     const listItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     return { listItems, networks };

@@ -26,7 +26,6 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { AccountType } from '@suite-common/wallet-config';
 import { AccountsState } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
@@ -117,23 +116,6 @@ export interface TradingBuildAccountOptionsProps extends TradingGetSortedAccount
     supportedCryptoIds: Set<CryptoId> | undefined;
     tokenDefinitions: Partial<TokenDefinitionsState>;
     excludeCryptoId?: CryptoId;
-}
-
-// FIXME: remove this type
-export interface TradingAccountOptionsGroupOptionProps {
-    value: CryptoId;
-    label: string; // token shortcut
-    cryptoName: string | undefined; // full name
-    balance: string;
-    descriptor: string;
-    decimals: number;
-    contractAddress?: string;
-    accountType?: AccountType;
-}
-
-export interface TradingAccountsOptionsGroupProps {
-    label: string;
-    options: TradingAccountOptionsGroupOptionProps[];
 }
 
 export interface TradingGetAmountLabelsProps {

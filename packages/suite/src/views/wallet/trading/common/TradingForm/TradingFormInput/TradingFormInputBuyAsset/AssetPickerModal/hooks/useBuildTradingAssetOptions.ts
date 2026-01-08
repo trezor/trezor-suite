@@ -46,13 +46,13 @@ function assetSearchFilter(asset: TradingAssetOption, search: string) {
     );
 }
 
-function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) {
-    return function disabledCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
+function excludeCryptoIds(excludedCryptoIds: Set<CryptoId>) {
+    return function excludeCryptoIdsFilter(accountOrToken: AggregatedAccountWithTokens) {
         switch (accountOrToken.type) {
             case 'account':
-                return !disabledCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
+                return !excludedCryptoIds.has(getCryptoId(accountOrToken.account.symbol));
             case 'token':
-                return !disabledCryptoIds.has(
+                return !excludedCryptoIds.has(
                     getCryptoId(accountOrToken.account.symbol, accountOrToken.token.contract),
                 );
             default:
@@ -64,7 +64,7 @@ function excludeDisabledCryptoIds(disabledCryptoIds: Set<CryptoId> = new Set()) 
 /**
  * Note this is going to be replaced soon with more sophisticated top assets logic.
  */
-function createTopFiveAssets(disabledCryptoIds: Set<CryptoId> = new Set()) {
+function createTopFiveAssets(excludedCryptoIds: Set<CryptoId>) {
     return (
         (
             [
@@ -84,7 +84,7 @@ function createTopFiveAssets(disabledCryptoIds: Set<CryptoId> = new Set()) {
             ] satisfies TradingAssetOption[]
         )
             // E.g. filter out "from" field value
-            .filter(asset => !disabledCryptoIds.has(asset.id))
+            .filter(asset => !excludedCryptoIds.has(asset.id))
     );
 }
 
@@ -145,14 +145,14 @@ export function useBuildTradingAssetOptions({
     search,
     networkSymbol,
 }: UseBuildTradingAssetOptionsProps) {
-    const { assets, disabledCryptoIds } = useAssetsContext();
+    const { assets, excludedCryptoIds } = useAssetsContext();
     const accountsWithTokens = useAgregatedAccountsWithTokens();
 
     return useMemo(() => {
         const listItems: TradingAssetListItem[] = [];
 
         const topFiveAssets =
-            search.length === 0 && !networkSymbol ? createTopFiveAssets(disabledCryptoIds) : [];
+            search.length === 0 && !networkSymbol ? createTopFiveAssets(excludedCryptoIds) : [];
         const topFiveAssetIds = new Set(topFiveAssets.map(asset => asset.id));
 
         if (topFiveAssets.length > 0) {
@@ -170,7 +170,7 @@ export function useBuildTradingAssetOptions({
         }
 
         const allAccountsWithTokens = accountsWithTokens.filter(
-            excludeDisabledCryptoIds(disabledCryptoIds),
+            excludeCryptoIds(excludedCryptoIds),
         );
 
         const filteredAccounts = allAccountsWithTokens
@@ -228,7 +228,7 @@ export function useBuildTradingAssetOptions({
         }
 
         const allAssets = assets.filter(
-            asset => !topFiveAssetIds.has(asset.id) && !disabledCryptoIds?.has(asset.id),
+            asset => !topFiveAssetIds.has(asset.id) && !excludedCryptoIds?.has(asset.id),
         );
 
         const filteredAssets = allAssets
@@ -263,5 +263,5 @@ export function useBuildTradingAssetOptions({
         });
 
         return { listItems, networks: orderedNetworks };
-    }, [accountsWithTokens, assets, disabledCryptoIds, networkSymbol, search]);
+    }, [accountsWithTokens, assets, excludedCryptoIds, networkSymbol, search]);
 }

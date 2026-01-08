@@ -1,20 +1,25 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { FiatCurrencyCode, SellFiatTradeQuoteRequest } from 'invity-api';
 
 import {
+    TradingAssetOption,
+    TradingAssetSellOption,
     TradingCountryCode,
     type TradingSellFormProps,
     getDefaultCountry,
     selectTradingComposedTransactionInfo,
+    useTradingAssets,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import {
     buildTradingFiatOption,
-    getAddressAndTokenFromAccountOptionsGroupProps,
+    resolveAddressAndToken,
 } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingSellFormRedirectValues = (
@@ -22,28 +27,56 @@ export const useTradingSellFormRedirectValues = (
     quotesRequest: SellFiatTradeQuoteRequest | undefined,
 ): TradingSellFormProps | null => {
     const { composed, selectedFee } = useSelector(selectTradingComposedTransactionInfo);
+    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const accounts = useSelector(selectVisibleDeviceAccounts);
+    const findAccount = useCallback(
+        (assetOption: TradingAssetOption) =>
+            accounts.find(account => {
+                if (assetOption.isNativeToken) {
+                    return account.symbol === assetOption.networkSymbol;
+                }
 
-    const cryptoGroups = useTradingBuildAccountGroups('sell');
-    const cryptoOptions = useMemo(
-        () => cryptoGroups.flatMap(group => group.options),
-        [cryptoGroups],
+                return (
+                    account.symbol === assetOption.networkSymbol &&
+                    assetOption.contractAddress &&
+                    !!account.tokens?.find(
+                        token =>
+                            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
+                            getContractAddressForNetworkSymbol(
+                                assetOption.networkSymbol,
+                                assetOption.contractAddress!,
+                            ),
+                    )
+                );
+            }),
+        [accounts],
+    );
+    const findAccountRef = useCurrentRef(findAccount);
+    const sendCrypto = useMemo(() => {
+        const assetOption = createAssetOptionFromCryptoId(quotesRequest?.cryptoCurrency);
+        const account = findAccountRef.current(assetOption);
+
+        if (!account) return null;
+
+        return {
+            account,
+            asset: {
+                ...assetOption,
+                accountKey: account.key,
+            } satisfies TradingAssetSellOption,
+        };
+    }, [createAssetOptionFromCryptoId, findAccountRef, quotesRequest?.cryptoCurrency]);
+
+    const { address, token } = resolveAddressAndToken(
+        sendCrypto?.account,
+        sendCrypto?.asset?.contractAddress,
     );
 
-    const sendCryptoSelect = useMemo(
-        () =>
-            quotesRequest?.cryptoCurrency
-                ? cryptoOptions.find(option => option.value === quotesRequest.cryptoCurrency)
-                : undefined,
-        [cryptoOptions, quotesRequest?.cryptoCurrency],
-    );
-
-    const { address, token } = getAddressAndTokenFromAccountOptionsGroupProps(sendCryptoSelect);
-
-    return isFromRedirect && quotesRequest && sendCryptoSelect
+    return isFromRedirect && quotesRequest && sendCrypto
         ? {
               ...DEFAULT_VALUES,
               amountInCrypto: quotesRequest.amountInCrypto,
-              sendCryptoSelect,
+              sendCryptoSelect: sendCrypto?.asset,
               countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
               paymentMethod: quotesRequest.paymentMethod && {
                   value: quotesRequest.paymentMethod,

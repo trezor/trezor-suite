@@ -2,7 +2,7 @@ import { CryptoId } from 'invity-api';
 
 import {
     INVITY_API_RELOAD_QUOTES_AFTER_SECONDS,
-    TradingAssetOption,
+    MinimalExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -102,12 +102,9 @@ describe('useExchangeQuotes', () => {
             payload: {
                 formValues: {
                     outputs: [{ amount: '0.1' }],
-                    receiveCryptoSelect: { id: 'ethereum' as CryptoId } satisfies Pick<
-                        TradingAssetOption,
-                        'id'
-                    >,
-                    sendCryptoSelect: { value: 'bitcoin' },
-                },
+                    receiveCryptoSelect: { id: 'ethereum' as CryptoId },
+                    sendCryptoSelect: { id: 'bitcoin' as CryptoId },
+                } satisfies MinimalExchangeFormProps,
                 network: expect.objectContaining({
                     tradeCryptoId: 'bitcoin',
                 }),
