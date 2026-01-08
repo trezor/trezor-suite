@@ -9,7 +9,7 @@ import {
 
 import { Box, BoxProps } from './Box';
 
-type DividerProps = Omit<BoxProps, 'style'> & {
+export type DividerProps = Omit<BoxProps, 'style'> & {
     style?: NativeStyleObject;
 };
 

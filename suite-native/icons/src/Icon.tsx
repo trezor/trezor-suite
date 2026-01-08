@@ -32,6 +32,7 @@ export const iconSizes = {
     extraLarge: 32,
 } as const;
 
+export const ICON_SIZES = Object.keys(iconSizes) as IconSize[];
 export type IconSize = keyof typeof iconSizes;
 
 export const getIconSize = (size: IconSize | number) =>

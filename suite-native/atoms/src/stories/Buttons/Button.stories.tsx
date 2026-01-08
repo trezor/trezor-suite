@@ -1,4 +1,3 @@
-/* eslint-disable import/no-default-export */
 import type { Meta, StoryObj } from '@storybook/react-native';
 
 import { ICON_NAMES } from '@suite-native/icons';
@@ -8,19 +7,24 @@ import {
     BUTTON_SIZES,
     Button as ButtonComponent,
     ButtonProps,
-} from '../Button/Button';
+} from '../../Button/Button';
 
 type ButtonStory = StoryObj<ButtonProps>;
 
 const meta: Meta<ButtonProps> = {
-    title: 'Atoms/buttons',
+    title: 'Atoms/Buttons',
     component: ButtonComponent,
 };
 
 export default meta;
 
 export const Button: ButtonStory = {
-    args: { children: 'Button', colorScheme: 'primary', size: 'medium' },
+    args: {
+        children: 'Press me',
+        viewLeft: 'magnifyingGlass',
+        colorScheme: 'primary',
+        size: 'medium',
+    },
     argTypes: {
         children: {
             type: 'string',

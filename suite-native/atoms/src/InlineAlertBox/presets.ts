@@ -3,7 +3,14 @@ import { Color } from '@trezor/theme';
 
 import { ButtonColorScheme } from '../Button/Button';
 
-export type InlineAlertBoxVariant = 'info' | 'critical' | 'neutral' | 'success' | 'warning';
+export const INLINE_ALERT_BOX_VARIANTS = [
+    'info',
+    'critical',
+    'neutral',
+    'success',
+    'warning',
+] as const;
+export type InlineAlertBoxVariant = (typeof INLINE_ALERT_BOX_VARIANTS)[number];
 
 export type InlineAlertBoxStyles = {
     backgroundColor: Color;

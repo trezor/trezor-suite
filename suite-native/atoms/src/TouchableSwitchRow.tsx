@@ -9,7 +9,7 @@ import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
 import { Text } from './Text';
 
-type TouchableSwitchRowProps = {
+export type TouchableSwitchRowProps = {
     icon: IconName;
     accessibilityLabel: string;
     text: ReactNode;

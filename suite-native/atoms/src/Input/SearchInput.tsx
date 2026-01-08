@@ -4,7 +4,7 @@ import { TextInput } from 'react-native';
 import { SurfaceElevation } from '../types';
 import { BaseSearchInput } from './BaseSearchInput';
 
-type InputProps = {
+export type SearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
     isDisabled?: boolean;
@@ -22,7 +22,7 @@ export const SearchInput = ({
     elevation = '0',
     onFocus,
     onBlur,
-}: InputProps) => {
+}: SearchInputProps) => {
     const searchInputRef = useRef<TextInput>(null);
 
     return (

@@ -3,7 +3,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { AccordionItem, AccordionItemProps } from './AccordionItem';
 import { VStack } from '../Stack';
 
-type AccordionListProps = {
+export type AccordionListProps = {
     items: Omit<AccordionItemProps, 'currentIndexOpened' | 'index' | 'isDividerDisplayed'>[];
 };
 

@@ -14,7 +14,7 @@ const contentStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
 }));
 
-type CardWithIconLayoutProps = {
+export type CardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
     children: ReactNode;

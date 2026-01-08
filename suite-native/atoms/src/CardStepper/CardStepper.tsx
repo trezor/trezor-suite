@@ -15,7 +15,7 @@ export type CardStepperMap<ContentIdType = undefined> = Record<
     }
 >;
 
-type CardStepperProps<ContentIdType = undefined> = {
+export type CardStepperProps<ContentIdType = undefined> = {
     onFinish: () => void;
     primaryButtonText: ReactNode;
     secondaryButtonText: ReactNode;

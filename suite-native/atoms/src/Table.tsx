@@ -4,7 +4,7 @@ import { Box } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-type TableProps = {
+export type TableProps = {
     children: ReactNode;
 };
 type TdProps = {

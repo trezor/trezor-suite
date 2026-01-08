@@ -10,7 +10,7 @@ import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
 import { inputStyle, inputWrapperStyle } from './searchInputStyles';
 import { useSearchInputCallbacks } from './useSearchInputCallbacks';
 
-export type SearchInputProps = {
+export type BaseSearchInputProps = {
     onChange: (value: string) => void;
     placeholder?: string;
     isDisabled?: boolean;
@@ -19,7 +19,7 @@ export type SearchInputProps = {
     onFocus?: () => void;
     onBlur?: () => void;
 };
-export const BaseSearchInput = forwardRef<TextInput, SearchInputProps>(
+export const BaseSearchInput = forwardRef<TextInput, BaseSearchInputProps>(
     (
         { onChange, placeholder, maxLength, isDisabled = false, elevation = '0', onFocus, onBlur },
         ref,

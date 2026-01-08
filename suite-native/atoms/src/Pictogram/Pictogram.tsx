@@ -15,9 +15,10 @@ import { WarningIconSvg } from './WarningIconSvg';
 import { WarningShapeSvg } from './WarningShapeSvg';
 import { PictogramIconSvgProps } from './types';
 
-export type PictogramVariant = 'success' | 'info' | 'warning' | 'critical';
+export const PICTOGRAM_VARIANTS = ['success', 'info', 'warning', 'critical'] as const;
+export type PictogramVariant = (typeof PICTOGRAM_VARIANTS)[number];
 
-type PictogramProps = {
+export type PictogramProps = {
     variant: PictogramVariant;
     icon?: IconName;
 };

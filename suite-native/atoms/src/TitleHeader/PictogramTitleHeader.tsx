@@ -7,7 +7,7 @@ import { Pictogram, PictogramVariant } from '../Pictogram/Pictogram';
 import { VStack } from '../Stack';
 import { CenteredTitleHeader } from './CenteredTitleHeader';
 
-type PictogramTitleHeaderProps = {
+export type PictogramTitleHeaderProps = {
     variant: PictogramVariant;
     icon?: IconName;
     title?: ReactNode;

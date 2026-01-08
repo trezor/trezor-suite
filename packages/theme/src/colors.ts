@@ -363,3 +363,5 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         ...colorsV2.dark,
     } as Colors,
 } as const;
+
+export const COLOR_TOKENS = Object.keys(light);

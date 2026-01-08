@@ -6,8 +6,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const ANIMATION_SPEED = 1.5;
 
-export type SpinnerLoadingState = 'success' | 'error' | 'idle';
-type SpinnerProps = {
+export const SPINNER_LOADING_STATES = ['success', 'error', 'idle'] as const;
+export type SpinnerLoadingState = (typeof SPINNER_LOADING_STATES)[number];
+export type SpinnerProps = {
     loadingState: SpinnerLoadingState;
     onComplete?: () => void;
     endFrame?: number;
