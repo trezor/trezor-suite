@@ -2,6 +2,7 @@ import { NetworkSymbol, getCoingeckoId, getNetworkFeatures } from '@suite-common
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { isSafeObjectKey } from '@trezor/utils';
 
 import {
     TOKEN_DEFINITIONS_PREFIX_URL,
@@ -55,11 +56,7 @@ type TokenDefinitionsParameters = [NetworkSymbol, DefinitionType, TokenManagemen
 const getSafeDefinitionParameters = (
     definitionKey: string,
 ): TokenDefinitionsParameters | undefined => {
-    const safeDefinitions = definitionKey
-        .split('-')
-        .filter(
-            definitionPart => !['__proto__', 'constructor', 'prototype'].includes(definitionPart),
-        );
+    const safeDefinitions = definitionKey.split('-').filter(isSafeObjectKey);
 
     if (safeDefinitions.length !== 3) return undefined;
 

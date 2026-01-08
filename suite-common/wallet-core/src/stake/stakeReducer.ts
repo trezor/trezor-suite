@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { PrecomposedTransactionFinal, StakeFormState, Timestamp } from '@suite-common/wallet-types';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, isSafeObjectKey } from '@trezor/utils';
 
 import { VotingDelegationOption, stakeActions } from './stakeActions';
 import {
@@ -102,7 +102,16 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.serializedTx;
         })
         .addCase(fetchEverstakeData.pending, (state, action) => {
+            // Ensure the root data map is prototype-less to prevent prototype pollution.
+            if (Object.getPrototypeOf(state.data) !== null) {
+                state.data = Object.assign(Object.create(null), state.data);
+            }
+
             const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             if (!state.data[symbol]) {
                 state.data[symbol] = {};
@@ -113,7 +122,7 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
                     error: false,
                     isLoading: true,
                     lastSuccessfulFetchTimestamp: 0 as Timestamp,
-                    data: {},
+                    data: Object.create(null),
                 };
             } else {
                 state.data[symbol][endpointType].isLoading = true;
@@ -124,6 +133,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             const { symbol, endpointType } = action.meta.arg;
 
             const data = state.data[symbol];
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             if (data?.[endpointType]) {
                 data[endpointType] = {
@@ -139,6 +152,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
 
             const data = state.data[symbol];
 
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
             if (data?.[endpointType]) {
                 data[endpointType] = {
                     error: true,
@@ -150,6 +167,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         })
         .addCase(fetchEverstakeStakingInfo.pending, (state, action) => {
             const { symbol, endpointType } = action.meta.arg;
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             if (!state.data[symbol]) {
                 state.data[symbol] = {};
@@ -175,6 +196,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
 
             const data = state.data[symbol];
 
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
+
             if (data?.[endpointType]) {
                 data[endpointType] = {
                     error: false,
@@ -188,6 +213,10 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             const { symbol, endpointType } = action.meta.arg;
 
             const data = state.data[symbol];
+
+            if (!isSafeObjectKey(endpointType)) {
+                return;
+            }
 
             if (data?.[endpointType]) {
                 data[endpointType] = {
