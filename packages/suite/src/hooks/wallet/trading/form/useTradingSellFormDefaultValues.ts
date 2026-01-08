@@ -2,13 +2,11 @@ import { useMemo } from 'react';
 
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
+    TradingCountryCode,
     type TradingPaymentMethodListProps,
-    type TradingSellInfoSelector,
-    cryptoIdToSymbol,
     enabledTradingCurrencies,
     getDefaultCountry,
     regional,
-    selectTradingPrefilledFromAccount,
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -16,42 +14,32 @@ import { FormState, Output } from '@suite-common/wallet-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { useTradingBuildAccountGroups } from 'src/hooks/wallet/trading/form/common/useTradingBuildAccountGroups';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
 import { Account } from 'src/types/wallet';
 import {
     buildTradingFiatOption,
-    getAddressAndTokenFromAccountOptionsGroupProps,
+    resolveAddressAndToken,
 } from 'src/utils/wallet/trading/tradingUtils';
+
+import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset';
+import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellFormDefaultValues = (
     account: Account,
-    sellInfo: TradingSellInfoSelector | undefined,
+    sellInfoCountry: TradingCountryCode | undefined,
 ): TradingSellFormDefaultValuesProps => {
-    const cryptoGroups = useTradingBuildAccountGroups('sell');
-    const prefilledFromAccount = useSelector(selectTradingPrefilledFromAccount);
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount('sell');
     const { isTorEnabled } = useSelector(selectTorState);
 
-    const cryptoOptions = useMemo(
-        () => cryptoGroups.flatMap(group => group.options),
-        [cryptoGroups],
-    );
-    const defaultSendCryptoSelect = useMemo(
-        () =>
-            (prefilledFromAccount.cryptoId &&
-                cryptoOptions.find(option => option.value === prefilledFromAccount.cryptoId)) ||
-            cryptoOptions.find(
-                option =>
-                    option.descriptor === account.descriptor &&
-                    account.symbol === cryptoIdToSymbol(option.value),
-            ),
-        [account.descriptor, account.symbol, prefilledFromAccount, cryptoOptions],
-    );
-    const country = !isTorEnabled ? sellInfo?.country : regional.UNKNOWN_COUNTRY;
+    const { defaultAsset } = useTradingDefaultSellAsset({
+        accountKey,
+        cryptoId,
+    });
+    const country = !isTorEnabled ? sellInfoCountry : regional.UNKNOWN_COUNTRY;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
-    const { address, token } =
-        getAddressAndTokenFromAccountOptionsGroupProps(defaultSendCryptoSelect);
+
+    const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
 
     const defaultPaymentMethod: TradingPaymentMethodListProps = useMemo(
         () => ({
@@ -91,12 +79,12 @@ export const useTradingSellFormDefaultValues = (
     const defaultValues = useMemo(
         () => ({
             ...defaultFormState,
-            sendCryptoSelect: defaultSendCryptoSelect,
+            sendCryptoSelect: defaultAsset,
             countrySelect: defaultCountry,
             paymentMethod: defaultPaymentMethod,
             amountInCrypto: true,
         }),
-        [defaultSendCryptoSelect, defaultCountry, defaultPaymentMethod, defaultFormState],
+        [defaultFormState, defaultAsset, defaultCountry, defaultPaymentMethod],
     );
 
     return { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod };

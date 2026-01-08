@@ -25,7 +25,7 @@ export const tradingExchangeFormToTradingExchangeFormProps = (
     invariant(sendCryptoAmount, 'sendCryptoAmount is required');
 
     return {
-        sendCryptoSelect: { value: toCaseAwareCryptoId(sendAsset.cryptoId) },
+        sendCryptoSelect: { id: toCaseAwareCryptoId(sendAsset.cryptoId) },
         receiveCryptoSelect: { id: toCaseAwareCryptoId(receiveAsset.cryptoId) },
         outputs: [{ amount: sendCryptoAmount }],
     };

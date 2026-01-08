@@ -205,10 +205,10 @@ export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
 
     const buildAssetOptions = useCallback(
-        ({ enabledCryptoIds = new Set() }: { enabledCryptoIds?: Set<CryptoId> }) => {
+        ({ includedCryptoIds = new Set() }: { includedCryptoIds?: Set<CryptoId> }) => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
-            const assets = Array.from(enabledCryptoIds)
+            const assets = Array.from(includedCryptoIds)
                 .filter(
                     cryptoId =>
                         isAssetWithSupportedNetwork(platforms, coins, cryptoId) &&

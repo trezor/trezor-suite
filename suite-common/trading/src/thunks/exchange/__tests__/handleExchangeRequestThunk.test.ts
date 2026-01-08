@@ -10,7 +10,11 @@ import { TradingAssetOption } from '../../../hooks/useTradingAssets';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { HandleExchangeRequestThunkProps, TradingExchangeFormProps } from '../../../types';
+import {
+    HandleExchangeRequestThunkProps,
+    TradingAssetSellOption,
+    TradingExchangeFormProps,
+} from '../../../types';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesMock);
 
@@ -94,14 +98,17 @@ describe('handleExchangeRequestThunk', () => {
             selectedUtxos: [],
             amountInCrypto: true,
             sendCryptoSelect: {
-                value: 'bitcoin' as CryptoId,
-                label: 'BTC',
-                cryptoName: 'Bitcoin',
-                descriptor: 'descriptor',
-                balance: '0.00297589',
-                accountType: 'normal',
-                decimals: 8,
-            },
+                id: 'bitcoin' as CryptoId,
+                isNativeToken: true,
+                name: 'Bitcoin',
+                coingeckoId: 'bitcoin',
+                contractAddress: null,
+                symbol: 'btc',
+                displaySymbol: 'BTC',
+                networkName: 'Bitcoin',
+                networkSymbol: 'btc',
+                accountKey: 'descriptor-btc-123',
+            } satisfies TradingAssetSellOption,
             receiveCryptoSelect: {
                 id: 'ethereum' as CryptoId,
                 isNativeToken: true,

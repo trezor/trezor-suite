@@ -31,7 +31,7 @@ import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingExchangeFormDefaultValues = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount();
+    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount('exchange');
 
     const defaultCurrency = useMemo(
         () =>

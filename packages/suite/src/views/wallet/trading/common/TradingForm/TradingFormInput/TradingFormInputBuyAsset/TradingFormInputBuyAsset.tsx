@@ -19,8 +19,9 @@ export interface TradingFormInputBuyAssetProps {
      */
     onAssetSelect: AssetPickerModalProps['onAssetSelect'];
 
-    enabledCryptoIds?: Set<CryptoId> | undefined;
-    disabledCryptoId?: CryptoId | undefined;
+    includedCryptoIds: CryptoId[];
+    excludedCryptoId?: CryptoId | undefined;
+
     dataTestId?: string;
 }
 
@@ -30,20 +31,21 @@ export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetIn
     inputName,
     inputDisabled,
     dataTestId,
-    enabledCryptoIds,
-    disabledCryptoId,
+    includedCryptoIds,
+    excludedCryptoId,
     onAssetSelect,
 }: TradingFormInputBuyAssetProps) {
     const modal = useModal();
-    const disabledCryptoIds = useMemo(
-        () => (disabledCryptoId ? new Set([disabledCryptoId]) : undefined),
-        [disabledCryptoId],
+    const includedCryptoIdsSet = useMemo(() => new Set(includedCryptoIds), [includedCryptoIds]);
+    const excludedCryptoIdsSet = useMemo(
+        () => (excludedCryptoId ? new Set([excludedCryptoId]) : new Set<CryptoId>()),
+        [excludedCryptoId],
     );
 
     return (
         <AssetOptionsProvider
-            enabledCryptoIds={enabledCryptoIds}
-            disabledCryptoIds={disabledCryptoIds}
+            includedCryptoIds={includedCryptoIdsSet}
+            excludedCryptoIds={excludedCryptoIdsSet}
         >
             <AssetPickerInput
                 name={inputName}

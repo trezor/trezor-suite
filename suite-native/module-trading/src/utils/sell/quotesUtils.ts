@@ -34,7 +34,7 @@ export const tradingSellFormToTradingSellFormProps = (
         outputs,
         amountInCrypto,
         countrySelect: country,
-        sendCryptoSelect: { value: sendAsset.cryptoId },
+        sendCryptoSelect: { id: sendAsset.cryptoId },
     };
 };
 

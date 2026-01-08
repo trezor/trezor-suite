@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
-import { CryptoId } from 'invity-api';
-
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { getCryptoId, selectTradingExchangeSellCryptoIds } from '@suite-common/trading';
 import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
@@ -35,8 +32,11 @@ function filterAccountsByNetworkSymbol(
 }
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
+
+    /**
+     * Filter accounts before they are converted to AccountWithTokensOption.
+     */
     accountFilter?: (account: Account) => boolean;
-    enabledCryptoIds?: Set<CryptoId>;
 }
 
 export function useAccountWithTokensOptions({
@@ -50,11 +50,6 @@ export function useAccountWithTokensOptions({
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
-    const supportedExchangeSellCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
-    const supportedCryptoIds = useMemo(
-        () => new Set(supportedExchangeSellCryptoIds),
-        [supportedExchangeSellCryptoIds],
-    );
 
     // Accounts are constantly being updated in Redux. So throttle them to significantly reduce re-renders
     const throttledAccounts = useThrottle(accounts, 1000);
@@ -108,7 +103,7 @@ export function useAccountWithTokensOptions({
                 };
             });
 
-        const accountsWithTokensOptions: AccountWithTokensOption[] =
+        const accountsWithTokens: AccountWithTokensOption[] =
             accountsAndTokensSortedByFiatBalance.flatMap(account => [
                 {
                     type: 'account',
@@ -126,17 +121,8 @@ export function useAccountWithTokensOptions({
                 ),
             ]);
 
-        const supportedAccountsWithTokens = accountsWithTokensOptions.filter(option => {
-            const cryptoId =
-                option.type === 'account'
-                    ? getCryptoId(option.account.symbol)
-                    : getCryptoId(option.account.symbol, option.token?.contract);
-
-            return supportedCryptoIds.has(cryptoId);
-        });
-
         return {
-            accountsWithTokens: supportedAccountsWithTokens,
+            accountsWithTokens,
             networks: orderedNetworks,
         };
     }, [
@@ -146,6 +132,5 @@ export function useAccountWithTokensOptions({
         accountFilter,
         baseCurrencyCode,
         tokenDefinitions,
-        supportedCryptoIds,
     ]);
 }

@@ -17,7 +17,9 @@ export function useFilterAccountsWithTokens(
 
                 switch (accountOrToken.type) {
                     case 'account':
-                        return accountSearchFn(accountOrToken.account, search);
+                        return accountSearchFn(accountOrToken.account, search, {
+                            tokensMatch: false,
+                        });
 
                     case 'token':
                         return isTokenMatchesSearch(accountOrToken.token, search);

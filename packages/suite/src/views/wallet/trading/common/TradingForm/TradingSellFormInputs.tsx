@@ -7,6 +7,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingSellFormProps,
     TradingSellType,
+    selectTradingSellSupportedCryptoIds,
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
@@ -15,6 +16,7 @@ import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
@@ -73,6 +75,8 @@ export const TradingSellFormInputs = () => {
         [onCryptoCurrencyChangeRef],
     );
 
+    const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
+
     return (
         <Card paddingType="none">
             <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
@@ -82,7 +86,8 @@ export const TradingSellFormInputs = () => {
                     inputBottomText={
                         <AssetPickerInputBalance name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT} />
                     }
-                    dataTestId="@trading/form/trade-from/select-crypto"
+                    includedCryptoIds={sellSupportedCryptoIds}
+                    dataTestId="@trading/form/select-crypto-for-sell"
                     onAssetSelect={handleSellAssetSelect}
                 />
                 <Column gap={spacings.xs}>

@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { CryptoId } from 'invity-api';
 
 import { getCryptoId, parseCryptoId } from '@suite-common/trading';
-import { selectDeviceMainnetAccounts } from '@suite-common/wallet-core';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 
@@ -18,7 +18,7 @@ export interface UseTradingFindAccountOrTokenProps {
  * Based on `accountKey` and `cryptoId` find corresponding account or its token
  */
 export function useTradingFindAccountOrToken() {
-    const accounts = useSelector(selectDeviceMainnetAccounts);
+    const accounts = useSelector(selectVisibleDeviceAccounts);
     const findAccountOrToken = useCallback(
         ({ accountKey, cryptoId }: UseTradingFindAccountOrTokenProps) => {
             const account = accounts.find(account => account.key === accountKey);

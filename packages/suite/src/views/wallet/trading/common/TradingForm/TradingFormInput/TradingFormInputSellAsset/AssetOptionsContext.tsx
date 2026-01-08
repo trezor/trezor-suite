@@ -2,13 +2,11 @@ import { ReactNode, createContext, useContext, useMemo } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TradingAssetOption, useTradingAssets } from '@suite-common/trading';
-
 const AssetOptionsContext = createContext<{
-    assets: TradingAssetOption[];
+    includedCryptoIds: Set<CryptoId>;
     excludedCryptoIds: Set<CryptoId>;
 }>({
-    assets: [],
+    includedCryptoIds: new Set(),
     excludedCryptoIds: new Set(),
 });
 
@@ -23,12 +21,10 @@ export function AssetOptionsProvider({
     excludedCryptoIds,
     children,
 }: AssetOptionsContextProps) {
-    const { buildAssetOptions } = useTradingAssets();
-    const contextValue = useMemo(() => {
-        const { assets } = buildAssetOptions({ includedCryptoIds });
-
-        return { assets, excludedCryptoIds };
-    }, [buildAssetOptions, excludedCryptoIds, includedCryptoIds]);
+    const contextValue = useMemo(
+        () => ({ includedCryptoIds, excludedCryptoIds }),
+        [includedCryptoIds, excludedCryptoIds],
+    );
 
     return (
         <AssetOptionsContext.Provider value={contextValue}>{children}</AssetOptionsContext.Provider>

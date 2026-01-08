@@ -30,7 +30,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
         if (!value) return undefined;
 
         const accountOrToken = findAccountOrToken.current({
-            tradingAccountKey: value.accountKey,
+            accountKey: value.accountKey,
             cryptoId: value.id,
         });
 

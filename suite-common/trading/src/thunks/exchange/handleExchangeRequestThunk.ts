@@ -47,7 +47,7 @@ export const getQuoteRequestData = ({
 
     if (
         !receiveCryptoSelect?.id ||
-        !sendCryptoSelect?.value ||
+        !sendCryptoSelect?.id ||
         !sendStringAmount ||
         Number(sendStringAmount) === 0
     ) {
@@ -56,7 +56,7 @@ export const getQuoteRequestData = ({
 
     const request: ExchangeTradeQuoteRequest = {
         receive: receiveCryptoSelect.id,
-        send: sendCryptoSelect.value,
+        send: sendCryptoSelect.id,
         sendStringAmount,
         dex: 'enable',
         receiveAddress,

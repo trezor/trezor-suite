@@ -67,12 +67,10 @@ describe('quotesUtils', () => {
             });
 
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
-                sendCryptoSelect: { value: 'bitcoin' },
-                receiveCryptoSelect: {
-                    id: 'ethereum' as CryptoId,
-                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
+                sendCryptoSelect: { id: 'bitcoin' as CryptoId },
+                receiveCryptoSelect: { id: 'ethereum' as CryptoId },
                 outputs: [{ amount: '1' }],
-            });
+            } satisfies MinimalExchangeFormProps);
         });
 
         it('should make address lower case for eth based assets', () => {
@@ -89,12 +87,14 @@ describe('quotesUtils', () => {
             });
 
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
-                sendCryptoSelect: { value: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+                sendCryptoSelect: {
+                    id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
+                },
                 receiveCryptoSelect: {
                     id: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId,
-                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
+                },
                 outputs: [{ amount: '1' }],
-            });
+            } satisfies MinimalExchangeFormProps);
         });
 
         it('should not make address lower case for SOL based assets', () => {
@@ -105,12 +105,14 @@ describe('quotesUtils', () => {
             });
 
             expect(tradingExchangeFormToTradingExchangeFormProps(form.getValues)).toEqual({
-                sendCryptoSelect: { value: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' },
+                sendCryptoSelect: {
+                    id: 'solana--JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN' as CryptoId,
+                },
                 receiveCryptoSelect: {
                     id: 'solana--jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL' as CryptoId,
-                } satisfies MinimalExchangeFormProps['receiveCryptoSelect'],
+                },
                 outputs: [{ amount: '1' }],
-            });
+            } satisfies MinimalExchangeFormProps);
         });
     });
 });

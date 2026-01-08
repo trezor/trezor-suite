@@ -10,6 +10,7 @@ import {
     TradingExchangeFormProps,
     TradingExchangeType,
     selectTradingExchangeBuyCryptoIds,
+    selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     tradingActions,
 } from '@suite-common/trading';
@@ -112,11 +113,8 @@ export const TradingExchangeFormInputs = () => {
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
 
-    const supportedExchangeBuyCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
-    const supportedExchangeBuyCryptoIdsSet = useMemo(
-        () => new Set(supportedExchangeBuyCryptoIds),
-        [supportedExchangeBuyCryptoIds],
-    );
+    const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
+    const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
 
     return (
         <Card paddingType="none">
@@ -127,7 +125,9 @@ export const TradingExchangeFormInputs = () => {
                     inputBottomText={
                         <AssetPickerInputBalance name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT} />
                     }
-                    dataTestId="@trading/form/trade-from/select-crypto"
+                    includedCryptoIds={exchangeSellSupportedCryptoIds}
+                    excludedCryptoId={receiveCryptoSelect?.id}
+                    dataTestId="@trading/form/select-crypto-for-sell"
                     onAssetSelect={handleSellAssetSelect}
                 />
                 <Column gap={spacings.xs}>
@@ -190,8 +190,8 @@ export const TradingExchangeFormInputs = () => {
                     inputPlaceholder="TR_SELECT_TOKEN"
                     inputLabel="TR_TO"
                     inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                    enabledCryptoIds={supportedExchangeBuyCryptoIdsSet}
-                    disabledCryptoId={sendCryptoSelect?.id}
+                    includedCryptoIds={exchangeBuySupportedCryptoIds}
+                    excludedCryptoId={sendCryptoSelect?.id}
                     onAssetSelect={handleReceiveAssetSelect}
                     dataTestId="@trading/form/select-crypto"
                 />

@@ -135,7 +135,7 @@ export const getSelectedCryptoId = (
     }
 
     if (isTradingSellContext(context)) {
-        return context.getValues().sendCryptoSelect?.value ?? null;
+        return context.getValues().sendCryptoSelect?.id ?? null;
     }
 
     return context.getValues().cryptoSelect.id ?? null;

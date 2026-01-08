@@ -129,13 +129,13 @@ export const TradingFormOffer = () => {
         isTradingExchangeContext(context) &&
         quote &&
         (quote as ExchangeTrade)?.isDex &&
-        context.getValues().sendCryptoSelect &&
+        context.getValues('sendCryptoSelect') &&
         account.networkType === 'ethereum' &&
-        !isSendingEvmNativeToken(context.getValues().sendCryptoSelect?.value);
+        !isSendingEvmNativeToken(context.getValues('sendCryptoSelect')?.id);
 
     const isQuoteOutdated =
         isTradingExchangeContext(context) &&
-        (quote as ExchangeTrade)?.send !== context.getValues().sendCryptoSelect?.value;
+        (quote as ExchangeTrade)?.send !== context.getValues('sendCryptoSelect')?.id;
 
     useEffect(() => {
         // confirm the quote once it loads
