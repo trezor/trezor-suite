@@ -17,6 +17,8 @@ import {
     ToastContainer,
     TrafficLightDraggableWindowHeader,
 } from 'src/components/suite';
+import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
+import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
 import { initStore } from 'src/reducers/store';
@@ -35,8 +37,6 @@ import { initSentry } from './sentry';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { BioAuthGuard } from '../../suite/src/components/suite/BioAuthGuard/BioAuthGuard';
-import { FindBar } from '../../suite/src/components/suite/FindBar/FindBar';
 
 const MainDesktop = ({ routerServices }: { routerServices: RouterServices }) => {
     useTor();
