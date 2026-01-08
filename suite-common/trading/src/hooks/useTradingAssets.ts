@@ -203,19 +203,12 @@ export function useTradingAssets() {
     const getCoinsAndPlatforms = useCoinsAndPlatforms();
 
     const buildAssetOptions = useCallback(
-        ({
-            enabledCryptoIds = new Set(),
-            disabledCryptoIds = new Set(),
-        }: {
-            enabledCryptoIds?: Set<CryptoId>;
-            disabledCryptoIds?: Set<CryptoId>;
-        }) => {
+        ({ enabledCryptoIds = new Set() }: { enabledCryptoIds?: Set<CryptoId> }) => {
             const { coins, platforms } = getCoinsAndPlatforms();
 
             const assets = Array.from(enabledCryptoIds)
                 .filter(
                     cryptoId =>
-                        !disabledCryptoIds.has(cryptoId) &&
                         isAssetWithSupportedNetwork(platforms, coins, cryptoId) &&
                         hasSupportedAddressValidator(platforms, coins, cryptoId) &&
                         coins[cryptoId],
