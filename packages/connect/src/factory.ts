@@ -101,6 +101,7 @@ export const connectCallableMethods = [
     'thpGetCredentials',
     'thpRemoveCredentials',
     'tronGetAddress',
+    'tronSignTransaction',
     'unlockPath',
     'verifyMessage',
     'wipeDevice',

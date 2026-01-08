@@ -76,7 +76,7 @@ const groups = {
     tron: {
         name: 'tron',
         pattern: 'methods',
-        includeFilter: 'tronGetAddress',
+        includeFilter: 'tronGetAddress,tronSignTransaction',
     },
     solana: {
         name: 'solana',
