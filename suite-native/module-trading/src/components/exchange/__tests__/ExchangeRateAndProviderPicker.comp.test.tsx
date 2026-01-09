@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -14,6 +15,17 @@ import { ExchangeFormType } from '@suite-native/trading-types';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import { ExchangeRateAndProviderPicker } from '../ExchangeRateAndProviderPicker';
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('ExchangeRateAndProviderPicker', () => {
     let exchangeForm: ExchangeFormType;
     let preloadedState: PreloadedState;
@@ -27,6 +39,12 @@ describe('ExchangeRateAndProviderPicker', () => {
         });
 
     beforeEach(async () => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         const { result } = await renderExchangeForm();
         exchangeForm = result.current;
 
@@ -75,18 +93,12 @@ describe('ExchangeRateAndProviderPicker', () => {
     });
 
     describe('analytics', () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
-
         beforeEach(() => {
             preloadedState!.wallet!.trading!.exchange!.quotes = exchangeQuotes;
             act(() => {
                 exchangeForm.setValue('quote', exchangeQuotes[0]);
             });
-            analyticsSpy.mockClear();
-        });
-
-        afterAll(() => {
-            analyticsSpy.mockRestore();
+            reportMock.mockClear();
         });
 
         it('should fire analytics event on provider select', async () => {
@@ -95,14 +107,14 @@ describe('ExchangeRateAndProviderPicker', () => {
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getByText('Cexdirect'));
 
-            expect(analyticsSpy).toHaveBeenCalledTimes(2);
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledTimes(2);
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingCompareOffers,
                 payload: {
                     type: 'exchange',
                 },
             });
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingParameterChanged,
                 payload: {
                     type: 'exchange',
@@ -117,8 +129,8 @@ describe('ExchangeRateAndProviderPicker', () => {
             await userEvent.press(getByText('Provider'));
             await userEvent.press(getAllByText('Mercuryo')[1]);
 
-            expect(analyticsSpy).toHaveBeenCalledTimes(1);
-            expect(analyticsSpy).not.toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledTimes(1);
+            expect(reportMock).not.toHaveBeenCalledWith({
                 type: EventType.TradingParameterChanged,
                 payload: {
                     type: 'exchange',

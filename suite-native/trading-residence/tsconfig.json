@@ -12,6 +12,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
         { "path": "../trading-state" },

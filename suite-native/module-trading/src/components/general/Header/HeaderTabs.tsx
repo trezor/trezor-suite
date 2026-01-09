@@ -3,11 +3,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
-import { EventType, TradingNavigateFrom, useLegacyAnalytics } from '@suite-native/analytics';
+import { EventType, TradingNavigateFrom } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     TradingWithFeatureFlagsRootState,
     selectActiveTradingType,

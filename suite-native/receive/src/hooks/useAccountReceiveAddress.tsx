@@ -15,9 +15,9 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 

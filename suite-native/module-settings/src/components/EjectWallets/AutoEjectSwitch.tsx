@@ -7,9 +7,9 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {

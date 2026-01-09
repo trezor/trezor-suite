@@ -6,13 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';

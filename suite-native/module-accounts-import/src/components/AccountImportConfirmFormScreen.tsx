@@ -17,7 +17,6 @@ import {
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { AccountFormValues, useAccountLabelForm } from '@suite-native/accounts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, Text } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -28,6 +27,7 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { importAccountThunk } from '../accountsImportThunks';

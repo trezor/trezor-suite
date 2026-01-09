@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     BottomSheetModal,
     Box,
@@ -12,6 +11,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailSheetProps = {

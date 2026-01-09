@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -14,6 +15,17 @@ import { SellFormType } from '@suite-native/trading-types';
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellReceiveMethodPicker } from '../SellReceiveMethodPicker';
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('SellReceiveMethodPicker', () => {
     let form: SellFormType;
     let preloadedState: PreloadedState;
@@ -27,6 +39,12 @@ describe('SellReceiveMethodPicker', () => {
         });
 
     beforeEach(async () => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
 
         const { result } = await renderSellForm();
@@ -91,14 +109,8 @@ describe('SellReceiveMethodPicker', () => {
         });
 
         describe('analytics', () => {
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
             beforeEach(() => {
-                analyticsSpy.mockClear();
-            });
-
-            afterAll(() => {
-                analyticsSpy.mockRestore();
+                reportMock.mockClear();
             });
 
             it('should fire analytics event on receive method select', async () => {
@@ -107,7 +119,7 @@ describe('SellReceiveMethodPicker', () => {
                 fireEvent.press(getByText('Receive method'));
                 fireEvent.press(getByText('Credit Card'));
 
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingParameterChanged,
                     payload: {
                         type: 'sell',
@@ -119,10 +131,10 @@ describe('SellReceiveMethodPicker', () => {
             it('should not fire analytics event when same receive method is selected', async () => {
                 const { getAllByText } = await renderSellReceiveMethodPicker();
 
-                fireEvent.press(getAllByText('Bank Transfer')[0]); // open the sheet
-                fireEvent.press(getAllByText('Bank Transfer')[1]); // select the same receive method
+                fireEvent.press(getAllByText('Bank Transfer')[0]);
+                fireEvent.press(getAllByText('Bank Transfer')[1]);
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(0);
+                expect(reportMock).toHaveBeenCalledTimes(0);
             });
         });
     });

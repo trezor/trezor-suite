@@ -35,6 +35,7 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../video-assets" },

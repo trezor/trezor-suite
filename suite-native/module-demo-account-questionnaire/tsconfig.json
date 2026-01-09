@@ -8,6 +8,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/urls" }
     ]

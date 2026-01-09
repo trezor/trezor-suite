@@ -23,6 +23,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
+        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

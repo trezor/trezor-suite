@@ -1,8 +1,21 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { TradingFeesScreen } from '../TradingFeesScreen';
+
+const reportMock = jest.fn();
+
+// Mock analytics hook
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 // Mock the useSubscribeForSolanaBlockUpdates hook
 const mockUseSubscribeForSolanaBlockUpdates = jest.fn();
@@ -49,7 +62,11 @@ describe('TradingFeesScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        // Default mock return value
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: 'btc1' },
@@ -66,7 +83,6 @@ describe('TradingFeesScreen', () => {
     it('should render the screen without crashing', async () => {
         const { root } = await renderScreen();
 
-        // The screen should render without crashing
         expect(root).toBeTruthy();
     });
 
@@ -85,7 +101,6 @@ describe('TradingFeesScreen', () => {
     });
 
     it('should not render anything when account is not found', async () => {
-        // Mock useRoute to return a non-existent account key
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: 'nonexistent-account' },
@@ -93,17 +108,14 @@ describe('TradingFeesScreen', () => {
 
         const { queryByTestId } = await renderScreen();
 
-        // Should not render the TradingFeesForm when account is not found
         expect(queryByTestId('trading-fees-form')).not.toBeOnTheScreen();
         expect(mockTradingFeesForm).not.toHaveBeenCalled();
     });
 
     it('should report to analytics on mount for exchange (default)', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
-
         await renderScreen();
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'fee-selection',
@@ -113,7 +125,6 @@ describe('TradingFeesScreen', () => {
     });
 
     it('should report to analytics on mount for exchange when explicitly set', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: 'btc1', tradingType: 'exchange' },
@@ -121,7 +132,7 @@ describe('TradingFeesScreen', () => {
 
         await renderScreen();
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'fee-selection',
@@ -131,7 +142,6 @@ describe('TradingFeesScreen', () => {
     });
 
     it('should report to analytics on mount for sell', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const sellPreloadedState = {
             wallet: {
                 trading: getInitializedTradingState('sell'),
@@ -147,7 +157,7 @@ describe('TradingFeesScreen', () => {
             preloadedState: sellPreloadedState,
         });
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingSell,
             payload: expect.objectContaining({
                 step: 'fee-selection',

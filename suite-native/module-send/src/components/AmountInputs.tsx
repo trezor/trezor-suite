@@ -9,10 +9,10 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { AmountErrorMessage } from './AmountErrorMessage';
 import { CryptoAmountInput } from './CryptoAmountInput';

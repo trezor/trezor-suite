@@ -1,5 +1,5 @@
-import { tradingExchangeActions } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -13,6 +13,17 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { useExchangeFlow } from '../useExchangeFlow';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 // Mock TrezorConnect to prevent errors during cleanup
 jest.mock('@trezor/connect', () => ({
@@ -37,10 +48,8 @@ describe('useExchangeFlow', () => {
 
     const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
-        // Add the required account keys to the exchange state
         tradingState.exchange.tradingAccountKey = 'btc1';
         tradingState.exchange.receiveAccountKey = 'btc2';
-        // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
         const preloadedState: PreloadedState = {
@@ -58,6 +67,11 @@ describe('useExchangeFlow', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
@@ -83,7 +97,6 @@ describe('useExchangeFlow', () => {
                 });
             });
 
-            // Should call confirmTradeThunk
             expect(dispatchSpy).toHaveBeenCalledWith({
                 type: 'confirmTradeThunkMock',
                 payload: {
@@ -107,7 +120,6 @@ describe('useExchangeFlow', () => {
         it('should return false when confirmTradeThunk returns false', async () => {
             const store = await getInitializedStore();
 
-            // Mock confirmTradeThunk to return false
             const originalConfirmTradeThunk =
                 require('@suite-common/trading').exchangeThunks.confirmTradeThunk;
             require('@suite-common/trading').exchangeThunks.confirmTradeThunk = () => ({
@@ -117,25 +129,20 @@ describe('useExchangeFlow', () => {
 
             const { result } = await renderUseExchangeFlow({ store });
 
-            const mockTrade = {
-                exchange: 'test-exchange',
-                orderId: 'test-order',
-            };
-
-            const confirmResult = await act(
-                async () =>
-                    await result.current.confirmTrade({
-                        receiveAddress: 'test-address',
-                        trade: mockTrade,
-                        approvalFlow: false,
-                        nextStep: jest.fn(),
-                    }),
+            const confirmResult = await act(() =>
+                result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: {
+                        exchange: 'test-exchange',
+                        orderId: 'test-order',
+                    },
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                }),
             );
 
-            // Should return false
             expect(confirmResult).toBe(false);
 
-            // Restore the original mock
             require('@suite-common/trading').exchangeThunks.confirmTradeThunk =
                 originalConfirmTradeThunk;
         });
@@ -146,14 +153,13 @@ describe('useExchangeFlow', () => {
 
             const { result } = await renderUseExchangeFlow({ store });
 
-            const confirmResult = await act(
-                async () =>
-                    await result.current.confirmTrade({
-                        receiveAddress: 'test-address',
-                        trade: undefined,
-                        approvalFlow: false,
-                        nextStep: jest.fn(),
-                    }),
+            const confirmResult = await act(() =>
+                result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: undefined,
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                }),
             );
 
             expect(confirmResult).toBe(false);
@@ -165,7 +171,6 @@ describe('useExchangeFlow', () => {
         it('should return false when sendAccount is missing', async () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
-            // Create a store with invalid tradingAccountKey
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = 'invalid-account-key';
             tradingState.exchange.receiveAccountKey = 'btc2';
@@ -181,19 +186,16 @@ describe('useExchangeFlow', () => {
             const { store } = initStore(preloadedState);
             const { result } = await renderUseExchangeFlow({ store });
 
-            const mockTrade = {
-                exchange: 'test-exchange',
-                orderId: 'test-order',
-            };
-
-            const confirmResult = await act(
-                async () =>
-                    await result.current.confirmTrade({
-                        receiveAddress: 'test-address',
-                        trade: mockTrade,
-                        approvalFlow: false,
-                        nextStep: jest.fn(),
-                    }),
+            const confirmResult = await act(() =>
+                result.current.confirmTrade({
+                    receiveAddress: 'test-address',
+                    trade: {
+                        exchange: 'test-exchange',
+                        orderId: 'test-order',
+                    },
+                    approvalFlow: false,
+                    nextStep: jest.fn(),
+                }),
             );
 
             expect(confirmResult).toBe(false);
@@ -203,83 +205,8 @@ describe('useExchangeFlow', () => {
         });
     });
 
-    describe('getCommonFunctions', () => {
-        it('should return null when no trade is provided and no selectedQuote', async () => {
-            const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
-            // Mock the selector to return undefined for selectedQuote
-            const store = await getInitializedStore();
-            store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-
-            const { result } = await renderUseExchangeFlow({ store });
-
-            // The getCommonFunctions is called internally, but we can test its effect
-            // by calling confirmTrade without a trade parameter
-            const resultValue = await act(() =>
-                result.current.confirmTrade({
-                    receiveAddress: 'test-address',
-                    trade: undefined,
-                    approvalFlow: false,
-                    nextStep: jest.fn(),
-                }),
-            );
-
-            expect(resultValue).toBe(false);
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                'Trade, send account and common functions are required to confirm trade',
-            );
-        });
-
-        it('should return common functions when trade is provided', async () => {
-            const store = await getInitializedStore();
-            const { result } = await renderUseExchangeFlow({ store });
-
-            const mockTrade = {
-                exchange: 'test-exchange',
-                orderId: 'test-order',
-            };
-
-            // Test by calling confirmTrade which uses getCommonFunctions internally
-            await act(async () => {
-                await result.current.confirmTrade({
-                    receiveAddress: 'test-address',
-                    trade: mockTrade,
-                    approvalFlow: false,
-                    nextStep: jest.fn(),
-                });
-            });
-
-            // If we get here without errors, getCommonFunctions worked correctly
-            expect(true).toBe(true);
-        });
-
-        it('should return common functions when preselected quote is provided', async () => {
-            const store = await getInitializedStore();
-            store.dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-            store.dispatch(
-                tradingExchangeActions.savePreselectedQuote({
-                    exchange: 'test-exchange',
-                    orderId: 'test-order',
-                }),
-            );
-            const { result } = await renderUseExchangeFlow({ store });
-
-            // Test by calling confirmTrade which uses getCommonFunctions internally
-            await act(async () => {
-                await result.current.confirmTrade({
-                    receiveAddress: 'test-address',
-                    approvalFlow: false,
-                    nextStep: jest.fn(),
-                });
-            });
-
-            // If we get here without errors, getCommonFunctions worked correctly
-            expect(true).toBe(true);
-        });
-    });
-
     describe('analytics', () => {
         it('should call analytics event when confirmTrade is called', async () => {
-            const analyticsSpy = jest.spyOn(analytics, 'report');
             const store = await getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
@@ -300,12 +227,12 @@ describe('useExchangeFlow', () => {
                 });
             });
 
-            // simulate triggerAnalyticsTradeConfirmation call in thunk
             const { triggerAnalyticsTradeConfirmation } = (dispatchSpy.mock.lastCall![0] as any)
                 .payload;
+
             triggerAnalyticsTradeConfirmation();
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingConfirmTrade,
                 payload: {
                     type: 'exchange',

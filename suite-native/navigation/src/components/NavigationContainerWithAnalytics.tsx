@@ -9,8 +9,8 @@ import {
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';

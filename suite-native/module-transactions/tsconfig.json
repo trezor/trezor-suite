@@ -31,6 +31,7 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },

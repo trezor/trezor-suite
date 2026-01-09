@@ -7,7 +7,6 @@ import {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,
     EventType,
-    useLegacyAnalytics,
 } from '@suite-native/analytics';
 import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
@@ -19,6 +18,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 

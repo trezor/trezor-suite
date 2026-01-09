@@ -23,7 +23,6 @@
         },
         { "path": "../config" },
         { "path": "../sentry" },
-        { "path": "../services" },
         { "path": "../../packages/analytics" },
         {
             "path": "../../packages/blockchain-link-types"

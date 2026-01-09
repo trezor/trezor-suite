@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -19,6 +20,17 @@ import { BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyProviderPicker } from '../BuyProviderPicker';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 describe('BuyProviderPicker', () => {
     let form: BuyFormType;
@@ -42,6 +54,14 @@ describe('BuyProviderPicker', () => {
 
     afterEach(() => {
         screen.unmount();
+    });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     it('should display nothing when in default state', async () => {
@@ -117,14 +137,8 @@ describe('BuyProviderPicker', () => {
         });
 
         describe('analytics', () => {
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
             beforeEach(() => {
-                analyticsSpy.mockClear();
-            });
-
-            afterAll(() => {
-                analyticsSpy.mockRestore();
+                reportMock.mockClear();
             });
 
             it('should fire analytics event on provider select', async () => {
@@ -133,14 +147,14 @@ describe('BuyProviderPicker', () => {
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(2);
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledTimes(2);
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingCompareOffers,
                     payload: {
                         type: 'buy',
                     },
                 });
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingParameterChanged,
                     payload: {
                         type: 'buy',
@@ -155,7 +169,7 @@ describe('BuyProviderPicker', () => {
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('Mercuryo'));
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(2);
+                expect(reportMock).toHaveBeenCalledTimes(2);
             });
 
             it('should not fire analytics event when same provider is selected', async () => {
@@ -163,11 +177,10 @@ describe('BuyProviderPicker', () => {
                     await renderTradingProviderPicker(preloadedState);
 
                 fireEvent.press(getByText('Provider'));
-                // 1st Credit Card is the selected one, 2nd is the one in the list
                 fireEvent.press(getAllByText('Cexdirect')[1]);
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(1);
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledTimes(1);
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingCompareOffers,
                     payload: {
                         type: 'buy',
@@ -181,7 +194,7 @@ describe('BuyProviderPicker', () => {
 
                 fireEvent.press(getByText('Provider'));
 
-                expect(analyticsSpy).not.toHaveBeenCalled();
+                expect(reportMock).not.toHaveBeenCalled();
             });
         });
     });

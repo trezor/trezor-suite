@@ -4,6 +4,7 @@
     "references": [
         {
             "path": "../../suite-common/redux-utils"
-        }
+        },
+        { "path": "../analytics" }
     ]
 }

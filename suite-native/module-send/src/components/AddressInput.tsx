@@ -11,13 +11,13 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { SendFormLabelEditable } from '@suite-native/labeling';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';

@@ -15,7 +15,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     AnimatedVStack,
@@ -23,6 +22,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';

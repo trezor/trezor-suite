@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
     selectActiveTradingType,

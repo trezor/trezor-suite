@@ -19,6 +19,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/styles" }

@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -11,6 +10,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 export const DemoAccountQuestionnaireIntroScreen = () => {
     const legacyAnalytics = useLegacyAnalytics();

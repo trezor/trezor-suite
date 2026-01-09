@@ -1,12 +1,23 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 
 const mockNavigationGoBack = jest.fn();
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -26,6 +37,10 @@ describe('TradingLocationSettingsScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     afterEach(() => {
@@ -51,14 +66,13 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const { getByText } = renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'settings',
@@ -68,13 +82,12 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should go back and log analytics event on back button press', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const { getByLabelText } = renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByLabelText('Go back'));
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingCountrySelection,
             payload: {
                 type: 'settings',

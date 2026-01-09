@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery, selectSelectedDevice } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';

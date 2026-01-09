@@ -13,8 +13,9 @@ import {
 import { EventType } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { selectIsAppReady, useLegacyAnalytics } from '@suite-native/state';
+import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {

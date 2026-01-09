@@ -1,11 +1,7 @@
 import { useState } from 'react';
 
 import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
-import {
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -24,6 +20,7 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Analytics } from '@trezor/analytics';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';

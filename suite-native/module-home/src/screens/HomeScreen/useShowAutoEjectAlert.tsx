@@ -5,14 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import {
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     selectHasAutoEjectAlertBeenDisplayed,
     selectShouldShowAutoEjectAlert,
