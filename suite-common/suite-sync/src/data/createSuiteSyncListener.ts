@@ -4,11 +4,11 @@ import { SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
 import {
-    addManyAccounts,
-    addManyAddresses,
-    addManyOutputs,
     clearAll,
-    setWallet,
+    upsertManyAccounts,
+    upsertManyAddresses,
+    upsertManyOutputs,
+    upsertManyWallets,
 } from './suiteSyncDataReducer';
 
 export type CreateSuiteSyncListenerDeps = {
@@ -17,20 +17,20 @@ export type CreateSuiteSyncListenerDeps = {
 
 export const createSuiteSyncListener = (deps: CreateSuiteSyncListenerDeps): SuiteSyncListener => ({
     onEntityChange: {
-        wallets: (_deviceStaticId, entity) => {
-            deps.dispatch(setWallet(entity));
+        wallets: (_deviceStaticId, entities) => {
+            deps.dispatch(upsertManyWallets(entities));
         },
-        accounts: (deviceStaticSessionId, entity) => {
+        accounts: (deviceStaticSessionId, entities) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-            deps.dispatch(addManyAccounts({ walletDescriptor, accounts: [entity] }));
+            deps.dispatch(upsertManyAccounts({ walletDescriptor, accounts: entities }));
         },
-        addresses: (deviceStaticSessionId, entity) => {
+        addresses: (deviceStaticSessionId, entities) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-            deps.dispatch(addManyAddresses({ walletDescriptor, addresses: [entity] }));
+            deps.dispatch(upsertManyAddresses({ walletDescriptor, addresses: entities }));
         },
-        outputs: (deviceStaticSessionId, entity) => {
+        outputs: (deviceStaticSessionId, entities) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
-            deps.dispatch(addManyOutputs({ walletDescriptor, outputs: [entity] }));
+            deps.dispatch(upsertManyOutputs({ walletDescriptor, outputs: entities }));
         },
     },
     onUnsubscribe: () => {

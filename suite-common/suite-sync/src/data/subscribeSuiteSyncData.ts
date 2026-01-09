@@ -32,17 +32,20 @@ export const createSubscribeSuiteSyncData =
         // This Type-Map is here to ensure, we won't forget to subscribe new table in a type-safe way
         const unsubscribes: { [K in keyof SuiteSyncSchema]: () => void } = {
             wallets: data.wallets.subscribe({
-                onChange: entity => listener.onEntityChange.wallets(deviceStaticSessionId, entity),
+                onChange: entities =>
+                    listener.onEntityChange.wallets(deviceStaticSessionId, entities),
             }),
             accounts: data.accounts.subscribe({
-                onChange: entity => listener.onEntityChange.accounts(deviceStaticSessionId, entity),
+                onChange: entities =>
+                    listener.onEntityChange.accounts(deviceStaticSessionId, entities),
             }),
             addresses: data.addresses.subscribe({
-                onChange: entity =>
-                    listener.onEntityChange.addresses(deviceStaticSessionId, entity),
+                onChange: entities =>
+                    listener.onEntityChange.addresses(deviceStaticSessionId, entities),
             }),
             outputs: data.outputs.subscribe({
-                onChange: entity => listener.onEntityChange.outputs(deviceStaticSessionId, entity),
+                onChange: entities =>
+                    listener.onEntityChange.outputs(deviceStaticSessionId, entities),
             }),
         };
 

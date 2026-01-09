@@ -75,7 +75,7 @@ const Accounts = ({
 
                 const label =
                     findSuiteSyncAccountLabel({
-                        accountLabels: suiteSyncAccountLabels,
+                        accounts: suiteSyncAccountLabels,
                         accountDescriptor,
                         networkSymbol,
                     })?.label ?? accountLabels[account.key];
@@ -139,7 +139,7 @@ export const AccountsList = ({
 
                   const accountLabel =
                       findSuiteSyncAccountLabel({
-                          accountLabels: suiteSyncAccountLabels,
+                          accounts: suiteSyncAccountLabels,
                           accountDescriptor,
                           networkSymbol,
                       })?.label ?? accountLabelOld;

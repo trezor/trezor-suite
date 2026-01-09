@@ -1,4 +1,4 @@
-export type EntityListener<T extends {}> = { onChange: (payload: T) => void };
+export type EntityListener<T extends {}> = { onChange: (payload: T[]) => void };
 
 /**
  * This is an abstraction to define a subscribable entity storage in the

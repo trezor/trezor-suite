@@ -13,7 +13,10 @@ export type { EntityListener, SuiteSyncTable } from './SuiteSyncTable';
  * stores.
  */
 export type { SuiteSyncSchema } from './data/SuiteSyncSchema';
-export type { AddressTable, SuiteSyncAddress } from './data/AddressTable';
-export type { OutputTable, SuiteSyncOutput } from './data/OutputTable';
 export type { WalletTable, SuiteSyncWallet } from './data/WalletTable';
+export type { AddressTable, SuiteSyncAddress } from './data/AddressTable';
+export { createSuiteSyncAddressId } from './data/AddressTable';
+export type { OutputTable, SuiteSyncOutput } from './data/OutputTable';
+export { createSuiteSyncOutputId } from './data/OutputTable';
 export type { AccountTable, SuiteSyncAccount } from './data/AccountTable';
+export { createSuiteSyncAccountId } from './data/AccountTable';

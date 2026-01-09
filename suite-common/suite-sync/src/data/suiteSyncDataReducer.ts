@@ -6,20 +6,9 @@ import {
     SuiteSyncOutput,
     SuiteSyncWallet,
 } from '@suite-common/suite-sync-storage';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
+import type { WalletDescriptor } from '@suite-common/wallet-types';
 
-export const createAccountId = (
-    accountDescriptor: AccountDescriptor,
-    networkSymbol: NetworkSymbol,
-) => `${accountDescriptor}-${networkSymbol}`;
-
-export const createOutputId = (txId: string, outputIndex: number) => `${txId}-${outputIndex}`;
-
-export type AccountWithId = SuiteSyncAccount & { id: string };
-export type OutputWithId = SuiteSyncOutput & { id: string };
-
-export const accountsAdapter = createEntityAdapter<AccountWithId, string>({
+export const accountsAdapter = createEntityAdapter<SuiteSyncAccount, string>({
     selectId: account => account.id,
 });
 
@@ -27,15 +16,15 @@ export const addressesAdapter = createEntityAdapter<SuiteSyncAddress, string>({
     selectId: address => address.address,
 });
 
-export const outputsAdapter = createEntityAdapter<OutputWithId, string>({
+export const outputsAdapter = createEntityAdapter<SuiteSyncOutput, string>({
     selectId: output => output.id,
 });
 
 export type WalletData = {
     wallet: SuiteSyncWallet;
-    accounts: EntityState<AccountWithId, string>;
+    accounts: EntityState<SuiteSyncAccount, string>;
     addresses: EntityState<SuiteSyncAddress, string>;
-    outputs: EntityState<OutputWithId, string>;
+    outputs: EntityState<SuiteSyncOutput, string>;
 };
 
 export const walletsAdapter = createEntityAdapter<WalletData, WalletDescriptor>({
@@ -74,18 +63,20 @@ export const suiteSyncDataSlice = createSlice({
     name: 'suiteSyncData',
     initialState,
     reducers: {
-        setWallet: (state, action: PayloadAction<SuiteSyncWallet>) => {
-            const existing = state.entities[action.payload.walletDescriptor];
-            const walletData: WalletData = {
-                wallet: action.payload,
-                accounts: existing?.accounts ?? accountsAdapter.getInitialState(),
-                addresses: existing?.addresses ?? addressesAdapter.getInitialState(),
-                outputs: existing?.outputs ?? outputsAdapter.getInitialState(),
-            };
-            walletsAdapter.upsertOne(state, walletData);
+        upsertManyWallets: (state, action: PayloadAction<SuiteSyncWallet[]>) => {
+            action.payload.forEach(wallet => {
+                const existing = state.entities[wallet.walletDescriptor];
+
+                walletsAdapter.upsertOne(state, {
+                    wallet,
+                    accounts: existing?.accounts ?? accountsAdapter.getInitialState(),
+                    addresses: existing?.addresses ?? addressesAdapter.getInitialState(),
+                    outputs: existing?.outputs ?? outputsAdapter.getInitialState(),
+                });
+            });
         },
 
-        addManyAccounts: (
+        upsertManyAccounts: (
             state,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
@@ -94,14 +85,10 @@ export const suiteSyncDataSlice = createSlice({
         ) => {
             const wallet = ensureWallet(state, action.payload.walletDescriptor);
             action.payload.accounts.forEach(account => {
-                const accountWithId: AccountWithId = {
-                    ...account,
-                    id: createAccountId(account.accountDescriptor, account.networkSymbol),
-                };
-                accountsAdapter.upsertOne(wallet.accounts, accountWithId);
+                accountsAdapter.upsertOne(wallet.accounts, account);
             });
         },
-        addManyAddresses: (
+        upsertManyAddresses: (
             state,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
@@ -109,12 +96,13 @@ export const suiteSyncDataSlice = createSlice({
             }>,
         ) => {
             const wallet = ensureWallet(state, action.payload.walletDescriptor);
+
             action.payload.addresses.forEach(address => {
                 addressesAdapter.upsertOne(wallet.addresses, address);
             });
         },
 
-        addManyOutputs: (
+        upsertManyOutputs: (
             state,
             action: PayloadAction<{
                 walletDescriptor: WalletDescriptor;
@@ -122,12 +110,9 @@ export const suiteSyncDataSlice = createSlice({
             }>,
         ) => {
             const wallet = ensureWallet(state, action.payload.walletDescriptor);
+
             action.payload.outputs.forEach(output => {
-                const outputWithId: OutputWithId = {
-                    ...output,
-                    id: createOutputId(output.txId, output.outputIndex),
-                };
-                outputsAdapter.upsertOne(wallet.outputs, outputWithId);
+                outputsAdapter.upsertOne(wallet.outputs, output);
             });
         },
 
@@ -135,8 +120,13 @@ export const suiteSyncDataSlice = createSlice({
     },
 });
 
-export const { setWallet, addManyAccounts, addManyAddresses, addManyOutputs, clearAll } =
-    suiteSyncDataSlice.actions;
+export const {
+    upsertManyWallets,
+    upsertManyAccounts,
+    upsertManyAddresses,
+    upsertManyOutputs,
+    clearAll,
+} = suiteSyncDataSlice.actions;
 
 export const suiteSyncDataReducer = suiteSyncDataSlice.reducer;
 

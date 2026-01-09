@@ -15,15 +15,9 @@ export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
     suiteSyncDataReducer,
     suiteSyncDataSlice,
-    setWallet,
-    addManyAccounts,
-    addManyAddresses,
-    addManyOutputs,
     clearAll,
     type SuiteSyncDataRootState,
     type SuiteSyncDataState,
-    type AccountWithId,
-    type OutputWithId,
     type WalletData,
 } from './data/suiteSyncDataReducer';
 export {

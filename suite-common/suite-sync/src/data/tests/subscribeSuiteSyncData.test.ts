@@ -5,6 +5,9 @@ import {
     SuiteSyncOutput,
     SuiteSyncStorage,
     SuiteSyncWallet,
+    createSuiteSyncAccountId,
+    createSuiteSyncAddressId,
+    createSuiteSyncOutputId,
 } from '@suite-common/suite-sync-storage';
 import { SuiteSyncListener } from '@suite-common/suite-sync-types';
 import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
@@ -130,65 +133,74 @@ describe(createSubscribeSuiteSyncData.name, () => {
         expect(result.ok).toBe(true);
 
         storageEmitters.wallets.forEach(it =>
-            it.onChange({ walletDescriptor: asWalletDescriptor('1'), label: 'Wallet Label' }),
+            it.onChange([{ walletDescriptor: asWalletDescriptor('1'), label: 'Wallet Label' }]),
         );
         expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith(
             deviceStaticSessionId,
-            {
-                label: 'Wallet Label',
-                walletDescriptor: '1',
-            },
+            [{ label: 'Wallet Label', walletDescriptor: '1' }],
         );
 
         storageEmitters.accounts.forEach(it =>
-            it.onChange({
-                accountDescriptor: asAccountDescriptor('account-1'),
-                label: 'Account for Drugs',
-                networkSymbol: 'btc',
-            }),
+            it.onChange([
+                {
+                    id: createSuiteSyncAccountId(asAccountDescriptor('account-1'), 'btc'),
+                    accountDescriptor: asAccountDescriptor('account-1'),
+                    label: 'Account for Drugs',
+                    networkSymbol: 'btc',
+                },
+            ]),
         );
         expect(suiteSyncListener.onEntityChange.accounts).toHaveBeenCalledWith(
             deviceStaticSessionId,
-            {
-                accountDescriptor: 'account-1',
-                label: 'Account for Drugs',
-                networkSymbol: 'btc',
-            },
+            [
+                {
+                    id: 'account-1-btc',
+                    accountDescriptor: 'account-1',
+                    label: 'Account for Drugs',
+                    networkSymbol: 'btc',
+                },
+            ],
         );
 
         storageEmitters.addresses.forEach(it =>
-            it.onChange({
-                networkSymbol: 'btc',
-                accountDescriptor: asAccountDescriptor('account-1'),
-                address: 'address',
-                label: 'Address for drugs',
-            }),
+            it.onChange([
+                {
+                    id: createSuiteSyncAddressId('address', 'btc'),
+                    networkSymbol: 'btc',
+                    accountDescriptor: asAccountDescriptor('account-1'),
+                    address: 'address',
+                    label: 'Address for drugs',
+                },
+            ]),
         );
         expect(suiteSyncListener.onEntityChange.addresses).toHaveBeenCalledWith(
             deviceStaticSessionId,
-            {
-                accountDescriptor: 'account-1',
-                address: 'address',
-                label: 'Address for drugs',
-                networkSymbol: 'btc',
-            },
+            [
+                {
+                    id: 'address-btc',
+                    accountDescriptor: 'account-1',
+                    address: 'address',
+                    label: 'Address for drugs',
+                    networkSymbol: 'btc',
+                },
+            ],
         );
 
         storageEmitters.outputs.forEach(it =>
-            it.onChange({
-                networkSymbol: 'btc',
-                accountDescriptor: asAccountDescriptor('account-1'),
-                txId: 'transaction-id',
-                outputIndex: 0,
-                label: 'Output spend for buying drugs',
-            }),
+            it.onChange([
+                {
+                    id: createSuiteSyncOutputId('transaction-id', 0),
+                    networkSymbol: 'btc',
+                    accountDescriptor: asAccountDescriptor('account-1'),
+                    txId: 'transaction-id',
+                    outputIndex: 0,
+                    label: 'Output spend for buying drugs',
+                },
+            ]),
         );
         expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith(
             deviceStaticSessionId,
-            {
-                label: 'Wallet Label',
-                walletDescriptor: '1',
-            },
+            [{ label: 'Wallet Label', walletDescriptor: '1' }],
         );
     });
 });

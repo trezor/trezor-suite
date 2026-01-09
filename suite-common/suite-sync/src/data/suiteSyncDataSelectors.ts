@@ -1,15 +1,14 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { SuiteSyncAccount, createSuiteSyncOutputId } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 import {
-    type AccountWithId,
     type SuiteSyncDataRootState,
     accountsAdapter,
     addressesAdapter,
-    createOutputId,
     outputsAdapter,
     walletsAdapter,
 } from './suiteSyncDataReducer';
@@ -104,7 +103,7 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
         (_state: SuiteSyncDataRootState, _txId: string, outputIndex: number) => outputIndex,
     ],
     (outputs, txId, outputIndex) => {
-        const id = createOutputId(txId, outputIndex);
+        const id = createSuiteSyncOutputId(txId, outputIndex);
 
         return outputs.find(output => output.id === id)?.label ?? null;
     },
@@ -147,18 +146,15 @@ export const selectSuiteSyncAccountAddressesByAccount = createMemoizedSelector(
 );
 
 export const findSuiteSyncAccountLabel = (params: {
-    accountLabels: AccountWithId[];
+    accounts: SuiteSyncAccount[];
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
-}) => {
-    const foundAccount = params.accountLabels.find(
+}) =>
+    params.accounts.find(
         account =>
             account.accountDescriptor === params.accountDescriptor &&
             account.networkSymbol === params.networkSymbol,
     );
-
-    return foundAccount;
-};
 
 export const selectSuiteSyncAccountLabel = createMemoizedSelector(
     [
@@ -177,8 +173,8 @@ export const selectSuiteSyncAccountLabel = createMemoizedSelector(
         ) => networkSymbol,
     ],
     (accountLabels, accountDescriptor, networkSymbol) =>
-        findSuiteSyncAccountLabel({ accountLabels, accountDescriptor, networkSymbol })?.label ??
-        null,
+        findSuiteSyncAccountLabel({ accounts: accountLabels, accountDescriptor, networkSymbol })
+            ?.label ?? null,
 );
 
 export const selectSuiteSyncAddressLabel = createMemoizedSelector(

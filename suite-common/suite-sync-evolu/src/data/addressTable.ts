@@ -7,8 +7,13 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { AddressTable, EntityListener, SuiteSyncAddress } from '@suite-common/suite-sync-storage';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    AddressTable,
+    EntityListener,
+    SuiteSyncAddress,
+    createSuiteSyncAddressId,
+} from '@suite-common/suite-sync-storage';
+import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { normalizeLabel } from './normalizeLabel';
@@ -18,7 +23,7 @@ export const AddressEvoluId = id('AddressEvoluId');
 export type AddressEvoluId = typeof AddressEvoluId.Type;
 
 export const createAddressEvoluId = (address: string, networkSymbol: NetworkSymbol) =>
-    AddressEvoluId.from(createIdFromString(`${address}-${networkSymbol}`));
+    AddressEvoluId.from(createIdFromString(createSuiteSyncAddressId(address, networkSymbol)));
 
 export const AddressLabelSchema = {
     address: {
@@ -63,6 +68,8 @@ export class AddressEvoluTable implements AddressTable {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            const acc: SuiteSyncAddress[] = [];
+
             for (const label of labels) {
                 if (
                     label.address === null ||
@@ -86,13 +93,18 @@ export class AddressEvoluTable implements AddressTable {
                     continue;
                 }
 
-                onChange({
+                const networkSymbol = asNetworkSymbol(label.networkSymbol);
+
+                acc.push({
+                    id: createSuiteSyncAddressId(label.address, networkSymbol),
                     address: label.address,
                     label: label.label,
                     accountDescriptor: asAccountDescriptor(label.accountDescriptor),
                     networkSymbol: label.networkSymbol as NetworkSymbol,
                 });
             }
+
+            onChange(acc);
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {

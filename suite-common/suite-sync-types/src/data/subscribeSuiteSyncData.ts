@@ -16,7 +16,7 @@ type SubscribeSuiteSyncDataParams = {
 export type Subscriptions = {
     [K in keyof SuiteSyncSchema]: (
         deviceStaticSessionId: StaticSessionId,
-        entity: SuiteSyncSchema[K],
+        entity: SuiteSyncSchema[K][],
     ) => void;
 };
 

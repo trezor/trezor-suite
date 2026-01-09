@@ -8,7 +8,12 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { EntityListener, OutputTable, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import {
+    EntityListener,
+    OutputTable,
+    SuiteSyncOutput,
+    createSuiteSyncOutputId,
+} from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
 
@@ -17,9 +22,6 @@ import { normalizeLabel } from './normalizeLabel';
 
 export const OutputEvoluId = id('OutputLabelId');
 export type OutputEvoluId = typeof OutputEvoluId.Type;
-
-export const createOutputEvoluId = (txId: string, outputIndex: number) =>
-    OutputEvoluId.from(createIdFromString(`${txId}-${outputIndex}`));
 
 export const OutputLabelSchema = {
     output: {
@@ -36,7 +38,9 @@ export class OutputEvoluTable implements OutputTable {
     constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
 
     update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
-        const idResult = createOutputEvoluId(txId, outputIndex);
+        const idResult = OutputEvoluId.from(
+            createIdFromString(createSuiteSyncOutputId(txId, outputIndex)),
+        );
 
         if (!idResult.ok) {
             console.error('OutputEvoluTable:id error:', idResult.error);
@@ -66,6 +70,8 @@ export class OutputEvoluTable implements OutputTable {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            const acc: SuiteSyncOutput[] = [];
+
             for (const label of labels) {
                 if (
                     label.txId === null ||
@@ -75,14 +81,19 @@ export class OutputEvoluTable implements OutputTable {
                     continue;
                 }
 
-                onChange({
+                const accountDescriptor = asAccountDescriptor(label.accountDescriptor);
+
+                acc.push({
+                    id: createSuiteSyncOutputId(label.txId, label.outputIndex),
                     txId: label.txId,
                     outputIndex: label.outputIndex,
                     label: label.label,
-                    accountDescriptor: asAccountDescriptor(label.accountDescriptor),
+                    accountDescriptor,
                     networkSymbol: label.networkSymbol as NetworkSymbol,
                 });
             }
+
+            onChange(acc);
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {

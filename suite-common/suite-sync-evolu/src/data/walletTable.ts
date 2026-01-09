@@ -8,16 +8,13 @@ import {
 } from '@evolu/common';
 
 import { EntityListener, SuiteSyncWallet, WalletTable } from '@suite-common/suite-sync-storage';
-import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
+import { asWalletDescriptor } from '@suite-common/wallet-types';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');
 export type WalletLabelId = typeof WalletLabelId.Type;
-
-export const createWalletLabelId = (walletDescriptor: WalletDescriptor) =>
-    WalletLabelId.from(createIdFromString(walletDescriptor));
 
 export const WalletLabelSchema = {
     wallet: {
@@ -35,7 +32,7 @@ export class EvoluWalletTable implements WalletTable {
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('wallet').selectAll());
 
     update = ({ walletDescriptor, label }: SuiteSyncWallet) => {
-        const idResult = createWalletLabelId(walletDescriptor);
+        const idResult = WalletLabelId.from(createIdFromString(walletDescriptor));
 
         if (!idResult.ok) {
             console.error('EvoluWalletTable:id error:', idResult.error);
@@ -60,16 +57,20 @@ export class EvoluWalletTable implements WalletTable {
         const query = this.getQuery();
 
         const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+            const acc: SuiteSyncWallet[] = [];
+
             for (const label of labels) {
                 if (label.walletDescriptor === null) {
                     continue;
                 }
 
-                onChange({
+                acc.push({
                     walletDescriptor: asWalletDescriptor(label.walletDescriptor),
                     label: label.label,
                 });
             }
+
+            onChange(acc);
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {
