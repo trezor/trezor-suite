@@ -1,5 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { type ReactNode, useMemo } from 'react';
 import { Provider } from 'react-redux';
 
 import { useFormattersConfig } from '@suite-native/formatters-config';
@@ -15,8 +14,6 @@ type ReduxProviderProps = {
     injectedStore?: TestStore;
 };
 
-export const STORE_WARMING_UP_MSG = 'Store is warming up...';
-
 const BasicProviderWithFormattingConfig = ({ children }: { children: ReactNode }) => {
     const formattersConfig = useFormattersConfig();
 
@@ -28,34 +25,24 @@ const BasicProviderWithFormattingConfig = ({ children }: { children: ReactNode }
 };
 
 /*
-This file is a copy of `StoreProvider.tsx` from `suite-native/state` but with ability
-to pass `preloadedState` of `injectedStore` as a prop and without the `Persistor` and  `Sentry` logic.
+Simplified synchronous (= no async warming up) version of `StoreProvider.tsx` from `suite-native/state` but without async logic
+for persisted state or Sentry. Allows to specify `preloadedState` of store or even inject precomposed
+store with `injectedStore`.
  */
 export const StoreProviderForTests = ({
     children,
     injectedStore,
     preloadedState,
 }: ReduxProviderProps) => {
-    const [store, setStore] = useState<TestStore | null>(null);
-
-    useEffect(() => {
+    const store = useMemo(() => {
         if (injectedStore) {
-            setStore(injectedStore);
-
-            return;
+            return injectedStore;
         }
 
-        const initStoreAsync = () => {
-            const { store: freshStore } = initStore(preloadedState);
-            setStore(freshStore);
-        };
+        const { store: freshStore } = initStore(preloadedState);
 
-        initStoreAsync();
+        return freshStore;
     }, [injectedStore, preloadedState]);
-
-    if (store === null) {
-        return <View accessibilityLabel={STORE_WARMING_UP_MSG} />;
-    }
 
     return (
         <Provider store={store}>
