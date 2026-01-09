@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
@@ -48,14 +49,16 @@ test.describe('Trading - Swap coin to token', { tag: ['@webOnly', '@T3W1', '@T3T
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: 'solana',
-                sendTicker: 'SOL',
-                receiveAsset: {
+                sellAsset: {
+                    searchFilter: 'Solana #1',
+                    networkSymbol: 'sol',
+                    assetCryptoId: getCryptoId('sol'),
+                },
+                buyAsset: {
                     searchFilter: 'USDC',
                     networkFilter: 'eth',
-                    receiveAsset: usdcMint as CryptoId,
+                    assetCryptoId: usdcMint as CryptoId,
                 },
-                receiveNetwork: usdcMint,
                 receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.selectSuiteReceiveAccount(0);

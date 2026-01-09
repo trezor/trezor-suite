@@ -16,11 +16,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
-import {
-    selectAccountByKey,
-    selectAllAccountsToList,
-    selectSelectedDevice,
-} from '@suite-common/wallet-core';
+import { selectAccountByKey, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
@@ -48,8 +44,7 @@ import { getTokens } from 'src/utils/wallet/tokenUtils';
  */
 export const useTradingFormAccount = (tradingType: TradingType) => {
     const dispatch = useDispatch();
-    const accounts = useSelector(selectAllAccountsToList);
-    const device = useSelector(selectSelectedDevice);
+    const visibileDeviceAccounts = useSelector(selectVisibleDeviceAccounts);
     const tokenDefinitions = useSelector(selectTokenDefinitions);
 
     const prefilled = useSelector(selectTradingPrefilledFromAccount);
@@ -94,12 +89,8 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
 
     const pickFallbackAccount = useCallback(
         (accounts: Account[]) =>
-            accounts.find(
-                acc =>
-                    isAccountEligibleForTrade(acc) &&
-                    acc.deviceState === device?.state?.staticSessionId,
-            ) ?? accounts[0],
-        [device?.state?.staticSessionId, isAccountEligibleForTrade],
+            accounts.find(acc => isAccountEligibleForTrade(acc)) ?? accounts[0],
+        [isAccountEligibleForTrade],
     );
 
     const account = useMemo(() => {
@@ -107,21 +98,19 @@ export const useTradingFormAccount = (tradingType: TradingType) => {
             return preferredAccount;
         }
 
-        const sameSymbolAccount = accounts.find(
+        const sameSymbolAccount = visibileDeviceAccounts.find(
             acc =>
                 acc.symbol === preferredAccount?.symbol &&
-                isAccountEligibleForTrade(acc, prefilled.cryptoId) &&
-                acc.deviceState === device?.state?.staticSessionId,
+                isAccountEligibleForTrade(acc, prefilled.cryptoId),
         );
 
         if (sameSymbolAccount) {
             return sameSymbolAccount;
         }
 
-        return pickFallbackAccount(accounts);
+        return pickFallbackAccount(visibileDeviceAccounts);
     }, [
-        accounts,
-        device?.state?.staticSessionId,
+        visibileDeviceAccounts,
         isAccountEligibleForTrade,
         pickFallbackAccount,
         preferredAccount,

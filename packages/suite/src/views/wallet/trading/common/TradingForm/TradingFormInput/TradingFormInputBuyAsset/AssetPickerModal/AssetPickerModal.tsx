@@ -49,7 +49,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     const renderItem = useCallback(
         (item: TradingAssetListItem) => {
             switch (item.type) {
-                case 'top-five-assets':
+                case 'top-assets':
                     return (
                         <Box margin={{ horizontal: 8, top: 8 }}>
                             <TopAssets
@@ -61,7 +61,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                                         height: ASSET_ROW_HEIGHT,
                                     })
                                 }
-                                data-testid={`${dataTestId}/top-five-assets`}
+                                data-testid={`${dataTestId}/top-assets`}
                             />
                         </Box>
                     );
@@ -110,6 +110,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 networkFilter={networkSymbol}
                 setNetworkFilter={setNetworkSymbol}
                 networks={networks}
+                dataTestId={dataTestId}
             />
 
             <Divider margin={{ top: 16 }} />

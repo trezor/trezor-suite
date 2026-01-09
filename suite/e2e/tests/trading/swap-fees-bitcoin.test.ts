@@ -1,3 +1,4 @@
+import { getCryptoId } from '@suite-common/trading';
 import { BigNumber } from '@trezor/utils';
 
 import { invityEndpoint, swapQuotesBTCEthereum, swapTradeBTCEthereum } from '../../fixtures/invity';
@@ -30,14 +31,17 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: 'bitcoin',
-                sendTicker: 'BTC',
-                receiveAsset: {
+                sellAsset: {
+                    networkFilter: 'btc',
+                    networkSymbol: 'btc',
+                    assetCryptoId: getCryptoId('btc'),
+                },
+                buyAsset: {
                     searchFilter: 'Ethereum',
                     networkFilter: 'eth',
-                    receiveAccount: 'eth',
+                    networkSymbol: 'eth',
+                    assetCryptoId: getCryptoId('eth'),
                 },
-                receiveNetwork: 'ethereum',
                 receiveAddress,
             });
             await tradingPage.fees.switchToCustom();

@@ -1,5 +1,4 @@
-import { CryptoId } from 'invity-api';
-
+import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import type { TranslationKey } from '@trezor/suite/src//components/suite/Translation';
 
@@ -66,14 +65,16 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: 'solana',
-                sendTicker: 'SOL',
-                receiveAsset: {
-                    searchFilter: 'Bitcoin',
-                    networkFilter: 'btc',
-                    receiveAsset: 'bitcoin' as CryptoId,
+                sellAsset: {
+                    searchFilter: 'Solana #1',
+
+                    networkSymbol: 'sol',
+                    assetCryptoId: getCryptoId('sol'),
                 },
-                receiveNetwork: 'bitcoin',
+                buyAsset: {
+                    searchFilter: 'Bitcoin',
+                    assetCryptoId: getCryptoId('btc'),
+                },
                 receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.selectSuiteReceiveAccount(0, 'btc');

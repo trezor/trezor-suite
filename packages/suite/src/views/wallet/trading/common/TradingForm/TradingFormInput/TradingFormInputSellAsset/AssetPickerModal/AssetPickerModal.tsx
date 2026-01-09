@@ -83,6 +83,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
                 networkFilter={networkFilter}
                 setNetworkFilter={setNetworkFilter}
                 networks={networks}
+                dataTestId={dataTestId}
             />
 
             <Divider margin={{ top: 16 }} />

@@ -104,10 +104,9 @@ export const useTradingSellForm = ({
         selectTradingIsSlip24Allowed(state, account, isDebug),
     );
 
-    const { symbol } = account;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = networks[account.symbol];
-    const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
+    const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const localCurrencyOption = { value: baseCurrencyCode, label: baseCurrencyCode.toUpperCase() };
     const trades = useSelector(selectTradingTrades);
     const trade = trades.find(
@@ -116,7 +115,7 @@ export const useTradingSellForm = ({
     );
 
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useTradingSellFormDefaultValues(account, sellInfo?.country);
+        useTradingSellFormDefaultValues(accountKey, sellInfo?.country);
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
     const { saveDraft, draft, removeDraft } = useFormDraft<TradingSellFormProps>('trading-sell');
     const getDraftUpdated = (): TradingSellFormProps | null => {
