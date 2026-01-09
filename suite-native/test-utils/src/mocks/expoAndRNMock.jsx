@@ -405,7 +405,10 @@ jest.mock('expo-constants', () => {
     return Constants;
 });
 
-jest.mock('expo-video', () => ({ VideoView: () => null }));
+jest.mock('expo-video', () => ({
+    VideoView: () => null,
+    useVideoPlayer: () => null,
+}));
 
 jest.mock('react-native-nitro-modules', () => ({}));
 
