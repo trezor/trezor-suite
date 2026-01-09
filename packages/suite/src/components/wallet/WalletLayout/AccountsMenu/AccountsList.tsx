@@ -111,7 +111,7 @@ export const AccountsList = ({
     const coinjoinIsPreloading = useSelector(state => state.wallet.coinjoin.isPreloading);
     const accountLabels = useSelector(selectAccountLabelsOld);
 
-    const suiteSyncAccountLabels = useSelector(state => {
+    const suiteSyncAccounts = useSelector(state => {
         if (!device?.state?.staticSessionId) return [];
 
         return selectSuiteSyncAccountLabels(state, device.state.staticSessionId);
@@ -139,7 +139,7 @@ export const AccountsList = ({
 
                   const accountLabel =
                       findSuiteSyncAccountLabel({
-                          accounts: suiteSyncAccountLabels,
+                          accounts: suiteSyncAccounts,
                           accountDescriptor,
                           networkSymbol,
                       })?.label ?? accountLabelOld;
