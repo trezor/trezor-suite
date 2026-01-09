@@ -10,7 +10,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { suiteSyncReducer } from '@suite-common/suite-sync';
+import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import { prepareThpReducer } from '@suite-common/thp';
 import { notificationsReducer } from '@suite-common/toast-notifications';
@@ -335,6 +335,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             nativeFirmware: nativeFirmwareReducer,
             notifications: notificationsReducer,
             suiteSync: suiteSyncPersistedReducer,
+            suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
             wallet: walletPersistedReducer,
