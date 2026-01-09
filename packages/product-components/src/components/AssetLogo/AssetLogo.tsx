@@ -10,7 +10,7 @@ import {
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
+import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils/src/tokenUtils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {
     ElevationUp,

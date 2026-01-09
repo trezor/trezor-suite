@@ -14195,33 +14195,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-iframe@workspace:packages/connect-iframe":
-  version: 0.0.0-use.local
-  resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
-  dependencies:
-    "@babel/preset-typescript": "npm:^7.28.5"
-    "@trezor/bundler-security": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/connect-common": "workspace:*"
-    "@trezor/eslint": "workspace:*"
-    "@types/jest": "npm:29.5.12"
-    "@types/w3c-web-usb": "npm:^1.0.10"
-    "@types/web": "npm:^0.0.197"
-    babel-loader: "npm:^10.0.0"
-    copy-webpack-plugin: "npm:^13.0.1"
-    crypto-browserify: "npm:3.12.0"
-    es6-promise: "npm:^4.2.8"
-    html-webpack-plugin: "npm:5.6.5"
-    rimraf: "npm:^6.0.1"
-    stream-browserify: "npm:^3.0.0"
-    terser-webpack-plugin: "npm:^5.3.16"
-    webpack: "npm:5.104.1"
-    webpack-cli: "npm:^6.0.1"
-    webpack-merge: "npm:^6.0.1"
-    worker-loader: "npm:^3.0.8"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/connect-mobile@workspace:*, @trezor/connect-mobile@workspace:^, @trezor/connect-mobile@workspace:packages/connect-mobile":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
@@ -24085,13 +24058,6 @@ __metadata:
     es5-ext: "npm:^0.10.35"
     es6-symbol: "npm:^3.1.1"
   checksum: 10/dbadecf3d0e467692815c2b438dfa99e5a97cbbecf4a58720adcb467a04220e0e36282399ba297911fd472c50ae4158fffba7ed0b7d4273fe322b69d03f9e3a5
-  languageName: node
-  linkType: hard
-
-"es6-promise@npm:^4.2.8":
-  version: 4.2.8
-  resolution: "es6-promise@npm:4.2.8"
-  checksum: 10/b250c55523c496c43c9216c2646e58ec182b819e036fe5eb8d83fa16f044ecc6b8dcefc88ace2097be3d3c4d02b6aa8eeae1a66deeaf13e7bee905ebabb350a3
   languageName: node
   linkType: hard
 

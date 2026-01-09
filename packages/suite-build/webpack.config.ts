@@ -2,13 +2,17 @@ import { merge } from 'webpack-merge';
 
 // Env utils
 // Configs
+
 import base from './configs/base.webpack.config';
+import connect from './configs/connect.webpack.config';
 import desktop from './configs/desktop.webpack.config';
 import dev from './configs/dev.webpack.config';
 import web from './configs/web.webpack.config';
 import { isDev, project } from './utils/env';
 
-const configs = [base];
+// hmm I would be happy not to have connect config part of desktop, but desktop has in fact web
+// targeted configs and without connect config, suite-desktop ui would not be built
+const configs = [connect, base];
 if (isDev) {
     configs.push(dev);
 }

@@ -23,7 +23,13 @@ export const InitSchema = Type.Object({
             ]),
         ),
     ),
-    coreMode: Type.Optional(Type.Union([Type.Literal('auto'), Type.Literal('iframe')])),
+    coreMode: Type.Optional(
+        Type.Union([
+            Type.Literal('auto'),
+            Type.Literal('core-in-suite-desktop'),
+            Type.Literal('core-in-suite-web'),
+        ]),
+    ),
 });
 
 export const paramDescriptions = {
@@ -37,18 +43,12 @@ export const paramDescriptions = {
     interactionTimeout: 'default `600`. Time in seconds after which popup automatically closes.',
     lazyLoad:
         'default `false`. Postpone iframe creation until TrezorConnect is called for the first time.',
-        // todo: when we are doing params
+    // todo: when we are doing params
     popup: 'default `true`. Projects running on trusted domains (trezor.io) are not required to use popup. For other domains this option is ignored.',
     transports:
         'Array of transports that should be use. If not provided, TrezorConnect will choose a reasonable default based on your environment.',
-    coreMode:
-        `default \`auto\`.
-
-If set to \`popup\`, webUSB transport would work cross-origin on the web. The disadvantage of this mode is that Connect popup does not retain a stateful connection to the device, which means for example that device events are not sent to the application when the popup is not open.
-
-If set to \`iframe\`, TrezorConnect will use iframe with persistent connection for the communication between popup and 3rd party wallet.
-
-In the default \`auto\` mode, TrezorConnect will automatically choose \`iframe\` if bridge transport is available and \`popup\` otherwise, to allow for webUSB use.`
+    coreMode: `default \`auto\`.
+In the default \`auto\` mode, TrezorConnect will automatically choose \`core-in-suite-desktop\` if Suite desktop is available and \`core-in-suite-web\` otherwise, to allow for webUSB use.`,
 };
 
 ## Init

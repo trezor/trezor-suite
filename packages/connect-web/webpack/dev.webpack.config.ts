@@ -5,8 +5,6 @@ import { WebpackPluginServe } from 'webpack-plugin-serve';
 
 // todo: https://github.com/trezor/trezor-suite/issues/5305
 import prod from './prod.webpack.config';
-import iframe from '../../connect-iframe/webpack/iframe.webpack.config';
-// todo: https://github.com/trezor/trezor-suite/issues/5305
 
 const dev = {
     mode: 'development',
@@ -34,12 +32,9 @@ const dev = {
                           key: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.key')),
                           cert: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.crt')),
                       },
-            static: [
-                path.join(__dirname, '../build'),
-                path.join(__dirname, '../../connect-iframe/build'),
-            ],
+            static: [path.join(__dirname, '../build')],
         }),
     ],
 };
 
-export default merge([iframe, prod, dev]);
+export default merge([prod, dev]);

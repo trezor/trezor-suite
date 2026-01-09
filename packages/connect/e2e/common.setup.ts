@@ -198,12 +198,12 @@ export const initTrezorConnect = async (
             email: 'tests@connect.trezor.io',
         },
         transports: ['BridgeTransport'],
-        coreMode: 'iframe',
-        debug: false,
+        debug: true,
         popup: false,
         pendingTransportEvent: true,
         transportReconnect: false,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests
+        coreMode: 'core-in-module', // for connect-web
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',

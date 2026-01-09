@@ -31,7 +31,7 @@ runs:
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+        yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
 
     - name: Build Suite Web
       shell: bash
@@ -42,7 +42,6 @@ runs:
       run: |
         yarn message-system-sign-config
         yarn workspace @trezor/suite-data build:lib
-        NODE_ENV=production yarn workspace @trezor/connect-iframe build:lib
         yarn workspace @trezor/suite-web build
 
     - name: Upload Suite Web to S3

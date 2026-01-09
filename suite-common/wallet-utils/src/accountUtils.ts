@@ -1,4 +1,4 @@
-import { TrezorDevice } from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types/src/device';
 import {
     type AccountType,
     type Bip43Path,

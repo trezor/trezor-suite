@@ -9,7 +9,6 @@ This package is bundled into web implementations. User interface is presented in
 Contains minimum of code required to:
 
 - Define `TrezorConnect` API object
-- Create and handle communication between `@trezor/connect-iframe` hosted on `https://connect.trezor.io/<version>/iframe.html`
 - Create and handle communication and lifecycle of `@trezor/connect-popup` hosted on `https://connect.trezor.io/<version>/popup.html`
 
 ## Installation

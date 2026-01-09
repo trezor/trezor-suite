@@ -98,7 +98,28 @@ const config: webpack.Configuration = {
             // TypeScript/JavaScript
             {
                 test: /\.(j|t)sx?$/,
-                exclude: /node_modules/,
+                exclude: (p: string) => {
+                    if (/node_modules/.test(p)) {
+                        return true;
+                    }
+
+                    if (
+                        // do not use suite loaders for workers, hot reload plugin fucks it up
+                        /workers\/blockbook\/index/i.test(p) ||
+                        /workers\/ripple\/index/i.test(p) ||
+                        /workers\/blockfrost\/index/i.test(p) ||
+                        /workers\/stellar\/index/i.test(p) ||
+                        // todo: I don't quite get it yet. If not excluded, the transpiled code try to access ReactRefreshWebpackPlugin global and crashes
+                        /socks-proxy-agent/i.test(p)
+                        // todo: this section is weird, what about sharedworker? I tried excluding it but it still instrumented
+                        // the code with HMR stuff
+                        // /transport\/src\/sessions/i.test(p)
+                    ) {
+                        return true;
+                    }
+
+                    return false;
+                },
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -129,6 +150,7 @@ const config: webpack.Configuration = {
                                     preprocess: true,
                                 },
                             ],
+                            // THIS !!! HURA
                             ...(isDev ? ['react-refresh/babel'] : []),
                             ...(process.env.INSTRUMENT_CODE
                                 ? [
@@ -162,25 +184,6 @@ const config: webpack.Configuration = {
                 use: [
                     {
                         loader: 'raw-loader',
-                    },
-                ],
-            },
-            // This worker loader is used for suite-desktop
-            {
-                // during compilation, it matches the worker file name both with Unix and Windows paths
-                test: /[/\\]workers[/\\][^/\\]+[/\\]index\.ts$/,
-                use: [
-                    {
-                        loader: 'worker-loader',
-                        options: {
-                            filename: 'static/worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-typescript'],
-                        },
                     },
                 ],
             },

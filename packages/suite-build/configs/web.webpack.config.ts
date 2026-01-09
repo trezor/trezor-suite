@@ -9,11 +9,22 @@ import { FLAGS, routes } from '@suite-common/suite-config';
 import { assetPrefix, isDev } from '../utils/env';
 import { getPathForProject } from '../utils/path';
 
-const baseDir = getPathForProject('web');
+export const baseDir = getPathForProject('web');
 
 const config: webpack.Configuration = {
     target: 'browserslist',
-    entry: [path.join(baseDir, 'src', 'index.ts')],
+    entry: {
+        main: path.join(baseDir, 'src', 'index.ts'),
+        ['sessions-background-sharedworker']: {
+            filename: 'workers/[name].js',
+            import: path.resolve(
+                __dirname,
+                '../../transport/src/sessions/background-sharedworker.ts',
+            ),
+            // Use importScripts-based chunk loading so vendor/runtime chunks load in a worker context
+            chunkLoading: 'import-scripts',
+        },
+    },
     output: {
         path: path.join(baseDir, 'build'),
     },
@@ -44,22 +55,11 @@ const config: webpack.Configuration = {
                 concurrency: 100,
             },
         }),
-        new CopyWebpackPlugin({
-            patterns: [
-                {
-                    from: path.join(
-                        __dirname,
-                        '../../',
-                        'connect-iframe/build/workers/sessions-background-sharedworker.js',
-                    ),
-                    to: path.join(baseDir, 'build/workers/sessions-background-sharedworker.js'),
-                },
-            ],
-        }),
         // Html files
         ...routes.map(
             route =>
                 new HtmlWebpackPlugin({
+                    chunks: ['main'],
                     minify: isDev
                         ? false
                         : {

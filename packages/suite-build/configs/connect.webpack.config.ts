@@ -5,18 +5,10 @@ import webpack from 'webpack';
 
 import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
 
-import { version } from '../package.json';
-import { getDistPathForProject } from './utils';
+import web from '../configs/web.webpack.config';
 
 const COMMON_DATA_SRC = '../../packages/connect-common/files';
 const MESSAGES_SRC = '../../packages/protobuf/messages.json';
-
-const project = process.env.PROJECT || 'iframe';
-
-if (project !== 'iframe' && project !== 'suite-web') {
-    throw new Error(`Unsupported project: ${project}`);
-}
-const DIST = getDistPathForProject(project);
 
 // Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
 // because we need to call `yarn build:libs during native build`
@@ -25,32 +17,13 @@ const commitHash =
     process.env.GITHUB_SHA ||
     execSync('git rev-parse HEAD').toString().trim();
 
-export const config: webpack.Configuration = {
+const DIST = web.output!.path! + '/js';
+
+const connect: webpack.Configuration = {
     target: 'web',
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     module: {
         rules: [
-            {
-                test: /sharedLoggerWorker.ts/i,
-                use: [
-                    {
-                        loader: 'worker-loader',
-                        options: {
-                            worker: 'SharedWorker',
-                            // TODO: we are not using contenthash here because we want to use that worker from
-                            // different environments (iframe, popup, connect-web, etc.) and we would not know the
-                            // name of the file.
-                            filename: './workers/shared-logger-worker.js',
-                        },
-                    },
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-typescript'],
-                        },
-                    },
-                ],
-            },
             {
                 test: /pinger\/pingWorker.ts/i,
                 loader: 'worker-loader',
@@ -115,6 +88,8 @@ export const config: webpack.Configuration = {
             zlib: false,
             path: false, // usb
             os: false, // usb
+            net: false, // todo: added when merging with karma config
+            tls: false, // todo: added when merging with karma config
         },
     },
     performance: {
@@ -130,13 +105,12 @@ export const config: webpack.Configuration = {
         // process/browser needs explicit .js extension
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer'],
-            Promise: ['es6-promise', 'Promise'],
-            process: 'process/browser.js',
+            process: require.resolve('process/browser'),
         }),
         // resolve @trezor/connect modules as "browser"
-        new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
-            resource.request = resource.request.replace(/workers$/, 'workers-browser');
-        }),
+        // new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
+        //     resource.request = resource.request.replace(/workers$/, 'workers-browser');
+        // }),
         new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
             resource.request = resource.request.replace(/assets$/, 'assets-browser');
         }),
@@ -150,9 +124,8 @@ export const config: webpack.Configuration = {
             ],
         }),
         new webpack.DefinePlugin({
-            'process.env.VERSION': JSON.stringify(version),
             'process.env.COMMIT_HASH': JSON.stringify(commitHash),
-            'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
+            // 'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
         }),
     ],
 
@@ -203,4 +176,4 @@ export const config: webpack.Configuration = {
     ],
 };
 
-export default config;
+export default connect;
