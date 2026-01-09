@@ -82,6 +82,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         if (this._coreManager) {
             this._coreManager.dispose();
         }
+        this._coreManager = undefined;
 
         return Promise.resolve(undefined);
     }
@@ -199,6 +200,13 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
     }
 
     public async call(params: CallMethodPayload) {
+        if (!this._coreManager) {
+            try {
+                await this.init();
+            } catch (err) {
+                return createErrorMessage(err);
+            }
+        }
         try {
             const { promiseId, promise } = this._messagePromises.create();
             const payload = cloneObject<any>(params);
