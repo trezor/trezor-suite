@@ -9,7 +9,6 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -22,6 +21,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';

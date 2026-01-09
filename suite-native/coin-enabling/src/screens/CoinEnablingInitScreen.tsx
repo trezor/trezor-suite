@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
@@ -19,6 +18,7 @@ import {
     StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';

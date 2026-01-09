@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -12,6 +13,17 @@ import { SellFormType } from '@suite-native/trading-types';
 
 import { useSellForm } from '../../../../hooks/sell/useSellForm';
 import { SellProviderPicker } from '../SellProviderPicker';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 describe('SellProviderPicker', () => {
     let form: SellFormType;
@@ -26,6 +38,12 @@ describe('SellProviderPicker', () => {
         });
 
     beforeEach(async () => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
 
         const { result } = await renderSellForm();
@@ -93,14 +111,8 @@ describe('SellProviderPicker', () => {
         });
 
         describe('analytics', () => {
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
             beforeEach(() => {
-                analyticsSpy.mockClear();
-            });
-
-            afterAll(() => {
-                analyticsSpy.mockRestore();
+                reportMock.mockClear();
             });
 
             it('should fire analytics event on provider select', async () => {
@@ -109,14 +121,14 @@ describe('SellProviderPicker', () => {
                 fireEvent.press(getByText('Provider'));
                 fireEvent.press(getByText('MoonPay'));
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(2);
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledTimes(2);
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingCompareOffers,
                     payload: {
                         type: 'sell',
                     },
                 });
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingParameterChanged,
                     payload: {
                         type: 'sell',
@@ -128,11 +140,11 @@ describe('SellProviderPicker', () => {
             it('should not fire analytics event when same provider is selected', async () => {
                 const { getAllByText } = await renderSellProviderPicker();
 
-                fireEvent.press(getAllByText('Banxa')[0]); // Open the picker
-                fireEvent.press(getAllByText('Banxa')[1]); // Select the same provider
+                fireEvent.press(getAllByText('Banxa')[0]);
+                fireEvent.press(getAllByText('Banxa')[1]);
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(1);
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledTimes(1);
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingCompareOffers,
                     payload: {
                         type: 'sell',
@@ -146,7 +158,7 @@ describe('SellProviderPicker', () => {
 
                 fireEvent.press(getByText('Provider'));
 
-                expect(analyticsSpy).not.toHaveBeenCalled();
+                expect(reportMock).not.toHaveBeenCalled();
             });
         });
     });

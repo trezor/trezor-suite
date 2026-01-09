@@ -11,12 +11,12 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';

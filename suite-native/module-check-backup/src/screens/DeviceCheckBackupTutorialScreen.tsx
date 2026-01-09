@@ -4,8 +4,8 @@ import { useSharedValue } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Screen } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,

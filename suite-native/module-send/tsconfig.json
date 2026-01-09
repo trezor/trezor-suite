@@ -42,6 +42,7 @@
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../send" },
+        { "path": "../services" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
         {

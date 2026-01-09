@@ -30,6 +30,7 @@
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../theme" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },

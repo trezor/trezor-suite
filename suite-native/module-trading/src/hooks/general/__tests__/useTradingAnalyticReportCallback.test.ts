@@ -4,20 +4,33 @@ import {
     TradingExchangeStep,
     TradingSellAction,
     TradingSellStep,
-    analytics,
 } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
 import { useTradingAnalyticReportCallback } from '../useTradingAnalyticReportCallback';
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('useTradingAnalyticReportCallback', () => {
     let preloadedState: PreloadedState;
-    let analyticsSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        analyticsSpy = jest.spyOn(analytics, 'report');
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     describe('when tradingType is "sell"', () => {
@@ -39,7 +52,7 @@ describe('useTradingAnalyticReportCallback', () => {
                 'visit',
             );
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingSell,
                 payload: expect.objectContaining({
                     step: 'sell-form',
@@ -68,7 +81,7 @@ describe('useTradingAnalyticReportCallback', () => {
                 'continue',
             );
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'exchange-form',
@@ -94,7 +107,7 @@ describe('useTradingAnalyticReportCallback', () => {
 
             result.current('fee-selection', 'visit');
 
-            expect(analyticsSpy).not.toHaveBeenCalled();
+            expect(reportMock).not.toHaveBeenCalled();
         });
     });
 
@@ -113,7 +126,7 @@ describe('useTradingAnalyticReportCallback', () => {
 
             result.current('fee-selection', 'visit');
 
-            expect(analyticsSpy).not.toHaveBeenCalled();
+            expect(reportMock).not.toHaveBeenCalled();
         });
     });
 });

@@ -7,6 +7,7 @@
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../services" },
         { "path": "../storage" },
         { "path": "../../packages/styles" }
     ]

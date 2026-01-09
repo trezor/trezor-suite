@@ -4,7 +4,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { useTranslate } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
@@ -17,6 +16,7 @@ import {
     StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {

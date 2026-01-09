@@ -4,12 +4,12 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     DeviceCheckBackupStackParamList,
     DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { ERRORS } from '@trezor/connect';
 
 import { checkBackupThunk } from '../checkBackupThunks';

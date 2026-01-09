@@ -6,10 +6,10 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { selectIsDeviceConnected, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { PinActionType } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 

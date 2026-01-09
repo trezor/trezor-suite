@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -22,6 +23,17 @@ jest.mock('../../../hooks/general/useFocusedValueWatch', () =>
     jest.requireActual('../../../hooks/general/useFocusedValueWatch'),
 );
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('SellForm', () => {
     const renderFormHook = (preloadedState: PreloadedState) =>
         renderHookWithStoreProviderAsync(() => useSellForm(), { preloadedState });
@@ -31,6 +43,14 @@ describe('SellForm', () => {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+    });
 
     it('should render when sell data are not preloaded', async () => {
         const { result } = await renderFormHook({});
@@ -89,11 +109,10 @@ describe('SellForm', () => {
     });
 
     it('should report to analytics on mount', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const { result } = await renderFormHook({});
         await renderSellForm({}, result.current);
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingSell,
             payload: expect.objectContaining({
                 step: 'sell-form',

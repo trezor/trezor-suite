@@ -5,7 +5,8 @@ import {
     MinimalExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -29,6 +30,17 @@ import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeQuotes } from '../useExchangeQuotes';
 
 let mockTimeSpent: number;
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -360,8 +372,6 @@ describe('useExchangeQuotes', () => {
     });
 
     describe('analytics', () => {
-        let analyticsReportSpy: jest.SpyInstance;
-
         const renderUseExchangeQuotesWithFilledForm = async (store: TestStore) => {
             const { result } = await renderUseExchangeQuotes(store);
             const { form } = result.current;
@@ -372,24 +382,24 @@ describe('useExchangeQuotes', () => {
                 form.setValue('sendCryptoAmount', '1');
             });
 
-            analyticsReportSpy.mockClear();
+            reportMock.mockClear();
+
             await act(async () => {
                 await result.current.quotes.quotesRequest;
             });
         };
 
         beforeAll(() => {
-            analyticsReportSpy = jest.spyOn(analytics, 'report').mockImplementation();
+            (useLegacyAnalytics as jest.Mock).mockReturnValue({
+                report: reportMock,
+            });
         });
 
         it('should report when quotes are fetched', async () => {
             const store = await getInitializedStore();
             jest.spyOn(store, 'dispatch').mockImplementation(() =>
                 Promise.resolve({
-                    meta: {
-                        requestStatus: 'fulfilled',
-                        requestId: 'test-request-id',
-                    },
+                    meta: { requestStatus: 'fulfilled', requestId: 'test-request-id' },
                     payload: exchangeQuotes,
                     type: '@trading-exchange/thunk/handleRequest/fulfilled',
                 }),
@@ -397,11 +407,9 @@ describe('useExchangeQuotes', () => {
 
             await renderUseExchangeQuotesWithFilledForm(store);
 
-            expect(analyticsReportSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingQuoteReceived,
-                payload: {
-                    type: 'exchange',
-                },
+                payload: { type: 'exchange' },
             });
         });
 
@@ -409,10 +417,7 @@ describe('useExchangeQuotes', () => {
             const store = await getInitializedStore();
             jest.spyOn(store, 'dispatch').mockImplementation(() =>
                 Promise.resolve({
-                    meta: {
-                        requestStatus: 'fulfilled',
-                        requestId: 'test-request-id',
-                    },
+                    meta: { requestStatus: 'fulfilled', requestId: 'test-request-id' },
                     payload: [],
                     type: '@trading-exchange/thunk/handleRequest/fulfilled',
                 }),
@@ -420,17 +425,14 @@ describe('useExchangeQuotes', () => {
 
             await renderUseExchangeQuotesWithFilledForm(store);
 
-            expect(analyticsReportSpy).not.toHaveBeenCalled();
+            expect(reportMock).not.toHaveBeenCalled();
         });
 
         it('should not report when handleRequestThunk rejected', async () => {
             const store = await getInitializedStore();
             jest.spyOn(store, 'dispatch').mockImplementation(() =>
                 Promise.resolve({
-                    meta: {
-                        requestStatus: 'rejected',
-                        requestId: 'test-request-id',
-                    },
+                    meta: { requestStatus: 'rejected', requestId: 'test-request-id' },
                     payload: exchangeQuotes,
                     type: '@trading-exchange/thunk/handleRequest/rejected',
                 }),
@@ -438,7 +440,7 @@ describe('useExchangeQuotes', () => {
 
             await renderUseExchangeQuotesWithFilledForm(store);
 
-            expect(analyticsReportSpy).not.toHaveBeenCalled();
+            expect(reportMock).not.toHaveBeenCalled();
         });
     });
 });

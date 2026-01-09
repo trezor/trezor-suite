@@ -1,10 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    DemoAccountQuestionnaireLinkKey,
-    EventType,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { DemoAccountQuestionnaireLinkKey, EventType } from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -16,6 +12,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,

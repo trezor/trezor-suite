@@ -7,7 +7,6 @@ import {
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     Box,
     Button,
@@ -19,6 +18,7 @@ import {
 } from '@suite-native/atoms';
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';

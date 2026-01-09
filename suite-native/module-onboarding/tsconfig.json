@@ -13,6 +13,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../trading-residence" },
         { "path": "../trading-state" },

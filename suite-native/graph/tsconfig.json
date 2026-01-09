@@ -33,6 +33,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../react-native-graph" },
+        { "path": "../services" },
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../tokens" },

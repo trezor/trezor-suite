@@ -1,5 +1,6 @@
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -10,6 +11,17 @@ import {
 import { TradingRootState } from '@suite-native/trading-state';
 
 import { Header } from '../Header';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 describe('Header', () => {
     const getFFPreloadedState = ({
@@ -95,6 +107,10 @@ describe('Header', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     it('should render nothing when no trade type is enabled', async () => {
@@ -224,15 +240,15 @@ describe('Header', () => {
                     sellEnabled: true,
                 }),
             ).store;
+            reportMock.mockClear();
         });
 
         it('should report TradingNavigate event on tab change', async () => {
             const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
-            const reportSpy = jest.spyOn(analytics, 'report');
 
             fireEvent.press(getByText('Swap'));
 
-            expect(reportSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingNavigate,
                 payload: {
                     action: 'navigate',
@@ -244,24 +260,24 @@ describe('Header', () => {
 
         it('should not report TradingNavigate event when tab was not changed', async () => {
             const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
-            const reportSpy = jest.spyOn(analytics, 'report');
+
             fireEvent.press(getByText('Swap'));
-            reportSpy.mockClear();
+            reportMock.mockClear();
 
             fireEvent.press(getByText('Swap'));
 
-            expect(reportSpy).not.toHaveBeenCalled();
+            expect(reportMock).not.toHaveBeenCalled();
         });
 
         it('should report TradingNavigate event when tab was changed to buy', async () => {
             const { getByText } = await renderWithStoreProviderAsync(<Header />, { store });
-            const reportSpy = jest.spyOn(analytics, 'report');
+
             fireEvent.press(getByText('Swap'));
-            reportSpy.mockClear();
+            reportMock.mockClear();
 
             fireEvent.press(getByText('Buy'));
 
-            expect(reportSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingNavigate,
                 payload: {
                     action: 'navigate',

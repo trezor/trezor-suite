@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { AccountsList, AddAccountButton, OnSelectAccount } from '@suite-native/accounts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -14,6 +13,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 

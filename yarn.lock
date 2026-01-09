@@ -11478,6 +11478,7 @@ __metadata:
     "@react-native-community/netinfo": "npm:^11.4.1"
     "@react-native/babel-preset": "npm:0.81.0"
     "@react-native/metro-config": "npm:~0.82.0"
+    "@react-navigation/bottom-tabs": "npm:7.5.0"
     "@react-navigation/native": "npm:7.1.18"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
@@ -11523,6 +11524,7 @@ __metadata:
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-device-onboarding": "workspace:*"
     "@suite-native/module-device-settings": "workspace:*"
+    "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
     "@suite-native/module-send": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -12062,6 +12064,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/sentry": "workspace:*"
+    "@suite-native/services": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12731,7 +12734,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-home@workspace:suite-native/module-home":
+"@suite-native/module-home@workspace:*, @suite-native/module-home@workspace:suite-native/module-home":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-home@workspace:suite-native/module-home"
   dependencies:
@@ -12877,6 +12880,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.18"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -12887,6 +12891,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/biometrics": "workspace:*"
     "@suite-native/coin-enabling": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"

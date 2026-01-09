@@ -5,7 +5,6 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { EventType } from '@suite-common/analytics-types';
 import { selectSelectedDevice, wipeDeviceThunk } from '@suite-common/wallet-core';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -14,6 +13,7 @@ import {
     StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,

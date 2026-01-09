@@ -10,12 +10,8 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import {
-    EventType,
-    TradingExchangeAction,
-    TradingExchangeStep,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, TradingExchangeAction, TradingExchangeStep } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 export type TradingExchangeAnalyticReportCallback = (

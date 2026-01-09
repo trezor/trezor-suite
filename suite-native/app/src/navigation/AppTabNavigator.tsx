@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
-import { EventType, useLegacyAnalytics } from '@suite-native/services';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     selectIsTradingBuyEnabled,
     selectIsTradingEnabled,

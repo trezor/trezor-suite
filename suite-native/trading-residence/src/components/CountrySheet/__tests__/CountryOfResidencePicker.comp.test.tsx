@@ -1,5 +1,5 @@
-import { analytics } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     renderHookWithBasicProvider,
     renderHookWithStoreProviderAsync,
@@ -19,6 +19,17 @@ import {
 
 let mockUseListDataFilter: typeof useListDataFilter;
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 jest.mock('@suite-native/trading-atoms', () => ({
     ...jest.requireActual('@suite-native/trading-atoms'),
     useListDataFilter: (rawData: unknown[], filterCallback: (i: unknown, f: string) => boolean) =>
@@ -27,7 +38,13 @@ jest.mock('@suite-native/trading-atoms', () => ({
 
 describe('CountryOfResidencePicker', () => {
     beforeEach(() => {
+        jest.clearAllMocks();
+
         mockUseListDataFilter = jest.requireActual('@suite-native/trading-atoms').useListDataFilter;
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     afterEach(() => {
@@ -57,7 +74,6 @@ describe('CountryOfResidencePicker', () => {
     it('should allow to select country', async () => {
         const { getByText, getByLabelText } = await renderCountryOfResidencePicker();
 
-        // select country
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
 
@@ -70,6 +86,7 @@ describe('CountryOfResidencePicker', () => {
             setFilterValue: jest.fn(),
             filterValue: 'test-key',
         });
+
         const { getByText } = await renderCountryOfResidencePicker();
         await userEvent.press(getByText('Country of residence'));
 
@@ -80,27 +97,25 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should report to analytics after country changed', async () => {
-        const reportSpy = jest.spyOn(analytics, 'report');
         const { getByText } = await renderCountryOfResidencePicker();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
 
-        expect(reportSpy).toHaveBeenCalled();
+        expect(reportMock).toHaveBeenCalled();
     });
 
     it('should not report to analytics when user selects already selected country', async () => {
-        const reportSpy = jest.spyOn(analytics, 'report');
         const { getByText, getAllByText } = await renderCountryOfResidencePicker();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
-        reportSpy.mockClear();
+        reportMock.mockClear();
 
         await userEvent.press(getAllByText(/Algeria/)[0]);
         await userEvent.press(getAllByText(/Algeria/)[1]);
 
-        expect(reportSpy).not.toHaveBeenCalled();
+        expect(reportMock).not.toHaveBeenCalled();
     });
 
     it('should render even when no value is selected', () => {

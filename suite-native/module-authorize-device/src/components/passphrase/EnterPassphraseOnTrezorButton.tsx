@@ -9,7 +9,6 @@ import {
     submitPassphrase,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button } from '@suite-native/atoms';
 import { setInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { DeviceModelIcon } from '@suite-native/icons';
@@ -20,6 +19,7 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
