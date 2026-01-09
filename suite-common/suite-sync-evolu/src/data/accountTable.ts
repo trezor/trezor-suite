@@ -84,7 +84,9 @@ export class EvoluAccountTable implements AccountTable {
                 });
             }
 
-            onChange(acc);
+            if (acc.length > 0) {
+                onChange(acc);
+            }
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {

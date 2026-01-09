@@ -70,7 +70,9 @@ export class EvoluWalletTable implements WalletTable {
                 });
             }
 
-            onChange(acc);
+            if (acc.length > 0) {
+                onChange(acc);
+            }
         };
 
         const unsubscribe = this.evolu.subscribeQuery(query)(() => {
