@@ -1,12 +1,7 @@
 import { useEffect } from 'react';
 
 import { useFormContext } from '@suite-native/forms';
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingLocationFormValues } from '../../types/tradingLocationForm';
@@ -33,7 +28,7 @@ describe('ConfirmLocationButton', () => {
     let store: TestStore;
 
     const renderConfirmLocationButton = (props: Partial<ConfirmLocationButtonProps>) =>
-        renderWithStoreProviderAsync(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
+        renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
             store,
         });
@@ -43,10 +38,10 @@ describe('ConfirmLocationButton', () => {
         store = initStore().store;
     });
 
-    it('should set location and call afterConfirmMock on press', async () => {
+    it('should set location and call afterConfirmMock on press', () => {
         const afterConfirmMock = jest.fn();
 
-        const { getByText } = await renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
+        const { getByText } = renderConfirmLocationButton({ afterConfirm: afterConfirmMock });
         fireEvent.press(getByText('Confirm location'));
 
         // from expo-localization mock
@@ -54,22 +49,19 @@ describe('ConfirmLocationButton', () => {
         expect(afterConfirmMock).toHaveBeenCalled();
     });
 
-    it('should log submitDefault event on press', async () => {
-        const { getByText } = await renderConfirmLocationButton({});
+    it('should log submitDefault event on press', () => {
+        const { getByText } = renderConfirmLocationButton({});
         fireEvent.press(getByText('Confirm location'));
 
         expect(mockAnalyticsReport).toHaveBeenCalledTimes(1);
         expect(mockAnalyticsReport).toHaveBeenCalledWith('submitDefault');
     });
 
-    it('should log submitCustom when selected value does not match the default one', async () => {
-        const { getByText } = await renderWithStoreProviderAsync(
-            <ConfirmLocationButtonWithChangedCountry />,
-            {
-                wrapper: LocationForm,
-                store,
-            },
-        );
+    it('should log submitCustom when selected value does not match the default one', () => {
+        const { getByText } = renderWithStoreProvider(<ConfirmLocationButtonWithChangedCountry />, {
+            wrapper: LocationForm,
+            store,
+        });
 
         fireEvent.press(getByText('Confirm location'));
 

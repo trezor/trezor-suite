@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { ReviewSummaryOutput, StatefulReviewOutput } from '../../../types';
@@ -25,7 +25,7 @@ jest.mock('../../../selectors', () => {
 
 describe('ReviewOutputItemList', () => {
     const renderReviewOutputItemList = (props: Partial<ReviewOutputItemListProps> = {}) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ReviewOutputItemList prefix="send" accountKey="eth-account-1" {...props} />,
             { preloadedState: { wallet: getWalletState() } },
         );
@@ -47,14 +47,14 @@ describe('ReviewOutputItemList', () => {
         mockSelectIsTransactionAlreadySignedValue = false;
     });
 
-    it('should render Error when account is not found', async () => {
-        const { getByText } = await renderReviewOutputItemList({ accountKey: 'btc-account-3' });
+    it('should render Error when account is not found', () => {
+        const { getByText } = renderReviewOutputItemList({ accountKey: 'btc-account-3' });
 
         expect(getByText('Error: Account not found.')).toBeOnTheScreen();
     });
 
-    it('should render outputs list', async () => {
-        const { getByText } = await renderReviewOutputItemList({});
+    it('should render outputs list', () => {
+        const { getByText } = renderReviewOutputItemList({});
 
         expect(getByText('Recipient address')).toBeOnTheScreen();
         expect(getByText('abcd efgh ijkl mnop qrst uvwx')).toBeOnTheScreen();
@@ -64,9 +64,9 @@ describe('ReviewOutputItemList', () => {
         expect(getByText('Maximum fee')).toBeOnTheScreen();
     });
 
-    it('should render empty list when reviewOutputs are undefined', async () => {
+    it('should render empty list when reviewOutputs are undefined', () => {
         mockSelectTransactionReviewOutputsFromDraftReturnValue = null;
-        const { queryByText } = await renderReviewOutputItemList({});
+        const { queryByText } = renderReviewOutputItemList({});
 
         expect(queryByText('Recipient address')).toBeNull();
         expect(queryByText('TimeBounds')).toBeNull();
@@ -75,15 +75,15 @@ describe('ReviewOutputItemList', () => {
     });
 
     describe('SlidingFooterOverlay', () => {
-        it('should render when transaction is not signed', async () => {
-            const { getByTestId } = await renderReviewOutputItemList({});
+        it('should render when transaction is not signed', () => {
+            const { getByTestId } = renderReviewOutputItemList({});
 
             expect(getByTestId('sliding-footer-overlay')).toBeOnTheScreen();
         });
 
-        it('should render when transaction is already signed', async () => {
+        it('should render when transaction is already signed', () => {
             mockSelectIsTransactionAlreadySignedValue = true;
-            const { queryByTestId } = await renderReviewOutputItemList({});
+            const { queryByTestId } = renderReviewOutputItemList({});
 
             expect(queryByTestId('sliding-footer-overlay')).toBeNull();
         });

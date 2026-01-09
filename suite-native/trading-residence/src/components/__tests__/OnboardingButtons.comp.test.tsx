@@ -1,9 +1,4 @@
-import {
-    TestStore,
-    fireEvent,
-    initStore,
-    renderWithStoreProviderAsync,
-} from '@suite-native/test-utils';
+import { TestStore, fireEvent, initStore, renderWithStoreProvider } from '@suite-native/test-utils';
 import {
     selectTradingResidenceCountry,
     selectWasTradingResidenceOnboardingVisited,
@@ -16,7 +11,7 @@ describe('OnboardingButtons', () => {
     let store: TestStore;
 
     const renderOnboardingButtons = (props: OnboardingButtonsProps) =>
-        renderWithStoreProviderAsync(<OnboardingButtons {...props} />, {
+        renderWithStoreProvider(<OnboardingButtons {...props} />, {
             wrapper: LocationForm,
             store,
         });
@@ -25,8 +20,8 @@ describe('OnboardingButtons', () => {
         store = initStore().store;
     });
 
-    it('should render correctly', async () => {
-        const { getByText } = await renderOnboardingButtons({ afterPress: () => {} });
+    it('should render correctly', () => {
+        const { getByText } = renderOnboardingButtons({ afterPress: () => {} });
 
         expect(getByText('Confirm location')).toBeOnTheScreen();
         expect(getByText('Not now')).toBeOnTheScreen();
@@ -36,9 +31,9 @@ describe('OnboardingButtons', () => {
         expect(selectWasTradingResidenceOnboardingVisited(store.getState())).toBe(false);
     });
 
-    it('should dispatch setResidenceCountry and setOnboardingVisited on `Confirm location` press', async () => {
+    it('should dispatch setResidenceCountry and setOnboardingVisited on `Confirm location` press', () => {
         const afterPressMock = jest.fn();
-        const { getByText } = await renderOnboardingButtons({ afterPress: afterPressMock });
+        const { getByText } = renderOnboardingButtons({ afterPress: afterPressMock });
 
         fireEvent.press(getByText('Confirm location'));
 
@@ -48,9 +43,9 @@ describe('OnboardingButtons', () => {
         expect(afterPressMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should dispatch only setOnboardingVisited on `Not now` press', async () => {
+    it('should dispatch only setOnboardingVisited on `Not now` press', () => {
         const afterPressMock = jest.fn();
-        const { getByText } = await renderOnboardingButtons({ afterPress: afterPressMock });
+        const { getByText } = renderOnboardingButtons({ afterPress: afterPressMock });
 
         fireEvent.press(getByText('Not now'));
 

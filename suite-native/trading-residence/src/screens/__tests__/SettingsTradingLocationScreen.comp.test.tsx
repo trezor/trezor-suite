@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 
@@ -22,7 +22,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('TradingLocationSettingsScreen', () => {
     const renderTradingLocationSettingsScreen = () =>
-        renderWithStoreProviderAsync(<SettingsTradingLocationScreen />);
+        renderWithStoreProvider(<SettingsTradingLocationScreen />);
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -32,9 +32,8 @@ describe('TradingLocationSettingsScreen', () => {
         screen.unmount();
     });
 
-    it('should render all components', async () => {
-        const { getByText, queryByText, getByLabelText } =
-            await renderTradingLocationSettingsScreen();
+    it('should render all components', () => {
+        const { getByText, queryByText, getByLabelText } = renderTradingLocationSettingsScreen();
 
         expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
@@ -44,7 +43,7 @@ describe('TradingLocationSettingsScreen', () => {
     });
 
     it('should goBack on `Confirm location` press', async () => {
-        const { getByText } = await renderTradingLocationSettingsScreen();
+        const { getByText } = renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByText('Confirm location'));
 
@@ -53,7 +52,7 @@ describe('TradingLocationSettingsScreen', () => {
 
     it('should log analytics event on country change', async () => {
         const analyticsSpy = jest.spyOn(analytics, 'report');
-        const { getByText } = await renderTradingLocationSettingsScreen();
+        const { getByText } = renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
@@ -70,7 +69,7 @@ describe('TradingLocationSettingsScreen', () => {
 
     it('should go back and log analytics event on back button press', async () => {
         const analyticsSpy = jest.spyOn(analytics, 'report');
-        const { getByLabelText } = await renderTradingLocationSettingsScreen();
+        const { getByLabelText } = renderTradingLocationSettingsScreen();
 
         await userEvent.press(getByLabelText('Go back'));
 

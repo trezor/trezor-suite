@@ -1,4 +1,4 @@
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { useWaitForButtonRequest } from '../useWaitForButtonRequest';
 
@@ -11,7 +11,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 
 describe('useWaitForButtonRequest.ts', () => {
     const renderUseWaitForButtonRequest = (initialCallback: jest.Mock) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             ({ onButtonRequest }) => useWaitForButtonRequest(onButtonRequest),
             {
                 initialProps: {
@@ -24,9 +24,9 @@ describe('useWaitForButtonRequest.ts', () => {
         jest.clearAllMocks();
     });
 
-    it('should call callback once there are any button requests', async () => {
+    it('should call callback once there are any button requests', () => {
         const callback = jest.fn();
-        const { result, rerender } = await renderUseWaitForButtonRequest(callback);
+        const { result, rerender } = renderUseWaitForButtonRequest(callback);
 
         act(() => {
             result.current();
@@ -41,9 +41,9 @@ describe('useWaitForButtonRequest.ts', () => {
         expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('should not call callback multiple times', async () => {
+    it('should not call callback multiple times', () => {
         const callback = jest.fn();
-        const { result, rerender } = await renderUseWaitForButtonRequest(callback);
+        const { result, rerender } = renderUseWaitForButtonRequest(callback);
 
         act(() => {
             result.current();

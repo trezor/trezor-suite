@@ -1,10 +1,5 @@
 import { Text } from '@suite-native/atoms';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    screen,
-} from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProvider, screen } from '@suite-native/test-utils';
 
 import { TradingLocationSettings, TradingLocationSettingsProps } from '../TradingLocationSettings';
 
@@ -12,7 +7,7 @@ describe('TradingLocationSettings', () => {
     let store: TestStore;
 
     const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
-        renderWithStoreProviderAsync(<TradingLocationSettings {...props} />, { store });
+        renderWithStoreProvider(<TradingLocationSettings {...props} />, { store });
 
     beforeEach(() => {
         store = initStore().store;
@@ -23,8 +18,8 @@ describe('TradingLocationSettings', () => {
         screen.unmount();
     });
 
-    it('should render all components', async () => {
-        const { getByText } = await renderTradingLocationSettings({
+    it('should render all components', () => {
+        const { getByText } = renderTradingLocationSettings({
             context: 'settings',
             children: <Text>Test Children</Text>,
         });

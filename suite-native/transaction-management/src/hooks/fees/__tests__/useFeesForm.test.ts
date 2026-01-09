@@ -1,4 +1,4 @@
-import { act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
@@ -10,7 +10,7 @@ describe('useFeesForm', () => {
     };
 
     const renderUseFeesForm = (props: UseFeesFormProps = mockProps) =>
-        renderHookWithStoreProviderAsync(() => useFeesForm(props), {
+        renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
                     send: {
@@ -65,8 +65,8 @@ describe('useFeesForm', () => {
             },
         });
 
-    it('should initialize with default values', async () => {
-        const { result } = await renderUseFeesForm();
+    it('should initialize with default values', () => {
+        const { result } = renderUseFeesForm();
 
         expect(result.current.getValues()).toEqual({
             feeLevel: 'normal',
@@ -75,8 +75,8 @@ describe('useFeesForm', () => {
         });
     });
 
-    it('should update fee level when changed', async () => {
-        const { result } = await renderUseFeesForm();
+    it('should update fee level when changed', () => {
+        const { result } = renderUseFeesForm();
 
         act(() => {
             result.current.setValue('feeLevel', 'high');
@@ -85,8 +85,8 @@ describe('useFeesForm', () => {
         expect(result.current.getValues('feeLevel')).toBe('high');
     });
 
-    it('should update custom fee per unit when changed', async () => {
-        const { result } = await renderUseFeesForm();
+    it('should update custom fee per unit when changed', () => {
+        const { result } = renderUseFeesForm();
 
         act(() => {
             result.current.setValue('customFeePerUnit', '30000000000');
@@ -95,8 +95,8 @@ describe('useFeesForm', () => {
         expect(result.current.getValues('customFeePerUnit')).toBe('30000000000');
     });
 
-    it('should update custom fee limit when changed', async () => {
-        const { result } = await renderUseFeesForm();
+    it('should update custom fee limit when changed', () => {
+        const { result } = renderUseFeesForm();
 
         act(() => {
             result.current.setValue('customFeeLimit', '21000');
@@ -105,14 +105,14 @@ describe('useFeesForm', () => {
         expect(result.current.getValues('customFeeLimit')).toBe('21000');
     });
 
-    it('should initialize with custom default values', async () => {
+    it('should initialize with custom default values', () => {
         const customProps: UseFeesFormProps = {
             accountKey: 'eth-1',
             defaultFeeLevel: 'high',
             defaultFeePerUnit: '15000000000',
         };
 
-        const { result } = await renderUseFeesForm(customProps);
+        const { result } = renderUseFeesForm(customProps);
 
         expect(result.current.getValues()).toEqual({
             feeLevel: 'high',

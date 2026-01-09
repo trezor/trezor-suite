@@ -2,12 +2,7 @@ import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesFooter } from '../FeesFooter';
@@ -74,9 +69,9 @@ describe('FeesFooter', () => {
         const finalProps = { ...defaultProps, ...props };
         mockOnSubmit = finalProps.onSubmit;
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <TestFormWrapper>
-                {/* 
+                {/*
                   FeesFooterProps expects withSubmitButton: true when present.
                   So we must ensure withSubmitButton is always true when passed.
                   This cast is safe because defaultProps and all usages set withSubmitButton: true.
@@ -103,14 +98,14 @@ describe('FeesFooter', () => {
         jest.clearAllMocks();
     });
 
-    it('should render mainnet summary when no token contract is provided', async () => {
-        const { getByText } = await renderFeesFooter();
+    it('should render mainnet summary when no token contract is provided', () => {
+        const { getByText } = renderFeesFooter();
 
         expect(getByText('Total amount')).toBeTruthy();
     });
 
-    it('should render token summary when token contract is provided', async () => {
-        const { getByText } = await renderFeesFooter({
+    it('should render token summary when token contract is provided', () => {
+        const { getByText } = renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
@@ -118,24 +113,24 @@ describe('FeesFooter', () => {
         expect(getByText('Fee')).toBeTruthy();
     });
 
-    it('should display total amount correctly', async () => {
-        const { getByText } = await renderFeesFooter({
+    it('should display total amount correctly', () => {
+        const { getByText } = renderFeesFooter({
             totalAmount: '5000000',
         });
 
         expect(getByText('0.05 BTC')).toBeTruthy();
     });
 
-    it('should show submit button when isSubmittable is true', async () => {
-        const { getByTestId } = await renderFeesFooter({
+    it('should show submit button when isSubmittable is true', () => {
+        const { getByTestId } = renderFeesFooter({
             isSubmittable: true,
         });
 
         expect(getByTestId('@transactionManagement/fees-submit-button')).toBeTruthy();
     });
 
-    it('should not show submit button when isSubmittable is false', async () => {
-        const { queryByTestId } = await renderFeesFooter({
+    it('should not show submit button when isSubmittable is false', () => {
+        const { queryByTestId } = renderFeesFooter({
             isSubmittable: false,
         });
 
@@ -143,7 +138,7 @@ describe('FeesFooter', () => {
     });
 
     it('should call onSubmit when submit button is pressed', async () => {
-        const { getByTestId } = await renderFeesFooter({
+        const { getByTestId } = renderFeesFooter({
             isSubmittable: true,
         });
 
@@ -152,20 +147,20 @@ describe('FeesFooter', () => {
         expect(mockOnSubmit).toHaveBeenCalledTimes(1);
     });
 
-    it('should display token symbol correctly', async () => {
+    it('should display token symbol correctly', () => {
         mockSelectAccountTokenSymbol.mockReturnValue('USDC');
 
-        const { getByText } = await renderFeesFooter({
+        const { getByText } = renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 
         expect(getByText(/USDC/)).toBeTruthy();
     });
 
-    it('should display token amount with correct decimals', async () => {
+    it('should display token amount with correct decimals', () => {
         mockSelectAccountTokenDecimals.mockReturnValue(6);
 
-        const { getByText } = await renderFeesFooter({
+        const { getByText } = renderFeesFooter({
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
             totalAmount: '1000', // 1 USDC with 6 decimals
         });
@@ -173,18 +168,18 @@ describe('FeesFooter', () => {
         expect(getByText('0.001 USDC')).toBeTruthy();
     });
 
-    it('should handle different token contracts', async () => {
+    it('should handle different token contracts', () => {
         mockSelectAccountTokenSymbol.mockReturnValue('DAI');
 
-        const { getByText } = await renderFeesFooter({
+        const { getByText } = renderFeesFooter({
             tokenContract: '0x6b175474e89094c44da98b954eedeac495271d0f' as TokenAddress,
         });
 
         expect(getByText(/DAI/)).toBeTruthy();
     });
 
-    it('should show submit button when withSubmitButton is true and isSubmittable is true', async () => {
-        const { getByText } = await renderFeesFooter({
+    it('should show submit button when withSubmitButton is true and isSubmittable is true', () => {
+        const { getByText } = renderFeesFooter({
             isSubmittable: true,
             withSubmitButton: true,
         });
@@ -198,15 +193,15 @@ describe('FeesFooter', () => {
         { isSubmittable: false, withSubmitButton: false },
     ])(
         'should not show submit button when withSubmitButton is $withSubmitButton even if isSubmittable is $isSubmittable',
-        async props => {
-            const { queryByText } = await renderFeesFooter(props);
+        props => {
+            const { queryByText } = renderFeesFooter(props);
 
             expect(queryByText('Review and sign')).toBeNull();
         },
     );
 
-    it('should default withSubmitButton to true when not provided', async () => {
-        const { getByText } = await renderFeesFooter({
+    it('should default withSubmitButton to true when not provided', () => {
+        const { getByText } = renderFeesFooter({
             isSubmittable: true,
             // withSubmitButton not provided, should default to true
         });

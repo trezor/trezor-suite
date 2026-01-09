@@ -6,7 +6,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import {
     TradingLocationModalScreen,
@@ -33,7 +33,7 @@ jest.mock('@react-navigation/native', () => ({
 
 describe('TradingLocationModalScreen', () => {
     const renderTradingLocationModalScreen = () =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <TradingLocationModalScreen
                 navigation={
                     {
@@ -48,8 +48,8 @@ describe('TradingLocationModalScreen', () => {
         screen.unmount();
     });
 
-    it('should render all components', async () => {
-        const { getByText, queryByLabelText } = await renderTradingLocationModalScreen();
+    it('should render all components', () => {
+        const { getByText, queryByLabelText } = renderTradingLocationModalScreen();
 
         expect(getByText('Trading is now available')).toBeOnTheScreen();
         expect(getByText('Confirm location')).toBeOnTheScreen();
@@ -60,7 +60,7 @@ describe('TradingLocationModalScreen', () => {
 
     it('should log analytics event on country change', async () => {
         const analyticsSpy = jest.spyOn(analytics, 'report');
-        const { getByText } = await renderTradingLocationModalScreen();
+        const { getByText } = renderTradingLocationModalScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
@@ -76,7 +76,7 @@ describe('TradingLocationModalScreen', () => {
     });
 
     it('should reset navigation on button press', async () => {
-        const { getByText } = await renderTradingLocationModalScreen();
+        const { getByText } = renderTradingLocationModalScreen();
 
         await userEvent.press(getByText('Not now'));
 
