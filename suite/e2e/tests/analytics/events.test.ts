@@ -4,13 +4,14 @@ import { EventType } from '@trezor/suite-analytics';
 import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { isModelWithTHP } from '../../support/helpers/modelHelper';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
 
 test.describe(
     'Analytics Events',
-    { tag: ['@group=suite', '@webOnly', '@specificFirmware'] },
+    { tag: ['@webOnly', '@specificFirmware', '@T3T1', '@smoke'] },
     () => {
         const firmwareVersion = findLatestVersionForModel('T3T1');
         test.use({ emulatorStartConf: { model: 'T3T1', version: firmwareVersion, wipe: true } });
@@ -101,7 +102,7 @@ test.describe(
     },
 );
 
-test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
+test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ startEmulator: false });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
@@ -127,13 +128,13 @@ test.describe('Analytics Events', { tag: ['@group=suite', '@webOnly'] }, () => {
             // the only message about the analytics being sent is the "settings/analytics" disabled.
             await analytics.interceptAnalytics();
 
-            await trezorUserEnvLink.startEmu({ wipe: true, model: model.model });
+            await trezorUserEnvLink.startEmu({ wipe: true, model });
             await trezorUserEnvLink.setupEmu({
                 passphrase_protection: true,
             });
 
             await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
-            if (model.isModelWithTHP()) {
+            if (isModelWithTHP(model)) {
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }

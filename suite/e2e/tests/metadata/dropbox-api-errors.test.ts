@@ -3,7 +3,7 @@ import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Dropbox API errors', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all' },
     });

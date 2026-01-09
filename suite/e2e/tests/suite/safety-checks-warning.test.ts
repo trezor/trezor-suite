@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('safety_checks Warnings', { tag: ['@group=suite'] }, () => {
+test.describe('safety_checks Warnings', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeSafetyChecksLevel('prompt');

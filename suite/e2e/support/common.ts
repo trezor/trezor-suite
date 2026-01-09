@@ -11,14 +11,14 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import releases from '../../../submodules/trezor-common/releases.json';
-import { PlaywrightProjects } from '../playwright.config';
+import { PlaywrightTarget } from '../playwright-base.config';
 import { PercentageOfBalanceParams } from './types';
 
 export const isDesktopProject = (testInfo: TestInfo) =>
-    testInfo.project.name === PlaywrightProjects.Desktop;
+    testInfo.project.use.target === PlaywrightTarget.Desktop;
 
 export const isWebProject = (testInfo: TestInfo) =>
-    testInfo.project.name === PlaywrightProjects.Web;
+    testInfo.project.use.target === PlaywrightTarget.Web;
 
 export const getUrl = (testInfo: TestInfo) => {
     const electronApiURL = 'file:///';

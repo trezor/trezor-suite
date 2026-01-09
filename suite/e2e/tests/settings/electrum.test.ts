@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
 test.describe(
     'Suite works with Electrum server',
-    { tag: ['@group=settings', '@desktopOnly'] },
+    { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
         test.beforeEach(async ({ onboardingPage }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });

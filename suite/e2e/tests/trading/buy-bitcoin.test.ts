@@ -20,7 +20,7 @@ const { receiveAddress, paymentMethodName } = buyTradeBTC.trade;
 // secondOffer via Bank Transfer that matches input criteria has index 5
 const updateFiatAmount = buyQuotesBTCUpdate[5].fiatStringAmount;
 
-test.describe('Trading - Buy BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Buy BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, walletPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesBTC });

@@ -1,15 +1,14 @@
 import { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
-import type { PlaywrightTestConfig } from '@playwright/test';
+import type { PlaywrightTestConfig, Project } from '@playwright/test';
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, './.env') });
 
-export enum PlaywrightProjects {
+export enum PlaywrightTarget {
     Web = 'web',
     Desktop = 'desktop',
-    Manual = 'manual',
 }
 
 const CI_TIMEOUT = 1000 * 180;
@@ -23,28 +22,40 @@ function getTimeout(): number {
     return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
 }
 
-const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWorkerFixtures>({
-    projects: [
-        {
-            name: PlaywrightProjects.Web,
-            use: {
-                ...devices['Desktop Chrome'],
-                channel: 'chromium',
-                baseURL: process.env.BASE_URL || 'http://localhost:8000/',
-            },
-            grepInvert: [/@desktopOnly/, /@group=manual/],
+export function createProject(name: string, base: Project, overrides: Project): Project {
+    return {
+        ...base,
+        ...overrides,
+        name,
+        use: {
+            ...base.use,
+            ...overrides.use,
         },
-        {
-            name: PlaywrightProjects.Desktop,
-            use: {},
-            grepInvert: [/@webOnly/, /@group=manual/],
-        },
-        {
-            name: PlaywrightProjects.Manual,
-            use: {},
-            grep: /@group=manual/,
-        },
-    ],
+    };
+}
+
+export const baseWebProject: Project = {
+    use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chromium',
+        baseURL: process.env.BASE_URL || 'http://localhost:8000/',
+        target: PlaywrightTarget.Web,
+    },
+    grepInvert: [/@desktopOnly/, /@group=manual/],
+};
+
+export const baseDesktopProject: Project = {
+    use: {
+        target: PlaywrightTarget.Desktop,
+    },
+    grepInvert: [/@webOnly/, /@group=manual/],
+};
+
+export const baseConfig: PlaywrightTestConfig = defineConfig<
+    CurrentsFixtures,
+    CurrentsWorkerFixtures
+>({
+    projects: [],
     testDir: 'tests',
     workers: 1, // to disable parallelism between test files
     retries: process.env.GITHUB_ACTION ? 2 : 0,
@@ -66,6 +77,3 @@ const config: PlaywrightTestConfig = defineConfig<CurrentsFixtures, CurrentsWork
     outputDir: path.join(__dirname, 'test-results'),
     snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
 });
-
-/* eslint-disable-next-line import/no-default-export */
-export default config;

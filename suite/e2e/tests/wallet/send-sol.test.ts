@@ -13,7 +13,7 @@ const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
 const SOL_DECIMALS = getNetwork('sol').decimals;
 
-test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
+test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'mnemonic_academic',
@@ -137,7 +137,7 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
 
             await test.step('Approve and Verify Send readiness', async () => {
                 // hold & sign
-                if (model.model !== 'T3W1') {
+                if (model !== 'T3W1') {
                     await devicePrompt.waitForPromptAndClick();
                 }
 

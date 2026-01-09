@@ -39,8 +39,8 @@ test.describe(
             const text = page.getByTestId('@sign-message-modal/message');
             await expect(text).toHaveText('example message');
 
-            await pressContinue(model.model);
-            await pressContinue(model.model);
+            await pressContinue(model);
+            await pressContinue(model);
 
             await trezorUserEnvLink.pressYes();
             expect(await res).toMatchObject({ success: true });

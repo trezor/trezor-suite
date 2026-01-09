@@ -3,8 +3,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('T2T1 - Device settings', { tag: ['@group=settings', '@specificModel'] }, () => {
-    test.use({ emulatorStartConf: { wipe: true, model: 'T2T1' } });
+test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');
@@ -64,19 +63,13 @@ test.describe('T2T1 - Device settings', { tag: ['@group=settings', '@specificMod
         },
     );
 
-    test.describe(
-        'T2T1 - older firmware < 2.5.4',
-        { tag: ['@group=settings', '@specificFirmware'] },
-        () => {
-            test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' } });
-            test('Cannot change homescreen in firmware < 2.5.4', async ({ page }) => {
-                await expect(
-                    page.getByTestId('@settings/device/homescreen-gallery'),
-                ).toBeDisabled();
-                await expect(page.getByTestId('@settings/device/homescreen-upload')).toBeDisabled();
-            });
-        },
-    );
+    test.describe('T2T1 - older firmware < 2.5.4', { tag: ['@specificFirmware', '@T2T1'] }, () => {
+        test.use({ emulatorStartConf: { wipe: true, model: 'T2T1', version: '2.5.3' } });
+        test('Cannot change homescreen in firmware < 2.5.4', async ({ page }) => {
+            await expect(page.getByTestId('@settings/device/homescreen-gallery')).toBeDisabled();
+            await expect(page.getByTestId('@settings/device/homescreen-upload')).toBeDisabled();
+        });
+    });
 
     // TODO: upload custom image
     // TODO: set auto-lock (needs pin)

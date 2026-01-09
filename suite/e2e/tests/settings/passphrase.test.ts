@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Passphrase', { tag: ['@group=settings'] }, () => {
+test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('device');

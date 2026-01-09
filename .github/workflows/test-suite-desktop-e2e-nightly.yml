@@ -71,60 +71,12 @@ jobs:
           currents-tags: "nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
 
-  run-e2e-suite-desktop-tests-t3w1:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-24.04
-    needs:
-      - build-app
-    strategy:
-      fail-fast: false
-      matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: desktop-app-build-e2e
-
-      - name: Extract build artifact
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        env:
-          EMULATOR_MODEL: T3W1
-        with:
-          project: "desktop"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
-          workspace-dependencies: "@trezor/suite-desktop"
-          test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep-invert: "@specificModel"
-          fail-fast: false
-          currents-project-id: "4ytF0E"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-ci-build-id: "nightly-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
-          currents-tags: "T3W1,nightly"
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-
   run-e2e-suite-desktop-tests-fw-canary:
-    if: github.repository == 'trezor/trezor-suite' && ${{ always() && !cancelled() }} # make sure this job runs even if others fail
+    if: ${{ github.repository == 'trezor/trezor-suite' && always() && !cancelled() }} # make sure this job runs even if others fail
     runs-on: ubuntu-24.04
     needs:
       - build-app
       - run-e2e-suite-desktop-tests
-      - run-e2e-suite-desktop-tests-t3w1
     strategy:
       fail-fast: false
       matrix:
@@ -165,54 +117,4 @@ jobs:
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
           currents-ci-build-id: "nightly-run-fw-canary-${{ github.run_id }}-${{ github.run_attempt }}"
           currents-tags: "fw-canary,nightly"
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-
-  run-e2e-suite-desktop-tests-fw-canary-t3w1:
-    if: github.repository == 'trezor/trezor-suite' && ${{ always() && !cancelled() }} # make sure this job runs even if others fail
-    runs-on: ubuntu-24.04
-    needs:
-      - build-app
-      - run-e2e-suite-desktop-tests
-      - run-e2e-suite-desktop-tests-t3w1
-    strategy:
-      fail-fast: false
-      matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6, 7]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: desktop-app-build-e2e
-
-      - name: Extract build artifact
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        env:
-          EMULATOR_MODEL: T3W1
-          CANARY_FIRMWARE: "true"
-        with:
-          project: "desktop"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
-          workspace-dependencies: "@trezor/suite-desktop"
-          test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep-invert: "@specificFirmware|@specificModel"
-          fail-fast: false
-          currents-project-id: "4ytF0E"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-ci-build-id: "nightly-run-fw-canary-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
-          currents-tags: "T3W1,fw-canary,nightly"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

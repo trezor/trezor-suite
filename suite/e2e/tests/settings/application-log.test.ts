@@ -2,7 +2,7 @@ import { readFileSync } from 'fs-extra';
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
+test.describe('Application Logs', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
@@ -10,7 +10,7 @@ test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
 
     test(
         'Display and export application logs',
-        { tag: ['@webOnly'] },
+        { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         async ({ page }, testInfo) => {
             const displayedLogs = await test.step('Display application logs', async () => {
                 await page.getByTestId('@settings/menu/general').click();
@@ -44,12 +44,16 @@ test.describe('Application Logs', { tag: ['@group=settings'] }, () => {
         },
     );
 
-    test('Display application logs', { tag: ['@desktopOnly'] }, async ({ page }) => {
-        await page.getByTestId('@settings/menu/general').click();
-        await page.getByTestId('@settings/show-log-button').click();
-        await expect(page.getByTestId('@modal/application-log')).toBeVisible();
-        await expect(page.getByTestId('@log/content')).not.toBeEmpty();
-        await expect(page.getByTestId('@log/export-button')).toBeVisible();
-        // Playwright does not support downloading files in electron, we would have to mock it
-    });
+    test(
+        'Display application logs',
+        { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
+        async ({ page }) => {
+            await page.getByTestId('@settings/menu/general').click();
+            await page.getByTestId('@settings/show-log-button').click();
+            await expect(page.getByTestId('@modal/application-log')).toBeVisible();
+            await expect(page.getByTestId('@log/content')).not.toBeEmpty();
+            await expect(page.getByTestId('@log/export-button')).toBeVisible();
+            // Playwright does not support downloading files in electron, we would have to mock it
+        },
+    );
 });

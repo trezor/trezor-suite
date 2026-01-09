@@ -121,6 +121,7 @@ runs:
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         RELEASE_BUILD: ${{ inputs.release-build }}
+        ELECTRON_DISABLE_SANDBOX: 1
       run: |
         if [[ -z "${{ inputs.base-url }}" ]]; then
           BASE_URL="https://dev.suite.sldev.cz/suite-web/${{ env.branch }}/web/"

@@ -18,7 +18,7 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
 );
 const { receiveAddress } = swapTradeEthereumBTC;
 
-test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock, page }) => {

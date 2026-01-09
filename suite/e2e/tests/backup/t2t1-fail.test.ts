@@ -4,9 +4,8 @@ import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Backup errors', { tag: ['@group=device-management', '@specificModel'] }, () => {
+test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { needs_backup: true },
     });
 
@@ -22,6 +21,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
         trezorUserEnvLink,
         settingsPage,
         walletPage,
+        emulatorStartConf,
     }) => {
         await test.step('Start backup', async () => {
             await dashboardPage.notificationNoBackupButton.click();
@@ -38,7 +38,7 @@ test.describe('Backup errors', { tag: ['@group=device-management', '@specificMod
         });
 
         await test.step('Simulate reconnect and check errors', async () => {
-            await trezorUserEnvLink.startEmu();
+            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
             await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
             await dashboardPage.deviceSwitchingCloseButton.click();
         });

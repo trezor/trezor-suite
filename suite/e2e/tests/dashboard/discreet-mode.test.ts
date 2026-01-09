@@ -23,7 +23,7 @@ const verifyHiddenAndRevealedValue = async ({
     await expect.soft(locator).toHaveText(revealedValue);
 };
 
-test.describe('Discreet Mode', { tag: ['@group=suite'] }, () => {
+test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();

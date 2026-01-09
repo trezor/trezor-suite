@@ -11,7 +11,7 @@ const receiveAddress =
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
-test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
+test.describe('Cardano', { tag: ['@snapshot', '@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['ada'], disableNetworks: ['btc'] });
@@ -36,7 +36,7 @@ test.describe('Cardano', { tag: ['@group=wallet', '@snapshot'] }, () => {
                 await walletPage.openAccount({ symbol: 'ada' });
                 await walletPage.accountDetailsTabButton.click();
                 await expect(walletPage.accountDetails).toMatchAriaSnapshot(
-                    cardanoAccountDetails(testInfo.project.name),
+                    cardanoAccountDetails(testInfo.project.use.target ?? 'N/A'),
                 );
             });
 

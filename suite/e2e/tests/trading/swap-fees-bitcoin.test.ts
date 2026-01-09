@@ -7,7 +7,7 @@ const sendAmount = '0.0004';
 const customFee = '10';
 const { receiveAddress } = swapTradeBTCEthereum;
 
-test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page, tradingMock }) => {

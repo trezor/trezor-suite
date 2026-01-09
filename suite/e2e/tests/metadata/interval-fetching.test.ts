@@ -15,7 +15,7 @@ const providers = [
     },
 ] as const;
 
-test.describe('Account metadata', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
 
     providers.forEach(p => {

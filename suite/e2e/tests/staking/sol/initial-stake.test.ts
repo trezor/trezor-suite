@@ -8,7 +8,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 const stakedAmount = solStakingAccountFirst.stakeInSol;
 const stakedAmountFormatted = `${stakedAmount} SOL`;
 
-test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
+test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',

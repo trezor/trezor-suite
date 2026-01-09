@@ -17,7 +17,7 @@ const testCases: { symbol: NetworkSymbol; xpub: string }[] = [
     },
 ];
 
-test.describe('Public Keys', { tag: ['@group=wallet'] }, () => {
+test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',

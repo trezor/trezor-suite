@@ -20,8 +20,10 @@ const formattedReceiveAmount = `${receiveAmount} USDC`;
 const { sendAddress, send: tetherMint, receive: usdcMint, receiveAddress } = swapTradeSolanaTokens;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
-test.describe('Trading - Swap tokens', { tag: ['@group=trading', '@webOnly'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+test.describe('Trading - Swap tokens', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+    test.use({
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+    });
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {

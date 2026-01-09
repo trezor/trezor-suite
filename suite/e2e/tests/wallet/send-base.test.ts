@@ -12,7 +12,7 @@ const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 const sendAmount = '0.000008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 
-test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
+test.describe('Send Base', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page }) => {

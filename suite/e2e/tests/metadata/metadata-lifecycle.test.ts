@@ -2,7 +2,7 @@ import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 
-test.describe('Metadata lifecycle', { tag: ['@group=metadata', '@webOnly'] }, () => {
+test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'mnemonic_all',

@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Sign and verify ETH', { tag: ['@group=wallet'] }, () => {
+test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();

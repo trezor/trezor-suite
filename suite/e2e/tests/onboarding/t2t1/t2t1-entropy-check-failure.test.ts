@@ -3,91 +3,86 @@ import { TestCategory, TestPriority, createTestAnnotation } from '@trezor/e2e-ut
 
 import { expect, test } from '../../../support/fixtures';
 
-test.describe(
-    'Onboarding - simulated entropy check failure',
-    { tag: ['@group=device-management'] },
-    () => {
-        test.use({
-            emulatorStartConf: { wipe: true, model: 'T2T1' },
-            setupEmulator: false,
-        });
+test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }, () => {
+    test.use({
+        setupEmulator: false,
+    });
 
-        test.beforeEach(async ({ onboardingPage, analyticsSection }) => {
-            await onboardingPage.disableNecessaryFirmwareChecks();
-            await analyticsSection.passThroughAnalytics();
-        });
+    test.beforeEach(async ({ onboardingPage, analyticsSection }) => {
+        await onboardingPage.disableNecessaryFirmwareChecks();
+        await analyticsSection.passThroughAnalytics();
+    });
 
-        test(
-            'Device compromised (entropy-mismatch)',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Verify that the proper modal is shown when entropy check fails during wallet creation.',
-                    category: TestCategory.Onboarding,
-                    priority: TestPriority.High,
+    test(
+        'Device compromised (entropy-mismatch)',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that the proper modal is shown when entropy check fails during wallet creation.',
+                category: TestCategory.Onboarding,
+                priority: TestPriority.High,
+            }),
+        },
+        async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+            await page.ensureStoreOnDesktop();
+
+            await page.evaluate(
+                action => window.store.dispatch(action),
+                deviceActions.setSimulatedEntropyCheckFail({
+                    success: false,
+                    payload: { code: 'Failure_EntropyCheck', error: 'SIMULATED ERROR' },
                 }),
-            },
-            async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
-                await page.ensureStoreOnDesktop();
+            );
 
-                await page.evaluate(
-                    action => window.store.dispatch(action),
-                    deviceActions.setSimulatedEntropyCheckFail({
-                        success: false,
-                        payload: { code: 'Failure_EntropyCheck', error: 'SIMULATED ERROR' },
-                    }),
-                );
+            await test.step('Start creating wallet', async () => {
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.createWalletButton.click();
+                await onboardingPage.selectSeedType('12-words');
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+            });
 
-                await test.step('Start creating wallet', async () => {
-                    await onboardingPage.firmware.continueThroughFirmware();
-                    await onboardingPage.createWalletButton.click();
-                    await onboardingPage.selectSeedType('12-words');
-                    await devicePrompt.confirmOnDevicePromptIsShown();
-                    await trezorUserEnvLink.pressYes();
-                });
+            await test.step('Land on entropy check failure', async () => {
+                await expect(onboardingPage.deviceCompromisedModal).toBeVisible();
+            });
+        },
+    );
 
-                await test.step('Land on entropy check failure', async () => {
-                    await expect(onboardingPage.deviceCompromisedModal).toBeVisible();
-                });
-            },
-        );
-
-        test(
-            'Transport error (device disconnected during entropy check)',
-            {
-                annotation: createTestAnnotation({
-                    testCase:
-                        'Verify that the proper modal is shown when entropy check gets interrupted by transport error during wallet creation.',
-                    category: TestCategory.Onboarding,
-                    priority: TestPriority.High,
+    test(
+        'Transport error (device disconnected during entropy check)',
+        {
+            annotation: createTestAnnotation({
+                testCase:
+                    'Verify that the proper modal is shown when entropy check gets interrupted by transport error during wallet creation.',
+                category: TestCategory.Onboarding,
+                priority: TestPriority.High,
+            }),
+        },
+        async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+            // note that this specific string is one of the ignored errors, see getIsIgnoredEntropyCheckError
+            const mockedError = 'device disconnected during action';
+            await page.ensureStoreOnDesktop();
+            await page.evaluate(
+                action => window.store.dispatch(action),
+                deviceActions.setSimulatedEntropyCheckFail({
+                    success: false,
+                    payload: { code: 'Failure_EntropyCheck', error: mockedError },
                 }),
-            },
-            async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
-                // note that this specific string is one of the ignored errors, see getIsIgnoredEntropyCheckError
-                const mockedError = 'device disconnected during action';
-                await page.ensureStoreOnDesktop();
-                await page.evaluate(
-                    action => window.store.dispatch(action),
-                    deviceActions.setSimulatedEntropyCheckFail({
-                        success: false,
-                        payload: { code: 'Failure_EntropyCheck', error: mockedError },
-                    }),
-                );
+            );
 
-                await test.step('Start creating wallet', async () => {
-                    await onboardingPage.firmware.continueThroughFirmware();
-                    await onboardingPage.createWalletButton.click();
-                    await onboardingPage.selectSeedType('12-words');
-                    await devicePrompt.confirmOnDevicePromptIsShown();
-                    await trezorUserEnvLink.pressYes();
-                });
+            await test.step('Start creating wallet', async () => {
+                await onboardingPage.firmware.continueThroughFirmware();
+                await onboardingPage.createWalletButton.click();
+                await onboardingPage.selectSeedType('12-words');
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await trezorUserEnvLink.pressYes();
+            });
 
-                await test.step('Display error toast, but stay on the same screen (no device compromised)', async () => {
-                    await expect(page.getByTestId('@toast/error')).toContainText(mockedError);
-                    await page.waitForTimeout(500); // we do not expect any navigation, so ensure no navigation occurs
-                    await expect(onboardingPage.selectSeedConfirmButton).toBeVisible();
-                });
-            },
-        );
-    },
-);
+            await test.step('Display error toast, but stay on the same screen (no device compromised)', async () => {
+                await expect(page.getByTestId('@toast/error')).toContainText(mockedError);
+                await page.waitForTimeout(500); // we do not expect any navigation, so ensure no navigation occurs
+                await expect(onboardingPage.selectSeedConfirmButton).toBeVisible();
+            });
+        },
+    );
+});

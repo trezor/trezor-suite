@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Suite Guide', { tag: '@group=suite' }, () => {
+test.describe('Suite Guide', { tag: ['@noDevice'] }, () => {
     test.use({ startEmulator: false });
     /**
      * Test case:

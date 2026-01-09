@@ -1,6 +1,6 @@
 import { test } from '../../support/fixtures';
 
-test.describe('LTC send form with mocked blockbook', { tag: ['@group=wallet'] }, () => {
+test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',

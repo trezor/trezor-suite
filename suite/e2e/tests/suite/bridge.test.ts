@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Bridge page', { tag: ['@group=suite', '@webOnly'] }, () => {
+test.describe('Bridge page', { tag: ['@webOnly', '@noDevice'] }, () => {
     test.use({ startEmulator: false });
     test('can use webusb', async ({ url, page, analyticsSection }) => {
         await analyticsSection.continueButton.click();

@@ -13,7 +13,7 @@ const finalBalance =
     startingBalance - feeAmount - Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
 const finalBalanceFormatted = toADA(finalBalance);
 
-test.describe('Staking - Cardano', { tag: ['@group=staking', '@specificModel'] }, () => {
+test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic' } });
 
     test.beforeEach(

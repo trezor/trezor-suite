@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Hidden version page', { tag: ['@group=suite', '@webOnly'] }, () => {
+test.describe('Hidden version page', { tag: ['@webOnly', '@noDevice'] }, () => {
     test.use({ startEmulator: false });
     test('Version page is accessible on URL', async ({ url, page, analyticsSection }) => {
         await analyticsSection.continueButton.click();

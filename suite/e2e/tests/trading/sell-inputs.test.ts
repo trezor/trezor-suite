@@ -8,8 +8,10 @@ const customFeeRate = 1;
 let bitcoinBalance: string | null;
 let solanaBalance: string | null;
 
-test.describe('Trading - Sell inputs', { tag: ['@group=trading', '@webOnly'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+test.describe('Trading - Sell inputs', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+    test.use({
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+    });
     test.beforeEach(async ({ onboardingPage, dashboardPage, settingsPage, solanaStakingMock }) => {
         await onboardingPage.completeOnboarding();
         await test.step('Mock Solana account to have 5 SOL', async ({}) => {

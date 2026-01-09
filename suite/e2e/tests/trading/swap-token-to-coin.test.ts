@@ -20,8 +20,10 @@ const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, send: tetherMint, receiveAddress } = swapTradeTetherBTC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
-test.describe('Trading - Swap token to coin', { tag: ['@group=trading', '@webOnly'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
+    test.use({
+        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+    });
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {
             await test.step('Mocking responses', async () => {

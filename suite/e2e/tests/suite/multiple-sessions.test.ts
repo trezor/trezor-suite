@@ -20,7 +20,7 @@ const stealBridgeSession = async () => {
     });
 };
 
-test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
+test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { passphrase_protection: true } });
     // Skipped, because it started failing after PW update. Needs to be investigated.
     test.skip(
@@ -77,7 +77,7 @@ test.describe('Multiple sessions', { tag: ['@group=suite'] }, () => {
     test(
         'Overtake session by opening suite new tab',
         {
-            tag: ['@webOnly'],
+            tag: ['@webOnly', '@T3W1', '@T3T1'],
             annotation: createTestAnnotation({
                 testCase:
                     'Verifies that a user can successfully take over a session by opening suite in new tab.',

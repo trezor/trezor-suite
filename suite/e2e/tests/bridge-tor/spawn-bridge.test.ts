@@ -17,7 +17,7 @@ import { enhancePage } from '../../support/testExtends/enhancePage';
 const NODE_BRIDGE_VERSION = '3.1.0';
 
 test.use({ exceptionLogger: skipFixture });
-test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
+test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.describe.configure({ mode: 'serial' });
 
     test.beforeEach(async ({ trezorUserEnvLink }) => {

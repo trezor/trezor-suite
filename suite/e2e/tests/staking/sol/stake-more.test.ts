@@ -13,7 +13,7 @@ const stakeMoreAmount = solStakingAccountSecond.stakeInSol;
 const stakeMoreAmountFormatted = `${stakeMoreAmount} SOL`;
 const totalStakedAmount = (Number(stakedAmount) + Number(stakeMoreAmount)).toFixed(9);
 
-test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
+test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',

@@ -1,11 +1,13 @@
 import { Locator, Page, expect } from '@playwright/test';
 
+import { Model } from '@trezor/trezor-user-env-link';
+
 import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
 import {
     NormalizedDisplayContent,
     parseDisplayContent,
 } from '../helpers/displayContentNormalizedParser';
-import { ModelFixture } from '../modelFixture';
+import { isT3W1 } from '../helpers/modelHelper';
 
 export class DevicePrompt {
     readonly confirmOnDevicePrompt: Locator;
@@ -40,7 +42,7 @@ export class DevicePrompt {
 
     constructor(
         private page: Page,
-        readonly model: ModelFixture,
+        readonly model: Model,
     ) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
@@ -110,7 +112,7 @@ export class DevicePrompt {
         };
 
         await this.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_CENTER_COORDINATES[this.model.model]);
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_CENTER_COORDINATES[this.model]);
     }
 
     @step()
@@ -214,12 +216,12 @@ export class DevicePrompt {
             T3T1: { x: 200, y: 20 },
             T3W1: { x: 300, y: 20 },
         };
-        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_BURGER_MENU_COORDINATES[this.model.model]);
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_BURGER_MENU_COORDINATES[this.model]);
         const EMULATOR_FEE_INFO_COORDINATES: Record<string, { x: number; y: number }> = {
             T3T1: { x: 125, y: buttonIndexT3T1 * 100 },
             T3W1: { x: 125, y: buttonIndexT3W1 * 100 },
         };
-        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_FEE_INFO_COORDINATES[this.model.model]);
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_FEE_INFO_COORDINATES[this.model]);
     }
 
     @step()
@@ -241,7 +243,7 @@ export class DevicePrompt {
     }
 
     getDeviceModel() {
-        return this.model.model;
+        return this.model;
     }
 
     private wrapTextByLineLimit = (
@@ -301,7 +303,7 @@ export class DevicePrompt {
         const T3T1_EXACT_LINE_LENGTH = 18;
         const T3W1_LINE_LENGTH_MINUS_DASH = 13;
 
-        if (this.model.isT3W1()) {
+        if (isT3W1(this.model)) {
             if (text.length === T3W1_EXACT_LINE_LENGTH) {
                 return [text];
             }

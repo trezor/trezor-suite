@@ -17,7 +17,7 @@ const accounts = {
 
 test.describe(
     'Use regtest to test pending transactions',
-    { tag: ['@group=wallet', '@desktopOnly'] },
+    { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
         test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
         test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnvLink }) => {

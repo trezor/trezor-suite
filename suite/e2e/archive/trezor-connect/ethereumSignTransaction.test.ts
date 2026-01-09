@@ -47,7 +47,7 @@ test.describe(
             await page
                 .getByTestId('@prompts/confirm-on-device/step/0/active')
                 .waitFor({ state: 'visible' });
-            await pressContinue(model.model);
+            await pressContinue(model);
 
             await page
                 .getByTestId('@prompts/confirm-on-device/step/1/active')

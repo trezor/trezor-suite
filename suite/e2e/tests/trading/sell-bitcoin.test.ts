@@ -22,7 +22,7 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeBTC.trade;
 const formattedAddress = formatAddressWithNewlines(sellWatchBTC.destinationAddress);
 
-test.describe('Trading - Sell BTC', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await test.step('Mocking responses', async () => {
