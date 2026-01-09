@@ -98,6 +98,7 @@ export const TradingExchangeFormInputs = () => {
                 /> */}
                 <TradingFormInputAccount
                     accountSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                    excludeCryptoId={receiveCryptoSelect?.id}
                     label="TR_FROM"
                     data-testid="@trading/form/trade-from/select-crypto"
                 />

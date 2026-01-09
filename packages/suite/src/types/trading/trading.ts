@@ -116,6 +116,7 @@ export interface TradingBuildAccountOptionsProps extends TradingGetSortedAccount
     }: GetDefaultAccountLabelParams) => string;
     supportedCryptoIds: Set<CryptoId> | undefined;
     tokenDefinitions: Partial<TokenDefinitionsState>;
+    excludeCryptoId?: CryptoId;
 }
 
 export interface TradingAccountOptionsGroupOptionProps {

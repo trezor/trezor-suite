@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { CryptoId } from 'invity-api';
+
 import { type TradingType, selectTradingSupportedSymbols } from '@suite-common/trading';
 import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
 
@@ -10,6 +12,7 @@ import { tradingBuildAccountOptions } from 'src/utils/wallet/trading/tradingUtil
 
 export const useTradingBuildAccountGroups = (
     type: TradingType,
+    excludeCryptoId?: CryptoId,
 ): TradingAccountsOptionsGroupProps[] => {
     const accounts = useSelector(selectAccounts);
     const accountLabels = useSelector(selectAccountLabels);
@@ -27,6 +30,7 @@ export const useTradingBuildAccountGroups = (
                 tokenDefinitions,
                 supportedCryptoIds: new Set(supportedSymbols),
                 getDefaultAccountLabel,
+                excludeCryptoId,
             }),
 
         [
@@ -36,6 +40,7 @@ export const useTradingBuildAccountGroups = (
             tokenDefinitions,
             supportedSymbols,
             getDefaultAccountLabel,
+            excludeCryptoId,
         ],
     );
 
