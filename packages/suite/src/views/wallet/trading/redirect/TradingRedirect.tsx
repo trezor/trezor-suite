@@ -35,7 +35,7 @@ export const TradingRedirect = () => {
 
     useEffect(() => {
         // get rid of parameters appended by some partners to url which we pass to them
-        const params = router?.hash?.split('?')[0].split('/');
+        const params = router?.hash?.replace(/^#/, '').split('?')[0].split('/');
         if (!params) return;
 
         const redirectCommonParams = {
