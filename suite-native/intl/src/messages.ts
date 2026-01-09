@@ -635,6 +635,7 @@ export const messages = {
             discoveryRunning: 'Discovery running, please wait...',
         },
         errors: {
+            requestFailed: 'Request failed',
             deviceNotConnected: 'Device not connected.',
             invalidCallback: 'Invalid callback URL',
             invalidParams: 'Invalid parameters from calling app',
@@ -649,6 +650,7 @@ export const messages = {
         trezorConnect: {
             title: 'Trezor Connect',
             forget: 'Forget',
+            retry: 'Retry',
         },
         walletConnect: {
             title: 'WalletConnect',

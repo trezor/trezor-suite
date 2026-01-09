@@ -113,14 +113,16 @@ export const PermissionConfirmation = () => {
                 </PressableOpacity>
             </Card>
 
-            <Button testID="@popup/call-device" onPress={onConfirm}>
-                {popupCall.methodInfo.confirmLabel || (
-                    <Translation id="moduleConnectPopup.confirm" />
-                )}
-            </Button>
-            <Button colorScheme="tertiaryElevation0" onPress={onClose}>
-                <Translation id="generic.buttons.close" />
-            </Button>
+            <VStack spacing="sp12">
+                <Button testID="@popup/call-device" onPress={onConfirm}>
+                    {popupCall.methodInfo.confirmLabel || (
+                        <Translation id="moduleConnectPopup.confirm" />
+                    )}
+                </Button>
+                <Button colorScheme="tertiaryElevation0" onPress={onClose}>
+                    <Translation id="generic.buttons.close" />
+                </Button>
+            </VStack>
         </VStack>
     );
 };
