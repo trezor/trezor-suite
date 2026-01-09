@@ -45,7 +45,6 @@ import { SafetyChecksModal } from './SafetyChecksModal';
 import { StakeInANutshellModal } from './StakeInANutshellModal/StakeInANutshellModal';
 import { StakeModal } from './StakeModal/StakeModal';
 import { TorLoadingModal } from './TorLoadingModal';
-import { TradingDCAModal } from './TradingDCAModal';
 import { TxDetailModal } from './TxDetailModal/TxDetailModal';
 import { TxSimulationModal } from './TxSimulationModal';
 import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
@@ -161,8 +160,6 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <WalletConnectProposalModal eventId={payload.eventId} />;
         case 'walletconnect-switch-account':
             return <WalletConnectSwitchAccountModal sessionTopic={payload.sessionTopic} />;
-        case 'trading-dca':
-            return <TradingDCAModal device={payload.device} onCancel={onCancel} />;
         case 'connect-address-confirmation':
             return <ConnectAddressConfirmation />;
         case 'connect-error':

@@ -43,7 +43,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     payload: {
                         action: 'navigate',
                         type: 'buy',
-                        from: 'buy/sell/dca-form',
+                        from: 'buy/sell',
                     },
                 });
             case 'wallet-trading-sell':
@@ -52,18 +52,10 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     payload: {
                         action: 'navigate',
                         type: 'sell',
-                        from: 'buy/sell/dca-form',
+                        from: 'buy/sell',
                     },
                 });
-            case 'wallet-trading-dca':
-                return legacyAnalytics.report({
-                    type: EventType.TradingNavigate,
-                    payload: {
-                        action: 'navigate',
-                        type: 'dca',
-                        from: 'buy/sell/dca-form',
-                    },
-                });
+        
         }
     };
 

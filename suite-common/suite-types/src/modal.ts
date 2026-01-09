@@ -168,10 +168,6 @@ export type UserContextPayload =
           sessionTopic: string;
       }
     | {
-          type: 'trading-dca';
-          device: TrezorDevice;
-      }
-    | {
           type: 'connect-address-confirmation';
       }
     | {

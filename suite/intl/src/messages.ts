@@ -1167,89 +1167,6 @@ export const messages = defineMessages({
         defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
-    TR_TRADING_DCA_HEADING: {
-        defaultMessage: 'Invest with Invity, secure with Trezor',
-        id: 'TR_TRADING_DCA_HEADING',
-    },
-    TR_TRADING_DCA_FEATURE_1_SUBHEADING: {
-        defaultMessage: 'Build your bitcoin portfolio with the Invity app',
-        id: 'TR_TRADING_DCA_FEATURE_1_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_FEATURE_1_DESCRIPTION: {
-        defaultMessage:
-            'Set it and forget it with Auto Buy, or let Auto Buy Plus optimize your timing for smarter stacking.',
-        id: 'TR_TRADING_DCA_FEATURE_1_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_FEATURE_2_SUBHEADING: {
-        defaultMessage: 'Boost your growth with Turbo Buy',
-        id: 'TR_TRADING_DCA_FEATURE_2_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_FEATURE_2_DESCRIPTION: {
-        defaultMessage:
-            'Add up to 60% more capital on top of your regular plan to accelerate returns.',
-        id: 'TR_TRADING_DCA_FEATURE_2_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_FEATURE_3_SUBHEADING: {
-        defaultMessage: 'Your bitcoin, always in your hands',
-        id: 'TR_TRADING_DCA_FEATURE_3_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_FEATURE_3_DESCRIPTION: {
-        defaultMessage:
-            'Auto Send automatically moves your bitcoin to your Trezor at no extra cost, keeping your investments secure and always under your control.',
-        id: 'TR_TRADING_DCA_FEATURE_3_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_1_SUBHEADING: {
-        defaultMessage: 'Download the Invity app',
-        id: 'TR_TRADING_DCA_STEP_CARD_1_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_1_DESCRIPTION: {
-        defaultMessage: 'Start investing in minutes.',
-        id: 'TR_TRADING_DCA_STEP_CARD_1_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_2_SUBHEADING: {
-        defaultMessage: 'Set up your preferred automatic plan',
-        id: 'TR_TRADING_DCA_STEP_CARD_2_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION: {
-        defaultMessage: 'Choose Auto Buy, Auto Buy Plus, or Turbo Buy.',
-        id: 'TR_TRADING_DCA_STEP_CARD_2_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_3_SUBHEADING: {
-        defaultMessage: 'Secure your bitcoin',
-        id: 'TR_TRADING_DCA_STEP_CARD_3_SUBHEADING',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION: {
-        defaultMessage:
-            'Use Auto Send to automatically move your bitcoin to your Trezor. Not available for Turbo Buy.',
-        id: 'TR_TRADING_DCA_STEP_CARD_3_DESCRIPTION',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_STEP_CARD_SELECT_ADDRESS: {
-        defaultMessage: 'Select address',
-        id: 'TR_TRADING_DCA_STEP_CARD_SELECT_ADDRESS',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_VERIFY_ADDRESS: {
-        defaultMessage: 'Verify address',
-        id: 'TR_TRADING_DCA_VERIFY_ADDRESS',
-        dynamic: true,
-    },
-    TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN: {
-        defaultMessage: 'DCA is currently available only for bitcoin',
-        id: 'TR_TRADING_DCA_AVAILABLE_ONLY_FOR_BITCOIN',
-        dynamic: true,
-    },
     TR_TRADING_BUY_AND_SELL: {
         defaultMessage: 'Buy & sell',
         id: 'TR_TRADING_BUY_AND_SELL',
@@ -5433,10 +5350,6 @@ export const messages = defineMessages({
     TR_NAV_BUY: {
         id: 'TR_NAV_BUY',
         defaultMessage: 'Buy',
-    },
-    TR_NAV_DCA: {
-        id: 'TR_NAV_DCA',
-        defaultMessage: 'DCA',
     },
     TR_NAV_SELL: {
         id: 'TR_NAV_SELL',
