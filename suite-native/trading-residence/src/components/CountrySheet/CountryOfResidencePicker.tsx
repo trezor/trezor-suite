@@ -5,10 +5,10 @@ import {
     EventType,
     SuiteNativeLegacyAnalyticsEvents,
 } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { HStack, Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
 import { Analytics } from '@trezor/analytics';
 

@@ -1,10 +1,22 @@
 import { TradingTransaction, TradingType } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
 import { TradingWebViewScreen } from '../TradingWebViewScreen';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 let mockRouteParams: {
     closeCallbackUrl: string;
@@ -43,6 +55,15 @@ describe('TradingWebViewScreen', () => {
 
         return result;
     };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+    });
+
     afterEach(() => {
         if (unmount) {
             unmount();
@@ -83,12 +104,7 @@ describe('TradingWebViewScreen', () => {
     });
 
     describe('analytics', () => {
-        let analyticsSpy: jest.SpyInstance;
-
         beforeEach(() => {
-            jest.clearAllMocks();
-            analyticsSpy = jest.spyOn(analytics, 'report');
-
             mockRouteParams = {
                 closeCallbackUrl: 'CALLBACK_URL',
                 orderId: 'orderId',
@@ -109,14 +125,14 @@ describe('TradingWebViewScreen', () => {
 
             await renderScreen();
 
-            expect(analyticsSpy).not.toHaveBeenCalledWith({
+            expect(reportMock).not.toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'webview',
                     action: 'visit',
                 }),
             });
-            expect(analyticsSpy).not.toHaveBeenCalledWith({
+            expect(reportMock).not.toHaveBeenCalledWith({
                 type: EventType.TradingSell,
                 payload: expect.objectContaining({
                     step: 'webview',
@@ -140,7 +156,7 @@ describe('TradingWebViewScreen', () => {
 
             await renderScreen(store);
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'webview',
@@ -164,7 +180,7 @@ describe('TradingWebViewScreen', () => {
 
             await renderScreen(store);
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingSell,
                 payload: expect.objectContaining({
                     step: 'webview',

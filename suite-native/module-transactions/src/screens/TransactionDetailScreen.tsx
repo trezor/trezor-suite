@@ -13,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
@@ -26,6 +25,7 @@ import {
     TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 

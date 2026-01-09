@@ -1,22 +1,36 @@
 import type { CryptoId } from 'invity-api';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
 import { useExchangeAnalyticReportCallback } from '../useExchangeAnalyticReportCallback';
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('useExchangeAnalyticReportCallback', () => {
     let preloadedState: PreloadedState;
-    let analyticsSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
 
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         preloadedState = {
             wallet: getWalletState({ tradeType: 'exchange' }),
         };
-        analyticsSpy = jest.spyOn(analytics, 'report');
     });
 
     it('should call analytics on mount', async () => {
@@ -29,7 +43,7 @@ describe('useExchangeAnalyticReportCallback', () => {
 
         result.current('exchange-form', 'continue');
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'exchange-form',
@@ -47,7 +61,7 @@ describe('useExchangeAnalyticReportCallback', () => {
 
         result.current('exchange-form', 'continue');
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: {
                 step: 'exchange-form',
@@ -66,7 +80,7 @@ describe('useExchangeAnalyticReportCallback', () => {
 
         result.current('exchange-form', 'continue');
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'exchange-form',
@@ -87,7 +101,7 @@ describe('useExchangeAnalyticReportCallback', () => {
 
         result.current('exchange-form', 'continue');
 
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: {
                 step: 'exchange-form',

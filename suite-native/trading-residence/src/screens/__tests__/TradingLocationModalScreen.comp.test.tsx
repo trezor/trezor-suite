@@ -1,11 +1,12 @@
 import { RouteProp } from '@react-navigation/native';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     RootStackRoutes,
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import {
@@ -14,11 +15,22 @@ import {
 } from '../TradingLocationModalScreen';
 
 const mockNavigationDispatch = jest.fn();
+const reportMock = jest.fn();
+
 const mockRoute: TradingLocationModalScreenProps['route'] = {
     name: RootStackRoutes.TradingLocationModal,
     key: 'TradingLocationModal',
     params: undefined,
 };
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -44,6 +56,14 @@ describe('TradingLocationModalScreen', () => {
             />,
         );
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+    });
+
     afterEach(() => {
         screen.unmount();
     });
@@ -59,14 +79,13 @@ describe('TradingLocationModalScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const { getByText } = renderTradingLocationModalScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'onboarding',

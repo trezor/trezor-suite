@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
-import { EventType, useLegacyAnalytics } from '@suite-native/services';
 import {
     Box,
     DiscreetCanvas,
@@ -16,6 +14,7 @@ import {
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
 
 const DiscreetTextExample = () => {

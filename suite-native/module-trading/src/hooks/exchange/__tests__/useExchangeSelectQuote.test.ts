@@ -1,5 +1,5 @@
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import {
     PreloadedState,
     TestStore,
@@ -21,6 +21,18 @@ import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
 const mockTokenSupportsIncreasingAllowance = jest.fn();
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: () => ({
+            report: jest.fn(),
+        }),
+    };
+});
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -163,7 +175,6 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const analyticsSpy = jest.spyOn(analytics, 'report');
             const { result } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
@@ -177,7 +188,7 @@ describe('useExchangeSelectQuote', () => {
                 tradingType: 'exchange',
             });
 
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'account-selection',

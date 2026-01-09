@@ -1,12 +1,23 @@
 import { RouteProp } from '@react-navigation/core';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
 const mockExitOnboardingFlow = jest.fn();
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 jest.mock('@react-navigation/core', () => ({
     ...jest.requireActual('@react-navigation/core'),
@@ -25,6 +36,14 @@ describe('TradingLocationOnboardingScreen', () => {
     const renderTradingLocationScreen = () =>
         renderWithStoreProviderAsync(<TradingLocationScreen />);
 
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+    });
+
     afterEach(() => {
         screen.unmount();
     });
@@ -40,14 +59,13 @@ describe('TradingLocationOnboardingScreen', () => {
     });
 
     it('should log analytics event on country change', async () => {
-        const analyticsSpy = jest.spyOn(analytics, 'report');
         const { getByText } = await renderTradingLocationScreen();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText('🇦🇷 Argentina'));
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'onboarding',

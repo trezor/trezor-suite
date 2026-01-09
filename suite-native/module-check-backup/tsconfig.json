@@ -17,6 +17,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../swipeable-walkthrough" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

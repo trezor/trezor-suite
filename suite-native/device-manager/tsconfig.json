@@ -28,6 +28,7 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

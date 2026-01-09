@@ -15,10 +15,10 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
-        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device-mutex" },
         { "path": "../intl" },
+        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

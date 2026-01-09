@@ -1,8 +1,9 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 
 import { tradingBuyActions } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -17,6 +18,17 @@ import { BuyFormType } from '@suite-native/trading-types';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyPaymentMethodPicker } from '../BuyPaymentMethodPicker';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 describe('BuyPaymentMethodPicker', () => {
     let form: BuyFormType;
@@ -35,6 +47,14 @@ describe('BuyPaymentMethodPicker', () => {
             { preloadedState, store },
         );
     };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+    });
 
     afterEach(() => {
         screen.unmount();
@@ -98,14 +118,8 @@ describe('BuyPaymentMethodPicker', () => {
         });
 
         describe('analytics', () => {
-            const analyticsSpy = jest.spyOn(analytics, 'report');
-
             beforeEach(() => {
-                analyticsSpy.mockClear();
-            });
-
-            afterAll(() => {
-                analyticsSpy.mockRestore();
+                reportMock.mockClear();
             });
 
             it('should fire analytics event on payment method select', async () => {
@@ -114,7 +128,7 @@ describe('BuyPaymentMethodPicker', () => {
                 fireEvent.press(getByText('Payment method'));
                 fireEvent.press(getByText('Credit Card'));
 
-                expect(analyticsSpy).toHaveBeenCalledWith({
+                expect(reportMock).toHaveBeenCalledWith({
                     type: EventType.TradingParameterChanged,
                     payload: {
                         type: 'buy',
@@ -127,29 +141,26 @@ describe('BuyPaymentMethodPicker', () => {
                 const { getByText } = await renderPaymentMethodPicker(preloadedState);
 
                 act(() => {
-                    // set credit card as selected payment method
                     form.setValue('quote', buyQuotes[1]);
                 });
 
                 fireEvent.press(getByText('Payment method'));
                 fireEvent.press(getByText('Apple Pay'));
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(1);
+                expect(reportMock).toHaveBeenCalledTimes(1);
             });
 
             it('should not fire analytics event when same payment method is selected', async () => {
                 const { getByText, getAllByText } = await renderPaymentMethodPicker(preloadedState);
 
                 act(() => {
-                    // set credit card as selected payment method
                     form.setValue('quote', buyQuotes[1]);
                 });
 
                 fireEvent.press(getByText('Payment method'));
-                // 1st Credit Card is the selected one, 2nd is the one in the list
                 fireEvent.press(getAllByText('Credit Card')[1]);
 
-                expect(analyticsSpy).toHaveBeenCalledTimes(0);
+                expect(reportMock).toHaveBeenCalledTimes(0);
             });
         });
     });

@@ -12,7 +12,6 @@ import {
     tradingBuyActions,
 } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -21,6 +20,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';

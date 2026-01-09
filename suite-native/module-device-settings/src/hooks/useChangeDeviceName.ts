@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import { EventType } from '@suite-common/analytics-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -12,6 +11,7 @@ import {
     DeviceNameStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';

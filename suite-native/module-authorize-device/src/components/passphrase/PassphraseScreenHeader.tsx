@@ -6,7 +6,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
@@ -21,6 +20,7 @@ import {
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<

@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BiometricsSvg, useBiometricsSettings } from '@suite-native/biometrics';
 import { Icon } from '@suite-native/icons';
@@ -13,6 +12,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 

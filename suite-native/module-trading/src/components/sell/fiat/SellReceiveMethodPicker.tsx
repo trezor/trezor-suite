@@ -5,9 +5,9 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';

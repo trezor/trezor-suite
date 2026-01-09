@@ -1,8 +1,4 @@
-import {
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { CardStepper, CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -12,6 +8,7 @@ import {
     DeviceSuspicionCause,
     StackProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Analytics } from '@trezor/analytics';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 

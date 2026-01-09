@@ -1,6 +1,5 @@
 import { AccountsList, OnSelectAccount } from '@suite-native/accounts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -10,6 +9,7 @@ import {
     StackProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 export const SendAccountsScreen = ({
     navigation,

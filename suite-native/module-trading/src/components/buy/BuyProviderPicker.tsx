@@ -10,9 +10,9 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import {

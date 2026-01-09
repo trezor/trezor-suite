@@ -1,8 +1,9 @@
 import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -25,6 +26,17 @@ import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from '../useSellForm';
 
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
+
 describe('useSellForm', () => {
     let store: TestStore;
 
@@ -41,6 +53,11 @@ describe('useSellForm', () => {
 
     beforeEach(async () => {
         store = await getInitializedStore();
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
     });
 
     describe('sendAccount', () => {
@@ -77,14 +94,13 @@ describe('useSellForm', () => {
         });
 
         it('should report change to analytics', async () => {
-            const reportSpy = jest.spyOn(analytics, 'report');
             const { result } = await renderUseSellForm();
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
             });
 
-            expect(reportSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingParameterChanged,
                 payload: {
                     type: 'sell',
@@ -121,14 +137,13 @@ describe('useSellForm', () => {
         });
 
         it('should report change to analytics', async () => {
-            const reportSpy = jest.spyOn(analytics, 'report');
             const { result } = await renderUseSellForm();
 
             act(() => {
                 result.current.setValue('fiatCurrency', 'pln');
             });
 
-            expect(reportSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingParameterChanged,
                 payload: {
                     type: 'sell',

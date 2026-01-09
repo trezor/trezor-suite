@@ -14,11 +14,11 @@ import {
     submitPassphrase,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { setCheckPassphraseOnDevice } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';

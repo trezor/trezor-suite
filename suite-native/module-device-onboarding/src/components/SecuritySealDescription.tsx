@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     BottomSheetModal,
     Box,
@@ -14,6 +13,7 @@ import {
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link, useOpenLink } from '@suite-native/link';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HELP_CENTER_PACKAGING_T3B1_URL, HELP_CENTER_PACKAGING_T3T1_URL } from '@trezor/urls';
 

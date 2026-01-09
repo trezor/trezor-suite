@@ -1,6 +1,7 @@
 import { useCallback, useContext } from 'react';
 
-import { CountryChangeAction, EventType, useLegacyAnalytics } from '@suite-native/analytics';
+import { CountryChangeAction, EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { CountryChangeContextCheckContext } from '../components/CountryChangeContextCheckContext';
 
@@ -10,7 +11,6 @@ export const useCountrySelectionAnalyticsReport = () => {
 
     return useCallback(
         (action: CountryChangeAction) => {
-            // @TODO is it case for getTypedNativeLegacyAnalytics?
             legacyAnalytics.report({
                 type: EventType.TradingCountrySelection,
                 payload: {

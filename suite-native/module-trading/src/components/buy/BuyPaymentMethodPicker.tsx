@@ -4,9 +4,9 @@ import type { BuyTrade } from 'invity-api';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 

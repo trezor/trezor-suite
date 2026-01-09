@@ -12,12 +12,9 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import {
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { AbortablePromise, ExchangeFormType } from '@suite-native/trading-types';

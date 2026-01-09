@@ -53,6 +53,7 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../sentry" },
+        { "path": "../services" },
         { "path": "../settings" },
         { "path": "../staking" },
         { "path": "../theme" },

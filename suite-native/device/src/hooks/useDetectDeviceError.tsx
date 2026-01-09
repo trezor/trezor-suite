@@ -17,7 +17,6 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { selectIsFirmwareInstallationRunning } from '@suite-native/firmware/src/nativeFirmwareSlice';
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
@@ -31,6 +30,7 @@ import {
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 

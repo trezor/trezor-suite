@@ -1,8 +1,9 @@
 import { TradingCountryOption } from '@suite-common/trading';
 import { yup } from '@suite-common/validators';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -17,6 +18,17 @@ import {
 } from '@suite-native/trading-fixtures';
 
 import { TradingCountryOfResidencePicker } from '../TradingCountryOfResidencePicker';
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 describe('TradingCountryOfResidencePicker', () => {
     let form: UseFormReturn<{ country: TradingCountryOption }>;
@@ -37,6 +49,12 @@ describe('TradingCountryOfResidencePicker', () => {
         );
 
     beforeEach(async () => {
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         const { result } = await renderForm();
         form = result.current;
     });
@@ -56,14 +74,12 @@ describe('TradingCountryOfResidencePicker', () => {
     });
 
     it('should call analytics on country change', async () => {
-        const reportSpy = jest.spyOn(analytics, 'report');
-
         const { getByText } = await renderCountryOfResidencePicker(residenceCheckDisabledState);
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
 
-        expect(reportSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'buy',

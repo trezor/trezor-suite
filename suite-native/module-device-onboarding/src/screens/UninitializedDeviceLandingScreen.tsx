@@ -9,7 +9,6 @@ import {
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -19,6 +18,7 @@ import {
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';

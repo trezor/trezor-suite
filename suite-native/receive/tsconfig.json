@@ -26,6 +26,7 @@
         { "path": "../module-device-onboarding" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../services" },
         { "path": "../toasts" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },

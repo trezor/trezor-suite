@@ -8,12 +8,8 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
-import {
-    EventType,
-    TradingSellAction,
-    TradingSellStep,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, TradingSellAction, TradingSellStep } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
 

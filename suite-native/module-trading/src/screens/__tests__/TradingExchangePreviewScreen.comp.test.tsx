@@ -2,8 +2,9 @@ import { RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -26,6 +27,17 @@ jest.mock('@react-navigation/native', () => ({
             params: {},
         }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangePreview>,
 }));
+
+const reportMock = jest.fn();
+
+jest.mock('@suite-native/services', () => {
+    const original = jest.requireActual('@suite-native/services');
+
+    return {
+        ...original,
+        useLegacyAnalytics: jest.fn(),
+    };
+});
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
 const mockFetchFeesAndCompose = jest.fn();
@@ -91,7 +103,6 @@ const createRouteProps = (isApproved: boolean = false) =>
 
 describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
-    const analyticsSpy = jest.spyOn(analytics, 'report');
     let consoleErrorSpy: jest.SpyInstance;
     let unmount: (() => void) | undefined;
 
@@ -117,6 +128,11 @@ describe('TradingExchangePreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockTxnErrorString = null;
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         const preloadedState = createPreloadedState();
@@ -184,12 +200,12 @@ describe('TradingExchangePreviewScreen', () => {
             });
 
             const retryFunction = mockShowAlert.mock.calls[0][0].onPressPrimaryButton;
-            analyticsSpy.mockClear();
+            reportMock.mockClear();
 
             await retryFunction();
 
             expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'transaction-preview',
@@ -208,12 +224,12 @@ describe('TradingExchangePreviewScreen', () => {
             });
 
             const cancelFunction = mockShowAlert.mock.calls[0][0].onPressSecondaryButton;
-            analyticsSpy.mockClear();
+            reportMock.mockClear();
 
             cancelFunction();
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
-            expect(analyticsSpy).toHaveBeenCalledWith({
+            expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
                 payload: expect.objectContaining({
                     step: 'transaction-preview',
@@ -236,8 +252,8 @@ describe('TradingExchangePreviewScreen', () => {
     it('should report to analytics on mount', async () => {
         await renderTradingExchangePreviewScreen();
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'transaction-preview',
@@ -248,12 +264,12 @@ describe('TradingExchangePreviewScreen', () => {
 
     it('should report to analytics on Continue press', async () => {
         const { getByText } = await renderTradingExchangePreviewScreen();
-        analyticsSpy.mockClear();
+        reportMock.mockClear();
 
         await userEvent.press(getByText('Continue'));
 
-        expect(analyticsSpy).toHaveBeenCalledTimes(1);
-        expect(analyticsSpy).toHaveBeenCalledWith({
+        expect(reportMock).toHaveBeenCalledTimes(1);
+        expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
             payload: expect.objectContaining({
                 step: 'transaction-preview',

@@ -13,7 +13,6 @@ import {
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -25,6 +24,7 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 

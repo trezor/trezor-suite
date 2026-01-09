@@ -3,12 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
-import {
-    EventType,
-    FirmwareUpdatePayload,
-    FirmwareUpdateStartType,
-    useLegacyAnalytics,
-} from '@suite-native/analytics';
+import { EventType, FirmwareUpdatePayload, FirmwareUpdateStartType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { FirmwareType } from '@trezor/connect';
 import {
     DeviceModelInternal,

@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { EventType } from '@suite-common/analytics-types';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { useTranslate } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
