@@ -58,13 +58,7 @@ module.exports = config => {
             { pattern: path.resolve(__dirname, './common.setup.ts'), watched: false },
 
             { pattern: path.resolve(__dirname, './__txcache__/index.js'), watched: false },
-            {
-                pattern: './connect-iframe/build/**/*.*',
-                watched: false,
-                included: false,
-                served: true,
-                nocache: false,
-            },
+
             ...(process.env.TESTS_PATTERN || '*')
                 .split(' ')
                 .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}*.ts`)),
@@ -76,6 +70,14 @@ module.exports = config => {
         webpack: {
             module: {
                 rules: [
+                    // todo: why does this suddenly becomes necessary?
+                    {
+                        test: /pinger\/pingWorker.ts/i,
+                        loader: 'worker-loader',
+                        options: {
+                            filename: './workers/ping-worker.[contenthash].js',
+                        },
+                    },
                     {
                         test: /\.ts?$/,
                         exclude: /node_modules/,
@@ -97,6 +99,9 @@ module.exports = config => {
                     crypto: require.resolve('crypto-browserify'),
                     stream: require.resolve('stream-browserify'),
                     vm: require.resolve('vm-browserify'),
+                    tls: false,
+                    net: false,
+                    fs: false,
                 },
             },
             plugins: [
@@ -108,14 +113,9 @@ module.exports = config => {
                 // replace TrezorConnect module used in ./tests/common.setup.js
                 new webpack.NormalModuleReplacementPlugin(
                     /^(\.\.\/)+src$/,
-                    path.join(__dirname, '../../connect-web/build/trezor-connect.js'),
+                    path.join(__dirname, '../../connect/lib/index-browser.js'),
                 ),
-
                 new webpack.DefinePlugin({
-                    // set custom connect endpoint to build directory
-                    'process.env.TREZOR_CONNECT_SRC': JSON.stringify(
-                        'http://localhost:8099/base/connect-iframe/build/',
-                    ),
                     // pass required process.env variables
                     'process.env.TESTS_FIRMWARE': JSON.stringify(process.env.TESTS_FIRMWARE),
                     'process.env.TESTS_INCLUDED_METHODS': JSON.stringify(
