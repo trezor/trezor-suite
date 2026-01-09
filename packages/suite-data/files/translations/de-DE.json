@@ -339,7 +339,7 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES": "Automatische Updates für Trezor Suite",
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Lade im Hintergrund automatisch die neueste Version von Trezor Suite herunter und installiere sie beim Neustart der App. So bleibst du bei den neuesten Funktionen und Sicherheits-Patches immer auf dem Laufenden. Updates werden ausgeführt, ohne dass du deine Zustimmung erteilen musst.",
   "TR_ALLOW_BLUETOOTH_CTA": "Erlauben",
-  "TR_ALL_NETWORKS": "Alle Netzwerke ({networkCount})",
+  "TR_ALL_NETWORKS": "Alle Netzwerke",
   "TR_ALL_TRANSACTIONS": "Transaktionen",
   "TR_AMOUNT_REDUCED_TXS": "Betrag ermäßigt",
   "TR_AMOUNT_SENT": "Zu sendender Betrag",

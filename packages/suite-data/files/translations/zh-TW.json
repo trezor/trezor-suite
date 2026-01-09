@@ -317,7 +317,7 @@
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES": "自動更新 Trezor Suite",
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "允許 Trezor Suite 自動在背景下載最新版本，並且在重啟應用程式時安裝。可以讓你一直享有最新功能與安全性更新。更新發生時不需要再次授權。",
   "TR_ALLOW_BLUETOOTH_CTA": "允許",
-  "TR_ALL_NETWORKS": "所有網路 ({networkCount})",
+  "TR_ALL_NETWORKS": "所有網路",
   "TR_ALL_TRANSACTIONS": "交易紀錄",
   "TR_AMOUNT_REDUCED_TXS": "減少金額",
   "TR_AMOUNT_SENT": "發送金額",
