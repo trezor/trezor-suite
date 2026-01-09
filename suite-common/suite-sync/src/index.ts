@@ -28,7 +28,6 @@ export {
 } from './data/suiteSyncDataReducer';
 export {
     selectWalletById,
-    selectWalletIds,
     selectSuiteSyncAccountLabels,
     selectSuiteSyncOutputLabelsByAccount,
     selectSuiteSyncAccountAddressesByAccount,

@@ -25,8 +25,6 @@ export const selectWalletById = (
     walletDescriptor: WalletDescriptor,
 ) => walletsSelectors.selectById(state, walletDescriptor);
 
-export const selectWalletIds = (state: SuiteSyncDataRootState) => walletsSelectors.selectIds(state);
-
 const selectAllAccountsForWallet = (
     state: SuiteSyncDataRootState,
     walletDescriptor: WalletDescriptor,
