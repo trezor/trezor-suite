@@ -7,8 +7,14 @@ import {
     nullOr,
 } from '@evolu/common';
 
-import { EntityListener, SuiteSyncWallet, WalletTable } from '@suite-common/suite-sync-storage';
+import {
+    EntityListener,
+    SuiteSyncWallet,
+    WalletTable,
+    createSuiteSyncUpdateError,
+} from '@suite-common/suite-sync-storage';
 import { asWalletDescriptor } from '@suite-common/wallet-types';
+import { err, ok } from '@trezor/type-utils';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
@@ -35,9 +41,7 @@ export class EvoluWalletTable implements WalletTable {
         const idResult = WalletLabelId.from(createIdFromString(walletDescriptor));
 
         if (!idResult.ok) {
-            console.error('EvoluWalletTable:id error:', idResult.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(idResult.error));
         }
 
         const result = this.evolu.upsert('wallet', {
@@ -47,10 +51,10 @@ export class EvoluWalletTable implements WalletTable {
         });
 
         if (!result.ok) {
-            console.error('EvoluWalletTable:update error:', result.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(result.error));
         }
+
+        return ok();
     };
 
     subscribe = ({ onChange }: EntityListener<SuiteSyncWallet>) => {

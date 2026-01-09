@@ -13,9 +13,11 @@ import {
     OutputTable,
     SuiteSyncOutput,
     createSuiteSyncOutputId,
+    createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor, asAccountDescriptor } from '@suite-common/wallet-types';
+import { err, ok } from '@trezor/type-utils';
 
 import { UnwrapQuery } from '../evoluUtils';
 import { normalizeLabel } from './normalizeLabel';
@@ -43,9 +45,7 @@ export class OutputEvoluTable implements OutputTable {
         );
 
         if (!idResult.ok) {
-            console.error('OutputEvoluTable:id error:', idResult.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(idResult.error));
         }
 
         const result = this.evolu.upsert('output', {
@@ -58,10 +58,10 @@ export class OutputEvoluTable implements OutputTable {
         });
 
         if (!result.ok) {
-            console.error('OutputEvoluTable:update error:', result.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(result.error));
         }
+
+        return ok();
     };
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('output').selectAll());

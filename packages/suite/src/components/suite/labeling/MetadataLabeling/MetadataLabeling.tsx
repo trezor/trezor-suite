@@ -415,6 +415,7 @@ export const Labeling = ({
                     case 'RefreshSuiteKeysUnavailable':
                     case 'DeviceError':
                     case 'DeviceCancelled':
+                    case 'SuiteSyncUpdateError':
                         console.error(result.payload.error);
 
                         return false;
@@ -565,6 +566,7 @@ export const MetadataLabeling = ({
                     case 'RefreshSuiteKeysUnavailable':
                     case 'DeviceError':
                     case 'DeviceCancelled':
+                    case 'SuiteSyncUpdateError':
                         console.error(result.payload.error);
                         setShowSuccess(false);
 

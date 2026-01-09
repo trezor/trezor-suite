@@ -12,9 +12,11 @@ import {
     EntityListener,
     SuiteSyncAddress,
     createSuiteSyncAddressId,
+    createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { err, ok } from '@trezor/type-utils';
 
 import { normalizeLabel } from './normalizeLabel';
 import { UnwrapQuery } from '../evoluUtils';
@@ -42,9 +44,7 @@ export class AddressEvoluTable implements AddressTable {
         const idResult = createAddressEvoluId(address, networkSymbol);
 
         if (!idResult.ok) {
-            console.error('AddressEvoluTable:id error:', idResult.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(idResult.error));
         }
 
         const result = this.evolu.upsert('address', {
@@ -56,10 +56,10 @@ export class AddressEvoluTable implements AddressTable {
         });
 
         if (!result.ok) {
-            console.error('AddressEvoluTable:update error:', result.error);
-
-            return;
+            return err(createSuiteSyncUpdateError(result.error));
         }
+
+        return ok();
     };
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('address').selectAll());

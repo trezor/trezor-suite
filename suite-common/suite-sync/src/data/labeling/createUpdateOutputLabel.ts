@@ -1,5 +1,4 @@
 import { UpdateOutputLabel } from '@suite-common/suite-sync-types';
-import { ok } from '@trezor/type-utils';
 
 import { EnsureStorageDep } from '../../storage/createEnsureStorage';
 
@@ -21,13 +20,11 @@ export const createUpdateOutputLabel =
             return storageResult;
         }
 
-        storageResult.value.data.outputs.update({
+        return storageResult.value.data.outputs.update({
             txId,
             outputIndex,
             label,
             accountDescriptor,
             networkSymbol,
         });
-
-        return ok();
     };

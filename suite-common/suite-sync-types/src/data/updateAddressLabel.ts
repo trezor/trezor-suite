@@ -1,3 +1,4 @@
+import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountDescriptor,
@@ -20,7 +21,13 @@ export type UpdateAddressLabelParams = {
 export type UpdateAddressLabel = (
     params: UpdateAddressLabelParams,
 ) => Promise<
-    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>
+    Result<
+        void,
+        | RefreshSuiteKeysUnavailableType
+        | DeviceErrorType
+        | DeviceCancelledErrType
+        | SuiteSyncUpdateError
+    >
 >;
 
 export type UpdateAddressLabelDep = { updateAddressLabel: UpdateAddressLabel };
