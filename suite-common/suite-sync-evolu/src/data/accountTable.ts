@@ -3,7 +3,6 @@ import {
     NonEmptyString100,
     NonEmptyString1000,
     QueryRows,
-    SqliteBoolean,
     createIdFromString,
     id,
     nullOr,
@@ -30,7 +29,6 @@ export const AccountSchema = {
         accountDescriptor: NonEmptyString1000, // xpub, ypub, .. descriptor
         networkSymbol: NonEmptyString100, // btc, ltc, eth, ...
         label: nullOr(NonEmptyString1000),
-        isHidden: nullOr(SqliteBoolean),
     },
 };
 
@@ -51,7 +49,6 @@ export class EvoluAccountTable implements AccountTable {
             accountDescriptor,
             networkSymbol,
             label: normalizeLabel(label),
-            isHidden: 1, // SQLite does not support bool
         });
 
         if (!result.ok) {
@@ -76,7 +73,6 @@ export class EvoluAccountTable implements AccountTable {
                     accountDescriptor: asAccountDescriptor(account.accountDescriptor),
                     networkSymbol: asNetworkSymbol(account.networkSymbol),
                     label: account.label,
-                    isHidden: account.isHidden === 1, // SQLite does not support bool
                 });
             }
         };

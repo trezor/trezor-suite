@@ -30,7 +30,7 @@ const createListenerMock = (): SuiteSyncListener => ({
 
 type StorageSubscriptions = {
     accounts: EntityListener<SuiteSyncAccount>[];
-    address: EntityListener<SuiteSyncAddress>[];
+    addresses: EntityListener<SuiteSyncAddress>[];
     outputs: EntityListener<SuiteSyncOutput>[];
     wallets: EntityListener<SuiteSyncWallet>[];
 };
@@ -47,7 +47,7 @@ const createSuiteSyncStorageMock = (storageEmitter?: StorageSubscriptions): Suit
         },
         addresses: {
             subscribe: jest.fn(onChange => {
-                storageEmitter?.address.push(onChange);
+                storageEmitter?.addresses.push(onChange);
 
                 return () => {};
             }),
@@ -114,7 +114,7 @@ describe(createSubscribeSuiteSyncData.name, () => {
         const storageEmitters: StorageSubscriptions = {
             wallets: [],
             accounts: [],
-            address: [],
+            addresses: [],
             outputs: [],
         };
 
@@ -132,29 +132,31 @@ describe(createSubscribeSuiteSyncData.name, () => {
         storageEmitters.wallets.forEach(it =>
             it.onChange({ walletDescriptor: asWalletDescriptor('1'), label: 'Wallet Label' }),
         );
-        expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith({
-            label: 'Wallet Label',
-            walletDescriptor: '1',
-        });
+        expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith(
+            deviceStaticSessionId,
+            {
+                label: 'Wallet Label',
+                walletDescriptor: '1',
+            },
+        );
 
         storageEmitters.accounts.forEach(it =>
             it.onChange({
-                isHidden: false,
                 accountDescriptor: asAccountDescriptor('account-1'),
                 label: 'Account for Drugs',
                 networkSymbol: 'btc',
             }),
         );
-        expect(suiteSyncListener.onEntityChange.accounts).toHaveBeenCalledWith([
+        expect(suiteSyncListener.onEntityChange.accounts).toHaveBeenCalledWith(
+            deviceStaticSessionId,
             {
                 accountDescriptor: 'account-1',
                 label: 'Account for Drugs',
                 networkSymbol: 'btc',
-                walletDescriptor: '1',
             },
-        ]);
+        );
 
-        storageEmitters.address.forEach(it =>
+        storageEmitters.addresses.forEach(it =>
             it.onChange({
                 networkSymbol: 'btc',
                 accountDescriptor: asAccountDescriptor('account-1'),
@@ -162,15 +164,15 @@ describe(createSubscribeSuiteSyncData.name, () => {
                 label: 'Address for drugs',
             }),
         );
-        expect(suiteSyncListener.onEntityChange.accounts).toStrictEqual([
+        expect(suiteSyncListener.onEntityChange.addresses).toHaveBeenCalledWith(
+            deviceStaticSessionId,
             {
                 accountDescriptor: 'account-1',
                 address: 'address',
                 label: 'Address for drugs',
                 networkSymbol: 'btc',
-                walletDescriptor: '1',
             },
-        ]);
+        );
 
         storageEmitters.outputs.forEach(it =>
             it.onChange({
@@ -181,18 +183,12 @@ describe(createSubscribeSuiteSyncData.name, () => {
                 label: 'Output spend for buying drugs',
             }),
         );
-        expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith([
+        expect(suiteSyncListener.onEntityChange.wallets).toHaveBeenCalledWith(
+            deviceStaticSessionId,
             {
-                payload: {
-                    accountDescriptor: 'account-1',
-                    label: 'Output spend for buying drugs',
-                    networkSymbol: 'btc',
-                    walletDescriptor: '1',
-                    outputIndex: 0,
-                    txId: 'transaction-id',
-                },
-                type: '@suite/labeling/set-output-label',
+                label: 'Wallet Label',
+                walletDescriptor: '1',
             },
-        ]);
+        );
     });
 });

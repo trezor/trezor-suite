@@ -12314,6 +12314,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
