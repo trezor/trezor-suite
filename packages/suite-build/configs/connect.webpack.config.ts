@@ -88,8 +88,6 @@ const connect: webpack.Configuration = {
             zlib: false,
             path: false, // usb
             os: false, // usb
-            net: false, // todo: added when merging with karma config
-            tls: false, // todo: added when merging with karma config
         },
     },
     performance: {
@@ -100,17 +98,6 @@ const connect: webpack.Configuration = {
         new webpack.DefinePlugin({
             'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
         }),
-        // provide fallback for global objects.
-        // resolve.fallback will not work since those objects are not imported as modules.
-        // process/browser needs explicit .js extension
-        new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-            process: require.resolve('process/browser'),
-        }),
-        // resolve @trezor/connect modules as "browser"
-        // new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
-        //     resource.request = resource.request.replace(/workers$/, 'workers-browser');
-        // }),
         new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
             resource.request = resource.request.replace(/assets$/, 'assets-browser');
         }),
