@@ -1,3 +1,5 @@
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { waitForVisible } from '../support/utils';
 
 class DeviceConnectingActions {
@@ -6,6 +8,12 @@ class DeviceConnectingActions {
         await device.disableSynchronization();
         await waitForVisible(by.id('@screen/ConnectingDevice'));
         await device.enableSynchronization();
+    }
+
+    async stopEmuAndConfirmViewOnlyWarning() {
+        await TrezorUserEnvLink.stopEmu();
+        await waitForVisible(by.id('@home/alert/view-only'));
+        await element(by.text('Got it')).tap();
     }
 }
 
