@@ -30,6 +30,7 @@ export const selectAccountLabel = (
     deviceStaticSessionId: StaticSessionId,
     accountDescriptor: AccountDescriptor,
     networkSymbol: NetworkSymbol,
+    accountKey: string,
 ) => {
     const isLabelingEnabled = selectIsLabelingEnabled(state);
 
@@ -42,7 +43,9 @@ export const selectAccountLabel = (
         networkSymbol,
     );
 
-    const storeLabel = selectReduxAccountLabel(state, accountDescriptor);
+    if (isLabelingEnabled && syncedLabel) {
+        return syncedLabel;
+    }
 
-    return isLabelingEnabled && syncedLabel !== null ? syncedLabel : storeLabel;
+    return selectReduxAccountLabel(state, accountKey);
 };
