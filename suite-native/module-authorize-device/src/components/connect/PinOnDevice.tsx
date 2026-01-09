@@ -1,16 +1,12 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage } from '@suite-native/device';
-import {
-    DevicePinImage,
-    selectIsIdleDeviceAuthorization,
-} from '@suite-native/device-authorization';
+import { DevicePinImage, DeviceState, selectDeviceState } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
-import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -29,8 +25,8 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
-    const deviceIsAuthorized = useSelector(selectIsIdleDeviceAuthorization);
-    const navigateToInitialScreen = useNavigateToInitialScreen();
+    const deviceState = useSelector(selectDeviceState);
+    const navigation = useNavigation();
 
     const { applyStyle } = useNativeStyles();
 
@@ -39,10 +35,13 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
             // hasDeviceRequestedPin is false when the user unlocks the device again
             // after it was already unlocked and then became locked.
             // (e.g., when attempting to verify the receive address with locked device).
-            if (deviceIsAuthorized) {
-                navigateToInitialScreen();
+            if (
+                deviceState === DeviceState.Idle ||
+                deviceState === DeviceState.AddPassphraseWallet
+            ) {
+                navigation.goBack();
             }
-        }, [deviceIsAuthorized, navigateToInitialScreen]),
+        }, [deviceState, navigation]),
     );
 
     return (
