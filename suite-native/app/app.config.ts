@@ -133,6 +133,7 @@ const getPlugins = (): ExpoPlugins => {
                 },
             },
         ],
+        ['./plugins/withNdkVersion', { ndkVersion: '27.0.12077973' }],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
         './plugins/withFollyFlags',
         [
