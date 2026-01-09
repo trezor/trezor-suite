@@ -1,27 +1,7 @@
-import { execSync } from 'child_process';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
-
-import web from '../configs/web.webpack.config';
-
-const COMMON_DATA_SRC = '../../packages/connect-common/files';
-const MESSAGES_SRC = '../../packages/protobuf/messages.json';
-
-// Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
-// because we need to call `yarn build:libs during native build`
-const commitHash =
-    process.env.EAS_BUILD_GIT_COMMIT_HASH ||
-    process.env.GITHUB_SHA ||
-    execSync('git rev-parse HEAD').toString().trim();
-
-const DIST = web.output!.path! + '/js';
-
 const connect: webpack.Configuration = {
-    target: 'web',
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     module: {
         rules: [
             {
@@ -94,25 +74,8 @@ const connect: webpack.Configuration = {
         hints: false,
     },
     plugins: [
-        new WebpackSecurityCheckPlugin(),
-        new webpack.DefinePlugin({
-            'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
-        }),
         new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
             resource.request = resource.request.replace(/assets$/, 'assets-browser');
-        }),
-        // copy public files
-        new CopyWebpackPlugin({
-            patterns: [
-                // copy firmware releases, bridge releases from '@trezor/connect-common'
-                { from: COMMON_DATA_SRC, to: `${DIST}/data` },
-                // copy messages.json from '@trezor/transport'
-                { from: MESSAGES_SRC, to: `${DIST}/data/messages`, force: true },
-            ],
-        }),
-        new webpack.DefinePlugin({
-            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
-            // 'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
         }),
     ],
 
