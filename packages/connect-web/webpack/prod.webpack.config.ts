@@ -5,6 +5,7 @@ import webpack from 'webpack';
 
 // Generate additional files hosted on https://connect.trezor.io/X/
 
+const __dirname = import.meta.dirname;
 const DIST = path.resolve(__dirname, '../build');
 
 const config: webpack.Configuration = {

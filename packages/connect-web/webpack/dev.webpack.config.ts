@@ -4,9 +4,11 @@ import { merge } from 'webpack-merge';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
 
 // todo: https://github.com/trezor/trezor-suite/issues/5305
-import prod from './prod.webpack.config';
-import iframe from '../../connect-iframe/webpack/iframe.webpack.config';
+import prod from './prod.webpack.config.ts';
+import iframe from '../../connect-iframe/webpack/iframe.webpack.config.ts';
 // todo: https://github.com/trezor/trezor-suite/issues/5305
+
+const __dirname = import.meta.dirname;
 
 const dev = {
     mode: 'development',

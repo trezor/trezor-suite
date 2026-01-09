@@ -1704,7 +1704,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:7.28.5":
+"@babel/preset-env@npm:7.28.5, @babel/preset-env@npm:^7.28.0":
   version: 7.28.5
   resolution: "@babel/preset-env@npm:7.28.5"
   dependencies:
@@ -1797,7 +1797,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.22.15, @babel/preset-react@npm:^7.28.5":
+"@babel/preset-react@npm:^7.22.15, @babel/preset-react@npm:^7.28.0, @babel/preset-react@npm:^7.28.5":
   version: 7.28.5
   resolution: "@babel/preset-react@npm:7.28.5"
   dependencies:
@@ -14352,6 +14352,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
+    "@babel/plugin-proposal-decorators": "npm:^7.28.0"
+    "@babel/preset-env": "npm:^7.28.0"
+    "@babel/preset-react": "npm:^7.28.0"
     "@babel/preset-typescript": "npm:^7.28.5"
     "@ethereumjs/common": "npm:^10.1.0"
     "@ethereumjs/tx": "npm:^10.1.0"
@@ -15168,7 +15171,7 @@ __metadata:
     esbuild: "npm:^0.25.2"
     jest: "npm:29.7.0"
     jest-extended: "npm:^4.0.2"
-    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.20.3"
     usb: "npm:^2.15.0"
   languageName: unknown
   linkType: soft

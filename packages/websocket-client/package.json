@@ -15,6 +15,7 @@
     },
     "sideEffects": false,
     "main": "src/index",
+    "type": "module",
     "browser": {
         "ws": "./src/ws-browser"
     },
@@ -23,26 +24,29 @@
         "ws": "@trezor/websocket-client/src/ws-native.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "types": "./libESM/index.d.ts"
+            }
+        },
         "browser": {
-            "ws": "./lib/ws-browser.js"
+            "ws": "./libESM/ws-browser.js"
         },
         "react-native": {
             "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-            "ws": "@trezor/websocket-client/lib/ws-native.js"
+            "ws": "@trezor/websocket-client/libESM/ws-native.js"
         }
     },
     "files": [
-        "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },

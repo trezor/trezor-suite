@@ -1,10 +1,10 @@
 {
-    "extends": "../../tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./lib",
+        "outDir": "./libESM",
         "types": ["w3c-web-usb", "node"]
     },
-    "include": ["./src"],
     "references": [
         {
             "path": "../protobuf"

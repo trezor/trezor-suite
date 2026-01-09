@@ -1,6 +1,10 @@
-const { SRC, BUILD } = require('./constants');
+import { createRequire } from 'module';
 
-module.exports = {
+import { BUILD, SRC } from './constants.js';
+
+const require = createRequire(import.meta.url);
+
+export default {
     target: 'webworker',
     mode: 'production',
     entry: {

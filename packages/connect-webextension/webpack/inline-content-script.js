@@ -1,5 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+const __dirname = import.meta.dirname;
 
 const contentScript = fs.readFileSync(path.join(__dirname, '../dist/content-script.js'), 'utf8');
 

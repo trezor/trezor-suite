@@ -1,11 +1,11 @@
 {
-    "extends": "../../tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./lib",
+        "outDir": "./libESM",
         "lib": ["webworker"],
         "types": ["jest", "node", "web"]
     },
-    "include": ["./src"],
     "references": [
         {
             "path": "../utils"

@@ -1,9 +1,12 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const webpack = require('webpack');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { createRequire } from 'module';
+import webpack from 'webpack';
 
-const { SRC, BUILD, PORT } = require('./constants');
+import { BUILD, PORT, SRC } from './constants.js';
 
-module.exports = {
+const require = createRequire(import.meta.url);
+
+export default {
     target: 'web',
     mode: 'development',
     devtool: 'source-map',

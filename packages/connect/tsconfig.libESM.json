@@ -1,11 +1,11 @@
 {
-    "extends": "../../tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "lib",
+        "outDir": "./libESM",
         "lib": ["webworker", "ES2022"],
         "types": ["w3c-web-usb"]
     },
-    "include": ["./src"],
     "references": [
         {
             "path": "../blockchain-link"

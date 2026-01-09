@@ -16,6 +16,7 @@
         "transport"
     ],
     "main": "./src/index.ts",
+    "type": "module",
     "browser": {
         "./src/pinger/ping": "./src/pinger/ping.browser.ts",
         "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
@@ -27,26 +28,31 @@
         "./src/transports/webusb": "./src/transports/webusb.ts"
     },
     "publishConfig": {
-        "main": "./lib/index.js",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "types": "./libESM/index.d.ts"
+            }
+        },
         "browser": {
-            "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
-            "./lib/transports/udp": "./lib/transports/udp.browser.ts",
-            "./lib/transports/webusb": "./lib/transports/webusb.browser.ts"
+            "./libESM/pinger/ping": "./libESM/pinger/ping.browser.ts",
+            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.browser.ts",
+            "./libESM/transports/udp": "./libESM/transports/udp.browser.ts",
+            "./libESM/transports/webusb": "./libESM/transports/webusb.browser.ts"
         },
         "react-native": {
-            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
-            "./lib/transports/webusb": "./lib/transports/webusb.js"
+            "./libESM/transports/nodeusb": "./libESM/transports/nodeusb.browser.js",
+            "./libESM/transports/webusb": "./libESM/transports/webusb.js"
         }
     },
     "files": [
-        "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",

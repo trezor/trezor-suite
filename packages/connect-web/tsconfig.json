@@ -21,6 +21,12 @@
         "../connect-popup/webpack/prod.webpack.config.ts",
         "../connect-popup/package.json"
     ],
+    "exclude": [
+        "./webpack",
+        "./libDev",
+        "./libESM",
+        "./jest.config.js"
+    ],
     "references": [
         { "path": "../connect" },
         { "path": "../connect-common" },

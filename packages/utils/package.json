@@ -15,58 +15,27 @@
     },
     "sideEffects": false,
     "publishConfig": {
-        "main": "lib/index.js",
-        "types": "lib/index.d.ts",
         "exports": {
             ".": {
                 "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
+                "types": "./libESM/index.d.ts"
             },
-            "./lib/bigNumber": {
-                "import": "./libESM/bigNumber.js",
-                "require": "./lib/bigNumber.js",
-                "types": "./lib/bigNumber.d.ts"
-            },
-            "./lib/resolveAfter": {
-                "import": "./libESM/resolveAfter.js",
-                "require": "./lib/resolveAfter.js",
-                "types": "./lib/resolveAfter.d.ts"
-            },
-            "./lib/promiseAllSequence": {
-                "import": "./libESM/promiseAllSequence.js",
-                "require": "./lib/promiseAllSequence.js",
-                "types": "./lib/promiseAllSequence.d.ts"
-            },
-            "./lib/cloneObject": {
-                "import": "./libESM/cloneObject.js",
-                "require": "./lib/cloneObject.js",
-                "types": "./lib/cloneObject.d.ts"
-            },
-            "./lib/versionUtils": {
-                "import": "./libESM/versionUtils.js",
-                "require": "./lib/versionUtils.js",
-                "types": "./lib/versionUtils.d.ts"
-            },
-            "./lib/createDeferredManager": {
-                "import": "./libESM/createDeferredManager.js",
-                "require": "./lib/createDeferredManager.js",
-                "types": "./lib/createDeferredManager.d.ts"
+            "./*": {
+                "types": "./libESM/*.d.ts",
+                "import": "./libESM/*.js"
             }
         }
     },
     "main": "src/index.ts",
+    "type": "module",
     "files": [
-        "lib/",
         "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest --verbose -c ./jest.config.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
         "depcheck": "yarn g:depcheck"

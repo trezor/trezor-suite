@@ -1,0 +1,8 @@
+{
+    "extends": "../tsconfig.libESM.json",
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "noEmit": true
+    },
+    "include": ["."]
+}

@@ -2,8 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "types": ["jest", "node", "w3c-web-usb"]
+        "types": ["jest", "node", "w3c-web-usb"],
+        "allowJs": true
     },
+    "include": ["./e2e/jest.config.js"],
     "references": [
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },

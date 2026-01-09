@@ -1,4 +1,6 @@
-const path = require('path');
+import path from 'path';
+
+const __dirname = import.meta.dirname;
 
 const ABSOLUTE_BASE = path.normalize(path.join(__dirname, '..'));
 
@@ -9,4 +11,4 @@ const constants = Object.freeze({
     INDEX: path.join(ABSOLUTE_BASE, 'src/index.html'),
 });
 
-module.exports = { ...constants, ABSOLUTE_BASE };
+export const { BUILD, SRC, PORT, INDEX } = constants;

@@ -20,11 +20,17 @@
     ],
     "sideEffects": false,
     "main": "src/index.ts",
+    "type": "module",
     "publishConfig": {
-        "main": "lib/index.js"
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "types": "./libESM/index.d.ts"
+            }
+        }
     },
     "files": [
-        "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
@@ -32,10 +38,10 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
-        "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
-        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
+        "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"webpack/tsconfig.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
+        "build:inline": "TS_NODE_PROJECT=\"webpack/tsconfig.json\" webpack --config ./webpack/inline.webpack.config.ts",
+        "build:webextension": "TS_NODE_PROJECT=\"webpack/tsconfig.json\" webpack --config ./webpack/prod.webpack.config.ts",
         "build": "rm -rf build && yarn build:inline && yarn build:webextension",
         "test:e2e": "yarn playwright install && yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",

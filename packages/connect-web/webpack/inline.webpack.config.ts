@@ -2,7 +2,9 @@ import path from 'path';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import prod from './prod.webpack.config';
+import prod from './prod.webpack.config.ts';
+
+const __dirname = import.meta.dirname;
 
 // Generate inline script hosted on https://connect.trezor.io/X/trezor-connect.js
 // This is compiled and polyfilled npm package without Core logic

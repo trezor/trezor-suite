@@ -10,8 +10,9 @@ import { versionUtils } from '@trezor/utils';
 import TrezorConnect from '../src';
 import { UI } from '../src/events';
 
-const emulatorStartOpts: EmuStartOptsType =
-    (process.env.emulatorStartOpts as any) || global.emulatorStartOpts || {};
+const emulatorStartOpts: EmuStartOptsType = process.env.emulatorStartOpts
+    ? JSON.parse(process.env.emulatorStartOpts)
+    : global.emulatorStartOpts || {};
 
 const emuStartType = emulatorStartOpts.type;
 const firmware: string | null =

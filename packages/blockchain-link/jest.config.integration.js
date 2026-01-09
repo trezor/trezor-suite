@@ -2,9 +2,9 @@
  * Integration tests for library build in `./lib` and `./build` directory
  */
 
-const baseConfig = require('../../jest.config.base');
+import baseConfig from '../../jest.config.base.js';
 
-module.exports = {
+export default {
     ...baseConfig,
     moduleFileExtensions: ['js', 'ts', 'json'],
     testMatch: ['**/tests/integration/*.test.ts'],

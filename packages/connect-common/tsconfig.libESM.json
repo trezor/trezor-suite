@@ -1,11 +1,11 @@
 {
-    "extends": "../../tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./lib",
+        "outDir": "./libESM",
         "esModuleInterop": false,
         "types": ["node", "chrome", "jest"]
     },
-    "include": ["./src"],
     "references": [
         {
             "path": "../env-utils"
@@ -13,6 +13,7 @@
         {
             "path": "../type-utils"
         },
+
         {
             "path": "../utils"
         }

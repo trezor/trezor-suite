@@ -13,15 +13,21 @@
     },
     "sideEffects": false,
     "main": "src/index",
+    "type": "module",
     "publishConfig": {
-        "main": "lib/index.js"
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "types": "./libESM/index.d.ts"
+            }
+        }
     },
     "files": [
-        "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",

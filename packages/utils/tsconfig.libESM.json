@@ -1,9 +1,7 @@
 {
-    "extends": "./tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "libESM",
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "target": "ES2023"
+        "outDir": "./libESM"
     }
 }

@@ -4,6 +4,7 @@ import webpack from 'webpack';
 
 // Generate single entry javascript bundle in build/js folder
 
+const __dirname = import.meta.dirname;
 const DIST = path.resolve(__dirname, '../build');
 
 const config: webpack.Configuration = {

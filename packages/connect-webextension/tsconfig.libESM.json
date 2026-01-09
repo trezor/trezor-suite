@@ -1,10 +1,10 @@
 {
-    "extends": "../../tsconfig.lib.json",
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
     "compilerOptions": {
-        "outDir": "lib",
+        "outDir": "./libESM",
         "types": ["chrome", "w3c-web-usb"]
     },
-    "include": ["./src"],
     "references": [
         {
             "path": "../connect"

@@ -1,7 +1,9 @@
 import path from 'path';
 import webpack from 'webpack';
 
-import prod from './prod.webpack.config';
+import prod from './prod.webpack.config.ts';
+
+const __dirname = import.meta.dirname;
 
 const config: webpack.Configuration = {
     target: 'web',

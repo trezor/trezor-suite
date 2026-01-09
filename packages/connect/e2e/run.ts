@@ -1,5 +1,5 @@
-import { getVersion as getJestVersion, runCLI } from 'jest';
 import karma from 'karma';
+import { createRequire } from 'module';
 import path from 'path';
 import webpack from 'webpack';
 
@@ -11,7 +11,16 @@ import {
 } from '@trezor/trezor-user-env-link';
 import { typedObjectKeys } from '@trezor/utils';
 
-import argv from './jest.config';
+// The issue is that Jest itself (when loaded via require('jest') and
+// called with runCLI) is trying to parse the jest.config.ts file,
+// so we use jest.config.js instead of .ts to avoid issues with ts-node,
+// which may conflict with the ESM context.
+// TODO: there could be a better way to handle this.
+import argv from './jest.config.js';
+
+const require = createRequire(import.meta.url);
+const { getVersion: getJestVersion, runCLI } = require('jest');
+const __dirname = import.meta.dirname;
 
 const firmwareArg = process.env.TESTS_FIRMWARE;
 const firmwareUrl = process.env.TESTS_FIRMWARE_URL;
@@ -98,6 +107,9 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     }
     const emulatorStartOpts = getEmulatorOptions(TrezorUserEnvLink.firmwares);
 
+    // Pass emulatorStartOpts via environment variable for setup files.
+    process.env.emulatorStartOpts = JSON.stringify(emulatorStartOpts);
+
     argv.globals = {
         emulatorStartOpts,
     };
@@ -121,8 +133,9 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
             argv.randomize = true;
         }
 
+        const projectRoot = path.resolve(__dirname, '..');
         // @ts-expect-error
-        const { results } = await runCLI(argv, [__dirname]).catch(err => {
+        const { results } = await runCLI(argv, [projectRoot]).catch(err => {
             console.error(err);
             process.exit(1);
         });

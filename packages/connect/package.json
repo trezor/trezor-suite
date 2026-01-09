@@ -20,6 +20,7 @@
     ],
     "sideEffects": false,
     "main": "src/index.ts",
+    "type": "module",
     "browser": {
         "./src/index": "./src/index-browser.ts",
         "./src/index.ts": "./src/index-browser.ts",
@@ -33,37 +34,40 @@
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
     "publishConfig": {
-        "main": "lib/index.js",
+        ".": {
+            "import": "./libESM/index.js",
+            "types": "./libESM/index.d.ts"
+        },
         "browser": {
-            "./lib/index.js": "./lib/index-browser.js",
-            "./lib/index": "./lib/index-browser.js",
-            "./lib/utils/assets": "./lib/utils/assets-browser.js",
-            "./lib/workers/workers": "./lib/workers/workers-browser.js"
+            "./libESM/index.js": "./libESM/index-browser.js",
+            "./libESM/index": "./libESM/index-browser.js",
+            "./libESM/utils/assets": "./libESM/utils/assets-browser.js",
+            "./libESM/workers/workers": "./libESM/workers/workers-browser.js"
         },
         "react-native": {
-            "./lib/index": "./lib/index.js",
-            "./lib/index.ts": "./lib/index.js",
-            "./lib/utils/assets": "./lib/utils/assets.native.js",
-            "./lib/workers/workers": "./lib/workers/workers.native.js"
+            "./libESM/index": "./libESM/index.js",
+            "./libESM/index.ts": "./libESM/index.js",
+            "./libESM/utils/assets": "./libESM/utils/assets.native.js",
+            "./libESM/workers/workers": "./libESM/workers/workers.native.js"
         }
     },
     "files": [
-        "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",
         "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
         "version:preminor": "yarn g:tsx scripts/bump-version.ts preminor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
-        "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
-        "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
+        "test:e2e:web": "tsx ./e2e/run.ts web",
+        "test:e2e:node": "tsx ./e2e/run.ts node",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },
@@ -102,6 +106,9 @@
         "jws": "^4.0.1"
     },
     "devDependencies": {
+        "@babel/plugin-proposal-decorators": "^7.28.0",
+        "@babel/preset-env": "^7.28.0",
+        "@babel/preset-react": "^7.28.0",
         "@babel/preset-typescript": "^7.28.5",
         "@trezor/eslint": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",

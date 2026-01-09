@@ -10,7 +10,7 @@ export default {
             'babel-jest',
             {
                 presets: [
-                    ['@babel/preset-env', { targets: { node: 'current' }, modules: 'commonjs' }],
+                    ['@babel/preset-env', { targets: { node: 'current' }, modules: 'auto' }],
                     '@babel/preset-typescript',
                 ],
             },
