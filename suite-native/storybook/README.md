@@ -45,6 +45,8 @@ yarn workspace @suite-native/storybook storybook:web
 
 This will start the Storybook development server at `http://localhost:6006`.
 
-### Nightly server deployment
+### Remote deployment
 
-TODO, will be implemented in a follow-up: https://github.com/trezor/trezor-suite/issues/23949
+Whenever the `@suite-native/storybook` package or any `stories.tsx` files are updated and merged into the develop branch, these changes are automatically deployed to the remote server through a [GitHub Actions workflow](../../.github/workflows/build-storybook-native.yml).
+
+The deployed storybook is available at https://dev.suite.sldev.cz/suite-mobile/components/develop/.
