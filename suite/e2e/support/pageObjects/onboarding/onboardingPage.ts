@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { BackupType } from '@suite-common/suite-types';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
-import { StartEmu } from '@trezor/trezor-user-env-link';
+import { Model, StartEmu } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
@@ -11,8 +11,7 @@ import { BackupSection } from './backupSection';
 import { FirmwareSection } from './firmwareSection';
 import { PinSection } from './pinSection';
 import { TutorialSection } from './tutorialSection';
-import { getModelFromEnv } from '../../helpers/modelFromEnv';
-import { ModelFixture } from '../../modelFixture';
+import { isModelWithSecureElement, isModelWithTHP } from '../../helpers/modelHelper';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class OnboardingPage {
@@ -44,7 +43,7 @@ export class OnboardingPage {
 
     constructor(
         public page: Page,
-        private readonly model: ModelFixture,
+        private readonly model: Model,
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
         private readonly settingsPage: SettingsPage,
@@ -120,14 +119,14 @@ export class OnboardingPage {
         await this.optionallyDismissFwHashCheckError();
         await this.analyticsSection.continueButton.click();
 
-        if (this.model.isModelWithTHP()) {
+        if (isModelWithTHP(this.model)) {
             await this.devicePrompt.allowConnectToTrezor();
             await this.enterTHPPairingCode();
             await this.enableAutoconnect();
         }
 
         await this.onboardingExitButton.click();
-        if (this.model.isModelWithSecureElement() && getModelFromEnv() !== 'T3W1') {
+        if (isModelWithSecureElement(this.model) && this.model !== 'T3W1') {
             await this.passThroughAuthenticityCheck();
         }
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
@@ -233,7 +232,7 @@ export class OnboardingPage {
             await this.disableFirmwareRevisionCheck();
         }
 
-        if (getModelFromEnv() === 'T3W1') {
+        if (this.model === 'T3W1') {
             await this.disableAuthenticityCheck();
         }
     }

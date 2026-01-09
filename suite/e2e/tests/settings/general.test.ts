@@ -11,7 +11,7 @@ export enum Currency {
     USD = 'usd',
 }
 
-test.describe('General settings', { tag: ['@group=settings'] }, () => {
+test.describe('General settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage }) => {
         await onboardingPage.completeOnboarding();
         await analytics.interceptAnalytics();

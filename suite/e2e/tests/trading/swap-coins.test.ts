@@ -39,7 +39,7 @@ const formattedReceiveAmount = `${receiveAmount} BTC`;
 const { sendAddress, receiveAddress } = swapTradeSolanaBTC;
 const formattedSendAddress = formatAddressWithNewlines(sendAddress);
 
-test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, tradingMock, walletPage, settingsPage }) => {

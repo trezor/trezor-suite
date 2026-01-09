@@ -50,17 +50,17 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         await connectPermissionsModal.confirmButton.click();
 
         await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
-        await pressContinue(model.model);
+        await pressContinue(model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/1/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(model.model);
+        await pressContinue(model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/2/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(model.model);
+        await pressContinue(model);
 
         await trezorUserEnvLink.pressYes();
 

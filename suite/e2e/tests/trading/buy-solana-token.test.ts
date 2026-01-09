@@ -18,7 +18,7 @@ const provider = capitalizeFirstLetter(buyQuotesSolanaToken[0].exchange);
 const formattedCryptoAmount = `${cryptoAmount} JUP`;
 const formattedFiatAmount = `CZK ${fiatAmount}`;
 
-test.describe('Trading - Buy Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Buy Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, tradingMock, onboardingPage, settingsPage, walletPage }) => {
         await page.route(invityEndpoint.buyQuotes, async route => {
             await route.fulfill({ json: buyQuotesSolanaToken });

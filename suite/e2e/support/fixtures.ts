@@ -5,7 +5,6 @@ import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/tradingMock';
-import { ModelFixture } from './modelFixture';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
 import { AssetsSection } from './pageObjects/assetsSection';
 import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
@@ -46,7 +45,6 @@ type Fixtures = {
     tradingMock: TradingMock;
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
-    model: ModelFixture;
     paginationControl: PaginationControl;
 };
 
@@ -64,7 +62,7 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new WalletPage(page));
     },
     onboardingPage: async (
-        { page, model, devicePrompt, analyticsSection, settingsPage, emulatorStartConf },
+        { page, devicePrompt, analyticsSection, settingsPage, emulatorStartConf, model },
         use,
     ) => {
         await use(
@@ -129,9 +127,6 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
-    },
-    model: async ({ emulatorStartConf }, use) => {
-        await use(new ModelFixture(emulatorStartConf.model));
     },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));

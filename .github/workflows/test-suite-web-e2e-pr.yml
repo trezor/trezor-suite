@@ -126,7 +126,7 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: "web"
+          project: "web:pr"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           additional-grep: "@webOnly"
@@ -134,39 +134,4 @@ jobs:
           fail-fast: 7
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-
-  run-e2e-suite-web-tests-t3w1:
-    if: github.repository == 'trezor/trezor-suite' && needs.check-previous-runs.outputs.skip_tests != 'true'
-    runs-on: ubuntu-latest
-    needs:
-      - build-web
-      - check-previous-runs
-    strategy:
-      fail-fast: false
-      matrix:
-        TEST_GROUP: [1, 2, 3, 4]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
-          fetch-depth: 2
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        env:
-          EMULATOR_MODEL: T3W1
-        with:
-          project: "web"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
-          test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: "@webOnly"
-          additional-grep-invert: "@specificModel|@nightlyOnly"
-          fail-fast: 7
-          currents-project-id: "Og0NOQ"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-ci-build-id: "pr-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
-          currents-tags: "T3W1"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

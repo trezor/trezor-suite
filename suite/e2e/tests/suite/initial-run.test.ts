@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
 
 import { expect, test } from '../../support/fixtures';
+import { isModelWithTHP } from '../../support/helpers/modelHelper';
 
 const optionallyDismissFwHashCheckError = (page: Page) => {
     // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
@@ -13,7 +14,7 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
         .catch(() => {}); // Intentionally ignore timeout errors - means the modal was not shown
 };
 
-test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
+test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
         model,
@@ -33,7 +34,7 @@ test.describe('Suite initial run', { tag: ['@group=suite'] }, () => {
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
 
-        if (model.isModelWithTHP()) {
+        if (isModelWithTHP(model)) {
             await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }

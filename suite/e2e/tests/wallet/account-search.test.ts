@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Look up a BTC account', { tag: ['@group=wallet'] }, () => {
+test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'cancel solid bulb sample fury scrap whale ranch raven razor sight skin',

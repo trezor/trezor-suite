@@ -122,7 +122,7 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: "desktop"
+          project: "desktop:pr"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
@@ -130,52 +130,4 @@ jobs:
           fail-fast: 7
           currents-project-id: "4ytF0E"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
-
-  run-e2e-suite-desktop-tests-t3w1:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-24.04
-    needs:
-      - build-app
-      - check-previous-runs
-    strategy:
-      fail-fast: false
-      matrix:
-        TEST_GROUP: [1, 2, 3, 4, 5, 6]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          ref: ${{ github.sha }}
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: desktop-app-build-e2e
-
-      - name: Extract build artifact
-        run: tar -xzf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
-
-      - name: Run Playwright E2E Tests
-        uses: ./.github/actions/run-e2e-tests
-        env:
-          EMULATOR_MODEL: T3W1
-        with:
-          project: "desktop"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
-          workspace-dependencies: "@trezor/suite-desktop"
-          test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep-invert: "@specificModel|@nightlyOnly"
-          fail-fast: 7
-          currents-project-id: "4ytF0E"
-          currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-          currents-ci-build-id: "pr-run-t3w1-${{ github.run_id }}-${{ github.run_attempt }}"
-          currents-tags: "T3W1"
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

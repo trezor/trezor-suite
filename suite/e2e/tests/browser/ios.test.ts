@@ -12,16 +12,12 @@ const iosAria = `
 `;
 
 test.use({ startEmulator: false, browserName: 'chromium', ...devices['iPhone 15 Pro'] });
-test.describe(
-    'iPhone with Chrome browser',
-    { tag: ['@group=other', '@webOnly', '@snapshot'] },
-    () => {
-        test('Suite does not support iOS', async ({ page }) => {
-            await expect(
-                page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
-            ).toBeVisible();
-            await expect(page.locator('body')).toMatchAriaSnapshot(iosAria);
-            await expect(page.getByText('Continue at my own risk')).toBeHidden();
-        });
-    },
-);
+test.describe('iPhone with Chrome browser', { tag: ['@webOnly', '@snapshot', '@noDevice'] }, () => {
+    test('Suite does not support iOS', async ({ page }) => {
+        await expect(
+            page.getByRole('heading', { name: 'Suite doesn’t work on iOS yet' }),
+        ).toBeVisible();
+        await expect(page.locator('body')).toMatchAriaSnapshot(iosAria);
+        await expect(page.getByText('Continue at my own risk')).toBeHidden();
+    });
+});

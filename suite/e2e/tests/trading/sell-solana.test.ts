@@ -24,7 +24,7 @@ const formattedFiatAmount = `€${fiatAmount}`;
 const { paymentMethodName } = sellTradeSolana.trade;
 const formattedAddress = formatAddressWithNewlines(sellWatchSolana.destinationAddress);
 
-test.describe('Trading - Sell Solana', { tag: ['@group=trading', '@webOnly'] }, () => {
+test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });

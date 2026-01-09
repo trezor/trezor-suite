@@ -2,7 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe.skip(
     'Onboarding - transport webusb/bridge',
-    { tag: ['@group=device-management', '@webOnly'] },
+    { tag: ['@webOnly', '@noDevice'] },
     () => {
         test.use({ startEmulator: false });
         test('Offer webusb as primary choice on web', async ({ page, analyticsSection }) => {

@@ -9,6 +9,7 @@ import messages from '@trezor/suite/src//support/messages';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
+import { isT3W1 } from '../helpers/modelHelper';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
@@ -179,7 +180,7 @@ export const expect = baseExpect.extend({
         },
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
-        const expectedContent = devicePrompt.model.isT3W1()
+        const expectedContent = isT3W1(devicePrompt.model)
             ? {
                   header: { title: 'Receive' },
                   body: [transformedExpectedAddress],
@@ -208,7 +209,7 @@ export const expect = baseExpect.extend({
         let expectedContent = expected.T3W1;
 
         // expected.T3T1 is used as overrides for the default T3W1 model
-        if (!devicePrompt.model.isT3W1()) {
+        if (!isT3W1(devicePrompt.model)) {
             const DEFAULT_T3T1_FOOTER = { footer: 'Tap to continue' };
             expectedContent = {
                 ...expected.T3W1,

@@ -10,7 +10,7 @@ let ethereumStakingBalance: string | null;
 const MOCKED_FEE_AMOUNT = 0.000290278609719;
 const WITHDRAWAL_BUFFER = 0.03;
 
-test.describe('ETH staking form', { tag: ['@group=staking'] }, () => {
+test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',

@@ -3,9 +3,8 @@ import { EventType } from '@trezor/suite-analytics';
 import { expect, test } from '../../support/fixtures';
 import { ExtractByEventType } from '../../support/types';
 
-test.describe('Backup success', { tag: ['@group=device-management', '@specificModel'] }, () => {
+test.describe('Backup success', { tag: ['@T2T1'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T2T1', wipe: true },
         emulatorSetupConf: { needs_backup: true, mnemonic: 'mnemonic_all' },
     });
 

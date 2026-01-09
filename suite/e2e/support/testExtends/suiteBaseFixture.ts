@@ -17,7 +17,6 @@ import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
-import { getModelFromEnv } from '../helpers/modelFromEnv';
 
 type StartEmuModelRequired = StartEmu & { model: Model };
 
@@ -35,6 +34,7 @@ type suiteBaseFixture = {
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     page: Page;
     exceptionLogger: void;
+    model: Model;
 };
 
 const electronSetup = async (
@@ -177,7 +177,15 @@ const trezorEnvSetup = async (
 const suiteBaseTest = currentsTest.extend<suiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: { model: getModelFromEnv(), wipe: true },
+    model: async ({}, use, testInfo) => {
+        if (!testInfo.project.use.model) {
+            throw new Error('Model is not defined in project.use');
+        }
+        await use(testInfo.project.use.model);
+    },
+    emulatorStartConf: async ({ model }, use) => {
+        await use({ model, wipe: true });
+    },
     // emulatorStartConf override from test file:
     //   test.use({emulatorStartConf: { model: 'T1B1', wipe: true }});
     // can lack version and it needs to be finalized based on model and CANARY_FIRMWARE env var

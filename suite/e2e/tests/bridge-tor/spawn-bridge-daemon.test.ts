@@ -9,7 +9,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.use({ exceptionLogger: skipFixture });
 test.use({ context: undefined }); // disable default context fixture to be able to use beforeAll
-test.describe('Bridge', { tag: ['@group=suite', '@desktopOnly'] }, () => {
+test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.describe.configure({ mode: 'serial' });
     test.beforeAll(async ({ trezorUserEnvLink, onboardingPage }) => {
         // Ensure bridge is stopped so we properly test the electron app starting node-bridge module.

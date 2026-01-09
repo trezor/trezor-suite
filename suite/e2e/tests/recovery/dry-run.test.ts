@@ -7,7 +7,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const pin = '1';
 
-test.describe('Recovery - dry run', { tag: ['@group=device-management'] }, () => {
+test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({
         emulatorSetupConf: { mnemonic: 'mnemonic_all', pin },
     });
@@ -111,7 +111,7 @@ test.describe('Recovery - dry run', { tag: ['@group=device-management'] }, () =>
                 category: TestCategory.Settings,
                 priority: TestPriority.Medium,
             }),
-            tag: ['@desktopOnly'],
+            tag: ['@desktopOnly', '@T3W1', '@T3T1'],
         },
         async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {

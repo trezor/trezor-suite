@@ -58,13 +58,13 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To run just one test** you can add: `-g "Basic cardano walkthrough"`
 
-1. **To run one group** you can add: `--grep @group=wallet`
+1. **To run on a specific device model** you can only run the device specific project i.e.: `yarn workspace @trezor/suite-e2e test:e2e:web --project=T3T1 general/wallet-discovery.test.ts `
 
 1. **To open advance playwright runner/debugger ui** you can add: `--ui`
 
 1. **To check for flakiness** you can specify test/suite and how many time it should run: `--repeat-each=10`
 
-1. **To check for flakiness on CI** you can edit in `packages/suite/package.json` script `"test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./playwright.config.ts --project=desktop --repeat-each=30 <test-file-name>",`, commit, push and run this CI against your branch. This will run this one test 30 times. Please, always specify limited number of tests, never run full suite 30 times.
+1. **To check for flakiness on CI** you can edit in `packages/suite/package.json` script `"test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./playwright-desktop.config.ts --project=desktop --repeat-each=30 <test-file-name>",`, commit, push and run this CI against your branch. This will run this one test 30 times. Please, always specify limited number of tests, never run full suite 30 times.
 
 1. **To debug test** add `await page.pause();` to place where you want test to stop. Debugger window will open. This works only in `--headed` run.
 
@@ -84,28 +84,25 @@ Please follow our general [Playwright contribution guide](e2e-playwright-contrib
 
 ### Tags
 
-Each test should be assigned a tag
+Each test must be assigned a tag according to what device model it is supported by the test i.e.
 
-At the moment, there are the following tags:
+- @T1B1
+- @T2T1
+- @T3B1
+- @T3T1
+- @T3W1
 
-- @group=[string]
+At the moment, there are these additional tags:
+
+- @smoke
 - @desktopOnly
 - @webOnly
 - @nightlyOnly
 - @snapshot
 
-#### @group
+#### @smoke
 
-Assigning a @group allows filtering based on logical test category
-
-- `@group=wallet`
-- `@group=suite`
-- `@group=device-management`
-- `@group=other`
-- `@group=metadata`
-- `@group=passphrase`
-- `@group=settings`
-- `@group=trading`
+Tests belonging to a smoke set are executed on all supported devices in PR pipelines. Otherwise only T3W1 is used.
 
 #### @desktopOnly or @webOnly
 

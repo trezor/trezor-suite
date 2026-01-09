@@ -17,7 +17,7 @@ const coinsToActivate = [
     'zec',
 ] as NetworkSymbol[];
 
-test.describe('Discovery', { tag: ['@group=wallet'] }, () => {
+test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

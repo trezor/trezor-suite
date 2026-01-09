@@ -3,7 +3,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Doge Send', { tag: ['@group=wallet', '@snapshot'] }, () => {
+test.describe('Doge Send', { tag: ['@snapshot', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic:

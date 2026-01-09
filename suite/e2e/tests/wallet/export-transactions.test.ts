@@ -7,7 +7,7 @@ import { expect, test } from '../../support/fixtures';
 import { ExportType } from '../../support/pageObjects/walletPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('Export transactions', { tag: ['@group=wallet', '@webOnly'] }, () => {
+test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',

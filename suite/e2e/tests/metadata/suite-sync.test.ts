@@ -4,13 +4,19 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 import { skipFixture } from '../../support/common';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
-import { getModelFromEnv } from '../../support/helpers/modelFromEnv';
 
 test.use({ exceptionLogger: skipFixture });
-test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware'] }, () => {
+test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware', '@T3W1'] }, () => {
     test.use({
-        emulatorStartConf: { model: getModelFromEnv(), version: '2-main', wipe: true },
-        emulatorSetupConf: { mnemonic: generateMnemonic(wordlist), passphrase_protection: true },
+        emulatorStartConf: {
+            model: 'T3W1',
+            version: '2-main',
+            wipe: true,
+        },
+        emulatorSetupConf: {
+            mnemonic: generateMnemonic(wordlist),
+            passphrase_protection: true,
+        },
     });
     test('Sync account label across sessions', async ({
         page,

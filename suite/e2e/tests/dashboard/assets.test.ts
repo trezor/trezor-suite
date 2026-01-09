@@ -1,6 +1,6 @@
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Assets', { tag: ['@group=suite'] }, () => {
+test.describe('Assets', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

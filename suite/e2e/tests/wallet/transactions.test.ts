@@ -11,7 +11,7 @@ const rangeData: { range: graphRangeOptions; label: string }[] = [
     { range: 'all', label: messages['TR_ALL'].defaultMessage },
 ];
 
-test.describe('Account transactions overview', { tag: ['@group=wallet'] }, () => {
+test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();

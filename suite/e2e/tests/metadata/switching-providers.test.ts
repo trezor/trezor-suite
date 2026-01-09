@@ -5,7 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe(
     'Metadata - switching between cloud providers',
-    { tag: ['@group=metadata', '@webOnly'] },
+    { tag: ['@webOnly', '@T3W1', '@T3T1'] },
     () => {
         const dropboxLabel = 'dropbox label';
         const googleLabel = 'google label';

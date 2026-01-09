@@ -4,11 +4,10 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.use({ startEmulator: false });
-
 test(
     'Join early access',
     {
-        tag: ['@group=settings', '@desktopOnly'],
+        tag: ['@desktopOnly', '@noDevice'],
         annotation: createTestAnnotation({
             testCase: 'Verify that a user can join the early access program.',
             category: TestCategory.Settings,

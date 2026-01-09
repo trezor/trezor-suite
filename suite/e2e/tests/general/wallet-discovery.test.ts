@@ -7,7 +7,7 @@ test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
 test.beforeEach(async ({ onboardingPage }) => {
     await onboardingPage.completeOnboarding();
 });
-test.describe('Wallet discover tests', { tag: ['@group=wallet'] }, () => {
+test.describe('Wallet discover tests', { tag: ['@T3W1', '@T3T1'] }, () => {
     test(
         'Discover a standard wallet',
         {
