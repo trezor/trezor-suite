@@ -10,13 +10,12 @@ import {
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
-import { FormState, Output } from '@suite-common/wallet-types';
+import { AccountKey, FormState, Output } from '@suite-common/wallet-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 import { TradingSellFormDefaultValuesProps } from 'src/types/trading/tradingForm';
-import { Account } from 'src/types/wallet';
 import {
     buildTradingFiatOption,
     resolveAddressAndToken,
@@ -26,13 +25,13 @@ import { useTradingDefaultSellAsset } from './common/useTradingDefaultSellAsset'
 import { useTradingFormAccount } from './useTradingFormAccount';
 
 export const useTradingSellFormDefaultValues = (
-    account: Account,
+    accountKey: AccountKey,
     sellInfoCountry: TradingCountryCode | undefined,
 ): TradingSellFormDefaultValuesProps => {
-    const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount('sell');
+    const { cryptoId } = useTradingFormAccount('sell');
     const { isTorEnabled } = useSelector(selectTorState);
 
-    const { defaultAsset } = useTradingDefaultSellAsset({
+    const { account, defaultAsset } = useTradingDefaultSellAsset({
         accountKey,
         cryptoId,
     });

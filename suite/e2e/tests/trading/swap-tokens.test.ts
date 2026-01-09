@@ -45,14 +45,17 @@ test.describe('Trading - Swap tokens', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: tetherMint,
-                sendTicker: 'USDT',
-                receiveAsset: {
+                sellAsset: {
+                    networkFilter: 'sol',
+                    networkSymbol: 'sol',
+                    tokenSymbol: 'usdt',
+                    assetCryptoId: tetherMint as CryptoId,
+                },
+                buyAsset: {
                     searchFilter: 'USDC',
                     networkFilter: 'sol',
-                    receiveAsset: usdcMint as CryptoId,
+                    assetCryptoId: usdcMint as CryptoId,
                 },
-                receiveNetwork: usdcMint,
                 receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.selectSuiteReceiveAccount(0);

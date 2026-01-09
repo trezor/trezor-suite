@@ -106,7 +106,7 @@ function getOrderNetworks({ topFiveAssets, assets, accountsWithTokens }: GetOrde
 
 export type TradingAssetListItem =
     | {
-          type: 'top-five-assets';
+          type: 'top-assets';
           assets: TradingAssetOption[];
           height: number;
       }
@@ -158,7 +158,7 @@ export function useBuildTradingAssetOptions({
         if (topFiveAssets.length > 0) {
             listItems.push(
                 {
-                    type: 'top-five-assets',
+                    type: 'top-assets',
                     assets: topFiveAssets,
                     height: 82,
                 },

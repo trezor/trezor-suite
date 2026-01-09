@@ -193,7 +193,7 @@ export const TradingExchangeFormInputs = () => {
                     includedCryptoIds={exchangeBuySupportedCryptoIds}
                     excludedCryptoId={sendCryptoSelect?.id}
                     onAssetSelect={handleReceiveAssetSelect}
-                    dataTestId="@trading/form/select-crypto"
+                    dataTestId="@trading/form/select-crypto-for-buy"
                 />
             </Column>
 

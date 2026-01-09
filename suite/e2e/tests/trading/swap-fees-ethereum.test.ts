@@ -1,5 +1,4 @@
-import { CryptoId } from 'invity-api';
-
+import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -41,14 +40,15 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: 'ethereum',
-                sendTicker: 'ETH',
-                receiveAsset: {
+                sellAsset: {
+                    networkSymbol: 'eth',
+                    assetCryptoId: getCryptoId('eth'),
+                },
+                buyAsset: {
                     searchFilter: 'Bitcoin',
                     networkFilter: 'btc',
-                    receiveAsset: 'bitcoin' as CryptoId,
+                    assetCryptoId: getCryptoId('btc'),
                 },
-                receiveNetwork: 'bitcoin',
                 receiveAddress,
             });
             await tradingPage.fees.setEthereumCustomFees({

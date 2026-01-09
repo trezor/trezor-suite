@@ -1,8 +1,4 @@
-import { Account } from 'src/types/wallet';
-import {
-    FIXTURE_ACCOUNTS,
-    FIXTURE_ACCOUNT_OPTIONS,
-} from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
+import { FIXTURE_ACCOUNT_OPTIONS } from 'src/utils/wallet/trading/__fixtures__/tradingUtils';
 import {
     buildTradingFiatOption,
     getCountryLabelParts,
@@ -11,7 +7,6 @@ import {
     tradingGetAccountLabel,
     tradingGetAmountLabels,
     tradingGetRoundedFiatAmount,
-    tradingGetSortedAccounts,
 } from 'src/utils/wallet/trading/tradingUtils';
 
 jest.mock('src/hooks/suite/useDefaultAccountLabel', () => ({
@@ -33,20 +28,6 @@ describe('trading utils', () => {
             flag: '',
             text: 'aaa',
         });
-    });
-
-    it('tradingGetSortedAccounts', () => {
-        const sortedAccounts = tradingGetSortedAccounts({
-            accounts: FIXTURE_ACCOUNTS as Account[],
-            deviceState: '1stTestnetAddress@device_id:0',
-        });
-
-        expect(sortedAccounts).toStrictEqual([
-            FIXTURE_ACCOUNTS[0],
-            FIXTURE_ACCOUNTS[2],
-            FIXTURE_ACCOUNTS[5],
-            FIXTURE_ACCOUNTS[1],
-        ]);
     });
 
     it('tradingGetAmountLabels', () => {

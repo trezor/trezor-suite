@@ -4,12 +4,7 @@ import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { type TradingType } from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';
-import {
-    asAmountSubunit,
-    sortByCoin,
-    substituteBip43Path,
-    subunitsToUnits,
-} from '@suite-common/wallet-utils';
+import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -18,7 +13,6 @@ import {
     TradingGetAmountLabelsProps,
     TradingGetAmountLabelsReturnProps,
     TradingGetProvidersInfoProps,
-    TradingGetSortedAccountsProps,
 } from 'src/types/trading/trading';
 import { Account } from 'src/types/wallet';
 
@@ -112,19 +106,6 @@ export const getComposeAddressPlaceholder = async (
             return account.descriptor;
         // no default
     }
-};
-
-export const tradingGetSortedAccounts = ({
-    accounts,
-    deviceState,
-}: TradingGetSortedAccountsProps) => {
-    if (!deviceState) return [];
-
-    return sortByCoin(
-        accounts.filter(
-            a => a.deviceState === deviceState && a.visible && a.accountType !== 'coinjoin',
-        ),
-    );
 };
 
 export const tradingGetAmountLabels = ({

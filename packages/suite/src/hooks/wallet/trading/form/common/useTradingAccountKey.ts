@@ -5,13 +5,12 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { selectAccounts, selectSelectedDevice } from '@suite-common/wallet-core';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet, sortByCoin } from '@suite-common/wallet-utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingTradeSellExchangeType } from 'src/types/trading/trading';
-import { tradingGetSortedAccounts } from 'src/utils/wallet/trading/tradingUtils';
 
 interface TradingUseAccountKeyProps {
     type: TradingTradeSellExchangeType;
@@ -32,8 +31,7 @@ export const useTradingAccountKey = ({
     shouldUseTradingAccountKey,
 }: TradingUseAccountKeyProps): [AccountKey, (state: AccountKey) => void] => {
     const dispatch = useDispatch();
-    const accounts = useSelector(selectAccounts);
-    const device = useSelector(selectSelectedDevice);
+    const visibleDeviceAccounts = useSelector(selectVisibleDeviceAccounts);
 
     const [accountKey, setAccountKey] = useState<AccountKey>(() => {
         if (tradingAccountKey && shouldUseTradingAccountKey) {
@@ -42,10 +40,9 @@ export const useTradingAccountKey = ({
 
         if (isTestnet(selectedAccount.account.symbol) && !selectedAccount.network.tradeCryptoId) {
             const defaultSymbol = mapTestnetSymbol(selectedAccount.account.symbol);
-            const accountsSorted = tradingGetSortedAccounts({
-                accounts,
-                deviceState: device?.state?.staticSessionId,
-            });
+            const accountsSorted = sortByCoin(
+                visibleDeviceAccounts.filter(a => a.accountType !== 'coinjoin'),
+            );
 
             const accountNotInTestnet = accountsSorted.find(a => a.symbol === defaultSymbol);
 

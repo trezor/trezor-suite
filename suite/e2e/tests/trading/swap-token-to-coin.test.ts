@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 
 import {
@@ -45,14 +46,16 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
-                sendCurrency: tetherMint,
-                sendTicker: 'USDT',
-                receiveAsset: {
+                sellAsset: {
+                    networkSymbol: 'sol',
+                    tokenSymbol: 'usdt',
+                    assetCryptoId: tetherMint as CryptoId,
+                },
+                buyAsset: {
                     searchFilter: 'Bitcoin',
                     networkFilter: 'btc',
-                    receiveAsset: 'bitcoin' as CryptoId,
+                    assetCryptoId: getCryptoId('btc'),
                 },
-                receiveNetwork: 'bitcoin',
                 receiveAddress,
                 selectReceiveAddress: async () => {
                     await tradingPage.selectSuiteReceiveAccount(0, 'btc');

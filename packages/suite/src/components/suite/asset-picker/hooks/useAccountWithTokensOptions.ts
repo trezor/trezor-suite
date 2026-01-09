@@ -32,7 +32,6 @@ function filterAccountsByNetworkSymbol(
 }
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
-
     /**
      * Filter accounts before they are converted to AccountWithTokensOption.
      */

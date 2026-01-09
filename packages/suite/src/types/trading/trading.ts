@@ -9,7 +9,6 @@ import {
 } from 'invity-api';
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { TokenDefinitionsState } from '@suite-common/token-definitions';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -26,12 +25,8 @@ import type {
     TradingTransactionSell,
     TradingType,
 } from '@suite-common/trading';
-import { AccountsState } from '@suite-common/wallet-core';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { StaticSessionId } from '@trezor/connect';
 import { AssetLogoProps, AssetOptionBaseProps } from '@trezor/product-components';
-
-import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 
 export type TradingPageType = 'form' | 'offers' | 'confirm' | 'retry';
 
@@ -99,23 +94,6 @@ export interface TradingCoinLogoProps {
     size?: 20 | 24;
     margin?: AssetLogoProps['margin'];
     className?: string;
-}
-
-export interface TradingGetSortedAccountsProps {
-    accounts: AccountsState;
-    deviceState: StaticSessionId | undefined;
-}
-
-export interface TradingBuildAccountOptionsProps extends TradingGetSortedAccountsProps {
-    accountLabels: Record<string, string | undefined>;
-    getDefaultAccountLabel: ({
-        accountType,
-        symbol,
-        index,
-    }: GetDefaultAccountLabelParams) => string;
-    supportedCryptoIds: Set<CryptoId> | undefined;
-    tokenDefinitions: Partial<TokenDefinitionsState>;
-    excludeCryptoId?: CryptoId;
 }
 
 export interface TradingGetAmountLabelsProps {

@@ -1,5 +1,4 @@
-import { CryptoId } from 'invity-api';
-
+import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -28,10 +27,10 @@ test.describe('Trading - Buy Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
     }) => {
         await test.step('Request to buy Ethereum', async () => {
             await walletPage.openTradingGlobalButton.click();
-            await tradingPage.selectReceiveAssetInAssetPicker({
+            await tradingPage.selectBuyAsset({
                 searchFilter: 'Ethereum',
                 networkFilter: 'eth',
-                receiveAsset: 'ethereum' as CryptoId,
+                assetCryptoId: getCryptoId('eth'),
             });
             await tradingPage.fillBuyForm({
                 amount: fiatAmount,
