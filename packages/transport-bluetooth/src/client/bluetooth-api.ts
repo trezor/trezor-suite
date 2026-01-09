@@ -113,6 +113,7 @@ export class BluetoothApi extends AbstractApi {
     openDevice(path: string, options?: { channel?: OpenDeviceChannel }) {
         const isReadChannel = !options?.channel || options.channel === 'read';
         if (isReadChannel) {
+            this.readBuffer.cancelRead(path);
             if (this.readSubscription[path]) {
                 // already subscribed to TX (read) characteristics
                 return Promise.resolve(this.success(undefined));
