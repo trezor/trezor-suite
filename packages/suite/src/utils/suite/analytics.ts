@@ -1,4 +1,7 @@
-import { selectActiveExperimentsWithVariants } from '@suite-common/message-system';
+import {
+    formatExperimentVariantsForAnalytics,
+    selectActiveExperimentsWithVariants,
+} from '@suite-common/message-system';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectRememberedHiddenWalletsCount,
@@ -88,7 +91,7 @@ export const getSuiteReadyPayload = async (
 
         isAutomaticUpdateEnabled: state.desktopUpdate.isAutomaticUpdateEnabled,
 
-        experimentVariants: experimentVariants.map(({ name, variant }) => `${name}:${variant}`),
+        experimentVariants: formatExperimentVariantsForAnalytics(experimentVariants),
 
         mevProtection: state.wallet.settings.mevProtection,
         networkReserve: state.wallet.settings.networkReserve,
