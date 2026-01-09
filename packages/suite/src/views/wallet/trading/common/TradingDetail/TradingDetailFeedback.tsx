@@ -9,7 +9,10 @@ import {
 
 import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
-import { selectActiveExperimentsWithVariants } from '@suite-common/message-system';
+import {
+    formatExperimentVariantsForAnalytics,
+    selectActiveExperimentsWithVariants,
+} from '@suite-common/message-system';
 import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
 
@@ -65,7 +68,9 @@ export const TradingDetailFeedback = ({
                     receiveCurrency,
                     geolocation: geolocation || undefined,
                     countryOfResidence: country || undefined,
-                    activeExperimentsWithVariants,
+                    activeExperimentsWithVariants: formatExperimentVariantsForAnalytics(
+                        activeExperimentsWithVariants,
+                    ),
                     ...userData,
                 },
             }),

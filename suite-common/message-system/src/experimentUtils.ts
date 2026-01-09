@@ -65,3 +65,7 @@ export const getActiveExperimentGroup = ({
 
     return experimentRange;
 };
+
+export const formatExperimentVariantsForAnalytics = (
+    experimentVariants: Array<{ name: keyof typeof ExperimentId; variant: string }>,
+): string[] => experimentVariants.map(({ name, variant }) => `${name}:${variant}`);
