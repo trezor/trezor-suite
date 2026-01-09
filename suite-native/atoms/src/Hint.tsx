@@ -15,9 +15,6 @@ type HintProps = {
     children?: ReactNode;
 };
 
-const ICON_SIZE = 14;
-const SPACE_SIZE = 6;
-
 const hintStyle = prepareNativeStyle(() => ({
     display: 'flex',
     flexDirection: 'row',
@@ -51,8 +48,8 @@ export const Hint = ({ style, children, variant = 'hint' }: HintProps) => {
     const { iconName, color } = hintVariants[variant];
 
     return (
-        <HStack spacing={SPACE_SIZE} style={[applyStyle(hintStyle), style]}>
-            <Icon name={iconName} color={color} size={ICON_SIZE} />
+        <HStack style={[applyStyle(hintStyle), style]}>
+            <Icon name={iconName} color={color} size="medium" />
             <Text style={applyStyle(hintTextStyle, { color })}>{children}</Text>
         </HStack>
     );
