@@ -27,7 +27,7 @@ const hintStyle = prepareNativeStyle(
         extend: {
             condition: !!error || !!hint,
             style: {
-                marginTop: 3,
+                marginTop: utils.spacings.sp8,
             },
         },
     }),
