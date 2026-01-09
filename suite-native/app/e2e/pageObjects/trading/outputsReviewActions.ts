@@ -23,6 +23,12 @@ class OutputsReviewActions extends TradingActions {
         await TrezorUserEnvLink.pressYes();
     }
 
+    async expectConnectTrezorInfo() {
+        await waitForVisible(by.text('Connect & unlock\nyour Trezor'), {
+            timeout: this.SHORT_TIMEOUT,
+        });
+    }
+
     async expectAndConfirmTotalFee() {
         await waitForVisible(by.text('Total including fee'));
         await detoxExpect(element(by.text('Amount'))).toBeVisible();
@@ -42,6 +48,10 @@ class OutputsReviewActions extends TradingActions {
         // for some reason we can have 2 back buttons in this screen
         await element(by.id('@screen/sub-header/go-back-button')).atIndex(0).tap();
         await element(by.text('Cancel')).tap();
+    }
+
+    async cancelConnectTrezorInfo() {
+        await element(by.id('@connect-device/header/close')).tap();
     }
 }
 

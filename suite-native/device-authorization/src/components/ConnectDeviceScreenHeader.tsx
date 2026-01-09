@@ -113,6 +113,7 @@ export const ConnectDeviceScreenHeader = ({
                     accessibilityRole="button"
                     accessibilityLabel="close"
                     onPress={handleCancel}
+                    testID="@connect-device/header/close"
                 />
             )}
         </ScreenHeaderWrapper>
