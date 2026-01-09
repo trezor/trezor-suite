@@ -320,6 +320,7 @@ export interface TradingFormInputAccountProps {
     label?: TranslationKey;
     accountSelectName: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
     'data-testid'?: string;
+    excludeCryptoId?: CryptoId;
 }
 
 export interface TradingFormInputCurrencyProps {

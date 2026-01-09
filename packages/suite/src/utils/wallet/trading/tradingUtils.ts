@@ -2,7 +2,12 @@ import { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } fr
 
 import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { type TradingType, cryptoIdToSymbol, toTokenCryptoId } from '@suite-common/trading';
+import {
+    type TradingType,
+    cryptoIdToNetworkAndContractAddress,
+    cryptoIdToSymbol,
+    toTokenCryptoId,
+} from '@suite-common/trading';
 import {
     Network,
     NetworkSymbol,
@@ -174,6 +179,7 @@ export const tradingBuildAccountOptions = ({
     tokenDefinitions,
     supportedCryptoIds,
     getDefaultAccountLabel,
+    excludeCryptoId,
 }: TradingBuildAccountOptionsProps): TradingAccountsOptionsGroupProps[] => {
     const accountsSorted = tradingGetSortedAccounts({
         accounts,
@@ -181,6 +187,8 @@ export const tradingBuildAccountOptions = ({
     });
 
     const groups: TradingAccountsOptionsGroupProps[] = [];
+
+    const excludeNetworkAndContractAddress = cryptoIdToNetworkAndContractAddress(excludeCryptoId);
 
     accountsSorted.forEach(account => {
         const {
@@ -195,6 +203,13 @@ export const tradingBuildAccountOptions = ({
         const network = getNetwork(accountSymbol);
 
         if (!network.tradeCryptoId) {
+            return;
+        }
+
+        if (
+            !excludeNetworkAndContractAddress.contractAddress &&
+            excludeNetworkAndContractAddress.network?.symbol === accountSymbol
+        ) {
             return;
         }
 
@@ -237,6 +252,18 @@ export const tradingBuildAccountOptions = ({
 
                 const tokenCryptoId = toTokenCryptoId(accountSymbol, contractAddress);
                 if (supportedCryptoIds && !supportedCryptoIds.has(tokenCryptoId)) {
+                    return;
+                }
+
+                if (
+                    excludeCryptoId &&
+                    excludeNetworkAndContractAddress.network &&
+                    tokenCryptoId ===
+                        getContractAddressForNetworkSymbol(
+                            excludeNetworkAndContractAddress.network?.symbol,
+                            excludeCryptoId,
+                        )
+                ) {
                     return;
                 }
 

@@ -29,6 +29,7 @@ import { TradingFormInputAccountOption } from 'src/views/wallet/trading/common/T
 export const TradingFormInputAccount = ({
     label,
     accountSelectName,
+    excludeCryptoId,
     'data-testid': dataTestId,
 }: TradingFormInputAccountProps) => {
     const context = useTradingFormContext<TradingTradeSellExchangeType>();
@@ -41,8 +42,7 @@ export const TradingFormInputAccount = ({
         },
         methods,
     } = context;
-    const optionGroups = useTradingBuildAccountGroups(type);
-
+    const optionGroups = useTradingBuildAccountGroups(type, excludeCryptoId);
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
 
     const { getValues, control } = methods as UseFormReturn<TradingSellExchangeFormProps>;
