@@ -1,7 +1,7 @@
 import { yup } from '@suite-common/validators';
 import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { FeesContent, FeesContentProps } from '../FeesContent';
@@ -66,7 +66,7 @@ describe('FeesContent', () => {
     const renderFeesContent = (props: Partial<FeesContentProps> = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <TestFormWrapper>
                 <FeesContent {...finalProps} />
             </TestFormWrapper>,
@@ -80,8 +80,8 @@ describe('FeesContent', () => {
         jest.clearAllMocks();
     });
 
-    it('should render title and description', async () => {
-        const { getByText } = await renderFeesContent();
+    it('should render title and description', () => {
+        const { getByText } = renderFeesContent();
 
         expect(getByText('Transaction fee')).toBeTruthy();
         expect(
@@ -89,59 +89,59 @@ describe('FeesContent', () => {
         ).toBeTruthy();
     });
 
-    it('should render fee options list when selected fee level is not custom', async () => {
-        const { getByTestId } = await renderFeesContent({
+    it('should render fee options list when selected fee level is not custom', () => {
+        const { getByTestId } = renderFeesContent({
             selectedFeeLevel: 'normal',
         });
 
         expect(getByTestId('@transactionManagement/fees-level-container-normal')).toBeTruthy();
     });
 
-    it('should not render fee options list when selected fee level is custom', async () => {
-        const { queryByTestId } = await renderFeesContent({
+    it('should not render fee options list when selected fee level is custom', () => {
+        const { queryByTestId } = renderFeesContent({
             selectedFeeLevel: 'custom',
         });
 
         expect(queryByTestId('@transactionManagement/fees-level-container-normal')).toBeNull();
     });
 
-    it('should always render custom fee component', async () => {
-        const { getByTestId } = await renderFeesContent();
+    it('should always render custom fee component', () => {
+        const { getByTestId } = renderFeesContent();
 
         expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
     });
 
-    it('should render all three fee level options', async () => {
-        const { getByTestId } = await renderFeesContent();
+    it('should render all three fee level options', () => {
+        const { getByTestId } = renderFeesContent();
 
         expect(getByTestId('@transactionManagement/fees-level-container-economy')).toBeTruthy();
         expect(getByTestId('@transactionManagement/fees-level-container-normal')).toBeTruthy();
         expect(getByTestId('@transactionManagement/fees-level-container-high')).toBeTruthy();
     });
 
-    it('should handle loading state', async () => {
-        const { getByTestId } = await renderFeesContent({
+    it('should handle loading state', () => {
+        const { getByTestId } = renderFeesContent({
             areFeesLoading: true,
         });
 
         expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
     });
 
-    it('should work with different network symbols', async () => {
-        const { getByText } = await renderFeesContent({
+    it('should work with different network symbols', () => {
+        const { getByText } = renderFeesContent({
             symbol: 'eth',
         });
 
         expect(getByText('Transaction fee')).toBeTruthy();
     });
 
-    it('should render with form draft data', async () => {
+    it('should render with form draft data', () => {
         const mockFormDraft = {
             selectedFee: 'high',
             feePerUnit: '10',
         } as FormState;
 
-        const { getByTestId } = await renderFeesContent({
+        const { getByTestId } = renderFeesContent({
             selectedFeeLevel: 'high',
             formDraft: mockFormDraft,
         });

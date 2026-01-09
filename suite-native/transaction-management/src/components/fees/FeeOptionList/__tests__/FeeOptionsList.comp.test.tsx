@@ -5,8 +5,8 @@ import {
     PreloadedState,
     TestStore,
     initStore,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 
@@ -58,12 +58,12 @@ describe('FeeOptionsList', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = async (
+    const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1',
         preloadedState?: PreloadedState,
         defaultFeePerUnit?: string,
     ) => {
-        const { result } = await renderHookWithStoreProviderAsync(
+        const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
@@ -77,7 +77,7 @@ describe('FeeOptionsList', () => {
         return result.current;
     };
 
-    const renderFeeOptionsList = async ({
+    const renderFeeOptionsList = ({
         preloadedState,
         props,
     }: {
@@ -85,9 +85,9 @@ describe('FeeOptionsList', () => {
         props?: Partial<FeeOptionsListProps>;
     }) => {
         const finalProps = { ...defaultProps, ...props };
-        const form = await renderUseFeesForm();
+        const form = renderUseFeesForm();
 
-        return renderWithStoreProviderAsync(<FeeOptionsList {...finalProps} />, {
+        return renderWithStoreProvider(<FeeOptionsList {...finalProps} />, {
             store,
             preloadedState: preloadedState || defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
@@ -107,16 +107,16 @@ describe('FeeOptionsList', () => {
     });
 
     describe('Rendering', () => {
-        it('should render all fee options', async () => {
-            const { getByText } = await renderFeeOptionsList({});
+        it('should render all fee options', () => {
+            const { getByText } = renderFeeOptionsList({});
 
             expect(getByText(/Low/)).toBeTruthy();
             expect(getByText(/Normal/)).toBeTruthy();
             expect(getByText(/High/)).toBeTruthy();
         });
 
-        it('should show loading state when isLoading is true', async () => {
-            const { queryAllByTestId } = await renderFeeOptionsList({
+        it('should show loading state when isLoading is true', () => {
+            const { queryAllByTestId } = renderFeeOptionsList({
                 props: { isLoading: true },
             });
 
@@ -124,14 +124,14 @@ describe('FeeOptionsList', () => {
             expect(queryAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);
         });
 
-        it('should filter out custom and low fee levels for btc network', async () => {
+        it('should filter out custom and low fee levels for btc network', () => {
             const feeLevels = {
                 ...createMockFeeLevels(),
                 custom: createMockFeeLevel(),
                 low: createMockFeeLevel(),
             };
 
-            const { getByText, queryByText } = await renderFeeOptionsList({
+            const { getByText, queryByText } = renderFeeOptionsList({
                 props: { feeLevels, symbol: 'btc' },
             });
 
@@ -143,13 +143,13 @@ describe('FeeOptionsList', () => {
             expect(queryByText(/Custom/)).toBeNull();
         });
 
-        it('should work with economy if there is no normal', async () => {
+        it('should work with economy if there is no normal', () => {
             const feeLevels = {
                 economy: createMockFeeLevels().economy,
                 high: createMockFeeLevels().high,
             } as GeneralPrecomposedLevels;
 
-            const { getByText, queryByText } = await renderFeeOptionsList({
+            const { getByText, queryByText } = renderFeeOptionsList({
                 props: { feeLevels },
             });
 
@@ -161,7 +161,7 @@ describe('FeeOptionsList', () => {
 
     describe('Interaction', () => {
         it('should call onSelectedFeeLevel when a fee option is selected', async () => {
-            const { getByTestId } = await renderFeeOptionsList({});
+            const { getByTestId } = renderFeeOptionsList({});
 
             await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
 
@@ -169,7 +169,7 @@ describe('FeeOptionsList', () => {
         });
 
         it('should handle different fee level selections', async () => {
-            const { getByTestId } = await renderFeeOptionsList({});
+            const { getByTestId } = renderFeeOptionsList({});
 
             await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-economy'));
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('economy');
@@ -178,8 +178,8 @@ describe('FeeOptionsList', () => {
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('high');
         });
 
-        it('should make options interactive when multiple options are available', async () => {
-            const { getByTestId } = await renderFeeOptionsList({});
+        it('should make options interactive when multiple options are available', () => {
+            const { getByTestId } = renderFeeOptionsList({});
 
             // Should have radio buttons when multiple options are available
             expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toBeTruthy();
@@ -187,12 +187,12 @@ describe('FeeOptionsList', () => {
             expect(getByTestId('@transactionManagement/fees-level-radio-high')).toBeTruthy();
         });
 
-        it('should make options non-interactive when only one option is available', async () => {
+        it('should make options non-interactive when only one option is available', () => {
             const singleFeeLevel = {
                 normal: createMockFeeLevel(),
             };
 
-            const { queryByTestId } = await renderFeeOptionsList({
+            const { queryByTestId } = renderFeeOptionsList({
                 props: { feeLevels: singleFeeLevel },
             });
 

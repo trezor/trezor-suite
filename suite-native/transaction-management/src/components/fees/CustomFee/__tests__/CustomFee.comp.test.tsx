@@ -4,8 +4,8 @@ import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils';
 
@@ -41,12 +41,12 @@ describe('CustomFee', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = async (
+    const renderUseFeesForm = (
         accountKey: AccountKey = 'eth-account-1',
         preloadedState?: PreloadedState,
         defaultFeePerUnit?: string,
     ) => {
-        const { result } = await renderHookWithStoreProviderAsync(
+        const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey,
@@ -87,7 +87,7 @@ describe('CustomFee', () => {
             formDraft: mockFormDraft,
         };
 
-        return renderWithStoreProviderAsync(<CustomFee {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFee {...finalProps} />, {
             preloadedState: preloadedState || defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
@@ -107,9 +107,9 @@ describe('CustomFee', () => {
         jest.clearAllMocks();
     });
 
-    it('should render custom fee button when custom fee is not selected', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId, getByText } = await renderCustomFee({
+    it('should render custom fee button when custom fee is not selected', () => {
+        const form = renderUseFeesForm();
+        const { getByTestId, getByText } = renderCustomFee({
             form,
         });
 
@@ -117,15 +117,15 @@ describe('CustomFee', () => {
         expect(getByText('Add custom fee')).toBeTruthy();
     });
 
-    it('should render custom fee card when custom fee is selected', async () => {
-        const form = await renderUseFeesForm();
+    it('should render custom fee card when custom fee is selected', () => {
+        const form = renderUseFeesForm();
 
         // Set fee level to custom
         act(() => {
             form.setValue('feeLevel', 'custom');
         });
 
-        const { getByText } = await renderCustomFee({
+        const { getByText } = renderCustomFee({
             form,
         });
 
@@ -134,9 +134,9 @@ describe('CustomFee', () => {
         expect(getByText('Edit')).toBeTruthy();
     });
 
-    it('should not render for solana network', async () => {
-        const form = await renderUseFeesForm();
-        const { toJSON } = await renderCustomFee({
+    it('should not render for solana network', () => {
+        const form = renderUseFeesForm();
+        const { toJSON } = renderCustomFee({
             form,
             props: {
                 symbol: 'sol' as NetworkSymbol,
@@ -146,13 +146,13 @@ describe('CustomFee', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should not call useCustomFee hook for solana network', async () => {
-        const form = await renderUseFeesForm();
+    it('should not call useCustomFee hook for solana network', () => {
+        const form = renderUseFeesForm();
 
         // Clear any previous calls
         mockUseCustomFee.mockClear();
 
-        await renderCustomFee({
+        renderCustomFee({
             form,
             props: {
                 symbol: 'sol' as NetworkSymbol,
@@ -163,13 +163,13 @@ describe('CustomFee', () => {
         expect(mockUseCustomFee).not.toHaveBeenCalled();
     });
 
-    it('should call useCustomFee hook for ethereum network', async () => {
-        const form = await renderUseFeesForm();
+    it('should call useCustomFee hook for ethereum network', () => {
+        const form = renderUseFeesForm();
 
         // Clear any previous calls
         mockUseCustomFee.mockClear();
 
-        await renderCustomFee({
+        renderCustomFee({
             form,
             props: {
                 symbol: 'eth' as NetworkSymbol,
@@ -183,9 +183,9 @@ describe('CustomFee', () => {
         });
     });
 
-    it('should render for bitcoin network', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId } = await renderCustomFee({
+    it('should render for bitcoin network', () => {
+        const form = renderUseFeesForm();
+        const { getByTestId } = renderCustomFee({
             form,
             props: {
                 symbol: 'btc' as NetworkSymbol,
@@ -195,9 +195,9 @@ describe('CustomFee', () => {
         expect(getByTestId('@transactionManagement/fees-level-custom')).toBeTruthy();
     });
 
-    it('should render for ethereum network', async () => {
-        const form = await renderUseFeesForm();
-        const { getByTestId } = await renderCustomFee({
+    it('should render for ethereum network', () => {
+        const form = renderUseFeesForm();
+        const { getByTestId } = renderCustomFee({
             form,
             props: {
                 symbol: 'eth' as NetworkSymbol,
@@ -208,14 +208,14 @@ describe('CustomFee', () => {
     });
 
     it('should open bottom sheet when edit button is pressed', async () => {
-        const form = await renderUseFeesForm();
+        const form = renderUseFeesForm();
 
         // Set fee level to custom to show the card
         act(() => {
             form.setValue('feeLevel', 'custom');
         });
 
-        const { getByText } = await renderCustomFee({
+        const { getByText } = renderCustomFee({
             form,
         });
 
@@ -224,9 +224,9 @@ describe('CustomFee', () => {
         expect(getByText('Gas limit')).toBeTruthy();
     });
 
-    it('should handle different account keys', async () => {
-        const form = await renderUseFeesForm('btc-account-1');
-        const { getByTestId } = await renderCustomFee({
+    it('should handle different account keys', () => {
+        const form = renderUseFeesForm('btc-account-1');
+        const { getByTestId } = renderCustomFee({
             form,
             props: {
                 accountKey: 'btc-account-1' as AccountKey,

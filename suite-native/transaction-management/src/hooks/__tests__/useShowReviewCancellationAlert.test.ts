@@ -1,4 +1,4 @@
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { useShowReviewCancellationAlert } from '../useShowReviewCancellationAlert';
 
@@ -21,15 +21,15 @@ describe('useShowReviewCancellationAlert', () => {
     let store: TestStore;
 
     const renderUseShowReviewCancellationAlert = () =>
-        renderHookWithStoreProviderAsync(() => useShowReviewCancellationAlert(), { store });
+        renderHookWithStoreProvider(() => useShowReviewCancellationAlert(), { store });
 
     beforeEach(() => {
         mockShowAlert.mockClear();
         store = initStore().store;
     });
 
-    it('should return stable callback', async () => {
-        const { result, rerender } = await renderUseShowReviewCancellationAlert();
+    it('should return stable callback', () => {
+        const { result, rerender } = renderUseShowReviewCancellationAlert();
 
         const firstCallback = result.current;
 
@@ -40,8 +40,8 @@ describe('useShowReviewCancellationAlert', () => {
         expect(firstCallback).toBe(secondCallback);
     });
 
-    it('should call showAlert on callback execution', async () => {
-        const { result } = await renderUseShowReviewCancellationAlert();
+    it('should call showAlert on callback execution', () => {
+        const { result } = renderUseShowReviewCancellationAlert();
 
         result.current();
 
@@ -50,7 +50,7 @@ describe('useShowReviewCancellationAlert', () => {
 
     it('should resolve with wasReviewCanceled true when primary button is pressed', async () => {
         const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue({} as any);
-        const { result } = await renderUseShowReviewCancellationAlert();
+        const { result } = renderUseShowReviewCancellationAlert();
         const promise = result.current();
         const alertConfig = mockShowAlert.mock.calls[0][0];
 
@@ -64,7 +64,7 @@ describe('useShowReviewCancellationAlert', () => {
     });
 
     it('should resolve with wasReviewCanceled false when secondary button is pressed', async () => {
-        const { result } = await renderUseShowReviewCancellationAlert();
+        const { result } = renderUseShowReviewCancellationAlert();
         const promise = result.current();
         const alertConfig = mockShowAlert.mock.calls[0][0];
 

@@ -1,5 +1,5 @@
 import { TokenAddress } from '@suite-common/wallet-types';
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
 import { ReviewOutputItemValues, ReviewOutputItemValuesProps } from '../ReviewOutputItemValues';
@@ -11,7 +11,7 @@ describe('ReviewOutputItemValues', () => {
         props: Partial<ReviewOutputItemValuesProps> = {},
         preloadedState: PreloadedState = {},
     ) =>
-        renderWithStoreProviderAsync(
+        renderWithStoreProvider(
             <ReviewOutputItemValues
                 accountKey="eth-account-1"
                 value={oneUsdc}
@@ -23,14 +23,14 @@ describe('ReviewOutputItemValues', () => {
             },
         );
 
-    it('should render translated title', async () => {
-        const { getByText } = await renderReviewOutputItemValues({}, { wallet: getWalletState() });
+    it('should render translated title', () => {
+        const { getByText } = renderReviewOutputItemValues({}, { wallet: getWalletState() });
 
         expect(getByText('Total amount')).toBeOnTheScreen();
     });
 
-    it('should render token balance', async () => {
-        const { getByText } = await renderReviewOutputItemValues(
+    it('should render token balance', () => {
+        const { getByText } = renderReviewOutputItemValues(
             {
                 tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
             },

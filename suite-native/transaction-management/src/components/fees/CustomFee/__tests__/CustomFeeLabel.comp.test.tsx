@@ -3,8 +3,8 @@ import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
     act,
-    renderHookWithStoreProviderAsync,
-    renderWithStoreProviderAsync,
+    renderHookWithStoreProvider,
+    renderWithStoreProvider,
 } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
@@ -17,11 +17,8 @@ describe('CustomFeeLabel', () => {
         wallet: getWalletState(),
     };
 
-    const renderUseFeesForm = async (
-        preloadedState?: PreloadedState,
-        defaultFeePerUnit?: string,
-    ) => {
-        const { result } = await renderHookWithStoreProviderAsync(
+    const renderUseFeesForm = (preloadedState?: PreloadedState, defaultFeePerUnit?: string) => {
+        const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
                     accountKey: 'test-account-key',
@@ -44,15 +41,15 @@ describe('CustomFeeLabel', () => {
         form: FeesFormType;
         preloadedState?: PreloadedState;
     }) =>
-        renderWithStoreProviderAsync(<CustomFeeLabel networkType={networkType} />, {
+        renderWithStoreProvider(<CustomFeeLabel networkType={networkType} />, {
             preloadedState: preloadedState || defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 
     describe('Bitcoin Network', () => {
-        it('should render custom fee label for bitcoin', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should render custom fee label for bitcoin', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'bitcoin',
                 form,
             });
@@ -60,21 +57,21 @@ describe('CustomFeeLabel', () => {
             expect(getByText(/Custom/)).toBeTruthy();
         });
 
-        it('should display fee per unit with correct units', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({ networkType: 'bitcoin', form });
+        it('should display fee per unit with correct units', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({ networkType: 'bitcoin', form });
 
             expect(getByText(/sat\/vB/)).toBeTruthy();
         });
 
-        it('should handle different fee per unit values', async () => {
-            const form = await renderUseFeesForm();
+        it('should handle different fee per unit values', () => {
+            const form = renderUseFeesForm();
 
             act(() => {
                 form.setValue('customFeePerUnit', '50');
             });
 
-            const { getByText } = await renderCustomFeeLabel({
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'bitcoin',
                 form,
             });
@@ -84,9 +81,9 @@ describe('CustomFeeLabel', () => {
     });
 
     describe('Ethereum Network', () => {
-        it('should render custom fee label for ethereum', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should render custom fee label for ethereum', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ethereum',
                 form,
             });
@@ -94,9 +91,9 @@ describe('CustomFeeLabel', () => {
             expect(getByText(/Custom/)).toBeTruthy();
         });
 
-        it('should display gas price and gas limit for ethereum', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should display gas price and gas limit for ethereum', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ethereum',
                 form,
             });
@@ -104,9 +101,9 @@ describe('CustomFeeLabel', () => {
             expect(getByText(/Gwei/)).toBeTruthy();
         });
 
-        it('should display fee per unit with Gwei units for ethereum', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should display fee per unit with Gwei units for ethereum', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ethereum',
                 form,
             });
@@ -114,15 +111,15 @@ describe('CustomFeeLabel', () => {
             expect(getByText(/Gwei/)).toBeTruthy();
         });
 
-        it('should handle different gas price and gas limit values', async () => {
-            const form = await renderUseFeesForm();
+        it('should handle different gas price and gas limit values', () => {
+            const form = renderUseFeesForm();
 
             act(() => {
                 form.setValue('customFeePerUnit', '25');
                 form.setValue('customFeeLimit', '50000');
             });
 
-            const { getByText } = await renderCustomFeeLabel({
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ethereum',
                 form,
             });
@@ -132,9 +129,9 @@ describe('CustomFeeLabel', () => {
     });
 
     describe('Other Networks', () => {
-        it('should render custom fee label for other networks', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should render custom fee label for other networks', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ripple',
                 form,
             });
@@ -142,9 +139,9 @@ describe('CustomFeeLabel', () => {
             expect(getByText(/Custom/)).toBeTruthy();
         });
 
-        it('should display fee per unit with appropriate units for other networks', async () => {
-            const form = await renderUseFeesForm();
-            const { getByText } = await renderCustomFeeLabel({
+        it('should display fee per unit with appropriate units for other networks', () => {
+            const form = renderUseFeesForm();
+            const { getByText } = renderCustomFeeLabel({
                 networkType: 'ripple',
                 form,
             });

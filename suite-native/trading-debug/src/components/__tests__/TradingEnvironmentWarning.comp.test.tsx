@@ -1,4 +1,4 @@
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { TradingState } from '@suite-native/trading-types';
 
@@ -8,7 +8,7 @@ describe('TradingEnvironmentWarning', () => {
     const renderTradingEnvironmentWarning = (
         tradingEnvironment: TradingState['tradingEnvironment'],
     ) =>
-        renderWithStoreProviderAsync(<TradingEnvironmentWarning />, {
+        renderWithStoreProvider(<TradingEnvironmentWarning />, {
             preloadedState: {
                 wallet: {
                     trading: {
@@ -19,16 +19,16 @@ describe('TradingEnvironmentWarning', () => {
             },
         });
 
-    it('should render nothing when tradingEnvironment is [production]', async () => {
-        const { toJSON } = await renderTradingEnvironmentWarning('production');
+    it('should render nothing when tradingEnvironment is [production]', () => {
+        const { toJSON } = renderTradingEnvironmentWarning('production');
 
         expect(toJSON()).toBeNull();
     });
 
     it.each<TradingState['tradingEnvironment']>(['staging', 'dev', 'localhost'])(
         'should render warning for tradingEnvironment [%s]',
-        async tradingEnvironment => {
-            const { getByText } = await renderTradingEnvironmentWarning(tradingEnvironment);
+        tradingEnvironment => {
+            const { getByText } = renderTradingEnvironmentWarning(tradingEnvironment);
 
             expect(getByText(`Trading environment: ${tradingEnvironment}`)).toBeOnTheScreen();
         },

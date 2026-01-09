@@ -1,15 +1,15 @@
-import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { ResidenceCheckAwareAnimatedBox } from '../ResidenceCheckAwareAnimatedBox';
 
 describe('ResidenceCheckAwareAnimatedBox', () => {
     const renderResidenceCheckAwareAnimatedBox = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<ResidenceCheckAwareAnimatedBox testID="TEST_ID" />, {
+        renderWithStoreProvider(<ResidenceCheckAwareAnimatedBox testID="TEST_ID" />, {
             preloadedState,
         });
 
-    it('should have no border when residence check is enabled', async () => {
-        const { getByTestId } = await renderResidenceCheckAwareAnimatedBox({
+    it('should have no border when residence check is enabled', () => {
+        const { getByTestId } = renderResidenceCheckAwareAnimatedBox({
             featureFlags: { isTradingResidenceCheckEnabled: true },
         });
 
@@ -18,8 +18,8 @@ describe('ResidenceCheckAwareAnimatedBox', () => {
         });
     });
 
-    it('should have border when residence check is disabled', async () => {
-        const { getByTestId } = await renderResidenceCheckAwareAnimatedBox({
+    it('should have border when residence check is disabled', () => {
+        const { getByTestId } = renderResidenceCheckAwareAnimatedBox({
             featureFlags: { isTradingResidenceCheckEnabled: false },
         });
 

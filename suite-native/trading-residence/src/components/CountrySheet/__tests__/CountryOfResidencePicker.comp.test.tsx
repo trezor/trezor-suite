@@ -2,7 +2,7 @@ import { analytics } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import {
     renderHookWithBasicProvider,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
     renderWithBasicProvider,
     screen,
     userEvent,
@@ -35,10 +35,8 @@ describe('CountryOfResidencePicker', () => {
         screen.unmount();
     });
 
-    const renderCountryOfResidencePicker = async (
-        props: Partial<CountryOfResidencePickerProps> = {},
-    ) => {
-        const { result } = await renderHookWithStoreProviderAsync(() => useLocationForm());
+    const renderCountryOfResidencePicker = (props: Partial<CountryOfResidencePickerProps> = {}) => {
+        const { result } = renderHookWithStoreProvider(() => useLocationForm());
 
         return renderWithBasicProvider(
             <CountryOfResidencePicker testID="TEST_ID" context="settings" {...props} />,
@@ -48,14 +46,14 @@ describe('CountryOfResidencePicker', () => {
         );
     };
 
-    it('should display value from expo-localization (Poland) when in default state', async () => {
-        const { getByLabelText } = await renderCountryOfResidencePicker();
+    it('should display value from expo-localization (Poland) when in default state', () => {
+        const { getByLabelText } = renderCountryOfResidencePicker();
 
         expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 Poland');
     });
 
     it('should allow to select country', async () => {
-        const { getByText, getByLabelText } = await renderCountryOfResidencePicker();
+        const { getByText, getByLabelText } = renderCountryOfResidencePicker();
 
         // select country
         await userEvent.press(getByText('Country of residence'));
@@ -70,7 +68,7 @@ describe('CountryOfResidencePicker', () => {
             setFilterValue: jest.fn(),
             filterValue: 'test-key',
         });
-        const { getByText } = await renderCountryOfResidencePicker();
+        const { getByText } = renderCountryOfResidencePicker();
         await userEvent.press(getByText('Country of residence'));
 
         expect(getByText('Country not found')).toBeTruthy();
@@ -81,7 +79,7 @@ describe('CountryOfResidencePicker', () => {
 
     it('should report to analytics after country changed', async () => {
         const reportSpy = jest.spyOn(analytics, 'report');
-        const { getByText } = await renderCountryOfResidencePicker();
+        const { getByText } = renderCountryOfResidencePicker();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
@@ -91,7 +89,7 @@ describe('CountryOfResidencePicker', () => {
 
     it('should not report to analytics when user selects already selected country', async () => {
         const reportSpy = jest.spyOn(analytics, 'report');
-        const { getByText, getAllByText } = await renderCountryOfResidencePicker();
+        const { getByText, getAllByText } = renderCountryOfResidencePicker();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
@@ -122,8 +120,8 @@ describe('CountryOfResidencePicker', () => {
         );
     });
 
-    it('should render without TestID', async () => {
-        const { getByText, queryByTestId } = await renderCountryOfResidencePicker({
+    it('should render without TestID', () => {
+        const { getByText, queryByTestId } = renderCountryOfResidencePicker({
             testID: undefined,
         });
 

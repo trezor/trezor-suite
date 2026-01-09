@@ -1,12 +1,7 @@
 import { yup } from '@suite-common/validators';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Form, useForm } from '@suite-native/forms';
-import {
-    TestStore,
-    initStore,
-    renderWithStoreProviderAsync,
-    userEvent,
-} from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../../__fixtures__/walletState';
 import { NativeSupportedPredefinedFeeLevel } from '../../../../types';
@@ -96,7 +91,7 @@ describe('FeeOption', () => {
         const finalProps = { ...defaultProps, ...props };
         mockOnSelectedFeeLevel = finalProps.onSelectedFeeLevel;
 
-        return renderWithStoreProviderAsync(
+        return renderWithStoreProvider(
             <TestFormWrapper>
                 <FeeOption {...finalProps} />
             </TestFormWrapper>,
@@ -124,35 +119,35 @@ describe('FeeOption', () => {
             ['normal', /Normal/],
             ['economy', /Low/],
             ['high', /High/],
-        ])('should render %s fee level with correct label', async (feeKey, expectedLabel) => {
-            const { getByText } = await renderFeeOption({ feeKey });
+        ])('should render %s fee level with correct label', (feeKey, expectedLabel) => {
+            const { getByText } = renderFeeOption({ feeKey });
 
             expect(getByText(expectedLabel)).toBeTruthy();
         });
 
-        it('should display fee information correctly', async () => {
-            const { getByText } = await renderFeeOption();
+        it('should display fee information correctly', () => {
+            const { getByText } = renderFeeOption();
 
             expect(getByText('4 sat/vB')).toBeTruthy();
             expect(getByText('~ ~10 minutes')).toBeTruthy();
         });
 
-        it('should show radio button when interactive', async () => {
-            const { getByTestId } = await renderFeeOption();
+        it('should show radio button when interactive', () => {
+            const { getByTestId } = renderFeeOption();
 
             expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toBeTruthy();
         });
 
-        it('should not show radio button when not interactive', async () => {
-            const { queryByTestId } = await renderFeeOption({
+        it('should not show radio button when not interactive', () => {
+            const { queryByTestId } = renderFeeOption({
                 isInteractive: false,
             });
 
             expect(queryByTestId('@transactionManagement/fees-level-radio-normal')).toBeNull();
         });
 
-        it('should show loading skeleton when isLoading is true', async () => {
-            const { queryAllByTestId } = await renderFeeOption({
+        it('should show loading skeleton when isLoading is true', () => {
+            const { queryAllByTestId } = renderFeeOption({
                 isLoading: true,
             });
 
@@ -162,7 +157,7 @@ describe('FeeOption', () => {
 
     describe('Interaction', () => {
         it('should call onSelectedFeeLevel when pressed', async () => {
-            const { getByTestId } = await renderFeeOption();
+            const { getByTestId } = renderFeeOption();
 
             await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
 
@@ -170,7 +165,7 @@ describe('FeeOption', () => {
         });
 
         it('should not call onSelectedFeeLevel when not interactive', async () => {
-            const { getByTestId } = await renderFeeOption({
+            const { getByTestId } = renderFeeOption({
                 isInteractive: false,
             });
 
@@ -182,7 +177,7 @@ describe('FeeOption', () => {
         });
 
         it('should handle different fee levels correctly', async () => {
-            const { getByTestId } = await renderFeeOption({
+            const { getByTestId } = renderFeeOption({
                 feeKey: 'economy',
             });
 
@@ -193,8 +188,8 @@ describe('FeeOption', () => {
     });
 
     describe('Fee calculation', () => {
-        it('should calculate fee per unit correctly for bitcoin', async () => {
-            const { getByText } = await renderFeeOption({
+        it('should calculate fee per unit correctly for bitcoin', () => {
+            const { getByText } = renderFeeOption({
                 symbol: 'btc',
                 feeLevel: createMockFeeLevel(),
                 transactionBytes: 250,
@@ -204,8 +199,8 @@ describe('FeeOption', () => {
             expect(getByText('4 sat/vB')).toBeTruthy();
         });
 
-        it('should use feePerByte for non-bitcoin networks', async () => {
-            const { getByText } = await renderFeeOption({
+        it('should use feePerByte for non-bitcoin networks', () => {
+            const { getByText } = renderFeeOption({
                 symbol: 'eth',
                 feeLevel: createMockFeeLevel(),
                 transactionBytes: 250,

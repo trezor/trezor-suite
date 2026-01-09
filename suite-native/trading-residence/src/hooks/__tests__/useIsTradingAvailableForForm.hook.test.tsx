@@ -1,12 +1,12 @@
 import { TradingCountryCode } from '@suite-common/trading';
-import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { PreloadedState, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { LocationForm } from '../../components/LocationForm';
 import { useIsTradingAvailableForForm } from '../useIsTradingAvailableForForm';
 
 describe('useIsTradingAvailableForForm', () => {
     const renderUseIsTradingAvailableForForm = (preloadedState: PreloadedState) =>
-        renderHookWithStoreProviderAsync(() => useIsTradingAvailableForForm(), {
+        renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
             wrapper: LocationForm,
             preloadedState,
         });
@@ -22,12 +22,12 @@ describe('useIsTradingAvailableForForm', () => {
         [true, undefined],
         // US is whitelisted
         [true, 'US'],
-    ])('should be [%s] for country [%s]', async (expectedValue, country) => {
+    ])('should be [%s] for country [%s]', (expectedValue, country) => {
         const preloadedState: PreloadedState = {
             wallet: { trading: { residence: { country } } },
         };
 
-        const { result } = await renderUseIsTradingAvailableForForm(preloadedState);
+        const { result } = renderUseIsTradingAvailableForForm(preloadedState);
 
         expect(result.current).toEqual(expectedValue);
     });
