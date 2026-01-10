@@ -2,11 +2,11 @@ import { useFormatters } from '@suite-common/formatters';
 import { SignValue } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { Box, TextProps } from '@suite-native/atoms';
 
 import { FormatterProps } from '../types';
 import { AmountText } from './AmountText';
+import { EmptyAmountSkeleton } from './EmptyAmountSkeleton';
 import { SignValueFormatter } from './SignValueFormatter';
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 
@@ -45,7 +45,11 @@ export const TokenToFiatAmountFormatter = ({
         useHistoricRate,
     });
 
-    const formattedFiatValue = BaseCurrencyAmountFormatter.format(fiatValue ?? BASE_CURRENCY_ZERO);
+    if (fiatValue === null) {
+        return <EmptyAmountSkeleton />;
+    }
+
+    const formattedFiatValue = BaseCurrencyAmountFormatter.format(fiatValue);
 
     return signValue ? (
         <Box flexDirection="row">
