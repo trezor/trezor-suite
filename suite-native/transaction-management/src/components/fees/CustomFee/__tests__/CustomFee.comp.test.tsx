@@ -221,8 +221,7 @@ describe('CustomFee', () => {
 
         await userEvent.press(getByText('Edit'));
 
-        // Verify the confirm button is present
-        expect(getByText('Confirm custom fee')).toBeTruthy();
+        expect(getByText('Gas limit')).toBeTruthy();
     });
 
     it('should handle different account keys', async () => {

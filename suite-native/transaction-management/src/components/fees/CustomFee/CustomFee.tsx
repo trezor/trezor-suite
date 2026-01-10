@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
+import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
@@ -44,11 +44,20 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
 const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: CustomFeeProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
-    const [previousSelectedFeeLevelLabel, setPreviousSelectedFeeLevelLabel] =
-        useState<FeeLevelLabel>('normal');
-    const { watch, setValue, getValues } = useFormContext<FeesFormValues>();
+    const {
+        watch,
+        getValues,
+        reset,
+        formState: { defaultValues },
+    } = useFormContext<FeesFormValues>();
 
     const isCustomFeeSelected = watch('feeLevel') === 'custom';
+    const lastSavedValuesRef = useRef<FeesFormValues>(undefined);
+    const initialFormValuesRef = useRef<FeesFormValues>(undefined);
+
+    useEffect(() => {
+        initialFormValuesRef.current = getValues();
+    }, [getValues]);
 
     // Use the hook to get fee-related values
     const { feeValue, isFeeLoading, isSubmittable, isErrorBoxVisible } = useCustomFee({
@@ -58,14 +67,20 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
 
     const openCustomFeeBottomSheet = () => {
         openModal();
+        lastSavedValuesRef.current = defaultValues as FeesFormValues;
 
+        // Store the initial form values when opening the modal in case of cancellation
         const currentSelectedFeeLevelLabel = getValues('feeLevel');
-        if (currentSelectedFeeLevelLabel !== 'custom')
-            setPreviousSelectedFeeLevelLabel(currentSelectedFeeLevelLabel);
+        if (currentSelectedFeeLevelLabel !== 'custom' && initialFormValuesRef.current !== undefined)
+            // This allows the "Cancel" button to return to the last known standard fee
+            initialFormValuesRef.current = {
+                ...initialFormValuesRef.current,
+                feeLevel: currentSelectedFeeLevelLabel,
+            };
     };
 
     const cancelCustomFee = () => {
-        setValue('feeLevel', previousSelectedFeeLevelLabel);
+        reset(initialFormValuesRef.current);
         closeModal();
     };
 
@@ -82,6 +97,7 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
             )}
 
             <CustomFeeBottomSheet
+                lastSavedValuesRef={lastSavedValuesRef}
                 ref={bottomSheetRef}
                 accountKey={accountKey}
                 onClose={closeModal}

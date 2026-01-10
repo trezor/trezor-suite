@@ -1,3 +1,4 @@
+import { RefObject, useCallback, useMemo } from 'react';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -19,12 +20,7 @@ import { Translation } from '@suite-native/intl';
 import { CustomFeeInputs } from './CustomFeeInputs';
 import { FeesFormValues } from '../../../feesFormSchema';
 import { CustomFeeParams } from '../../../hooks';
-import {
-    FEE_LIMIT_FIELD_NAME,
-    FEE_PER_UNIT_FIELD_NAME,
-    MAX_FEE_PER_GAS_FIELD_NAME,
-    MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME,
-} from '../../../presets';
+
 type CustomFeeBottomSheetProps = {
     onClose: () => void;
     accountKey: AccountKey;
@@ -34,6 +30,7 @@ type CustomFeeBottomSheetProps = {
     isErrorBoxVisible: boolean;
     onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     ref: BottomSheetModalRef;
+    lastSavedValuesRef: RefObject<FeesFormValues | undefined>;
 };
 
 export const CustomFeeBottomSheet = ({
@@ -44,34 +41,59 @@ export const CustomFeeBottomSheet = ({
     isSubmittable,
     isErrorBoxVisible,
     ref,
+    lastSavedValuesRef,
     onCustomFeeSet,
 }: CustomFeeBottomSheetProps) => {
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const { setValue, handleSubmit, getValues } = useFormContext<FeesFormValues>();
+    const {
+        setValue,
+        handleSubmit,
+        reset,
+        formState: { isDirty },
+        watch,
+        getValues,
+    } = useFormContext<FeesFormValues>();
 
-    const handleSetCustomFee = handleSubmit(() => {
-        setValue('feeLevel', 'custom');
-        const customFeePerUnit = getValues(FEE_PER_UNIT_FIELD_NAME);
-        const customFeeLimit = getValues(FEE_LIMIT_FIELD_NAME);
-        const customMaxFeePerGas = getValues(MAX_FEE_PER_GAS_FIELD_NAME);
-        const customMaxPriorityFeePerGas = getValues(MAX_PRIORITY_FEE_PER_GAS_FIELD_NAME);
-        onCustomFeeSet({
-            customFeePerUnit,
-            customFeeLimit,
-            customMaxFeePerGas,
-            customMaxPriorityFeePerGas,
-        });
+    const feeLevelValue = watch('feeLevel');
+
+    const isButtonVisible = useMemo(
+        () => (isDirty || feeLevelValue !== 'custom') && isSubmittable,
+        [feeLevelValue, isDirty, isSubmittable],
+    );
+
+    const handleSetCustomFee = handleSubmit(data => {
+        const { feeLevel, ...formData } = data;
+
+        if (feeLevel !== 'custom') {
+            setValue('feeLevel', 'custom');
+        }
+
+        const updatedData = { ...formData, feeLevel: 'custom' } satisfies FeesFormValues;
+        lastSavedValuesRef.current = updatedData;
+
+        // clear the dirty state
+        reset(updatedData);
+
+        onCustomFeeSet(formData);
         onClose();
     });
+
+    const handleDismiss = useCallback(() => {
+        reset({
+            ...lastSavedValuesRef.current,
+            feeLevel: getValues('feeLevel'),
+        });
+    }, [reset, lastSavedValuesRef, getValues]);
 
     if (!symbol) return null;
 
     return (
         <BottomSheetModal
             ref={ref}
+            onClose={handleDismiss}
             title={<Translation id="transactionManagement.fees.custom.bottomSheet.title" />}
             testID="@transactionManagement/custom-fee-bottom-sheet"
             isCloseDisplayed
@@ -118,7 +140,7 @@ export const CustomFeeBottomSheet = ({
             <Box marginTop="sp16">
                 <FormSubmitButton
                     onPress={handleSetCustomFee}
-                    isVisible={isSubmittable}
+                    isVisible={isButtonVisible}
                     testID="@transactionManagement/custom-fee-submit-button"
                 >
                     <Translation id="transactionManagement.fees.custom.bottomSheet.confirmButton" />
