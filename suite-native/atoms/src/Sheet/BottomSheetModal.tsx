@@ -28,8 +28,11 @@ export type BottomSheetModalProps = {
     title?: ReactNode;
     subtitle?: ReactNode;
     isCloseDisplayed?: boolean;
-    onDismiss?: () => void;
     bottomSheetCustomProps?: Partial<BottomSheetModalBaseProps>;
+    // triggered when the close button is pressed
+    onClose?: () => void;
+    // triggered Always when the modal is dismissed
+    onDismiss?: () => void;
 } & BoxProps;
 
 const backgroundStyle = prepareNativeStyle(({ colors }) => ({
@@ -54,6 +57,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
             subtitle,
             onDismiss,
             bottomSheetCustomProps = {},
+            onClose,
             ...rest
         },
         ref,
@@ -76,13 +80,11 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         );
 
         const onCloseModal = useCallback(() => {
-            if (onDismiss) {
-                onDismiss();
-            }
+            onClose?.();
             if (ref && 'current' in ref && ref.current) {
                 ref.current.dismiss();
             }
-        }, [ref, onDismiss]);
+        }, [ref, onClose]);
 
         return (
             <BottomSheetModalBase
