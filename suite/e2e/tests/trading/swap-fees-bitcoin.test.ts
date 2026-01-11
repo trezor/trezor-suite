@@ -68,24 +68,31 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@group=trading', '@webOnly
             );
             await expect(devicePrompt.headerFeeRate).toContainText(feeRate);
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Total amount'],
-                    [`${totalAmount} BTC`],
-                    [' '],
-                    ['incl. Transaction fee'],
-                    [`${feeFromDeviceModal} BTC`],
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Total amount'],
+                        [`${totalAmount} BTC`],
+                        ['incl. Transaction fee'],
+                        [`${feeFromDeviceModal} BTC`],
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
             });
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await tradingPage.fees.openFeeInfoOnEmulator();
+            await devicePrompt.openFeeInfoOnEmulator({ buttonIndexT3W1: 2 });
             const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Fee info' },
-                body: [['Fee rate'], [feeRateWithoutDecimals]],
+                T3W1: {
+                    header: { title: 'Fee info' },
+                    body: [['Fee rate'], [feeRateWithoutDecimals]],
+                },
+                T3T1: { footer: undefined },
             });
         });
     });

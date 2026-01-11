@@ -92,13 +92,17 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
 
                 // verify recipient address on device
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Recipient' },
-                    body: [model.model !== 'T3W1' ? TRANSFORMED_ADDRESS : RECIPIENT_ADDRESS],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Recipient' },
+                        body: [TRANSFORMED_ADDRESS],
+                        actions: {
+                            right_button: 'Continue',
+                        },
+                    },
                 });
 
                 // confirm address
-                await devicePrompt.waitForPromptAndClick(model.model);
+                await devicePrompt.waitForPromptAndClick();
             });
 
             await test.step('Verify Amount & Transaction Fee', async () => {
@@ -108,26 +112,33 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
                 await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(`${maxFee}`);
 
                 // verify amount & fee
+                const amountWrapped = devicePrompt.wrapText(`${sendMaxAmountWithReserve} SOL`, {
+                    isAmount: true,
+                });
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Summary' },
-                    body: [
-                        ['Amount:'],
-                        [`${sendMaxAmountWithReserve} SOL`],
-                        [' '],
-                        ['Transaction fee:'],
-                        [`${maxFee} SOL`],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Send' },
+                        body: [
+                            ['Amount:'],
+                            amountWrapped,
+                            ['Transaction fee:'],
+                            devicePrompt.wrapText(`${maxFee} SOL`, { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        header: { title: 'Summary' },
+                    },
                 });
 
                 // confirm amount & fee
-                await devicePrompt.waitForPromptAndClick(model.model);
+                await devicePrompt.waitForPromptAndClick();
             });
 
             await test.step('Approve and Verify Send readiness', async () => {
                 // hold & sign
                 if (model.model !== 'T3W1') {
-                    await devicePrompt.waitForPromptAndClick(model.model);
+                    await devicePrompt.waitForPromptAndClick();
                 }
 
                 await expect(devicePrompt.sendButton).toBeEnabled();

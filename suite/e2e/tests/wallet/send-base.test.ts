@@ -4,10 +4,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import {
-    splitStringByDisplayLimit,
-    transformAddress,
-} from '../../support/testExtends/customMatchers';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const networkName = 'Base #1';
 const sendAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
@@ -67,9 +64,15 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
             await expect(devicePrompt.headerParagraph).toContainText(networkName);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Address', subtitle: 'Recipient' },
-                body: [transformAddress(sendAddress)],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [transformAddress(sendAddress)],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient' },
+                    body: [transformAddress(sendAddress)],
+                },
             });
         });
 
@@ -86,32 +89,48 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
                 ethereumMaximumFee,
             );
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Amount'],
-                    [formattedSendAmount],
-                    [' '],
-                    ['Maximum fee'],
-                    splitStringByDisplayLimit(`${ethereumMaximumFee} ETH`),
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Amount'],
+                        [formattedSendAmount],
+                        ['Maximum fee'],
+                        devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
             });
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await tradingPage.fees.openFeeInfoOnEmulator();
+            await devicePrompt.openFeeInfoOnEmulator();
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Fee info' },
-                body: [
-                    ['Gas limit'],
-                    [`${gasLimit} units`],
-                    [' '],
-                    ['Max fee per gas'],
-                    [`${maxFeePerGas} Gwei`],
-                    [' '],
-                    ['Max priority fee'],
-                    [`${maxPriorityFeePerGas} Gwei`],
-                ],
+                T3W1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [maxFeePerGas, '\n', 'Gwei'],
+                        ['Max priority fee'],
+                        [maxPriorityFeePerGas, '\n', 'Gwei'],
+                    ],
+                },
+                T3T1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [`${maxFeePerGas} Gwei`],
+                        ['Max priority fee'],
+                        [`${maxPriorityFeePerGas} Gwei`],
+                    ],
+                    footer: undefined,
+                },
             });
         });
     });
@@ -149,9 +168,15 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
             await expect(devicePrompt.headerParagraph).toContainText(networkName);
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Address', subtitle: 'Recipient' },
-                body: [transformAddress(sendAddress)],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [transformAddress(sendAddress)],
+                    actions: { right_button: 'Continue' },
+                },
+                T3T1: {
+                    header: { title: 'Address', subtitle: 'Recipient' },
+                    body: [transformAddress(sendAddress)],
+                },
             });
         });
 
@@ -167,33 +192,47 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
             await expect(devicePrompt.cryptoAmountOf('fee'), errorMessageMaxCalculation).toHaveText(
                 ethereumMaximumFee,
             );
+            const maxFeeWrapped = devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, {
+                isAmount: true,
+            });
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Amount'],
-                    [formattedSendAmount],
-                    [' '],
-                    ['Maximum fee'],
-                    splitStringByDisplayLimit(`${ethereumMaximumFee} ETH`),
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
             });
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await tradingPage.fees.openFeeInfoOnEmulator();
+            await devicePrompt.openFeeInfoOnEmulator();
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Fee info' },
-                body: [
-                    ['Gas limit'],
-                    [`${gasLimit} units`],
-                    [' '],
-                    ['Max fee per gas'],
-                    [`${maxFeePerGas} Gwei`],
-                    [' '],
-                    ['Max priority fee'],
-                    [`${maxPriorityFeePerGas} Gwei`],
-                ],
+                T3W1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [maxFeePerGas, '\n', 'Gwei'],
+                        ['Max priority fee'],
+                        [maxPriorityFeePerGas, '\n', 'Gwei'],
+                    ],
+                },
+                T3T1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [`${maxFeePerGas} Gwei`],
+                        ['Max priority fee'],
+                        [`${maxPriorityFeePerGas} Gwei`],
+                    ],
+                    footer: undefined,
+                },
             });
         });
         await test.step('Confirm transaction', async () => {

@@ -2,7 +2,6 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 
 import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
-import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 // mocked and expected values
 const startingBalance = 88858306;
@@ -163,39 +162,53 @@ test.describe('Staking - Cardano', { tag: ['@group=staking', '@specificModel'] }
 
             await test.step('Confirm claim on device', async () => {
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Confirm withdrawal for', '\n', 'reward address:'],
-                        splitStringByDisplayLimit(
-                            'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
-                        ),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm withdrawal for reward', '\n', 'address:'],
+                            devicePrompt.wrapText(
+                                'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
+                            ),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Confirm withdrawal for', '\n', 'reward address:'],
+                            devicePrompt.wrapText(
+                                'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
+                            ),
+                        ],
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['for account #1:'],
-                        ["m/1852'/1815'/0'/2", '\n', '/0'],
-                        ['Amount:'],
-                        [bigRewardAmountFormatted],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['for account #1:'],
+                            devicePrompt.wrapText("m/1852'/1815'/0'/2/0"),
+                            ['Amount:'],
+                            [bigRewardAmountFormatted],
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Transaction fee:'],
-                        [toADA(bigRewardFee)],
-                        ['Network: Mainnet'],
-                        ['Valid since: n/a'],
-                        [/^TTL: \d{9}$/],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Transaction fee:'],
+                            [toADA(bigRewardFee)],
+                            ['Network: Mainnet'],
+                            ['Valid since: n/a'],
+                            [/^TTL: \d{9}$/],
+                        ],
+                        actions: { right_button: 'Hold to confirm' },
+                    },
                 });
 
                 // staked account without rewards after claiming

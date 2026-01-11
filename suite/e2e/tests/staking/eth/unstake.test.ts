@@ -6,7 +6,6 @@ import ETH_UNSTAKE_PENDING_TX from '../../../fixtures/staking/eth-unstake-pendin
 import { skipFixture } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
-import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
     test.use({
@@ -68,9 +67,11 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Unstake' },
-                    body: [['Unstake ETH from', '\n', 'Everstake?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Unstake' },
+                        body: [['Unstake ETH from', '\n', 'Everstake?']],
+                        actions: { right_button: 'Continue' },
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
@@ -79,16 +80,15 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
                     '0.000290278609719 ETH',
                 );
+                const feeMaxWrapped = devicePrompt.wrapText('0.000290278609719 ETH', {
+                    isAmount: true,
+                });
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Unstake' },
-                    body: [
-                        ['Amount'],
-                        [`3,234 ETH`],
-                        [' '],
-                        ['Maximum fee'],
-                        splitStringByDisplayLimit('0.000290278609719 ETH'),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Unstake' },
+                        body: [['Amount'], ['3,234 ETH'], ['Maximum fee'], feeMaxWrapped],
+                        actions: { right_button: 'Hold to sign' },
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
             });
@@ -186,9 +186,11 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Claim' },
-                    body: [['Claim ETH from', '\n', 'Everstake?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Claim' },
+                        body: [['Claim ETH from', '\n', 'Everstake?']],
+                        actions: { right_button: 'Continue' },
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
@@ -198,9 +200,14 @@ test.describe('ETH unstaking and claim', { tag: ['@group=staking'] }, () => {
                     '0.000290278609719 ETH',
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Claim' },
-                    body: [['Maximum fee'], splitStringByDisplayLimit('0.000290278609719 ETH')],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Claim' },
+                        body: [
+                            ['Maximum fee'],
+                            devicePrompt.wrapText('0.000290278609719 ETH', { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 blockbookMock.updateAccountState({

@@ -5,7 +5,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { invityEndpoint, swapQuotesEthereumBTC, swapTradeEthereumBTC } from '../../fixtures/invity';
 import { expect, test } from '../../support/fixtures';
-import { splitStringByDisplayLimit } from '../../support/testExtends/customMatchers';
 
 const sendAmount = '0.008';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -87,32 +86,47 @@ test.describe('Trading - Swap fees', { tag: ['@group=trading', '@webOnly'] }, ()
                 errorMessageMaxCalculation,
             ).toHaveText(`${ethereumMaximumFee} ETH`);
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Amount'],
-                    [formattedSendAmount],
-                    [' '],
-                    ['Maximum fee'],
-                    splitStringByDisplayLimit(`${ethereumMaximumFee} ETH`),
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Amount'],
+                        [formattedSendAmount],
+                        ['Maximum fee'],
+                        devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
             });
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await tradingPage.fees.openFeeInfoOnEmulator();
+            await devicePrompt.openFeeInfoOnEmulator();
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Fee info' },
-                body: [
-                    ['Gas limit'],
-                    [`${gasLimit} units`],
-                    [' '],
-                    ['Max fee per gas'],
-                    [`${maxFeePerGas} Gwei`],
-                    [' '],
-                    ['Max priority fee'],
-                    [`${maxPriorityFeePerGas} Gwei`],
-                ],
+                T3W1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [maxFeePerGas, '\n', 'Gwei'],
+                        ['Max priority fee'],
+                        [maxPriorityFeePerGas, '\n', 'Gwei'],
+                    ],
+                },
+                T3T1: {
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [`${maxFeePerGas} Gwei`],
+                        ['Max priority fee'],
+                        [`${maxPriorityFeePerGas} Gwei`],
+                    ],
+                    footer: undefined,
+                },
             });
         });
     });

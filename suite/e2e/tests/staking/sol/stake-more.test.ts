@@ -6,7 +6,6 @@ import {
 } from '../../../fixtures/staking/sol-staking-accounts';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
-import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 // Expected values based on our mocked responses
 const stakedAmount = solStakingAccountFirst.stakeInSol;
@@ -78,9 +77,11 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     { values: { symbol: 'SOL' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Stake' },
-                    body: [['Stake SOL on', '\n', 'Everstake?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Stake' },
+                        body: [['Stake SOL on', '\n', 'Everstake?']],
+                        actions: { right_button: 'Continue' },
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 // labeled as total but excludes fees
@@ -91,16 +92,32 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     solanaStakingMock.feeFormatted,
                 );
 
+                const feeWrapped = devicePrompt.wrapText(solanaStakingMock.feeFormatted, {
+                    isAmount: true,
+                });
+                const amountAndFeeWrapped = devicePrompt.wrapText(
+                    solanaStakingMock.addFeeTo(stakeMoreAmount),
+                    { isAmount: true },
+                );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Stake' },
-                    body: [
-                        ['Amount:'],
-                        splitStringByDisplayLimit(solanaStakingMock.addFeeTo(stakeMoreAmount)),
-                        [' '],
-                        ['Max fees and rent:'],
-                        splitStringByDisplayLimit(solanaStakingMock.feeFormatted),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Stake' },
+                        body: [
+                            ['Max fees and rent:'],
+                            feeWrapped,
+                            ['Amount:'],
+                            amountAndFeeWrapped,
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Amount:'],
+                            amountAndFeeWrapped,
+                            ['Max fees and rent:'],
+                            feeWrapped,
+                        ],
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
             });

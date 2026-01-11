@@ -106,27 +106,31 @@ test.describe('Staking - Cardano', { tag: ['@group=staking', '@specificModel'] }
 
             await test.step('Confirm claim on device', async () => {
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Confirm:'],
-                        ['Stake key', '\n', 'deregistration'],
-                        ['for account #1:'],
-                        ["m/1852'/1815'/0'/2", '\n', '/0'],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm:'],
+                            ['Stake key', '\n', 'deregistration'],
+                            ['for account #1:'],
+                            devicePrompt.wrapText("m/1852'/1815'/0'/2/0"),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Transaction fee:'],
-                        [toADA(feeAmount)],
-                        ['Network: Mainnet'],
-                        ['Valid since: n/a'],
-                        [/^TTL: \d{9}$/],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Transaction fee:'],
+                            [toADA(feeAmount)],
+                            ['Network: Mainnet'],
+                            ['Valid since: n/a'],
+                            [/^TTL: \d{9}$/],
+                        ],
+                        actions: { right_button: 'Hold to confirm' },
+                    },
                 });
 
                 // unstaked account

@@ -5,7 +5,6 @@ import ETH_STAKE_CONFIRMED_TX from '../../../fixtures/staking/eth-stake-confirme
 import ETH_STAKE_PENDING_TX from '../../../fixtures/staking/eth-stake-pending-tx.json';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
-import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
     test.use({
@@ -86,9 +85,11 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                     { values: { symbol: 'ETH' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Stake' },
-                    body: [['Stake ETH on', '\n', 'Everstake?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Stake' },
+                        body: [['Stake ETH on', '\n', 'Everstake?']],
+                        actions: { right_button: 'Continue' },
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
@@ -99,15 +100,16 @@ test.describe('ETH staking', { tag: ['@group=staking'] }, () => {
                 );
 
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Stake' },
-                    body: [
-                        ['Amount'],
-                        splitStringByDisplayLimit('0.100204158497493752 ETH'),
-                        [' '],
-                        ['Maximum fee'],
-                        splitStringByDisplayLimit('0.000290278609719 ETH'),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Stake' },
+                        body: [
+                            ['Amount'],
+                            devicePrompt.wrapText('0.100204158497493752 ETH', { isAmount: true }),
+                            ['Maximum fee'],
+                            devicePrompt.wrapText('0.000290278609719 ETH', { isAmount: true }),
+                        ],
+                        actions: { right_button: 'Hold to sign' },
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
             });

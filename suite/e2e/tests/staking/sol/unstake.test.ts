@@ -74,9 +74,14 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     { values: { symbol: 'SOL' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Unstake' },
-                    body: [['Unstake SOL from stake', '\n', 'account?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Unstake' },
+                        body: [['Unstake SOL from', '\n', 'stake account?']],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        body: [['Unstake SOL from stake', '\n', 'account?']],
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
@@ -86,9 +91,11 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     solanaStakingMock.feeFormatted,
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Unstake' },
-                    body: [['Transaction fee:'], [`${solanaStakingMock.rentFee} SOL`]],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Unstake' },
+                        body: [['Transaction fee:'], [`${solanaStakingMock.rentFee} SOL`]],
+                        actions: { right_button: 'Hold to sign' },
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
             });
@@ -144,9 +151,14 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     { values: { symbol: 'SOL' } },
                 );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Claim' },
-                    body: [['Claim SOL from stake', '\n', 'account?']],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Claim' },
+                        body: [['Claim SOL from', '\n', 'stake account?']],
+                        actions: { right_button: 'Continue' },
+                    },
+                    T3T1: {
+                        body: [['Claim SOL from stake', '\n', 'account?']],
+                    },
                 });
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
@@ -156,16 +168,22 @@ test.describe('sol staking', { tag: ['@group=staking', '@webOnly'] }, () => {
                     solanaStakingMock.feeFormatted,
                 );
 
+                const feeWrapped = devicePrompt.wrapText(`${solanaStakingMock.rentFee} SOL`, {
+                    isAmount: true,
+                });
+                const amountAndFeeWrapped = devicePrompt.wrapText(
+                    solanaStakingMock.addFeeTo(unstakingAmount),
+                    { isAmount: true },
+                );
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Claim' },
-                    body: [
-                        ['Amount:'],
-                        [solanaStakingMock.addFeeTo(unstakingAmount)],
-                        [' '],
-                        ['Transaction fee:'],
-                        [`${solanaStakingMock.rentFee} SOL`],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Claim' },
+                        body: [['Transaction fee:'], feeWrapped, ['Amount:'], amountAndFeeWrapped],
+                        actions: { right_button: 'Hold to sign' },
+                    },
+                    T3T1: {
+                        body: [['Amount:'], amountAndFeeWrapped, ['Transaction fee:'], feeWrapped],
+                    },
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await solanaStakingMock.setProgramAccounts([]);
