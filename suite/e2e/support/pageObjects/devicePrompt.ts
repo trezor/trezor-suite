@@ -1,7 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { Model } from '@trezor/trezor-user-env-link';
-
 import { TrezorUserEnvLinkProxy, analyzeObject, step } from '../common';
 import {
     NormalizedDisplayContent,
@@ -42,7 +40,7 @@ export class DevicePrompt {
 
     constructor(
         private page: Page,
-        private readonly model: ModelFixture,
+        readonly model: ModelFixture,
     ) {
         this.confirmOnDevicePrompt = page.getByTestId('@prompts/confirm-on-device');
         this.connectDevicePrompt = page.getByTestId('@connect-device-prompt');
@@ -105,15 +103,14 @@ export class DevicePrompt {
     }
 
     @step()
-    async waitForPromptAndClick(model?: Model): Promise<void> {
+    async waitForPromptAndClick(): Promise<void> {
         const EMULATOR_CENTER_COORDINATES: Record<string, { x: number; y: number }> = {
             T3T1: { x: 125, y: 150 },
             T3W1: { x: 200, y: 480 },
         };
 
         await this.confirmOnDevicePromptIsShown();
-
-        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_CENTER_COORDINATES[model ?? 'T3T1']);
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_CENTER_COORDINATES[this.model.model]);
     }
 
     @step()
@@ -153,6 +150,7 @@ export class DevicePrompt {
         return analyzeObject({
             header: debugState.header,
             body: debugState.body,
+            actions: debugState.actions,
             footer: debugState.footer,
         });
     }
@@ -205,6 +203,26 @@ export class DevicePrompt {
     }
 
     @step()
+    async openFeeInfoOnEmulator({
+        buttonIndexT3W1 = 1,
+        buttonIndexT3T1 = 1,
+    }: {
+        buttonIndexT3W1?: number;
+        buttonIndexT3T1?: number;
+    } = {}) {
+        const EMULATOR_BURGER_MENU_COORDINATES: Record<string, { x: number; y: number }> = {
+            T3T1: { x: 200, y: 20 },
+            T3W1: { x: 300, y: 20 },
+        };
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_BURGER_MENU_COORDINATES[this.model.model]);
+        const EMULATOR_FEE_INFO_COORDINATES: Record<string, { x: number; y: number }> = {
+            T3T1: { x: 125, y: buttonIndexT3T1 * 100 },
+            T3W1: { x: 125, y: buttonIndexT3W1 * 100 },
+        };
+        await TrezorUserEnvLinkProxy.clickEmu(EMULATOR_FEE_INFO_COORDINATES[this.model.model]);
+    }
+
+    @step()
     async closeModal() {
         await this.modalCloseButton.click();
         await expect(this.modal).toBeHidden();
@@ -225,4 +243,42 @@ export class DevicePrompt {
     getDeviceModel() {
         return this.model.model;
     }
+
+    private wrapTextByLineLimit = (
+        text: string,
+        lineCharLimit: number,
+        newline: string | string[],
+    ) => {
+        const regex = new RegExp(`.{1,${lineCharLimit}}`, 'g');
+        const splitLines = text.match(regex);
+        if (!splitLines) {
+            throw new Error(`Failed to split text into lines: "${text}"`);
+        }
+
+        const newlineArray = Array.isArray(newline) ? newline : [newline];
+
+        return splitLines.flatMap((line, index) =>
+            index < splitLines.length - 1 ? [line.trim(), ...newlineArray] : [line.trim()],
+        );
+    };
+
+    wrapText = (text: string, options?: { isAmount?: boolean }) => {
+        const T3W1_EXACT_LINE_LENGTH = 14;
+        const T3T1_EXACT_LINE_LENGTH = 18;
+        const T3W1_LINE_LENGTH_MINUS_DASH = 13;
+
+        if (this.model.isT3W1()) {
+            if (text.length === T3W1_EXACT_LINE_LENGTH) {
+                return [text];
+            }
+            const lineCharLimit = options?.isAmount
+                ? T3W1_LINE_LENGTH_MINUS_DASH
+                : T3W1_EXACT_LINE_LENGTH;
+            const newline = options?.isAmount ? ['-', '\n'] : ['\n'];
+
+            return this.wrapTextByLineLimit(text, lineCharLimit, newline);
+        }
+
+        return this.wrapTextByLineLimit(text, T3T1_EXACT_LINE_LENGTH, ['\n']);
+    };
 }

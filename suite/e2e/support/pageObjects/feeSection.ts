@@ -2,7 +2,7 @@ import { Locator, Page, Response } from '@playwright/test';
 
 import { BigNumber } from '@trezor/utils';
 
-import { TrezorUserEnvLinkProxy, step } from '../common';
+import { step } from '../common';
 import { solanaUrlPattern } from '../mocks/tradingMock';
 import { expect } from '../testExtends/customMatchers';
 
@@ -200,14 +200,6 @@ before rounding: ${maxFeeInEthereum} ETH, after rounding: ${maxFeeRounded} ETH`;
         }
 
         return match.groups.value;
-    }
-
-    @step()
-    async openFeeInfoOnEmulator() {
-        const burgerMenuCoordinates = { x: 200, y: 20 };
-        await TrezorUserEnvLinkProxy.clickEmu(burgerMenuCoordinates);
-        const feeInfoCoordinates = { x: 125, y: 100 };
-        await TrezorUserEnvLinkProxy.clickEmu(feeInfoCoordinates);
     }
 
     @step()

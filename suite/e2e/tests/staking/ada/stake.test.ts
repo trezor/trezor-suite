@@ -4,7 +4,6 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { ADA_MOCKED_ACCOUNT } from '../../../support/mocks/ada-endpoints';
-import { splitStringByDisplayLimit } from '../../../support/testExtends/customMatchers';
 
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
@@ -94,75 +93,103 @@ test.describe('Staking - Cardano', { tag: ['@group=staking', '@specificModel'] }
             await test.step('Confirm staking on device', async () => {
                 await stakingSection.continueButton.click();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Confirm:'],
-                        ['Stake key', '\n', 'registration'],
-                        ['for account #1:'],
-                        ["m/1852'/1815'/0'/2", '\n', '/0'],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm:'],
+                            ['Stake key', '\n', 'registration'],
+                            ['for account #1:'],
+                            devicePrompt.wrapText("m/1852'/1815'/0'/2/0"),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Confirm:'],
-                        ['Stake delegation'],
-                        ['for account #1:'],
-                        ["m/1852'/1815'/0'/2", '\n', '/0'],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm:'],
+                            ['Stake', '\n', 'delegation'],
+                            ['for account #1:'],
+                            ["m/1852'/1815'/", '\n', "0'/2/0"],
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Confirm:'],
+                            ['Stake delegation'],
+                            ['for account #1:'],
+                            ["m/1852'/1815'/0'/2", '\n', '/0'],
+                        ],
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['to pool:'],
-                        splitStringByDisplayLimit(
-                            'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
-                        ),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['to pool:'],
+                            devicePrompt.wrapText(
+                                'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+                            ),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Confirm:'],
-                        ['Vote delegation'],
-                        ['for account #1:'],
-                        ["m/1852'/1815'/0'/2", '\n', '/0'],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm:'],
+                            ['Vote', '\n', 'delegation'],
+                            ['for account #1:'],
+                            ["m/1852'/1815'/", '\n', "0'/2/0"],
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        body: [
+                            ['Confirm:'],
+                            ['Vote delegation'],
+                            ['for account #1:'],
+                            ["m/1852'/1815'/0'/2", '\n', '/0'],
+                        ],
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Delegating to key hash:'],
-                        splitStringByDisplayLimit(
-                            'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
-                        ),
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Delegating to key hash:'],
+                            devicePrompt.wrapText(
+                                'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
+                            ),
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
                 await expect(devicePrompt).toDisplayOnEmulator({
-                    header: { title: 'Confirm transaction' },
-                    body: [
-                        ['Transaction fee:'],
-                        [toADA(feeAmount)],
-                        ['Network: Mainnet'],
-                        ['Valid since: n/a'],
-                        [/^TTL: \d{9}$/],
-                    ],
-                    footer: 'Tap to continue',
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Transaction fee:'],
+                            [toADA(feeAmount)],
+                            ['Network: Mainnet'],
+                            ['Valid since: n/a'],
+                            [/^TTL: \d{9}$/],
+                        ],
+                        actions: { right_button: 'Hold to confirm' },
+                    },
                 });
 
                 // staked account

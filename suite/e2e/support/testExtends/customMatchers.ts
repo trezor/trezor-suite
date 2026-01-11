@@ -8,12 +8,13 @@ import { TranslationKey } from '@trezor/suite/src//components/suite/Translation'
 import messages from '@trezor/suite/src//support/messages';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
+import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 import { DevicePrompt } from '../pageObjects/devicePrompt';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
 
-const DISPLAY_CHAR_LIMIT = 18;
-const STRING_UP_TO_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT}}`, 'g');
+const DISPLAY_CHAR_LIMIT_T3T1 = 18;
+const STRING_UP_TO_T3T1_DISPLAY_LIMIT = new RegExp(`.{1,${DISPLAY_CHAR_LIMIT_T3T1}}`, 'g');
 const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
 
 const compareTextAndNumber = async (
@@ -39,7 +40,7 @@ const compareTextAndNumber = async (
 
 const compareDisplayContent = async (
     devicePrompt: DevicePrompt,
-    expectedContent: any,
+    expectedContent: NormalizedDisplayContent,
     errorMessage: string,
 ) => {
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
@@ -111,20 +112,8 @@ export const transformAddress = (address: string, lineFormat: LineFormats = 'fou
     }
 
     if (lineFormat === 'fullLine') {
-        return addNewlinesToAddress(address, STRING_UP_TO_DISPLAY_LIMIT, ' \n ');
+        return addNewlinesToAddress(address, STRING_UP_TO_T3T1_DISPLAY_LIMIT, ' \n ');
     }
-};
-
-export const splitStringByDisplayLimit = (text: string) => {
-    const splitLines = text.match(STRING_UP_TO_DISPLAY_LIMIT);
-    if (!splitLines) {
-        throw new Error(`Failed to split text into lines: "${text}"`);
-    }
-
-    // Add a newline item into array after each item except the last one
-    return splitLines.flatMap((line, index) =>
-        index < splitLines.length - 1 ? [line.trim(), '\n'] : [line.trim()],
-    );
 };
 
 export const expect = baseExpect.extend({
@@ -185,29 +174,24 @@ export const expect = baseExpect.extend({
     async toDisplayReceiveAddress(
         devicePrompt: DevicePrompt,
         expectedAddress: string,
-        options: { lineFormat: LineFormats; specialAccountType?: string } = {
+        options: { lineFormat: LineFormats } = {
             lineFormat: 'fourTetragrams',
         },
     ) {
-        if (devicePrompt.getDeviceModel() !== 'T3T1') {
-            return { pass: true, message: () => 'Test is skipped on non-T3T1 models' };
-        }
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
-
-        let expectedContent;
-        if (options.specialAccountType) {
-            expectedContent = {
-                header: { title: 'Receive address' },
-                body: [[options.specialAccountType], transformedExpectedAddress],
-                footer: 'Tap to continue',
-            };
-        } else {
-            expectedContent = {
-                header: { title: 'Receive address' },
-                body: [transformedExpectedAddress],
-                footer: 'Tap to continue',
-            };
-        }
+        const expectedContent = devicePrompt.model.isT3W1()
+            ? {
+                  header: { title: 'Receive' },
+                  body: [transformedExpectedAddress],
+                  actions: {
+                      right_button: 'Confirm',
+                  },
+              }
+            : {
+                  header: { title: 'Receive address' },
+                  body: [transformedExpectedAddress],
+                  footer: 'Tap to continue',
+              };
 
         return await compareDisplayContent(
             devicePrompt,
@@ -216,9 +200,30 @@ export const expect = baseExpect.extend({
         );
     },
 
-    async toDisplayOnEmulator(devicePrompt: DevicePrompt, expectedContent: object) {
-        if (devicePrompt.getDeviceModel() !== 'T3T1') {
-            return { pass: true, message: () => 'Test is skipped on non-T3T1 models' };
+    async toDisplayOnEmulator(
+        devicePrompt: DevicePrompt,
+        expected: { T3W1: NormalizedDisplayContent; T3T1?: Partial<NormalizedDisplayContent> },
+    ) {
+        // default T3W1 model
+        let expectedContent = expected.T3W1;
+
+        // expected.T3T1 is used as overrides for the default T3W1 model
+        if (!devicePrompt.model.isT3W1()) {
+            const DEFAULT_T3T1_FOOTER = { footer: 'Tap to continue' };
+            expectedContent = {
+                ...expected.T3W1,
+                ...DEFAULT_T3T1_FOOTER,
+                ...expected.T3T1,
+            };
+
+            // Remove footer if T3T1 override explicitly says it is undefined
+            const noFooterExpected = !expectedContent.footer;
+            if (noFooterExpected) {
+                delete expectedContent.footer;
+            }
+
+            // nonT3W1 does not have actions, remove them
+            delete expectedContent.actions;
         }
 
         return await compareDisplayContent(

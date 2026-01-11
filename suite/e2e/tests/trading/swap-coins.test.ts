@@ -94,9 +94,11 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             const transformedExpectedAddress = transformAddress(sendAddress, 'fullLine');
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Recipient' },
-                body: [transformedExpectedAddress],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Recipient' },
+                    body: [transformedExpectedAddress],
+                    actions: { right_button: 'Continue' },
+                },
             });
 
             await devicePrompt.waitForPromptAndConfirm();
@@ -119,15 +121,19 @@ test.describe('Trading - Swap coins', { tag: ['@group=trading', '@webOnly'] }, (
                 solanaFee,
             );
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Amount:'],
-                    [formattedSendAmount],
-                    [' '],
-                    ['Transaction fee:'],
-                    [`${solanaFee} SOL`],
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Send' },
+                    body: [
+                        ['Amount:'],
+                        [formattedSendAmount],
+                        ['Transaction fee:'],
+                        devicePrompt.wrapText(`${solanaFee} SOL`, { isAmount: true }),
+                    ],
+                    actions: { right_button: 'Hold to sign' },
+                },
+                T3T1: {
+                    header: { title: 'Summary' },
+                },
             });
 
             await devicePrompt.waitForFinalPromptAndConfirm();

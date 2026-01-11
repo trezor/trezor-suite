@@ -122,15 +122,17 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
                 `${maxPriorityFeePerGasRounded} Gwei`,
             );
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Summary' },
-                body: [
-                    ['Amount'],
-                    [formattedCryptoAmount],
-                    [' '],
-                    ['Maximum fee'],
-                    splitStringByDisplayLimit(`${ethereumMaximumFee} ETH`),
-                ],
-                footer: 'Tap to continue',
+                T3W1: {
+                    header: { title: 'Summary' },
+                    body: [
+                        ['Amount'],
+                        [formattedCryptoAmount],
+                        ['Maximum fee'],
+                        devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                    ],
+
+                    actions: { right_button: 'Confirm' }, 
+                },
             });
            
             await expect(
@@ -140,19 +142,20 @@ test.describe('Trading - Sell Ethereum', { tag: ['@group=trading', '@webOnly'] }
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await tradingPage.fees.openFeeInfoOnEmulator();
+            await devicePrompt.openFeeInfoOnEmulator();
             await expect(devicePrompt).toDisplayOnEmulator({
-                header: { title: 'Fee info' },
-                body: [
-                    ['Gas limit'],
-                    [`${gasLimit} units`],
-                    [' '],
-                    ['Max fee per gas'],
-                    [`${maxFeePerGas} Gwei`],
-                    [' '],
-                    ['Max priority fee'],
-                    [`${maxPriorityFeePerGas} Gwei`],
-                ],
+                T3W1: {
+                    header: { title: 'Fee info' },
+                    body: [
+                        ['Gas limit'],
+                        [`${gasLimit} units`],
+                        ['Max fee per gas'],
+                        [`${maxFeePerGas} Gwei`],
+                        ['Max priority fee'],
+                        [`${maxPriorityFeePerGas} Gwei`],
+                    ],
+                    actions: { right_button: 'Confirm' },
+                },
             });
         });
         */
