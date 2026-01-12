@@ -1,4 +1,6 @@
+import { getNetwork } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
@@ -8,7 +10,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
 const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fullLine');
-const SOL_DECIMALS = 9;
+const SOL_DECIMALS = getNetwork('sol').decimals;
 
 test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
     test.use({
@@ -58,13 +60,13 @@ test.describe('Send - Solana', { tag: ['@group=wallet'] }, () => {
                 const balance = Number(await tradingPage.sendBalance.textContent());
                 maxFee = Number(await tradingPage.fees.maxFee.textContent());
                 const reservedAmount = await tradingPage.fees.getNetworkReserveAmount();
-                sendMaxAmountWithReserve = (balance - maxFee - reservedAmount).toFixed(
-                    SOL_DECIMALS,
-                );
+                sendMaxAmountWithReserve = new BigNumber(balance - maxFee - reservedAmount)
+                    .decimalPlaces(SOL_DECIMALS)
+                    .toString();
 
                 await expect(tradingPage.sendAmountInput).toHaveValue(sendMaxAmountWithReserve);
                 await expect(walletPage.totalSent).toHaveText(
-                    (balance - reservedAmount).toFixed(SOL_DECIMALS),
+                    new BigNumber(balance - reservedAmount).decimalPlaces(SOL_DECIMALS).toString(),
                 );
                 await expect(tradingPage.sendButton).toBeEnabled();
             });
