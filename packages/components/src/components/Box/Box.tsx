@@ -54,7 +54,7 @@ const Container = styled.div<
     border: 0 solid
         ${({ $borderColor, $elevation, theme }) =>
             $borderColor ? theme[$borderColor] : mapElevationToBorder({ theme, $elevation })};
-    transition: background 0.3s ease;
+    transition: 0.2s ease;
 
     ${({ $borderWidth }) => {
         if ($borderWidth == null || $borderWidth === 0) return null;
@@ -92,6 +92,11 @@ const Container = styled.div<
         css`
             box-shadow: ${$shadow};
         `}
+
+    &:focus-visible {
+        outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
+        outline-offset: 2px;
+    }
 
     ${withFrameProps};
 `;

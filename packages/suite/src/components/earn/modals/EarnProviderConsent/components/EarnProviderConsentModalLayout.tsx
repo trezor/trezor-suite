@@ -71,7 +71,7 @@ export const EarnProviderConsentModalLayout = ({
                     <Checkbox
                         data-testid="@staking/provider-acknowledge-checkbox"
                         verticalAlignment="center"
-                        onClick={() => setHasAgreed(!hasAgreed)}
+                        onChange={() => setHasAgreed(!hasAgreed)}
                         isChecked={hasAgreed}
                     >
                         {consentText}

@@ -88,7 +88,7 @@ export const AttributeEditor = ({
 
                     <Checkbox
                         isChecked={attr.isOptional}
-                        onClick={() => onChange({ ...attr, isOptional: !attr.isOptional })}
+                        onChange={() => onChange({ ...attr, isOptional: !attr.isOptional })}
                     >
                         <Row gap={4} alignItems="center">
                             <Text>optional</Text>

@@ -142,7 +142,7 @@ export const ConfirmStakeModal = ({
             <Card>
                 <Checkbox
                     data-testid="@staking/acknowledge-checkbox"
-                    onClick={() => setHasAgreed(!hasAgreed)}
+                    onChange={() => setHasAgreed(!hasAgreed)}
                     isChecked={hasAgreed}
                 >
                     <Translation id="TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD" />

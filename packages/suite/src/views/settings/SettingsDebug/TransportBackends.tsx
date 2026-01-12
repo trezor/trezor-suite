@@ -37,7 +37,7 @@ export const TransportBackends = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={bridgeProcess.process}
-                        onClick={() => {
+                        onChange={() => {
                             toggleBridge();
                         }}
                     />
@@ -51,7 +51,7 @@ export const TransportBackends = () => {
                 <ActionColumn>
                     <Checkbox
                         isChecked={!bridgeSettings.doNotStartOnStartup}
-                        onClick={() => {
+                        onChange={() => {
                             changeBridgeSettings({
                                 ...bridgeSettings,
                                 doNotStartOnStartup: !bridgeSettings.doNotStartOnStartup,

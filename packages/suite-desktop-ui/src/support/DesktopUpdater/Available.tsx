@@ -77,7 +77,7 @@ export const Available = ({ onCancel, latest }: AvailableProps) => {
             <Card margin={{ top: spacings.xxl }}>
                 <Checkbox
                     isChecked={enableAutoupdateOnNextRun}
-                    onClick={handleToggleAutoUpdateClick}
+                    onChange={handleToggleAutoUpdateClick}
                 >
                     <Translation id="TR_UPDATE_MODAL_ENABLE_AUTO_UPDATES" />
                 </Checkbox>

@@ -129,19 +129,14 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
 
     return (
-        <GhostContainer
-            onClick={handleCheckbox}
-            isActive={isChecked}
-            padding={12}
-            margin={{ horizontal: -12 }}
-            as="div"
-        >
+        <GhostContainer onClick={handleCheckbox} padding={12} margin={{ horizontal: -12 }} as="div">
             <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
                         isChecked={isChecked}
                         isDisabled={isDisabled}
-                        onClick={handleCheckbox}
+                        onChange={handleCheckbox}
+                        onClick={e => e.stopPropagation()}
                     />
                 </Tooltip>
                 <Column flex="1" gap={0}>

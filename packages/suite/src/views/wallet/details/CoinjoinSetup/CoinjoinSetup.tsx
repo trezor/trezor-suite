@@ -78,14 +78,14 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                 <SetupOptions>
                     <Radio
                         isChecked={!coinjoinAccount.setup}
-                        onClick={setRecommendedSetup}
+                        onChange={setRecommendedSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_RECOMMENDED" />
                     </Radio>
                     <Radio
                         isChecked={!!coinjoinAccount.setup}
-                        onClick={setCustomSetup}
+                        onChange={setCustomSetup}
                         isDisabled={hasSession}
                     >
                         <Translation id="TR_CUSTOM" />

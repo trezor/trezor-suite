@@ -52,7 +52,7 @@ export const BackupSeedCards = () => {
                                 <Icon name={item.icon} intent="neutral" priority="secondary" />
                                 <Checkbox
                                     isChecked={isChecked(item.key)}
-                                    onClick={event => {
+                                    onChange={event => {
                                         event.preventDefault();
                                     }}
                                 />

@@ -41,7 +41,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const learnMoreClicked = () => {
         analytics.report({
@@ -73,12 +72,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const getStepConfig = (): StepConfig => {
         switch (step) {
             case 'first-info': {
-                const goToStepNextStep = () => {
-                    setIsSubmitted(true);
-                    if (isChecked1 && isChecked2) {
-                        setStep('second-info');
-                    }
-                };
+                const goToStepNextStep = () => setStep('second-info');
 
                 return {
                     width: 600,
@@ -86,7 +80,6 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                         <MultiShareBackupStep1
                             isChecked1={isChecked1}
                             isChecked2={isChecked2}
-                            isSubmitted={isSubmitted}
                             setIsChecked1={setIsChecked1}
                             setIsChecked2={setIsChecked2}
                         />

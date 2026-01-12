@@ -158,9 +158,8 @@ export const ReviewButton = () => {
                     intent="critical"
                     description={
                         <Checkbox
-                            variant="destructive"
                             isChecked={anonymityWarningChecked}
-                            onClick={toggleAnonymityWarning}
+                            onChange={toggleAnonymityWarning}
                         >
                             <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
                         </Checkbox>

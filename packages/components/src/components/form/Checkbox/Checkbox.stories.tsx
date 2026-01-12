@@ -1,13 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
-import {
-    Checkbox as CheckboxComponent,
-    allowedCheckboxFrameProps,
-    checkboxVariants,
-    labelAlignments,
-    verticalAlignments,
-} from './Checkbox';
+import { Checkbox as CheckboxComponent, allowedCheckboxFrameProps } from './Checkbox';
+import { labelAlignments, verticalAlignments } from './types';
 import { getFramePropsStory } from '../../../utils/frameProps';
 
 const meta: Meta<typeof CheckboxComponent> = {
@@ -23,19 +18,13 @@ export const Checkbox: StoryObj<typeof meta> = {
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
-            <CheckboxComponent
-                variant="primary"
-                isChecked={isChecked}
-                {...args}
-                onClick={handleIsChecked}
-            >
+            <CheckboxComponent isChecked={isChecked} {...args} onChange={handleIsChecked}>
                 {args.children}
             </CheckboxComponent>
         );
     },
     args: {
-        children: 'Checkbox',
-        variant: 'primary',
+        children: 'Label',
         isChecked: false,
         isDisabled: false,
         labelAlignment: 'end',
@@ -44,11 +33,11 @@ export const Checkbox: StoryObj<typeof meta> = {
     },
 
     argTypes: {
-        variant: {
-            control: {
-                type: 'radio',
-            },
-            options: checkboxVariants,
+        isChecked: {
+            control: 'boolean',
+        },
+        isDisabled: {
+            control: 'boolean',
         },
         labelAlignment: {
             control: {

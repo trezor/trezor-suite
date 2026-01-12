@@ -3,6 +3,7 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 import { BorderRadii, Color, TypographyStyle } from '@trezor/theme';
 
 import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps, InverseKey } from './types';
+import { commonFocusStyles } from '../../utils/utils';
 
 export const pickButtonProps = ({
     href,
@@ -49,8 +50,7 @@ export const commonButtonStyles = css`
     transition: 0.1s ease-in-out;
 
     &:focus-visible {
-        outline: 4px solid ${({ theme }) => theme.stateBorderElementFocused};
-        outline-offset: 2px;
+        ${commonFocusStyles}
     }
 
     &:disabled {
