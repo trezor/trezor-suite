@@ -61,7 +61,8 @@ export const createRefreshSuiteSync =
             // Device's sessionId may have changed, so let's get the current one
             const refreshedDevice = deps.getDeviceForStaticSessionId(deviceStaticId);
             if (!refreshedDevice || !isTrezorDeviceWithState(refreshedDevice)) {
-                return err(RefreshSuiteKeysUnavailable());
+                // This shall not happen, if it does, it's probably a Suite/Connect bug.
+                return err({ type: 'RefreshDeviceFailed' as const });
             }
 
             await deps.dispatch(
@@ -96,7 +97,7 @@ export const createRefreshSuiteSync =
                 // Those errors are most likely due to Bug in the code or data corruption
                 case 'CreateSuiteSyncOwnerError':
                 case 'ProofOfDelegatedSignFailed':
-                case 'RefreshSuiteKeysUnavailable':
+                case 'RefreshDeviceFailed':
                     console.error(result.error);
                     // Todo: dispatch better notification
                     deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
