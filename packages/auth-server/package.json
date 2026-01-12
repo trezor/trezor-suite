@@ -9,7 +9,6 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "dev": "yarn g:tsx watch ./src/index.ts",
-        "build": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "start": "node ./lib/index.js"
     },
     "dependencies": {
