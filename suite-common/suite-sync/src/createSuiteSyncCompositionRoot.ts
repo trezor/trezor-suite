@@ -74,15 +74,16 @@ export const createSuiteSyncCompositionRoot = (
         loadSuiteSyncOwnerFromState,
     });
 
+    const getDeviceForStaticSessionId: GetDeviceForStaticSessionId = deviceStaticId =>
+        selectDeviceByStaticSessionId(deps.getState(), deviceStaticId) ?? null;
+
     const refreshSuiteSyncKeys = createRefreshSuiteSync({
         dispatch: deps.dispatch,
         ensureDelegatedIdentityKey: deps.ensureDelegatedIdentityKey,
         ensureSuiteSyncOwner,
         loadSuiteSyncOwnerFromState,
+        getDeviceForStaticSessionId,
     });
-
-    const getDeviceForStaticSessionId: GetDeviceForStaticSessionId = deviceStaticId =>
-        selectDeviceByStaticSessionId(deps.getState(), deviceStaticId) ?? null;
 
     const ensureStorage = createEnsureStorage({
         refreshSuiteSyncKeys,
