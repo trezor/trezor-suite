@@ -1,5 +1,3 @@
-import { localizeNumber } from '@suite-common/wallet-utils';
-
 import { getBigNumberFromBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -26,7 +24,10 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
             await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
             await test.step('Regtest discovered with non zero value', async () => {
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
+                await settingsPage.changeNetworks({
+                    enableNetworks: ['regtest'],
+                    disableNetworks: ['btc'],
+                });
                 await dashboardPage.navigateTo();
                 await expect(walletPage.accountLabel({ symbol: 'regtest' })).toHaveText(
                     'Bitcoin Regtest #1',
@@ -38,9 +39,19 @@ test.describe('Coin balance', { tag: ['@group=wallet'] }, () => {
                 const { originalBalance, hasEllipsis } = await getBigNumberFromBalance(
                     firstAccountBalanceLocator,
                 );
+
                 const rawIncreasedBalance = originalBalance.plus(1).toString();
-                const expectedIncreasedBalance =
-                    localizeNumber(rawIncreasedBalance, 'en-US', 0, 8) + (hasEllipsis ? '…' : '');
+                let expectedIncreasedBalance: string;
+
+                // adding 1 can overflow the balance length of 10 chars
+                if (rawIncreasedBalance.length > 10) {
+                    expectedIncreasedBalance = rawIncreasedBalance.slice(0, 10) + '…';
+                    // keep ellipsis if was already present
+                } else if (hasEllipsis) {
+                    expectedIncreasedBalance = rawIncreasedBalance + '…';
+                } else {
+                    expectedIncreasedBalance = rawIncreasedBalance;
+                }
 
                 await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
                 await expect(firstAccountBalanceLocator).toHaveText(expectedIncreasedBalance);
