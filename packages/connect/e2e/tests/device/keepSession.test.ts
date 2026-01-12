@@ -1,4 +1,4 @@
-import TrezorConnect, { StaticSessionId } from '../../../src';
+import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const controller = getController();

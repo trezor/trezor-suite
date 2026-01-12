@@ -78,34 +78,6 @@ module.exports = config => {
                         },
                     },
                     {
-                        test: /workers\/blockbook\/index/i,
-                        loader: 'worker-loader',
-                        options: {
-                            filename: './workers/blockbook-worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        test: /workers\/ripple\/index/i,
-                        loader: 'worker-loader',
-                        options: {
-                            filename: './workers/ripple-worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        test: /workers\/blockfrost\/index/i,
-                        loader: 'worker-loader',
-                        options: {
-                            filename: './workers/blockfrost-worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        test: /workers\/stellar\/index/i,
-                        loader: 'worker-loader',
-                        options: {
-                            filename: './workers/stellar-worker.[contenthash].js',
-                        },
-                    },
-                    {
                         test: /\.ts?$/,
                         exclude: /node_modules/,
                         use: [
