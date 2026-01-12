@@ -6,8 +6,7 @@ export const useIllustrationColors = () => {
     } = useNativeStyles();
 
     const lineColor = colors.backgroundPrimaryDefault;
-    const fillColor = colors.backgroundSurfaceElevation0;
-    const fillBrandColor = colors.illustrationFillBrand;
+    const fillColor = colors.illustrationFillBrand;
 
-    return { lineColor, fillColor, fillBrandColor };
+    return { lineColor, fillColor };
 };
