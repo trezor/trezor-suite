@@ -37,6 +37,7 @@ import {
 type AssetItemProps = {
     cryptoCurrencySymbol: NetworkSymbol;
     onPress?: (symbol: NetworkSymbol) => void;
+    testID?: string;
 };
 
 type NavigationType = TabToStackCompositeNavigationProp<
@@ -88,7 +89,7 @@ const PercentageIcon = React.memo(({ symbol }: AssetItemSubComponentProps) => {
     );
 });
 
-export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetItemProps) => {
+export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress, testID }: AssetItemProps) => {
     const navigation = useNavigation<NavigationType>();
     const { NetworkNameFormatter } = useFormatters();
     const accountsKeysForNetworkSymbol = useSelectorDeepComparison((state: AssetsRootState) =>
@@ -116,6 +117,7 @@ export const AssetItem = React.memo(({ cryptoCurrencySymbol, onPress }: AssetIte
 
     return (
         <AccountsListItemBase
+            testID={testID}
             disabled={!onPress}
             onPress={handleAssetPress}
             icon={<PercentageIcon symbol={cryptoCurrencySymbol} />}

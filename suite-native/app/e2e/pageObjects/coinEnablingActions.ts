@@ -1,3 +1,5 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+
 import { onDeviceConnecting } from './deviceConnectingActions';
 import { onHome } from './homeActions';
 import { scrollUntilVisible, waitForVisible } from '../support/utils';
@@ -17,7 +19,7 @@ class CoinEnablingActions {
         await element(by.id('@coin-enabling/button-save')).tap();
     }
 
-    async handleCoinEnablingInit(coins = ['btc']) {
+    async handleCoinEnablingInit(coins: NetworkSymbol[] = ['btc']) {
         await this.waitForInitScreen();
         for (const coin of coins) {
             await this.toggleNetwork(coin);

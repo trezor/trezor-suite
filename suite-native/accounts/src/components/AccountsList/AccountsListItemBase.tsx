@@ -10,6 +10,7 @@ export type AccountListItemBaseProps = {
     mainValue: React.ReactNode;
     secondaryValue: React.ReactNode;
     badges?: React.ReactNode;
+    testID?: string;
 
     onPress?: PressableProps['onPress'];
     disabled?: boolean;
@@ -90,6 +91,7 @@ export const AccountsListItemBase = ({
     secondaryValue,
     onPress,
     disabled,
+    testID,
     hasBackground = false,
     isFirst = false,
     isLast = false,
@@ -113,7 +115,7 @@ export const AccountsListItemBase = ({
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">{icon}</Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
-                    <Text>{title}</Text>
+                    <Text testID={`${testID}/title`}>{title}</Text>
                     <HStack spacing="sp4" alignItems="center">
                         {badges}
                     </HStack>
