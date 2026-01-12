@@ -200,6 +200,9 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
             await devicePrompt.waitForPromptAndConfirm();
             await devicePrompt.sendButton.click();
             await page.getByTestId('@toast/tx-sent').click();
+            await page.getByRole('button', { name: 'View details' }).hover();
+            // wait for transaction to be processed in Suite before navigating to its detail
+            await page.expectReduxObjectToEqual('wallet.send.drafts', {});
             await page.getByRole('button', { name: 'View details' }).click();
 
             // Transaction takes ~5s to confirm on the network, but we need to pull
@@ -210,7 +213,7 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
                 await expect(page.getByTestId('@modal/tx-details/confirmed')).toHaveText(
                     'Confirmed',
                 );
-            }).toPass({ timeout: 30_000 });
+            }, 'expect Transaction to be confirmed').toPass({ timeout: 30_000 });
         });
     });
 });
