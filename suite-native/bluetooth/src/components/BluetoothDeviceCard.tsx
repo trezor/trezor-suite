@@ -1,7 +1,7 @@
 import {
     Box,
     Button,
-    Card,
+    CardWithAlert,
     InlineAlertBoxProps,
     Text,
     resetLetterSpacingOnAndroidStyle,
@@ -54,7 +54,7 @@ export const BluetoothDeviceCard = ({
     };
 
     return (
-        <Card
+        <CardWithAlert
             style={applyStyle(cardStyle)}
             alertProps={isPairingInProgress ? pairingHintInlineAlert : undefined}
             alertPosition="bottom"
@@ -84,6 +84,6 @@ export const BluetoothDeviceCard = ({
             >
                 <Translation id={buttonTranslation} />
             </Button>
-        </Card>
+        </CardWithAlert>
     );
 };

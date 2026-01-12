@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import {
     Box,
     Button,
-    Card,
+    CardWithAlert,
     CheckBox,
     HStack,
     IconListItem,
@@ -95,7 +95,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                 />
                 <InformativeList />
                 <Pressable onPress={handleCheckboxPress}>
-                    <Card
+                    <CardWithAlert
                         alertProps={{
                             variant: 'warning',
                             title: (
@@ -114,7 +114,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                             </Box>
                             <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
                         </HStack>
-                    </Card>
+                    </CardWithAlert>
                 </Pressable>
             </VStack>
             {isChecked && (

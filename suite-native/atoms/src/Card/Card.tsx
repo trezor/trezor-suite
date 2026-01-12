@@ -7,21 +7,16 @@ import { G } from '@mobily/ts-belt';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { InlineAlertBox, InlineAlertBoxProps } from '../InlineAlertBox/InlineAlertBox';
-
-const CARD_CONTAINER_TEST_ID = '@atom/card/container';
-const ALERT_TEST_ID = '@atom/card/alert/';
-
-type AlertPosition = 'top' | 'bottom';
+const CARD_CONTENT_TEST_ID = '@atom/card/content';
 
 export type CardProps = {
     children: ReactNode;
+    header?: ReactNode;
+    footer?: ReactNode;
     style?: NativeStyleObject;
     noPadding?: boolean;
     noShadow?: boolean;
     borderColor?: Color;
-    alertProps?: InlineAlertBoxProps;
-    alertPosition?: AlertPosition;
     testID?: string;
 };
 
@@ -32,25 +27,26 @@ const cardOuterContainerStyle = prepareNativeStyle<{
 }));
 
 const cardInnerContainerStyle = prepareNativeStyle<{
-    alertPosition?: AlertPosition;
+    hasHeader: boolean;
+    hasFooter: boolean;
     noPadding: boolean;
     borderColor?: Color;
     noShadow?: boolean;
-}>((utils, { alertPosition, noPadding, borderColor, noShadow }) => ({
+}>((utils, { hasHeader, hasFooter, noPadding, borderColor, noShadow }) => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.r16,
     padding: utils.spacings.sp16,
 
     extend: [
         {
-            condition: alertPosition === 'top',
+            condition: hasHeader,
             style: {
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
             },
         },
         {
-            condition: alertPosition === 'bottom',
+            condition: hasFooter,
             style: {
                 borderBottomLeftRadius: 0,
                 borderBottomRightRadius: 0,
@@ -76,38 +72,13 @@ const cardInnerContainerStyle = prepareNativeStyle<{
     ],
 }));
 
-const alertBoxWrapperStyle = prepareNativeStyle<{
-    alertPosition?: AlertPosition;
-}>((utils, { alertPosition = 'top' }) => ({
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    paddingHorizontal: utils.spacings.sp4,
-    extend: [
-        {
-            condition: alertPosition === 'top',
-            style: {
-                borderTopLeftRadius: utils.borders.radii.r16,
-                borderTopRightRadius: utils.borders.radii.r16,
-                paddingTop: utils.spacings.sp4,
-            },
-        },
-        {
-            condition: alertPosition === 'bottom',
-            style: {
-                borderBottomLeftRadius: utils.borders.radii.r16,
-                borderBottomRightRadius: utils.borders.radii.r16,
-                paddingBottom: utils.spacings.sp4,
-            },
-        },
-    ],
-}));
-
 export const Card = React.forwardRef<View, CardProps>(
     (
         {
             children,
+            header,
+            footer,
             style,
-            alertProps,
-            alertPosition: alertPositionProp,
             borderColor,
             noPadding = false,
             noShadow = false,
@@ -117,51 +88,32 @@ export const Card = React.forwardRef<View, CardProps>(
     ) => {
         const { applyStyle } = useNativeStyles();
 
-        const isAlertDisplayed = !!alertProps;
-        const alertPosition = isAlertDisplayed ? (alertPositionProp ?? 'top') : undefined;
+        const hasHeader = !!header;
+        const hasFooter = !!footer;
 
         return (
             <View
                 style={applyStyle(cardOuterContainerStyle, { flex: style?.flex })}
                 testID={testID}
             >
-                {isAlertDisplayed && alertPosition === 'top' && (
-                    <View
-                        style={applyStyle(alertBoxWrapperStyle, {
-                            alertPosition,
-                        })}
-                        testID={ALERT_TEST_ID + 'top'}
-                    >
-                        <InlineAlertBox {...alertProps} />
-                    </View>
-                )}
+                {header}
                 <View
                     style={[
-                        /* CAUTION: in case that alert is displayed, it is not possible to change styles of the borders by the `style` prop. */
                         applyStyle(cardInnerContainerStyle, {
-                            alertPosition,
+                            hasHeader,
+                            hasFooter,
                             noPadding,
                             borderColor,
                             noShadow,
                         }),
                         style,
                     ]}
-                    testID={CARD_CONTAINER_TEST_ID}
-                    // Ref must be here otherwise the animation will not work
+                    testID={CARD_CONTENT_TEST_ID}
                     ref={ref}
                 >
                     {children}
                 </View>
-                {isAlertDisplayed && alertPosition === 'bottom' && (
-                    <View
-                        style={applyStyle(alertBoxWrapperStyle, {
-                            alertPosition,
-                        })}
-                        testID={ALERT_TEST_ID + 'bottom'}
-                    >
-                        <InlineAlertBox {...alertProps} />
-                    </View>
-                )}
+                {footer}
             </View>
         );
     },
