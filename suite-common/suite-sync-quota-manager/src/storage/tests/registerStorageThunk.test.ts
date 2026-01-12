@@ -1,4 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { ok } from '@trezor/type-utils';
 
 import { quotaManagerDeviceFetched, quotaManagerFetchError } from '../../quotaManagerActions';
 import { quotaManagerFetch } from '../../quotaManagerFetch';
@@ -37,13 +38,12 @@ describe(registerStorageThunk.name, () => {
         const device = { id: 'device-id' };
         (selectSelectedDevice as jest.Mock).mockReturnValue(device);
 
-        (quotaManagerFetch as jest.Mock).mockResolvedValue({
-            ok: true,
-            value: {
+        (quotaManagerFetch as jest.Mock).mockResolvedValue(
+            ok({
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,
-            },
-        });
+            }),
+        );
 
         const thunk = registerStorageThunk(params);
         const result = await thunk(mockDispatch, mockGetState);
@@ -99,13 +99,12 @@ describe(registerStorageThunk.name, () => {
     it('does not dispatch quotaManagerDeviceFetched if device is missing', async () => {
         (selectSelectedDevice as jest.Mock).mockReturnValue(undefined);
 
-        (quotaManagerFetch as jest.Mock).mockResolvedValue({
-            ok: true,
-            value: {
+        (quotaManagerFetch as jest.Mock).mockResolvedValue(
+            ok({
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,
-            },
-        });
+            }),
+        );
 
         const thunk = registerStorageThunk(params);
         await thunk(mockDispatch, mockGetState);

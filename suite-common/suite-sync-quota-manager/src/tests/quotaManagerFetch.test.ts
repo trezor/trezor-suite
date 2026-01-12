@@ -24,7 +24,8 @@ describe(quotaManagerFetch.name, () => {
             },
         );
 
-        expect(result).toEqual({ ok: true, value: {} });
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toEqual({});
     });
 
     it('should call POST with body', async () => {
@@ -47,7 +48,8 @@ describe(quotaManagerFetch.name, () => {
             body: JSON.stringify({ success: true }),
         });
 
-        expect(result).toEqual({ ok: true, value: { success: true } });
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toEqual({ success: true });
     });
 
     it('should handle non-OK response', async () => {
@@ -61,12 +63,10 @@ describe(quotaManagerFetch.name, () => {
             method: 'GET',
         });
 
-        expect(result).toEqual({
-            ok: false,
-            error: {
-                code: 404,
-                message: 'Not Found',
-            },
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error).toStrictEqual({
+            code: 404,
+            message: 'Not Found',
         });
     });
 });
