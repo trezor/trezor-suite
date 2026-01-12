@@ -40,6 +40,13 @@ const connect: webpack.Configuration = {
                 },
             },
             {
+                test: /workers\/solana\/index/i,
+                loader: 'worker-loader',
+                options: {
+                    filename: './workers/solana-worker.[contenthash].js',
+                },
+            },
+            {
                 test: /\.(js|ts)$/,
                 exclude: /node_modules/,
                 use: {
@@ -73,12 +80,6 @@ const connect: webpack.Configuration = {
     performance: {
         hints: false,
     },
-    plugins: [
-        new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
-            resource.request = resource.request.replace(/assets$/, 'assets-browser');
-        }),
-    ],
-
     // @trezor/utxo-lib NOTE:
     // When uglifying the javascript, you must exclude the following variable names from being mangled:
     // Array, BigInteger, Boolean, Buffer, ECPair, Function, Number, Point and Script.

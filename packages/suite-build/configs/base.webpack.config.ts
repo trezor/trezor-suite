@@ -109,6 +109,7 @@ const config: webpack.Configuration = {
                         /workers\/ripple\/index/i.test(p) ||
                         /workers\/blockfrost\/index/i.test(p) ||
                         /workers\/stellar\/index/i.test(p) ||
+                        /workers\/solana\/index/i.test(p) ||
                         // todo: I don't quite get it yet. If not excluded, the transpiled code try to access ReactRefreshWebpackPlugin global and crashes
                         /socks-proxy-agent/i.test(p)
                         // todo: this section is weird, what about sharedworker? I tried excluding it but it still instrumented
@@ -150,7 +151,6 @@ const config: webpack.Configuration = {
                                     preprocess: true,
                                 },
                             ],
-                            // THIS !!! HURA
                             ...(isDev ? ['react-refresh/babel'] : []),
                             ...(process.env.INSTRUMENT_CODE
                                 ? [

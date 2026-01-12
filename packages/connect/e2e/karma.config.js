@@ -59,6 +59,14 @@ module.exports = config => {
 
             { pattern: path.resolve(__dirname, './__txcache__/index.js'), watched: false },
 
+            {
+                pattern: path.resolve(__dirname, './dist/*.wasm'),
+                watched: false,
+                included: false,
+                served: true,
+                nocache: false,
+            },
+
             ...(process.env.TESTS_PATTERN || '*')
                 .split(' ')
                 .map(pattern => path.resolve(__dirname, `./tests/**/${pattern.trim()}*.ts`)),
@@ -68,6 +76,10 @@ module.exports = config => {
             stats: 'errors-only',
         },
         webpack: {
+            output: {
+                path: path.resolve(__dirname, './dist'),
+                publicPath: '/base/connect/e2e/dist/',
+            },
             module: {
                 rules: [
                     {
@@ -127,6 +139,7 @@ module.exports = config => {
                     'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
                 }),
             ],
+            experiments: { asyncWebAssembly: true },
         },
         reporters: ['CustomReporter'], // use custom reporter from karma.plugin
     });
