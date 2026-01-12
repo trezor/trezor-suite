@@ -409,7 +409,7 @@ export const Labeling = ({
                 processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
             );
 
-            if (isFulfilled(result) && !result.payload.ok) {
+            if (isFulfilled(result) && !result.payload.success) {
                 const { type } = result.payload.error;
                 switch (type) {
                     case 'RefreshSuiteKeysUnavailable':
@@ -560,7 +560,7 @@ export const MetadataLabeling = ({
             const result = await dispatch(
                 processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
             );
-            if (isFulfilled(result) && !result.payload.ok) {
+            if (isFulfilled(result) && !result.payload.success) {
                 const { type } = result.payload.error;
                 switch (type) {
                     case 'RefreshSuiteKeysUnavailable':

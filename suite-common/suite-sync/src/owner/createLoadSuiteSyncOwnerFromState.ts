@@ -42,7 +42,7 @@ export const createLoadSuiteSyncOwnerFromState =
             value: encryptedSuiteSyncOwner,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             const errorType = result.error.type;
             switch (errorType) {
                 /**
@@ -65,5 +65,5 @@ export const createLoadSuiteSyncOwnerFromState =
             }
         }
 
-        return deserializeSuiteSyncOwner(result.value);
+        return deserializeSuiteSyncOwner(result.payload);
     };

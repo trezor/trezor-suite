@@ -21,12 +21,12 @@ export const prepareChallengeSession = async ({ baseUrl }: PrepareChallengeSessi
         body: { sessionId },
     });
 
-    if (!challengeResponse.ok) {
+    if (!challengeResponse.success) {
         return challengeResponse;
     }
 
     return ok({
         sessionId,
-        challenge: (challengeResponse.value as ChallengeResponse).challenge,
+        challenge: (challengeResponse.payload as ChallengeResponse).challenge,
     });
 };

@@ -54,7 +54,7 @@ export const createRefreshSuiteSync =
         const getKeys = async () => {
             const delegatedKeyResult = await deps.ensureDelegatedIdentityKey({ device });
 
-            if (!delegatedKeyResult.ok) {
+            if (!delegatedKeyResult.success) {
                 return delegatedKeyResult;
             }
 
@@ -68,25 +68,25 @@ export const createRefreshSuiteSync =
             await deps.dispatch(
                 ensureDeviceHasQuotaThunk({
                     device: refreshedDevice,
-                    delegatedKey: delegatedKeyResult.value,
+                    delegatedKey: delegatedKeyResult.payload,
                 }),
             );
 
             const ownerResult = await deps.ensureSuiteSyncOwner({
                 device: refreshedDevice,
-                delegatedKey: delegatedKeyResult.value,
+                delegatedKey: delegatedKeyResult.payload,
             });
 
-            if (!ownerResult.ok) {
+            if (!ownerResult.success) {
                 return ownerResult;
             }
 
-            return ok(ownerResult.value);
+            return ok(ownerResult.payload);
         };
 
         const result = await getKeys();
 
-        if (!result.ok) {
+        if (!result.success) {
             const errType = result.error.type;
 
             switch (errType) {
@@ -108,5 +108,5 @@ export const createRefreshSuiteSync =
             }
         }
 
-        return ok(result.value);
+        return ok(result.payload);
     };

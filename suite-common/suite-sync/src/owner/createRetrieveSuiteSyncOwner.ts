@@ -46,7 +46,7 @@ export const createRetrieveSuiteSyncOwner =
 
         // It may happen that we are not able to sign the ProofOfDelegatedIdentity.
         // It usually means bug/data corruption in the Redux.
-        if (!proofOfDelegatedIdentity.ok) {
+        if (!proofOfDelegatedIdentity.success) {
             return proofOfDelegatedIdentity;
         }
 
@@ -57,7 +57,7 @@ export const createRetrieveSuiteSyncOwner =
                 instance: device.instance ?? 0,
             },
             useEmptyPassphrase: device.useEmptyPassphrase ?? false,
-            proof_of_delegated_identity: proofOfDelegatedIdentity.value,
+            proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
         });
 
         if (result.success) {

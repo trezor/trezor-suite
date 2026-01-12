@@ -27,7 +27,7 @@ export const createSaveDelegatedIdentityKey =
             value: delegatedIdentityKey,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             switch (result.error.type) {
                 /**
                  * If encryption is not available we are not storing it.
@@ -52,7 +52,7 @@ export const createSaveDelegatedIdentityKey =
         }
 
         deps.dispatch(
-            deviceActions.setDelegatedIdentityKey({ deviceId, delegatedKey: result.value }),
+            deviceActions.setDelegatedIdentityKey({ deviceId, delegatedKey: result.payload }),
         );
 
         return;

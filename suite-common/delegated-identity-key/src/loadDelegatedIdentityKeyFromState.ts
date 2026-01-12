@@ -35,7 +35,7 @@ export const createLoadDelegatedIdentityKeyFromState =
             value: encryptedCurrentDelegatedKey,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             const errorType = result.error.type;
             switch (errorType) {
                 /**
@@ -60,5 +60,5 @@ export const createLoadDelegatedIdentityKeyFromState =
             }
         }
 
-        return result.value;
+        return result.payload;
     };

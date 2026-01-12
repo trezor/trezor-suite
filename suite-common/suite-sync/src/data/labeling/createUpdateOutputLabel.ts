@@ -16,11 +16,11 @@ export const createUpdateOutputLabel =
     }) => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (!storageResult.ok) {
+        if (!storageResult.success) {
             return storageResult;
         }
 
-        return storageResult.value.data.outputs.update({
+        return storageResult.payload.data.outputs.update({
             txId,
             outputIndex,
             label,

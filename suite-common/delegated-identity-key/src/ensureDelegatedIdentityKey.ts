@@ -24,14 +24,14 @@ export const createEnsureDelegatedIdentityKey =
             device,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             return result;
         }
 
         await deps.saveDelegatedIdentityKey({
             deviceId: device.id,
-            delegatedIdentityKey: result.value,
+            delegatedIdentityKey: result.payload,
         });
 
-        return ok(result.value);
+        return ok(result.payload);
     };

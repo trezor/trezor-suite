@@ -28,7 +28,7 @@ export const createSaveSuiteSyncOwner =
             value: serializeSuiteSyncOwner(suiteSyncOwner),
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             switch (result.error.type) {
                 /**
                  * If encryption is not available we are not storing it.
@@ -50,7 +50,7 @@ export const createSaveSuiteSyncOwner =
             }
         }
 
-        deps.dispatch(deviceActions.setSuiteSyncOwner({ deviceStaticId, owner: result.value }));
+        deps.dispatch(deviceActions.setSuiteSyncOwner({ deviceStaticId, owner: result.payload }));
 
         return;
     };

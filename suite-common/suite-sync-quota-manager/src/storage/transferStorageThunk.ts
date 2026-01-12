@@ -26,11 +26,11 @@ export const transferStorageThunk =
             body: params,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             return err(result.error);
         }
 
         // assign space / storage limit to ownerId in follow up PR
 
-        return ok(result.value as TransferStorageResponse);
+        return ok(result.payload as TransferStorageResponse);
     };
