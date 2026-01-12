@@ -29,6 +29,7 @@ const usedIcons = [
     'arrowUUpLeft',
     'arrowCounterClockwise',
     'article',
+    'atom',
     'backspace',
     'eject',
     'ejectSimple',
