@@ -12,6 +12,7 @@ import { ok } from '@trezor/type-utils';
 
 import { mockNotExpected } from '../../tests/utils';
 import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSyncKeys';
+import { GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
 import { LoadSuiteSyncOwnerFromState } from '../owner/createLoadSuiteSyncOwnerFromState';
 
 const createMockDeps = () =>
@@ -23,6 +24,9 @@ const createMockDeps = () =>
         ),
         ensureDelegatedIdentityKey: mockNotExpected<EnsureDelegatedIdentityKey>(
             'ensureDelegatedIdentityKey',
+        ),
+        getDeviceForStaticSessionId: mockNotExpected<GetDeviceForStaticSessionId>(
+            'getDeviceForStaticSessionId',
         ),
     }) satisfies RefreshSuiteSyncKeysDeps;
 
@@ -102,6 +106,8 @@ describe(createRefreshSuiteSync.name, () => {
         );
 
         const mockDevice = createDevice();
+        deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
+
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         await refreshSuiteSyncKeys({
             device: mockDevice,
@@ -122,6 +128,8 @@ describe(createRefreshSuiteSync.name, () => {
         );
 
         const mockDevice = createDevice();
+        deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
+
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         await refreshSuiteSyncKeys({
             device: mockDevice,
@@ -147,9 +155,12 @@ describe(createRefreshSuiteSync.name, () => {
             }),
         );
 
+        const mockDevice = createDevice();
+        deps.getDeviceForStaticSessionId.mockImplementation(() => mockDevice);
+
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({
-            device: createDevice(),
+            device: mockDevice,
         });
 
         expect(result.ok).toBe(true);
