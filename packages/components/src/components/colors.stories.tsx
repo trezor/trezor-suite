@@ -152,13 +152,13 @@ const Header = () => {
                     />
                 </Box>
                 <Row gap={20}>
-                    <Checkbox onClick={toggleV1} isChecked={isV1Visible}>
+                    <Checkbox onChange={toggleV1} isChecked={isV1Visible}>
                         <BadgeV1 />
                     </Checkbox>
-                    <Checkbox onClick={toggleV2} isChecked={isV2Visible}>
+                    <Checkbox onChange={toggleV2} isChecked={isV2Visible}>
                         <BadgeV2 />
                     </Checkbox>
-                    <Checkbox onClick={toggleColorCode} isChecked={isColorCodeVisible}>
+                    <Checkbox onChange={toggleColorCode} isChecked={isColorCodeVisible}>
                         #
                     </Checkbox>
                 </Row>

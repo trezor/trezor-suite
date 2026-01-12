@@ -143,7 +143,7 @@ export const EntryForm = ({ onEncrypted, entry, cancel }: Props) => {
                             <Checkbox
                                 key={key} // key should be unique
                                 isChecked={selectedTags.includes(keyInt)}
-                                onClick={() => {
+                                onChange={() => {
                                     setSelectedTags(
                                         selectedTags.includes(keyInt)
                                             ? selectedTags.filter(tag => tag !== keyInt)

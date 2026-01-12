@@ -147,7 +147,7 @@ export const StepCheckSeed = ({
                 <Card>
                     <Checkbox
                         isChecked={isChecked}
-                        onClick={() => setIsChecked(!isChecked)}
+                        onChange={() => setIsChecked(!isChecked)}
                         data-testid="@firmware/confirm-seed-checkbox"
                     >
                         {checkbox}

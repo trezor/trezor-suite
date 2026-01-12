@@ -119,7 +119,7 @@ export const QuotaManagerSettings = () => {
                     <Checkbox
                         data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
                         isChecked={enforceQuotaManager}
-                        onClick={onToggleEnforceQuotaManager}
+                        onChange={onToggleEnforceQuotaManager}
                     />
                 </ActionColumn>
             </SectionItem>

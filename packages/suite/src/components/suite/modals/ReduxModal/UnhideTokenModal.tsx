@@ -65,7 +65,7 @@ export const UnhideTokenModal = ({ address, onCancel }: UnhideTokenModalProps) =
                 <Translation id="TR_UNHIDE_TOKEN_TEXT" />
             </Paragraph>
             <Card margin={{ top: spacings.xl }}>
-                <Checkbox isChecked={checked} onClick={() => setChecked(!checked)}>
+                <Checkbox isChecked={checked} onChange={() => setChecked(!checked)}>
                     <Translation id="TR_DO_NOT_SHOW_AGAIN" />
                 </Checkbox>
             </Card>

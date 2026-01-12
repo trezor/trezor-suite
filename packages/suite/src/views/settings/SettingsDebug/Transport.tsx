@@ -73,7 +73,7 @@ export const Transport = () => {
                     <ActionColumn>
                         <Checkbox
                             isChecked={transport.checked}
-                            onClick={() => {
+                            onChange={() => {
                                 const nextTransports = items
                                     .filter(t => (t.name === transport.name) !== t.checked)
                                     .map(t => t.name);

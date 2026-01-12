@@ -90,7 +90,9 @@ export class SettingsPage {
             ? this.page.locator('[data-testid*="@radio-button"]')
             : this.page.getByTestId(`@radio-button-${level}`);
     readonly safetyChecksRadioButtonCheck = (check: boolean): Locator =>
-        this.page.locator(`[data-testid*="@radio-button"][data-checked="${check}"]`);
+        this.page.locator(
+            `[data-testid*="@radio-button"]:has(input${check ? ':checked' : ':not(:checked)'})`,
+        );
     readonly settingsLoader: Locator;
     readonly experimentalFeaturesSwitch: Locator;
     readonly suiteSyncCheckbox: Locator;

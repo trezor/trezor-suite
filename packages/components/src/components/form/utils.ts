@@ -1,8 +1,9 @@
 import { css } from 'styled-components';
 
-import { SpacingValuesNew, TypographyStyle } from '@trezor/theme';
+import { SpacingValuesNew, TypographyStyle, borders } from '@trezor/theme';
 
 import { InputSize } from './types';
+import { commonFocusStyles } from '../../utils/utils';
 
 const heightMap: Record<InputSize, number> = {
     small: 36,
@@ -48,3 +49,37 @@ export const commonInputStyles = css`
 `;
 
 export const INPUT_PADDING: SpacingValuesNew = 16;
+
+export const commonCheckInputStyles = css`
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: ${borders.widths.large} solid;
+    transition: 0.1s ease-in-out;
+
+    ${({ theme }) => css`
+        border-color: ${theme.iconSubdued};
+        background-color: ${theme.backgroundSurfaceElevation1};
+
+        input:checked + & {
+            border-color: ${theme.backgroundPrimaryDefault};
+        }
+
+        input:disabled:not(:checked) + & {
+            border-color: ${theme.borderElevation1};
+            background-color: ${theme.backgroundSurfaceElevationNegative};
+        }
+
+        label:hover > input:not(:disabled, :checked) + & {
+            border-color: ${theme.borderFocus};
+            background-color: ${theme.backgroundSurfaceElevation0};
+        }
+
+        input:focus-visible + & {
+            ${commonFocusStyles}
+        }
+    `}
+`;

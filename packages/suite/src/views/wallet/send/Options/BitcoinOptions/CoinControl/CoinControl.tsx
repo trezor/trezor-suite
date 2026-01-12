@@ -176,7 +176,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     <Checkbox
                         isChecked={allUtxosSelected}
                         isDisabled={!hasEligibleUtxos}
-                        onClick={handleAllUtxosSelected}
+                        onChange={handleAllUtxosSelected}
                     >
                         <Text intent="neutral" priority="secondary">
                             <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />

@@ -56,7 +56,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                 <Column gap={spacings.xl} alignItems="flex-start">
                     <Radio
                         isChecked={level === 'Strict'}
-                        onClick={() => setLevel('Strict')}
+                        onChange={() => setLevel('Strict')}
                         data-testid="@radio-button-strict"
                         verticalAlignment="center"
                     >
@@ -72,7 +72,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                     <Radio
                         // For the purpose of this modal consider `PromptAlways` as identical to `PromptTemporarily`.
                         isChecked={level === 'PromptTemporarily' || level === 'PromptAlways'}
-                        onClick={() => setLevel('PromptTemporarily')}
+                        onChange={() => setLevel('PromptTemporarily')}
                         data-testid="@radio-button-prompt"
                         verticalAlignment="center"
                     >

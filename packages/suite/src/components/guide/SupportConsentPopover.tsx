@@ -33,7 +33,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
                             <Card paddingType="small">
                                 <Checkbox
                                     isChecked={isSystemInfoShared}
-                                    onClick={() => setIsSystemInfoShared(prev => !prev)}
+                                    onChange={() => setIsSystemInfoShared(prev => !prev)}
                                     data-testid="@guide/support/share-system-info"
                                 >
                                     <Translation id="TR_GUIDE_SUPPORT_CONSENT_TOGGLE" />

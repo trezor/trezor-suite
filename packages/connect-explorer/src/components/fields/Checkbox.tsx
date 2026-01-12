@@ -12,7 +12,7 @@ interface CheckboxProps {
 const Checkbox = ({ field, onChange, ...rest }: CheckboxProps) => (
     <Row>
         <Card paddingType="small" onClick={() => onChange(field, !field.value)}>
-            <CheckboxComponent onClick={() => {}} isChecked={field.value} {...rest}>
+            <CheckboxComponent onChange={() => {}} isChecked={field.value} {...rest}>
                 {field.name}
             </CheckboxComponent>
         </Card>

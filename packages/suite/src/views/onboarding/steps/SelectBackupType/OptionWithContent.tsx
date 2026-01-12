@@ -112,7 +112,7 @@ const Option = ({
     >
         <Radio
             isChecked={isChecked}
-            onClick={onSelect}
+            onChange={onSelect}
             data-testid={dataTest}
             isDisabled={disabled}
         />

@@ -1,20 +1,15 @@
-import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
+import { EventHandler, MouseEventHandler, ReactNode, SyntheticEvent } from 'react';
 
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import { Color, borders, spacingsPx, typography } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
-import { UIAlignment, UIVariant } from '../../../config/types';
-import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
-import {
-    FrameProps,
-    FramePropsKeys,
-    pickAndPrepareFrameProps,
-    withFrameProps,
-} from '../../../utils/frameProps';
-import { TransientProps } from '../../../utils/transientProps';
-import { getFocusShadowStyle } from '../../../utils/utils';
+import { LabelAlignment, VerticalAlignment } from './types';
+import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../../utils/frameProps';
+import { Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
+import { Text } from '../../typography/Text/Text';
+import { commonCheckInputStyles } from '../utils';
 
 export const allowedCheckboxFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 export type AllowedCheckboxFrameProps = Pick<
@@ -22,220 +17,86 @@ export type AllowedCheckboxFrameProps = Pick<
     (typeof allowedCheckboxFrameProps)[number]
 >;
 
-interface VariantStyles {
-    background: Color;
-    border: Color;
-    backgroundHover: Color;
-    borderHover: Color;
-    backgroundChecked: Color;
-    borderChecked: Color;
-    backgroundDisabled: Color;
-    borderDisabled: Color;
-    backgroundDisabledChecked: Color;
-    borderDisabledChecked: Color;
-}
-
-export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
-    primary: {
-        background: 'backgroundSurfaceElevation1',
-        border: 'iconSubdued',
-        backgroundHover: 'backgroundSurfaceElevation0',
-        borderHover: 'borderFocus',
-        backgroundChecked: 'backgroundPrimaryDefault',
-        borderChecked: 'backgroundPrimaryDefault',
-        backgroundDisabled: 'backgroundSurfaceElevationNegative',
-        borderDisabled: 'borderElevation1',
-        backgroundDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
-        borderDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
-    },
-    destructive: {
-        background: 'backgroundAlertRedSubtleOnElevation0',
-        border: 'borderAlertRed',
-        backgroundHover: 'backgroundSurfaceElevation0',
-        borderHover: 'borderAlertRed',
-        backgroundChecked: 'borderAlertRed',
-        borderChecked: 'borderAlertRed',
-        backgroundDisabled: 'backgroundSurfaceElevationNegative',
-        borderDisabled: 'backgroundAlertRedSubtleOnElevation0',
-        backgroundDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
-        borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
-    },
-    warning: {
-        background: 'backgroundAlertYellowSubtleOnElevation0',
-        border: 'backgroundAlertYellowBold',
-        backgroundHover: 'backgroundSurfaceElevation0',
-        borderHover: 'backgroundAlertYellowBold',
-        backgroundChecked: 'backgroundAlertYellowBold',
-        borderChecked: 'backgroundAlertYellowBold',
-        backgroundDisabled: 'backgroundSurfaceElevationNegative',
-        borderDisabled: 'backgroundAlertYellowSubtleOnElevation0',
-        backgroundDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
-        borderDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
-    },
-};
-
-type ContainerProps = TransientProps<AllowedCheckboxFrameProps> & {
-    $isDisabled?: boolean;
-    $labelAlignment?: LabelAlignment;
-    $verticalAlignment?: VerticalAlignment;
-};
-
-export const Container = styled.div<ContainerProps>`
-    display: flex;
-    align-items: ${({ $verticalAlignment }) =>
-        $verticalAlignment === 'start' ? 'flex-start' : 'center'};
-    gap: ${spacingsPx.sm};
-    flex-direction: ${({ $labelAlignment }) => $labelAlignment === 'start' && 'row-reverse'};
-    pointer-events: ${({ $isDisabled }) => $isDisabled && 'none'};
-    cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
-    ${withFrameProps}
-`;
-
-export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: ${spacingsPx.xl};
-    height: ${spacingsPx.xl};
-    min-width: ${spacingsPx.xl};
-    min-height: ${spacingsPx.xl};
-    border-radius: ${borders.radii.xxs};
-    background: ${({ theme, $variant }) => theme[variantStyles[$variant].background]};
-    border: 2px solid ${({ theme, $variant }) => theme[variantStyles[$variant].border]};
-    transition:
-        border 0.1s,
-        background 0.1s,
-        box-shadow 0.1s ease-out;
-
-    input:checked + & {
-        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundChecked]};
-        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderChecked]};
-    }
-
-    input:disabled + & {
-        cursor: not-allowed;
-        pointer-events: auto;
-    }
-
-    input:disabled:not(:checked) + & {
-        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundDisabled]};
-        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderDisabled]};
-    }
-
-    input:disabled:checked + & {
-        background: ${({ theme, $variant }) =>
-            theme[variantStyles[$variant].backgroundDisabledChecked]};
-        border-color: ${({ theme, $variant }) =>
-            theme[variantStyles[$variant].backgroundDisabledChecked]};
-    }
-
-    ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + && {
-        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundHover]};
-        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderHover]};
-    }
-
-    ${getFocusShadowStyle()}
-`;
-
-const CheckIcon = styled(Icon)<{ $isVisible: boolean }>`
-    opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
-    transition: opacity 0.1s;
-`;
-
-export const Label = styled.div<{ $isRed: boolean }>`
-    display: flex;
-    flex: 1;
-    text-align: left;
-    user-select: none;
-    color: ${({ theme, $isRed }) => $isRed && theme.textAlertRed};
-    ${typography['body-md']}
-    transition: color 0.1s;
-
-    input:disabled ~ & {
-        color: ${({ theme }) => theme.textDisabled};
-    }
-`;
-
-export const HiddenInput = styled.input`
+const HiddenInput = styled.input`
     position: absolute;
     opacity: 0;
     width: 0;
     height: 0;
 `;
 
-export const checkboxVariants = ['primary', 'destructive', 'warning'] as const;
-export type CheckboxVariant = Extract<UIVariant, (typeof checkboxVariants)[number]>;
+const FakeInput = styled.div`
+    ${commonCheckInputStyles}
 
-export const labelAlignments = ['start', 'end'] as const;
-export type LabelAlignment = Extract<UIAlignment, (typeof labelAlignments)[number]>;
+    border-radius: ${borders.radii.xxs};
 
-export const verticalAlignments = ['start', 'center'] as const;
-export type VerticalAlignment = Extract<UIAlignment, (typeof verticalAlignments)[number]>;
+    ${({ theme }) => css`
+        input:checked + & {
+            background-color: ${theme.backgroundPrimaryDefault};
+        }
 
-// export type LabelAlignment = Alignment;
-// export type VerticalAlignment = Alignment;
+        input:not(:checked) + & > * {
+            opacity: 0;
+        }
+
+        input:checked:disabled + & {
+            border-color: ${theme.backgroundPrimarySubtleOnElevation0};
+            background-color: ${theme.backgroundPrimarySubtleOnElevation0};
+        }
+    `}
+`;
 
 export type CheckboxProps = AllowedCheckboxFrameProps & {
-    variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
     verticalAlignment?: VerticalAlignment;
-    onClick: EventHandler<SyntheticEvent>;
+    onChange: EventHandler<SyntheticEvent>;
+    onClick?: MouseEventHandler<HTMLLabelElement>;
     'data-testid'?: string;
-    className?: string;
     children?: ReactNode;
 };
 
 export const Checkbox = ({
-    variant = 'primary',
     isChecked,
     isDisabled = false,
     labelAlignment = 'end',
     verticalAlignment = 'start',
+    onChange,
     onClick,
     'data-testid': dataTest,
-    className,
     children,
     ...rest
 }: CheckboxProps) => {
-    const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-        if (
-            !isDisabled &&
-            (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER)
-        ) {
-            onClick(event);
-        }
-    };
-
-    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps);
+    const frameProps = pickAndPrepareFrameProps(rest, allowedCheckboxFrameProps, false);
 
     return (
-        <Container
-            // @ts-expect-error - needed for playwright retry-ability
-            disabled={isDisabled}
+        <Row
+            gap={12}
+            alignItems={verticalAlignment === 'start' ? 'flex-start' : 'center'}
             data-testid={dataTest}
-            $isDisabled={isDisabled}
-            $labelAlignment={labelAlignment}
-            $verticalAlignment={verticalAlignment}
-            onClick={isDisabled ? undefined : onClick}
-            onKeyUp={handleKeyUp}
-            className={className}
+            isReversed={labelAlignment === 'start'}
+            cursor={isDisabled ? 'not-allowed' : 'pointer'}
+            as="label"
+            onClick={onClick}
             {...frameProps}
         >
             <HiddenInput
                 checked={isChecked}
                 disabled={isDisabled}
-                readOnly
+                onChange={onChange}
                 type="checkbox"
-                tabIndex={-1}
+                tabIndex={0}
             />
 
-            <CheckContainer tabIndex={0} $variant={variant}>
-                <CheckIcon $isVisible={!!isChecked} size={16} color="iconOnPrimary" name="check" />
-            </CheckContainer>
+            <FakeInput>
+                <Icon size={16} color="iconOnPrimary" name="check" />
+            </FakeInput>
 
-            {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
-        </Container>
+            {children && (
+                <Text typographyStyle="body-md" flex="1" isDisabled={isDisabled} as="div">
+                    {children}
+                </Text>
+            )}
+        </Row>
     );
 };

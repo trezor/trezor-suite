@@ -72,7 +72,7 @@ export const AutoStartBeforeQuitModal = () => {
                     <Checkbox
                         data-testid="auto-start-before-quit/dont-ask-again-checkbox"
                         isChecked={dontAskAgain}
-                        onClick={() => setDontAskAgain(!dontAskAgain)}
+                        onChange={() => setDontAskAgain(!dontAskAgain)}
                     >
                         <Translation id="TR_DONT_ASK_AGAIN" />
                     </Checkbox>
