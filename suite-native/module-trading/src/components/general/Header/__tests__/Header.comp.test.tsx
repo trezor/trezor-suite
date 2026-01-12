@@ -97,72 +97,38 @@ describe('Header', () => {
         jest.clearAllMocks();
     });
 
-    it('should render nothing when no trade type is enabled', async () => {
-        const { toJSON } = await renderHeader({});
-
-        expect(toJSON()).toBeNull();
-    });
-
-    it('should render Buy header without buttons when only buy is enabled', async () => {
-        const { getByText, queryByText } = await renderHeader({ buyEnabled: true });
+    it.each([
+        {
+            buyEnabled: true,
+            sellEnabled: true,
+            exchangeEnabled: true,
+        },
+        {
+            buyEnabled: true,
+            sellEnabled: false,
+            exchangeEnabled: false,
+        },
+        {
+            buyEnabled: false,
+            sellEnabled: true,
+            exchangeEnabled: false,
+        },
+        {
+            buyEnabled: true,
+            sellEnabled: true,
+            exchangeEnabled: false,
+        },
+        {
+            buyEnabled: false,
+            sellEnabled: false,
+            exchangeEnabled: true,
+        },
+    ])('should display Header tabs with Buy, Swap and Sell tabs, case %#', async config => {
+        const { getByText } = await renderHeader(config);
 
         expect(getByText('Buy')).toBeOnTheScreen();
-        expect(queryByText('Sell')).toBeNull();
-        expect(queryByText('Swap')).toBeNull();
-    });
-
-    it.each([
-        {
-            buyEnabled: true,
-            sellEnabled: true,
-            exchangeEnabled: true,
-        },
-        {
-            buyEnabled: false,
-            sellEnabled: true,
-            exchangeEnabled: true,
-        },
-        {
-            buyEnabled: true,
-            sellEnabled: true,
-            exchangeEnabled: false,
-        },
-        {
-            buyEnabled: false,
-            sellEnabled: true,
-            exchangeEnabled: false,
-        },
-    ])(
-        'should display Header tabs with Buy, Swap and Sell tabs otherwise, case %#',
-        async config => {
-            const { getByText, queryByText } = await renderHeader(config);
-
-            expect(getByText('Buy')).toBeOnTheScreen();
-            expect(getByText('Swap')).toBeOnTheScreen();
-            expect(queryByText('Sell')).toBeOnTheScreen();
-        },
-    );
-
-    it.each([
-        {
-            buyEnabled: true,
-            sellEnabled: false,
-            exchangeEnabled: true,
-        },
-        {
-            buyEnabled: false,
-            sellEnabled: false,
-            exchangeEnabled: true,
-        },
-        {
-            buyEnabled: false,
-            sellEnabled: false,
-            exchangeEnabled: false,
-        },
-    ])('should display Header tabs without Sell tab, case %#', async config => {
-        const { queryByText } = await renderHeader(config);
-
-        expect(queryByText('Sell')).toBeNull();
+        expect(getByText('Swap')).toBeOnTheScreen();
+        expect(getByText('Sell')).toBeOnTheScreen();
     });
 
     it('should display nothing when isAmountInputActive is true', async () => {
