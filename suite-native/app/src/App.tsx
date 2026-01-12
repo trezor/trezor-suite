@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
@@ -50,20 +50,19 @@ SplashScreen.preventAutoHideAsync();
 // https://github.com/react-native-netinfo/react-native-netinfo?tab=readme-ov-file#configure
 configureNetInfo();
 
-let isApplicationInitDispatched = false;
-
 const AppComponent = () => {
     const dispatch = useDispatch();
     const formattersConfig = useFormattersConfig();
+    const isApplicationInitDispatchedRef = useRef(false);
     const isAppReady = useSelector(selectIsAppReady);
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
 
     useEffect(() => {
-        if (!isApplicationInitDispatched) {
+        if (!isApplicationInitDispatchedRef.current) {
             dispatch(applicationInit());
-            isApplicationInitDispatched = true;
+            isApplicationInitDispatchedRef.current = true;
         }
     }, [dispatch]);
 
