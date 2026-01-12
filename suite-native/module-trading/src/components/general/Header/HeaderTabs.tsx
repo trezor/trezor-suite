@@ -11,7 +11,6 @@ import { useTranslate } from '@suite-native/intl';
 import {
     TradingWithFeatureFlagsRootState,
     selectActiveTradingType,
-    selectIsTradingSellEnabled,
     tradingActions,
 } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -36,8 +35,6 @@ const useSelectedTab = () => {
 const useTabsData = () => {
     const { translate } = useTranslate();
 
-    const isSellEnabled = useSelector(selectIsTradingSellEnabled);
-
     return useMemo(() => {
         const tabs = [
             {
@@ -46,7 +43,7 @@ const useTabsData = () => {
                 icon: 'plus',
                 testID: '@trading/buy/header-tab',
             },
-            isSellEnabled && {
+            {
                 key: 'sell',
                 label: translate('moduleTrading.tradingScreen.tabs.sell'),
                 icon: 'minus',
@@ -61,7 +58,7 @@ const useTabsData = () => {
         ] as { key: TradingType; label: string; icon: IconName; testID: string }[];
 
         return tabs.filter(Boolean);
-    }, [translate, isSellEnabled]);
+    }, [translate]);
 };
 
 const tabsStyle = prepareNativeStyle(({ spacings }) => ({

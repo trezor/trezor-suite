@@ -8,55 +8,22 @@ import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
-import {
-    selectIsTradingBuyEnabled,
-    selectIsTradingEnabled,
-    selectIsTradingExchangeEnabled,
-    selectIsTradingSellEnabled,
-} from '@suite-native/trading-state';
+import { selectIsTradingEnabled } from '@suite-native/trading-state';
 
 import { rootTabsOptions } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
-const getTradingAnalyticsType = (
-    isTradingBuyEnabled: boolean,
-    isTradingExchangeEnabled: boolean,
-    isTradingSellEnabled: boolean,
-) => {
-    if (isTradingBuyEnabled) {
-        return 'buy';
-    }
-    if (isTradingExchangeEnabled) {
-        return 'exchange';
-    }
-    if (isTradingSellEnabled) {
-        return 'sell';
-    }
-
-    return null;
-};
-
 export const AppTabNavigator = () => {
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
-    const isTradingBuyEnabled = useSelector(selectIsTradingBuyEnabled);
-    const isTradingExchangeEnabled = useSelector(selectIsTradingExchangeEnabled);
-    const isTradingSellEnabled = useSelector(selectIsTradingSellEnabled);
 
     const handleTradeTabPress = () => {
-        const tradingType = getTradingAnalyticsType(
-            isTradingBuyEnabled,
-            isTradingExchangeEnabled,
-            isTradingSellEnabled,
-        );
-
-        if (!tradingType) return;
-
+        // Buy is the default tab when navigating to the Trading stack
         analytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
-                type: tradingType,
+                type: 'buy',
                 from: 'trade',
             },
         });
