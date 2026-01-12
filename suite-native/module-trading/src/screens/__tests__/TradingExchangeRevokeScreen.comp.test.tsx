@@ -34,23 +34,37 @@ const preloadedState = {
     },
 };
 
-const renderScreen = () =>
-    renderWithStoreProviderAsync(
-        <TradingExchangeRevokeScreen
-            route={
-                { params: { quote: testQuote } } as RouteProp<
-                    TradingStackParamList,
-                    TradingStackRoutes.TradingExchangeRevoke
-                >
-            }
-            navigation={{} as any}
-        />,
-        {
-            preloadedState,
-        },
-    );
-
 describe('TradingExchangeRevokeScreen', () => {
+    let unmount: (() => void) | undefined;
+
+    const renderScreen = async () => {
+        const result = await renderWithStoreProviderAsync(
+            <TradingExchangeRevokeScreen
+                route={
+                    { params: { quote: testQuote } } as RouteProp<
+                        TradingStackParamList,
+                        TradingStackRoutes.TradingExchangeRevoke
+                    >
+                }
+                navigation={{} as any}
+            />,
+            {
+                preloadedState,
+            },
+        );
+
+        ({ unmount } = result);
+
+        return result;
+    };
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
+    });
+
     it('should render the revoke screen with quote details', async () => {
         const { getByText } = await renderScreen();
 

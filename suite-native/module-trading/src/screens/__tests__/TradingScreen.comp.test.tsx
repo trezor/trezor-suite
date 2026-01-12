@@ -89,8 +89,22 @@ const stateWithDisabledTrading = {
 } as unknown as PreloadedState;
 
 describe('TradingScreen', () => {
-    const renderTradingScreen = (preloadedState?: PreloadedState) =>
-        renderWithStoreProviderAsync(<TradingScreen />, { preloadedState });
+    let unmount: (() => void) | undefined;
+
+    const renderTradingScreen = async (preloadedState?: PreloadedState) => {
+        const result = await renderWithStoreProviderAsync(<TradingScreen />, { preloadedState });
+
+        ({ unmount } = result);
+
+        return result;
+    };
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
+    });
 
     const expectBuyForm = () => {
         expect(screen.getByText('You pay')).toBeOnTheScreen();

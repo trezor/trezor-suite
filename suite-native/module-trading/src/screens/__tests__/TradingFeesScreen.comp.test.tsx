@@ -34,12 +34,19 @@ const preloadedState = {
     },
 };
 
-const renderScreen = () =>
-    renderWithStoreProviderAsync(<TradingFeesScreen />, {
-        preloadedState,
-    });
-
 describe('TradingFeesScreen', () => {
+    let unmount: (() => void) | undefined;
+
+    const renderScreen = async () => {
+        const result = await renderWithStoreProviderAsync(<TradingFeesScreen />, {
+            preloadedState,
+        });
+
+        ({ unmount } = result);
+
+        return result;
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
         // Default mock return value
@@ -47,6 +54,13 @@ describe('TradingFeesScreen', () => {
             name: 'TradingFeesScreen',
             params: { accountKey: 'btc1' },
         });
+    });
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render the screen without crashing', async () => {

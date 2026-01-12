@@ -53,14 +53,27 @@ const getPreloadedState = (): PreloadedState => ({
     },
 });
 
-const renderScreen = (preloadedState: PreloadedState) =>
-    renderWithStoreProviderAsync(<TradingHistoryScreen />, {
-        preloadedState,
-    });
-
 describe('TradingHistoryScreen', () => {
+    let unmount: (() => void) | undefined;
+
+    const renderScreen = async (preloadedState: PreloadedState) => {
+        const result = await renderWithStoreProviderAsync(<TradingHistoryScreen />, {
+            preloadedState,
+        });
+
+        ({ unmount } = result);
+
+        return result;
+    };
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render list of trades', async () => {

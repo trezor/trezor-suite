@@ -1,6 +1,6 @@
 import { TradingTransaction, TradingType } from '@suite-common/trading';
 import { EventType, analytics } from '@suite-native/analytics';
-import { initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
 
@@ -34,13 +34,29 @@ jest.mock('@suite-common/trading', () => {
 });
 
 describe('TradingWebViewScreen', () => {
+    let unmount: (() => void) | undefined;
+
+    const renderScreen = async (store?: TestStore) => {
+        const result = await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+
+        ({ unmount } = result);
+
+        return result;
+    };
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
+    });
+
     it('should render header', async () => {
         mockRouteParams = {
             closeCallbackUrl: 'CALLBACK_URL',
             source: { uri: 'SOURCE_URI', html: undefined },
             tradingType: 'buy',
         };
-        const { getByTestId } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
+        const { getByTestId } = await renderScreen();
 
         expect(getByTestId('@screen/sub-header/icon-left')).toBeTruthy();
     });
@@ -50,7 +66,7 @@ describe('TradingWebViewScreen', () => {
             closeCallbackUrl: 'CALLBACK_URL',
             tradingType: 'buy',
         };
-        const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
+        const { getByText } = await renderScreen();
 
         expect(getByText('Something went wrong')).toBeTruthy();
     });
@@ -61,7 +77,7 @@ describe('TradingWebViewScreen', () => {
             source: { uri: undefined, html: undefined },
             tradingType: 'buy',
         };
-        const { getByText } = await renderWithStoreProviderAsync(<TradingWebViewScreen />);
+        const { getByText } = await renderScreen();
 
         expect(getByText('Something went wrong')).toBeTruthy();
     });
@@ -91,9 +107,7 @@ describe('TradingWebViewScreen', () => {
                 } as unknown as TradingTransaction,
             ];
 
-            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
-                preloadedState,
-            });
+            await renderScreen();
 
             expect(analyticsSpy).not.toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
@@ -122,10 +136,9 @@ describe('TradingWebViewScreen', () => {
                     },
                 } as unknown as TradingTransaction,
             ];
+            const { store } = initStore(preloadedState);
 
-            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
-                preloadedState,
-            });
+            await renderScreen(store);
 
             expect(analyticsSpy).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
@@ -147,10 +160,9 @@ describe('TradingWebViewScreen', () => {
                     },
                 } as unknown as TradingTransaction,
             ];
+            const { store } = initStore(preloadedState);
 
-            await renderWithStoreProviderAsync(<TradingWebViewScreen />, {
-                preloadedState,
-            });
+            await renderScreen(store);
 
             expect(analyticsSpy).toHaveBeenCalledWith({
                 type: EventType.TradingSell,
@@ -174,9 +186,9 @@ describe('TradingWebViewScreen', () => {
                         },
                     } as unknown as TradingTransaction,
                 ];
-                const { store } = await initStore(preloadedState);
+                const { store } = initStore(preloadedState);
 
-                await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+                await renderScreen(store);
 
                 expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
             },
@@ -193,9 +205,9 @@ describe('TradingWebViewScreen', () => {
                     },
                 } as unknown as TradingTransaction,
             ];
-            const { store } = await initStore(preloadedState);
+            const { store } = initStore(preloadedState);
 
-            await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+            await renderScreen(store);
 
             expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
         });

@@ -46,12 +46,18 @@ const testQuote = exchangeQuotes[0];
 
 describe('TradingExchangeApprovalScreen', () => {
     let store: TestStore;
+    let unmount: (() => void) | undefined;
 
-    const renderScreen = () =>
-        renderWithStoreProviderAsync(
+    const renderScreen = async () => {
+        const result = await renderWithStoreProviderAsync(
             <TradingExchangeApprovalScreen route={{ params: {} } as any} navigation={{} as any} />,
             { store },
         );
+
+        ({ unmount } = result);
+
+        return result;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -65,6 +71,13 @@ describe('TradingExchangeApprovalScreen', () => {
         store = initStore(preloadedState).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
         store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
+    });
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render the approval screen with quote details', async () => {
@@ -111,9 +124,10 @@ describe('TradingExchangeApprovalScreen', () => {
     });
 
     it('should clear preselected quote on unmount', async () => {
-        const { unmount } = await renderScreen();
+        const { unmount: localUnmount } = await renderScreen();
 
-        unmount();
+        localUnmount();
+        unmount = undefined;
 
         const preselectedQuote = selectTradingExchangePreselectedQuote(store.getState());
         expect(preselectedQuote).toBeUndefined();
