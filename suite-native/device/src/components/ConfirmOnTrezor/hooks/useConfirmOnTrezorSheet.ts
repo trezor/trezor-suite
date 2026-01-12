@@ -54,7 +54,8 @@ export const useConfirmOnTrezorSheet = ({ controlRef }: Props) => {
             const targetY = snapPoints[index];
             translateY.value = withSpring(targetY, {
                 damping: 20,
-                stiffness: 150,
+                stiffness: 180,
+                mass: 1,
             });
             currentIndex.value = index;
         },
