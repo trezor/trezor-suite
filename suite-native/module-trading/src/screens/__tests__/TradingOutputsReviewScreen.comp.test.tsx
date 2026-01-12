@@ -1,7 +1,11 @@
 import { RouteProp } from '@react-navigation/native';
 
 import { TokenAddress } from '@suite-common/wallet-types';
-import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import type {
+    StackProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
 import { TestStore, initStore, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
@@ -119,66 +123,100 @@ const createExchangeRoute = (params: ReturnType<typeof createExchangeRouteParams
         params,
     }) as RouteProp<TradingStackParamList, TradingStackRoutes.TradingExchangeOutputsReview>;
 
-describe('TradingSellOutputsReviewScreen', () => {
+describe('', () => {
     let store: TestStore;
+    let unmount: (() => void) | undefined;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
-        mockNavigation.navigate.mockClear();
-        mockNavigation.goBack.mockClear();
-        mockNavigation.popToTop.mockClear();
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
-    it('should render TradingSellOutputsReviewScreen', async () => {
-        const params = createSellRouteParams();
-        const route = createSellRoute(params);
+    describe('TradingSellOutputsReviewScreen', () => {
+        const renderScreen = async (
+            route: StackProps<
+                TradingStackParamList,
+                TradingStackRoutes.TradingSellOutputsReview
+            >['route'],
+        ) => {
+            const result = await renderWithStoreProviderAsync(
+                <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
+                { store },
+            );
 
-        const { toJSON } = await renderWithStoreProviderAsync(
-            <TradingSellOutputsReviewScreen route={route} navigation={mockNavigation} />,
-            { store },
-        );
+            ({ unmount } = result);
 
-        expect(toJSON()).not.toBeNull();
-        expect(mockUseSellFlowFn).toHaveBeenCalled();
-        expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
-            expect.objectContaining({
-                orderId: TEST_ORDER_ID,
-                accountKey: TEST_ACCOUNT_KEY,
-                reportToAnalytics: mockReportToAnalyticsSell,
-            }),
-        );
+            return result;
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
+            mockNavigation.navigate.mockClear();
+            mockNavigation.goBack.mockClear();
+            mockNavigation.popToTop.mockClear();
+        });
+
+        it('should render TradingSellOutputsReviewScreen', async () => {
+            const params = createSellRouteParams();
+            const route = createSellRoute(params);
+
+            const { toJSON } = await renderScreen(route);
+
+            expect(toJSON()).not.toBeNull();
+            expect(mockUseSellFlowFn).toHaveBeenCalled();
+            expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderId: TEST_ORDER_ID,
+                    accountKey: TEST_ACCOUNT_KEY,
+                    reportToAnalytics: mockReportToAnalyticsSell,
+                }),
+            );
+        });
     });
-});
 
-describe('TradingExchangeOutputsReviewScreen', () => {
-    let store: TestStore;
+    describe('TradingExchangeOutputsReviewScreen', () => {
+        const renderScreen = async (
+            route: StackProps<
+                TradingStackParamList,
+                TradingStackRoutes.TradingExchangeOutputsReview
+            >['route'],
+        ) => {
+            const result = await renderWithStoreProviderAsync(
+                <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
+                { store },
+            );
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
-        mockNavigation.navigate.mockClear();
-        mockNavigation.goBack.mockClear();
-        mockNavigation.popToTop.mockClear();
-    });
+            ({ unmount } = result);
 
-    it('should render TradingExchangeOutputsReviewScreen', async () => {
-        const params = createExchangeRouteParams();
-        const route = createExchangeRoute(params);
+            return result;
+        };
 
-        const { toJSON } = await renderWithStoreProviderAsync(
-            <TradingExchangeOutputsReviewScreen route={route} navigation={mockNavigation} />,
-            { store },
-        );
+        beforeEach(() => {
+            jest.clearAllMocks();
+            store = initStore({ wallet: getWalletState({ tradeType: 'exchange' }) }).store;
+            mockNavigation.navigate.mockClear();
+            mockNavigation.goBack.mockClear();
+            mockNavigation.popToTop.mockClear();
+        });
 
-        expect(toJSON()).not.toBeNull();
-        expect(mockUseExchangeFlowFn).toHaveBeenCalled();
-        expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
-            expect.objectContaining({
-                orderId: TEST_ORDER_ID,
-                accountKey: TEST_ACCOUNT_KEY,
-                reportToAnalytics: mockReportToAnalyticsExchange,
-            }),
-        );
+        it('should render TradingExchangeOutputsReviewScreen', async () => {
+            const params = createExchangeRouteParams();
+            const route = createExchangeRoute(params);
+
+            const { toJSON } = await renderScreen(route);
+
+            expect(toJSON()).not.toBeNull();
+            expect(mockUseExchangeFlowFn).toHaveBeenCalled();
+            expect(mockUseTradingOutputsReviewScreenControls).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    orderId: TEST_ORDER_ID,
+                    accountKey: TEST_ACCOUNT_KEY,
+                    reportToAnalytics: mockReportToAnalyticsExchange,
+                }),
+            );
+        });
     });
 });

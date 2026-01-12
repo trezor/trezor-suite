@@ -6,7 +6,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import {
     TradingLocationModalScreen,
@@ -43,6 +43,10 @@ describe('TradingLocationModalScreen', () => {
                 route={mockRoute}
             />,
         );
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should render all components', async () => {
         const { getByText, queryByLabelText } = await renderTradingLocationModalScreen();

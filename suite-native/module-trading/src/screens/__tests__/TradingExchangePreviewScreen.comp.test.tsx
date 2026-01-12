@@ -93,20 +93,25 @@ describe('TradingExchangePreviewScreen', () => {
     let store: TestStore;
     const analyticsSpy = jest.spyOn(analytics, 'report');
     let consoleErrorSpy: jest.SpyInstance;
+    let unmount: (() => void) | undefined;
 
-    const renderTradingExchangePreviewScreen = (
+    const renderTradingExchangePreviewScreen = async (
         isApproved: boolean = false,
         customStore?: TestStore,
     ) => {
         const testStore = customStore ?? store;
 
-        return renderWithStoreProviderAsync(
+        const result = await renderWithStoreProviderAsync(
             <TradingExchangePreviewScreen
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
             { store: testStore },
         );
+
+        ({ unmount } = result);
+
+        return result;
     };
 
     beforeEach(() => {
@@ -120,6 +125,10 @@ describe('TradingExchangePreviewScreen', () => {
 
     afterEach(() => {
         consoleErrorSpy.mockRestore();
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render continue button', async () => {

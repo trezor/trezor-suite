@@ -42,10 +42,14 @@ jest.mock('../../hooks/general/useWatchTrade', () => ({
 }));
 
 describe('TradingSellPreviewScreen', () => {
+    let unmount: (() => void) | undefined;
+
     const renderTradingSellPreviewScreen = async (preloadedState?: PreloadedState) => {
         const result = await renderWithStoreProviderAsync(<TradingSellPreviewScreen />, {
             preloadedState,
         });
+
+        unmount = result.unmount;
         // wait for async useEffects callbacks to (hopefully) finish
         await act(() => Promise.resolve());
 
@@ -55,6 +59,13 @@ describe('TradingSellPreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockUseTradingDetailData.trade = undefined;
+    });
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
     it('should render screen with header and preview view', async () => {

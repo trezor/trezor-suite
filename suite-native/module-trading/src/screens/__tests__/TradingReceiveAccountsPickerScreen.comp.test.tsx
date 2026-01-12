@@ -41,12 +41,26 @@ const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
     },
 });
 
-const renderScreen = (preloadedState: PreloadedState) =>
-    renderWithStoreProviderAsync(<TradingReceiveAccountsPickerScreen />, {
-        preloadedState,
+describe('TradingReceiveAccountsPickerScreen', () => {
+    let unmount: (() => void) | undefined;
+
+    const renderScreen = async (preloadedState: PreloadedState) => {
+        const result = await renderWithStoreProviderAsync(<TradingReceiveAccountsPickerScreen />, {
+            preloadedState,
+        });
+
+        ({ unmount } = result);
+
+        return result;
+    };
+
+    afterEach(() => {
+        if (unmount) {
+            unmount();
+            unmount = undefined;
+        }
     });
 
-describe('TradingReceiveAccountsPickerScreen', () => {
     it('should render account list with correct title', async () => {
         mockRouteParams = { symbol: 'btc', tradingType: 'buy' };
 

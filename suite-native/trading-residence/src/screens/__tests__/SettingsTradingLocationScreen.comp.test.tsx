@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { SettingsStackParamList, SettingsStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import { SettingsTradingLocationScreen } from '../SettingsTradingLocationScreen';
 
@@ -26,6 +26,10 @@ describe('TradingLocationSettingsScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render all components', async () => {
