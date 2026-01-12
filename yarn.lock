@@ -12065,6 +12065,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/experimental-features@workspace:*, @suite-native/experimental-features@workspace:suite-native/experimental-features":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/experimental-features@workspace:suite-native/experimental-features"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/services": "workspace:*"
+    "@suite-native/settings": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.5"
+    react-native-reanimated: "npm:~4.1.5"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/feature-flags@workspace:*, @suite-native/feature-flags@workspace:suite-native/feature-flags":
   version: 0.0.0-use.local
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
@@ -12995,6 +13018,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
+    "@suite-native/experimental-features": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -13350,6 +13374,7 @@ __metadata:
   resolution: "@suite-native/settings@workspace:suite-native/settings"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: "npm:19.1.0"
@@ -46814,7 +46839,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.0.0, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.3.4, yaml@npm:^2.6.0, yaml@npm:^2.6.1":
+"yaml@npm:^2.0.0, yaml@npm:^2.2.1, yaml@npm:^2.2.2, yaml@npm:^2.3.4, yaml@npm:^2.6.1":
+  version: 2.8.1
+  resolution: "yaml@npm:2.8.1"
+  bin:
+    yaml: bin.mjs
+  checksum: 10/eae07b3947d405012672ec17ce27348aea7d1fa0534143355d24a43a58f5e05652157ea2182c4fe0604f0540be71f99f1173f9d61018379404507790dff17665
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.6.0":
   version: 2.8.2
   resolution: "yaml@npm:2.8.2"
   bin:

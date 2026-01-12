@@ -5,8 +5,8 @@ import { setSuiteSyncRelayUrl, suiteSyncActions } from './suiteSyncActions';
 export type SuiteSyncSettings = {
     /**
      * This is flag, that enables the Suite Sync Feature.
-     * On desktop, it is managed by Experimental Features.
-     * On mobile, it is managed by Debug Settings.
+     * On mobile, it is managed by Experimental Features.
+     * On desktop, it is managed by Debug Settings.
      *
      * It shall be removed once we release the Suite Sync feature.
      */

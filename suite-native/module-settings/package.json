@@ -34,6 +34,7 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/discovery": "workspace:*",
+        "@suite-native/experimental-features": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",

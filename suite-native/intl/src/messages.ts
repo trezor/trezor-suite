@@ -1406,11 +1406,16 @@ export const messages = {
                         'Unable to connect to the backend server. Reconnect your device and check your internet connection or custom backend address. Also, make sure BTC is activated in Settings.',
                 },
             },
-        },
-        secureSync: {
-            title: 'Secure sync (required)',
-            description:
-                'Secure sync keeps your data consistent across all of your devices. Data is stored locally and only synced with devices you authorize.',
+            experimentalFeatures: {
+                title: 'Experimental features',
+                warning:
+                    'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
+                suiteSync: {
+                    title: 'Suite Sync',
+                    description:
+                        'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
+                },
+            },
         },
     },
     moduleOnboarding: {

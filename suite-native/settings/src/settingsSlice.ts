@@ -1,7 +1,10 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
+
+export type ExperimentalFeature = 'suite-sync';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -11,6 +14,7 @@ export interface AppSettingsState {
     areTestnetsEnabled: boolean;
     shouldShowAutoEjectAlert: boolean;
     hasAutoEjectAlertBeenDisplayed: boolean;
+    experimentalFeatures?: ExperimentalFeature[]; // undefined = disabled, empty array = enabled
 }
 
 export type SettingsSliceRootState = {
@@ -36,12 +40,31 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isFirmwareHashCheckEnabled',
     'areTestnetsEnabled',
     'hasAutoEjectAlertBeenDisplayed',
+    'experimentalFeatures',
 ];
 
 export const appSettingsSlice = createSlice({
     name: 'appSettings',
     initialState: appSettingsInitialState,
     reducers: {
+        allowExperimentalFeatures: state => {
+            state.experimentalFeatures = [];
+        },
+        disallowExperimentalFeatures: state => {
+            state.experimentalFeatures = undefined;
+        },
+        enableExperimentalFeature: (state, { payload }: PayloadAction<ExperimentalFeature>) => {
+            if (!state.experimentalFeatures) {
+                state.experimentalFeatures = [payload];
+            } else if (!state.experimentalFeatures.includes(payload)) {
+                state.experimentalFeatures.push(payload);
+            }
+        },
+        disableExperimentalFeature: (state, { payload }: PayloadAction<ExperimentalFeature>) => {
+            state.experimentalFeatures = state.experimentalFeatures
+                ? state.experimentalFeatures.filter(feature => feature !== payload)
+                : state.experimentalFeatures;
+        },
         setIsOnboardingFinished: state => {
             state.isOnboardingFinished = true;
         },
@@ -98,5 +121,20 @@ export const {
     toggleAreTestnetsEnabled,
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
+    allowExperimentalFeatures,
+    disallowExperimentalFeatures,
+    enableExperimentalFeature,
+    disableExperimentalFeature,
 } = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
+
+export const selectAreExperimentalFeaturesAllowed = (state: SettingsSliceRootState) =>
+    state.appSettings.experimentalFeatures !== undefined;
+
+export const selectEnabledExperimentalFeatures = (state: SettingsSliceRootState) =>
+    returnStableArrayIfEmpty(state.appSettings.experimentalFeatures);
+
+export const selectIsExperimentalFeatureEnabled = (
+    state: SettingsSliceRootState,
+    featureKey: ExperimentalFeature,
+) => state.appSettings.experimentalFeatures?.includes(featureKey) ?? false;
