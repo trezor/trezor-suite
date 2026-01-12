@@ -7,7 +7,9 @@ import {
 } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
-import TrezorConnect from '../src';
+import TrezorConnect from '@trezor/connect';
+
+// import TrezorConnect from '../src';
 import { UI } from '../src/events';
 
 const emulatorStartOpts: EmuStartOptsType =

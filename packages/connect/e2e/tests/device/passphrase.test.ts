@@ -1,4 +1,4 @@
-import TrezorConnect from '../../../src';
+import TrezorConnect from '@trezor/connect';
 import {
     conditionalTest,
     getController,

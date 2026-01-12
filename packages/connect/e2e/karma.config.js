@@ -78,6 +78,34 @@ module.exports = config => {
                         },
                     },
                     {
+                        test: /workers\/blockbook\/index/i,
+                        loader: 'worker-loader',
+                        options: {
+                            filename: './workers/blockbook-worker.[contenthash].js',
+                        },
+                    },
+                    {
+                        test: /workers\/ripple\/index/i,
+                        loader: 'worker-loader',
+                        options: {
+                            filename: './workers/ripple-worker.[contenthash].js',
+                        },
+                    },
+                    {
+                        test: /workers\/blockfrost\/index/i,
+                        loader: 'worker-loader',
+                        options: {
+                            filename: './workers/blockfrost-worker.[contenthash].js',
+                        },
+                    },
+                    {
+                        test: /workers\/stellar\/index/i,
+                        loader: 'worker-loader',
+                        options: {
+                            filename: './workers/stellar-worker.[contenthash].js',
+                        },
+                    },
+                    {
                         test: /\.ts?$/,
                         exclude: /node_modules/,
                         use: [
@@ -109,12 +137,6 @@ module.exports = config => {
                     Buffer: ['buffer', 'Buffer'],
                     process: 'process/browser',
                 }),
-                // replace TrezorConnect module used in ./tests/common.setup.js
-                new webpack.NormalModuleReplacementPlugin(
-                    /^(\.\.\/)+src$/,
-                    path.join(__dirname, '../../connect/lib/index-browser.js'),
-                ),
-
                 new webpack.DefinePlugin({
                     // pass required process.env variables
                     'process.env.TESTS_FIRMWARE': JSON.stringify(process.env.TESTS_FIRMWARE),

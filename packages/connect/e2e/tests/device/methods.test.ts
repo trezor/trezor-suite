@@ -1,4 +1,4 @@
-import TrezorConnect from '../../../src';
+import TrezorConnect from '@trezor/connect';
 import * as fixtures from '../../__fixtures__';
 import {
     conditionalTest,
@@ -117,6 +117,7 @@ describe(`TrezorConnect methods`, () => {
 
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
+                        console.log('result', result);
                         let expected = t.result
                             ? { success: true, payload: t.result }
                             : { success: false };
