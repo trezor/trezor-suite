@@ -32,7 +32,7 @@ export const createTurnOnSuiteSync =
                     deviceStaticSessionId: device.state.staticSessionId,
                 });
 
-                if (!result.ok) {
+                if (!result.success) {
                     // Todo: notification? Here or in the caller?
                     console.error('[createTurnOnSuiteSync] error', result.error);
                 }

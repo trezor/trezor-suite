@@ -17,12 +17,12 @@ export const createElectronPlatformEncryption = (
     encrypt: async <T extends EncryptableBranded>({ value }: { value: T }) => {
         const result = await deps.desktopApi.safeStoreEncrypt({ value });
 
-        return result.ok ? ok(asEncryptedHex(result.value as T)) : result;
+        return result.success ? ok(asEncryptedHex(result.payload as T)) : result;
     },
 
     decrypt: async <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) => {
         const result = await deps.desktopApi.safeStoreDecrypt({ value });
 
-        return result.ok ? ok(result.value as T) : result;
+        return result.success ? ok(result.payload as T) : result;
     },
 });

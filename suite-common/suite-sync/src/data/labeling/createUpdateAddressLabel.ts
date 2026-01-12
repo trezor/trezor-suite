@@ -9,11 +9,11 @@ export const createUpdateAddressLabel =
     async ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }) => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (!storageResult.ok) {
+        if (!storageResult.success) {
             return storageResult;
         }
 
-        return storageResult.value.data.addresses.update({
+        return storageResult.payload.data.addresses.update({
             address,
             label,
             accountDescriptor,

@@ -42,7 +42,7 @@ export const init: ModuleInit = () => {
         validateIpcMessage({ ipcEvent });
 
         const isEncryptionAvailableResult = isEncryptionAvailable();
-        if (!isEncryptionAvailableResult.ok) {
+        if (!isEncryptionAvailableResult.success) {
             return isEncryptionAvailableResult;
         }
 
@@ -60,7 +60,7 @@ export const init: ModuleInit = () => {
         validateIpcMessage({ ipcEvent });
 
         const isEncryptionAvailableResult = isEncryptionAvailable();
-        if (!isEncryptionAvailableResult.ok) {
+        if (!isEncryptionAvailableResult.success) {
             return isEncryptionAvailableResult;
         }
 

@@ -48,8 +48,8 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
 
         const result = await ensureSuiteSyncOwner({ device, delegatedKey });
 
-        expect(result.ok).toBe(true);
-        expect(result.ok && result.value).toBe(owner1);
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe(owner1);
     });
 
     it('fails for invalid DelegatedIdentityKey', async () => {
@@ -62,7 +62,7 @@ describe(createRetrieveSuiteSyncOwner.name, () => {
 
         const result = await ensureSuiteSyncOwner({ device, delegatedKey });
 
-        expect(result.ok).toBe(false);
-        expect(!result.ok && result.error.type).toBe('ProofOfDelegatedSignFailed');
+        expect(result.success).toBe(false);
+        expect(!result.success && result.error.type).toBe('ProofOfDelegatedSignFailed');
     });
 });

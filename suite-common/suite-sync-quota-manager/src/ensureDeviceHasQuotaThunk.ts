@@ -37,13 +37,13 @@ export const ensureDeviceHasQuotaThunk =
         });
 
         // already registered, don't need to register again
-        if (hasPublicKeyStorage.ok) {
+        if (hasPublicKeyStorage.success) {
             dispatch(
                 quotaManagerDeviceFetched({
                     deviceId: device.id,
                     publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
-                    totalStorageSize: hasPublicKeyStorage.value.totalSpace,
-                    unspentStorageSize: hasPublicKeyStorage.value.unspentSpace,
+                    totalStorageSize: hasPublicKeyStorage.payload.totalSpace,
+                    unspentStorageSize: hasPublicKeyStorage.payload.unspentSpace,
                 }),
             );
 
@@ -52,7 +52,7 @@ export const ensureDeviceHasQuotaThunk =
 
         // 404 is expected when device is not registered yet, other errors should be shown to the user
         // as quota manager unavailability
-        if (!hasPublicKeyStorage.ok && hasPublicKeyStorage.error.code !== 404) {
+        if (!hasPublicKeyStorage.success && hasPublicKeyStorage.error.code !== 404) {
             dispatch(
                 quotaManagerFetchError({
                     error: hasPublicKeyStorage.error.message,
@@ -66,7 +66,7 @@ export const ensureDeviceHasQuotaThunk =
             baseUrl: quotaManagerBaseUrl,
         });
 
-        if (!sessionChallenge.ok) {
+        if (!sessionChallenge.success) {
             dispatch(
                 quotaManagerFetchError({
                     error: sessionChallenge.error.message,
@@ -80,16 +80,16 @@ export const ensureDeviceHasQuotaThunk =
             const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
                 delegatedKey,
                 header: EVOLU_SIGN_REGISTRATION_REQUEST_HEADER,
-                challenge: sessionChallenge.value.challenge,
+                challenge: sessionChallenge.payload.challenge,
                 size: DEFAULT_WALLET_SIZE_QUOTA,
             });
 
-            if (!proofOfDelegatedIdentity.ok) return;
+            if (!proofOfDelegatedIdentity.success) return;
 
             const registrationRequestResult = await TrezorConnect.evoluSignRegistrationRequest({
-                challenge_from_server: sessionChallenge.value.challenge,
+                challenge_from_server: sessionChallenge.payload.challenge,
                 size_to_acquire: DEFAULT_WALLET_SIZE_QUOTA,
-                proof_of_delegated_identity: proofOfDelegatedIdentity.value,
+                proof_of_delegated_identity: proofOfDelegatedIdentity.payload,
             });
 
             if (registrationRequestResult.success) {
@@ -100,9 +100,9 @@ export const ensureDeviceHasQuotaThunk =
                             deviceCert: registrationRequestResult.payload.certificate_chain[0],
                             caCert: registrationRequestResult.payload.certificate_chain[1],
                         },
-                        challenge: sessionChallenge.value.challenge,
+                        challenge: sessionChallenge.payload.challenge,
                         proof: registrationRequestResult.payload.signature,
-                        sessionId: sessionChallenge.value.sessionId,
+                        sessionId: sessionChallenge.payload.sessionId,
                         deviceModel: device.features.internal_model,
                         publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                     }),

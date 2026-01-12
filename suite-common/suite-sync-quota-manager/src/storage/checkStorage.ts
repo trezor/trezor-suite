@@ -35,11 +35,11 @@ export const checkStorageByPublicKey = async ({
         queryParams: { publicKey },
     });
 
-    if (!result.ok) {
+    if (!result.success) {
         return err(result.error);
     }
 
-    return ok(result.value as AskForStoragePublicKeyResponse);
+    return ok(result.payload as AskForStoragePublicKeyResponse);
 };
 
 /**
@@ -53,9 +53,9 @@ export const checkStorageByOwnerId = async ({ baseUrl, ownerId }: CheckStorageBy
         queryParams: { ownerId },
     });
 
-    if (!result.ok) {
+    if (!result.success) {
         return err(result.error);
     }
 
-    return ok(result.value as AskForStorageResponse);
+    return ok(result.payload as AskForStorageResponse);
 };

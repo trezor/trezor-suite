@@ -10,11 +10,11 @@ export const createUpdateWalletLabel =
     async ({ deviceStaticSessionId, label }) => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (!storageResult.ok) {
+        if (!storageResult.success) {
             return storageResult;
         }
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        return storageResult.value.data.wallets.update({ walletDescriptor, label });
+        return storageResult.payload.data.wallets.update({ walletDescriptor, label });
     };

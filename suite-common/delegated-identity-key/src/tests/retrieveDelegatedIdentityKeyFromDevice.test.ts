@@ -30,7 +30,7 @@ describe(createRetrieveDelegatedIdentityKeyFromDevice.name, () => {
             device: device123,
         });
 
-        expect(result.ok).toBe(true);
-        expect(result.ok && result.value).toBe('delegated-key-123');
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe('delegated-key-123');
     });
 });

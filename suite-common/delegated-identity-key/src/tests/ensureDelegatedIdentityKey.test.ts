@@ -30,8 +30,8 @@ describe(createEnsureDelegatedIdentityKey.name, () => {
 
         const result = await ensureDelegatedIdentityKey({ device });
 
-        expect(result.ok).toBe(true);
-        expect(result.ok && result.value).toBe('redux-delegated-identity-key');
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe('redux-delegated-identity-key');
     });
 
     it('retrieves DelegatedIdentityKey from Device whe not loaded (from Redux)', async () => {
@@ -42,7 +42,7 @@ describe(createEnsureDelegatedIdentityKey.name, () => {
 
         const result = await ensureDelegatedIdentityKey({ device });
 
-        expect(result.ok).toBe(true);
-        expect(result.ok && result.value).toBe('trezor-delegated-key-123');
+        expect(result.success).toBe(true);
+        expect(result.success && result.payload).toBe('trezor-delegated-key-123');
     });
 });

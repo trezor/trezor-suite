@@ -56,13 +56,13 @@ export const createEnsureStorage =
 
         const ownerResult = await deps.refreshSuiteSyncKeys({ device });
 
-        if (!ownerResult.ok) {
+        if (!ownerResult.success) {
             return ownerResult;
         }
 
         const relayUrl = deps.getRelayUrl();
         const newStorage = deps.createSuiteStorage({
-            suiteSyncOwner: ownerResult.value,
+            suiteSyncOwner: ownerResult.payload,
             relayUrl: relayUrl !== null && relayUrl.trim() !== '' ? relayUrl : deps.defaultRelayUrl,
         });
 

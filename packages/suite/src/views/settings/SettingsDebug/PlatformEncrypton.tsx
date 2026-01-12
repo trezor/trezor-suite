@@ -22,8 +22,8 @@ export const PlatformEncrypton = () => {
     const encrypt = async () => {
         const result = await services.platformEncryption.encrypt({ value: plaintext });
 
-        if (result.ok) {
-            setCiphertext(result.value);
+        if (result.success) {
+            setCiphertext(result.payload);
         } else {
             alert(`encrypt: [${result.error.type}] ${result.error.message}`);
         }
@@ -32,8 +32,8 @@ export const PlatformEncrypton = () => {
     const decrypt = async () => {
         const result = await services.platformEncryption.decrypt({ value: ciphertext });
 
-        if (result.ok) {
-            setPlaintext(result.value);
+        if (result.success) {
+            setPlaintext(result.payload);
         } else {
             alert(`decrypt: [${result.error.type}]`);
         }

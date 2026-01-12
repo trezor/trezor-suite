@@ -10,13 +10,13 @@ export const createUpdateAccountLabel =
     async ({ deviceStaticSessionId, accountKey, label }) => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (!storageResult.ok) {
+        if (!storageResult.success) {
             return storageResult;
         }
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-        return storageResult.value.data.accounts.update({
+        return storageResult.payload.data.accounts.update({
             accountDescriptor,
             networkSymbol,
             label,

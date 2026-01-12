@@ -63,11 +63,11 @@ describe(registerStorageThunk.name, () => {
                 unspentStorageSize: 800,
             }),
         );
-        expect(result.ok).toBe(true);
+        expect(result.success).toBe(true);
 
         // hack
-        if (result.ok) {
-            expect(result.value).toEqual({
+        if (result.success) {
+            expect(result.payload).toEqual({
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,
             });
@@ -88,10 +88,10 @@ describe(registerStorageThunk.name, () => {
         expect(mockDispatch).toHaveBeenCalledWith(
             quotaManagerFetchError({ error: 'Network error' }),
         );
-        expect(result.ok).toBe(false);
+        expect(result.success).toBe(false);
 
         // hack
-        if (!result.ok) {
+        if (!result.success) {
             expect(result.error).toEqual({ message: 'Network error' });
         }
     });

@@ -42,13 +42,13 @@ export const registerStorageThunk =
             body: params,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             dispatch(quotaManagerFetchError({ error: result.error.message }));
 
             return err(result.error);
         }
 
-        const response = result.value as RegisterStorageResponse;
+        const response = result.payload as RegisterStorageResponse;
 
         if (device && device.id) {
             dispatch(

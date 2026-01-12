@@ -25,14 +25,14 @@ export const createEnsureSuiteSyncOwner =
             delegatedKey,
         });
 
-        if (!result.ok) {
+        if (!result.success) {
             return result;
         }
 
         await deps.saveSuiteSyncOwner({
             deviceStaticId: device.state.staticSessionId,
-            suiteSyncOwner: result.value,
+            suiteSyncOwner: result.payload,
         });
 
-        return ok(result.value);
+        return ok(result.payload);
     };

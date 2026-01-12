@@ -88,7 +88,7 @@ describe(createSubscribeSuiteSyncData.name, () => {
 
         const result = await subscribeLabeling({ deviceStaticSessionId });
 
-        expect(!result.ok && result.error.type).toBe('RefreshSuiteKeysUnavailable');
+        expect(!result.success && result.error.type).toBe('RefreshSuiteKeysUnavailable');
     });
 
     it('subscribes labeling', async () => {
@@ -103,7 +103,7 @@ describe(createSubscribeSuiteSyncData.name, () => {
 
         const result = await subscribeLabeling({ deviceStaticSessionId });
 
-        expect(result.ok).toBe(true);
+        expect(result.success).toBe(true);
 
         expect(storage.data.wallets.subscribe).toHaveBeenCalledTimes(1);
         expect(storage.data.accounts.subscribe).toHaveBeenCalledTimes(1);
@@ -130,7 +130,7 @@ describe(createSubscribeSuiteSyncData.name, () => {
 
         const result = await subscribeLabeling({ deviceStaticSessionId });
 
-        expect(result.ok).toBe(true);
+        expect(result.success).toBe(true);
 
         storageEmitters.wallets.forEach(it =>
             it.onChange([{ walletDescriptor: asWalletDescriptor('1'), label: 'Wallet Label' }]),

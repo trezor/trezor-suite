@@ -11,8 +11,8 @@ describe(getProofOfDelegatedIdentity.name, () => {
             header: 'EvoluGetNode',
         });
 
-        expect(proof.ok).toBe(true);
-        expect(proof.ok && proof.value).toBe(
+        expect(proof.success).toBe(true);
+        expect(proof.success && proof.payload).toBe(
             '75207c8e657c8b9a885c491f2407ce6b2ab28c88914a1f20b4a12d25a5103df171dd1f4137733466491d53891233c200e0500effaeab9270bf294ab08f32b41e',
         );
     });

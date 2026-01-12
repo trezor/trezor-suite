@@ -20,13 +20,13 @@ export const createSubscribeSuiteSyncData =
     async ({ deviceStaticSessionId }): ReturnType<SubscribeSuiteSyncData> => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
 
-        if (!storageResult.ok) {
+        if (!storageResult.success) {
             return storageResult;
         }
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        const { data } = storageResult.value;
+        const { data } = storageResult.payload;
         const { suiteSyncListener: listener } = deps;
 
         // This Type-Map is here to ensure, we won't forget to subscribe new table in a type-safe way
