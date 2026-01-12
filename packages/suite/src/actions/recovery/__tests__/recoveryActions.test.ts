@@ -1,11 +1,13 @@
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
+
+import { ExtraDependencies } from '@suite-common/redux-utils';
+import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
 import recoveryReducer from 'src/reducers/recovery/recoveryReducer';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 const getInitialState = (custom?: any): any => ({
     suite: {
@@ -61,7 +63,22 @@ const rootReducer = combineReducers({
     device: createReducer({}, () => ({})),
     recovery: recoveryReducer,
 });
-const preloadedState = getInitialState();
+
+const prepareConfiguredMockStore = ({
+    initialState,
+    extra,
+}: {
+    initialState?: ReturnType<typeof getInitialState>;
+    extra?: Partial<ExtraDependencies>;
+} = {}) =>
+    configureMockStore<ReturnType<typeof getInitialState>>({
+        reducer: rootReducer,
+        preloadedState: initialState ?? getInitialState(),
+        middleware: [],
+        extra: extra ?? {
+            services: extraDependenciesMock.services,
+        },
+    });
 
 describe('Recovery Actions', () => {
     beforeAll(() => {
@@ -126,14 +143,7 @@ describe('Recovery Actions', () => {
     });
 
     it('checkSeed', async () => {
-        const store = configureMockStore({
-            reducer: rootReducer,
-            preloadedState,
-            middleware: [],
-            extra: {
-                services: extraDependenciesMock.services,
-            },
-        });
+        const store = prepareConfiguredMockStore();
         const action = store.dispatch(recoveryActions.checkSeed());
         expect(store.getState().recovery.status).toMatch('in-progress');
         await action;
