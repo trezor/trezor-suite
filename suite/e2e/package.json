@@ -15,7 +15,7 @@
         "github:report:manual": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- playwright test --config=./playwright.config.ts --project=manual --reporter=./support/reporters/gitHubReporter.ts",
         "github:create:project": "tsx ./support/reporters/scriptCreateProject.ts",
         "git:bisect": "./bisect-commits.sh",
-        "decode:sol:stake": "tsx ./e2e/scripts/decode-sol-staking-account.ts"
+        "decode:sol:stake": "tsx ./scripts/decode-sol-staking-account.ts"
     },
     "devDependencies": {
         "@currents/playwright": "^1.19.0",
