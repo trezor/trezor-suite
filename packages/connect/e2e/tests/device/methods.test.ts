@@ -62,6 +62,8 @@ const getFixtures = () => {
     return result || [];
 };
 
+let lastSetupConfig: TestCase['setup'] | null = null;
+
 describe(`TrezorConnect methods`, () => {
     afterAll(() => {
         // reset controller at the end
@@ -113,7 +115,14 @@ describe(`TrezorConnect methods`, () => {
                         }
 
                         // single test may require a different setup
-                        await setup(controller, t.setup || testCase.setup);
+                        const setupConfig = t.setup || testCase.setup;
+                        if (
+                            setupConfig.wiped ||
+                            JSON.stringify(setupConfig) !== JSON.stringify(lastSetupConfig)
+                        ) {
+                            await setup(controller, setupConfig);
+                            lastSetupConfig = setupConfig;
+                        }
 
                         // @ts-expect-error, string + params union
                         const result = await TrezorConnect[testCase.method](t.params);
