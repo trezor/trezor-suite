@@ -203,8 +203,8 @@ export const analyzeObject = (obj: any): any => {
         const paddedCodes = chars.map(char => char.charCodeAt(0).toString().padStart(padding, ' '));
 
         return {
-            chars: `${paddedChars.join(' ')}`,
-            codes: `${paddedCodes.join(' ')}`,
+            chars: paddedChars.join(' '),
+            codes: paddedCodes.join(' '),
         };
     };
 
