@@ -4,6 +4,7 @@ import { SUITE } from 'src/actions/suite/constants';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { Account } from 'src/types/wallet';
 
 import { BannerPoints } from './BannerPoints';
@@ -15,13 +16,17 @@ interface EvmExplanationBannerProps {
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
     const { explanationBannerClosed } = useSelector(state => state.suite.evmSettings);
+    const routeName = useSelector(selectRouteName);
     const dispatch = useDispatch();
+
+    const isReceiveRoute = routeName === 'wallet-receive';
 
     const isVisible =
         account &&
         !explanationBannerClosed[account.symbol] &&
         account.symbol !== 'eth' &&
-        networks[account.symbol].networkType === 'ethereum';
+        networks[account.symbol].networkType === 'ethereum' &&
+        !isReceiveRoute;
 
     if (!isVisible) {
         return null;
