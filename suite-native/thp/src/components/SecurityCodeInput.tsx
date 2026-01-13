@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Pressable, TextInput } from 'react-native';
+import { Platform, Pressable, TextInput } from 'react-native';
 import { KeyboardEvents } from 'react-native-keyboard-controller';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -19,6 +19,12 @@ const textInputStyle = prepareNativeStyle(_ => ({
     top: -9999,
     opacity: 0,
 }));
+
+const IS_IPAD = Platform.OS === 'ios' && Platform.isPad;
+
+// New iPad OS (26.X +) introduces a floating number pad that does not work for this hidden input use case.
+// For this reason, we use the `numbers-and-punctuation` keyboard type to display the traditional full width bottom keyboard.
+const KEYBOARD_TYPE = IS_IPAD ? 'numbers-and-punctuation' : 'number-pad';
 
 export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) => {
     const { applyStyle } = useNativeStyles();
@@ -66,7 +72,7 @@ export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) 
         <Pressable onPress={focusInput}>
             <TextInput
                 ref={inputRef}
-                keyboardType="number-pad"
+                keyboardType={KEYBOARD_TYPE}
                 textContentType="oneTimeCode"
                 importantForAutofill="no"
                 autoComplete="off"
