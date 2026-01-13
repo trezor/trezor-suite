@@ -7,60 +7,6 @@
             "conditions": [
                 {
                     "environment": {
-                        "desktop": "!",
-                        "mobile": ">=25.8.1 <25.11.1",
-                        "web": "!"
-                    },
-                    "os": {
-                        "macos": "!",
-                        "linux": "!",
-                        "windows": "!",
-                        "android": "!",
-                        "ios": "*",
-                        "chromeos": "!"
-                    }
-                }
-            ],
-            "message": {
-                "id": "a2ec37b4-e028-4fa4-abf3-0fc380a708da",
-                "priority": 91,
-                "dismissible": false,
-                "variant": "info",
-                "category": "feature",
-                "content": {
-                    "en": "Trading is not available.",
-                    "es": "Trading is not available.",
-                    "cs": "Trading is not available.",
-                    "de": "Trading is not available.",
-                    "fr": "Trading is not available.",
-                    "it": "Trading is not available.",
-                    "pt": "Trading is not available.",
-                    "tr": "Trading is not available.",
-                    "ru": "Trading is not available.",
-                    "ja": "Trading is not available.",
-                    "uk": "Trading is not available.",
-                    "hu": "Trading is not available."
-                },
-                "feature": [
-                    {
-                        "domain": "trading.buy",
-                        "flag": false
-                    },
-                    {
-                        "domain": "trading.sell",
-                        "flag": false
-                    },
-                    {
-                        "domain": "trading.exchange",
-                        "flag": false
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
                         "desktop": "22.4.0",
                         "mobile": "!",
                         "web": "22.4.0"
@@ -395,38 +341,6 @@
                         "pt": "Ir para trezor.io/trezor-suite",
                         "uk": "Перейти на trezor.io/trezor-suite"
                     }
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "151c4f91-8bc4-4158-a7e3-c1aae2979742",
-                "priority": 94,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en": "Never type your wallet backup into the computer; your backup should only ever be entered directly on your Trezor device.",
-                    "es": "Nunca escriba la copia de seguridad de su monedero en el ordenador; la copia de seguridad solo debe introducirse directamente en su dispositivo Trezor.",
-                    "cs": "Nikdy nezadávejte zálohu peněženky do počítače; záloha by se měla zadávat pouze přímo na vašem zařízení Trezor.",
-                    "ru": "Никогда не вводите резервную копию кошелька на компьютере; резервную копию следует вводить только непосредственно на вашем устройстве Trezor.",
-                    "ja": "コンピューターにウォレットのバックアップを決して入力しないでください。バックアップは、Trezorデバイス上で直接入力する必要があります。",
-                    "hu": "Soha ne írja be a tárca biztonsági mentését a számítógépbe; a biztonsági mentést kizárólag a Trezor eszközön szabad megadni.",
-                    "it": "Non digitare mai il backup del wallet nel computer; il backup deve essere inserito esclusivamente sul tuo dispositivo Trezor.",
-                    "fr": "Ne saisissez jamais la sauvegarde de votre portefeuille sur l'ordinateur ; elle doit être saisie uniquement et directement sur votre appareil Trezor.",
-                    "de": "Geben Sie Ihr Wallet-Backup niemals am Computer ein; das Backup darf ausschließlich direkt auf Ihrem Trezor-Gerät eingegeben werden.",
-                    "tr": "Cüzdan yedeğinizi asla bilgisayara yazmayın; yedeğiniz yalnızca doğrudan Trezor cihazınız üzerinden girilmelidir.",
-                    "pt": "Nunca digite o backup da sua carteira no computador; o backup deve ser inserido apenas diretamente no seu dispositivo Trezor.",
-                    "uk": "Ніколи не вводьте резервну копію гаманця на комп’ютері; резервну копію слід вводити лише безпосередньо на вашому пристрої Trezor."
                 }
             }
         },
@@ -1252,6 +1166,38 @@
         {
             "conditions": [
                 {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "151c4f91-8bc4-4158-a7e3-c1aae2979742",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en": "Never type your wallet backup into the computer; your backup should only ever be entered directly on your Trezor device.",
+                    "es": "Nunca escriba la copia de seguridad de su monedero en el ordenador; la copia de seguridad solo debe introducirse directamente en su dispositivo Trezor.",
+                    "cs": "Nikdy nezadávejte zálohu peněženky do počítače; záloha by se měla zadávat pouze přímo na vašem zařízení Trezor.",
+                    "ru": "Никогда не вводите резервную копию кошелька на компьютере; резервную копию следует вводить только непосредственно на вашем устройстве Trezor.",
+                    "ja": "コンピューターにウォレットのバックアップを決して入力しないでください。バックアップは、Trezorデバイス上で直接入力する必要があります。",
+                    "hu": "Soha ne írja be a tárca biztonsági mentését a számítógépbe; a biztonsági mentést kizárólag a Trezor eszközön szabad megadni.",
+                    "it": "Non digitare mai il backup del wallet nel computer; il backup deve essere inserito esclusivamente sul tuo dispositivo Trezor.",
+                    "fr": "Ne saisissez jamais la sauvegarde de votre portefeuille sur l'ordinateur ; elle doit être saisie uniquement et directement sur votre appareil Trezor.",
+                    "de": "Geben Sie Ihr Wallet-Backup niemals am Computer ein; das Backup darf ausschließlich direkt auf Ihrem Trezor-Gerät eingegeben werden.",
+                    "tr": "Cüzdan yedeğinizi asla bilgisayara yazmayın; yedeğiniz yalnızca doğrudan Trezor cihazınız üzerinden girilmelidir.",
+                    "pt": "Nunca digite o backup da sua carteira no computador; o backup deve ser inserido apenas diretamente no seu dispositivo Trezor.",
+                    "uk": "Ніколи не вводьте резервну копію гаманця на комп’ютері; резервну копію слід вводити лише безпосередньо на вашому пристрої Trezor."
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
                     "settings": [
                         {
                             "ada": true
@@ -1636,6 +1582,60 @@
             }
         },
         {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "!",
+                        "mobile": ">=25.8.1 <25.11.1",
+                        "web": "!"
+                    },
+                    "os": {
+                        "macos": "!",
+                        "linux": "!",
+                        "windows": "!",
+                        "android": "!",
+                        "ios": "*",
+                        "chromeos": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "a2ec37b4-e028-4fa4-abf3-0fc380a708da",
+                "priority": 91,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "Trading is not available.",
+                    "es": "Trading is not available.",
+                    "cs": "Trading is not available.",
+                    "de": "Trading is not available.",
+                    "fr": "Trading is not available.",
+                    "it": "Trading is not available.",
+                    "pt": "Trading is not available.",
+                    "tr": "Trading is not available.",
+                    "ru": "Trading is not available.",
+                    "ja": "Trading is not available.",
+                    "uk": "Trading is not available.",
+                    "hu": "Trading is not available."
+                },
+                "feature": [
+                    {
+                        "domain": "trading.buy",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.sell",
+                        "flag": false
+                    },
+                    {
+                        "domain": "trading.exchange",
+                        "flag": false
+                    }
+                ]
+            }
+        },
+        {
             "message": {
                 "id": "eb223dc5-b64d-4d29-b51e-b7bab6048c38",
                 "priority": 91,
@@ -1896,6 +1896,46 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": ">=25.10.2",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "f2b80133-36f6-45c6-a262-33ac0d0c5dcc",
+                "priority": 2,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placehodler",
+                    "en": "Placehodler",
+                    "es": "Placehodler",
+                    "cs": "Placehodler",
+                    "de": "Placehodler",
+                    "fr": "Placehodler",
+                    "it": "Placehodler",
+                    "pt": "Placehodler",
+                    "tr": "Placehodler",
+                    "ru": "Placehodler",
+                    "ja": "Placehodler",
+                    "uk": "Placehodler",
+                    "hu": "Placehodler"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "ts7",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": "<24.12.3",
                         "mobile": "!",
                         "web": "<24.12.3"
@@ -2051,46 +2091,6 @@
                     {
                         "domain": "security.entropyCheck",
                         "flag": false
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": ">=25.10.2",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "f2b80133-36f6-45c6-a262-33ac0d0c5dcc",
-                "priority": 2,
-                "dismissible": true,
-                "variant": "info",
-                "category": "feature",
-                "content": {
-                    "en-GB": "Placehodler",
-                    "en": "Placehodler",
-                    "es": "Placehodler",
-                    "cs": "Placehodler",
-                    "de": "Placehodler",
-                    "fr": "Placehodler",
-                    "it": "Placehodler",
-                    "pt": "Placehodler",
-                    "tr": "Placehodler",
-                    "ru": "Placehodler",
-                    "ja": "Placehodler",
-                    "uk": "Placehodler",
-                    "hu": "Placehodler"
-                },
-                "feature": [
-                    {
-                        "domain": "dashboard.promoBanner",
-                        "visibleBanner": "ts7",
-                        "flag": true
                     }
                 ]
             }
