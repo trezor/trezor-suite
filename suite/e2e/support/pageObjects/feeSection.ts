@@ -1,5 +1,6 @@
 import { Locator, Page, Response } from '@playwright/test';
 
+import { localizeNumber } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { step } from '../common';
@@ -171,7 +172,7 @@ export class FeeSection {
         const ratioToEthereum = 1e9;
         const maxFeeInEthereum =
             (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;
-        const maxFeeRounded = maxFeeInEthereum.toFixed(numberOfDecimals);
+        const maxFeeRounded = localizeNumber(maxFeeInEthereum, 'en-US', 0, numberOfDecimals);
         // This method is also providing detailed error message for troubleshooting expect if it fails
         const errorMessageMaxCalculation = `expected to have max Fee: 
 "(parseFloat(${gasLimit}) * parseFloat(${maxFeePerGas})) / ${ratioToEthereum}"

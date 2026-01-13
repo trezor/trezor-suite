@@ -262,7 +262,41 @@ export class DevicePrompt {
         );
     };
 
-    wrapText = (text: string, options?: { isAmount?: boolean }) => {
+    private wrapTextByWords = (text: string, lineCharLimit: number) => {
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+
+        const wouldExceedLimit = (line: string, word: string): boolean => {
+            const combinedLength = line ? line.length + 1 + word.length : word.length;
+
+            return combinedLength > lineCharLimit;
+        };
+
+        for (const word of words) {
+            if (!currentLine) {
+                // First word on the line
+                currentLine = word;
+            } else if (wouldExceedLimit(currentLine, word)) {
+                // Word doesn't fit, wrap to new line
+                lines.push(currentLine);
+                lines.push('\n');
+                currentLine = word;
+            } else {
+                // Word fits, add it with a space
+                currentLine += ' ' + word;
+            }
+        }
+
+        // Add the final line without trailing newline
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+
+        return lines;
+    };
+
+    wrapText = (text: string, options?: { isAmount?: boolean; wrapByWords?: boolean }) => {
         const T3W1_EXACT_LINE_LENGTH = 14;
         const T3T1_EXACT_LINE_LENGTH = 18;
         const T3W1_LINE_LENGTH_MINUS_DASH = 13;
@@ -271,12 +305,21 @@ export class DevicePrompt {
             if (text.length === T3W1_EXACT_LINE_LENGTH) {
                 return [text];
             }
+
+            if (options?.wrapByWords) {
+                return this.wrapTextByWords(text, T3W1_EXACT_LINE_LENGTH);
+            }
+
             const lineCharLimit = options?.isAmount
                 ? T3W1_LINE_LENGTH_MINUS_DASH
                 : T3W1_EXACT_LINE_LENGTH;
             const newline = options?.isAmount ? ['-', '\n'] : ['\n'];
 
             return this.wrapTextByLineLimit(text, lineCharLimit, newline);
+        }
+
+        if (options?.wrapByWords) {
+            return this.wrapTextByWords(text, T3T1_EXACT_LINE_LENGTH);
         }
 
         return this.wrapTextByLineLimit(text, T3T1_EXACT_LINE_LENGTH, ['\n']);
