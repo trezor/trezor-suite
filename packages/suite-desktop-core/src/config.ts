@@ -13,6 +13,7 @@ export const allowedProtocols = ['http:', 'https:'];
 const allowedDomainsDev = [
     // google store for chrome extensions (devtools) loaded in electron-react-devtools.ts, see https://github.com/MarshallOfSound/electron-devtools-installer/blob/f8ec609/src/downloadChromeExtension.ts#L30
     'google.com',
+    'googleusercontent.com',
 ];
 
 export const allowedDomains = [
