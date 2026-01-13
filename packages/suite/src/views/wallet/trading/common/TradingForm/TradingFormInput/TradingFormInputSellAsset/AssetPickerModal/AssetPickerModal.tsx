@@ -87,10 +87,7 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
             <Divider margin={{ top: 16 }} />
 
-            <AssetListWrapper
-                listItems={listItems}
-                renderItem={renderItem}
-            />
+            <AssetListWrapper listItems={listItems} renderItem={renderItem} />
         </AssetsModal>
     );
 });
