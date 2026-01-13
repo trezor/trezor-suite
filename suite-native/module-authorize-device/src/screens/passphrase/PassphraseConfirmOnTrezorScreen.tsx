@@ -1,18 +1,27 @@
-import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
-import { ConfirmOnTrezorAnimation } from '@suite-native/device';
-import { Translation } from '@suite-native/intl';
-import { Screen } from '@suite-native/navigation';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
+import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorization';
+import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
+import { PassphraseConfirmOnTrezorScreenContent } from '@suite-native/passphrase';
 
-export const PassphraseConfirmOnTrezorScreen = () => (
-    <Screen header={<PassphraseScreenHeader />}>
-        <VStack spacing="sp24" alignItems="center" justifyContent="center" flex={1} padding="sp8">
-            <ConfirmOnTrezorAnimation />
-            <CenteredTitleHeader
-                title={<Translation id="modulePassphrase.confirmOnDevice.title" />}
-                subtitle={<Translation id="modulePassphrase.confirmOnDevice.description" />}
-            />
-        </VStack>
-    </Screen>
-);
+import { AuthorizeDeviceScreenHeader } from '../../components/AuthorizeDeviceScreenHeader';
+
+export const PassphraseConfirmOnTrezorScreen = () => {
+    const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
+    const navigateToInitialScreen = useNavigateToInitialScreen();
+
+    useEffect(() => {
+        if (!hasDeviceRequestedPassphrase) {
+            // NOTE: this means that the device passphrase request was fulfilled either success or not,
+            // TzoreConnect will trigger proper events globaly and this will be reopened if needed
+            navigateToInitialScreen();
+        }
+    }, [hasDeviceRequestedPassphrase, navigateToInitialScreen]);
+
+    return (
+        <Screen header={<AuthorizeDeviceScreenHeader />}>
+            <PassphraseConfirmOnTrezorScreenContent />
+        </Screen>
+    );
+};

@@ -11,7 +11,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectBluetoothDeviceScreen } from '../screens/connect/ConnectBluetoothDeviceScreen';
@@ -22,7 +21,7 @@ import { PinScreen } from '../screens/connect/PinScreen';
 import { RemoveBluetoothDeviceScreen } from '../screens/connect/RemoveBluetoothDeviceScreen';
 import { TurnOnAndUnlockDeviceScreen } from '../screens/connect/TurnOnAndUnlockDeviceScreen';
 import { PassphraseConfirmFeatureUnlockEnterOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockEnterOnTrezorScreen';
-import { PassphraseConfirmFeatureUnlockOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockOnTrezorScreen';
+import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
 import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
 import { ThpCodeEntryScreen } from '../screens/thp/ThpCodeEntryScreen';
 import { ThpConfirmationScreen } from '../screens/thp/ThpConfirmationScreen';
@@ -37,13 +36,6 @@ export const AuthorizeDeviceStackNavigator = () => {
         <AuthorizeDeviceStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
-            {
-                // NOTE: render this first as it handles states that should be on top - passphrase on device enable
-            }
-            <AuthorizeDeviceStack.Screen
-                name={AuthorizeDeviceStackRoutes.PassphraseForm}
-                component={PassphraseStackNavigator}
-            />
             {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
@@ -104,8 +96,8 @@ export const AuthorizeDeviceStackNavigator = () => {
                 component={PassphraseConfirmFeatureUnlockEnterOnTrezorScreen}
             />
             <AuthorizeDeviceStack.Screen
-                name={AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor}
-                component={PassphraseConfirmFeatureUnlockOnTrezorScreen}
+                name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}
+                component={PassphraseConfirmOnTrezorScreen}
             />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.CoinEnablingInit}
