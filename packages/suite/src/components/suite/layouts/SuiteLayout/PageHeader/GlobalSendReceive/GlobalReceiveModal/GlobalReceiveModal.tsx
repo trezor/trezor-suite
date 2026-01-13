@@ -12,7 +12,6 @@ import {
     AssetsListEmpty,
     AssetsModal,
 } from 'src/components/suite/asset-picker/components';
-import { useDataFingerprint } from 'src/components/suite/asset-picker/hooks/useDataFingerprint';
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
@@ -40,7 +39,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const listRef = useRef<HTMLDivElement>(null);
     const accountsOptions = useAccountsOptions();
     const filteredAccounts = useFilterAccounts(accountsOptions);
-    const filteredAccountsFingerprint = useDataFingerprint(filteredAccounts);
     const filledSearch = useSelector(globalSendReceiveFilters.selectors.filledSearch);
 
     const renderItem = useCallback(
@@ -114,7 +112,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 >
                     <AssetsList
                         items={filteredAccounts}
-                        itemsFingerprint={filteredAccountsFingerprint}
                         renderItem={renderItem}
                         height={LIST_HEIGHT}
                         ref={listRef}

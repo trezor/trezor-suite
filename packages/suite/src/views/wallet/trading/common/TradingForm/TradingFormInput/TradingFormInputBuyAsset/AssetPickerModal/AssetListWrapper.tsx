@@ -1,7 +1,7 @@
 import { ReactNode, memo, useRef } from 'react';
 
 import { AssetsList, AssetsListEmpty } from 'src/components/suite/asset-picker/components';
-import { useDataFingerprint, useListScrollReset } from 'src/components/suite/asset-picker/hooks';
+import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 
 import { TradingAssetListItem } from './hooks/useBuildTradingAssetOptions';
 
@@ -10,16 +10,17 @@ const LIST_HEIGHT = 530;
 export interface AssetListWrapperProps {
     renderItem: (item: TradingAssetListItem) => ReactNode;
     listItems: TradingAssetListItem[];
+    resetScrollTrigger: string;
 }
 
 export const AssetListWrapper = memo(function AssetListWrapperInner({
     listItems,
     renderItem,
+    resetScrollTrigger,
 }: AssetListWrapperProps) {
     const listRef = useRef<HTMLDivElement>(null);
-    const listItemsFingerprint = useDataFingerprint(listItems);
 
-    useListScrollReset(listRef, listItemsFingerprint);
+    useListScrollReset(listRef, resetScrollTrigger);
 
     return (
         <AssetsListEmpty
@@ -30,7 +31,6 @@ export const AssetListWrapper = memo(function AssetListWrapperInner({
         >
             <AssetsList
                 items={listItems}
-                itemsFingerprint={listItemsFingerprint}
                 renderItem={renderItem}
                 height={LIST_HEIGHT}
                 ref={listRef}

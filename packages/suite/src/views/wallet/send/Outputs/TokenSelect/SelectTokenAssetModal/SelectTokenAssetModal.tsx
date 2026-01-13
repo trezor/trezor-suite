@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -15,7 +15,6 @@ import { Translation } from 'src/components/suite/Translation';
 import { TokenBalance } from 'src/components/wallet/TokenBalance';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { getFingerprint } from 'src/utils/wallet/getFingerprint';
 
 import { useBuildOptionsForTabs } from './hooks/useBuildOptionsForTabs';
 import { useOptionsSearch } from './hooks/useOptionsSearch';
@@ -60,15 +59,6 @@ export function SelectTokenAssetModal({
     const optionsForAllTabs = useBuildOptionsForTabs(account);
     const { filteredOptions, setSearch, search } = useOptionsSearch(
         optionsForAllTabs[activeTokenTab],
-    );
-    const optionsFingerprint = useMemo(
-        () =>
-            getFingerprint(
-                filteredOptions.map(
-                    ({ badge, ...optionWithoutReactNodes }) => optionWithoutReactNodes,
-                ),
-            ),
-        [filteredOptions],
     );
 
     const handleSelectChange = async (selectedAsset: AssetOptionBaseProps) => {
@@ -122,7 +112,6 @@ export function SelectTokenAssetModal({
     return (
         <SelectAssetModal
             options={filteredOptions}
-            optionsFingerprint={optionsFingerprint}
             onSelectAsset={handleSelectChange}
             onClose={onModalClose}
             searchInput={
