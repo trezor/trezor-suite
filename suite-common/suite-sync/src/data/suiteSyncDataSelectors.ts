@@ -1,5 +1,10 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { SuiteSyncAccount, createSuiteSyncOutputId } from '@suite-common/suite-sync-storage';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import {
+    SuiteSyncAccount,
+    SuiteSyncAddress,
+    SuiteSyncOutput,
+    createSuiteSyncOutputId,
+} from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor, WalletDescriptor } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -19,32 +24,34 @@ const selectAllAccountsForWallet = createMemoizedSelector(
     [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
     wallet => {
         if (wallet === null) {
-            return [];
+            return returnStableArrayIfEmpty<SuiteSyncAccount>();
         }
 
         return typedObjectValues(wallet.accounts);
     },
 );
 
-const selectAllAddressesForWallet = (
-    state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor,
-) => {
-    const wallet = selectWalletById(state, walletDescriptor);
-    if (!wallet) return [];
+const selectAllAddressesForWallet = createMemoizedSelector(
+    [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
+    wallet => {
+        if (!wallet) {
+            return returnStableArrayIfEmpty<SuiteSyncAddress>();
+        }
 
-    return typedObjectValues(wallet.addresses);
-};
+        return typedObjectValues(wallet.addresses);
+    },
+);
 
-const selectAllOutputsForWallet = (
-    state: SuiteSyncDataRootState,
-    walletDescriptor: WalletDescriptor,
-) => {
-    const wallet = selectWalletById(state, walletDescriptor);
-    if (!wallet) return [];
+const selectAllOutputsForWallet = createMemoizedSelector(
+    [(state, walletDescriptor) => selectWalletById(state, walletDescriptor)],
+    wallet => {
+        if (!wallet) {
+            return returnStableArrayIfEmpty<SuiteSyncOutput>();
+        }
 
-    return typedObjectValues(wallet.outputs);
-};
+        return typedObjectValues(wallet.outputs);
+    },
+);
 
 export const selectSuiteSyncWalletLabel = (
     state: SuiteSyncDataRootState,
