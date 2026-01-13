@@ -11,6 +11,20 @@ Generally it's recommended to follow official [React Native environment setup](h
 2. [iOS Guide](https://reactnative.dev/docs/set-up-your-environment?os=macos&platform=ios)
     - Make sure you have the latest version of the Xcode command line tools installed: `xcode-select --install`
 
+### NixOS prerequisites
+
+shell
+
+```
+USE_ANDROID=1 nix-shell
+```
+
+flakes
+
+```
+nix develop .#use_android
+```
+
 ## Before you run the app
 
 1. Run `yarn native:prebuild:clean` to generate `ios/` and `android/` directories.
