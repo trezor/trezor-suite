@@ -65,7 +65,6 @@ const calculateItemHeight = <T extends BaseItemProps>(item: T): number => item.h
 
 type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & {
     items: Array<T>;
-    itemsFingerprint: string;
     onScroll?: (e: Event) => void;
     onScrollEnd: () => void;
     listHeight: number | string;
@@ -101,7 +100,6 @@ type VirtualizedListProps<T extends BaseItemProps> = AllowedFrameProps & {
 
 export function VirtualizedListComponent<T extends BaseItemProps>({
     items: initialItems,
-    itemsFingerprint: initialItemsFingerprint,
     onScroll,
     onScrollEnd,
     listHeight,
@@ -120,7 +118,6 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     const newRef = useRef<HTMLDivElement>(null);
     const containerRef = (ref as React.RefObject<HTMLDivElement>) || newRef;
     const [items, setItems] = useState(initialItems);
-    const [itemsFingerprint, setItemsFingerprint] = useState(initialItemsFingerprint);
     const [indexes, setIndexes] = useState({
         startIndex: 0,
         endIndex: visibleItemsCount,
@@ -134,23 +131,12 @@ export function VirtualizedListComponent<T extends BaseItemProps>({
     }, [containerRef]);
 
     useEffect(() => {
-        if (itemsFingerprint === initialItemsFingerprint) {
-            return;
-        }
-
         setItems(initialItems);
-        setItemsFingerprint(initialItemsFingerprint);
 
         if (resetScrollOnItemsChange) {
             resetScroll();
         }
-    }, [
-        initialItems,
-        initialItemsFingerprint,
-        itemsFingerprint,
-        resetScroll,
-        resetScrollOnItemsChange,
-    ]);
+    }, [initialItems, resetScroll, resetScrollOnItemsChange]);
 
     const itemHeights = useMemo(() => items.map(item => calculateItemHeight(item)), [items]);
     const totalHeight = useMemo(

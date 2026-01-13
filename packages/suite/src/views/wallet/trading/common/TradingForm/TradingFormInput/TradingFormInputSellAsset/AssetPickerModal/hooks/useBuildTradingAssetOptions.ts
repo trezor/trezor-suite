@@ -5,7 +5,6 @@ import { union } from '@trezor/utils';
 
 import {
     useAccountWithTokensOptions,
-    useDataFingerprint,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -24,7 +23,6 @@ export function useBuildTradingAssetOptions({
         includeTestnets: false,
     });
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(accountsWithTokens, search);
-    const listItemsFingerprint = useDataFingerprint(filteredAccountsWithTokens);
     const listItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
     const networks = useMemo(
         () =>
@@ -36,5 +34,5 @@ export function useBuildTradingAssetOptions({
         [accountsWithTokens],
     );
 
-    return { listItemsFingerprint, listItems, networks };
+    return { listItems, networks };
 }

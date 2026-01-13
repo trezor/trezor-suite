@@ -114,7 +114,11 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
             <Divider margin={{ top: 16 }} />
 
-            <AssetListWrapper renderItem={renderItem} listItems={listItems} />
+            <AssetListWrapper
+                renderItem={renderItem}
+                listItems={listItems}
+                resetScrollTrigger={`${networkSymbol}${throttledSearch}${listItems.length}`}
+            />
         </AssetsModal>
     );
 });

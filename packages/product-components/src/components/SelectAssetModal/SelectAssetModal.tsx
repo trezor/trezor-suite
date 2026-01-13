@@ -37,7 +37,6 @@ const LIST_HEIGHT = `calc(80vh - ${HEADER_HEIGHT}px)`;
 
 export interface SelectAssetModalProps {
     options: AssetProps[];
-    optionsFingerprint: string;
     onSelectAsset: (selectedAsset: AssetOptionBaseProps) => Promise<void> | void;
     onClose: () => void;
     searchInput?: ReactNode;
@@ -49,7 +48,6 @@ export interface SelectAssetModalProps {
 
 export const SelectAssetModal = ({
     options,
-    optionsFingerprint,
     onSelectAsset,
     onClose,
     filterTabs,
@@ -126,7 +124,6 @@ export const SelectAssetModal = ({
                         <ShadowTop backgroundColor={shadowColor} />
                         <VirtualizedList
                             items={options}
-                            itemsFingerprint={optionsFingerprint}
                             ref={scrollElementRef}
                             onScroll={onScroll}
                             renderItem={renderItem}

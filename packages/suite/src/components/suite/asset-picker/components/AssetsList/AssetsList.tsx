@@ -5,7 +5,6 @@ import { mapElevationToBackgroundToken } from '@trezor/theme';
 
 export interface AssetsListProps<T> {
     items: T[];
-    itemsFingerprint: string;
     renderItem: (item: T, index: number) => ReactNode;
     height: string | number;
     minHeight?: string | number;
@@ -16,7 +15,6 @@ export const LIST_MIN_HEIGHT = 200;
 
 function AssetsListInner<T extends BaseItemProps>({
     items,
-    itemsFingerprint,
     renderItem,
     height,
     minHeight = LIST_MIN_HEIGHT,
@@ -34,7 +32,6 @@ function AssetsListInner<T extends BaseItemProps>({
             <VirtualizedList
                 items={items}
                 padding={8}
-                itemsFingerprint={itemsFingerprint}
                 ref={ref}
                 onScroll={onScroll}
                 renderItem={renderItem}

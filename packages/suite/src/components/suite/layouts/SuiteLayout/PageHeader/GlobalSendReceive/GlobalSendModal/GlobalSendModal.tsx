@@ -18,7 +18,6 @@ import {
 import {
     AssetPickerListItem,
     useAccountWithTokensOptions,
-    useDataFingerprint,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -45,7 +44,6 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
         accountsWithTokens,
         searchFilter,
     );
-    const fingerprintWithTokens = useDataFingerprint(filteredAccountsWithTokens);
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     const submitRef = useCurrentRef(onSubmit);
@@ -113,7 +111,6 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
             >
                 <AssetsList
                     items={globalSendListItems}
-                    itemsFingerprint={fingerprintWithTokens}
                     renderItem={renderItem}
                     height={LIST_HEIGHT}
                     ref={listRef}
