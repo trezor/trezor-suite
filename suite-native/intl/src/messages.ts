@@ -119,7 +119,7 @@ export const messages = {
                     ios: 'Connect your Trezor Safe 7',
                     android: 'Connect your Trezor',
                 },
-                description: 'Manage your coins with your Trezor connected.',
+                description: 'Manage your assets with your Trezor connected.',
                 connectButton: 'Connect',
             },
             syncCoins: {
@@ -178,7 +178,7 @@ export const messages = {
                 stillWorking: 'Retrieving balances',
             },
         },
-        rediscoveryNeeded: 'Reconnect your trezor to load all assets.',
+        rediscoveryNeeded: 'Reconnect your Trezor to load all assets.',
     },
     biometricsButton: 'Unlock with biometrics',
     bluetooth: {
@@ -233,7 +233,7 @@ export const messages = {
             pairingInstructions: {
                 step1: 'Go to Settings > Bluetooth',
                 step2: 'Find your Trezor and tap on ⓘ',
-                step3: 'Tap “Forget this device”',
+                step3: 'Tap “Forget device”',
             },
         },
         toasts: {
@@ -420,10 +420,10 @@ export const messages = {
             },
         },
         autoconnect: {
-            title: 'Connect to your Trezor faster with Auto-connect',
+            title: 'Connect to your Trezor faster with auto-connect',
             description:
-                'Allow Trezor Suite to connect automatically to this Trezor so you don’t have to confirm the connection each time.',
-            turnOnButton: 'Turn on Auto-connect',
+                'Use this phone regularly with your Trezor? Let Trezor Suite connect automatically—no need to approve it each time.',
+            turnOnButton: 'Turn on auto-connect',
             noThanksButton: 'Not now',
         },
         pairingSuccess: {
@@ -902,7 +902,7 @@ export const messages = {
             },
         },
         bluetooth: {
-            title: 'Unpair Trezor',
+            title: 'Unpair Bluetooth connection',
             content: 'Unpair your Trezor from this device',
             unpairTrezorButton: 'Unpair',
             description:
@@ -916,18 +916,18 @@ export const messages = {
             },
             screen: {
                 subtitle:
-                    'With auto connect, Trezor will connect automatically without having to confirm every connection.',
+                    'Trezor will connect automatically, so you don’t need to approve each connection.',
             },
             enable: {
-                pictogramTitle: 'Auto connect enabled',
+                pictogramTitle: 'Auto-connect turned on',
                 description:
                     'Trezor will no longer connect automatically to Trezor Suite. You’ll confirm each connection on your device.',
                 turnOffButton: 'Turn off',
-                error: 'Turning on auto-connect failed.',
+                error: 'Auto-connect failed to turn on.',
                 successToast: 'Auto-connect turned on',
             },
             disable: {
-                pictogramTitle: 'Auto connect disabled',
+                pictogramTitle: 'Auto-connect turned off',
                 description:
                     'Trezor will connect automatically to Trezor Suite. No need to confirm each time.',
                 turnOnButton: 'Turn on',
@@ -1044,8 +1044,7 @@ export const messages = {
                 },
                 coinEnabling: {
                     title: 'Coins',
-                    subtitle:
-                        'Only choosing coins that you use will shorten loading times when connecting your Trezor.',
+                    subtitle: 'Manage assets that you want to use',
                 },
                 suiteSync: {
                     title: 'Suite Sync',
@@ -1058,6 +1057,10 @@ export const messages = {
                 advanced: {
                     title: 'Advanced',
                     subtitle: 'Expert features for power users ',
+                },
+                labeling: {
+                    title: 'Labeling',
+                    subtitle: 'Name your wallets, accounts and more',
                 },
             },
             connections: {
@@ -1367,6 +1370,11 @@ export const messages = {
                 subtitle:
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
             },
+        },
+        secureSync: {
+            title: 'Secure sync (required)',
+            description:
+                'Secure sync keeps your data consistent across all of your devices. Data is stored locally and only synced with devices you authorize.',
         },
     },
     moduleOnboarding: {
@@ -1749,7 +1757,7 @@ export const messages = {
             removeAccountAlert: {
                 title: 'Do you really want to remove this coin from {trezorSuiteHeader}?',
                 description:
-                    'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
+                    'Your assets remain intact and safe. Import this asset again using your public key (XPUB) or receive address at any time.',
                 primaryButton: 'Remove coin',
             },
         },
@@ -1906,7 +1914,7 @@ export const messages = {
         },
         connectButton: 'Connect Trezor',
         status: {
-            portfolioTracker: 'Track your coins without Trezor',
+            portfolioTracker: 'Track your assets without Trezor',
             connected: 'Connected',
             disconnected: 'Disconnected',
             bootloader: 'Bootloader mode',
@@ -2246,7 +2254,8 @@ export const messages = {
         infoBanner: {
             providerReducingRewards:
                 'Your current provider is reducing ADA rewards. Update your provider on desktop and earn {apy}% APY.',
-            updateToNewProvider: `Update to our new provider, Everstake, and earn ~{apy}% APY. Your ADA with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.`,
+            updateToNewProvider:
+                'Update to our new provider, Everstake, and earn ~{apy}% APY. Your ADA with our previous provider is safe, and your rewards stay intact, though rates aren’t guaranteed.',
             rewardsReduced: 'Cardano staking rewards reduced',
         },
         notAvailable: 'Not available',
@@ -2528,7 +2537,7 @@ export const messages = {
                 submitted: 'Submitted',
                 approvalPending: 'Approval pending',
                 waitingForUser: 'Waiting for user',
-                success: 'Approved',
+                success: 'Success',
                 error: 'Rejected',
                 blocked: 'Blocked',
                 siteActionRequest: 'Site action requested',
@@ -2677,7 +2686,7 @@ export const messages = {
             betaBadge: 'Beta',
         },
         changeLanguage: {
-            success: `Language changed to {languageName}`,
+            success: 'Language changed to {languageName}',
             failure: {
                 title: 'Translation download failed',
                 description: 'Check your internet connection and try again.',
@@ -2814,7 +2823,10 @@ export const messages = {
                 high: 'High',
             },
             description: {
-                title: { general: 'Transaction fee', ethereum: 'Maximum fee' },
+                title: {
+                    general: 'Transaction fee',
+                    ethereum: 'Maximum fee',
+                },
                 body: 'Fees are paid directly to validators for processing your transactions.',
             },
             custom: {
@@ -3000,5 +3012,21 @@ export const messages = {
     },
     moduleClipboard: {
         copiedToClipboard: 'Copied to clipboard',
+    },
+    labeling: {
+        label: 'Label',
+        addLabel: 'Add label',
+        disableAlert: {
+            title: 'Are you sure you want to turn off Suite Sync?',
+            description:
+                'Turning off Suite Sync disables labeling. Your labels will stay safely encrypted, but they won’t be visible until you turn Suite Sync back on.',
+            cta: 'Turn off',
+        },
+        enableAlert: {
+            title: 'Turn on Suite Sync to use labels',
+            description:
+                'Suite Sync keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
+            cta: 'Turn on',
+        },
     },
 };
