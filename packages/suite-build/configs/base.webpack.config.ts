@@ -99,7 +99,9 @@ const config: webpack.Configuration = {
             // TypeScript/JavaScript
             {
                 test: /\.(j|t)sx?$/,
-                exclude: /node_modules/,
+                exclude:
+                    // do not use suite loaders for workers, hot reload plugin fucks it up
+                    /node_modules|workers\/(blockbook|ripple|blockfrost|stellar)\/index|socks-proxy-agent/i,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -163,25 +165,6 @@ const config: webpack.Configuration = {
                 use: [
                     {
                         loader: 'raw-loader',
-                    },
-                ],
-            },
-            // This worker loader is used for suite-desktop
-            {
-                // during compilation, it matches the worker file name both with Unix and Windows paths
-                test: /[/\\]workers[/\\][^/\\]+[/\\]index\.ts$/,
-                use: [
-                    {
-                        loader: 'worker-loader',
-                        options: {
-                            filename: 'static/worker.[contenthash].js',
-                        },
-                    },
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-typescript'],
-                        },
                     },
                 ],
             },

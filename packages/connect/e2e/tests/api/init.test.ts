@@ -1,4 +1,5 @@
-import TrezorConnect from '../../../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect from '@trezor/connect';
 
 // error thrown by .init()
 const INIT_ERROR = { code: 'Init_ManifestMissing' };
@@ -6,12 +7,6 @@ const INIT_ERROR = { code: 'Init_ManifestMissing' };
 describe('TrezorConnect.init', () => {
     afterEach(() => {
         TrezorConnect.dispose();
-    });
-
-    beforeAll(() => {
-        // use local build, not trezor connect version hosted on trezor.connect.io
-        // @ts-expect-error
-        global.__TREZOR_CONNECT_SRC = process.env.TREZOR_CONNECT_SRC;
     });
 
     it('calling method before .init() and/or .manifest()', async () => {
@@ -42,13 +37,11 @@ describe('TrezorConnect.init', () => {
     it('calling .init() multiple times', async () => {
         await TrezorConnect.init({
             manifest: { appName: 'a', appUrl: 'a', email: 'b' },
-            coreMode: 'iframe', // for connect-web
         });
 
         try {
             await TrezorConnect.init({
                 manifest: { appName: 'a', appUrl: 'a', email: 'b' },
-                coreMode: 'iframe', // for connect-web
             });
             throw new Error('Should not be resolved');
         } catch (error) {
@@ -59,7 +52,6 @@ describe('TrezorConnect.init', () => {
     it('calling multiple methods synchronously', async () => {
         await TrezorConnect.init({
             manifest: { appName: 'a', appUrl: 'a', email: 'b' },
-            coreMode: 'iframe', // for connect-web
         });
 
         const result = await Promise.all([
@@ -74,7 +66,6 @@ describe('TrezorConnect.init', () => {
     it('init success', async () => {
         await TrezorConnect.init({
             manifest: { appName: 'a', appUrl: 'a', email: 'b' },
-            coreMode: 'iframe', // for connect-web
         });
 
         const resp = await TrezorConnect.getCoinInfo({ coin: 'btc' });
@@ -83,8 +74,7 @@ describe('TrezorConnect.init', () => {
         });
     });
 
-    // manifest doesn't allow us to control the coreMode, therefore the test won't run
-    it.skip('manifest success', async () => {
+    it('manifest success', async () => {
         TrezorConnect.manifest({
             appName: 'a',
             appUrl: 'a',

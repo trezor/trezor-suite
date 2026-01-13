@@ -3,7 +3,6 @@ import { LogsManager } from '@trezor/utils';
 const green = '#bada55';
 const blue = '#20abd8';
 const orange = '#f4a744';
-const yellow = '#fbd948';
 
 const colors: Record<string, string> = {
     // blue, npm package related
@@ -19,8 +18,6 @@ const colors: Record<string, string> = {
     DeviceCommands: `color: ${green}; background: #000;`,
     '@trezor/transport': `color: ${green}; background: #000;`,
     InteractionTimeout: `color: ${green}; background: #000;`,
-    // yellow, ui related
-    '@trezor/connect-popup': `color: ${yellow}; background: #000;`,
 };
 
 const logsManager = new LogsManager({ colors });

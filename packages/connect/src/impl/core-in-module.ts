@@ -47,17 +47,13 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
     }
 
     private async initCoreManager() {
-        const { connectSrc } = this._settings;
-
-        const connectCorePath = `${connectSrc}js/core.js`;
-
-        const importResult = await import(/* webpackIgnore: true */ connectCorePath).catch(_err => {
-            this._log.error(`_err: Cannot load "${connectCorePath}"`, _err);
+        const importResult = await import('@trezor/connect/src/core/index').catch(_err => {
+            this._log.error(`_err: Cannot load connect core`, _err);
         });
 
         if (!importResult) {
-            this._log.error(`importResult is empty! Cannot load "${connectCorePath}"`);
-            throw new Error(`importResult is empty! Cannot load "${connectCorePath}"`);
+            this._log.error(`importResult is empty! Cannot load connect core`);
+            throw new Error(`importResult is empty! Cannot load connect core`);
         }
 
         const { initCoreState } = importResult;
@@ -82,6 +78,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         if (this._coreManager) {
             this._coreManager.dispose();
         }
+        this._coreManager = undefined;
 
         return Promise.resolve(undefined);
     }
@@ -199,6 +196,13 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
     }
 
     public async call(params: CallMethodPayload) {
+        if (!this._coreManager) {
+            try {
+                await this.init();
+            } catch (err) {
+                return createErrorMessage(err);
+            }
+        }
         try {
             const { promiseId, promise } = this._messagePromises.create();
             const payload = cloneObject<any>(params);

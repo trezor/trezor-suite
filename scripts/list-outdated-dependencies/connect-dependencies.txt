@@ -39,7 +39,6 @@ concurrently
 crc
 cross-fetch
 crypto-browserify
-es6-promise
 esbuild
 escape-string-regexp
 flexsearch

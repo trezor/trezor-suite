@@ -59,37 +59,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-
+      - run: yarn workspaces focus @trezor/connect
       - if: ${{ inputs.testEnv == 'web' }}
         run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
-      # Install dependencies only for @trezor/connect package
-      - if: ${{ inputs.testEnv == 'web' }}
-        run: yarn workspaces focus @trezor/connect
-      - if: ${{ inputs.testEnv == 'web' }}
-        name: Retrieve build connect-web
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact-connect-web
-          path: packages/connect-web/build
-      - if: ${{ inputs.testEnv == 'web' }}
-        name: Retrieve build connect-iframe
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifact-connect-iframe
-          path: packages/connect-iframe/build
-      - if: ${{ inputs.testEnv == 'web' }}
-        run: cd packages/connect-iframe && tree .
-      - if: ${{ inputs.testEnv == 'web' }}
-        name: "Echo download path"
-        run: echo ${{steps.download.outputs.download-path}}
-
-      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - if: ${{ inputs.testEnv == 'node' }}
-        run: sed -i "/\"node\"/d" package.json
-      - if: ${{ inputs.testEnv == 'node' }}
-        run: yarn workspaces focus @trezor/connect
-
+          yarn workspaces focus @trezor/connect-web
+          yarn && yarn build:libs
       - if: ${{ inputs.disable_cache_tx == 'true' }}
         run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
       - if: ${{ inputs.testFirmwareModel }}

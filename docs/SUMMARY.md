@@ -38,7 +38,6 @@
     - [desktop logger](./features/desktop-logger.md)
     - [onboarding](./features/onboarding/onboarding.md)
 - [Tests](./tests/index.md)
-    - [E2E @trezor/connect-popup](./tests/e2e-connect-popup.md)
     - [regtest](./tests/regtest.md)
 - [Miscellaneous](./misc/index.md)
     - [build](./misc/build.md)

@@ -1,4 +1,6 @@
-import TrezorConnect from '../../../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect from '@trezor/connect';
+
 import * as fixtures from '../../__fixtures__';
 import {
     conditionalTest,

@@ -11,7 +11,6 @@ on:
     paths:
       - "packages/blockchain-link/**"
       - "packages/connect-common/**"
-      - "packages/connect-iframe/**"
       - "packages/connect-web/**"
       - "packages/connect/**"
       - "packages/protobuf/**"
@@ -31,38 +30,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
-  build:
-    if: github.repository == 'trezor/trezor-suite'
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-          cache-dependency-path: "**/yarn.lock"
-      - run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-      - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web
-      - run: yarn workspace @trezor/connect-iframe build
-      - run: yarn workspace @trezor/connect-web build
-      # upload + download takes longer than doing yarn build:libs
-      - name: Upload build connect-web
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact-connect-web
-          path: packages/connect-web/build
-      - name: Upload build connect-iframe
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact-connect-iframe
-          path: packages/connect-iframe/build
-
   set-matrix:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -107,7 +74,7 @@ jobs:
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
   PR-check:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: PR-check ${{ matrix.key }}
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -125,7 +92,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
   PR-check-web:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: PR-check-web ${{ matrix.key }}
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -143,7 +110,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyWebMatrix) }}
 
   PR-nightly-t3w1:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: PR-nightly-t3w1 ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -161,7 +128,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.nightlyT3W1Matrix) }}
 
   randomized-order:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: randomized ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -180,7 +147,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
   all-fws:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: all-fws ${{ matrix.key }} ${{ matrix.firmware }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -198,7 +165,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.allFwsMatrix) }}
 
   all-models-api:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: all-models-api ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -216,7 +183,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
 
   all-transports:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: all-transports-api ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
@@ -234,7 +201,7 @@ jobs:
       matrix: ${{ fromJson(needs.set-matrix.outputs.allTransportsMatrix) }}
 
   model-one-api:
-    needs: [build, set-matrix]
+    needs: [set-matrix]
     name: model-one-api ${{ matrix.key }}
     if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
