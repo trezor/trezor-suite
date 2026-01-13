@@ -68,7 +68,7 @@ jobs:
     timeout-minutes: 60
     outputs:
       dailyMatrix: ${{ steps.set-matrix-daily.outputs.matrix }}
-      dailyT3W1Matrix: ${{ steps.set-matrix-daily-t3w1.outputs.matrix }}
+      dailyWebMatrix: ${{ steps.set-matrix-daily-web.outputs.matrix }}
       nightlyT3W1Matrix: ${{ steps.set-matrix-nightly-t3w1.outputs.matrix }}
       otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.matrix }}
       allFwsMatrix: ${{ steps.set-matrix-all-firmwares.outputs.matrix }}
@@ -80,11 +80,11 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T2T1 --firmware=2-latest --env=all --groups=api,api-flaky --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=node --groups=all --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
-      - name: Set daily T3W1 matrix
-        id: set-matrix-daily-t3w1
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=all --groups=thp --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
+      - name: Set daily web matrix
+        id: set-matrix-daily-web
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T3W1 --firmware=2-latest --env=web --groups=api,init --disable_cache_tx=true --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set nightly T3W1 matrix
         id: set-matrix-nightly-t3w1
@@ -124,9 +124,9 @@ jobs:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
 
-  PR-check-t3w1:
+  PR-check-web:
     needs: [build, set-matrix]
-    name: PR-check-t3w1 ${{ matrix.key }}
+    name: PR-check-web ${{ matrix.key }}
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
@@ -140,7 +140,7 @@ jobs:
       testFirmwareModel: ${{ matrix.model }}
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyT3W1Matrix) }}
+      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyWebMatrix) }}
 
   PR-nightly-t3w1:
     needs: [build, set-matrix]
