@@ -150,7 +150,10 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
 
                     // cardano patch
                     const enabledNetworks = getEnabledNetworks();
-                    const isCardanoMethod = key.startsWith('cardano');
+                    const isCardanoMethod =
+                        key === 'call'
+                            ? params.method.startsWith('cardano')
+                            : key.startsWith('cardano');
                     const cardanoEnabled =
                         !!enabledNetworks.find(a => a === 'ada') || isCardanoMethod;
 
