@@ -12,7 +12,7 @@ const InputWithOptionsContainer = styled.div`
     width: 100%;
 `;
 
-export type InputWithOptionsProps<TFieldValues extends FieldValues> = {
+type InputWithOptionsProps<TFieldValues extends FieldValues> = {
     cryptoInputProps: NumberInputProps<TFieldValues>;
     fiatInputProps?: NumberInputProps<TFieldValues>;
     fiatValue?: React.ReactNode;
