@@ -12473,7 +12473,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-authorize-device@workspace:suite-native/module-authorize-device"
   dependencies:
-    "@gorhom/bottom-sheet": "npm:5.2.6"
     "@react-navigation/native": "npm:7.1.18"
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
@@ -12821,6 +12820,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/module-passphrase@workspace:suite-native/module-passphrase":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-passphrase@workspace:suite-native/module-passphrase"
+  dependencies:
+    "@react-navigation/native-stack": "npm:7.5.1"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/module-send@workspace:*, @suite-native/module-send@workspace:suite-native/module-send":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send@workspace:suite-native/module-send"
@@ -13113,6 +13125,35 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-redux: "npm:9.2.0"
     type-fest: "npm:4.24.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/passphrase@workspace:*, @suite-native/passphrase@workspace:suite-native/passphrase":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
+  dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@react-navigation/native": "npm:7.1.18"
+    "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.5"
+    react-native-reanimated: "npm:~4.1.5"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

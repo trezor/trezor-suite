@@ -6,8 +6,7 @@ import {
     selectIsCreatingNewPassphraseWallet,
 } from '@suite-native/device-authorization';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-
-import { PassphraseEnterOnTrezorScreen } from './PassphraseEnterOnTrezorScreen';
+import { PassphraseEnterOnTrezorScreen } from '@suite-native/passphrase';
 
 export const PassphraseConfirmFeatureUnlockEnterOnTrezorScreen = () => {
     const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);

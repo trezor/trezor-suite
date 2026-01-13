@@ -11,9 +11,8 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { PassphraseForm } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
-
-import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -34,7 +33,7 @@ export const PassphraseFeatureUnlockFormScreen = () => {
     };
 
     const handleAfterSubmit = () => {
-        navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor);
+        navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor);
     };
 
     return (
