@@ -316,7 +316,7 @@
   "TR_ALLOW_ANALYTICS_WHAT_WE_COLLECT_DESCRIPTION": "Raccogliamo dati sulle prestazioni delle app, sulle interazioni degli utenti e sui problemi tecnici per migliorare continuamente la tua esperienza.",
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES": "Aggiornamenti automatici di Trezor Suite",
   "TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION": "Scaricare automaticamente la versione più recente di Trezor Suite in background e installarla al riavvio dell'app. In questo modo si garantisce che le funzionalità e i patch di sicurezza siano sempre aggiornati. Gli aggiornamenti vengono installati senza richiedere l'autorizzazione dell'utente.",
-  "TR_ALL_NETWORKS": "Tutte le reti ({networkCount})",
+  "TR_ALL_NETWORKS": "Tutte le reti",
   "TR_ALL_TRANSACTIONS": "Transazioni",
   "TR_AMOUNT_REDUCED_TXS": "Importo ridotto",
   "TR_AMOUNT_SENT": "Importo inviato",
