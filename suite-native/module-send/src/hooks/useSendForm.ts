@@ -129,7 +129,7 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
         }),
     });
 
-    const { handleSubmit, control, getValues, setValue, trigger, setError } = form;
+    const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
 
@@ -215,14 +215,22 @@ export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) =>
     useEffect(() => {
         const prefillValuesFromStoredDraft = async () => {
             if (sendFormDraft?.outputs) {
-                // TODO: use reset() instead of setValue()
-                setValue('outputs', sendFormDraft.outputs, { shouldTouch: true });
-                setValue('destinationTag', sendFormDraft.destinationTag, {
-                    shouldTouch: true,
+                form.reset({
+                    ...getDefaultValues({
+                        tokenContract,
+                        isDestinationTagEnabled:
+                            network?.networkType === 'ripple' || network?.networkType === 'stellar',
+                    }),
+                    ...sendFormDraft,
                 });
+
                 // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
                 if (!tokenContract) await calculateNormalFeeMaxAmount();
-                trigger();
+
+                // We need to wait for the context to hydrate before validating the form with the draft values.
+                setTimeout(() => {
+                    trigger();
+                }, 0);
             }
         };
 
