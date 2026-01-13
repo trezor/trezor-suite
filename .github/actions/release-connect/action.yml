@@ -60,6 +60,7 @@ runs:
         echo -e "\nenableScripts: false" >> .yarnrc.yml
         yarn install --immutable # focus install is not used here to make sure that all global patches are applied for the release.
 
+    # todo: might not be needed
     - name: Build connect-web
       shell: bash
       env:
@@ -67,16 +68,10 @@ runs:
       run: |
         yarn workspace @trezor/connect-web build
 
+    # todo: we are going to remove inline bundle?
     - name: Check connect-web build size
       shell: bash
       run: ./packages/connect-web/scripts/check-inline-build-size.sh
-
-    - name: Build connect-iframe
-      shell: bash
-      env:
-        NODE_ENV: ${{ inputs.nodeEnv }}
-      run: |
-        yarn workspace @trezor/connect-iframe build
 
     - name: Build connect-webextension
       shell: bash
@@ -107,7 +102,6 @@ runs:
       run: |
         echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
         mkdir -p tmp_build_directory
-        cp -R ./packages/connect-iframe/build/* tmp_build_directory/
         cp -R ./packages/connect-web/build/* tmp_build_directory/
         cp -R ./packages/connect-explorer/build/* tmp_build_directory/
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"

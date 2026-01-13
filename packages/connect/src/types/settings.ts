@@ -79,7 +79,7 @@ export interface ConnectSettingsInternal {
 
 export interface ConnectSettingsWeb {
     hostLabel?: string;
-    coreMode?: 'auto' | 'iframe' | 'deeplink' | 'suite-desktop' | 'suite-web';
+    coreMode?: 'auto' | 'deeplink' | 'suite-desktop' | 'suite-web';
 }
 export interface ConnectSettingsWebextension {
     /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */

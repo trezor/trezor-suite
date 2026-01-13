@@ -1,4 +1,6 @@
-import TrezorConnect, { PROTO, Success, Unsuccessful } from '../../../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect, { PROTO, Success, Unsuccessful } from '@trezor/connect';
+
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 describe('TrezorConnect.cancelCoinjoinAuthorization', () => {

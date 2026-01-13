@@ -1,0 +1,16 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "babel-loader",
+        "@babel/preset-typescript",
+        "@trezor/connect",
+        "karma-babel-preprocessor",
+        "karma-chrome-launcher",
+        "karma-jasmine",
+        "karma-jasmine-async",
+        "karma-sourcemap-loader",
+        "karma-webpack",
+        "node-libs-browser",
+        "process"
+    ]
+}

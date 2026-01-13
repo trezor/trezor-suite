@@ -12,8 +12,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "base": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
-        "core:web": "PROJECT=\"suite-web\" yarn workspace @trezor/connect-iframe build:core-module",
-        "web": "yarn run core:web && PROJECT=web yarn run base",
+        "web": "PROJECT=web yarn run base",
         "dev:web": "yarn run web",
         "dev:web:vite": "vite",
         "build:web": "NODE_ENV=production yarn run web",

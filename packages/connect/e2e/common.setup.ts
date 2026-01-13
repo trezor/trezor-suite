@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect from '@trezor/connect';
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
     EmuStartOptsType,
@@ -7,7 +9,7 @@ import {
 } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
-import TrezorConnect from '../src';
+// import TrezorConnect from '../src';
 import { UI } from '../src/events';
 
 const emulatorStartOpts: EmuStartOptsType =
@@ -198,12 +200,12 @@ export const initTrezorConnect = async (
             email: 'tests@connect.trezor.io',
         },
         transports: ['BridgeTransport'],
-        coreMode: 'iframe',
-        debug: false,
+        debug: true,
         popup: false,
         pendingTransportEvent: true,
         transportReconnect: false,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests
+        coreMode: 'core-in-module', // for connect-web
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',

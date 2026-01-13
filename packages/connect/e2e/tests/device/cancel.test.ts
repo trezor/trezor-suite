@@ -1,4 +1,6 @@
-import TrezorConnect from '../../../src';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect from '@trezor/connect';
+
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
 const getAddress = (showOnTrezor: boolean, coin: string = 'regtest') =>

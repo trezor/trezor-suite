@@ -1,3 +1,4 @@
+# todo: at the moment it is build only. I don't want to change the name not to mess with existing runs in github
 name: "[Build/Test] connect-popup e2e"
 
 permissions:
@@ -14,9 +15,7 @@ on:
     paths:
       - "packages/connect/**"
       - "packages/connect-common/**"
-      - "packages/connect-iframe/**"
       - "packages/connect-explorer/**"
-      - "packages/connect-webextension/**"
       - "packages/connect-web/**"
       - "packages/connect-explorer-theme/**"
       - "packages/trezor-user-env-link/**"

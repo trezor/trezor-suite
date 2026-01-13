@@ -20,7 +20,7 @@ Static files will be generated in `build/` directory.
 
 ## Building webextension
 
-We are building a webextension that uses `@trezor/connect-explorer` and `@trezor/connect-webextension`. This webextension aims to be used for testing TrezorConnect in the webextension environment using the same tests we use for web with connect-popup.
+We are building a webextension that uses `@trezor/connect-explorer` and `@trezor/connect-webextension`. This webextension aims to be used for testing TrezorConnect in the webextension environment.
 
 You can build the web extension running the command bellow:
 

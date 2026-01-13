@@ -2,7 +2,6 @@ import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect'
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 
-import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from './impl/core-in-suite-web';
 
@@ -13,15 +12,11 @@ type ConnectWebExtraMethods = {
 };
 
 const impl = new TrezorConnectDynamic<
-    'iframe' | 'core-in-suite-desktop' | 'core-in-suite-web',
+    'core-in-suite-desktop' | 'core-in-suite-web',
     ConnectSettingsWeb,
     ConnectFactoryDependencies<ConnectSettingsWeb> & ConnectWebExtraMethods
 >({
     implementations: [
-        {
-            type: 'iframe',
-            impl: new CoreInIframe(),
-        },
         {
             type: 'core-in-suite-desktop',
             impl: new CoreInSuiteDesktop(),
@@ -32,9 +27,7 @@ const impl = new TrezorConnectDynamic<
         },
     ],
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWeb>) => {
-        if (settings.coreMode === 'iframe') {
-            return 'iframe';
-        } else if (settings.coreMode === 'suite-desktop') {
+        if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
         } else if (settings.coreMode === 'suite-web') {
             return 'core-in-suite-web';
@@ -43,7 +36,7 @@ const impl = new TrezorConnectDynamic<
                 console.warn(`Invalid coreMode: ${settings.coreMode}`);
             }
 
-            return 'core-in-suite-web';
+            return 'core-in-suite-desktop';
         }
     },
     handleBeforeCall: async () => {

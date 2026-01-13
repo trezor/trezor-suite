@@ -111,6 +111,7 @@ const config: webpack.Configuration = {
             inject: true,
             minify: false,
         }),
+        // todo: this is outdated
         new CopyWebpackPlugin({
             patterns: [
                 {

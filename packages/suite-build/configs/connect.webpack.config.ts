@@ -1,56 +1,9 @@
-import { execSync } from 'child_process';
-import CopyWebpackPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import webpack from 'webpack';
 
-import { WebpackSecurityCheckPlugin } from '@trezor/bundler-security';
-
-import { version } from '../package.json';
-import { getDistPathForProject } from './utils';
-
-const COMMON_DATA_SRC = '../../packages/connect-common/files';
-const MESSAGES_SRC = '../../packages/protobuf/messages.json';
-
-const project = process.env.PROJECT || 'iframe';
-
-if (project !== 'iframe' && project !== 'suite-web') {
-    throw new Error(`Unsupported project: ${project}`);
-}
-const DIST = getDistPathForProject(project);
-
-// Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
-// because we need to call `yarn build:libs during native build`
-const commitHash =
-    process.env.EAS_BUILD_GIT_COMMIT_HASH ||
-    process.env.GITHUB_SHA ||
-    execSync('git rev-parse HEAD').toString().trim();
-
-export const config: webpack.Configuration = {
-    target: 'web',
-    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+const connect: webpack.Configuration = {
     module: {
         rules: [
-            {
-                test: /sharedLoggerWorker.ts/i,
-                use: [
-                    {
-                        loader: 'worker-loader',
-                        options: {
-                            worker: 'SharedWorker',
-                            // TODO: we are not using contenthash here because we want to use that worker from
-                            // different environments (iframe, popup, connect-web, etc.) and we would not know the
-                            // name of the file.
-                            filename: './workers/shared-logger-worker.js',
-                        },
-                    },
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            presets: ['@babel/preset-typescript'],
-                        },
-                    },
-                ],
-            },
             {
                 test: /pinger\/pingWorker.ts/i,
                 loader: 'worker-loader',
@@ -86,6 +39,15 @@ export const config: webpack.Configuration = {
                     filename: './workers/stellar-worker.[contenthash].js',
                 },
             },
+            // fakin solana. for some reason it can't be running in a worker. at least becauses of playwright tests, where we can't manipulate time in the worker context, but
+            // I hope there were more reasons not to use worker for solana
+            // {
+            //     test: /workers\/solana\/index/i,
+            //     loader: 'worker-loader',
+            //     options: {
+            //         filename: './workers/solana-worker.[contenthash].js',
+            //     },
+            // },
             {
                 test: /\.(js|ts)$/,
                 exclude: /node_modules/,
@@ -120,42 +82,6 @@ export const config: webpack.Configuration = {
     performance: {
         hints: false,
     },
-    plugins: [
-        new WebpackSecurityCheckPlugin(),
-        new webpack.DefinePlugin({
-            'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
-        }),
-        // provide fallback for global objects.
-        // resolve.fallback will not work since those objects are not imported as modules.
-        // process/browser needs explicit .js extension
-        new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-            Promise: ['es6-promise', 'Promise'],
-            process: 'process/browser.js',
-        }),
-        // resolve @trezor/connect modules as "browser"
-        new webpack.NormalModuleReplacementPlugin(/\/workers\/workers$/, resource => {
-            resource.request = resource.request.replace(/workers$/, 'workers-browser');
-        }),
-        new webpack.NormalModuleReplacementPlugin(/\/utils\/assets$/, resource => {
-            resource.request = resource.request.replace(/assets$/, 'assets-browser');
-        }),
-        // copy public files
-        new CopyWebpackPlugin({
-            patterns: [
-                // copy firmware releases, bridge releases from '@trezor/connect-common'
-                { from: COMMON_DATA_SRC, to: `${DIST}/data` },
-                // copy messages.json from '@trezor/transport'
-                { from: MESSAGES_SRC, to: `${DIST}/data/messages`, force: true },
-            ],
-        }),
-        new webpack.DefinePlugin({
-            'process.env.VERSION': JSON.stringify(version),
-            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
-            'process.env.ASSET_PREFIX': JSON.stringify(process.env.ASSET_PREFIX),
-        }),
-    ],
-
     // @trezor/utxo-lib NOTE:
     // When uglifying the javascript, you must exclude the following variable names from being mangled:
     // Array, BigInteger, Boolean, Buffer, ECPair, Function, Number, Point and Script.
@@ -203,4 +129,4 @@ export const config: webpack.Configuration = {
     ],
 };
 
-export default config;
+export default connect;
