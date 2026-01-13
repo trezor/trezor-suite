@@ -9,3 +9,5 @@ export const EVM_SPENDER_LABELS: Record<string, string> = {
 };
 
 export const UINT256_MAX = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+
+export const EVM_FEE_RATE_DECIMALS = 4;

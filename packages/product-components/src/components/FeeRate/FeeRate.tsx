@@ -1,5 +1,5 @@
+import { EVM_FEE_RATE_DECIMALS } from '@suite-common/suite-constants';
 import { NetworkType } from '@suite-common/wallet-config';
-import { EVM_FEE_RATE_DECIMALS } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 

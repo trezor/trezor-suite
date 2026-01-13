@@ -8,9 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
+import { EVM_FEE_RATE_DECIMALS } from '@suite-common/suite-constants';
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
-    EVM_FEE_RATE_DECIMALS,
     FeesRootState,
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
