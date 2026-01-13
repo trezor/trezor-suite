@@ -15,6 +15,7 @@ type UnverifiedAddressSectionProps = {
     isAddressRevealed: boolean;
     isCardanoAddress: boolean;
     onShowAddress: () => void;
+    isLoading?: boolean;
 };
 
 export const UnverifiedAddress = ({
@@ -22,6 +23,7 @@ export const UnverifiedAddress = ({
     isAddressRevealed,
     isCardanoAddress,
     onShowAddress,
+    isLoading,
 }: UnverifiedAddressSectionProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
@@ -37,7 +39,9 @@ export const UnverifiedAddress = ({
                     isCardanoAddress={isCardanoAddress}
                 />
             )}
-            {!isAddressRevealed && <ShowAddressButtons onShowAddress={onShowAddress} />}
+            {!isAddressRevealed && (
+                <ShowAddressButtons onShowAddress={onShowAddress} isLoading={isLoading} />
+            )}
         </VStack>
     );
 };

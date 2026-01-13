@@ -75,6 +75,8 @@ export const ReceiveAddressScreen = ({
         }
     }, [handleShowAddress, openModal, isDeviceBackupRequired]);
 
+    const isLoading =
+        !(isReceiveApproved || hasReceiveButtonRequest) && isUnverifiedAddressRevealed;
     const isConfirmOnTrezorReady =
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
 
@@ -160,6 +162,7 @@ export const ReceiveAddressScreen = ({
                     accountDescriptor={account.descriptor}
                     symbol={account.symbol}
                     address={address}
+                    isLoading={isLoading}
                     deviceStaticSessionId={account.deviceState}
                     isTokenAddress={!!tokenContract}
                     isReceiveApproved={isReceiveApproved}

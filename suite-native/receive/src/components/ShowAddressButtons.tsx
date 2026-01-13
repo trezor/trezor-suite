@@ -14,9 +14,10 @@ import { ShowAddressViewOnlyBottomSheet } from './ShowAddressViewOnlyBottomSheet
 
 type ShowAddressButtonsProps = {
     onShowAddress: () => void;
+    isLoading?: boolean;
 };
 
-export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) => {
+export const ShowAddressButtons = ({ onShowAddress, isLoading }: ShowAddressButtonsProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -42,6 +43,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
                 viewLeft="eye"
                 size="large"
                 onPress={handleShowAddress}
+                isLoading={isLoading}
             >
                 <Translation
                     id={

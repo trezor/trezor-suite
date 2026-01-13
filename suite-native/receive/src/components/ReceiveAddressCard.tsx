@@ -23,6 +23,7 @@ type ReceiveAddressCardProps = {
     symbol: NetworkSymbol;
     onShowAddress: () => void;
     isTokenAddress?: boolean;
+    isLoading?: boolean;
 };
 
 export const ReceiveAddressCard = ({
@@ -33,6 +34,7 @@ export const ReceiveAddressCard = ({
     isReceiveApproved,
     onShowAddress,
     symbol,
+    isLoading,
     isTokenAddress = false,
 }: ReceiveAddressCardProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -86,7 +88,8 @@ export const ReceiveAddressCard = ({
                     ) : (
                         <UnverifiedAddress
                             address={address}
-                            isAddressRevealed={isUnverifiedAddressRevealed}
+                            isLoading={isLoading}
+                            isAddressRevealed={isUnverifiedAddressRevealed && !isLoading}
                             isCardanoAddress={networkType === 'cardano'}
                             onShowAddress={onShowAddress}
                         />
