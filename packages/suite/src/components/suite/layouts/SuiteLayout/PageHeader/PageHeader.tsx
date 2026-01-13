@@ -34,6 +34,20 @@ const Container = styled.div`
     z-index: ${zIndices.pageHeader};
 `;
 
+const PageHeaderIndex = () => {
+    const hasAccounts = useSelector(state => selectAccounts(state).length > 0);
+
+    if (!hasAccounts) return null;
+
+    return (
+        <Row gap={12}>
+            <HeaderDropdown />
+            <TradeActions />
+            <GlobalSendReceive />
+        </Row>
+    );
+};
+
 interface PageHeaderProps {
     children?: ReactNode;
 }
@@ -41,26 +55,21 @@ interface PageHeaderProps {
 export const PageHeader = ({ children }: PageHeaderProps) => {
     // Select minimal state to avoid unnecessary re-renders
     const selectedAccountKey = useSelector(selectSelectedAccountKey);
-    const hasAccounts = useSelector(state => selectAccounts(state).length > 0);
-    const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const routeName = useSelector(selectRouteName);
+    const isAccountTabPage = useSelector(selectIsAccountTabPage);
 
     // handle moment when children are not rendered yet in the Trade section
-    const isTradeSection = routeName?.includes('wallet-trading');
+    const isTradeSection = !!routeName?.includes('wallet-trading');
 
-    return isTradeSection || children ? (
-        <Container>{children ?? null}</Container>
-    ) : (
+    if (isTradeSection || children != null) {
+        return <Container>{children}</Container>;
+    }
+
+    return (
         <Container>
             <PageName />
 
-            {routeName === 'suite-index' && hasAccounts && (
-                <Row gap={12}>
-                    <HeaderDropdown />
-                    <TradeActions />
-                    <GlobalSendReceive />
-                </Row>
-            )}
+            {routeName === 'suite-index' && <PageHeaderIndex />}
             {!!selectedAccountKey && isAccountTabPage && <HeaderActions />}
         </Container>
     );

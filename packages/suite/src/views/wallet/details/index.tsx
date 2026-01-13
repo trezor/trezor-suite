@@ -4,9 +4,10 @@ import styled from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex } from '@suite-common/wallet-core';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
-import { spacings, typography } from '@trezor/theme';
+import { typography } from '@trezor/theme';
 import {
     HELP_CENTER_BIP329_URL,
     HELP_CENTER_BIP32_URL,
@@ -47,25 +48,22 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
 
     return (
-        <ContentFlex gap={spacings.xxxl} justifyContent="space-between">
+        <ContentFlex gap={40} justifyContent="space-between">
             <InfoItem
                 label={<Translation id={title} />}
                 typographyStyle="body"
                 variant="default"
-                gap={spacings.xs}
+                gap={8}
                 maxWidth={500}
             >
-                <Column gap={spacings.sm}>
+                <Column gap={12}>
                     <Paragraph typographyStyle="hint" variant="tertiary">
                         {description}
                     </Paragraph>
                     {learnMoreUrl && <LearnMoreButton url={learnMoreUrl} />}
                 </Column>
             </InfoItem>
-            <Column
-                alignItems={isContentBelowBreakpoint ? 'flex-start' : 'flex-end'}
-                gap={spacings.xs}
-            >
+            <Column alignItems={isContentBelowBreakpoint ? 'flex-start' : 'flex-end'} gap={8}>
                 {children}
             </Column>
         </ContentFlex>
@@ -76,6 +74,15 @@ const Details = () => {
     const { device, isLocked } = useDevice();
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const { params } = selectedAccount;
+    const fallbackAccount = useSelector(state =>
+        selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex(
+            state,
+            params?.symbol,
+            params?.accountType,
+            params?.accountIndex,
+        ),
+    );
     const isLocalFirstStorageEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
@@ -85,13 +92,18 @@ const Details = () => {
 
     const dispatch = useDispatch();
 
-    if (!device || selectedAccount.status !== 'loaded') {
+    if (
+        !device ||
+        (selectedAccount.status !== 'loaded' && selectedAccount.status !== 'exception') ||
+        fallbackAccount == null
+    ) {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
-    const { account } = selectedAccount;
+    const account = selectedAccount.account ?? fallbackAccount;
+
     const locked = isLocked(true);
-    const disabled = locked || isReceiveDisabled;
+    const disabled = locked || isReceiveDisabled || !selectedAccount.account;
 
     const accountTypeTech = getAccountTypeTech(account.path);
 
@@ -121,7 +133,7 @@ const Details = () => {
             )}
 
             <Card data-testid="@wallet/account-details">
-                <Column gap={spacings.xxxl} hasDivider>
+                <Column gap={40} hasDivider>
                     <DetailsRow
                         title="TR_ACCOUNT_DETAILS_TYPE_HEADER"
                         description={
