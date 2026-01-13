@@ -150,9 +150,6 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
 
 export const validateState = async (context: WorkflowContext) => {
     const { device, method } = context;
-    if (!method.useDeviceState) {
-        return;
-    }
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;

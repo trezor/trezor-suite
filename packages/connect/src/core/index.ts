@@ -293,7 +293,9 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     };
 
     // Make sure that device will display pin/passphrase
-    await workflows.validateState(workflowCtx);
+    if (method.useDeviceState) {
+        await workflows.validateState(workflowCtx);
+    }
 
     if (method.useUi) {
         // make sure that popup is opened
