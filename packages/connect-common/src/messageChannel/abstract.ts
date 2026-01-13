@@ -22,7 +22,6 @@ export interface AbstractMessageChannelConstructorParams {
     };
     logger?: Log;
     lazyHandshake?: boolean;
-    legacyMode?: boolean;
 }
 
 export type Message<IncomingMessages extends { type: string }> = IncomingMessages & {
@@ -58,7 +57,6 @@ export abstract class AbstractMessageChannel<
     private handshakeFinished: Deferred<void> | undefined;
 
     protected lazyHandshake?: boolean;
-    protected legacyMode?: boolean;
     protected logger?: Log;
 
     /**
@@ -75,13 +73,11 @@ export abstract class AbstractMessageChannel<
         channel,
         logger,
         lazyHandshake = false,
-        legacyMode = false,
     }: AbstractMessageChannelConstructorParams) {
         super();
         this.channel = channel;
         this.sendFn = sendFn;
         this.lazyHandshake = lazyHandshake;
-        this.legacyMode = legacyMode;
         this.logger = logger;
     }
 
@@ -91,13 +87,6 @@ export abstract class AbstractMessageChannel<
     public init() {
         if (!this.handshakeFinished) {
             this.handshakeFinished = createDeferred();
-            if (this.legacyMode) {
-                // Bypass handshake for communication with legacy components
-                // We add a delay for enough time for the other side to be ready
-                setTimeout(() => {
-                    this.handshakeFinished?.resolve();
-                }, 500);
-            }
             if (!this.lazyHandshake) {
                 // When `lazyHandshake` handshakeWithPeer will start when received channel-handshake-request.
                 this.handshakeWithPeer();
@@ -151,32 +140,17 @@ export abstract class AbstractMessageChannel<
     protected onMessage(_message: Message<IncomingMessages>) {
         // Older code used to send message as a data property of the message object.
         // This is a workaround to keep backward compatibility.
-        let message = _message;
-        if (
-            this.legacyMode &&
-            message.type === undefined &&
-            'data' in message &&
-            typeof message.data === 'object' &&
-            message.data !== null &&
-            'type' in message.data &&
-            typeof message.data.type === 'string'
-        ) {
-            // @ts-expect-error
-            message = message.data;
-        }
+        const message = _message;
 
         const { channel, id, type, ...data } = message;
 
-        // Don't verify channel in legacy mode
-        if (!this.legacyMode) {
-            if (!channel?.peer || channel.peer !== this.channel.here) {
-                // To wrong peer
-                return;
-            }
-            if (!channel?.here || this.channel.peer !== channel.here) {
-                // From wrong peer
-                return;
-            }
+        if (!channel?.peer || channel.peer !== this.channel.here) {
+            // To wrong peer
+            return;
+        }
+        if (!channel?.here || this.channel.peer !== channel.here) {
+            // From wrong peer
+            return;
         }
 
         if (type === 'channel-handshake-request') {
