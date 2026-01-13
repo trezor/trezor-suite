@@ -32,7 +32,6 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../asset-utils" },
-        { "path": "../blockchain-link-types" },
         { "path": "../components" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },

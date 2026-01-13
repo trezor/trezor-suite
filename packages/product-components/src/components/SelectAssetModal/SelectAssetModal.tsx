@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl';
 
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';
 
@@ -11,7 +10,7 @@ import { AssetItem } from './AssetItem';
 import { AssetItemNotFound } from './AssetItemNotFound';
 
 export interface AssetTokenBalance {
-    baseSymbol: TokenInfo['symbol'];
+    baseSymbol?: string; // TokenInfo['symbol'];
     baseAmount: string;
     fiatAmount: BaseCurrencyAmount | null;
 }
