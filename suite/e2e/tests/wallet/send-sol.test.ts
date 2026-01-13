@@ -107,9 +107,9 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
             await test.step('Verify Amount & Transaction Fee', async () => {
                 await expect(devicePrompt.cryptoAmountOf('total')).toHaveText(
-                    `${sendMaxAmountWithReserve}`,
+                    sendMaxAmountWithReserve,
                 );
-                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(`${maxFee}`);
+                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(maxFee.toString());
 
                 // verify amount & fee
                 const amountWrapped = devicePrompt.wrapText(`${sendMaxAmountWithReserve} SOL`, {
