@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
 
-import { analytics } from '@suite-common/analytics';
 import { Column } from '@trezor/components';
-import styled, { useTheme } from 'styled-components';
 
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
@@ -13,7 +11,6 @@ import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { WelcomeLayoutWithoutModalSwitcher } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 
 export const AnalyticsConsentScreen = () => {
-    const theme = useTheme();
     const legacyAnalytics = useLegacyAnalytics();
 
     const onConfirm = (trackingEnabled: boolean) => {
