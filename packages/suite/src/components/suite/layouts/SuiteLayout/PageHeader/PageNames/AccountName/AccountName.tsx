@@ -34,7 +34,8 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
         observer.observe(target);
 
         return () => observer.disconnect();
-    }, [balanceSectionRef]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [balanceSectionRef?.current]);
 
     return <AccountDetails selectedAccount={selectedAccount} isBalanceShown={isScrolled} />;
 };

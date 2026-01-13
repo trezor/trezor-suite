@@ -1,18 +1,13 @@
-import { Translation } from '@suite/intl';
-import { selectCardanoPoolsInfo, selectIsDiscreteModeActive } from '@suite-common/wallet-core';
+import { selectIsDiscreteModeActive } from '@suite-common/wallet-core';
 import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
-import {
-    isCardanoStakedWithEverstake,
-    isCardanoStakedWithFiveBinaries,
-} from '@suite-common/wallet-utils';
-import { Column, Icon, Row, Text } from '@trezor/components';
+import { Column, Row, Text } from '@trezor/components';
 
-import { AccountLabel, CoinBalance } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 
-import { BalancePlaceholder } from './BalancePlaceholder';
-import { BaseCurrency } from './BaseCurrency';
+import { AccountItemBottomLine } from './AccountItemBottomLine';
+import { AccountItemLabel } from './AccountItemLabel';
+import { AccountItemRightSide } from './AccountItemRightSide';
 
 type AccountItemContentProps = {
     customFiatValue?: BaseCurrencyAmount;
@@ -32,15 +27,16 @@ export const AccountItemContent = ({
     isFiatLoading,
 }: AccountItemContentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
-    const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
-    const isCardanoStaking = account.networkType === 'cardano' && type === 'staking';
-    const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
-    const cardanoStakingIcon = isCardanoStakedWithEverstake(account, cardanoStakingPools) ? (
-        <Icon name="check" variant="primary" size={16} />
-    ) : (
-        <Icon name="warning" variant="warning" size={16} />
-    );
+    const isCardanoStakingRow = account.networkType === 'cardano' && type === 'staking';
+    const isFailed = !!account.failed;
+
+    const canShowBalance = account.backendType !== 'coinjoin' || account.status !== 'initial';
+
+    const shouldShowCryptoBalance =
+        !isCardanoStakingRow && !isFailed && canShowBalance && type !== 'tokens';
+
+    const shouldShowBalancePlaceholder = !isCardanoStakingRow && !isFailed && !canShowBalance;
 
     return (
         // Content is constant size in discreet mode, so overflow: hidden is unnecessary.
@@ -52,48 +48,25 @@ export const AccountItemContent = ({
                     ellipsisLineCount={1}
                     data-testid={`${dataTestKey}/label`}
                 >
-                    {type === 'coin' && <AccountLabel account={account} />}
-                    {type === 'staking' && (
-                        <Column alignItems="flex-start">
-                            <Translation id="TR_NAV_STAKING" />
-                            {isCardanoStakedWithFiveBinaries(account) && (
-                                <Text typographyStyle="hint" variant="warning">
-                                    <Translation id="TR_STAKING_REWARDS_REDUCED" />
-                                </Text>
-                            )}
-                        </Column>
-                    )}
-                    {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
+                    <AccountItemLabel account={account} type={type} />
                 </Text>
 
-                {!isCardanoStaking ? (
-                    <Text typographyStyle="hint" variant="tertiary">
-                        <BaseCurrency
-                            isLoading={isFiatLoading}
-                            customFiatValue={customFiatValue}
-                            symbol={account.symbol}
-                            formattedBalance={formattedBalance}
-                        />
-                    </Text>
-                ) : (
-                    cardanoStakingIcon
-                )}
+                <AccountItemRightSide
+                    account={account}
+                    isCardanoStakingRow={isCardanoStakingRow}
+                    isFailed={isFailed}
+                    formattedBalance={formattedBalance}
+                    customFiatValue={customFiatValue}
+                    isFiatLoading={isFiatLoading}
+                />
             </Row>
-            {!isCardanoStaking && (
-                <>
-                    {isBalanceShown && type !== 'tokens' && (
-                        <Text typographyStyle="hint" variant="tertiary">
-                            <CoinBalance
-                                data-testid="@wallet"
-                                value={formattedBalance}
-                                symbol={account.symbol}
-                                showApproximation
-                            />
-                        </Text>
-                    )}
-                    {!isBalanceShown && <BalancePlaceholder networkSymbol={account.symbol} />}
-                </>
-            )}
+
+            <AccountItemBottomLine
+                account={account}
+                formattedBalance={formattedBalance}
+                shouldShowCryptoBalance={shouldShowCryptoBalance}
+                shouldShowBalancePlaceholder={shouldShowBalancePlaceholder}
+            />
         </Column>
     );
 };

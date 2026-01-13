@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Context } from '@suite-common/message-system';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { SkeletonCircle, SkeletonRectangle } from '@trezor/components';
+import { Column, SkeletonCircle, SkeletonRectangle } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
@@ -31,11 +31,6 @@ const AccountCryptoBalance = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const BalanceSection = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
 interface AccountTopPanelSkeletonProps {
     animate?: boolean;
     symbol?: NetworkSymbol;
@@ -58,6 +53,10 @@ export const AccountTopPanel = () => {
     const { balanceSectionRef } = useAccountHeaderContext();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
 
+    if (status === 'exception') {
+        return null;
+    }
+
     if (status !== 'loaded' || !account) {
         return (
             <AccountTopPanelSkeleton
@@ -71,7 +70,7 @@ export const AccountTopPanel = () => {
 
     return (
         <Container>
-            <BalanceSection ref={balanceSectionRef}>
+            <Column ref={balanceSectionRef}>
                 <AmountUnitSwitchWrapper symbol={symbol}>
                     {shallDisplayBaseCurrency && (
                         <AccountCryptoBalance>
@@ -90,7 +89,7 @@ export const AccountTopPanel = () => {
                     localCurrency={baseCurrency}
                     data-testid="@wallet/account-top-panel/fiat-amount"
                 />
-            </BalanceSection>
+            </Column>
             <ContextMessage context={Context.getAccount(symbol, accountType)} />
         </Container>
     );

@@ -93,7 +93,7 @@ export const selectDeviceAccountsForNetworkSymbolAndAccountType = createMemoized
     },
 );
 
-export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = createMemoizedSelector(
+export const selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex = createMemoizedSelector(
     [
         selectDeviceAccountsForNetworkSymbolAndAccountType,
         (
@@ -106,8 +106,13 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = cre
     (accounts, accountIndex) => {
         if (accountIndex === undefined || accountIndex < 0) return undefined;
 
-        return accounts[accountIndex]?.key;
+        return accounts[accountIndex];
     },
+);
+
+export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = createMemoizedSelector(
+    [selectDeviceAccountForNetworkSymbolAndAccountTypeWithIndex],
+    account => account?.key,
 );
 
 export const selectDeviceMainnetAccounts = createMemoizedSelector(
