@@ -1,7 +1,7 @@
 // Karma custom plugin
 
-const { CACHE } = require('./__txcache__');
-const { createServer, transformCoinsJson } = require('./__wscache__');
+import { CACHE } from './__txcache__/index.js';
+import { createServer, transformCoinsJson } from './__wscache__/index.js';
 
 function CustomReporter(rootConfig, logger) {
     const log = logger.create('reporter.TrezorConnect');
@@ -78,7 +78,7 @@ function WebSocketServerFactory(args, config, logger) {
     });
 }
 
-module.exports = {
+export default {
     'preprocessor:TxCachePreprocessor': ['factory', TxCachePreprocessor],
     'preprocessor:WsCachePreprocessor': ['factory', WsCachePreprocessor],
     'reporter:CustomReporter': ['type', CustomReporter],

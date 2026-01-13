@@ -1,7 +1,14 @@
-const path = require('path');
-const webpack = require('webpack');
+import { createRequire } from 'module';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import webpack from 'webpack';
 
-module.exports = config => {
+import karmaPlugin from './karma.plugin.js';
+
+const require = createRequire(import.meta.url);
+const __dirname = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+
+export default config => {
     const singleRun = process.env.KARMA_SINGLE_RUN !== 'false';
 
     config.set({
@@ -41,7 +48,7 @@ module.exports = config => {
         logLevel: config.LOG_DEBUG,
 
         // include custom karma.plugin
-        plugins: ['karma-*', path.resolve(__dirname, './karma.plugin.js')],
+        plugins: ['karma-*', karmaPlugin],
         frameworks: ['jasmine', 'webpack', 'WebsocketServer'], // use custom framework from karma.plugin
         preprocessors: {
             '**/karma.setup.js': 'webpack',

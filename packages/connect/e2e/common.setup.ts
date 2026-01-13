@@ -7,7 +7,7 @@ import {
 } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
-import TrezorConnect from '../src';
+import TrezorConnect from '../src/index.ts';
 import { UI } from '../src/events';
 
 const emulatorStartOpts: EmuStartOptsType = process.env.emulatorStartOpts
@@ -99,6 +99,11 @@ export const setup = async (
     if (!options.wiped) {
         const mnemonic = options.mnemonic || MNEMONICS.mnemonic_all;
 
+        console.log('restOptions', restOptions);
+        console.log('restOptions', restOptions);
+        console.log('restOptions', restOptions);
+        console.log('restOptions', restOptions);
+        console.log('restOptions', restOptions);
         await TrezorUserEnvLink.setupEmu({
             ...restOptions,
             mnemonic,

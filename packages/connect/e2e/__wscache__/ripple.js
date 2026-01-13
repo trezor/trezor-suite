@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const rippleFixtures = {
+const __dirname = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+
+export const rippleFixtures = {
     server_info: () => ({
         status: 'success',
         type: 'response',
@@ -54,8 +57,4 @@ const rippleFixtures = {
         type: 'response',
         result: {},
     }),
-};
-
-module.exports = {
-    rippleFixtures,
 };

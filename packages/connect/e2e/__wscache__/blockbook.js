@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const blockbookFixtures = {
+const __dirname = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+
+export const blockbookFixtures = {
     getInfo: params => ({
         data: {
             name: 'Blockbook',
@@ -28,5 +31,3 @@ const blockbookFixtures = {
         data: message.params.blocks.map(() => ({ feePerUnit: '1000' })),
     }),
 };
-
-module.exports = { blockbookFixtures };

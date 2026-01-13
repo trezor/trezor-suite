@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const blockfrostFixtures = {
+const __dirname = import.meta.dirname ?? path.dirname(fileURLToPath(import.meta.url));
+
+export const blockfrostFixtures = {
     GET_SERVER_INFO: params => ({
         data: {
             name: 'Blockfrost',
@@ -23,8 +26,4 @@ const blockfrostFixtures = {
             data,
         };
     },
-};
-
-module.exports = {
-    blockfrostFixtures,
 };
