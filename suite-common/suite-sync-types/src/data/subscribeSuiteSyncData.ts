@@ -1,4 +1,4 @@
-import { SuiteSyncSchema } from '@suite-common/suite-sync-storage';
+import { SuiteSyncSchema, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
     DeviceCancelledErrType,
     DeviceErrorType,
@@ -7,7 +7,7 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { RefreshSuiteKeysUnavailableType } from '../refreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
 type SubscribeSuiteSyncDataParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -32,9 +32,12 @@ export type SuiteSyncListenerDep = {
 export type SubscribeSuiteSyncData = (
     params: SubscribeSuiteSyncDataParams,
 ) => Promise<
-    Result<void, RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType>
+    Result<
+        SuiteSyncStorage,
+        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
+    >
 >;
 
 export type SubscribeSuiteSyncDataDep = {
-    subscribeSuiteSyncData: SubscribeSuiteSyncData;
+    ensureSuiteSyncData: SubscribeSuiteSyncData;
 };

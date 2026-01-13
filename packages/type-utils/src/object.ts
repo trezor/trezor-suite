@@ -28,3 +28,11 @@ export type NarrowObjectWithKey<T, K extends PropertyKey> = T extends any
         ? T
         : never
     : never;
+
+export type NullablePropsRecursive<T extends Record<string, any>> = {
+    [K in keyof T]: T[K] extends (...args: any[]) => any
+        ? T[K] | null
+        : T[K] extends Record<string, any>
+          ? NullablePropsRecursive<T[K]> | null
+          : never;
+};

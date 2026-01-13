@@ -1,22 +1,23 @@
 import { UpdateAccountLabel } from '@suite-common/suite-sync-types';
+import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 
-import { EnsureStorageDep } from '../../storage/createEnsureStorage';
-
-export type UpdateAccountLabelDeps = EnsureStorageDep;
+export type UpdateAccountLabelDeps = EnsureWalletSuiteSyncOnDep;
 
 export const createUpdateAccountLabel =
     (deps: UpdateAccountLabelDeps): UpdateAccountLabel =>
     async ({ deviceStaticSessionId, accountKey, label }) => {
-        const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
+        const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
+            deviceStaticSessionId,
+        });
 
-        if (!storageResult.success) {
-            return storageResult;
+        if (!ensureWalletOnResult.success) {
+            return ensureWalletOnResult;
         }
 
         const { accountDescriptor, networkSymbol } = parseAccountKey(accountKey);
 
-        return storageResult.payload.data.accounts.update({
+        return ensureWalletOnResult.payload.data.accounts.update({
             accountDescriptor,
             networkSymbol,
             label,

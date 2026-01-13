@@ -18,5 +18,6 @@ export const createSubscriptionStorage = (): SubscriptionStorage => {
             storage[storageId]?.();
             delete storage[storageId];
         },
+        has: (storageId): boolean => storageId in storage,
     };
 };

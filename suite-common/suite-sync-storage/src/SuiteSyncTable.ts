@@ -17,3 +17,5 @@ export type SuiteSyncTable<T extends {}> = {
     update(entity: Partial<T>): Result<void, SuiteSyncUpdateError>;
     subscribe(params: EntityListener<T>): () => void;
 };
+
+export type InferSuiteSyncTableEntity<T> = T extends SuiteSyncTable<infer E> ? E : never;

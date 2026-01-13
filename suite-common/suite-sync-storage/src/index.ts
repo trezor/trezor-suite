@@ -5,7 +5,12 @@ export type {
 } from './SuiteSyncStorage';
 export type { CreateSuiteSyncOwner, CreateSuiteSyncOwnerDep } from './Owner';
 export { CreateSuiteSyncOwnerError } from './Owner';
-export type { EntityListener, SuiteSyncTable, SuiteSyncUpdateError } from './SuiteSyncTable';
+export type {
+    EntityListener,
+    SuiteSyncTable,
+    SuiteSyncUpdateError,
+    InferSuiteSyncTableEntity,
+} from './SuiteSyncTable';
 export { createSuiteSyncUpdateError } from './SuiteSyncTable';
 
 /**

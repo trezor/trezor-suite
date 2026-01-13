@@ -15,7 +15,7 @@ export type CreateSubscribeSuiteSyncDataDeps = EnsureStorageDep &
     SubscriptionStorageDep &
     SuiteSyncListenerDep;
 
-export const createSubscribeSuiteSyncData =
+export const createEnsureSubscribeSuiteSyncData =
     (deps: CreateSubscribeSuiteSyncDataDeps): SubscribeSuiteSyncData =>
     async ({ deviceStaticSessionId }): ReturnType<SubscribeSuiteSyncData> => {
         const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
@@ -25,6 +25,12 @@ export const createSubscribeSuiteSyncData =
         }
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
+
+        const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
+
+        if (deps.subscriptionStorage.has(storageId)) {
+            return storageResult;
+        }
 
         const { data } = storageResult.payload;
         const { suiteSyncListener: listener } = deps;
@@ -50,12 +56,12 @@ export const createSubscribeSuiteSyncData =
         };
 
         deps.subscriptionStorage.add({
-            storageId: createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId),
+            storageId,
             unsubscribe: () => {
                 typedObjectValues(unsubscribes).forEach(unsubscribe => unsubscribe());
                 listener.onUnsubscribe({ walletDescriptor });
             },
         });
 
-        return ok();
+        return ok(storageResult.payload);
     };

@@ -3,7 +3,6 @@ import {
     SuiteSyncAccount,
     SuiteSyncAddress,
     SuiteSyncOutput,
-    SuiteSyncStorage,
     SuiteSyncWallet,
     createSuiteSyncAccountId,
     createSuiteSyncAddressId,
@@ -14,10 +13,15 @@ import { asAccountDescriptor, asWalletDescriptor } from '@suite-common/wallet-ty
 import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { mockNotExpected } from '../../../tests/utils';
-import { RefreshSuiteKeysUnavailable } from '../../createRefreshSuiteSyncKeys';
+import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
+import { createMockDeps } from '../../../tests/utils';
+import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
+import { createStorageIdFromDeviceStaticSessionId } from '../../storage/createStorageIdFromDeviceStaticSessionId';
 import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';
-import { createSubscribeSuiteSyncData } from '../subscribeSuiteSyncData';
+import {
+    CreateSubscribeSuiteSyncDataDeps,
+    createEnsureSubscribeSuiteSyncData,
+} from '../createEnsureSuiteSyncData';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -38,71 +42,105 @@ type StorageSubscriptions = {
     wallets: EntityListener<SuiteSyncWallet>[];
 };
 
-const createSuiteSyncStorageMock = (storageEmitter?: StorageSubscriptions): SuiteSyncStorage => ({
-    data: {
+const createStorageWithEmitters = (storageEmitter: StorageSubscriptions) =>
+    createSuiteSyncStorageMock({
         accounts: {
-            subscribe: jest.fn(onChange => {
-                storageEmitter?.accounts.push(onChange);
+            subscribe: onChange => {
+                storageEmitter.accounts.push(onChange);
 
                 return () => {};
-            }),
-            update: mockNotExpected('update'),
+            },
         },
         addresses: {
-            subscribe: jest.fn(onChange => {
-                storageEmitter?.addresses.push(onChange);
+            subscribe: onChange => {
+                storageEmitter.addresses.push(onChange);
 
                 return () => {};
-            }),
-            update: mockNotExpected('update'),
+            },
         },
         outputs: {
-            subscribe: jest.fn(onChange => {
-                storageEmitter?.outputs.push(onChange);
+            subscribe: onChange => {
+                storageEmitter.outputs.push(onChange);
 
                 return () => {};
-            }),
-            update: mockNotExpected('update'),
+            },
         },
         wallets: {
-            subscribe: jest.fn(onChange => {
-                storageEmitter?.wallets.push(onChange);
+            subscribe: onChange => {
+                storageEmitter.wallets.push(onChange);
 
                 return () => {};
-            }),
-            update: mockNotExpected('update'),
+            },
         },
-    },
-    dispose: mockNotExpected('dispose'),
-    updateRelayUrl: mockNotExpected('updateRelayUrl'),
-});
+    });
 
-describe(createSubscribeSuiteSyncData.name, () => {
+describe(createEnsureSubscribeSuiteSyncData.name, () => {
     it('fails when storage is not available', async () => {
         const suiteSyncListener = createListenerMock();
-        const subscribeLabeling = createSubscribeSuiteSyncData({
-            ensureStorage: () => Promise.resolve(err(RefreshSuiteKeysUnavailable())),
+        const storageResult = err(SuiteSyncUnavailableOnDeviceError());
+
+        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+            ensureStorage: () => Promise.resolve(storageResult),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
 
+        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
         const result = await subscribeLabeling({ deviceStaticSessionId });
 
-        expect(!result.success && result.error.type).toBe('RefreshSuiteKeysUnavailable');
+        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(result).toBe(storageResult);
+    });
+
+    it('returns early when subscription already exists', async () => {
+        const suiteSyncListener = createListenerMock();
+        const storage = createSuiteSyncStorageMock({
+            wallets: { subscribe: () => () => {} },
+            accounts: { subscribe: () => () => {} },
+            addresses: { subscribe: () => () => {} },
+            outputs: { subscribe: () => () => {} },
+        });
+
+        const subscriptionStorage = createSubscriptionStorage();
+        // Pre-populate subscription storage to simulate existing subscription
+        const storageId = createStorageIdFromDeviceStaticSessionId(deviceStaticSessionId);
+        subscriptionStorage.add({
+            storageId,
+            unsubscribe: jest.fn(),
+        });
+
+        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
+            ensureStorage: () => Promise.resolve(ok(storage)),
+            subscriptionStorage,
+            suiteSyncListener,
+        });
+
+        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
+        const result = await subscribeLabeling({ deviceStaticSessionId });
+
+        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(result.success && result.payload).toBe(storage);
     });
 
     it('subscribes labeling', async () => {
         const suiteSyncListener = createListenerMock();
-        const storage = createSuiteSyncStorageMock();
+        const storage = createSuiteSyncStorageMock({
+            wallets: { subscribe: () => () => {} },
+            accounts: { subscribe: () => () => {} },
+            addresses: { subscribe: () => () => {} },
+            outputs: { subscribe: () => () => {} },
+        });
 
-        const subscribeLabeling = createSubscribeSuiteSyncData({
+        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
 
+        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
         const result = await subscribeLabeling({ deviceStaticSessionId });
 
+        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
         expect(result.success).toBe(true);
 
         expect(storage.data.wallets.subscribe).toHaveBeenCalledTimes(1);
@@ -121,12 +159,15 @@ describe(createSubscribeSuiteSyncData.name, () => {
             outputs: [],
         };
 
-        const storage = createSuiteSyncStorageMock(storageEmitters);
-        const subscribeLabeling = createSubscribeSuiteSyncData({
+        const storage = createStorageWithEmitters(storageEmitters);
+
+        const deps = createMockDeps<CreateSubscribeSuiteSyncDataDeps>({
             ensureStorage: () => Promise.resolve(ok(storage)),
             subscriptionStorage: createSubscriptionStorage(),
             suiteSyncListener,
         });
+
+        const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
 
         const result = await subscribeLabeling({ deviceStaticSessionId });
 

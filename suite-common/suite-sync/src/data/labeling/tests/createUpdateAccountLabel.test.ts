@@ -1,0 +1,60 @@
+import type { AccountTable } from '@suite-common/suite-sync-storage';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { StaticSessionId } from '@trezor/connect';
+import { err, ok } from '@trezor/type-utils';
+
+import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
+import { createMockDeps, mock } from '../../../../tests/utils';
+import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
+import { UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
+
+const deviceStaticSessionId: StaticSessionId = '1@2:3';
+
+describe(createUpdateAccountLabel.name, () => {
+    it('updates account label and propagates update result', async () => {
+        const updateResult: ReturnType<AccountTable['update']> = ok();
+
+        const storage = createSuiteSyncStorageMock({
+            accounts: { update: mock<AccountTable['update']>(() => updateResult) },
+        });
+
+        const deps = createMockDeps<UpdateAccountLabelDeps>({
+            ensureWalletSuiteSyncOn: () => Promise.resolve(ok(storage)),
+        });
+
+        const updateAccountLabel = createUpdateAccountLabel(deps);
+        const result = await updateAccountLabel({
+            deviceStaticSessionId,
+            accountKey: 'accountDescriptor-btc-1@2:3',
+            label: 'New Account Label',
+        });
+
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+
+        expect(storage.data.accounts.update).toHaveBeenCalledWith({
+            accountDescriptor: asAccountDescriptor('accountDescriptor'),
+            networkSymbol: 'btc',
+            label: 'New Account Label',
+        });
+
+        expect(result).toBe(updateResult);
+    });
+
+    it('returns ensureWalletSuiteSyncOn error', async () => {
+        const ensureWalletSuiteSyncOnResult = err(SuiteSyncUnavailableOnDeviceError());
+
+        const deps = createMockDeps<UpdateAccountLabelDeps>({
+            ensureWalletSuiteSyncOn: () => Promise.resolve(ensureWalletSuiteSyncOnResult),
+        });
+
+        const updateAccountLabel = createUpdateAccountLabel(deps);
+        const result = await updateAccountLabel({
+            deviceStaticSessionId,
+            accountKey: 'accountDescriptor-btc-1@2:3',
+            label: 'New Account Label',
+        });
+
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(result).toBe(ensureWalletSuiteSyncOnResult);
+    });
+});

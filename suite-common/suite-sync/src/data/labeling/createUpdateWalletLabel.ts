@@ -1,20 +1,21 @@
 import { UpdateWalletLabel } from '@suite-common/suite-sync-types';
+import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 
-import { EnsureStorageDep } from '../../storage/createEnsureStorage';
-
-export type UpdateWalletLabelDeps = EnsureStorageDep;
+export type UpdateWalletLabelDeps = EnsureWalletSuiteSyncOnDep;
 
 export const createUpdateWalletLabel =
     (deps: UpdateWalletLabelDeps): UpdateWalletLabel =>
     async ({ deviceStaticSessionId, label }) => {
-        const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
+        const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
+            deviceStaticSessionId,
+        });
 
-        if (!storageResult.success) {
-            return storageResult;
+        if (!ensureWalletOnResult.success) {
+            return ensureWalletOnResult;
         }
 
         const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
-        return storageResult.payload.data.wallets.update({ walletDescriptor, label });
+        return ensureWalletOnResult.payload.data.wallets.update({ walletDescriptor, label });
     };
