@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/core';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
 
@@ -24,6 +24,10 @@ jest.mock('../../hooks/useExitOnboardingFlow', () => ({
 describe('TradingLocationOnboardingScreen', () => {
     const renderTradingLocationScreen = () =>
         renderWithStoreProviderAsync(<TradingLocationScreen />);
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should render all components', async () => {
         const { getByText, getByLabelText } = await renderTradingLocationScreen();
