@@ -160,6 +160,7 @@ if (
     // enable Rozenite plugins only in debug build
     module.exports = withRozenite(configWithStorybook, {
         enhanceMetroConfig: originalConfig => withRozeniteReduxDevTools(originalConfig),
+        enabled: true,
     });
 } else {
     module.exports = configWithStorybook;
