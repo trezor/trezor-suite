@@ -469,6 +469,7 @@ describe('tradingSlice', () => {
             it.each<ProviderConfirmationStatus>([
                 'window_closed_incomplete',
                 'window_closed_with_success',
+                'confirmation_success',
                 'inactive',
             ])('should set status to [%s]', newStatus => {
                 actions.push(tradingActions.setProviderConfirmationStatus(newStatus));
@@ -478,7 +479,7 @@ describe('tradingSlice', () => {
                 expect(state.providerConfirmationStatus).toBe(newStatus);
             });
 
-            it.each<ProviderConfirmationStatus>(['confirmation_success', 'confirmation_failed'])(
+            it.each<ProviderConfirmationStatus>(['confirmation_failed'])(
                 'should not allow to set status to [%s]',
                 invalidStatus => {
                     actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
@@ -500,6 +501,7 @@ describe('tradingSlice', () => {
 
             it.each<ProviderConfirmationStatus>([
                 'window_closed_with_success',
+                'confirmation_success',
                 'confirmation_failed',
                 'inactive',
             ])('should set status to [%s]', newStatus => {
@@ -510,7 +512,7 @@ describe('tradingSlice', () => {
                 expect(state.providerConfirmationStatus).toBe(newStatus);
             });
 
-            it.each<ProviderConfirmationStatus>(['confirmation_success', 'window_opened'])(
+            it.each<ProviderConfirmationStatus>(['window_opened'])(
                 'should not allow to set status to [%s]',
                 invalidStatus => {
                     actions.push(tradingActions.setProviderConfirmationStatus(invalidStatus));
