@@ -8,7 +8,7 @@ import { DelegatedIdentityKey, SuiteSyncOwnerId } from '@suite-common/suite-type
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
-import { DEFAULT_OWNER_SIZE_QUOTA } from './constants';
+import { DEFAULT_ACCOUNT_SIZE_QUOTA } from './constants';
 import { quotaManagerFetchError, quotaManagerOwnerFetched } from './quotaManagerActions';
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
@@ -79,7 +79,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                 publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                 ownerId,
                 challenge: sessionChallenge.payload.challenge,
-                size: DEFAULT_OWNER_SIZE_QUOTA,
+                size: DEFAULT_ACCOUNT_SIZE_QUOTA,
             }),
         });
 
@@ -93,7 +93,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                     ownerId,
                     publicKey: getPublicIdentityKeyFromDelegatedKey(delegatedKey),
                     proof: proofOfDelegatedIdentity.payload,
-                    size: DEFAULT_OWNER_SIZE_QUOTA,
+                    size: DEFAULT_ACCOUNT_SIZE_QUOTA,
                     challenge: sessionChallenge.payload.challenge,
                     sessionId: sessionChallenge.payload.sessionId,
                 },
