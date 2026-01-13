@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import TrezorConnect from '@trezor/connect';
 import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
 import {
     EmuStartOptsType,
@@ -6,8 +8,6 @@ import {
     type TrezorUserEnvLinkClass,
 } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
-
-import TrezorConnect from '@trezor/connect';
 
 // import TrezorConnect from '../src';
 import { UI } from '../src/events';

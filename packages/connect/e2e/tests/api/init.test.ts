@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
 
 // error thrown by .init()
