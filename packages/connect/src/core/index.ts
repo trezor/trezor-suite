@@ -393,17 +393,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
-    if (method.isManagementRestricted({ origin: DataManager.getSettings('origin') })) {
-        sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
-        sendCoreMessage(
-            createResponseMessage(responseID, false, {
-                error: ERRORS.TypedError('Method_NotAllowed'),
-            }),
-        );
-
-        return Promise.resolve();
-    }
-
     return await onCallDevice(context, message, method);
 };
 
