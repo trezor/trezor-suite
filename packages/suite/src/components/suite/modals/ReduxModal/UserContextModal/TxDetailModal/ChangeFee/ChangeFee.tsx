@@ -5,12 +5,12 @@ import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
-import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Translation } from 'src/components/suite/Translation';
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 import { useSelector } from 'src/hooks/suite';
 import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 

@@ -1,7 +1,6 @@
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
-import { FeeRate } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { Translation } from 'src/components/suite/Translation';
@@ -10,6 +9,7 @@ import { useLocales, useSelector } from 'src/hooks/suite';
 import { FeeCard } from './FeeCard';
 import { FeeCardsWrapper } from './StandardFee.styles';
 import { feeLevelTranslationMap } from './constants';
+import { FeeRate } from '../../../FeeRate/FeeRate';
 import { DustPreventionNotice } from '../../DustPreventionNotice';
 import { type FeeOptionType } from './hooks/useNetworkFeeOptions';
 import { useFeesContext } from '../../context/FeesContext';

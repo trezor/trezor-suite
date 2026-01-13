@@ -1,10 +1,11 @@
 import { SelectedAccountLoaded, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, InfoItem, Row, Text, TextButton } from '@trezor/components';
-import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils';
+
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 
 import { useCancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
 import { BaseCurrencyValue } from '../../../../../BaseCurrencyValue';

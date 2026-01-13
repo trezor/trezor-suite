@@ -11,7 +11,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
+import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
@@ -19,6 +19,7 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { Translation } from 'src/components/suite/Translation';
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

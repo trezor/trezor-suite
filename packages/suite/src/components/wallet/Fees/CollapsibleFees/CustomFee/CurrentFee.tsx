@@ -1,10 +1,10 @@
 import { FeeInfo } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import { Icon, Row, Text } from '@trezor/components';
-import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 
 import { useFeesContext } from '../../context/FeesContext';
 

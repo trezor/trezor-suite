@@ -6,12 +6,12 @@ import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Grid, Row, Text } from '@trezor/components';
-import { FeeRate } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { Translation } from 'src/components/suite/Translation';
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

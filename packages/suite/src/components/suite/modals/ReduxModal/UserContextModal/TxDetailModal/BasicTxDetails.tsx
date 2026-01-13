@@ -18,12 +18,13 @@ import {
     Text,
     useElevation,
 } from '@trezor/components';
-import { CoinLogo, FeeRate } from '@trezor/product-components';
+import { CoinLogo } from '@trezor/product-components';
 import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
 import { Translation } from 'src/components/suite/Translation';
+import { FeeRate } from 'src/components/wallet/FeeRate/FeeRate';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useExternalLink } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
