@@ -60,7 +60,7 @@ export const sumAddressValues = <T>(
         )
         .reduce((a, b) => a + b, 0);
 
-const getAccountInfo: Api<Req, Res> = async (client, payload) => {
+const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) => {
     const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT } = payload;
     const network = client.getInfo()?.network;
 
@@ -97,10 +97,10 @@ const getAccountInfo: Api<Req, Res> = async (client, payload) => {
         };
     }
     const discover = discoverAddress(client);
-    const receive = await discovery(discover, descriptor, 'receive', network).then(
+    const receive = await discovery(discover, addressCache(descriptor, 'receive')).then(
         getBalances(client),
     );
-    const change = await discovery(discover, descriptor, 'change', network).then(
+    const change = await discovery(discover, addressCache(descriptor, 'change')).then(
         getBalances(client),
     );
     const batch = receive.concat(change);

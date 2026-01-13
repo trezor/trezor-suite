@@ -26,7 +26,7 @@ const transformUtxo =
               }),
     });
 
-const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
+const getAccountUtxo: Api<Req, Res> = async ({ client, addressCache }, descriptor) => {
     const {
         block: { height },
         network,
@@ -41,8 +41,8 @@ const getAccountUtxo: Api<Req, Res> = async (client, descriptor) => {
     }
 
     const discover = discoverAddress(client);
-    const receive = await discovery(discover, descriptor, 'receive', network);
-    const change = await discovery(discover, descriptor, 'change', network);
+    const receive = await discovery(discover, addressCache(descriptor, 'receive'));
+    const change = await discovery(discover, addressCache(descriptor, 'change'));
     const result = await Promise.all(
         receive
             .concat(change)

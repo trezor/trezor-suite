@@ -3,6 +3,7 @@ import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { Message } from '@trezor/blockchain-link-types/src/messages';
 import { Without } from '@trezor/type-utils';
+import { AddressCache, createAddressCache } from '@trezor/utxo-lib';
 
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';
 import { CachingElectrumClient } from './client/caching';
@@ -15,7 +16,12 @@ type BlockListener = ReturnType<typeof L.blockListener>;
 type TxListener = ReturnType<typeof L.txListener>;
 
 type Request<T> = T extends any
-    ? T & ContextType<ElectrumClient> & { blockListener: BlockListener; txListener: TxListener }
+    ? T &
+          ContextType<ElectrumClient> & {
+              blockListener: BlockListener;
+              txListener: TxListener;
+              addressCache: AddressCache;
+          }
     : never;
 type MessageType = Message['type'];
 type ResponseType<T extends MessageType> = T extends typeof MESSAGES.GET_INFO
@@ -47,6 +53,8 @@ const onRequest = async <T extends Message>(
     request: Request<T>,
 ): Promise<Reply<typeof request.type>> => {
     const client = await request.connect();
+    const { addressCache } = request;
+    const context = { client, addressCache };
     switch (request.type) {
         case MESSAGES.GET_INFO:
             return {
@@ -56,22 +64,22 @@ const onRequest = async <T extends Message>(
         case MESSAGES.GET_BLOCK_HASH:
             return {
                 type: RESPONSES.GET_BLOCK_HASH,
-                payload: await M.getBlockHash(client, request.payload),
+                payload: await M.getBlockHash(context, request.payload),
             };
         case MESSAGES.GET_ACCOUNT_INFO:
             return {
                 type: RESPONSES.GET_ACCOUNT_INFO,
-                payload: await M.getAccountInfo(client, request.payload),
+                payload: await M.getAccountInfo(context, request.payload),
             };
         case MESSAGES.GET_ACCOUNT_UTXO:
             return {
                 type: RESPONSES.GET_ACCOUNT_UTXO,
-                payload: await M.getAccountUtxo(client, request.payload),
+                payload: await M.getAccountUtxo(context, request.payload),
             };
         case MESSAGES.GET_TRANSACTION:
             return {
                 type: RESPONSES.GET_TRANSACTION,
-                payload: await M.getTransaction(client, request.payload),
+                payload: await M.getTransaction(context, request.payload),
             };
         case MESSAGES.GET_TRANSACTION_HEX:
             return {
@@ -81,17 +89,17 @@ const onRequest = async <T extends Message>(
         case MESSAGES.GET_ACCOUNT_BALANCE_HISTORY:
             return {
                 type: RESPONSES.GET_ACCOUNT_BALANCE_HISTORY,
-                payload: await M.getAccountBalanceHistory(client, request.payload),
+                payload: await M.getAccountBalanceHistory(context, request.payload),
             };
         case MESSAGES.ESTIMATE_FEE:
             return {
                 type: RESPONSES.ESTIMATE_FEE,
-                payload: await M.estimateFee(client, request.payload),
+                payload: await M.estimateFee(context, request.payload),
             };
         case MESSAGES.PUSH_TRANSACTION:
             return {
                 type: RESPONSES.PUSH_TRANSACTION,
-                payload: await M.pushTransaction(client, request.payload),
+                payload: await M.pushTransaction(context, request.payload),
             };
         case MESSAGES.SUBSCRIBE:
             switch (request.payload.type) {
@@ -140,8 +148,9 @@ const onRequest = async <T extends Message>(
 };
 
 class ElectrumWorker extends BaseWorker<ElectrumClient> {
-    private blockListener: BlockListener;
-    private txListener: TxListener;
+    private readonly blockListener: BlockListener;
+    private readonly txListener: TxListener;
+    private addressCache: AddressCache | undefined;
 
     constructor() {
         super();
@@ -171,6 +180,8 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
                 protocolVersion: '1.4',
             },
         });
+
+        this.addressCache = createAddressCache(api.getInfo()?.network);
 
         this.post({
             id: -1,
@@ -206,6 +217,7 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
                 state: this.state,
                 blockListener: this.blockListener,
                 txListener: this.txListener,
+                addressCache: this.addressCache!,
             };
             const response = await onRequest(request);
             this.post({ id: event.data.id, ...response });

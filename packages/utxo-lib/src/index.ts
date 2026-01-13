@@ -4,7 +4,7 @@ import * as bufferutils from './bufferutils';
 import { composeTx } from './compose';
 import * as crypto from './crypto';
 import { deriveAddresses, getXpubOrDescriptorInfo } from './derivation';
-import { discovery } from './discovery';
+import { createAddressCache, discovery } from './discovery';
 import * as networks from './networks';
 import * as payments from './payments';
 import * as script from './script';
@@ -23,9 +23,11 @@ export {
     deriveAddresses,
     getXpubOrDescriptorInfo,
     discovery,
+    createAddressCache,
 };
 
 export type { PaymentType } from './derivation';
+export type { AddressCache, AddressProvider } from './discovery';
 export type {
     ComposeInput,
     ComposeOutput,
