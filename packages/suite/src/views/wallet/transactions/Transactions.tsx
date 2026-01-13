@@ -6,6 +6,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
+import { SolanaLimitedHistoryBanner } from 'src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 import { useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
 
@@ -73,6 +74,7 @@ export const Transactions = () => {
                 <CardanoNewProviderCard account={account} />
                 <TransactionSummary account={account} />
                 <TradeBox account={account} />
+                <SolanaLimitedHistoryBanner account={account} />
                 <WalletTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );

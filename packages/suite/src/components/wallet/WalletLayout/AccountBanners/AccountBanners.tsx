@@ -17,7 +17,6 @@ import { ContextMessage } from './ContextMessage';
 import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { ReserveBanner } from './ReserveBanner';
-import { SolanaLimitedHistoryBanner } from './SolanaLimitedHistoryBanner';
 import { StakingBanner } from './StakingBanner';
 import { StellarLimitedHistoryBanner } from './StellarLimitedHistoryBanner';
 import { TaprootBanner } from './TaprootBanner';
@@ -52,7 +51,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <TaprootBanner account={account} />
             <CardanoLegacyBanner account={account} />
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
-            {account?.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
         </Column>
     );
