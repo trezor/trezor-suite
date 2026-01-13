@@ -1,3 +1,5 @@
+import type { MiddlewareAPI } from 'redux';
+
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
 import type { ExtraDependencies } from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
@@ -18,7 +20,9 @@ import storageMiddleware from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
 import walletMiddleware from './walletMiddleware';
 
-export const getWalletMiddlewares = (getExtra: () => ExtraDependencies | null) => [
+export const getWalletMiddlewares = (
+    getExtra: () => ExtraDependencies | null,
+): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
     walletMiddleware,
