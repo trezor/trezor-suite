@@ -34,6 +34,7 @@ import {
     FirmwareUpdateStackRoutes,
     HomeStackRoutes,
     OnboardingStackRoutes,
+    PassphraseStackRoutes,
     ReceiveStackRoutes,
     RootStackRoutes,
     SendStackRoutes,
@@ -332,19 +333,23 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.ConnectingDevice]: undefined;
     [AuthorizeDeviceStackRoutes.ThpConfirmation]: undefined;
     [AuthorizeDeviceStackRoutes.ThpCodeEntry]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseForm]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseLoading]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseRedirecting]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseConfirmFeatureUnlockOnTrezor]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseMismatchAlert]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm]: undefined;
     [AuthorizeDeviceStackRoutes.CoinEnablingInit]: undefined;
     [AuthorizeDeviceStackRoutes.ContinueOnTrezor]: undefined;
+};
+
+export type PassphraseStackParamList = {
+    [PassphraseStackRoutes.PassphraseForm]: undefined;
+    [PassphraseStackRoutes.PassphraseEnterOnTrezor]: undefined;
+    [PassphraseStackRoutes.PassphraseConfirmOnTrezor]: undefined;
+    [PassphraseStackRoutes.PassphraseLoading]: undefined;
+    [PassphraseStackRoutes.PassphraseRedirecting]: undefined;
+    [PassphraseStackRoutes.PassphraseDuplicateAlert]: undefined;
+    [PassphraseStackRoutes.PassphraseEmptyWallet]: undefined;
+    [PassphraseStackRoutes.PassphraseMismatchAlert]: undefined;
+    [PassphraseStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
 };
 
 export type RootStackParamList = {
@@ -382,6 +387,7 @@ export type RootStackParamList = {
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;
+    [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
 };
 
 export type TransactionDetailStackParamList = {

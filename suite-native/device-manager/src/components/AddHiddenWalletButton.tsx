@@ -16,8 +16,8 @@ import {
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -32,8 +32,8 @@ const textStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
@@ -61,10 +61,11 @@ export const AddHiddenWalletButton = () => {
             }),
         );
         dispatch(runDiscoveryThunk(device));
+        // TODO remove
         dispatch(changeDeviceAuthorizationIntent(DeviceAuthorizationIntent.AddHiddenWallet));
 
-        navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-            screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+        navigation.navigate(RootStackRoutes.PassphraseStack, {
+            screen: PassphraseStackRoutes.PassphraseForm,
         });
     };
 

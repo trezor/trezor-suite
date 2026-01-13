@@ -14,8 +14,8 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -37,8 +37,8 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseEmptyWallet,
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseEmptyWallet,
     RootStackParamList
 >;
 
@@ -53,7 +53,7 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
         const { applyStyle } = useNativeStyles();
 
         const handleOpenEmptyWallet = () => {
-            navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet);
+            navigation.navigate(PassphraseStackRoutes.PassphraseVerifyEmptyWallet);
             onCloseModal();
         };
 

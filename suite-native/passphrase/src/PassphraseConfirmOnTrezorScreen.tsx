@@ -3,7 +3,7 @@ import { ConfirmOnTrezorAnimation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
 
-import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
+import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 export const PassphraseConfirmOnTrezorScreen = () => (
     <Screen header={<PassphraseScreenHeader />}>

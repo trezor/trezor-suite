@@ -11,7 +11,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { PassphraseStackNavigator } from './PassphraseStackNavigator';
 import { ContinueOnTrezorScreen } from '../screens/ContinueOnTrezorScreen';
 import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
 import { ConnectBluetoothDeviceScreen } from '../screens/connect/ConnectBluetoothDeviceScreen';
@@ -37,13 +36,6 @@ export const AuthorizeDeviceStackNavigator = () => {
         <AuthorizeDeviceStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
-            {
-                // NOTE: render this first as it handles states that should be on top - passphrase on device enable
-            }
-            <AuthorizeDeviceStack.Screen
-                name={AuthorizeDeviceStackRoutes.PassphraseForm}
-                component={PassphraseStackNavigator}
-            />
             {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate

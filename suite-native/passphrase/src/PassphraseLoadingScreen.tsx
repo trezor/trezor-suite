@@ -7,7 +7,7 @@ import { selectPassphraseDeviceNotEmpty } from '@suite-native/device-authorizati
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 
-import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
+import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);

@@ -5,33 +5,31 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     selectCheckPassphraseOnDevice,
-    selectDeviceRequestedPin,
     selectInputPassphraseOnDevice,
 } from '@suite-native/device-authorization';
 import {
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
+import {
+    PassphraseConfirmOnTrezorScreen,
+    PassphraseDuplicateAlert,
+    PassphraseEmptyWalletScreen,
+    PassphraseEnterOnTrezorScreen,
+    PassphraseFlowDoneRedirect,
+    PassphraseFormScreen,
+    PassphraseLoadingScreen,
+    PassphraseMismatchAlert,
+    PassphraseVerifyEmptyWalletScreen,
+    useRedirectOnPassphraseCompletion,
+} from '@suite-native/passphrase';
 
-import { PassphraseDuplicateAlert } from '../components/passphrase/PassphraseDuplicateAlert';
-import { PassphraseFlowDoneRedirect } from '../components/passphrase/PassphraseFlowDoneRedirect';
-import { PassphraseMismatchAlert } from '../components/passphrase/PassphraseMismatchAlert';
-import { PinScreen } from '../screens/connect/PinScreen';
-import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
-import { PassphraseEmptyWalletScreen } from '../screens/passphrase/PassphraseEmptyWalletScreen';
-import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
-import { PassphraseFormScreen } from '../screens/passphrase/PassphraseFormScreen';
-import { PassphraseLoadingScreen } from '../screens/passphrase/PassphraseLoadingScreen';
-import { PassphraseVerifyEmptyWalletScreen } from '../screens/passphrase/PassphraseVerifyEmptyWalletScreen';
-import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCompletion';
-
-export const PassphraseStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
+export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
-    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     const checkingOnDevice = useSelector(selectCheckPassphraseOnDevice);
@@ -46,29 +44,23 @@ export const PassphraseStackNavigator = () => {
         <PassphraseStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
-            {hasDeviceRequestedPin && (
-                <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PinMatrix}
-                    component={PinScreen}
-                />
-            )}
             {inputPassphraseOnDevice && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
+                    name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
                     component={PassphraseEnterOnTrezorScreen}
                 />
             )}
 
             {passphraseState === 'progress' && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseLoading}
+                    name={PassphraseStackRoutes.PassphraseLoading}
                     component={PassphraseLoadingScreen}
                 />
             )}
 
             {['starting', 'enter-passphrase'].includes(passphraseState) && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseForm}
+                    name={PassphraseStackRoutes.PassphraseForm}
                     component={PassphraseFormScreen}
                 />
             )}
@@ -76,13 +68,13 @@ export const PassphraseStackNavigator = () => {
             {passphraseState === 'confirm-empty-passphrase' && (
                 <>
                     <PassphraseStack.Screen
-                        name={AuthorizeDeviceStackRoutes.PassphraseEmptyWallet}
+                        name={PassphraseStackRoutes.PassphraseEmptyWallet}
                         component={PassphraseEmptyWalletScreen}
                     />
                     {/* The PassphraseVerifyEmptyWallet screen is shown when user confirms they want to use an empty passphrase */}
 
                     <PassphraseStack.Screen
-                        name={AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet}
+                        name={PassphraseStackRoutes.PassphraseVerifyEmptyWallet}
                         component={PassphraseVerifyEmptyWalletScreen}
                     />
                 </>
@@ -90,7 +82,7 @@ export const PassphraseStackNavigator = () => {
 
             {passphraseState === 'passphrase-mismatch' && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseMismatchAlert}
+                    name={PassphraseStackRoutes.PassphraseMismatchAlert}
                     component={function PassphraseMismatchAlertScreen() {
                         return (
                             <PassphraseMismatchAlert>
@@ -102,13 +94,13 @@ export const PassphraseStackNavigator = () => {
             )}
             {passphraseState === 'passphrase-checking-on-device' && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}
+                    name={PassphraseStackRoutes.PassphraseConfirmOnTrezor}
                     component={PassphraseConfirmOnTrezorScreen}
                 />
             )}
             {passphraseState === 'passphrase-duplicate' && (
                 <PassphraseStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PassphraseDuplicateAlert}
+                    name={PassphraseStackRoutes.PassphraseDuplicateAlert}
                     component={function PassphraseMismatchAlertScreen() {
                         return (
                             <PassphraseDuplicateAlert>
@@ -121,7 +113,7 @@ export const PassphraseStackNavigator = () => {
 
             {/* This is a catch-all route that handles failures and completion redirects */}
             <PassphraseStack.Screen
-                name={AuthorizeDeviceStackRoutes.PassphraseRedirecting}
+                name={PassphraseStackRoutes.PassphraseRedirecting}
                 component={PassphraseFlowDoneRedirect}
             />
         </PassphraseStack.Navigator>

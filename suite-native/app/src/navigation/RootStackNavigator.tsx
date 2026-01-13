@@ -27,6 +27,7 @@ import {
 } from '@suite-native/module-device-onboarding';
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
+import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { StakingDetailScreen } from '@suite-native/module-staking-management';
@@ -163,6 +164,13 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.AuthorizeDeviceStack}
                     component={AuthorizeDeviceStackNavigator}
+                    options={{
+                        gestureEnabled: false,
+                    }}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.PassphraseStack}
+                    component={PassphraseStackNavigator}
                     options={{
                         gestureEnabled: false,
                     }}

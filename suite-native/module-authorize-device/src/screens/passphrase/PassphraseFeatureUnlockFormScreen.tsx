@@ -11,9 +11,9 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { PassphraseForm } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
 
-import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

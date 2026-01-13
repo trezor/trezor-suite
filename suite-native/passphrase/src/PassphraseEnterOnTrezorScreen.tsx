@@ -21,12 +21,12 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
+import { useRedirectOnPassphraseCompletion } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
-import { PassphraseMismatchAlert } from '../../components/passphrase/PassphraseMismatchAlert';
-import { useRedirectOnPassphraseCompletion } from '../../useRedirectOnPassphraseCompletion';
+import { PassphraseContentScreenWrapper } from './PassphraseContentScreenWrapper';
+import { PassphraseMismatchAlert } from './PassphraseMismatchAlert';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',

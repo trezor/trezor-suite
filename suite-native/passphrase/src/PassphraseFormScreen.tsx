@@ -10,8 +10,8 @@ import { Screen } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
-import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
-import { PassphraseScreenHeader } from '../../components/passphrase/PassphraseScreenHeader';
+import { PassphraseForm } from './PassphraseForm';
+import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 const ANIMATION_DURATION = 300;
 

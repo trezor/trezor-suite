@@ -26,6 +26,7 @@ export enum RootStackRoutes {
     TradingLocationModal = 'TradingLocationModal',
     DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',
     Storybook = 'Storybook',
+    PassphraseStack = 'PassphraseStack',
 }
 
 export enum AppTabsRoutes {
@@ -170,19 +171,23 @@ export enum AuthorizeDeviceStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ConnectingDevice = 'ConnectingDevice',
+    PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
+    PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
+    PassphraseConfirmFeatureUnlockOnTrezor = 'PassphraseConfirmFeatureUnlockOnTrezor',
+    CoinEnablingInit = 'CoinEnablingInit',
+    ContinueOnTrezor = 'ContinueOnTrezor',
+}
+
+export enum PassphraseStackRoutes {
     PassphraseForm = 'PassphraseForm',
-    PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',
+    PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
+    PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseRedirecting = 'PassphraseRedirecting',
     PassphraseDuplicateAlert = 'PassphraseDuplicateAlert',
     PassphraseMismatchAlert = 'PassphraseMismatchAlert',
-    PassphraseConfirmFeatureUnlockOnTrezor = 'PassphraseConfirmFeatureUnlockOnTrezor',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
-    PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
-    PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
-    CoinEnablingInit = 'CoinEnablingInit',
-    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum DevUtilsStackRoutes {
