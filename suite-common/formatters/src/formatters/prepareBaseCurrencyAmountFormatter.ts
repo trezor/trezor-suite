@@ -1,6 +1,6 @@
 import { IntlShape } from 'react-intl';
 
-import { FormatNumberOptions } from '@formatjs/intl';
+import type { FormatNumberOptions } from '@formatjs/intl';
 
 import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
@@ -10,7 +10,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect/src/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { makeFormatter } from '../makeFormatter';

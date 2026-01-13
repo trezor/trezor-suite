@@ -4,10 +4,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
-import { IntlProviderForTests } from '@suite-native/intl';
-import { StylesProvider, createRenderer } from '@trezor/styles';
-import { prepareNativeTheme } from '@trezor/theme';
+import type { FormatterProviderConfig } from '@suite-common/formatters';
+import { FormatterProvider } from '@suite-common/formatters/src/FormatterProvider';
+import { IntlProviderForTests } from '@suite-native/intl/src/IntlProviderForTests';
+import { StylesProvider } from '@trezor/styles/src/StylesProvider';
+import { createRenderer } from '@trezor/styles/src/createRenderer';
+import { prepareNativeTheme } from '@trezor/theme/src/prepareTheme';
 
 type ProviderProps = {
     children: ReactNode;

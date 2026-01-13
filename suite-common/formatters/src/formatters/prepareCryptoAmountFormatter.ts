@@ -1,18 +1,18 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import {
-    NetworkSymbol,
+    type NetworkSymbol,
     getNetworkOptional,
     isNetworkSymbol,
     networks,
 } from '@suite-common/wallet-config';
-import { TokenSymbol } from '@suite-common/wallet-types';
+import type { TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
     redactNumericalSubstring,
 } from '@suite-common/wallet-utils';
-import { PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect/src/constants';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';
