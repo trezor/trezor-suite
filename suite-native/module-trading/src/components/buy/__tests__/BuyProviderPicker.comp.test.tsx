@@ -6,6 +6,7 @@ import {
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import {
     buyCexdirect,
@@ -38,6 +39,10 @@ describe('BuyProviderPicker', () => {
             </Form>,
             { preloadedState },
         );
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should display nothing when in default state', async () => {
         await renderUseTradingBuyForm();

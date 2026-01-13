@@ -1,6 +1,6 @@
 import { Keyboard } from 'react-native';
 
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { TradeableAsset } from '@suite-native/trading-types';
 
@@ -22,6 +22,10 @@ describe('TradeableAssetSheet', () => {
                 {...props}
             />,
         );
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should call Keyboard.dismiss, onAssetSelect and onClose when an item is pressed', async () => {
         const closeMock = jest.fn();

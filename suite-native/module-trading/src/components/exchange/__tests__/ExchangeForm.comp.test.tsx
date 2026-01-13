@@ -3,6 +3,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -34,6 +35,10 @@ describe('ExchangeForm', () => {
     beforeEach(async () => {
         const { result } = await renderForm();
         form = result.current;
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render form', async () => {

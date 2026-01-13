@@ -5,6 +5,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
     userEvent,
 } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
@@ -30,6 +31,10 @@ describe('ExchangeRateAndProviderPicker', () => {
         exchangeForm = result.current;
 
         preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render nothing when no quote is selected and quotes are not loading', async () => {

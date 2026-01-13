@@ -4,6 +4,7 @@ import {
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { useListDataFilter } from '@suite-native/trading-atoms';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
@@ -39,6 +40,10 @@ describe('BuyFiatCurrencyPicker', () => {
             },
         );
     };
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should display selected currency', async () => {
         const { getByLabelText } = await renderFiatCurrencyPicker();

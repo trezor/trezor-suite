@@ -8,6 +8,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
     userEvent,
 } from '@suite-native/test-utils';
 import {
@@ -38,6 +39,10 @@ describe('TradingCountryOfResidencePicker', () => {
     beforeEach(async () => {
         const { result } = await renderForm();
         form = result.current;
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should use country from form', async () => {
