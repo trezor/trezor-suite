@@ -1,10 +1,17 @@
 # pinned to nixos-unstable on commit https://github.com/NixOS/nixpkgs/commit/5ae3b07d8d6527c42f17c876e404993199144b6a
 # we need to use nixos-unstable to be able to use nodejs_24, once there is a stable release with it we can change.
-with import
+let
+  pkgs = import
   (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/5ae3b07d8d6527c42f17c876e404993199144b6a.tar.gz";
     sha256 = "1zb5ca8jqavb19j7g06a41jg6bvpr20b9lihvham6qywhgaqprz9";
-   }) { system = builtins.currentSystem; };
+   }) {
+    system = builtins.currentSystem;
+    config.allowUnfree = true;
+    config.android_sdk.accept_license = true;
+  };
+in
+with pkgs;
 
 let
   # unstable packages
@@ -16,6 +23,12 @@ let
     url = "https://github.com/NixOS/nixpkgs/archive/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4.tar.gz";
     sha256 = "0l5b1libi46sc3ly7a5vj04098f63aj5jynxpz44sb396nncnivl";
   }) {};
+
+  useAndroid = builtins.getEnv "USE_ANDROID" == "1";
+  androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
+  extraBuildInputs = pkgs.lib.concatLists [
+    (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
+  ];
 in
   stdenvNoCC.mkDerivation {
     name = "trezor-suite-dev";
@@ -34,14 +47,14 @@ in
       })
       python3
       python3Packages.pip
-      jre
       p7zip
       electron
       pkg-config
       pixman cairo giflib libjpeg libpng librsvg pango            # build dependencies for node-canvas
       shellcheck
       vips
-    ] ++ lib.optionals stdenv.isLinux [
+    ] ++ extraBuildInputs
+      ++ lib.optionals stdenv.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
@@ -58,7 +71,8 @@ in
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
-    '' + lib.optionalString stdenv.isDarwin ''
+     '' + lib.optionalString useAndroid androidEnv.shellHook
+        + lib.optionalString stdenv.isDarwin ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
     '' + lib.optionalString stdenv.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
