@@ -1,23 +1,14 @@
 ### 🚀 New features
 
-- Stellar tokens now have full support, including activation and deactivation to reclaim the 0.5 XLM reserve.
-- You can start send and receive actions directly from the main dashboard—no need to enter a specific account.
-- A new Trezor Connect popup on the Trezor Suite web app lets you interact with third-party wallets directly in your browser.
-- Multisig transaction hashes can now be reviewed straight on your Trezor device.
+- Korean language support is now available in the Trezor Suite app, making it more accessible for a wider global audience.
 
 ### 🎨 Improvements
 
-- Network reserves on Base, Optimism, and Solana have been refined to reduce failed sends, swaps, and sells.
-- Trading flow updates:
-    - Default trade amounts are gone—enter values manually for clearer intent.
-    - Post-trade updates now provide clearer status and timing info.
-    - Provider agreements have moved to the trading footer with a direct link to Terms and Conditions for fewer interruptions.
-- The desktop app is more responsive, with an auto-shrinking sidebar and better layout adaptability.
-- Connection flow has been polished for clearer selection between Bluetooth and cable.
-- Cardano staking sees smoother rebalancing, cleaner provider migration, and fixed APR display when pools are empty.
-- Users trading over Tor will now see a warning if a provider isn’t compatible. Any providers that can’t operate with Tor enabled will be automatically filtered out.
-- Firmware installation is now allowed on USB-connected devices even when battery level is below 40%.
+- Dollar-cost averaging (DCA) has been removed from the Trading section to simplify the overall trading experience.
+- The Fixed/Floating rate toggle has been removed, streamlining the swap and trading flow.
+- The provider picker has been consolidated into a single selector, making it easier to compare and choose providers.
+- A new asset picker has been added to the Swap section, enabling faster and clearer selection of your target asset.
 
 ### 🔧 Bug fixes
 
-- Minor issues have been addressed, along with general usability refinements for a smoother experience.
+- Minor bug fixes and performance improvements have been implemented for a smoother and more reliable experience.
