@@ -10,6 +10,7 @@ import {
     initStore,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { buyQuotes, getInitializedTradingStateWithQuotes } from '@suite-native/trading-fixtures';
 import { BuyFormType } from '@suite-native/trading-types';
@@ -34,6 +35,10 @@ describe('BuyPaymentMethodPicker', () => {
             { preloadedState, store },
         );
     };
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should not render when there are no payment methods', async () => {
         const { toJSON } = await renderPaymentMethodPicker();

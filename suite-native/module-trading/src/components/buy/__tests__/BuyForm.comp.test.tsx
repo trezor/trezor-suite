@@ -4,6 +4,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -28,6 +29,10 @@ describe('BuyForm', () => {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should render when buy data are not preloaded', async () => {
         const { result } = await renderFormHook(residenceCheckDisabledState);

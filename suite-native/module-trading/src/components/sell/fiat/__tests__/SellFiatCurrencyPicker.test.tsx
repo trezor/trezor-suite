@@ -4,6 +4,7 @@ import {
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { useListDataFilter } from '@suite-native/trading-atoms';
 import { getWalletState } from '@suite-native/trading-fixtures';
@@ -22,6 +23,10 @@ jest.mock('@suite-native/trading-atoms', () => ({
 describe('SellFiatCurrencyPicker', () => {
     beforeEach(() => {
         mockUseListDataFilter = jest.requireActual('@suite-native/trading-atoms').useListDataFilter;
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     const renderFiatCurrencyPicker = async () => {

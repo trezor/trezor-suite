@@ -3,6 +3,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes, usdcAsset } from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
@@ -31,6 +32,10 @@ describe('SellCard', () => {
     beforeEach(async () => {
         const { result } = await renderForm();
         form = result.current;
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render all components for "you pay" part', async () => {

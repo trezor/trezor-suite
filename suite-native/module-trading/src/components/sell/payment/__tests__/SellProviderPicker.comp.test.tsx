@@ -6,6 +6,7 @@ import {
     fireEvent,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 import { SellFormType } from '@suite-native/trading-types';
@@ -30,6 +31,10 @@ describe('SellProviderPicker', () => {
 
         const { result } = await renderSellForm();
         form = result.current;
+    });
+
+    afterEach(() => {
+        screen.unmount();
     });
 
     it('should render nothing when no quotes are loaded', async () => {

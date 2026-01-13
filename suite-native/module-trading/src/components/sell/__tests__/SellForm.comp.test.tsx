@@ -5,6 +5,7 @@ import {
     act,
     renderHookWithStoreProviderAsync,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import {
     btcAsset,
@@ -31,6 +32,10 @@ describe('SellForm', () => {
             preloadedState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
+
+    afterEach(() => {
+        screen.unmount();
+    });
 
     it('should render when sell data are not preloaded', async () => {
         const { result } = await renderFormHook({});
