@@ -15,12 +15,12 @@ import { StaticSessionId } from '@trezor/connect';
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
+import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSuiteSyncData';
 import { createSuiteSyncListener } from './data/createSuiteSyncListener';
 import { createUpdateAccountLabel } from './data/labeling/createUpdateAccountLabel';
 import { createUpdateAddressLabel } from './data/labeling/createUpdateAddressLabel';
 import { createUpdateOutputLabel } from './data/labeling/createUpdateOutputLabel';
 import { createUpdateWalletLabel } from './data/labeling/createUpdateWalletLabel';
-import { createSubscribeSuiteSyncData } from './data/subscribeSuiteSyncData';
 import { GetDeviceForStaticSessionId } from './getDeviceForStaticSessionId';
 import { createEnsureSuiteSyncOwner } from './owner/createEnsureSuiteSyncOwner';
 import { createLoadSuiteSyncOwnerFromState } from './owner/createLoadSuiteSyncOwnerFromState';
@@ -32,10 +32,10 @@ import { createSaveSuiteSyncOwner } from './owner/createSaveSuiteSyncOwner';
 import { createChangeRelayUrl } from './relay/createChangeRelayUrl';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 import { createEnsureStorage } from './storage/createEnsureStorage';
+import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuiteSyncOn';
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
 import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
 import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
-import { createTurnOnSuiteSyncForWallet } from './storage/createTurnOnSuiteSyncForWallet';
 import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 
 type CreateSuiteSyncCompositionRootDeps = {
@@ -101,17 +101,18 @@ export const createSuiteSyncCompositionRoot = (
         dispatch: deps.dispatch,
     });
 
-    const subscribeSuiteSyncData = createSubscribeSuiteSyncData({
+    const subscribeSuiteSyncData = createEnsureSubscribeSuiteSyncData({
         subscriptionStorage,
         ensureStorage,
         suiteSyncListener,
     });
 
-    const turnOnSuiteSyncForWallet = createTurnOnSuiteSyncForWallet({
+    const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn({
         dispatch: deps.dispatch,
         getState: deps.getState,
         refreshSuiteSyncKeys,
-        subscribeSuiteSyncData,
+        ensureSuiteSyncData: subscribeSuiteSyncData,
+        subscriptionStorage,
     });
 
     const turnOffSuiteSyncForWallet = createTurnOffSuiteSyncForWallet({
@@ -127,7 +128,7 @@ export const createSuiteSyncCompositionRoot = (
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
         }),
-        turnOnSuiteSyncForWallet,
+        ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({
             getAllDeviceSessionIds,
@@ -138,13 +139,21 @@ export const createSuiteSyncCompositionRoot = (
         turnOnSuiteSync: createTurnOnSuiteSync({
             getState: deps.getState,
             dispatch: deps.dispatch,
-            turnOnSuiteSyncForWallet,
+            ensureWalletSuiteSyncOn,
         }),
         labeling: {
-            updateWalletLabel: createUpdateWalletLabel({ ensureStorage }),
-            updateAccountLabel: createUpdateAccountLabel({ ensureStorage }),
-            updateOutputLabel: createUpdateOutputLabel({ ensureStorage }),
-            updateAddressLabel: createUpdateAddressLabel({ ensureStorage }),
+            updateWalletLabel: createUpdateWalletLabel({
+                ensureWalletSuiteSyncOn,
+            }),
+            updateAccountLabel: createUpdateAccountLabel({
+                ensureWalletSuiteSyncOn,
+            }),
+            updateOutputLabel: createUpdateOutputLabel({
+                ensureWalletSuiteSyncOn,
+            }),
+            updateAddressLabel: createUpdateAddressLabel({
+                ensureWalletSuiteSyncOn,
+            }),
         },
     };
 };

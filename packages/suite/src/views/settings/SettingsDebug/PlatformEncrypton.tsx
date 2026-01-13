@@ -40,7 +40,7 @@ export const PlatformEncrypton = () => {
     };
 
     return (
-        <SettingsSection title="Secure Storage">
+        <SettingsSection title="Platform Encryption">
             <SectionItem>
                 <Column gap={spacings.md} flex="1">
                     <Textarea

@@ -1,24 +1,26 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import {
+    EnsureWalletSuiteSyncOn,
     RefreshSuiteSyncKeysDep,
     SubscribeSuiteSyncDataDep,
-    TurnOnSuiteSyncForWallet,
+    SubscriptionStorageDep,
 } from '@suite-common/suite-sync-types';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
-import { ok } from '@trezor/type-utils';
+import { err } from '@trezor/type-utils';
 
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
-export type TurnOnSuiteSyncForWalletDeps = {
+export type EnsureWalletSuiteSyncOnDeps = {
     dispatch: Dispatch;
     getState: () => any;
 } & SubscribeSuiteSyncDataDep &
-    RefreshSuiteSyncKeysDep;
+    RefreshSuiteSyncKeysDep &
+    SubscriptionStorageDep;
 
-export const createTurnOnSuiteSyncForWallet =
-    (deps: TurnOnSuiteSyncForWalletDeps): TurnOnSuiteSyncForWallet =>
+export const createEnsureWalletSuiteSyncOn =
+    (deps: EnsureWalletSuiteSyncOnDeps): EnsureWalletSuiteSyncOn =>
     async ({ deviceStaticSessionId }) => {
         const device = selectDeviceByStaticSessionId(deps.getState(), deviceStaticSessionId);
 
@@ -26,8 +28,8 @@ export const createTurnOnSuiteSyncForWallet =
             device && isTrezorDeviceWithState(device) && isSuiteSyncSupportedByDevice(device);
 
         if (!canTurnOnSuiteSync) {
-            return ok();
+            return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        return await deps.subscribeSuiteSyncData({ deviceStaticSessionId });
+        return await deps.ensureSuiteSyncData({ deviceStaticSessionId });
     };

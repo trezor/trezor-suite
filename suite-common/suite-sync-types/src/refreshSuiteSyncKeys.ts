@@ -12,8 +12,8 @@ type RefreshSuiteSyncKeysParams = {
  *
  * This error can be split if we need more granular error.
  */
-export type RefreshSuiteKeysUnavailableType = {
-    type: 'RefreshSuiteKeysUnavailable';
+export type SuiteSyncUnavailableOnDeviceErrorType = {
+    type: 'SuiteSyncUnavailableOnDeviceError';
 };
 
 export type RefreshSuiteSyncKeys = (
@@ -21,7 +21,7 @@ export type RefreshSuiteSyncKeys = (
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType
+        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
     >
 >;
 

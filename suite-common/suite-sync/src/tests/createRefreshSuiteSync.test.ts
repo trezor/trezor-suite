@@ -68,7 +68,7 @@ describe(createRefreshSuiteSync.name, () => {
         });
 
         expect(result.success).toEqual(false);
-        expect(!result.success && result.error.type).toBe('RefreshSuiteKeysUnavailable');
+        expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
     });
 
     it('returns an suite sync owner when device has state and is available', async () => {
@@ -95,7 +95,7 @@ describe(createRefreshSuiteSync.name, () => {
         });
 
         expect(result.success).toEqual(false);
-        expect(!result.success && result.error.type).toEqual('RefreshSuiteKeysUnavailable');
+        expect(!result.success && result.error.type).toEqual('SuiteSyncUnavailableOnDeviceError');
     });
 
     it('ensures that the delegated identity key is available when owner is not in state', async () => {

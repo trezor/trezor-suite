@@ -1,15 +1,15 @@
 import { CreateSuiteStorageDep, SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import {
-    RefreshSuiteKeysUnavailableType,
     RefreshSuiteSyncKeysDep,
     SuiteSyncStorageRepositoryDep,
+    SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result, err, ok } from '@trezor/type-utils';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
-import { RefreshSuiteKeysUnavailable } from '../createRefreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 
 export type EnsureStorageDeps = {
@@ -29,7 +29,7 @@ export type CreateEnsureStorage = (
 ) => Promise<
     Result<
         SuiteSyncStorage,
-        RefreshSuiteKeysUnavailableType | DeviceErrorType | DeviceCancelledErrType
+        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
     >
 >;
 
@@ -51,7 +51,7 @@ export const createEnsureStorage =
         const device = deps.getDeviceForStaticSessionId(deviceStaticSessionId);
 
         if (device === null) {
-            return err(RefreshSuiteKeysUnavailable());
+            return err(SuiteSyncUnavailableOnDeviceError());
         }
 
         const ownerResult = await deps.refreshSuiteSyncKeys({ device });

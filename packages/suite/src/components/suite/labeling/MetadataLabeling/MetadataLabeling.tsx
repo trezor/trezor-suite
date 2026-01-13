@@ -414,7 +414,7 @@ export const Labeling = ({
             if (isFulfilled(result) && !result.payload.success) {
                 const { type } = result.payload.error;
                 switch (type) {
-                    case 'RefreshSuiteKeysUnavailable':
+                    case 'SuiteSyncUnavailableOnDeviceError':
                     case 'DeviceError':
                     case 'DeviceCancelled':
                     case 'SuiteSyncUpdateError':
@@ -565,7 +565,7 @@ export const MetadataLabeling = ({
             if (isFulfilled(result) && !result.payload.success) {
                 const { type } = result.payload.error;
                 switch (type) {
-                    case 'RefreshSuiteKeysUnavailable':
+                    case 'SuiteSyncUnavailableOnDeviceError':
                     case 'DeviceError':
                     case 'DeviceCancelled':
                     case 'SuiteSyncUpdateError':

@@ -1,8 +1,7 @@
 import { UpdateOutputLabel } from '@suite-common/suite-sync-types';
+import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 
-import { EnsureStorageDep } from '../../storage/createEnsureStorage';
-
-export type UpdateOutputLabelDeps = EnsureStorageDep;
+export type UpdateOutputLabelDeps = EnsureWalletSuiteSyncOnDep;
 
 export const createUpdateOutputLabel =
     (deps: UpdateOutputLabelDeps): UpdateOutputLabel =>
@@ -14,13 +13,15 @@ export const createUpdateOutputLabel =
         networkSymbol,
         deviceStaticSessionId,
     }) => {
-        const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
+        const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
+            deviceStaticSessionId,
+        });
 
-        if (!storageResult.success) {
-            return storageResult;
+        if (!ensureWalletOnResult.success) {
+            return ensureWalletOnResult;
         }
 
-        return storageResult.payload.data.outputs.update({
+        return ensureWalletOnResult.payload.data.outputs.update({
             txId,
             outputIndex,
             label,

@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { TurnOnSuiteSync, TurnOnSuiteSyncForWallet } from '@suite-common/suite-sync-types';
+import { TurnOnSuiteSync } from '@suite-common/suite-sync-types';
+import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 import { selectDevices } from '@suite-common/wallet-core';
 
 import { suiteSyncActions } from './suiteSyncActions';
@@ -9,8 +10,7 @@ import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 export type CreateTurnOnSuiteSyncDeps = {
     getState: () => any;
     dispatch: Dispatch;
-    turnOnSuiteSyncForWallet: TurnOnSuiteSyncForWallet;
-};
+} & EnsureWalletSuiteSyncOnDep;
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
@@ -28,7 +28,7 @@ export const createTurnOnSuiteSync =
 
         for (const device of devices) {
             if (device?.state?.staticSessionId) {
-                const result = await deps.turnOnSuiteSyncForWallet({
+                const result = await deps.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: device.state.staticSessionId,
                 });
 

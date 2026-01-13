@@ -8,7 +8,7 @@ import {
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { RefreshSuiteKeysUnavailableType } from '../refreshSuiteSyncKeys';
+import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
 type UpdateOutputLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -24,7 +24,7 @@ export type UpdateOutputLabel = (
 ) => Promise<
     Result<
         void,
-        | RefreshSuiteKeysUnavailableType
+        | SuiteSyncUnavailableOnDeviceErrorType
         | DeviceErrorType
         | DeviceCancelledErrType
         | SuiteSyncUpdateError

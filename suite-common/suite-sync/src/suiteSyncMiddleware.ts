@@ -16,7 +16,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
     (action, { next, getState, extra }) => {
         if (selectIsSuiteSyncEnabled(getState()) && deviceActions.setDiscovered.match(action)) {
             if (action.payload.success) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({
+                extra.services.suiteSync.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: action.payload.staticSessionId,
                 });
             }
@@ -26,7 +26,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             const { payload } = action as ReturnType<(typeof suiteSyncTurnOnTriggers)[number]>;
 
             if (isTrezorDeviceWithState(payload.device)) {
-                extra.services.suiteSync.turnOnSuiteSyncForWallet({
+                extra.services.suiteSync.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: payload.device.state.staticSessionId,
                 });
             }

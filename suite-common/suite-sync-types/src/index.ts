@@ -9,7 +9,7 @@ export type {
 export type { RefreshSuiteSyncKeys, RefreshSuiteSyncKeysDep } from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
-export type { RefreshSuiteKeysUnavailableType } from './refreshSuiteSyncKeys';
+export type { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
 export type { ChangeRelayUrl, ChangeRelayUrlDep } from './relay/changeRelayUrl';
 export type { ProofOfDelegatedSignFailed } from './getProofOfDelegatedIdentity';
 
@@ -29,10 +29,10 @@ export type {
     TurnOffSuiteSyncForWalletDep,
 } from './storage/turnOffSuiteSyncForWallet';
 export type {
-    TurnOnSuiteSyncForWallet,
-    TurnOnSuiteSyncForWalletDep,
-    TurnOnSuiteSyncForWalletParams,
-} from './storage/turnOnSuiteSyncForWallet';
+    EnsureWalletSuiteSyncOn,
+    EnsureWalletSuiteSyncOnDep,
+    EnsureWalletSuiteSyncOnParams,
+} from './storage/ensureWalletSuiteSyncOn';
 
 export type {
     Subscriptions,

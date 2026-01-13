@@ -1,19 +1,20 @@
 import { UpdateAddressLabel } from '@suite-common/suite-sync-types';
+import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 
-import { EnsureStorageDep } from '../../storage/createEnsureStorage';
-
-export type UpdateAddressLabelDeps = EnsureStorageDep;
+export type UpdateAddressLabelDeps = EnsureWalletSuiteSyncOnDep;
 
 export const createUpdateAddressLabel =
     (deps: UpdateAddressLabelDeps): UpdateAddressLabel =>
     async ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }) => {
-        const storageResult = await deps.ensureStorage({ deviceStaticSessionId });
+        const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
+            deviceStaticSessionId,
+        });
 
-        if (!storageResult.success) {
-            return storageResult;
+        if (!ensureWalletOnResult.success) {
+            return ensureWalletOnResult;
         }
 
-        return storageResult.payload.data.addresses.update({
+        return ensureWalletOnResult.payload.data.addresses.update({
             address,
             label,
             accountDescriptor,

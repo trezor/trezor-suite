@@ -7,8 +7,8 @@ import {
 } from '@suite-common/suite-sync-quota-manager';
 import {
     EnsureSuiteSyncOwnerDep,
-    RefreshSuiteKeysUnavailableType,
     RefreshSuiteSyncKeys,
+    SuiteSyncUnavailableOnDeviceErrorType,
 } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -22,8 +22,8 @@ import { LoadSuiteSyncOwnerFromStateDep } from './owner/createLoadSuiteSyncOwner
  * Device is not connected or device is in a state/configuration, that does not
  * support Suite Sync.
  */
-export const RefreshSuiteKeysUnavailable = (): RefreshSuiteKeysUnavailableType => ({
-    type: 'RefreshSuiteKeysUnavailable',
+export const SuiteSyncUnavailableOnDeviceError = (): SuiteSyncUnavailableOnDeviceErrorType => ({
+    type: 'SuiteSyncUnavailableOnDeviceError',
 });
 
 export type RefreshSuiteSyncKeysDeps = {
@@ -38,7 +38,7 @@ export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
     async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
         if (!device || !isTrezorDeviceWithState(device)) {
-            return err(RefreshSuiteKeysUnavailable());
+            return err(SuiteSyncUnavailableOnDeviceError());
         }
 
         const deviceStaticId = device.state.staticSessionId;
@@ -57,7 +57,7 @@ export const createRefreshSuiteSync =
             !device.connected || // disconnected device cannot resolve Evolu-Keys
             device.mode !== 'normal' // bootloader
         ) {
-            return err(RefreshSuiteKeysUnavailable());
+            return err(SuiteSyncUnavailableOnDeviceError());
         }
 
         const getKeys = async () => {
@@ -119,7 +119,7 @@ export const createRefreshSuiteSync =
                     // Todo: dispatch better notification
                     deps.dispatch(notificationsActions.addToast({ type: 'suite-sync-keys-error' }));
 
-                    return err(RefreshSuiteKeysUnavailable());
+                    return err(SuiteSyncUnavailableOnDeviceError());
                 default:
                     return exhaustive(errType);
             }

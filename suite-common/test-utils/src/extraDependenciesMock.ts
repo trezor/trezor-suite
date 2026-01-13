@@ -10,7 +10,7 @@ import { type ExtraDependencies, createThunk } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { ok } from '@trezor/type-utils';
+import { err, ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';
 
@@ -71,7 +71,8 @@ export const mockReducer = (name: string) => (state: any, action: any) => {
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
-    turnOnSuiteSyncForWallet: () => Promise.resolve(ok()),
+    ensureWalletSuiteSyncOn: () =>
+        Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
     turnOnSuiteSync: () => Promise.resolve(),
     turnOffSuiteSync: () => Promise.resolve(),
