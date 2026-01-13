@@ -216,27 +216,20 @@ test.describe('Send Base', { tag: ['@group=wallet', '@nightlyOnly'] }, () => {
                         ['Gas limit'],
                         [`${gasLimit} units`],
                         ['Max fee per gas'],
-                        [maxFeePerGas, '\n', 'Gwei'],
+                        devicePrompt.wrapText(`${maxFeePerGas} Gwei`, { wrapByWords: true }),
                         ['Max priority fee'],
-                        [maxPriorityFeePerGas, '\n', 'Gwei'],
+                        devicePrompt.wrapText(`${maxPriorityFeePerGas} Gwei`, {
+                            wrapByWords: true,
+                        }),
                     ],
                 },
-                T3T1: {
-                    header: { title: 'Fee info' },
-                    body: [
-                        ['Gas limit'],
-                        [`${gasLimit} units`],
-                        ['Max fee per gas'],
-                        [`${maxFeePerGas} Gwei`],
-                        ['Max priority fee'],
-                        [`${maxPriorityFeePerGas} Gwei`],
-                    ],
-                    footer: undefined,
-                },
+                T3T1: { footer: undefined },
             });
         });
         await test.step('Confirm transaction', async () => {
             await devicePrompt.waitForPromptAndConfirm();
+            // wait for transaction to be prepared
+            await page.expectReduxObjectToEqual('wallet.send.serializedTx.symbol', 'base');
             await devicePrompt.sendButton.click();
             await page.getByTestId('@toast/tx-sent').click();
             await page.getByRole('button', { name: 'View details' }).hover();
