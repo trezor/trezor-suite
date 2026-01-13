@@ -24,11 +24,37 @@ export const countUnusedFromEnd = <T>(
     return array.length;
 };
 
-export const discovery = <T>(
+type AddressType = 'receive' | 'change';
+
+export const createAddressCache = (network: Network | undefined) => {
+    const cache: Record<`${string}/${AddressType}`, AddressInfo[]> = {};
+
+    return (xpub: string, type: AddressType) => {
+        const key = `${xpub}/${type}` as const;
+
+        const getAllDerived = () => cache[key] ?? [];
+
+        const getAddresses = (from: number, count: number) => {
+            const derived = cache[key] ?? [];
+            const needed = from + count - derived.length;
+            if (needed > 0) {
+                const newDerived = deriveAddresses(xpub, type, derived.length, needed, network);
+                cache[key] = derived.concat(newDerived);
+            }
+
+            return cache[key].slice(from, from + count);
+        };
+
+        return { getAllDerived, getAddresses };
+    };
+};
+
+export type AddressCache = ReturnType<typeof createAddressCache>;
+export type AddressProvider = ReturnType<AddressCache>;
+
+export const discovery = async <T>(
     discover: (addr: AddressInfo) => Promise<AddressResult<T>>,
-    xpub: string,
-    type: 'receive' | 'change',
-    network?: Network,
+    addressProvider: AddressProvider,
     lookout: number = DISCOVERY_LOOKOUT,
 ) => {
     const discoverRecursive = async (
@@ -37,12 +63,14 @@ export const discovery = <T>(
     ): Promise<AddressResult<T>[]> => {
         const unused = countUnusedFromEnd(prev, a => a.empty, lookout);
         if (unused >= lookout) return prev;
-        const moreCount = lookout - unused;
-        const addresses = deriveAddresses(xpub, type, from, moreCount, network);
+        const count = lookout - unused;
+        const addresses = addressProvider.getAddresses(from, count);
         const more = await Promise.all(addresses.map(discover));
 
-        return discoverRecursive(from + moreCount, prev.concat(more));
+        return discoverRecursive(from + count, prev.concat(more));
     };
 
-    return discoverRecursive(0, []);
+    const known = await Promise.all(addressProvider.getAllDerived().map(discover));
+
+    return discoverRecursive(known.length, known);
 };

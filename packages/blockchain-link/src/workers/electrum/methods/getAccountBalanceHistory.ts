@@ -69,7 +69,7 @@ const aggregateTransactions = (txs: (Transaction & { blockTime: number })[], gro
 };
 
 const getAccountBalanceHistory: Api<Req, Res> = async (
-    client,
+    { client, addressCache },
     { descriptor, from, to, groupBy },
 ) => {
     let history: HistoryTx[];
@@ -82,8 +82,8 @@ const getAccountBalanceHistory: Api<Req, Res> = async (
         addresses = undefined;
     } else {
         const discover = discoverAddress(client);
-        const receive = await discovery(discover, descriptor, 'receive', network);
-        const change = await discovery(discover, descriptor, 'change', network);
+        const receive = await discovery(discover, addressCache(descriptor, 'receive'));
+        const change = await discovery(discover, addressCache(descriptor, 'change'));
         addresses = {
             change: change.map(transformAddress),
             used: receive.filter(({ history }) => history.length).map(transformAddress),

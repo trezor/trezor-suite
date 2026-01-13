@@ -4,7 +4,7 @@ import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockboo
 
 import { Api, getTransactions } from '../utils';
 
-const getTransaction: Api<Req, Res> = async (client, payload) => {
+const getTransaction: Api<Req, Res> = async ({ client }, payload) => {
     const [tx] = await getTransactions(client, [{ tx_hash: payload, height: -1 }]);
 
     return transformTransaction(tx);
