@@ -16,6 +16,11 @@ let
     url = "https://github.com/NixOS/nixpkgs/archive/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4.tar.gz";
     sha256 = "0l5b1libi46sc3ly7a5vj04098f63aj5jynxpz44sb396nncnivl";
   }) {};
+  rustShell = import ./shell-rust.nix { inherit pkgs; };
+  useRust = builtins.getEnv "USE_RUST" == "1";
+  extraBuildInputs = pkgs.lib.concatLists [
+    (if useRust then rustShell.buildInputs else [])
+  ];
 in
   stdenvNoCC.mkDerivation {
     name = "trezor-suite-dev";
@@ -47,13 +52,18 @@ in
     ] ++ lib.optionals stdenv.isDarwin (with darwin.apple_sdk.frameworks; [
       Cocoa
       CoreServices
-    ]);
+    ]) ++ extraBuildInputs;
 
     # used by patchelf for WabiSabiClientLibrary in dev mode (see webpack nixos-interpreter-plugin)
     NIX_PATCHELF_LIBRARY_PATH = "${openssl.out}/lib:${zlib}/lib:${gcc.cc.lib}/lib";
     NIX_CC="${gcc}";
 
     shellHook = ''
+      ${if useRust then ''
+        echo "Rust dev tools enabled"
+        export RUST_LOG="debug"
+        export RUST_BACKTRACE=1
+      '' else ""}
       export NODE_OPTIONS=--max_old_space_size=4096
       export CURDIR="$(pwd)"
       export PATH="$PATH:$CURDIR/node_modules/.bin"
