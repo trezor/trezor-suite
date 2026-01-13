@@ -293,6 +293,10 @@ export const EXPERIMENTAL_FEATURES_KB_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/experimental-features-in-trezor-suite',
 );
 
+export const NETWORK_RESERVE_URL: Url = withPlatformUtm(
+    'https://trezor.io/learn/supported-assets/ethereum-layer-2-EVM/network-reserve-for-base-optimism-and-solana',
+);
+
 export const HELP_CENTER_T3W1_INTRODUCTION_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-devices/trezor-safe-7/introduction-to-the-trezor-safe-7',
 );
