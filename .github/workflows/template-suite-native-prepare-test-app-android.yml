@@ -54,6 +54,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+          cache: gradle
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
@@ -142,6 +143,18 @@ jobs:
         run: $ANDROID_HOME/build-tools/35.0.0/apksigner sign --ks $KEYSTORE_PATH --ks-pass $KEYSTORE_PASSWORD --out app-release.apk app-release.apk
 
       ############# CACHE MISS - COMPILE A FRESH .APK FILE #############
+
+      - name: Rust Cache
+        if: steps.s3_build_cache.outputs.hit == 'false'
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            ./node_modules/@emurgo/csl-mobile-bridge/rust -> target
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: "x86_64-linux-android, armv7-linux-androideabi, aarch64-linux-android, i686-linux-android"
 
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'

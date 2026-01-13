@@ -52,6 +52,20 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           yarn install
 
+      - name: Rust Cache
+        if: steps.s3_build_cache.outputs.hit == 'false'
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            ./node_modules/@emurgo/csl-mobile-bridge/rust -> target
+
+      # Add required Rust targets for @emurgo/csl-mobile-bridge support
+      # https://github.com/Emurgo/csl-mobile-bridge?tab=readme-ov-file#requirements
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: "aarch64-apple-ios, aarch64-apple-ios-sim, x86_64-apple-ios"
+
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
         run: yarn prebuild --platform ios --clean
