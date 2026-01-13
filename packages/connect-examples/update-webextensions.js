@@ -59,17 +59,17 @@ rootPaths.forEach(dir => {
         },
     );
 
-    const srcPath = path.join(__dirname, '../connect-web');
+    const srcPath = path.join(__dirname, '../connect-webextension');
 
     ['trezor-content-script.js'].forEach(p => {
         fs.copyFileSync(
-            path.join(srcPath, 'src', 'webextension', p),
+            path.join(srcPath, 'extension-files', p),
             path.join(rootPath, buildFolder, 'vendor', p),
         );
     });
 
     ['trezor-usb-permissions.js'].forEach(p => {
-        let content = fs.readFileSync(path.join(srcPath, 'src', 'webextension', p), 'utf-8');
+        let content = fs.readFileSync(path.join(srcPath, 'extension-files', p), 'utf-8');
         if (trezorConnectSrc !== DEFAULT_SRC) {
             const urlRegex = /const url = .*?;/s;
             content = content.replace(urlRegex, `const url = '${trezorConnectSrc}';`);
@@ -79,7 +79,7 @@ rootPaths.forEach(dir => {
 
     ['trezor-usb-permissions.html'].forEach(p => {
         fs.copyFileSync(
-            path.join(srcPath, 'src', 'webextension', p),
+            path.join(srcPath, 'extension-files', p),
             path.join(rootPath, buildFolder, p),
         );
     });

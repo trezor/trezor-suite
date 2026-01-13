@@ -7,6 +7,14 @@ import webpack from 'webpack';
 
 const DIST = path.resolve(__dirname, '../build');
 
+const extensionFilesPath = path.join(
+    __dirname,
+    '..',
+    '..',
+    'connect-webextension',
+    'extension-files',
+);
+
 const config: webpack.Configuration = {
     target: 'web',
     mode: 'production',
@@ -14,10 +22,7 @@ const config: webpack.Configuration = {
         // webusb
         webusb: path.resolve(__dirname, '../src/webusb/index.ts'),
         // webextension
-        extensionPermissions: path.resolve(
-            __dirname,
-            '../src/webextension/extensionPermissions.ts',
-        ),
+        extensionPermissions: path.resolve(extensionFilesPath, 'extensionPermissions.ts'),
     },
     output: {
         filename: 'js/[name].[contenthash].js',
@@ -67,7 +72,7 @@ const config: webpack.Configuration = {
         new HtmlWebpackPlugin({
             chunks: ['extensionPermissions'],
             filename: 'extension-permissions.html',
-            template: path.join(__dirname, '../src/webextension/extension-permissions.html'),
+            template: path.join(__dirname, extensionFilesPath, 'extension-permissions.html'),
             inject: true,
             minify: false,
         }),
