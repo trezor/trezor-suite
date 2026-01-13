@@ -1,3 +1,4 @@
+import { getSuiteVersion } from '@trezor/env-utils';
 import { err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -35,6 +36,7 @@ export const quotaManagerFetch = async ({
         method,
         headers: {
             'Content-Type': 'application/json',
+            'Suite-Version': getSuiteVersion(),
         },
         body: body ? JSON.stringify(body) : null,
     });
