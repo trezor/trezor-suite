@@ -61,7 +61,7 @@ export const TradeDetailSheet = memo(({ orderId, isVisible, onDismiss }: TradeDe
             <TradeDetailTransactionInfo orderId={orderId} />
             <TradeDetailInfo orderId={orderId} />
             <TradeDetailFooter orderId={orderId} />
-            <Footer type={trade.tradeType} />
+            <Footer />
         </BottomSheetModal>
     );
 });

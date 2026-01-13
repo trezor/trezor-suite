@@ -168,7 +168,7 @@ export const TradingExchangePreviewScreen = ({
                 />
             )}
 
-            <Footer type="exchange" />
+            <Footer />
         </Screen>
     );
 };

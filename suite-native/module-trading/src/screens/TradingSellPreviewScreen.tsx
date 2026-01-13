@@ -89,7 +89,7 @@ export const TradingSellPreviewScreen = () => {
                     onSignTransactionNavigation={onSignTransactionNavigation}
                 />
             )}
-            <Footer type="sell" />
+            <Footer />
         </Screen>
     );
 };
