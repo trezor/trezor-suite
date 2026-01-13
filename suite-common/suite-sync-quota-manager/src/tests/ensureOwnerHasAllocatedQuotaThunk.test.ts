@@ -3,7 +3,7 @@ import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types
 import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from '../challenge/prepareChallengeSession';
-import { DEFAULT_OWNER_SIZE_QUOTA } from '../constants';
+import { DEFAULT_ACCOUNT_SIZE_QUOTA } from '../constants';
 import { ensureOwnerHasAllocatedQuotaThunk } from '../ensureOwnerHasAllocatedQuotaThunk';
 import { SuiteSyncQuotaManagerState, quotaManagerInitialState } from '../quotaManagerReducer';
 import { checkStorageByOwnerId } from '../storage/checkStorage';
@@ -143,7 +143,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
                 publicKey:
                     '0428a3cefc19b41ff56795e371aab72d6d85a3ca2200bd46c54e611a36222295a88b44d6f23ce94025b6010f9eb0f9168ad35d8396dc865fa0a16f2f5471816a45',
                 proof: '3fe8d55f5dfdc54133027c3a94903ab4e038353dc08ec4d324c7fd5eda74def911249c2bf1929313a223ce4fa50140fb6c717b46f123c901a5df39afbe7f2bb7',
-                size: DEFAULT_OWNER_SIZE_QUOTA,
+                size: DEFAULT_ACCOUNT_SIZE_QUOTA,
                 challenge: 'aa55',
                 sessionId: 'session-123',
             },
