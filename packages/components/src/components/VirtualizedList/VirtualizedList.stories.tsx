@@ -44,7 +44,6 @@ export const VirtualizedList: StoryFn = () => {
         <Container>
             <VirtualizedListComponent
                 items={data}
-                itemsFingerprint="mocked-fingerprint"
                 onScrollEnd={() => {
                     setEnd(end + 1000);
                 }}

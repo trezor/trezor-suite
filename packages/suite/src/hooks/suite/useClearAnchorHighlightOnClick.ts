@@ -17,9 +17,21 @@ export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement
         const removeAnchor = () => anchor && dispatch(onAnchorChange());
 
         if (parent && anchor) {
-            parent.addEventListener('click', removeAnchor);
+            let frameId: number | null = null;
 
-            return () => parent.removeEventListener('click', removeAnchor);
+            frameId = requestAnimationFrame(() => {
+                frameId = null;
+                parent.addEventListener('click', removeAnchor);
+            });
+
+            return () => {
+                if (frameId) {
+                    cancelAnimationFrame(frameId);
+                    frameId = null;
+                }
+
+                parent.removeEventListener('click', removeAnchor);
+            };
         }
     }, [elementRef, anchor, dispatch]);
 };

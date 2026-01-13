@@ -49,7 +49,6 @@ export const SelectAssetModal: StoryObj<typeof meta> = {
         onSelectAsset: action('onSelectAsset'),
         onClose: action('onClose'),
         options: getData(selectAssetModalOptions),
-        optionsFingerprint: 'mocked-fingerprint',
         renderOptionBalance: () => null,
         noItemsAvailablePlaceholder: {
             heading: 'No items available',
