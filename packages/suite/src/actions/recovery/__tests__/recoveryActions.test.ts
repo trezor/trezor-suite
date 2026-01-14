@@ -1,7 +1,3 @@
-import { combineReducers, createReducer } from '@reduxjs/toolkit';
-
-import { ExtraDependencies } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as recoveryActions from 'src/actions/recovery/recoveryActions';
@@ -56,29 +52,6 @@ const mockStore = (initialState: ReturnType<typeof getInitialState>) => {
 
     return store;
 };
-
-const rootReducer = combineReducers({
-    suite: createReducer({ flags: {}, locks: [] }, () => ({})),
-    analytics: createReducer({ enabled: false }, () => ({})),
-    device: createReducer({}, () => ({})),
-    recovery: recoveryReducer,
-});
-
-const prepareConfiguredMockStore = ({
-    initialState,
-    extra,
-}: {
-    initialState?: ReturnType<typeof getInitialState>;
-    extra?: Partial<ExtraDependencies>;
-} = {}) =>
-    configureMockStore<ReturnType<typeof getInitialState>>({
-        reducer: rootReducer,
-        preloadedState: initialState ?? getInitialState(),
-        middleware: [],
-        extra: extra ?? {
-            services: extraDependenciesMock.services,
-        },
-    });
 
 describe('Recovery Actions', () => {
     beforeAll(() => {
@@ -143,7 +116,7 @@ describe('Recovery Actions', () => {
     });
 
     it('checkSeed', async () => {
-        const store = prepareConfiguredMockStore();
+        const store = mockStore(getInitialState());
         const action = store.dispatch(recoveryActions.checkSeed());
         expect(store.getState().recovery.status).toMatch('in-progress');
         await action;
