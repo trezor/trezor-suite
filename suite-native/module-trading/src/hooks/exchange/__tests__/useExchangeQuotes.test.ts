@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { CryptoId } from 'invity-api';
 
 import {
@@ -31,16 +33,8 @@ import { useExchangeQuotes } from '../useExchangeQuotes';
 
 let mockTimeSpent: number;
 
-const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useLegacyAnalytics: jest.fn(),
-    };
-});
+let reportMock: jest.Mock;
+type ReportSpy = jest.SpyInstance;
 
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
@@ -67,7 +61,23 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
+const useExchangeQuotesWithReportSpy = () => {
+    const analytics = useLegacyAnalytics();
+    const spyRef = React.useRef<ReportSpy | null>(null);
+
+    if (!spyRef.current) {
+        spyRef.current = jest.spyOn(analytics, 'report');
+    }
+
+    const form = useExchangeForm();
+    const quotes = useExchangeQuotes(form);
+
+    return { form, quotes, reportSpy: spyRef.current! };
+};
+
 describe('useExchangeQuotes', () => {
+    const activeSpies: ReportSpy[] = [];
+
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore => {
         const preloadedState: PreloadedState = {
             wallet: {
@@ -82,19 +92,32 @@ describe('useExchangeQuotes', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderUseExchangeQuotes = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(
-            () => {
-                const form = useExchangeForm();
-                const quotes = useExchangeQuotes(form);
-
-                return { form, quotes };
+    const renderUseExchangeQuotes = async (store: TestStore) => {
+        const hook = await renderHookWithStoreProviderAsync(
+            () => useExchangeQuotesWithReportSpy(),
+            {
+                store,
             },
-            { store },
         );
+
+        const spy = hook.result.current.reportSpy;
+        activeSpies.push(spy);
+        reportMock = spy as unknown as jest.Mock;
+
+        return hook;
+    };
 
     beforeEach(() => {
         mockTimeSpent = 0;
+        jest.clearAllMocks();
+        if (reportMock) reportMock.mockClear();
+    });
+
+    afterEach(() => {
+        while (activeSpies.length) {
+            activeSpies.pop()!.mockRestore();
+        }
+        reportMock = undefined as unknown as jest.Mock;
     });
 
     it('should query quotes once all required data is selected', async () => {
@@ -165,7 +188,6 @@ describe('useExchangeQuotes', () => {
                 form.setValue('sendAsset', btcAsset);
                 form.setValue('receiveAsset', ethAsset);
                 form.setValue('sendCryptoAmount', amount);
-                // allow validations to run
                 await Promise.resolve();
             });
 
@@ -199,7 +221,6 @@ describe('useExchangeQuotes', () => {
             }),
         );
 
-        // clean up form flush async validations
         await act(async () => {
             form.clearErrors();
             await form.trigger();
@@ -308,7 +329,6 @@ describe('useExchangeQuotes', () => {
             }),
         );
 
-        // clean up form flush async validations
         await act(async () => {
             form.clearErrors();
             await form.trigger();
@@ -348,13 +368,13 @@ describe('useExchangeQuotes', () => {
             form.setValue('receiveAsset', ethAsset);
             form.setValue('sendCryptoAmount', '1');
         });
-        // handleRequestThunk is mocked, add quotes manually
+
         act(() => {
             store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
         });
 
         dispatchSpy.mockClear();
-        // clear some value to make form invalid
+
         act(() => {
             form.setValue('sendCryptoAmount', undefined);
         });
@@ -388,12 +408,6 @@ describe('useExchangeQuotes', () => {
                 await result.current.quotes.quotesRequest;
             });
         };
-
-        beforeAll(() => {
-            (useLegacyAnalytics as jest.Mock).mockReturnValue({
-                report: reportMock,
-            });
-        });
 
         it('should report when quotes are fetched', async () => {
             const store = await getInitializedStore();
