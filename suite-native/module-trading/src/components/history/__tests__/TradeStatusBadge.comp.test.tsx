@@ -2,6 +2,7 @@ import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invit
 
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';
+import messages from '@suite-native/intl/translations/en-US.json';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
@@ -17,66 +18,74 @@ describe('TradeStatusBadge', () => {
     });
 
     it.each([
-        ['SUCCESS', /Approved/],
-        ['BLOCKED', /Blocked/],
-        ['ERROR', /Rejected/],
-        ['SUBMITTED', /Submitted/],
-        ['LOGIN_REQUEST', /Pending/],
-        ['REQUESTING', /Requesting/],
-        ['APPROVAL_PENDING', /Approval pending/],
-        ['WAITING_FOR_USER', /Waiting for user/],
-    ] as [BuyTradeStatus, RegExp][])(
+        ['SUCCESS', 'success'],
+        ['BLOCKED', 'blocked'],
+        ['ERROR', 'error'],
+        ['SUBMITTED', 'submitted'],
+        ['LOGIN_REQUEST', 'loginRequest'],
+        ['REQUESTING', 'requesting'],
+        ['APPROVAL_PENDING', 'approvalPending'],
+        ['WAITING_FOR_USER', 'waitingForUser'],
+    ] as [BuyTradeStatus, string][])(
         'should render badge with correct text for buy trade and status %s',
-        async (status, expectedText) => {
+        async (status, statusKey) => {
             const buyTrade = getBuyTrade({ status });
             const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
                 <TradeStatusBadge status={buyTrade.data.status} />,
             );
-            expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
-        },
-    );
-
-    it.each([
-        ['SUCCESS', /Approved/],
-        ['KYC', /KYC/],
-        ['ERROR', /Rejected/],
-        ['LOADING', /Loading/],
-        ['CONFIRM', /Confirm/],
-        ['SENDING', /Sending/],
-        ['CONFIRMING', /Confirming/],
-        ['CONVERTING', /Converting/],
-        ['APPROVAL_REQ', /Approval required/],
-        ['APPROVAL_PENDING', /Approval pending/],
-        ['SIGN_DATA', /Sign data/],
-        ['PENDING', /Pending/],
-    ] as [ExchangeTradeStatus, RegExp][])(
-        'should render badge with correct text for exchange trade and status %s',
-        async (status, expectedText) => {
-            const exchangeTrade = getExchangeTrade({ status });
-            const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
-                <TradeStatusBadge status={exchangeTrade.data.status} />,
+            const expectedText = new RegExp(
+                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
         },
     );
 
     it.each([
-        ['SUCCESS', /Approved/],
-        ['BLOCKED', /Blocked/],
-        ['ERROR', /Rejected/],
-        ['CANCELLED', /Canceled/],
-        ['REFUNDED', /Refunded/],
-        ['REQUESTING', /Requesting/],
-        ['LOGIN_REQUEST', /Pending/],
-        ['SITE_ACTION_REQUEST', /Site action requested/],
-        ['SUBMITTED', /Submitted/],
-        ['SEND_CRYPTO', /Send crypto/],
-    ] as [SellTradeStatus, RegExp][])(
+        ['SUCCESS', 'success'],
+        ['KYC', 'kyc'],
+        ['ERROR', 'error'],
+        ['LOADING', 'loading'],
+        ['CONFIRM', 'confirm'],
+        ['SENDING', 'sending'],
+        ['CONFIRMING', 'confirming'],
+        ['CONVERTING', 'converting'],
+        ['APPROVAL_REQ', 'ApprovalRequired'],
+        ['APPROVAL_PENDING', 'approvalPending'],
+        ['SIGN_DATA', 'signData'],
+        ['PENDING', 'pending'],
+    ] as [ExchangeTradeStatus, string][])(
+        'should render badge with correct text for exchange trade and status %s',
+        async (status, statusKey) => {
+            const exchangeTrade = getExchangeTrade({ status });
+            const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
+                <TradeStatusBadge status={exchangeTrade.data.status} />,
+            );
+            const expectedText = new RegExp(
+                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
+            );
+            expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
+        },
+    );
+
+    it.each([
+        ['SUCCESS', 'success'],
+        ['BLOCKED', 'blocked'],
+        ['ERROR', 'error'],
+        ['CANCELLED', 'cancelled'],
+        ['REFUNDED', 'refunded'],
+        ['REQUESTING', 'requesting'],
+        ['LOGIN_REQUEST', 'loginRequest'],
+        ['SITE_ACTION_REQUEST', 'siteActionRequest'],
+        ['SUBMITTED', 'submitted'],
+    ] as [SellTradeStatus, string][])(
         'should render badge with correct text for sell trade and status %s',
-        async (status, expectedText) => {
+        async (status, statusKey) => {
             const sellTrade = getSellTrade({ status });
             const { getByAccessibilityHint } = await renderWithStoreProviderAsync(
                 <TradeStatusBadge status={sellTrade.data.status} />,
+            );
+            const expectedText = new RegExp(
+                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
         },
