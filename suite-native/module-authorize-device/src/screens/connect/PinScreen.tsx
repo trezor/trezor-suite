@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import { PinOnKeypad } from '@suite-native/device-authorization';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { ConnectDeviceScreenView } from '../../components/connect/ConnectDeviceScreenView';
 import { PinOnDevice } from '../../components/connect/PinOnDevice';
-import { PinOnKeypad } from '../../components/connect/PinOnKeypad';
 
 export const PinScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
