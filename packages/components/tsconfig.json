@@ -14,10 +14,6 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/icons" },
-        {
-            "path": "../../suite-common/suite-constants"
-        },
-        { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../theme" },
         { "path": "../type-utils" },

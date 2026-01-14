@@ -3,10 +3,6 @@ import React, { useEffect, useState } from 'react';
 import Lottie, { LottieOptions } from 'lottie-react';
 import styled from 'styled-components';
 
-// TODO: suite-common imports in non-suite packages should not be allowed
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
-import { DeviceModelInternal } from '@trezor/device-utils';
 import { resolveStaticPath } from '@trezor/env-utils';
 
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
@@ -23,7 +19,6 @@ type LottieAnimationProps = {
     type: LottieType;
     loop?: boolean;
     shape?: Shape;
-    deviceModelInternal?: DeviceModelInternal;
 };
 
 export const LottieAnimation = ({
@@ -31,7 +26,6 @@ export const LottieAnimation = ({
     type,
     loop = false,
     shape,
-    deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
     ...props
 }: LottieAnimationProps) => {
     const [lottieAnimationData, setLottieAnimationData] =
@@ -63,7 +57,7 @@ export const LottieAnimation = ({
         return () => {
             abortController.abort();
         };
-    }, [type, deviceModelInternal]);
+    }, [type]);
 
     return (
         <AnimationWrapper $height={size} $width={size} shape={shape} {...props}>
