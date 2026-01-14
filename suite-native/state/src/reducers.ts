@@ -45,6 +45,7 @@ import {
     MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
     backfillPortfolioTrackerUnavailableCapabilities,
+    blockchainPersistTransform,
     bluetoothPersistTransform,
     deriveAccountTypeFromPaymentType,
     devicePersistTransform,
@@ -102,6 +103,15 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const blockchainPersistedReducer = preparePersistReducer({
+        reducer: blockchainReducer,
+        persistedKeys: ['btc'],
+        key: 'blockchain',
+        version: 1,
+        transforms: [blockchainPersistTransform],
+        storage: deps.mmkvStorage,
+    });
+
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
         persistedKeys: ['favouriteAssets', 'trades', 'settings', 'residence', 'tradingEnvironment'],
@@ -140,7 +150,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const walletReducers = combineReducers({
         accounts: accountsReducer,
-        blockchain: blockchainReducer,
+        blockchain: blockchainPersistedReducer,
         explorer: explorerReducer,
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,

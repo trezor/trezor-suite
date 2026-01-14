@@ -54,7 +54,7 @@ const InformativeList = () => (
 
 type NavigationProp = StackNavigationProps<
     SettingsStackParamList,
-    SettingsStackRoutes.SettingsDeviceChecks
+    SettingsStackRoutes.SettingsAdvanced
 >;
 
 type TurnOffCheckScreenContentProps = {
@@ -74,7 +74,7 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
         if (navigation.canGoBack()) {
             navigation.goBack();
         } else {
-            navigation.navigate(SettingsStackRoutes.SettingsDeviceChecks);
+            navigation.navigate(SettingsStackRoutes.SettingsAdvanced);
         }
         showToast({
             variant: 'default',

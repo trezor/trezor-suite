@@ -2,10 +2,12 @@ import { createMiddleware } from '@suite-common/redux-utils';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     TransactionsRootState,
+    blockchainActions,
     onBlockchainDisconnectThunk,
     selectAllPendingTransactions,
+    setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { BlockchainEvent, BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
+import { BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS } from '@trezor/connect';
 
 import {
     onBlockchainConnectThunk,
@@ -22,34 +24,38 @@ export const selectNetworksWithPendingTransactions = (state: TransactionsRootSta
 };
 
 // Be very careful when adding new stuff here, it could affect performance a lot on mobile
-export const blockchainMiddleware = createMiddleware(
-    (action: BlockchainEvent, { dispatch, next, getState }) => {
-        switch (action.type) {
-            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
-                dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
+export const blockchainMiddleware = createMiddleware((action, { dispatch, next, getState }) => {
+    switch (action.type) {
+        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.CONNECT:
+            dispatch(onBlockchainConnectThunk({ symbol: action.payload.coin.shortcut }));
 
-                break;
-            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
-                const networksWithPendingTransactions =
-                    selectNetworksWithPendingTransactions(getState());
-                const symbol = action.payload.coin.shortcut.toLowerCase();
+            break;
+        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.BLOCK: {
+            const networksWithPendingTransactions =
+                selectNetworksWithPendingTransactions(getState());
+            const symbol = action.payload.coin.shortcut.toLowerCase();
 
-                if (isNetworkSymbol(symbol) && networksWithPendingTransactions.includes(symbol)) {
-                    dispatch(syncAccountsWithBlockchainThunk({ symbol }));
-                }
-
-                break;
+            if (isNetworkSymbol(symbol) && networksWithPendingTransactions.includes(symbol)) {
+                dispatch(syncAccountsWithBlockchainThunk({ symbol }));
             }
-            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
-                dispatch(onBlockchainNotificationThunk(action.payload));
-                break;
-            case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
-                dispatch(onBlockchainDisconnectThunk(action.payload));
-                break;
-            default:
-                break;
-        }
 
-        return next(action);
-    },
-);
+            break;
+        }
+        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.NOTIFICATION:
+            dispatch(onBlockchainNotificationThunk(action.payload));
+            break;
+        case TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR:
+            dispatch(onBlockchainDisconnectThunk(action.payload));
+            break;
+        default:
+            break;
+    }
+
+    next(action);
+
+    if (blockchainActions.setBackend.match(action)) {
+        dispatch(setCustomBackendThunk(action.payload.symbol));
+    }
+
+    return action;
+});

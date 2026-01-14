@@ -1,0 +1,143 @@
+import { useCallback, useMemo, useState } from 'react';
+import { Keyboard } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
+
+import { yup } from '@suite-common/validators';
+import { BackendType } from '@suite-common/wallet-config';
+import {
+    BlockchainRootState,
+    blockchainActions,
+    reconnectBlockchainThunk,
+    selectNetworkBlockchainInfo,
+} from '@suite-common/wallet-core';
+import { SelectItemType } from '@suite-native/atoms';
+import { useForm } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
+import TrezorConnect, { BLOCKCHAIN, BlockchainError } from '@trezor/connect';
+import { parseElectrumUrl } from '@trezor/utils';
+
+const symbol = 'btc';
+
+export type ServerType = BackendType | 'default';
+
+type FormValues = {
+    serverType: ServerType;
+    serverAddress: string;
+};
+
+export const useBackendServersForm = () => {
+    const dispatch = useDispatch();
+    const { translate } = useTranslate();
+
+    const {
+        connected,
+        backends: { selected, urls },
+    } = useSelector((state: BlockchainRootState) => selectNetworkBlockchainInfo(state, symbol));
+
+    const serverTypes = useMemo<SelectItemType<ServerType>[]>(
+        () => [
+            {
+                value: 'default',
+                label: translate('moduleSettings.advanced.bitcoinBackends.servers.serverType'),
+            },
+            { value: 'electrum', label: 'Electrum' },
+        ],
+        [translate],
+    );
+
+    const defaultValues = useMemo<FormValues>(
+        () => ({
+            serverType: selected ?? 'default',
+            serverAddress: urls?.electrum?.[0] ?? '',
+        }),
+        [selected, urls],
+    );
+
+    const form = useForm({
+        validation: yup.object({
+            serverType: yup
+                .string<ServerType>()
+                .oneOf(serverTypes.map(({ value }) => value))
+                .required(),
+            serverAddress: yup
+                .string()
+                .test(
+                    'format',
+                    translate('moduleSettings.advanced.bitcoinBackends.servers.invalidFormat'),
+                    value => !!value && !!parseElectrumUrl(value),
+                )
+                .test(
+                    'tor',
+                    translate('moduleSettings.advanced.bitcoinBackends.servers.torNotSupported'),
+                    value => !!value && !value.includes('.onion:'),
+                ),
+        }),
+        defaultValues,
+        mode: 'onSubmit',
+    });
+
+    const [isConnecting, setIsConnecting] = useState(false);
+
+    const setBackend = ({ serverType, serverAddress }: FormValues) => {
+        dispatch(
+            blockchainActions.setBackend({
+                symbol,
+                type: serverType,
+                urls: serverType === 'electrum' ? [serverAddress] : [],
+            }),
+        );
+        dispatch(reconnectBlockchainThunk({ symbol }));
+    };
+
+    const submit = form.handleSubmit(formValues => {
+        setIsConnecting(true);
+        setBackend(formValues);
+    });
+
+    const discard = () => {
+        setBackend(form.formState.defaultValues as FormValues);
+    };
+
+    const onConnectionSuccess = useCallback(() => {
+        form.reset(defaultValues);
+        setIsConnecting(false);
+        Keyboard.dismiss();
+    }, [form, defaultValues]);
+
+    const onConnectionError = useCallback(
+        (e: BlockchainError) => {
+            if (e.code === 'Backend_Error') {
+                form.setError('serverAddress', {
+                    message: translate(
+                        'moduleSettings.advanced.bitcoinBackends.servers.unableToConnect',
+                    ),
+                });
+                setIsConnecting(false);
+            }
+        },
+        [form, translate],
+    );
+
+    useFocusEffect(
+        useCallback(() => {
+            TrezorConnect.on(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+            TrezorConnect.on(BLOCKCHAIN.ERROR, onConnectionError);
+
+            return () => {
+                TrezorConnect.off(BLOCKCHAIN.CONNECT, onConnectionSuccess);
+                TrezorConnect.off(BLOCKCHAIN.ERROR, onConnectionError);
+            };
+        }, [onConnectionSuccess, onConnectionError]),
+    );
+
+    return {
+        form,
+        serverTypes,
+        isConnected: connected,
+        isConnecting,
+        submit,
+        discard,
+    };
+};

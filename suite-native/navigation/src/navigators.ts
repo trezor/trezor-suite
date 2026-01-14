@@ -90,9 +90,10 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsSupport]: undefined;
     [SettingsStackRoutes.SettingsCoinEnabling]: undefined;
     [SettingsStackRoutes.SettingsLabeling]: undefined;
-    [SettingsStackRoutes.SettingsDeviceChecks]: undefined;
+    [SettingsStackRoutes.SettingsAdvanced]: undefined;
     [SettingsStackRoutes.TurnOffDeviceAuthenticityCheck]: undefined;
     [SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck]: undefined;
+    [SettingsStackRoutes.BitcoinBackends]: undefined;
     [SettingsStackRoutes.SettingsTradingLocation]: undefined;
 };
 

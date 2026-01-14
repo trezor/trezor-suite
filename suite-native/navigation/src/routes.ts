@@ -233,9 +233,10 @@ export enum SettingsStackRoutes {
     SettingsSupport = 'SettingsSupport',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
     SettingsLabeling = 'SettingsLabeling',
-    SettingsDeviceChecks = 'SettingsDeviceChecks',
+    SettingsAdvanced = 'SettingsAdvanced',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
+    BitcoinBackends = 'BitcoinBackends',
     SettingsTradingLocation = 'SettingsTradingLocation',
 }
 

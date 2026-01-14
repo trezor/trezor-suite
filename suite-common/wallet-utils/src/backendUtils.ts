@@ -3,6 +3,7 @@ import {
     NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
     getNetworkType,
+    networkSymbolCollection,
 } from '@suite-common/wallet-config';
 import type {
     Account,
@@ -41,9 +42,11 @@ const isBackend = (backend: Partial<CustomBackend>): backend is CustomBackend =>
     !!(backend.type && backend.urls?.length);
 
 export const getCustomBackends = (blockchains: BlockchainNetworks): CustomBackend[] =>
-    Object.entries(blockchains)
-        .map(([symbol, { backends }]) => ({
-            symbol: symbol as NetworkSymbol,
+    networkSymbolCollection
+        .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
+        .filter(({ blockchain }) => !!blockchain)
+        .map(({ symbol, blockchain: { backends } }) => ({
+            symbol,
             type: backends.selected,
             urls: backends.selected && backends.urls?.[backends.selected],
         }))
