@@ -7,7 +7,7 @@ import {
     PrecomposedTransactionFinalCardano,
     StakePool,
 } from '@suite-common/wallet-types';
-import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect';
+import { CARDANO, CardanoCertificate, CardanoOutput, PROTO } from '@trezor/connect/src/exports';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
