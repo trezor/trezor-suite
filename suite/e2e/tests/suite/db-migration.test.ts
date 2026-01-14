@@ -16,10 +16,9 @@ test.describe(
     'Database migration',
     // This test is run only on web nightly builds, it works with web instances of 22.5 and develop branch
     // On PR and release CI run it would provide no value and potentially false failures
-    { tag: ['@webOnly', '@nightlyOnly', '@T3W1', '@T3T1'] },
+    { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] },
     () => {
         test.use({
-            emulatorStartConf: { model: 'T3T1', wipe: true },
             emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
         });
 
