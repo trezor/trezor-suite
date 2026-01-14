@@ -1,3 +1,4 @@
+import { getSuiteDevice } from '@suite-common/test-utils';
 import { UI } from '@trezor/connect';
 
 import {
@@ -15,7 +16,7 @@ describe('deviceAuthorizationSlice', () => {
     describe('initial state', () => {
         it('should have correct initial state', () => {
             expect(deviceAuthorizationReducer(undefined, { type: 'unknown' })).toEqual({
-                deviceState: DeviceAuthorizationStep.Idle,
+                deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
             });
         });
     });
@@ -23,20 +24,39 @@ describe('deviceAuthorizationSlice', () => {
     describe('UI.REQUEST_PIN', () => {
         it('should set `hasDeviceRequestedPin`', () => {
             expect(deviceAuthorizationReducer(undefined, { type: UI.REQUEST_PIN })).toEqual({
-                deviceState: DeviceAuthorizationStep.PinRequested,
+                deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
             });
         });
     });
+
     describe('UI.REQUEST_PASSPHRASE', () => {
         it('should set hasDeviceRequestedPassphrase', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
             });
 
-            const state = deviceAuthorizationReducer(prevState, { type: UI.REQUEST_PASSPHRASE });
+            const state = deviceAuthorizationReducer(prevState, {
+                type: UI.REQUEST_PASSPHRASE,
+                // @ts-expect-error
+                payload: { device: getSuiteDevice({ _state: { staticSessionId: 'fsdjofi' } }) },
+            });
 
             expect(state).toEqual({
-                deviceState: DeviceAuthorizationStep.PassphraseRequested,
+                deviceAuthorizationStep: DeviceAuthorizationStep.PassphraseRequested,
+            });
+        });
+
+        it('should ignore newly created device without state', () => {
+            const prevState = getDeviceAuthorizationState({
+                deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
+            });
+
+            const state = deviceAuthorizationReducer(prevState, {
+                type: UI.REQUEST_PASSPHRASE,
+            });
+
+            expect(state).toEqual({
+                deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
             });
         });
     });
@@ -51,7 +71,7 @@ describe('deviceAuthorizationSlice', () => {
             const state = deviceAuthorizationReducer(prevState, action);
 
             expect(state).toEqual({
-                deviceState: DeviceAuthorizationStep.PinRequested,
+                deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
             });
         });
 
@@ -67,7 +87,7 @@ describe('deviceAuthorizationSlice', () => {
             const state = deviceAuthorizationReducer(prevState, action);
 
             expect(state).toEqual({
-                deviceState: DeviceAuthorizationStep.PinRequested,
+                deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
             });
         });
     });
@@ -80,7 +100,7 @@ describe('deviceAuthorizationSlice', () => {
             const action = { type: UI.CLOSE_UI_WINDOW };
 
             expect(deviceAuthorizationReducer(prevState, action)).toEqual({
-                deviceState: DeviceAuthorizationStep.Idle,
+                deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
             });
         });
     });

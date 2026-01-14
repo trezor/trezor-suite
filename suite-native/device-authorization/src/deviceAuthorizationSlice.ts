@@ -57,7 +57,7 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI.REQUEST_PASSPHRASE, (state, action) => {
                 // @ts-expect-error payload not typed
-                if (action.payload.device._state.staticSessionId) {
+                if (action.payload?.device?._state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
                 }
             })
