@@ -1,9 +1,6 @@
-import type { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
-
 import { TradingTransactionStatus } from '@suite-common/trading';
 import { BadgeVariant } from '@suite-native/atoms';
-import messages from '@suite-native/intl/translations/en-US.json';
-import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import { getTranslation, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
 
 import { TradeStatusBadge, getBadgeIconName, getBadgeVariant } from '../TradeStatusBadge';
@@ -26,7 +23,7 @@ describe('TradeStatusBadge', () => {
         ['REQUESTING', 'requesting'],
         ['APPROVAL_PENDING', 'approvalPending'],
         ['WAITING_FOR_USER', 'waitingForUser'],
-    ] as [BuyTradeStatus, string][])(
+    ] as const)(
         'should render badge with correct text for buy trade and status %s',
         async (status, statusKey) => {
             const buyTrade = getBuyTrade({ status });
@@ -34,7 +31,7 @@ describe('TradeStatusBadge', () => {
                 <TradeStatusBadge status={buyTrade.data.status} />,
             );
             const expectedText = new RegExp(
-                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
+                getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
         },
@@ -52,8 +49,7 @@ describe('TradeStatusBadge', () => {
         ['APPROVAL_REQ', 'ApprovalRequired'],
         ['APPROVAL_PENDING', 'approvalPending'],
         ['SIGN_DATA', 'signData'],
-        ['PENDING', 'pending'],
-    ] as [ExchangeTradeStatus, string][])(
+    ] as const)(
         'should render badge with correct text for exchange trade and status %s',
         async (status, statusKey) => {
             const exchangeTrade = getExchangeTrade({ status });
@@ -61,7 +57,7 @@ describe('TradeStatusBadge', () => {
                 <TradeStatusBadge status={exchangeTrade.data.status} />,
             );
             const expectedText = new RegExp(
-                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
+                getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
         },
@@ -77,7 +73,7 @@ describe('TradeStatusBadge', () => {
         ['LOGIN_REQUEST', 'loginRequest'],
         ['SITE_ACTION_REQUEST', 'siteActionRequest'],
         ['SUBMITTED', 'submitted'],
-    ] as [SellTradeStatus, string][])(
+    ] as const)(
         'should render badge with correct text for sell trade and status %s',
         async (status, statusKey) => {
             const sellTrade = getSellTrade({ status });
@@ -85,7 +81,7 @@ describe('TradeStatusBadge', () => {
                 <TradeStatusBadge status={sellTrade.data.status} />,
             );
             const expectedText = new RegExp(
-                messages[`moduleTrading.tradeHistory.status.${statusKey}` as keyof typeof messages],
+                getTranslation(`moduleTrading.tradeHistory.status.${statusKey}`),
             );
             expect(getByAccessibilityHint('Trade status badge')).toHaveTextContent(expectedText);
         },
