@@ -7,9 +7,10 @@ import {
 } from '@suite-native/navigation';
 import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 
+import { BitcoinBackendsScreen } from '../screens/BitcoinBackendsScreen';
+import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
-import { SettingsDeviceChecksScreen } from '../screens/SettingsDeviceChecksScreen';
 import { SettingsSuiteSyncScreen } from '../screens/SettingsLabelingScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
 import { SettingsPrivacyScreen } from '../screens/SettingsPrivacyScreen';
@@ -54,8 +55,8 @@ export const SettingsStackNavigator = () => (
             component={SettingsSuiteSyncScreen}
         />
         <SettingsStack.Screen
-            name={SettingsStackRoutes.SettingsDeviceChecks}
-            component={SettingsDeviceChecksScreen}
+            name={SettingsStackRoutes.SettingsAdvanced}
+            component={SettingsAdvancedScreen}
         />
         <SettingsStack.Screen
             name={SettingsStackRoutes.TurnOffFirmwareAuthenticityCheck}
@@ -64,6 +65,10 @@ export const SettingsStackNavigator = () => (
         <SettingsStack.Screen
             name={SettingsStackRoutes.TurnOffDeviceAuthenticityCheck}
             component={TurnOffDeviceAuthenticityCheckScreen}
+        />
+        <SettingsStack.Screen
+            name={SettingsStackRoutes.BitcoinBackends}
+            component={BitcoinBackendsScreen}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsTradingLocation }}

@@ -1333,7 +1333,6 @@ export const messages = {
         },
         advanced: {
             title: 'Advanced',
-            goodAdvice: 'We strongly recommend leaving these checks turned on.',
             authenticityChecks: {
                 buttonTurnOff: 'Turn off',
                 buttonTurnOn: 'Turn on',
@@ -1369,6 +1368,43 @@ export const messages = {
                 title: 'MEV Protection',
                 subtitle:
                     'Stay safe and secure fair prices by preventing others from interfering with your transactions. Available on {supportedNetworks}.',
+            },
+            bitcoinBackends: {
+                title: 'Bitcoin backends',
+                subtitle: 'Manage backend connections',
+                description:
+                    'Connect to a custom backend server, like your own Bitcoin node, for enhanced privacy.',
+                servers: {
+                    title: 'Backend servers',
+                    status: {
+                        connected: 'Connected',
+                        disconnected: 'Disconnected',
+                    },
+                    serverType: 'Server type',
+                    serverTypeDefault: 'Default – Trezor',
+                    serverAddress: 'Server address',
+                    connectButton: 'Connect',
+                    invalidFormat:
+                        'Incorrect format. Please enter the server address in such a way: host:port:[t|s]',
+                    torNotSupported: 'Tor not supported, use a clearnet address instead.',
+                    unableToConnect:
+                        'Unable to connect to server. Check for typos and server disruptions.',
+                },
+                closeAction: {
+                    title: 'Discard your changes?',
+                    description: 'Unsaved edits will be lost if you leave this page.',
+                    discardButton: 'Discard',
+                    continueEditingButton: 'Continue editing',
+                },
+                connectionInfo: {
+                    title: 'Connection info',
+                    connectedTo: 'Currently connected to',
+                    blockHash: 'Block hash',
+                    blockHeight: 'Block height',
+                    backendVersion: 'Backend version',
+                    disconnected:
+                        'Unable to connect to the backend server. Reconnect your device and check your internet connection or custom backend address. Also, make sure BTC is activated in Settings.',
+                },
             },
         },
         secureSync: {

@@ -1908,6 +1908,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bitcoinerlab/secp256k1@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@bitcoinerlab/secp256k1@npm:1.2.0"
+  dependencies:
+    "@noble/curves": "npm:^1.7.0"
+  checksum: 10/435978260e15832227e37c683ca9b470625786ef8903a174ff4386d16cba49ba5c43c7bc4d0284be2d69e467b3fb0e030c8845895f2fe768b505ebd42e106938
+  languageName: node
+  linkType: hard
+
 "@blockaid/client@npm:^0.56.0":
   version: 0.56.0
   resolution: "@blockaid/client@npm:0.56.0"
@@ -6281,7 +6290,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^1.0.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.9.6, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:^1.0.0, @noble/curves@npm:^1.6.0, @noble/curves@npm:^1.7.0, @noble/curves@npm:^1.9.6, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
@@ -11458,6 +11467,7 @@ __metadata:
   resolution: "@suite-native/app@workspace:suite-native/app"
   dependencies:
     "@babel/core": "npm:7.28.5"
+    "@bitcoinerlab/secp256k1": "npm:1.2.0"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:^1.9.4"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
@@ -11602,6 +11612,7 @@ __metadata:
     react-native-safe-area-context: "npm:5.6.1"
     react-native-screens: "npm:~4.18.0"
     react-native-svg: "npm:15.14.0"
+    react-native-tcp-socket: "npm:6.3.0"
     react-native-webview: "npm:13.16.0"
     react-native-worklets: "npm:^0.6.1"
     react-redux: "npm:9.2.0"
@@ -12876,9 +12887,11 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/mev": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -12891,6 +12904,7 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
+    "@suite-native/forms": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -25240,7 +25254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventemitter3@npm:^4.0.0, eventemitter3@npm:^4.0.1, eventemitter3@npm:^4.0.4":
+"eventemitter3@npm:^4.0.0, eventemitter3@npm:^4.0.1, eventemitter3@npm:^4.0.4, eventemitter3@npm:^4.0.7":
   version: 4.0.7
   resolution: "eventemitter3@npm:4.0.7"
   checksum: 10/8030029382404942c01d0037079f1b1bc8fed524b5849c237b80549b01e2fc49709e1d0c557fa65ca4498fc9e24cff1475ef7b855121fcc15f9d61f93e282346
@@ -39003,6 +39017,18 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/8f067e265cd2749a7f0a3a09eccd6a297f1e99d0306e2c630d354e7093c3cb8e47cd054988f832b05ed80509ebdda7422cb407d8dcf851f1d4e8706f14f38c21
+  languageName: node
+  linkType: hard
+
+"react-native-tcp-socket@npm:6.3.0":
+  version: 6.3.0
+  resolution: "react-native-tcp-socket@npm:6.3.0"
+  dependencies:
+    buffer: "npm:^5.4.3"
+    eventemitter3: "npm:^4.0.7"
+  peerDependencies:
+    react-native: ">=0.60.0"
+  checksum: 10/6c7b4b00e52a733baf36f3aed07a833f35865670ae586e4fe2d1665e970eddc55606d0c00a94a8f077bccdcc0ecddb59226c26d363ca1db29b4039ae5c0dce35
   languageName: node
   linkType: hard
 

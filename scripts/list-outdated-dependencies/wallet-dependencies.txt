@@ -1,3 +1,4 @@
+@bitcoinerlab/secp256k1
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk-ethereum
@@ -59,6 +60,7 @@ redux
 redux-logger
 redux-mock-store
 react-native-quick-crypto
+react-native-tcp-socket
 redux-persist
 redux-thunk
 reselect

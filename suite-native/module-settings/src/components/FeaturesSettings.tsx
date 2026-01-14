@@ -65,7 +65,7 @@ export const FeaturesSettings = () => {
                 icon="shieldWarning"
                 title={<Translation id="moduleSettings.items.features.advanced.title" />}
                 subtitle={<Translation id="moduleSettings.items.features.advanced.subtitle" />}
-                onPress={() => navigateTo(SettingsStackRoutes.SettingsDeviceChecks)}
+                onPress={() => navigateTo(SettingsStackRoutes.SettingsAdvanced)}
             />
         </TitledSection>
     );

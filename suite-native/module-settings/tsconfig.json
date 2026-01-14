@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/mev" },
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {
@@ -14,6 +17,9 @@
         },
         {
             "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -33,6 +39,7 @@
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../discovery" },
+        { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },

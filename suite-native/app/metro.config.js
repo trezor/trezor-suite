@@ -41,6 +41,9 @@ const config = {
             http: require.resolve('stream-http'),
             zlib: require.resolve('browserify-zlib'),
             vm: require.resolve('vm-browserify'),
+            // modules needed by ElectrumWorker
+            net: require.resolve('react-native-tcp-socket'),
+            tls: require.resolve('react-native-tcp-socket'),
         },
         sourceExts,
         resolveRequest: (context, moduleName, platform) => {
@@ -69,6 +72,15 @@ const config = {
                 // In future we will need JS implementation of Cardano libs or C++ implementation
                 return {
                     filePath: require.resolve('./cardanoPolyfills.js'),
+                    type: 'sourceFile',
+                };
+            }
+
+            // tiny-secp256k1 used by @trezor/utxo-lib is terribly slow because WASM is not supported.
+            // @bitcoinerlab/secp256k1 is approximately 5× faster but requires additional tweaking.
+            if (moduleName === 'tiny-secp256k1') {
+                return {
+                    filePath: require.resolve('./secp256k1Shim.js'),
                     type: 'sourceFile',
                 };
             }

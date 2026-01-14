@@ -20,6 +20,7 @@ export * from './migrations/walletSettings/v1';
 export * from './migrations/walletSettings/v2';
 export * from './migrations/locale/v2';
 
+export * from './transforms/blockchainTransforms';
 export * from './transforms/bluetoothTransforms';
 export * from './transforms/deviceTransforms';
 export * from './transforms/walletTransforms';
