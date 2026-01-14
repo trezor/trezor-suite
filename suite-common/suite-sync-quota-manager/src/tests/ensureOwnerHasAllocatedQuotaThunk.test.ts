@@ -142,7 +142,7 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
                 ownerId,
                 publicKey:
                     '0428a3cefc19b41ff56795e371aab72d6d85a3ca2200bd46c54e611a36222295a88b44d6f23ce94025b6010f9eb0f9168ad35d8396dc865fa0a16f2f5471816a45',
-                proof: '3fe8d55f5dfdc54133027c3a94903ab4e038353dc08ec4d324c7fd5eda74def911249c2bf1929313a223ce4fa50140fb6c717b46f123c901a5df39afbe7f2bb7',
+                proof: '106fb51f7945d6bd6fac019eb7953f43400746884f1e4f69c3cbfe13ec6539604039baa2c6b5ada1e395957908fe9777991910d4bee05c124161597cef814e3e',
                 size: DEFAULT_ACCOUNT_SIZE_QUOTA,
                 challenge: 'aa55',
                 sessionId: 'session-123',
