@@ -13397,6 +13397,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     react: "npm:19.1.0"
+    react-intl: "npm:^8.0.6"
     react-native: "npm:0.81.5"
     react-native-keyboard-controller: "npm:1.19.2"
     react-native-permissions: "npm:5.4.2"

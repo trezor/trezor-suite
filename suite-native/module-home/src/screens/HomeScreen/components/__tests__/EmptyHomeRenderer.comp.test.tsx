@@ -1,8 +1,9 @@
 import { PORTFOLIO_TRACKER_DEVICE_ID } from '@suite-common/wallet-core';
 import {
     PreloadedState,
-    getByTranslationId,
+    getTranslation,
     renderWithStoreProviderAsync,
+    screen,
 } from '@suite-native/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -13,15 +14,21 @@ describe('EmptyHomeRenderer', () => {
         renderWithStoreProviderAsync(<EmptyHomeRenderer />, { preloadedState });
 
     const expectUninitializedConnectedDeviceState = () => {
-        expect(getByTranslationId('moduleHome.emptyState.uninitializedDevice.title')).toBeTruthy();
+        expect(
+            screen.getByText(getTranslation('moduleHome.emptyState.uninitializedDevice.title')),
+        ).toBeTruthy();
     };
 
     const expectEmptyPortfolioCrossroadsState = () => {
-        expect(getByTranslationId('moduleHome.emptyState.connectTrezor.description')).toBeTruthy();
+        expect(
+            screen.getByText(getTranslation('moduleHome.emptyState.connectTrezor.description')),
+        ).toBeTruthy();
     };
 
     const expectEmptyConnectedDeviceState = () => {
-        expect(getByTranslationId('moduleHome.emptyState.emptyDevice.title')).toBeTruthy();
+        expect(
+            screen.getByText(getTranslation('moduleHome.emptyState.emptyDevice.title')),
+        ).toBeTruthy();
     };
 
     it('should display UninitializedConnectedDeviceState when device is connected but not initialized', async () => {
