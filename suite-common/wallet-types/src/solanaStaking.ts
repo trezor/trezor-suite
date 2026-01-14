@@ -1,4 +1,4 @@
-import { SolanaTx } from '@suite-common/staking-solana';
+import { SolanaTx, SolanaTxMeta } from '@suite-common/staking-solana';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Fee } from '@trezor/blockchain-link-types/src/blockbook';
 
@@ -28,6 +28,7 @@ export type PrepareStakeSolTxResponse =
     | {
           success: true;
           tx: SolanaTx;
+          solanaTxMeta: SolanaTxMeta;
       }
     | {
           success: false;

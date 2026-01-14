@@ -9,6 +9,7 @@ import {
     TransactionMessageWithBlockhashLifetime,
     address,
     appendTransactionMessageInstruction,
+    compileTransactionMessage,
     createAddressWithSeed,
     createNoopSigner,
     createTransactionMessage,
@@ -21,8 +22,12 @@ import {
     setTransactionMessageLifetimeUsingBlockhash,
 } from '@solana/kit';
 import {
+    SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR,
+    SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR,
     getSetComputeUnitLimitInstruction,
+    getSetComputeUnitLimitInstructionDataDecoder,
     getSetComputeUnitPriceInstruction,
+    getSetComputeUnitPriceInstructionDataDecoder,
 } from '@solana-program/compute-budget';
 import {
     STAKE_PROGRAM_ADDRESS,
@@ -40,12 +45,18 @@ import {
 } from '@solana-program/system';
 
 import {
+    SOL_BASE_FEE,
+    SOL_COMPUTE_UNIT_LIMIT,
+    SOL_MICROLAMPORTS_PER_LAMPORT,
+} from '@suite-common/wallet-constants';
+import {
     STAKE_ACCOUNT_V2_SIZE,
     getDelegations,
     isStake,
     stakeAccountState,
 } from '@trezor/blockchain-link/src/workers/solana/utils/stakingAccounts';
 import { StakeState } from '@trezor/blockchain-link-types/src/solana';
+import { COMPUTE_BUDGET_PROGRAM_ID } from '@trezor/blockchain-link-utils/src/solana';
 import { serializeError } from '@trezor/utils';
 
 import { selectSolanaWalletSdkNetwork } from '../connection';
@@ -64,6 +75,7 @@ import {
     Connection,
     Delegations,
     Params,
+    SolanaTxMeta,
     StakeParams,
     StakeResponse,
     UnstakeResponse,
@@ -160,6 +172,59 @@ const baseTx = async (
     return transactionMessage;
 };
 
+export const getFeeSummary = ({
+    transactionMessage,
+}: {
+    transactionMessage: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
+}) => {
+    const compiledMessage = compileTransactionMessage(transactionMessage);
+
+    const baseFeeLamports = SOL_BASE_FEE * BigInt(compiledMessage.header.numSignerAccounts);
+
+    let unitLimit = BigInt(SOL_COMPUTE_UNIT_LIMIT);
+    let unitPriceMicroLamports = 0n;
+    let isUnitLimitSet = false;
+    let isUnitPriceSet = false;
+
+    compiledMessage.instructions.forEach(instruction => {
+        if (
+            compiledMessage.staticAccounts[instruction.programAddressIndex] !==
+            COMPUTE_BUDGET_PROGRAM_ID
+        ) {
+            return;
+        }
+
+        const { data } = instruction;
+        if (!data || data.length === 0) return;
+
+        if (data[0] === SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR && !isUnitLimitSet) {
+            const decoded = getSetComputeUnitLimitInstructionDataDecoder().decode(data);
+            unitLimit = BigInt(decoded.units);
+            isUnitLimitSet = true;
+
+            return;
+        }
+
+        if (data[0] === SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR && !isUnitPriceSet) {
+            const decoded = getSetComputeUnitPriceInstructionDataDecoder().decode(data);
+            unitPriceMicroLamports = BigInt(decoded.microLamports);
+            isUnitPriceSet = true;
+        }
+    });
+
+    const priorityFeeLamports =
+        (unitPriceMicroLamports * BigInt(unitLimit) + SOL_MICROLAMPORTS_PER_LAMPORT - 1n) /
+        SOL_MICROLAMPORTS_PER_LAMPORT;
+
+    const feeLamports = baseFeeLamports + priorityFeeLamports;
+
+    return {
+        baseFeeLamports: baseFeeLamports.toString(10),
+        priorityFeeLamports: priorityFeeLamports.toString(10),
+        feeLamports: feeLamports.toString(10),
+    };
+};
+
 const timestampInSec = (): number => (Date.now() / 1000) | 0;
 
 const isLockupInForce = (
@@ -248,7 +313,6 @@ export const stake = async ({
             initializeStakeAccountInstruction,
             stakeAccountPublicKey,
         ] = await createAccountWithSeedTx(address(sender), BigInt(lamports) + minimumRent, source);
-
         const delegateInstruction = getDelegateStakeInstruction({
             stake: stakeAccountPublicKey,
             vote: validator,
@@ -276,9 +340,21 @@ export const stake = async ({
                 ? await partiallySignTransactionMessageWithSigners(transactionMessage)
                 : transactionMessage;
 
+        const feeSummary = getFeeSummary({ transactionMessage });
+        const feeLamports = BigInt(feeSummary.feeLamports);
+        const feeIncludingRentLamports = (feeLamports + minimumRent).toString();
+        const deviceAmountLamports = (lamports + minimumRent).toString();
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports,
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: minimumRent.toString(),
+            feeIncludingRentLamports,
+        };
+
         return {
             stakeTx: signedTransactionMessage,
             stakeAccount: stakeAccountPublicKey,
+            txMeta,
         };
     } catch (error) {
         throw new Error(
@@ -430,7 +506,17 @@ export const unstake = async ({
             throw new Error('Zero instructions');
         }
 
-        return { unstakeTx: transactionMessage, unstakeAmount };
+        const feeSummary = getFeeSummary({ transactionMessage });
+        const feeLamports = BigInt(feeSummary.feeLamports);
+        const feeIncludingRentLamports = (feeLamports + minimumRent).toString();
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports: unstakeAmount.toString(),
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: minimumRent.toString(),
+            feeIncludingRentLamports,
+        };
+
+        return { unstakeTx: transactionMessage, unstakeAmount, txMeta };
     } catch (error) {
         throw new Error(
             `Solana staking: unstaking failed - ${error instanceof Error ? error.message : serializeError(error)}`,
@@ -488,9 +574,18 @@ export const claim = async ({
             }
         }
 
+        const feeSummary = getFeeSummary({ transactionMessage });
+        const txMeta: SolanaTxMeta = {
+            deviceAmountLamports: totalClaimableStake.toString(),
+            feeLamports: feeSummary.feeLamports,
+            rentLamports: '0',
+            feeIncludingRentLamports: feeSummary.feeLamports,
+        };
+
         return {
             claimTx: transactionMessage,
             totalClaimAmount: totalClaimableStake,
+            txMeta,
         };
     } catch (error) {
         throw new Error(
