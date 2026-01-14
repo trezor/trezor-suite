@@ -27,8 +27,8 @@ import { AssetInitials } from './AssetInitials';
 import { LegacyNetworkSymbol, isNetworkSymbolWithIcon } from '../../constants/networks';
 import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
 
-export const allowedAssetLogoSizes = [20, 24, 32, 40] as const;
-type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
+export const allowedAssetLogoSizes = [20, 24, 32, 40] as const satisfies number[];
+export type AssetLogoSize = (typeof allowedAssetLogoSizes)[number];
 
 export const allowedAssetLogoFrameProps = ['margin'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedAssetLogoFrameProps)[number]>;

@@ -3,71 +3,136 @@ import { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
-import { useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { Text } from '@trezor/components';
+import { SpacingValuesNew, borders } from '@trezor/theme';
 
-import { AssetLogo } from '../AssetLogo/AssetLogo';
+import { mapSizeToTypographyStyle } from './utils';
+import { AssetLogo, AssetLogoSize } from '../AssetLogo/AssetLogo';
+
+const MAX_VISIBLE_TOKENS = 3;
 
 export type TokenIconSetProps = {
     symbol: NetworkSymbol;
     tokens: { contract: string; symbol?: string }[]; // tokens represented by their contract addresses and symbols
+    size: AssetLogoSize;
+    gap: SpacingValuesNew;
+    isCountVisible?: boolean;
+    isCentered?: boolean;
 };
 
-const IconContainer = styled.div<{ $length: number }>`
-    width: 24px;
+const Container = styled.div<{
+    $length: number;
+    $size: AssetLogoSize;
+    $gap: SpacingValuesNew;
+    $isCountVisible: boolean;
+    $isCentered: boolean;
+}>`
     justify-content: center;
     display: flex;
     align-items: center;
-    ${({ $length }) =>
+
+    ${({ $isCentered, $size, $gap, $length, $isCountVisible }) => {
+        const visibleCount = $length > 3 ? 3 + Number($isCountVisible) : $length;
+
+        return $isCentered
+            ? css`
+                  width: ${$size}px;
+              `
+            : css`
+                  width: ${$size + (visibleCount - 1) * $gap}px;
+              `;
+    }}
+
+    ${({ $length, $gap, $isCountVisible }) =>
         $length > 1 &&
         css`
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(${$length > 1 ? '1px' : '6px'}, 6px));
-            direction: rtl;
+            grid-template-columns: repeat(
+                ${$length > 3 ? 3 + Number($isCountVisible) : $length},
+                ${$gap}px
+            );
             justify-items: center;
         `}
 `;
 
-const TokenIconPlaceholder = styled.div<{ $elevation: Elevation }>`
-    width: 20px;
-    height: 20px;
+const IconWrapper = styled.div<{ $size: number; $gap: number; $length: number }>`
     border-radius: ${borders.radii.full};
-    border: 1px solid ${mapElevationToBorder};
-    background: ${mapElevationToBackground};
+
+    ${({ $size, $gap, $length }) =>
+        $length > 1 &&
+        css`
+            &:not(:last-child) {
+                mask: radial-gradient(
+                    circle at calc(50% + ${$gap}px) 50%,
+                    transparent ${$size / 2 + 1}px,
+                    black ${$size / 2 + 1}px
+                );
+            }
+        `}
 `;
 
-/**
- * @param tokens - provide already sorted tokens (for example by fiat value).
- */
-export const TokenIconSet = ({ symbol, tokens }: TokenIconSetProps) => {
-    const { elevation } = useElevation();
+const CountContainer = styled.div<{ $size: AssetLogoSize }>`
+    ${({ $size }) => css`
+        width: ${$size}px;
+        height: ${$size}px;
+    `}
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: ${borders.radii.full};
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevationNegative};
+`;
+
+export const TokenIconSet = ({
+    symbol,
+    tokens,
+    size,
+    gap,
+    isCountVisible = false,
+    isCentered = false,
+}: TokenIconSetProps) => {
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
-        const visibleTokens = tokens.slice(0, 3).reverse();
+        const visibleTokens = tokens.slice(0, MAX_VISIBLE_TOKENS).reverse();
         const coingeckoId = getCoingeckoId(symbol);
 
         return visibleTokens?.map(token => (
-            <AssetLogo
-                key={token.contract}
-                size={20}
-                coingeckoId={coingeckoId ?? ''}
-                symbol={symbol}
-                contractAddress={token.contract}
-                placeholder={token.symbol ?? ''}
-                placeholderWithTooltip={false}
-            />
+            <IconWrapper key={token.contract} $size={size} $gap={gap} $length={length}>
+                <AssetLogo
+                    size={size}
+                    coingeckoId={coingeckoId ?? ''}
+                    symbol={symbol}
+                    contractAddress={token.contract}
+                    placeholder={token.symbol ?? ''}
+                    placeholderWithTooltip={false}
+                />
+            </IconWrapper>
         ));
-    }, [symbol, tokens]);
+    }, [symbol, tokens, size, gap, length]);
 
     if (length === 0) {
         return null;
     }
 
     return (
-        <IconContainer $length={length}>
-            {length > 3 && <TokenIconPlaceholder $elevation={elevation} />}
+        <Container
+            $length={length}
+            $size={size}
+            $gap={gap}
+            $isCountVisible={isCountVisible}
+            $isCentered={isCentered}
+        >
             {visibleTokensContent}
-        </IconContainer>
+            {length > 3 && isCountVisible && (
+                <CountContainer $size={size}>
+                    <Text typographyStyle={mapSizeToTypographyStyle(size)} variant="default">
+                        +{length - MAX_VISIBLE_TOKENS}
+                    </Text>
+                </CountContainer>
+            )}
+        </Container>
     );
 };
