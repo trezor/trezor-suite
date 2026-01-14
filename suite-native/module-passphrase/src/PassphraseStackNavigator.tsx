@@ -14,17 +14,17 @@ import {
 } from '@suite-native/navigation';
 import {
     PassphraseDuplicateAlert,
-    PassphraseEmptyWalletScreen,
-    PassphraseEnterOnTrezorScreen,
     PassphraseFlowDoneRedirect,
-    PassphraseFormScreen,
-    PassphraseLoadingScreen,
     PassphraseMismatchAlert,
-    PassphraseVerifyEmptyWalletScreen,
     useRedirectOnPassphraseCompletion,
 } from '@suite-native/passphrase';
 
 import { PassphraseConfirmOnTrezorScreen } from './screens/PassphraseConfirmOnTrezorScreen';
+import { PassphraseEmptyWalletScreen } from './screens/PassphraseEmptyWalletScreen';
+import { PassphraseEnterOnTrezorScreen } from './screens/PassphraseEnterOnTrezorScreen';
+import { PassphraseFormScreen } from './screens/PassphraseFormScreen';
+import { PassphraseLoadingScreen } from './screens/PassphraseLoadingScreen';
+import { PassphraseVerifyEmptyWalletScreen } from './screens/PassphraseVerifyEmptyWalletScreen';
 
 export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
@@ -93,12 +93,14 @@ export const PassphraseStackNavigator = () => {
                     }}
                 />
             )}
+
             {passphraseState === 'passphrase-checking-on-device' && (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseConfirmOnTrezor}
                     component={PassphraseConfirmOnTrezorScreen}
                 />
             )}
+
             {passphraseState === 'passphrase-duplicate' && (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseDuplicateAlert}

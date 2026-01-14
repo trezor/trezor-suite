@@ -12836,10 +12836,14 @@ __metadata:
   resolution: "@suite-native/module-passphrase@workspace:suite-native/module-passphrase"
   dependencies:
     "@react-navigation/native-stack": "npm:7.5.1"
+    "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/device-authorization": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/passphrase": "workspace:*"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.5"
+    react-native-reanimated: "npm:~4.1.5"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft

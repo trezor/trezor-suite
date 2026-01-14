@@ -10,7 +10,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PassphraseMismatchAlert } from './PassphraseMismatchAlert';
-import { useRedirectOnPassphraseCompletion } from './useRedirectOnPassphraseCompletion';
+import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCompletion';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',

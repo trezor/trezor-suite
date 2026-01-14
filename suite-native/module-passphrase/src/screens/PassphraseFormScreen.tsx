@@ -8,11 +8,9 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { Screen } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
+import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
-
-import { PassphraseForm } from './PassphraseForm';
-import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 const ANIMATION_DURATION = 300;
 

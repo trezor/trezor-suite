@@ -8,7 +8,7 @@ import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
 
-import { PassphraseScreenHeader } from './PassphraseScreenHeader';
+import { PassphraseScreenHeader } from '@suite-native/passphrase';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
