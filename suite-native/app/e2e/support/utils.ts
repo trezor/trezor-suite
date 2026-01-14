@@ -76,6 +76,25 @@ export const waitForVisible = async (
     }
 };
 
+export const waitToHaveText = async (
+    elementOrMatcher: ElementOrMatcher,
+    expectedText: string,
+    { timeout = 30_000 }: { timeout?: number } = {},
+) => {
+    const target = getTarget(elementOrMatcher);
+    await waitForVisible(target, { timeout });
+    await scheduleAction(async () => {
+        const attributes = await target.getAttributes();
+        const actualText = (attributes as ElementAttributes).text;
+
+        if (actualText !== expectedText) {
+            throw new Error(
+                `waitForText(): target text "${actualText}" did not equal expected "${expectedText}" after ${timeout}ms`,
+            );
+        }
+    }, RETRY_CONF);
+};
+
 export const waitToHaveRegex = async (
     elementOrMatcher: ElementOrMatcher,
     expectedRegex: RegExp,

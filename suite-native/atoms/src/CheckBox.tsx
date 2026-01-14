@@ -9,6 +9,7 @@ type CheckBoxProps = {
     isDisabled?: boolean;
     onChange: (value: boolean) => void;
     style?: NativeStyleObject;
+    testID?: string;
 };
 
 type CheckBoxStyleProps = {
@@ -43,11 +44,18 @@ const checkBoxStyle = prepareNativeStyle<CheckBoxStyleProps>(
     }),
 );
 
-export const CheckBox = ({ isChecked, isDisabled = false, onChange, style }: CheckBoxProps) => {
+export const CheckBox = ({
+    isChecked,
+    isDisabled = false,
+    onChange,
+    style,
+    testID,
+}: CheckBoxProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <PressableOpacity
+            testID={testID}
             disabled={isDisabled}
             onPress={() => onChange(!isChecked)}
             accessibilityRole="checkbox"

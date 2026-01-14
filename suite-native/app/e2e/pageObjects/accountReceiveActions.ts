@@ -23,6 +23,13 @@ class AccountReceiveActions {
         await waitForVisible(receiveAddressText);
         await detoxExpect(receiveAddressText).toHaveText(address);
     }
+
+    async verifyReceiveAddressLabel(label: string) {
+        const receiveAddressLabel = element(by.id('@receive/address-label/text'));
+
+        await waitForVisible(receiveAddressLabel);
+        await detoxExpect(receiveAddressLabel).toHaveText(label);
+    }
 }
 
 export const onAccountReceive = new AccountReceiveActions();

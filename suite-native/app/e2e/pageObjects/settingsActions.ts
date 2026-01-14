@@ -1,32 +1,31 @@
 import { SupportedLocaleCode } from '@suite-native/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { PROTO } from '@trezor/connect';
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { onTabBar } from './tabBarActions';
 import { scrollUntilVisible, wait, waitForVisible } from '../support/utils';
 
+const DEV_EVOLU_URL = 'https://suite-sync.suite.sldev.cz/evolu/';
+
+type SettingsOptions =
+    | 'preferences'
+    | 'labeling'
+    | 'dev-utils'
+    | 'privacy'
+    | 'coin-enabling'
+    | 'eject-wallets'
+    | 'support'
+    | 'trading'
+    | 'wallet-connect'
+    | 'connect-permissions';
+
 class SettingsActions {
-    async tapPreferences() {
-        const preferencesSettingsElement = element(by.id('@settings/preferences'));
-        await waitForVisible(preferencesSettingsElement);
-        await preferencesSettingsElement.tap();
-    }
-
-    async tapPrivacyAndSecurity() {
-        const privacyAndSecurityElement = element(by.id('@settings/privacy'));
-        await waitForVisible(privacyAndSecurityElement);
-        await privacyAndSecurityElement.tap();
-    }
-
-    async tapCoinEnabling() {
-        const coinEnablingElement = element(by.id('@settings/coin-enabling'));
-        await scrollUntilVisible(coinEnablingElement);
-        await coinEnablingElement.tap();
-    }
-
-    async tapEjectWallets() {
-        const ejectWalletsElement = element(by.id('@settings/eject-wallets'));
-        await waitForVisible(ejectWalletsElement);
-        await ejectWalletsElement.tap();
+    async openSection(option: SettingsOptions) {
+        await element(by.id('@screen/mainScrollView')).scrollTo('top');
+        const optionElement = element(by.id(`@settings/${option}`));
+        await scrollUntilVisible(optionElement);
+        await optionElement.tap();
     }
 
     async toggleDiscreetMode() {
@@ -92,6 +91,21 @@ class SettingsActions {
         const ejectWalletElement = element(by.id(`@settings/eject-single-wallet`));
         await waitForVisible(ejectWalletElement);
         await ejectWalletElement.tap();
+    }
+
+    async enableSuiteSync(url = DEV_EVOLU_URL) {
+        await this.openSection('dev-utils');
+        const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
+        await scrollUntilVisible(saveSuiteSyncUrl);
+        await element(by.id('@suiteSync/enable-toggle')).tap();
+        await element(by.id('@suiteSync/custom-relay-url-input')).typeText(url);
+        // Workaround close keyboard by clicking on section header
+        await element(by.id('@suiteSync/header')).tap();
+        await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
+        await onTabBar.tapBackButton();
+        await this.openSection('labeling');
+        await element(by.id('settings/secure-sync-touchable-row')).tap();
+        await TrezorUserEnvLink.pressYes();
     }
 }
 
