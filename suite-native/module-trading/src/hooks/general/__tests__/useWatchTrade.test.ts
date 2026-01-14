@@ -1,3 +1,6 @@
+import React from 'react';
+
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     initStore,
@@ -7,22 +10,10 @@ import { getBuyTrade, getInitializedTradingState } from '@suite-native/trading-f
 
 import { useWatchTrade } from '../useWatchTrade';
 
-// Mock the useReloadTimer hook
 jest.mock('../useReloadTimer', () => ({
     useReloadTimer: jest.fn(),
 }));
 
-// Mock analytics
-jest.mock('@suite-native/analytics', () => ({
-    analytics: {
-        report: jest.fn(),
-    },
-    EventType: {
-        TradingStatus: 'TradingStatus',
-    },
-}));
-
-// Mock trading thunks
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     tradingThunks: {
@@ -34,11 +25,35 @@ const mockWatchTradeThunk = require('@suite-common/trading').tradingThunks.watch
 
 const mockUseReloadTimer = require('../useReloadTimer').useReloadTimer;
 
+type ReportSpy = jest.SpyInstance;
+
+const useWatchTradeWithReportSpy = (props: {
+    accountKey?: string;
+    orderId?: string;
+    isInProgress?: boolean;
+}) => {
+    const analytics = useLegacyAnalytics();
+    const spyRef = React.useRef<ReportSpy | null>(null);
+
+    if (!spyRef.current) {
+        spyRef.current = jest.spyOn(analytics, 'report');
+    }
+
+    useWatchTrade({
+        accountKey: props.accountKey,
+        orderId: props.orderId,
+        isInProgress: props.isInProgress ?? false,
+    });
+
+    return spyRef.current!;
+};
+
 describe('useWatchTrade', () => {
+    const activeSpies: ReportSpy[] = [];
+
     beforeEach(() => {
         jest.clearAllMocks();
 
-        // Default mock implementation
         mockUseReloadTimer.mockReturnValue({
             timer: {
                 reset: jest.fn(),
@@ -46,6 +61,13 @@ describe('useWatchTrade', () => {
             shouldReload: false,
             resetCount: 0,
         });
+    });
+
+    afterEach(() => {
+        while (activeSpies.length) {
+            activeSpies.pop()!.mockRestore();
+        }
+        reportMock = undefined as unknown as jest.Mock;
     });
 
     const getInitializedStore = ({
@@ -82,19 +104,21 @@ describe('useWatchTrade', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderUseWatchTrade = (
+    const renderUseWatchTrade = async (
         store: any,
         props: { accountKey?: string; orderId?: string; isInProgress?: boolean },
-    ) =>
-        renderHookWithStoreProviderAsync(
-            () =>
-                useWatchTrade({
-                    accountKey: props.accountKey,
-                    orderId: props.orderId,
-                    isInProgress: props.isInProgress ?? false,
-                }),
+    ) => {
+        const hook = await renderHookWithStoreProviderAsync(
+            () => useWatchTradeWithReportSpy(props),
             { store },
         );
+
+        const spy = hook.result.current;
+        activeSpies.push(spy);
+        reportMock = spy as unknown as jest.Mock;
+
+        return hook;
+    };
 
     describe('Trade Watching Behavior', () => {
         it('should not dispatch watch trade thunk when no trade is found', async () => {
@@ -195,7 +219,7 @@ describe('useWatchTrade', () => {
 
             expect(mockUseReloadTimer).toHaveBeenCalledWith({
                 isEnabled: true,
-                refreshLimitSeconds: 10, // REFRESH_SECONDS_IN_PROGRESS
+                refreshLimitSeconds: 10,
             });
         });
 
@@ -213,7 +237,7 @@ describe('useWatchTrade', () => {
 
             expect(mockUseReloadTimer).toHaveBeenCalledWith({
                 isEnabled: true,
-                refreshLimitSeconds: 30, // REFRESH_SECONDS_BASE
+                refreshLimitSeconds: 30,
             });
         });
 

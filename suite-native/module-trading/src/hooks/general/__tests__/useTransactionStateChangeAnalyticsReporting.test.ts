@@ -1,39 +1,67 @@
+import React from 'react';
+
 import { TradingTransaction } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { renderHook } from '@suite-native/test-utils';
+import { useLegacyAnalytics } from '@suite-native/services';
+import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
 
 import { useTransactionStateChangeAnalyticsReporting } from '../useTransactionStateChangeAnalyticsReporting';
 
-// Mock analytics
-jest.mock('@suite-native/analytics', () => ({
-    EventType: {
-        TradingStatus: 'trading-status',
-    },
-}));
+type Props = { trades: TradingTransaction[] };
+type ReportSpy = jest.SpyInstance;
 
-const reportMock = jest.fn();
+const useHookWithReportSpy = (trades: TradingTransaction[]) => {
+    const analytics = useLegacyAnalytics();
 
-jest.mock('@suite-native/services', () => ({
-    ...jest.requireActual('@suite-native/services'),
-    useLegacyAnalytics: () => ({
-        report: reportMock,
-    }),
-}));
+    const spyRef = React.useRef<ReportSpy | null>(null);
+
+    if (!spyRef.current) {
+        spyRef.current = jest.spyOn(analytics, 'report');
+    }
+
+    useTransactionStateChangeAnalyticsReporting(trades);
+
+    return spyRef.current!;
+};
+
 describe('useTransactionStateChangeAnalyticsReporting', () => {
+    const activeSpies: ReportSpy[] = [];
+    let reportMock: jest.Mock;
+
+    const setup = (initialTrades: TradingTransaction[]) => {
+        const hook = renderHookWithBasicProvider(
+            ({ trades }: Props) => useHookWithReportSpy(trades),
+            { initialProps: { trades: initialTrades } },
+        );
+
+        const spy = hook.result.current;
+        activeSpies.push(spy);
+
+        reportMock = spy as unknown as jest.Mock;
+
+        return hook;
+    };
+
     beforeEach(() => {
         jest.clearAllMocks();
-        reportMock.mockClear();
+        if (reportMock) reportMock.mockClear();
+    });
+
+    afterEach(() => {
+        while (activeSpies.length) {
+            activeSpies.pop()!.mockRestore();
+        }
+        reportMock = undefined as unknown as jest.Mock;
     });
 
     it('should not report analytics when deviceTrades is empty', () => {
-        renderHook(() => useTransactionStateChangeAnalyticsReporting([]));
+        setup([]);
 
         expect(reportMock).not.toHaveBeenCalled();
     });
 
     it('should not report analytics when deviceTrades is undefined', () => {
-        // The hook expects an array, so we need to handle this case
         expect(() => {
             renderHook(() => useTransactionStateChangeAnalyticsReporting(undefined as any));
         }).toThrow();
@@ -42,22 +70,16 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     it('should not report analytics on first render for buy trade', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        renderHook(() => useTransactionStateChangeAnalyticsReporting([buyTrade]));
+        setup([buyTrade]);
 
-        // First render - should NOT report as it's the initial status
         expect(reportMock).not.toHaveBeenCalled();
     });
 
     it('should report analytics for trade status change', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { rerender } = renderHook(
-            ({ trades }: { trades: TradingTransaction[] }) =>
-                useTransactionStateChangeAnalyticsReporting(trades),
-            { initialProps: { trades: [buyTrade] } },
-        );
+        const { rerender } = setup([buyTrade]);
 
-        // Change status to SUCCESS
         const updatedBuyTrade = getBuyTrade({ status: 'SUCCESS' });
         rerender({ trades: [updatedBuyTrade] });
 
@@ -71,34 +93,21 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     it('should not report analytics when status remains the same', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade] },
-        });
+        const { rerender } = setup([buyTrade]);
 
-        // Same status - should not report
         rerender({ trades: [buyTrade] });
 
-        expect(reportMock).not.toHaveBeenCalled(); // Still no calls
+        expect(reportMock).not.toHaveBeenCalled();
     });
 
     it('should handle multiple trades with different status changes', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade, exchangeTrade] },
-        });
+        const { rerender } = setup([buyTrade, exchangeTrade]);
 
-        // First render - should NOT report initial statuses
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change both statuses
         const updatedBuyTrade = getBuyTrade({ status: 'SUCCESS' });
         const updatedExchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         rerender({ trades: [updatedBuyTrade, updatedExchangeTrade] });
@@ -116,7 +125,6 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
     it('should handle trade with unknown key and not report analytics', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        // Remove ALL possible keys to make it truly unknown
         const tradeWithoutKeys = {
             ...buyTrade,
             key: undefined,
@@ -127,17 +135,10 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
             },
         } as TradingTransaction;
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [tradeWithoutKeys] },
-        });
+        const { rerender } = setup([tradeWithoutKeys]);
 
-        // First render - should NOT report due to unknown key
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status - should NOT report due to unknown key
         const updatedTrade = {
             ...tradeWithoutKeys,
             data: { ...tradeWithoutKeys.data, status: 'SUCCESS' },
@@ -149,20 +150,12 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
     it('should handle trade with orderId as fallback key', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        // Remove the key but keep orderId
         const tradeWithOrderId = { ...buyTrade, key: undefined } as TradingTransaction;
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [tradeWithOrderId] },
-        });
+        const { rerender } = setup([tradeWithOrderId]);
 
-        // First render - should NOT report using orderId as key
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status - should report using orderId as key
         const updatedTrade = {
             ...tradeWithOrderId,
             data: { ...tradeWithOrderId.data, status: 'SUCCESS' },
@@ -178,24 +171,16 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
     it('should handle trade with paymentId as fallback key', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        // Remove the key and orderId but keep paymentId
         const tradeWithPaymentId = {
             ...buyTrade,
             key: undefined,
             data: { ...buyTrade.data, orderId: undefined },
         } as TradingTransaction;
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [tradeWithPaymentId] },
-        });
+        const { rerender } = setup([tradeWithPaymentId]);
 
-        // First render - should NOT report using paymentId as key
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status - should report using paymentId as key
         const updatedTrade = {
             ...tradeWithPaymentId,
             data: { ...tradeWithPaymentId.data, status: 'SUCCESS' },
@@ -212,38 +197,23 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     it('should handle trade with undefined status and not report analytics', () => {
         const buyTrade = getBuyTrade({ status: undefined });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade] },
-        });
+        const { rerender } = setup([buyTrade]);
 
-        // First render - should not report due to undefined status
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change to defined status - should NOT report because previous status was undefined
         const updatedTrade = getBuyTrade({ status: 'SUCCESS' });
         rerender({ trades: [updatedTrade] });
 
-        // Should not report because the previous status was undefined (not a meaningful change)
         expect(reportMock).not.toHaveBeenCalled();
     });
 
     it('should handle trade status transitions correctly', () => {
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [exchangeTrade] },
-        });
+        const { rerender } = setup([exchangeTrade]);
 
-        // First render - should NOT report initial status
         expect(reportMock).not.toHaveBeenCalled();
 
-        // CONVERTING -> KYC (maps to 'kyc')
         const kycTrade = getExchangeTrade({ status: 'KYC' });
         rerender({ trades: [kycTrade] });
         expect(reportMock).toHaveBeenCalledWith({
@@ -252,7 +222,6 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         });
         expect(reportMock).toHaveBeenCalledTimes(1);
 
-        // KYC -> SUCCESS (maps to 'success')
         const successTrade = getExchangeTrade({ status: 'SUCCESS' });
         rerender({ trades: [successTrade] });
         expect(reportMock).toHaveBeenCalledWith({
@@ -265,17 +234,10 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     it('should handle error statuses correctly', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade] },
-        });
+        const { rerender } = setup([buyTrade]);
 
-        // First render - should NOT report initial status
         expect(reportMock).not.toHaveBeenCalled();
 
-        // SUBMITTED -> ERROR (maps to 'error')
         const errorTrade = getBuyTrade({ status: 'ERROR' });
         rerender({ trades: [errorTrade] });
         expect(reportMock).toHaveBeenCalledWith({
@@ -288,22 +250,14 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
     it('should maintain previous statuses across re-renders', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade] },
-        });
+        const { rerender } = setup([buyTrade]);
 
-        // First render - should NOT report initial status
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status to SUCCESS
         const successTrade = getBuyTrade({ status: 'SUCCESS' });
         rerender({ trades: [successTrade] });
         expect(reportMock).toHaveBeenCalledTimes(1);
 
-        // Change back to SUBMITTED - should report again
         rerender({ trades: [buyTrade] });
         expect(reportMock).toHaveBeenCalledTimes(2);
         expect(reportMock).toHaveBeenNthCalledWith(2, {
@@ -314,7 +268,6 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
 
     it('should handle trade with all fallback keys undefined and not report analytics', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
-        // Remove all possible keys
         const tradeWithoutKeys = {
             ...buyTrade,
             key: undefined,
@@ -325,17 +278,10 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
             },
         } as TradingTransaction;
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [tradeWithoutKeys] },
-        });
+        const { rerender } = setup([tradeWithoutKeys]);
 
-        // First render - should not report due to unknown key
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status - should not report due to unknown key
         const updatedTrade = {
             ...tradeWithoutKeys,
             data: { ...tradeWithoutKeys.data, status: 'SUCCESS' },
@@ -349,21 +295,13 @@ describe('useTransactionStateChangeAnalyticsReporting', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const exchangeTrade = getExchangeTrade({ status: 'CONVERTING' });
 
-        const { rerender } = renderHook<
-            ReturnType<typeof useTransactionStateChangeAnalyticsReporting>,
-            { trades: TradingTransaction[] }
-        >(({ trades }) => useTransactionStateChangeAnalyticsReporting(trades), {
-            initialProps: { trades: [buyTrade, exchangeTrade] },
-        });
+        const { rerender } = setup([buyTrade, exchangeTrade]);
 
-        // First render - should NOT report
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Remove one trade
         rerender({ trades: [buyTrade] });
         expect(reportMock).not.toHaveBeenCalled();
 
-        // Change status of remaining trade
         const updatedBuyTrade = getBuyTrade({ status: 'SUCCESS' });
         rerender({ trades: [updatedBuyTrade] });
         expect(reportMock).toHaveBeenCalledTimes(1);

@@ -1,5 +1,8 @@
+import React from 'react';
+
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
+import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -21,18 +24,7 @@ import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
 const mockTokenSupportsIncreasingAllowance = jest.fn();
-const reportMock = jest.fn();
-
-jest.mock('@suite-native/services', () => {
-    const original = jest.requireActual('@suite-native/services');
-
-    return {
-        ...original,
-        useLegacyAnalytics: () => ({
-            report: jest.fn(),
-        }),
-    };
-});
+let reportMock: jest.Mock;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -55,7 +47,24 @@ jest.mock('@react-navigation/native', () => ({
     useNavigation: () => mockNavigation,
 }));
 
+type ReportSpy = jest.SpyInstance;
+
+const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => {
+    const analytics = useLegacyAnalytics();
+
+    const spyRef = React.useRef<ReportSpy | null>(null);
+    if (!spyRef.current) {
+        spyRef.current = jest.spyOn(analytics, 'report');
+    }
+
+    const hookResult = useExchangeSelectQuote(exchangeForm);
+
+    return { ...hookResult, reportSpy: spyRef.current! };
+};
+
 describe('useExchangeSelectQuote', () => {
+    const activeSpies: ReportSpy[] = [];
+
     let exchangeForm: ExchangeFormType;
     let store: TestStore;
 
@@ -69,10 +78,11 @@ describe('useExchangeSelectQuote', () => {
                 accounts: [btcAccount, ethAccount],
             },
         };
+
         if (isLoading !== undefined) {
             preloadedState.wallet!.trading!.exchange!.isLoading = isLoading;
         }
-        // Ensure required keys are present so the hook can proceed
+
         preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-key';
         preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-key';
 
@@ -82,11 +92,29 @@ describe('useExchangeSelectQuote', () => {
     const renderExchangeForm = () =>
         renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
 
-    const renderUseExchangeSelectQuote = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeSelectQuote(exchangeForm), { store });
+    const renderUseExchangeSelectQuote = async () => {
+        const hook = await renderHookWithStoreProviderAsync(
+            () => useExchangeSelectQuoteWithReportSpy(exchangeForm),
+            { store },
+        );
+
+        const spy = hook.result.current.reportSpy;
+        activeSpies.push(spy);
+        reportMock = spy as unknown as jest.Mock;
+
+        return hook;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();
+        if (reportMock) reportMock.mockClear();
+    });
+
+    afterEach(() => {
+        while (activeSpies.length) {
+            activeSpies.pop()!.mockRestore();
+        }
+        reportMock = undefined as unknown as jest.Mock;
     });
 
     describe('while loading quotes', () => {
@@ -211,7 +239,6 @@ describe('useExchangeSelectQuote', () => {
             const dispatchCall = dispatchSpy.mock.calls[0][0];
             const { nextStep } = (dispatchCall as any).payload;
 
-            // Execute the nextStep callback to simulate successful quote selection
             act(() => {
                 nextStep();
             });
