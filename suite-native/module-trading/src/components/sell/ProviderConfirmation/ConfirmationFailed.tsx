@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { AnimatedBox, FullAlertBox } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
+const CONFIRMATION_FAILED_TEST_ID = '@trading/sell-preview/provider-confirmation-failed';
+
 export const ConfirmationFailed = () => {
     const { translate } = useTranslate();
     const { goBack } = useNavigation();
@@ -24,6 +26,7 @@ export const ConfirmationFailed = () => {
                 onPressPrimaryButton={goBack}
                 iconName="info"
                 variant="neutral"
+                testID={CONFIRMATION_FAILED_TEST_ID}
             />
         </AnimatedBox>
     );

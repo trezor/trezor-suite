@@ -16,6 +16,8 @@ export type SellSendAmountInputProps = {
     showAssetsSheet: () => void;
 };
 
+const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
+
 export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
         const { translate } = useTranslate();
@@ -47,6 +49,7 @@ export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProp
                     'moduleTrading.tradingScreen.quotesLoadingLabel',
                 )}
                 isLoading={isLoading && !amountInCrypto}
+                testID={SELL_SEND_INPUT_TEST_ID}
             />
         );
     },

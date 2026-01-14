@@ -8,10 +8,9 @@ import { onDeviceConnecting } from '../pageObjects/deviceConnectingActions';
 import { onHome } from '../pageObjects/homeActions';
 import { onPassphrase } from '../pageObjects/passphraseModule';
 import { onTabBar } from '../pageObjects/tabBarActions';
-import { exchangePreviewActions } from '../pageObjects/trading/exchangePreviewActions';
 import { exchangeOutputsReviewActions } from '../pageObjects/trading/outputsReviewActions';
-import { tradingExchangeActions } from '../pageObjects/trading/tradingExchangeActions';
-import { tradingFeeActions } from '../pageObjects/trading/tradingFeeActions';
+import { sellPreviewActions } from '../pageObjects/trading/sellPreviewActions';
+import { tradingSellActions } from '../pageObjects/trading/tradingSellActions';
 import { openApp, preparePreloadedReduxState, prepareTrezorEmulator } from '../support/setup';
 import { waitForVisible } from '../support/utils';
 
@@ -28,16 +27,16 @@ const preloadedStateWithTrezor = preparePreloadedReduxState(
 const isCIRun = !!process.env.GITHUB_ACTION;
 const passphrase = process.env.TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE;
 
-conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => {
+conditionalDescribe(device.getPlatform() === 'android', 'Trade Sell', () => {
     describe('with portfolio tracker [@noDevice]', () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateWithoutTrezor } });
             await onTabBar.navigateToTrade();
-            await tradingExchangeActions.tapTradingSectionHeaderTab();
+            await tradingSellActions.tapTradingSectionHeaderTab();
         });
 
         it('should display info card', async () => {
-            await tradingExchangeActions.expectPortfolioTrackerInfoCard();
+            await tradingSellActions.expectPortfolioTrackerInfoCard();
         });
     });
 
@@ -60,30 +59,24 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await onPassphrase.openPassphraseWallet(passphrase);
             await onHome.waitForScreen();
             await onDeviceConnecting.stopEmuAndConfirmViewOnlyWarning();
-            await tradingExchangeActions.openForm();
+            await tradingSellActions.openForm();
         });
 
-        it('should request trezor connect before review', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
-            await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
-            await tradingExchangeActions.setSendCryptoAmount('10');
-            await tradingExchangeActions.waitForQuotesToLoad();
+        it('should request trezor connect before preview', async () => {
+            await tradingSellActions.selectCountry('Czechi', '🇨🇿 Czechia', '🇨🇿 CZE');
+            await tradingSellActions.selectFiatCurrency('EUR');
+            await tradingSellActions.selectSendAsset('USDC');
+            await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingExchangeActions.scrollScreenToBottom();
-            await tradingExchangeActions.expectValidExchangeForm();
+            await tradingSellActions.scrollToLearnMoreLink();
+            await tradingSellActions.expectValidSellForm();
 
-            await tradingExchangeActions.confirmTradingForm();
-
-            await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
-            await exchangePreviewActions.waitForFeesToLoad();
-            await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToTransactionSigning();
+            await tradingSellActions.confirmTradingForm();
 
             await exchangeOutputsReviewActions.expectConnectTrezorInfo();
             await exchangeOutputsReviewActions.cancelConnectTrezorInfo();
 
-            await tradingExchangeActions.waitForTradeDataToLoad();
+            await tradingSellActions.waitForTradeDataToLoad();
         });
     });
 
@@ -104,41 +97,27 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             });
             await waitForVisible(by.text('Connected'));
             await onPassphrase.openPassphraseWallet(passphrase);
-            await tradingExchangeActions.openForm();
+            await tradingSellActions.openForm();
         });
 
-        it('Basic exchange USDC to USDT', async () => {
-            await tradingExchangeActions.selectSendAsset('USDC');
-            await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
-            await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
-            await tradingExchangeActions.setSendCryptoAmount('10');
-            await tradingExchangeActions.waitForQuotesToLoad();
+        it('Basic sell USDC for EUR', async () => {
+            await tradingSellActions.selectCountry('Czechi', '🇨🇿 Czechia', '🇨🇿 CZE');
+            await tradingSellActions.selectFiatCurrency('EUR');
+            await tradingSellActions.selectSendAsset('USDC');
+            await tradingSellActions.setSendCryptoAmount('55');
 
-            await tradingExchangeActions.scrollScreenToBottom();
-            await tradingExchangeActions.viewProviders();
-            await tradingExchangeActions.expectValidExchangeForm();
+            await tradingSellActions.scrollToLearnMoreLink();
+            await tradingSellActions.expectValidSellForm();
 
-            await tradingExchangeActions.confirmTradingForm();
+            await tradingSellActions.viewReceiveMethods();
+            await tradingSellActions.viewProviders();
 
-            await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
+            await tradingSellActions.confirmTradingForm();
 
-            await exchangePreviewActions.waitForFeesToLoad();
-            await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToFees();
+            await sellPreviewActions.closePaymentWebview();
 
-            await tradingFeeActions.expectFeesScreenToBeVisible();
-            await tradingFeeActions.goBack();
-
-            await exchangePreviewActions.goToTransactionSigning();
-
-            await exchangeOutputsReviewActions.expectOutputsReviewScreenToBeVisible();
-            await exchangeOutputsReviewActions.expectAndConfirmRecipientAddress();
-            await exchangeOutputsReviewActions.expectAndConfirmTotalFee();
-            await exchangeOutputsReviewActions.signTransaction();
-            await exchangeOutputsReviewActions.expectSendTransactionButton();
-            await exchangeOutputsReviewActions.cancelTransaction();
-
-            await tradingExchangeActions.waitForTradeDataToLoad();
+            await sellPreviewActions.expectConfirmationInProgress();
+            await sellPreviewActions.expectConfirmationToFail();
         });
     });
 });

@@ -15,12 +15,19 @@ export type FiatCurrencySheetProps = {
     onClose: () => void;
     onFiatSelect: (currency: FiatCurrencyCode) => void;
     supportedFiatCurrencies: FiatCurrencyItem[];
+    searchInputTestId?: string;
 };
 
 const keyExtractor = (item: FiatCurrencyItem) => item.value;
 
 export const FiatCurrencySheet = memo(
-    ({ isVisible, onClose, onFiatSelect, supportedFiatCurrencies }: FiatCurrencySheetProps) => {
+    ({
+        isVisible,
+        onClose,
+        onFiatSelect,
+        supportedFiatCurrencies,
+        searchInputTestId,
+    }: FiatCurrencySheetProps) => {
         const { filteredData, filterValue, setFilterValue } =
             useFiatCurrencyFilteredData(supportedFiatCurrencies);
         const { translate } = useTranslate();
@@ -36,10 +43,10 @@ export const FiatCurrencySheet = memo(
                     searchInputPlaceholder={translate(
                         'moduleTrading.fiatCurrencySheet.searchInputPlaceholder',
                     )}
-                    searchInputTestId="@trading/buy/fiat-search-input"
+                    searchInputTestId={searchInputTestId}
                 />
             ),
-            [onClose, setFilterValue, translate],
+            [onClose, setFilterValue, translate, searchInputTestId],
         );
 
         const onFiatSelectCallback = (currency: FiatCurrencyCode) => {

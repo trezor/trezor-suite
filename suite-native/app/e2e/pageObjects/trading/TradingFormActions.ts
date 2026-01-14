@@ -1,5 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
+import { onTabBar } from '../tabBarActions';
 import { TradingActions } from './TradingActions';
 import { wait, waitForVisible } from '../../support/utils';
 
@@ -167,5 +168,11 @@ export abstract class TradingFormActions extends TradingActions {
 
     async expectPortfolioTrackerInfoCard() {
         await detoxExpect(this.getElementById('portfolio-tracker-info')).toBeVisible();
+    }
+
+    async openForm() {
+        await onTabBar.navigateToTrade();
+        await this.tapTradingSectionHeaderTab();
+        await this.waitForTradeDataToLoad();
     }
 }
