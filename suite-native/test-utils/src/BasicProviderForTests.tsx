@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
 import { IntlProviderForTests } from '@suite-native/intl';
+import { NativeServicesProvider } from '@suite-native/services';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
@@ -24,14 +25,22 @@ const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
     is24HourFormat: true,
 };
 
+const mockServices = {
+    analytics: {
+        report: () => {},
+    },
+};
+
 export const BasicProviderForTests = ({ children, formattersConfig }: ProviderProps) => (
     <SafeAreaProvider>
         <IntlProviderForTests>
             <StylesProvider theme={theme} renderer={renderer}>
                 <NavigationContainer>
-                    <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
-                        <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
-                    </FormatterProvider>
+                    <NativeServicesProvider services={mockServices}>
+                        <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
+                            <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
+                        </FormatterProvider>
+                    </NativeServicesProvider>
                 </NavigationContainer>
             </StylesProvider>
         </IntlProviderForTests>
