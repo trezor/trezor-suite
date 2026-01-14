@@ -20,7 +20,7 @@ const getInitialState = (state?: InitialState) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>();
+const mockStore = configureStore<State, any>([]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

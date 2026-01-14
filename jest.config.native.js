@@ -42,7 +42,6 @@ module.exports = {
         '<rootDir>/../../suite-native/connection-status/src/jestSetup.js',
         '<rootDir>/../../suite-native/react-native-graph/src/jestSetup.js',
         '<rootDir>/../../suite-native/atoms/src/jestSetup.jsx',
-        '<rootDir>/../../suite-native/analytics/src/jest.setup.ts',
         '<rootDir>/../../suite-native/module-trading/src/jest.setup.tsx',
         '<rootDir>/../../suite-native/module-connect-popup/src/jest.setup.ts',
         '<rootDir>/../../suite-native/module-device-onboarding/src/jest.setup.ts',
