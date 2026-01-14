@@ -20,7 +20,6 @@ const initialSettings: ConnectSettings = {
     connectSrc: DEFAULT_DOMAIN,
     popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
-    webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
     transports: undefined,
     pendingTransportEvent: true,
     env: 'node',
@@ -100,7 +99,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     const src = settings.connectSrc || DEFAULT_DOMAIN;
     settings.popupSrc = `${src}popup.html`;
-    settings.webusbSrc = `${src}webusb.html`;
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;

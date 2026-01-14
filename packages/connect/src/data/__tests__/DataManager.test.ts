@@ -16,7 +16,6 @@ const settings = {
     origin: '',
     configSrc: 'NOT-USED-ANYMORE',
     popupSrc: '',
-    webusbSrc: '',
     deeplinkUrl: '',
     version: '9.0.0',
     priority: 1,

@@ -62,7 +62,6 @@ export interface ConnectSettingsInternal {
     origin?: string;
     configSrc: string;
     popupSrc: string;
-    webusbSrc: string;
     version: string;
     npmVersion?: string;
     priority: number;
