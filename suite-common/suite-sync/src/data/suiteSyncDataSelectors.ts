@@ -52,7 +52,7 @@ export const selectSuiteSyncWalletLabel = (
 ) => {
     const walletData = selectWalletById(state, walletDescriptor);
 
-    return walletData?.wallet.label;
+    return walletData?.wallet.label ?? null;
 };
 
 export const selectSuiteSyncOutputLabelsByAccount = createMemoizedSelector(

@@ -6,6 +6,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -19,7 +22,6 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../formatters" },
         { "path": "../icons" },

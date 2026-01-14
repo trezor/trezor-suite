@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
@@ -17,6 +18,7 @@ const DEFAULT_CUSTOM_RELAY_URL = '';
 export const SuiteSyncRelaySettings = () => {
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
     const isFeatureSuiteSyncEnabled = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
     const dispatch = useDispatch();
@@ -46,6 +48,14 @@ export const SuiteSyncRelaySettings = () => {
         );
     };
 
+    const handleSuiteSyncDebugToggle = () => {
+        dispatch(
+            suiteSyncActions.updateSuiteSyncDebugEnabled({
+                isEnabled: !isSuiteSyncDebugEnabled,
+            }),
+        );
+    };
+
     const handleResetToDefault = async () => {
         await suiteSync.changeRelayUrl({ relayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
         form.reset({ suiteSyncRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL });
@@ -66,6 +76,13 @@ export const SuiteSyncRelaySettings = () => {
                         testID="@suiteSync/enable-toggle"
                         isChecked={isFeatureSuiteSyncEnabled}
                         onChange={handleSuiteSyncEnableToggle}
+                    />
+                </HStack>
+                <HStack justifyContent="space-between">
+                    <Text variant="highlight">Enable Suite Sync Debug</Text>
+                    <CheckBox
+                        isChecked={isSuiteSyncDebugEnabled}
+                        onChange={handleSuiteSyncDebugToggle}
                     />
                 </HStack>
                 <VStack spacing="sp8">
