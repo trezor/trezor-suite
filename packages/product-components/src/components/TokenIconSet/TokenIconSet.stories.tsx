@@ -1,6 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react';
 
+import { spacingsNew } from '@trezor/theme';
+
 import { TokenIconSet as TokenIconSetComponent, TokenIconSetProps } from './TokenIconSet';
+import { allowedAssetLogoSizes } from '../AssetLogo/AssetLogo';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
     contract,
@@ -16,13 +19,17 @@ const TOKEN_4 = getToken('0xdAC17F958D2ee523a2206206994597C13D831ec7', 'usdt', 6
 
 const meta: Meta<typeof TokenIconSetComponent> = {
     title: 'TokenIconSet',
+    component: TokenIconSetComponent,
 };
 export default meta;
 export const TokenIconSet: StoryObj<TokenIconSetProps> = {
-    render: (props: TokenIconSetProps) => <TokenIconSetComponent {...props} />,
     args: {
         symbol: 'eth',
         tokens: [TOKEN_1, TOKEN_2, TOKEN_3, TOKEN_4],
+        size: 24,
+        gap: 16,
+        isCountVisible: false,
+        isCentered: false,
     },
     argTypes: {
         tokens: {
@@ -42,6 +49,24 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
                     4: '4+ tokens',
                 },
             },
+        },
+        size: {
+            options: allowedAssetLogoSizes,
+            control: {
+                type: 'select',
+            },
+        },
+        gap: {
+            options: spacingsNew,
+            control: {
+                type: 'select',
+            },
+        },
+        isCountVisible: {
+            control: 'boolean',
+        },
+        isCentered: {
+            control: 'boolean',
         },
     },
 };
