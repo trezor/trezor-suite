@@ -1,7 +1,6 @@
-import type { GuideCategory } from '@suite-common/suite-types';
-
-import { Row, Text, TextButton } from '@trezor/components';
 import { EventType } from '@suite/analytics';
+import type { GuideCategory } from '@suite-common/suite-types';
+import { Row, Text, TextButton } from '@trezor/components';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { Translation } from 'src/components/suite/Translation';

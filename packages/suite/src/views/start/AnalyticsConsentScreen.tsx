@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import { Column } from '@trezor/components';
-
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 
