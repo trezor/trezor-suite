@@ -2,7 +2,7 @@ import {
     SuiteSyncDataRootState,
     WithSuiteSyncAndDeviceState,
     selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
-    selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -19,7 +19,7 @@ export type CombinedLabelingState = SuiteSyncDataRootState &
     AccountsRootState;
 
 export const selectIsLabelingEnabled = (state: WithSuiteSyncAndDeviceState) => {
-    const isSuiteSyncAvailable = selectIsFeatureSuiteSyncAvailable(state);
+    const isSuiteSyncAvailable = selectIsSuiteSyncEnabled(state);
     const isPortfolioTracker = selectIsPortfolioTrackerDevice(state);
 
     return isSuiteSyncAvailable && !isPortfolioTracker;
