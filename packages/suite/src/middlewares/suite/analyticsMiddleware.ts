@@ -58,10 +58,9 @@ import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 const analyticsMiddleware = createMiddlewareWithExtraDeps(
     (action: Action, { extra, next, dispatch, getState }) => {
         const prevRouterUrl = selectRouterUrl(getState());
-        const result = next(action);
 
-        // pass action
-        next(action);
+        // NOTE: pass action on, keep the result
+        const result = next(action);
 
         const state: AppState = getState();
         const { legacyAnalytics } = extra.services;
