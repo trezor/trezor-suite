@@ -1,7 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { EventType } from '@suite/analytics';
 import { Divider, Link, Modal } from '@trezor/components';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
