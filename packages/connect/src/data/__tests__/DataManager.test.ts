@@ -15,7 +15,6 @@ const settings = {
     // internal part, not to be accepted from .init()
     origin: '',
     configSrc: 'NOT-USED-ANYMORE',
-    iframeSrc: '',
     popupSrc: '',
     webusbSrc: '',
     deeplinkUrl: '',

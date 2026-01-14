@@ -18,7 +18,6 @@ const initialSettings: ConnectSettings = {
     priority: DEFAULT_PRIORITY,
     trustedHost: true,
     connectSrc: DEFAULT_DOMAIN,
-    iframeSrc: `${DEFAULT_DOMAIN}iframe.html`,
     popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     webusbSrc: `${DEFAULT_DOMAIN}webusb.html`,
@@ -100,7 +99,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     }
 
     const src = settings.connectSrc || DEFAULT_DOMAIN;
-    settings.iframeSrc = `${src}iframe.html`;
     settings.popupSrc = `${src}popup.html`;
     settings.webusbSrc = `${src}webusb.html`;
 
