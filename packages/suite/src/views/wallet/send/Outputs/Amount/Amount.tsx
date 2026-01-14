@@ -264,9 +264,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
             )}
 
             {isLowAnonymity && (
-                <Banner icon margin={{ top: spacings.sm }}>
-                    <Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />
-                </Banner>
+                <Banner
+                    icon
+                    margin={{ top: spacings.sm }}
+                    description={<Translation id="TR_NOT_ENOUGH_ANONYMIZED_FUNDS_WARNING" />}
+                />
             )}
         </>
     );

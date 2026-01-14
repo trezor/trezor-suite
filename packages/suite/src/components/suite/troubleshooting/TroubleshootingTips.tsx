@@ -80,9 +80,12 @@ export const TroubleshootingTips = ({
 
     return cta ? (
         <Column gap={80} alignItems="center">
-            <Banner rightContent={cta} intent={intent} maxWidth={600}>
-                {ctaLabel ?? label}
-            </Banner>
+            <Banner
+                rightContent={cta}
+                intent={intent}
+                maxWidth={600}
+                description={ctaLabel ?? label}
+            />
             {visibleTips.length > 0 && <TroubleshootingButton />}
         </Column>
     ) : (

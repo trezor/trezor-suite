@@ -202,12 +202,16 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         >
             <Column gap={spacings.sm}>
                 {!isIncreasingAllowanceSupported && (
-                    <Banner intent="info" icon="info">
-                        <Translation
-                            id="TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER"
-                            values={{ displaySymbol }}
-                        />
-                    </Banner>
+                    <Banner
+                        intent="info"
+                        icon="info"
+                        description={
+                            <Translation
+                                id="TR_EXCHANGE_APPROVAL_MODAL_REVOKE_BANNER"
+                                values={{ displaySymbol }}
+                            />
+                        }
+                    />
                 )}
 
                 <Box

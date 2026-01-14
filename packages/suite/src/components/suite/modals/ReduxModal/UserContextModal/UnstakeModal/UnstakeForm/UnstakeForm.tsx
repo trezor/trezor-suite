@@ -54,16 +54,19 @@ export const UnstakeForm = () => {
                 <Column gap={spacings.xxl} margin={{ bottom: spacings.lg }}>
                     <Column gap={spacings.md}>
                         {canClaim && (
-                            <Banner intent="info">
-                                <Translation
-                                    id="TR_STAKE_CAN_CLAIM_WARNING"
-                                    values={{
-                                        amount: claimableAmount,
-                                        symbol: getDisplaySymbol(account.symbol),
-                                        br: <br />,
-                                    }}
-                                />
-                            </Banner>
+                            <Banner
+                                intent="info"
+                                description={
+                                    <Translation
+                                        id="TR_STAKE_CAN_CLAIM_WARNING"
+                                        values={{
+                                            amount: claimableAmount,
+                                            symbol: getDisplaySymbol(account.symbol),
+                                            br: <br />,
+                                        }}
+                                    />
+                                }
+                            />
                         )}
                         <SolanaStakingLimitBanner
                             account={account}
@@ -81,7 +84,7 @@ export const UnstakeForm = () => {
                             <Column gap={spacings.lg}>
                                 <UnstakeInputs />
                                 {showError && (
-                                    <Banner intent="critical">{inputError?.message}</Banner>
+                                    <Banner intent="critical" description={inputError?.message} />
                                 )}
                             </Column>
                         </>

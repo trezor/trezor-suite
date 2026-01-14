@@ -19,8 +19,7 @@ export const BridgeDeprecated = () => {
                     <Translation id="TR_LEARN_MORE" />
                 </Banner.Button>
             }
-        >
-            <Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />
-        </Banner>
+            description={<Translation id="TR_STANDALONE_BRIDGE_DEPRECATED" />}
+        />
     );
 };

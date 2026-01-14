@@ -36,9 +36,12 @@ export const PassphraseWalletConfirmation = ({
                     <H3>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE" />
                     </H3>
-                    <Banner icon="info">
-                        <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING" />
-                    </Banner>
+                    <Banner
+                        icon="info"
+                        description={
+                            <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING" />
+                        }
+                    />
                     <PassphraseInputCard
                         deviceModel={deviceModel ?? undefined}
                         onSubmit={onSubmit}

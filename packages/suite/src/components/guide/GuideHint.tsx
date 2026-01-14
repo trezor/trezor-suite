@@ -6,32 +6,7 @@ import {
     isValidElement,
 } from 'react';
 
-import styled from 'styled-components';
-
 import { Banner } from '@trezor/components';
-import { typography } from '@trezor/theme';
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledBanner = styled(Banner)`
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    color: ${({ theme }) => theme.textDefault};
-    gap: 10px;
-    padding: 10px;
-
-    &:not(:last-child) {
-        margin-bottom: 16px;
-    }
-
-    a {
-        display: inline; /* Allow linebreaks inside links as the space is quite narrow. */
-        ${typography.hint}
-    }
-
-    /* Provide a more specific selector to override paragraph style on parent. */
-    p:last-child {
-        margin: 0;
-    }
-`;
 
 const BULB_EMOJI = '💡';
 const WARNING_EMOJI = '⚠️';
@@ -76,9 +51,5 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
         return child;
     });
 
-    return (
-        <StyledBanner icon intent={intent}>
-            {clonedChildren}
-        </StyledBanner>
-    );
+    return <Banner icon intent={intent} description={clonedChildren} />;
 };

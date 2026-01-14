@@ -36,15 +36,16 @@ export const ReserveBanner = ({ account }: ReserveBannerProps) => {
                     <Translation id="TR_LEARN_MORE" />
                 </Banner.Button>
             }
-        >
-            <Translation
-                id="TR_RESERVE_INFO"
-                values={{
-                    minBalance: formatNetworkAmount(account.misc.reserve, account.symbol),
-                    networkName: getNetwork(account.symbol).name,
-                    displaySymbol: getDisplaySymbol(account.symbol),
-                }}
-            />
-        </Banner>
+            description={
+                <Translation
+                    id="TR_RESERVE_INFO"
+                    values={{
+                        minBalance: formatNetworkAmount(account.misc.reserve, account.symbol),
+                        networkName: getNetwork(account.symbol).name,
+                        displaySymbol: getDisplaySymbol(account.symbol),
+                    }}
+                />
+            }
+        />
     ) : null;
 };

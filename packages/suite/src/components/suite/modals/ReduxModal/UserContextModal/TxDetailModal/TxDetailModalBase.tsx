@@ -69,18 +69,21 @@ export const TxDetailModalBase = ({
                 />
 
                 {isPhishingTransaction && (
-                    <Banner icon>
-                        <Translation
-                            id="TR_ZERO_PHISHING_BANNER"
-                            values={{
-                                a: chunks => (
-                                    <TrezorLink href={HELP_CENTER_ZERO_VALUE_ATTACKS}>
-                                        {chunks}
-                                    </TrezorLink>
-                                ),
-                            }}
-                        />
-                    </Banner>
+                    <Banner
+                        icon
+                        description={
+                            <Translation
+                                id="TR_ZERO_PHISHING_BANNER"
+                                values={{
+                                    a: chunks => (
+                                        <TrezorLink href={HELP_CENTER_ZERO_VALUE_ATTACKS}>
+                                            {chunks}
+                                        </TrezorLink>
+                                    ),
+                                }}
+                            />
+                        }
+                    />
                 )}
 
                 {children}

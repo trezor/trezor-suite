@@ -32,9 +32,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
             }
         >
             <Column gap={spacings.md}>
-                <Banner intent="warning">
-                    <Translation id="TR_AFFECTED_TXS" />
-                </Banner>
+                <Banner intent="warning" description={<Translation id="TR_AFFECTED_TXS" />} />
                 <Table>
                     <Table.Body>
                         {chainedTxs.own.map(tx => (

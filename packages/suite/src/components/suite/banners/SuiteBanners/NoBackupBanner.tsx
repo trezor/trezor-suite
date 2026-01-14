@@ -24,8 +24,7 @@ export const NoBackup = () => {
                     <Translation id="TR_CREATE_BACKUP" />
                 </Banner.Button>
             }
-        >
-            {translation}
-        </Banner>
+            description={translation}
+        />
     );
 };

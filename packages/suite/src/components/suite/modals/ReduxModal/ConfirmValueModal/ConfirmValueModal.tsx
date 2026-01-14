@@ -151,28 +151,40 @@ export const ConfirmValueModal = ({
             >
                 <Column gap={spacings.md}>
                     {!device?.connected && (
-                        <Banner icon="warning" intent="warning">
-                            <Paragraph typographyStyle="hint">
-                                <Translation
-                                    id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
-                                    values={{ deviceLabel }}
-                                />
-                            </Paragraph>
-                            <Paragraph typographyStyle="label">
-                                <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
-                            </Paragraph>
-                        </Banner>
+                        <Banner
+                            icon="warning"
+                            intent="warning"
+                            description={
+                                <>
+                                    <Paragraph typographyStyle="hint">
+                                        <Translation
+                                            id="TR_DEVICE_LABEL_IS_NOT_CONNECTED"
+                                            values={{ deviceLabel }}
+                                        />
+                                    </Paragraph>
+                                    <Paragraph typographyStyle="label">
+                                        <Translation id="TR_PLEASE_CONNECT_YOUR_DEVICE" />
+                                    </Paragraph>
+                                </>
+                            }
+                        />
                     )}
                     {(account?.networkType === 'ripple' || account?.networkType === 'stellar') && (
-                        <Banner intent="info" icon="info">
-                            <Translation
-                                id="DESTINATION_TAG_BANNER_RECEIVE"
-                                values={{
-                                    a: chunks => <Link onClick={handleOpenGuide}>{chunks}</Link>,
-                                    displaySymbol: getDisplaySymbol(account.symbol),
-                                }}
-                            />
-                        </Banner>
+                        <Banner
+                            intent="info"
+                            icon="info"
+                            description={
+                                <Translation
+                                    id="DESTINATION_TAG_BANNER_RECEIVE"
+                                    values={{
+                                        a: chunks => (
+                                            <Link onClick={handleOpenGuide}>{chunks}</Link>
+                                        ),
+                                        displaySymbol: getDisplaySymbol(account.symbol),
+                                    }}
+                                />
+                            }
+                        />
                     )}
                     <Card fillType="flat" paddingType="large">
                         <Row gap={32} alignItems="stretch" data-testid="@modal/output-address">

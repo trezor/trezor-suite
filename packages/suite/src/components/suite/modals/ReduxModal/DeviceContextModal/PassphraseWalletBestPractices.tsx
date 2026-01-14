@@ -43,11 +43,14 @@ const PassphraseWalletBestPracticesContent = ({
                 </List.Item>
             </List>
         </Column>
-        <Banner margin={{ top: spacings.sm }}>
-            <Text variant="warning" typographyStyle="callout">
-                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
-            </Text>
-        </Banner>
+        <Banner
+            margin={{ top: spacings.sm }}
+            description={
+                <Text variant="warning" typographyStyle="callout">
+                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
+                </Text>
+            }
+        />
         <Button width="100%" onClick={onNext} data-testid="@passphrase-confirmation/step2-button">
             <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON" />
         </Button>

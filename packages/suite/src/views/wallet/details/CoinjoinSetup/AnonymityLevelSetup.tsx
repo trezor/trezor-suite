@@ -154,14 +154,18 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
                     <motion.div {...expandAnimation}>
-                        <Banner icon intent="critical">
-                            <Translation
-                                values={{
-                                    red: chunks => <RedText>{chunks}</RedText>,
-                                }}
-                                id="TR_LOW_ANONYMITY_WARNING"
-                            />
-                        </Banner>
+                        <Banner
+                            icon
+                            intent="critical"
+                            description={
+                                <Translation
+                                    values={{
+                                        red: chunks => <RedText>{chunks}</RedText>,
+                                    }}
+                                    id="TR_LOW_ANONYMITY_WARNING"
+                                />
+                            }
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>

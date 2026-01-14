@@ -82,9 +82,11 @@ export const BluetoothAdapterStatusModal = ({ onCancel }: BluetoothAdapterStatus
             }
         >
             {hasDeeplinkFailed && status.deeplinkFailed ? (
-                <Banner intent="warning" icon>
-                    <Translation id={status.deeplinkFailed} />
-                </Banner>
+                <Banner
+                    intent="warning"
+                    icon
+                    description={<Translation id={status.deeplinkFailed} />}
+                />
             ) : (
                 <Paragraph>
                     <Translation id={status.description}></Translation>

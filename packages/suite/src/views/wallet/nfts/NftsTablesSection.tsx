@@ -51,9 +51,11 @@ export const NftsTablesSection = ({
             <H3>
                 <Translation id="TR_COLLECTIONS_UNRECOGNIZED_BY_TREZOR" />
             </H3>
-            <Banner intent="warning" icon>
-                <Translation id="TR_NFT_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
-            </Banner>
+            <Banner
+                intent="warning"
+                icon
+                description={<Translation id="TR_NFT_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />}
+            />
             <NftsTable
                 selectedAccount={selectedAccount}
                 isShown={false}

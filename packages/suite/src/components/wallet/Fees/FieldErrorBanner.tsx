@@ -15,9 +15,5 @@ export function FieldErrorBanner({ fieldName }: FieldErrorBannerProps) {
         return null;
     }
 
-    return (
-        <Banner icon intent="critical">
-            {error.message}
-        </Banner>
-    );
+    return <Banner icon intent="critical" description={error.message} />;
 }

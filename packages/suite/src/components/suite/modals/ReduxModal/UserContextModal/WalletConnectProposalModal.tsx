@@ -263,15 +263,16 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 <Translation id="TR_COIN_SETTINGS" />
                             </Banner.Button>
                         }
-                    >
-                        <Translation
-                            id={
-                                requiredNetworksNotActivated
-                                    ? 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED'
-                                    : 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED'
-                            }
-                        />
-                    </Banner>
+                        description={
+                            <Translation
+                                id={
+                                    requiredNetworksNotActivated
+                                        ? 'TR_WALLETCONNECT_REQUIRED_NETWORKS_NOT_ACTIVATED'
+                                        : 'TR_WALLETCONNECT_NO_NETWORKS_ACTIVATED'
+                                }
+                            />
+                        }
+                    />
                 )}
 
                 {(isMalicious || pendingProposal.isScam) && (
@@ -284,15 +285,17 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     />
                 )}
                 {pendingProposal.validation === 'INVALID' && (
-                    <Banner intent="critical">
-                        <Translation id="TR_WALLETCONNECT_UNABLE_TO_VERIFY" />
-                    </Banner>
+                    <Banner
+                        intent="critical"
+                        description={<Translation id="TR_WALLETCONNECT_UNABLE_TO_VERIFY" />}
+                    />
                 )}
 
                 {pendingProposal.expired && (
-                    <Banner intent="warning">
-                        <Translation id="TR_WALLETCONNECT_REQUEST_EXPIRED" />
-                    </Banner>
+                    <Banner
+                        intent="warning"
+                        description={<Translation id="TR_WALLETCONNECT_REQUEST_EXPIRED" />}
+                    />
                 )}
             </Column>
         </Modal>

@@ -112,18 +112,21 @@ export const ConfirmStakeModal = ({
             }
         >
             <Column gap={spacings.sm} margin={{ top: spacings.xxs, bottom: spacings.lg }}>
-                <Banner icon="clock">
-                    <Translation
-                        id={getStakeEnteringMessage(account?.networkType)}
-                        values={{
-                            networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
-                            count:
-                                account?.networkType === 'ethereum'
-                                    ? daysToAddToPool
-                                    : SOLANA_EPOCH_DAYS,
-                        }}
-                    />
-                </Banner>
+                <Banner
+                    icon="clock"
+                    description={
+                        <Translation
+                            id={getStakeEnteringMessage(account?.networkType)}
+                            values={{
+                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                count:
+                                    account?.networkType === 'ethereum'
+                                        ? daysToAddToPool
+                                        : SOLANA_EPOCH_DAYS,
+                            }}
+                        />
+                    }
+                />
                 <Banner
                     icon="hand"
                     rightContent={
@@ -131,14 +134,15 @@ export const ConfirmStakeModal = ({
                             <Translation id="TR_LEARN_MORE" />
                         </Banner.Button>
                     }
-                >
-                    <Translation
-                        id="TR_STAKE_ETH_WILL_BE_BLOCKED"
-                        values={{
-                            networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
-                        }}
-                    />
-                </Banner>
+                    description={
+                        <Translation
+                            id="TR_STAKE_ETH_WILL_BE_BLOCKED"
+                            values={{
+                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            }}
+                        />
+                    }
+                />
             </Column>
 
             <Card>

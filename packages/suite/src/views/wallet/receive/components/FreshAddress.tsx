@@ -10,7 +10,6 @@ import {
     Card,
     H4,
     InfoItem,
-    Paragraph,
     Row,
     Text,
     Tooltip,
@@ -168,24 +167,27 @@ export const FreshAddress = ({
                 </Tooltip>
             </Row>
             {account.networkType === 'ethereum' && account.symbol !== 'eth' && (
-                <Banner icon intent="info" margin={{ top: spacings.xxl }}>
-                    <H4>
+                <Banner
+                    icon
+                    intent="info"
+                    margin={{ top: spacings.xxl }}
+                    title={
                         <Translation
                             id="TR_EVM_EXPLANATION_TITLE"
                             values={{
                                 network: getNetwork(account.symbol).name,
                             }}
                         />
-                    </H4>
-                    <Paragraph>
+                    }
+                    description={
                         <Translation
                             id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
                             values={{
                                 network: getNetwork(account.symbol).name,
                             }}
                         />
-                    </Paragraph>
-                </Banner>
+                    }
+                />
             )}
         </Card>
     );

@@ -162,8 +162,7 @@ export const NeedsAttentionBanner = ({
                     </Banner.Button>
                 )
             }
-        >
-            {deviceStatusMessage && <Translation id={deviceStatusMessage} />}
-        </Banner>
+            description={deviceStatusMessage ? <Translation id={deviceStatusMessage} /> : undefined}
+        />
     );
 };

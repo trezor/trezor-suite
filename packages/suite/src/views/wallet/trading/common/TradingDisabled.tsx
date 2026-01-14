@@ -22,13 +22,17 @@ export const TradingDisabled = ({ type, content }: TradingDisabledProps) => {
     const { translationString } = useTranslation();
 
     return (
-        <Banner icon="warning" intent="warning">
-            {content ?? (
-                <Translation
-                    id="TR_TRADING_DISABLED_DEFAULT"
-                    values={{ type: translationString(typeLabels[type]) }}
-                />
-            )}
-        </Banner>
+        <Banner
+            icon="warning"
+            intent="warning"
+            description={
+                content ?? (
+                    <Translation
+                        id="TR_TRADING_DISABLED_DEFAULT"
+                        values={{ type: translationString(typeLabels[type]) }}
+                    />
+                )
+            }
+        />
     );
 };

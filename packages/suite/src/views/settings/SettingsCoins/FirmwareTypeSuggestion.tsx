@@ -29,26 +29,27 @@ export const FirmwareTypeSuggestion = () => {
                     <Translation id="TR_GOT_IT" />
                 </Banner.Button>
             }
-        >
-            <Paragraph>
-                <Translation
-                    id={translationId}
-                    values={{
-                        button: chunks => (
-                            <Banner.Button
-                                margin={{ horizontal: 2 }}
-                                intent="info"
-                                size="small"
-                                onClick={goToFirmwareType}
-                            >
-                                {chunks}
-                            </Banner.Button>
-                        ),
-                        bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
-                        regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
-                    }}
-                />
-            </Paragraph>
-        </Banner>
+            description={
+                <Paragraph>
+                    <Translation
+                        id={translationId}
+                        values={{
+                            button: chunks => (
+                                <Banner.Button
+                                    margin={{ horizontal: 2 }}
+                                    intent="info"
+                                    size="small"
+                                    onClick={goToFirmwareType}
+                                >
+                                    {chunks}
+                                </Banner.Button>
+                            ),
+                            bitcoinOnly: <Translation id="TR_FIRMWARE_TYPE_BITCOIN_ONLY" />,
+                            regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
+                        }}
+                    />
+                </Paragraph>
+            }
+        />
     );
 };

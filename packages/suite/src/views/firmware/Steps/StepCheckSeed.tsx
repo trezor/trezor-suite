@@ -138,9 +138,11 @@ export const StepCheckSeed = ({
                     {description}
                 </Column>
                 {deviceWillBeWiped && (
-                    <Banner intent="critical" icon="warning">
-                        <Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />
-                    </Banner>
+                    <Banner
+                        intent="critical"
+                        icon="warning"
+                        description={<Translation id="TR_FIRMWARE_SWITCH_WARNING_3" />}
+                    />
                 )}
                 <Card>
                     <Checkbox

@@ -65,14 +65,15 @@ export const FirmwareInstallation = ({
                                 <Translation id="TR_SELECT_TREZOR" />
                             </Banner.Button>
                         }
-                    >
-                        <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
-                    </Banner>
+                        description={<Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />}
+                    />
                 )}
                 {displayIsSlow && (
-                    <Banner intent="info" icon="bluetooth">
-                        <Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />
-                    </Banner>
+                    <Banner
+                        intent="info"
+                        icon="bluetooth"
+                        description={<Translation id="TR_INSTALLATION_FW_SLOW_TIP_BANNER" />}
+                    />
                 )}
                 <Card>
                     <Column gap={8}>

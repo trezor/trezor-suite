@@ -185,9 +185,10 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                                         data-testid="@modal/claim/fee-warning-banner"
                                         intent="warning"
                                         icon="warning"
-                                    >
-                                        <Translation id="TR_STAKING_REWARDS_NETWORK_FEE_WARNING" />
-                                    </Banner>
+                                        description={
+                                            <Translation id="TR_STAKING_REWARDS_NETWORK_FEE_WARNING" />
+                                        }
+                                    />
                                 )}
 
                                 <Card>
@@ -284,7 +285,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
                         )}
 
                         {errors[CRYPTO_INPUT] && (
-                            <Banner intent="critical">{errors[CRYPTO_INPUT]?.message}</Banner>
+                            <Banner intent="critical" description={errors[CRYPTO_INPUT]?.message} />
                         )}
                     </Column>
                 </form>

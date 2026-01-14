@@ -154,15 +154,18 @@ export const ReviewButton = () => {
     return (
         <Container>
             {showCoinControlWarning && (
-                <Banner intent="critical">
-                    <Checkbox
-                        variant="destructive"
-                        isChecked={anonymityWarningChecked}
-                        onClick={toggleAnonymityWarning}
-                    >
-                        <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
-                    </Checkbox>
-                </Banner>
+                <Banner
+                    intent="critical"
+                    description={
+                        <Checkbox
+                            variant="destructive"
+                            isChecked={anonymityWarningChecked}
+                            onClick={toggleAnonymityWarning}
+                        >
+                            <Translation id="TR_BREAKING_ANONYMITY_CHECKBOX" />
+                        </Checkbox>
+                    }
+                />
             )}
 
             <Tooltip content={tooltipContent}>

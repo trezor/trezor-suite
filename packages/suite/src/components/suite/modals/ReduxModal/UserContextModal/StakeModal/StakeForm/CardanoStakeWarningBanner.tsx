@@ -18,13 +18,17 @@ export const CardanoStakeWarningBanner = ({
     if (!isCardanoStakingDisabled) return;
 
     return (
-        <Banner intent="critical" icon="warning">
-            <Translation
-                id="TR_STAKE_NOT_ENOUGH_FUNDS_WARNING"
-                values={{
-                    networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
-                }}
-            />
-        </Banner>
+        <Banner
+            intent="critical"
+            icon="warning"
+            description={
+                <Translation
+                    id="TR_STAKE_NOT_ENOUGH_FUNDS_WARNING"
+                    values={{
+                        networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
+                    }}
+                />
+            }
+        />
     );
 };

@@ -20,9 +20,9 @@ import { borders, spacings, spacingsPx } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemExperimentDetail } from './MessageSystemExperimentDetail';
+import { MessageSystemExperimentFilters } from './MessageSystemExperimentFilters';
 import { MessageSystemExperimentInfo } from './MessageSystemExperimentInfo';
 import { MessageSystemConditionGroup } from '../MessageSystemConditionGroup';
-import { MessageSystemExperimentFilters } from './MessageSystemExperimentFilters';
 import { MessageSystemFormExperiment } from '../MessageSystemForm/MessageSystemFormExperiment';
 
 const MessageContainer = styled.div<{ $active: boolean }>`
@@ -81,7 +81,7 @@ export const MessageSystemExperiments = ({
                     onToggleActive={() => setShowActive(prev => !prev)}
                 />
                 {filteredExperiments.length === 0 && (
-                    <Banner intent="warning">No experiments.</Banner>
+                    <Banner intent="warning" description="No experiments." />
                 )}
 
                 {filteredExperiments.map(({ experiment: rawExperiment, conditions }, index) => {

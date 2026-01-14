@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { Banner, Column, H4, Paragraph } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { WebUsbButton } from 'src/components/suite/WebUsbButton';
@@ -27,6 +27,8 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
             data-testid="@settings/device/disconnected-device-banner"
             intent="warning"
             icon={mapTrezorModelToIcon[selectedDeviceModelInternal]}
+            title={title}
+            description={description}
             rightContent={
                 <>
                     {deviceConnectedButNotAcquired && <AcquireDeviceButton />}
@@ -35,11 +37,6 @@ export const DeviceBanner = ({ title, description }: DeviceBannerProps) => {
                     )}
                 </>
             }
-        >
-            <Column>
-                <H4>{title}</H4>
-                {description && <Paragraph>{description}</Paragraph>}
-            </Column>
-        </Banner>
+        />
     );
 };

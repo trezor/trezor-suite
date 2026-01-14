@@ -195,11 +195,14 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 </Row>
 
                 {isMissingVisible && (
-                    <Banner icon>
-                        <Paragraph>
-                            <Translation id={missingToInputId} values={missingToInputValues} />
-                        </Paragraph>
-                    </Banner>
+                    <Banner
+                        icon
+                        description={
+                            <Paragraph>
+                                <Translation id={missingToInputId} values={missingToInputValues} />
+                            </Paragraph>
+                        }
+                    />
                 )}
 
                 <Divider margin={0} />

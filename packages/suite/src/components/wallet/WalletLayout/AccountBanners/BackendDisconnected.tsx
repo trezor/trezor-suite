@@ -29,12 +29,18 @@ const DisconnectedNotification = ({
                     <Translation id="TR_CONNECT" />
                 </Banner.Button>
             }
-        >
-            <Translation id="TR_BACKEND_DISCONNECTED" />
-            {countdownSeconds ? (
-                <Translation id="TR_BACKEND_RECONNECTING" values={{ time: countdownSeconds }} />
-            ) : null}
-        </Banner>
+            description={
+                <>
+                    <Translation id="TR_BACKEND_DISCONNECTED" />
+                    {countdownSeconds ? (
+                        <Translation
+                            id="TR_BACKEND_RECONNECTING"
+                            values={{ time: countdownSeconds }}
+                        />
+                    ) : null}
+                </>
+            }
+        />
     );
 };
 

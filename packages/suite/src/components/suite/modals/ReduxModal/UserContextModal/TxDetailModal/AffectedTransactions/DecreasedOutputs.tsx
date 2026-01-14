@@ -117,9 +117,12 @@ export const DecreasedOutputs = () => {
 
             <Divider margin={spacings.zero} />
             <Column margin={spacings.md} gap={spacings.md}>
-                <Banner intent="warning" data-testid="@send/decreased-outputs" icon="warning">
-                    <Translation id={getDecreaseWarring()} />
-                </Banner>
+                <Banner
+                    intent="warning"
+                    data-testid="@send/decreased-outputs"
+                    icon="warning"
+                    description={<Translation id={getDecreaseWarring()} />}
+                />
                 {useRadio && (
                     <Text>
                         <Translation id="TR_DECREASED_AMOUNT_SELECTION_EXPLANATION" />

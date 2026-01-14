@@ -82,26 +82,30 @@ const DividerWrapper = styled.div`
 `;
 
 const LegacyWarning = () => (
-    <Banner intent="info" icon>
-        <Column alignItems="start">
-            <Text typographyStyle="highlight" variant="info">
-                <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />
-            </Text>
-            <Translation
-                id="TR_THESE_WONT_ALLOW_YOU_UPGRADE"
-                values={{
-                    a: chunks => (
-                        <TrezorLink
-                            typographyStyle="callout"
-                            href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
-                        >
-                            {chunks}
-                        </TrezorLink>
-                    ),
-                }}
-            />
-        </Column>
-    </Banner>
+    <Banner
+        intent="info"
+        icon
+        description={
+            <Column alignItems="start">
+                <Text typographyStyle="highlight" variant="info">
+                    <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />
+                </Text>
+                <Translation
+                    id="TR_THESE_WONT_ALLOW_YOU_UPGRADE"
+                    values={{
+                        a: chunks => (
+                            <TrezorLink
+                                typographyStyle="callout"
+                                href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
+                            >
+                                {chunks}
+                            </TrezorLink>
+                        ),
+                    }}
+                />
+            </Column>
+        }
+    />
 );
 
 export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(

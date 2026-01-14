@@ -10,9 +10,11 @@ export const WordInputStep = () => (
             <Paragraph>
                 <Translation id="TR_ENTER_SEED_WORDS_INSTRUCTION" />
             </Paragraph>
-            <Banner intent="info" icon="question">
-                <Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />
-            </Banner>
+            <Banner
+                intent="info"
+                icon="question"
+                description={<Translation id="TR_RANDOM_SEED_WORDS_DISCLAIMER" />}
+            />
             <WordInput />
         </Column>
     </Card>

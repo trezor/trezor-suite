@@ -41,16 +41,20 @@ export const DisableTorStopCoinjoinModal = ({
             }
         >
             <Column gap={spacings.xl}>
-                <Banner intent="warning" icon="torBrowser">
-                    <Paragraph typographyStyle="body">
-                        <Translation
-                            id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
-                            values={{
-                                b: chunks => <strong>{chunks}</strong>,
-                            }}
-                        />
-                    </Paragraph>
-                </Banner>
+                <Banner
+                    intent="warning"
+                    icon="torBrowser"
+                    description={
+                        <Paragraph typographyStyle="body">
+                            <Translation
+                                id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
+                                values={{
+                                    b: chunks => <strong>{chunks}</strong>,
+                                }}
+                            />
+                        </Paragraph>
+                    }
+                />
                 <Paragraph variant="tertiary" typographyStyle="hint">
                     <Translation id="TR_TOR_KEEP_RUNNING_FOR_COIN_JOIN_SUBTITLE" />
                 </Paragraph>

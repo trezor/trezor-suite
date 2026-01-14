@@ -11,7 +11,7 @@ import {
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Banner, Column, H4, Paragraph } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
@@ -141,6 +141,22 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         <Banner
             icon="piggyBank"
             intent="brand"
+            title={
+                <Translation id="TR_STAKING_BANNER_DETAIL_TITLE" values={{ apy, displaySymbol }} />
+            }
+            description={
+                !hasEnoughBalanceForStaking || !hasPotentialRewards ? (
+                    <Translation
+                        id="TR_STAKING_BANNER_DETAIL_TEXT_EMPTY"
+                        values={{ displaySymbol }}
+                    />
+                ) : (
+                    <Translation
+                        id="TR_STAKING_BANNER_DETAIL_TEXT"
+                        values={{ potentialRewards, displaySymbol }}
+                    />
+                )
+            }
             rightContent={
                 <>
                     <Banner.Button onClick={goToStakingTab}>
@@ -154,28 +170,6 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
                     />
                 </>
             }
-        >
-            <Column>
-                <H4>
-                    <Translation
-                        id="TR_STAKING_BANNER_DETAIL_TITLE"
-                        values={{ apy, displaySymbol }}
-                    />
-                </H4>
-                <Paragraph typographyStyle="hint">
-                    {!hasEnoughBalanceForStaking || !hasPotentialRewards ? (
-                        <Translation
-                            id="TR_STAKING_BANNER_DETAIL_TEXT_EMPTY"
-                            values={{ displaySymbol }}
-                        />
-                    ) : (
-                        <Translation
-                            id="TR_STAKING_BANNER_DETAIL_TEXT"
-                            values={{ potentialRewards, displaySymbol }}
-                        />
-                    )}
-                </Paragraph>
-            </Column>
-        </Banner>
+        />
     );
 };

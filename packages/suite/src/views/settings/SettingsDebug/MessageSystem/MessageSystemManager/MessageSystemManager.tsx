@@ -73,55 +73,61 @@ export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemMan
                     selectedCategory={selectedCategory}
                     onCategoryChange={setSelectedCategory}
                 />
-                {filteredActions.length === 0 && <Banner intent="warning">No messages.</Banner>}
+                {filteredActions.length === 0 && (
+                    <Banner intent="warning" description="No messages." />
+                )}
 
                 {filteredActions.map(({ message, conditions }, index) => (
-                    <Banner key={`${message.id}-${index}`} intent={message.variant}>
-                        <Text as="div" variant="default">
-                            <Row gap={24} alignItems="flex-start">
-                                <Column flex="1" gap={spacings.md}>
-                                    <MessageSystemManagerDetail message={message} />
-                                    <Divider color="backgroundNeutralBold" />
-                                    <MessageSystemConditionGroup conditions={conditions} />
-                                </Column>
-                                <Column gap={spacings.xs}>
-                                    <MessageSystemManagerInfo
-                                        message={message}
-                                        allValidMessages={allValidMessages}
-                                        isInApp={!!allManuallyAddedMessageIds?.[message.id]}
-                                    />
-                                    <Column alignItems="flex-end" gap={spacings.xs}>
-                                        <Button
-                                            size="small"
-                                            iconLeft="copy"
-                                            intent="neutral"
-                                            onClick={() =>
-                                                copyToClipboard(
-                                                    JSON.stringify(
-                                                        { conditions, message },
-                                                        null,
-                                                        2,
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            Copy to clipboard
-                                        </Button>
-                                        {!!allManuallyAddedMessageIds?.[message.id] && (
+                    <Banner
+                        key={`${message.id}-${index}`}
+                        intent={message.variant}
+                        description={
+                            <Text as="div" variant="default">
+                                <Row gap={24} alignItems="flex-start">
+                                    <Column flex="1" gap={spacings.md}>
+                                        <MessageSystemManagerDetail message={message} />
+                                        <Divider color="backgroundNeutralBold" />
+                                        <MessageSystemConditionGroup conditions={conditions} />
+                                    </Column>
+                                    <Column gap={spacings.xs}>
+                                        <MessageSystemManagerInfo
+                                            message={message}
+                                            allValidMessages={allValidMessages}
+                                            isInApp={!!allManuallyAddedMessageIds?.[message.id]}
+                                        />
+                                        <Column alignItems="flex-end" gap={spacings.xs}>
                                             <Button
                                                 size="small"
-                                                iconLeft="trash"
-                                                intent="critical"
-                                                onClick={() => removeMessage(message.id)}
+                                                iconLeft="copy"
+                                                intent="neutral"
+                                                onClick={() =>
+                                                    copyToClipboard(
+                                                        JSON.stringify(
+                                                            { conditions, message },
+                                                            null,
+                                                            2,
+                                                        ),
+                                                    )
+                                                }
                                             >
-                                                Remove
+                                                Copy to clipboard
                                             </Button>
-                                        )}
+                                            {!!allManuallyAddedMessageIds?.[message.id] && (
+                                                <Button
+                                                    size="small"
+                                                    iconLeft="trash"
+                                                    intent="critical"
+                                                    onClick={() => removeMessage(message.id)}
+                                                >
+                                                    Remove
+                                                </Button>
+                                            )}
+                                        </Column>
                                     </Column>
-                                </Column>
-                            </Row>
-                        </Text>
-                    </Banner>
+                                </Row>
+                            </Text>
+                        }
+                    />
                 ))}
             </Column>
         </Modal>

@@ -68,9 +68,10 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
     return (
         <Card>
             {hasSession && (
-                <Banner intent="info">
-                    <Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />
-                </Banner>
+                <Banner
+                    intent="info"
+                    description={<Translation id="TR_DISABLED_ANONYMITY_CHANGE_MESSAGE" />}
+                />
             )}
             <SetupContainer>
                 <SetupOptions>

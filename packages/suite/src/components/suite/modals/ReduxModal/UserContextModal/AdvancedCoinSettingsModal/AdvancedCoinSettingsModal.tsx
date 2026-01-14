@@ -130,9 +130,10 @@ export const AdvancedCoinSettingsModal = ({ symbol, onCancel }: AdvancedCoinSett
                 </Card>
 
                 {backendsForm.validationError && (
-                    <Banner intent="critical">
-                        <Text>{backendsForm.validationError}</Text>
-                    </Banner>
+                    <Banner
+                        intent="critical"
+                        description={<Text>{backendsForm.validationError}</Text>}
+                    />
                 )}
 
                 <CollapsibleBox

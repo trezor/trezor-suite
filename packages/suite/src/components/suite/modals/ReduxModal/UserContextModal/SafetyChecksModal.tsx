@@ -51,9 +51,7 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                 </>
             }
         >
-            <Banner icon>
-                <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
-            </Banner>
+            <Banner icon description={<Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />} />
             <Card margin={{ top: spacings.md }}>
                 <Column gap={spacings.xl} alignItems="flex-start">
                     <Radio

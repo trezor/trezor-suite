@@ -86,8 +86,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
                     )}
                 </>
             }
-        >
-            {message.content}
-        </Banner>
+            description={message.content}
+        />
     );
 };

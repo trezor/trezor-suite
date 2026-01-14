@@ -112,9 +112,16 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                     </Note>
                 </>
             ) : (
-                <Banner intent="warning" icon="warning">
-                    <Translation id="DESTINATION_TAG_BANNER_SEND" values={{ networkName: name }} />
-                </Banner>
+                <Banner
+                    intent="warning"
+                    icon="warning"
+                    description={
+                        <Translation
+                            id="DESTINATION_TAG_BANNER_SEND"
+                            values={{ networkName: name }}
+                        />
+                    }
+                />
             )}
         </Column>
     );

@@ -295,15 +295,19 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                     />
 
                     {insufficientBalanceInfo && (
-                        <Banner intent="warning" icon="warning">
-                            <Translation
-                                id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
-                                values={{
-                                    required: insufficientBalanceInfo.required,
-                                    available: insufficientBalanceInfo.available,
-                                }}
-                            />
-                        </Banner>
+                        <Banner
+                            intent="warning"
+                            icon="warning"
+                            description={
+                                <Translation
+                                    id="TR_TOKEN_ACTIVATION_INSUFFICIENT_FUNDS"
+                                    values={{
+                                        required: insufficientBalanceInfo.required,
+                                        available: insufficientBalanceInfo.available,
+                                    }}
+                                />
+                            }
+                        />
                     )}
                 </Column>
             </FormProvider>

@@ -31,13 +31,14 @@ export const CloseableBanner = ({
         }
         icon={hasIcon ? 'shareNetwork' : undefined}
         margin={margin}
-    >
-        <Column gap={spacings.xxs} flex="1" alignItems="flex-start" justifyContent="stretch">
-            <Text typographyStyle="highlight" variant="info">
-                {title}
-            </Text>
+        description={
+            <Column gap={spacings.xxs} flex="1" alignItems="flex-start" justifyContent="stretch">
+                <Text typographyStyle="highlight" variant="info">
+                    {title}
+                </Text>
 
-            {children}
-        </Column>
-    </Banner>
+                {children}
+            </Column>
+        }
+    />
 );

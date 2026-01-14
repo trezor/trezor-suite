@@ -56,10 +56,11 @@ export const TradingUtilsTorWarning = ({
                     </Banner.Button>
                 )
             }
-        >
-            <Column gap={spacings.sm}>
-                <Translation id={translationId} />
-            </Column>
-        </Banner>
+            description={
+                <Column gap={spacings.sm}>
+                    <Translation id={translationId} />
+                </Column>
+            }
+        />
     );
 };

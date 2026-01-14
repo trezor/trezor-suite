@@ -18,7 +18,8 @@ import { Box } from '../Box/Box';
 import { Column, Row } from '../Flex/Flex';
 import { Icon, IconName } from '../Icon/Icon';
 import { Spinner } from '../loaders/Spinner/Spinner';
-import { Text } from '../typography/Text/Text';
+import { H4 } from '../typography/Heading/Heading';
+import { Paragraph } from '../typography/Paragraph/Paragraph';
 
 export const allowedBannerFrameProps = [
     'margin',
@@ -29,16 +30,16 @@ export const allowedBannerFrameProps = [
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBannerFrameProps)[number]>;
 
 export type BannerProps = AllowedFrameProps & {
-    children: ReactNode;
     intent?: BannerIntent;
     rightContent?: ReactNode;
     icon?: IconName | true;
     'data-testid'?: string;
     isLoading?: boolean;
-};
+} & ({ title: ReactNode; description?: ReactNode } | { title?: ReactNode; description: ReactNode });
 
 export const Banner = ({
-    children,
+    title,
+    description,
     intent = DEFAULT_INTENT,
     icon,
     rightContent,
@@ -72,14 +73,20 @@ export const Banner = ({
                 )}
 
                 <Row flex="1" flexWrap="wrap" gap={12}>
-                    <Column flex="1 1 300px" maxWidth="100%">
-                        <Text
-                            as="div"
-                            typographyStyle="hint"
-                            color={mapIntentToTextColor(intent, theme)}
-                        >
-                            {children}
-                        </Text>
+                    <Column flex="1 1 360px" maxWidth="100%">
+                        {title && (
+                            <H4 typographyStyle="body" color={mapIntentToTextColor(intent, theme)}>
+                                {title}
+                            </H4>
+                        )}
+                        {description && (
+                            <Paragraph
+                                typographyStyle="hint"
+                                color={mapIntentToTextColor(intent, theme)}
+                            >
+                                {description}
+                            </Paragraph>
+                        )}
                     </Column>
                     {rightContent && (
                         <BannerContext.Provider value={{ intent }}>

@@ -80,8 +80,7 @@ export const FirmwareAuthenticityCheckBanner = () => {
                     </Banner.Button>
                 )
             }
-        >
-            <Translation id={message} />
-        </Banner>
+            description={<Translation id={message} />}
+        />
     );
 };

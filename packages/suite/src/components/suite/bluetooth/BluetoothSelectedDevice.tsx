@@ -5,9 +5,9 @@ import { Banner, Card, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
+import { PairingState } from './PairingState';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { Translation } from '../Translation';
-import { PairingState } from './PairingState';
 
 export type OkComponentProps = {
     device: DesktopBluetoothDevice;
@@ -71,9 +71,12 @@ export const BluetoothSelectedDevice = ({
         <Card>
             <OkComponent device={device} />
             {showHint && (
-                <Banner intent="info" icon="info" margin={{ top: 16 }}>
-                    <Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />
-                </Banner>
+                <Banner
+                    intent="info"
+                    icon="info"
+                    margin={{ top: 16 }}
+                    description={<Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />}
+                />
             )}
         </Card>
     );
