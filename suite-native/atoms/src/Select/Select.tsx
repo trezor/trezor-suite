@@ -1,4 +1,5 @@
 import { ReactNode, useMemo, useState } from 'react';
+import { Keyboard } from 'react-native';
 
 import { Translation } from '@suite-native/intl';
 
@@ -24,6 +25,7 @@ type SelectProps<TItemValue extends SelectItemValue> = {
     value: TItemValue;
     onSelectItem: (value: TItemValue) => void;
     isConfirmable?: boolean;
+    isLabelShown?: boolean;
     testID?: string;
 };
 
@@ -33,6 +35,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     value,
     onSelectItem,
     isConfirmable = false,
+    isLabelShown = false,
     testID,
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -46,6 +49,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     const [isConfirmButtonVisible, setIsConfirmButtonVisible] = useState(false);
 
     const openBottomSheet = () => {
+        Keyboard.dismiss();
         setSelectedItemValue(value);
         setIsConfirmButtonVisible(false);
         openModal();
@@ -99,6 +103,7 @@ export const Select = <TItemValue extends SelectItemValue>({
                 </VStack>
             </BottomSheetModal>
             <SelectTrigger
+                label={isLabelShown && title}
                 value={selectTriggerItem?.label ?? null}
                 icon={selectTriggerItem?.icon}
                 handlePress={openBottomSheet}
