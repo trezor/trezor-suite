@@ -1,3 +1,4 @@
+@emurgo/csl-mobile-bridge
 @ethereumjs/common
 @ethereumjs/tx
 @everstake/wallet-sdk-ethereum
@@ -62,6 +63,7 @@ react-native-quick-crypto
 redux-persist
 redux-thunk
 reselect
+@rnrepo/expo-config-plugin
 tiny-secp256k1
 toml
 typeforce
