@@ -1,4 +1,4 @@
-import { PROTO } from '@trezor/connect';
+import { PROTO } from '@trezor/connect/src/exports';
 
 export const UNIT_ABBREVIATIONS = {
     [PROTO.AmountUnit.BITCOIN]: 'BTC',
