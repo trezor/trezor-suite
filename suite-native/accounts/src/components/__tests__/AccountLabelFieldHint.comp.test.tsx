@@ -1,4 +1,4 @@
-import { renderHook, renderWithBasicProvider } from '@suite-native/test-utils';
+import { getTranslation, renderHook, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useAccountLabelForm } from '../../hooks/useAccountLabelForm';
 import { AccountLabelFieldHint, AccountLabelFieldHintProps } from '../AccountLabelFieldHint';
@@ -12,6 +12,13 @@ describe('AccountLabelFieldHint', () => {
 
         const { getByText } = renderComponent({ formControl: result.current.control });
 
-        expect(getByText('13 / 30 letters')).toBeTruthy();
+        expect(
+            getByText(
+                getTranslation('accounts.accountLabelFieldHint.letterCount', {
+                    current: 13,
+                    max: 30,
+                }),
+            ),
+        ).toBeTruthy();
     });
 });
