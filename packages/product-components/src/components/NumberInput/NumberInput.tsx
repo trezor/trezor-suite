@@ -10,7 +10,8 @@ import {
 import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
 
 import { Locale } from '@suite-common/suite-types';
-import { localizeNumber } from '@suite-common/wallet-utils';
+// todo: scope packages should not import from scope suite-common
+import { localizeNumber } from '@suite-common/wallet-utils/src/localizeNumberUtils';
 import { Input, InputProps } from '@trezor/components';
 import { getLocaleSeparators } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
