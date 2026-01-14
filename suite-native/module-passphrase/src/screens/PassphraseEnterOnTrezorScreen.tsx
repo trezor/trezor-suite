@@ -4,9 +4,10 @@ import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-
-import { PassphraseContentScreenWrapper } from '../PassphraseContentScreenWrapper';
-import { PassphraseEnterOnTrezorScreenContent } from '../PassphraseEnterOnTrezorScreenContent';
+import {
+    PassphraseContentScreenWrapper,
+    PassphraseEnterOnTrezorScreenContent,
+} from '@suite-native/passphrase';
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const dispatch = useDispatch();

@@ -19,10 +19,8 @@ import {
 import { EmptyWalletSvg } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import { useLegacyAnalytics } from '@suite-native/services';
+import { EmptyWalletInfoSheet, PassphraseContentScreenWrapper } from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-
-import { EmptyWalletInfoSheet } from './EmptyWalletInfoSheet';
-import { PassphraseContentScreenWrapper } from './PassphraseContentScreenWrapper';
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,

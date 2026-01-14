@@ -1,10 +1,7 @@
 import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
-
-import { PassphraseForm } from './PassphraseForm';
-import { PassphraseScreenHeader } from './PassphraseScreenHeader';
-
+import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
 
 export const PassphraseVerifyEmptyWalletScreen = () => {
     const { translate } = useTranslate();

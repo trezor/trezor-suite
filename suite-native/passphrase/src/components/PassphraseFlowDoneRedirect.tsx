@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { useRedirectOnPassphraseCompletion } from './useRedirectOnPassphraseCompletion';
+import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCompletion';
 
 export const PassphraseFlowDoneRedirect = ({ children }: { children?: ReactNode }) => {
     useRedirectOnPassphraseCompletion();
