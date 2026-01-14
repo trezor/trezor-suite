@@ -7,6 +7,7 @@ import {
     composeStakingTransaction,
 } from '@suite-common/staking/src/actions/stakeFormActions';
 import {
+    SolanaTxMeta,
     prepareClaimSolTx,
     prepareStakeSolTx,
     prepareUnstakeSolTx,
@@ -26,6 +27,7 @@ import {
     BlockchainNetworks,
     EstimatedFee,
     ExternalOutput,
+    PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
     PrepareStakeSolTxResponse,
@@ -157,6 +159,35 @@ async function estimateFee(
     return { success: false };
 }
 
+const applySolanaTxMeta = (
+    composed: PrecomposedLevels,
+    solanaTxMeta: SolanaTxMeta,
+): PrecomposedLevels =>
+    Object.fromEntries(
+        Object.entries(composed).map(([key, tx]) => {
+            if (tx.type === 'error') return [key, tx];
+
+            const nextTx = { ...tx, solanaTxMeta };
+
+            if (tx.type === 'final') {
+                const totalSpent = new BigNumber(solanaTxMeta.deviceAmountLamports)
+                    .plus(solanaTxMeta.feeIncludingRentLamports)
+                    .toString();
+
+                return [
+                    key,
+                    {
+                        ...nextTx,
+                        fee: solanaTxMeta.feeIncludingRentLamports,
+                        totalSpent,
+                    },
+                ];
+            }
+
+            return [key, nextTx];
+        }),
+    );
+
 export const composeTransaction =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch, getState: GetState) => {
@@ -179,7 +210,7 @@ export const composeTransaction =
         const { levels } = feeInfo;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
 
-        return composeStakingTransaction(
+        const composed = composeStakingTransaction(
             formValues,
             formState,
             predefinedLevels,
@@ -187,6 +218,23 @@ export const composeTransaction =
             estimatedFee,
             undefined,
         );
+        if (!composed) return;
+
+        if (estimatedFee.success && estimatedFee.payload) {
+            const txDataWithFee = await getTransactionData(
+                formValues,
+                selectedAccount,
+                blockchain,
+                estimatedFee.payload,
+            );
+            const solanaTxMeta = txDataWithFee?.success ? txDataWithFee.solanaTxMeta : undefined;
+
+            if (solanaTxMeta) {
+                return applySolanaTxMeta(composed, solanaTxMeta);
+            }
+        }
+
+        return composed;
     };
 
 export const signTransaction =

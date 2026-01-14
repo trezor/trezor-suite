@@ -61,7 +61,7 @@ const getStakingParams = (estimatedFee?: Fee[number]) => {
     }
 
     return {
-        сomputeUnitPrice: BigInt(estimatedFee.feePerUnit),
+        computeUnitPrice: BigInt(estimatedFee.feePerUnit),
         computeUnitLimit: Number(estimatedFee.feeLimit), // solana package expects number
     };
 };
@@ -97,6 +97,7 @@ export const prepareStakeSolTx = async ({
         return {
             success: true,
             tx: transformedTx,
+            solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
         console.error(e);
@@ -132,6 +133,7 @@ export const prepareUnstakeSolTx = async ({
         return {
             success: true,
             tx: transformedTx,
+            solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
         console.error(e);
@@ -163,6 +165,7 @@ export const prepareClaimSolTx = async ({
         return {
             success: true,
             tx: transformedTx,
+            solanaTxMeta: tx.txMeta,
         };
     } catch (e) {
         console.error(e);

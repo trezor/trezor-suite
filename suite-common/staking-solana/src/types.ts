@@ -28,11 +28,19 @@ export interface SolNetworkConfig {
     network: Network;
 }
 
+export type SolanaTxMeta = {
+    deviceAmountLamports: string;
+    feeLamports: string;
+    rentLamports: string;
+    feeIncludingRentLamports: string;
+};
+
 export type StakeResponse = {
     stakeTx:
         | (CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime)
         | (Transaction & TransactionMessageWithBlockhashLifetime);
     stakeAccount: Address;
+    txMeta: SolanaTxMeta;
 };
 
 export type Delegations = Array<Account<StakeStateAccount, Address>>;
@@ -40,6 +48,7 @@ export type Delegations = Array<Account<StakeStateAccount, Address>>;
 export type UnstakeResponse = {
     unstakeTx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
     unstakeAmount: bigint;
+    txMeta: SolanaTxMeta;
 };
 
 export type Connection = RpcFromTransport<
@@ -50,6 +59,7 @@ export type Connection = RpcFromTransport<
 export type ClaimResponse = {
     claimTx: CompilableTransactionMessage & TransactionMessageWithBlockhashLifetime;
     totalClaimAmount: bigint;
+    txMeta: SolanaTxMeta;
 };
 
 export type TransactionShim = {
