@@ -9,6 +9,9 @@ export type ConfirmationInProgressProps = {
     status: ProviderConfirmationStatus;
     loadingState: WaitingCardProps['loadingState'];
 };
+
+const CONFIRMATION_IN_PROGRESS_TEST_ID = '@trading/sell-preview/provider-confirmation-in-progress';
+
 export const ConfirmationInProgress = ({ status, loadingState }: ConfirmationInProgressProps) => {
     const isClosedIncomplete = status === 'window_closed_incomplete';
 
@@ -25,6 +28,7 @@ export const ConfirmationInProgress = ({ status, loadingState }: ConfirmationInP
                 <Translation id="moduleTrading.tradingSellPreviewScreen.providerStatus.upTo30Seconds" />
             }
             loadingState={loadingState}
+            testID={CONFIRMATION_IN_PROGRESS_TEST_ID}
         >
             {isClosedIncomplete && (
                 <AnimatedBox

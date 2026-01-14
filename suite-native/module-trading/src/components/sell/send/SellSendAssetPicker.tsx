@@ -13,6 +13,8 @@ import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { MyAssetSheet } from '../../general/MyAssetSheet/MyAssetSheet';
 import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
 
+const ASSET_PICKER_TEST_ID = '@trading/sell/asset-send-button';
+
 export const SellSendAssetPicker = () => {
     const dispatch = useDispatch();
     const inputRef = useRef<TextInput>(null);
@@ -48,6 +50,7 @@ export const SellSendAssetPicker = () => {
                     onPress={showSheet}
                     selectedAsset={selectedValue}
                     colorScheme="primary"
+                    testID={ASSET_PICKER_TEST_ID}
                     caret
                 />
                 <SellSendAmountInput ref={inputRef} showAssetsSheet={showAssetsSheet} />

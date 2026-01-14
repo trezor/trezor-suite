@@ -11,7 +11,7 @@ const SellTabEnabled = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     if (isPortfolioTrackerDevice) {
-        return <PortfolioTrackerInfo />;
+        return <PortfolioTrackerInfo testID="@trading/sell/portfolio-tracker-info" />;
     }
 
     return <SellTabContent />;

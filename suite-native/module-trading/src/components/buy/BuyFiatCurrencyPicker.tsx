@@ -27,6 +27,7 @@ export const BuyFiatCurrencyPicker = () => {
                 isVisible={isSheetVisible}
                 onClose={hideSheet}
                 onFiatSelect={setSelectedValue}
+                searchInputTestId="@trading/buy/fiat-search-input"
             />
         </>
     );

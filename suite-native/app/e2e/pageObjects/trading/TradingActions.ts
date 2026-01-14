@@ -1,4 +1,4 @@
-import { wait } from '../../support/utils';
+import { scrollUntilVisible, wait } from '../../support/utils';
 
 export class TradingActions {
     readonly DOUBLE_LONG_TIMEOUT = 60_000;
@@ -15,7 +15,9 @@ export class TradingActions {
             | 'history'
             | 'exchange-preview'
             | 'exchange-fees'
-            | 'outputs-review',
+            | 'outputs-review'
+            | 'sell-preview'
+            | 'sell-fees',
     ) {
         this.testIdPrefix = `@trading/${screenPrefix}/`;
     }
@@ -38,6 +40,9 @@ export class TradingActions {
     }
 
     async scrollScreenToBottom() {
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+        // Scroll to bottom of the page.
+        // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
+        const learnMoreLink = element(by.text('Learn more'));
+        await scrollUntilVisible(learnMoreLink);
     }
 }

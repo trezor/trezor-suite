@@ -14,12 +14,14 @@ export type WaitingCardProps = {
     subtitle: ReactNode;
     loadingState?: SpinnerLoadingState;
     children?: ReactNode;
+    testID?: string;
 };
 
 export const WaitingCard = ({
     title,
     subtitle,
     loadingState = 'idle',
+    testID,
     children,
 }: WaitingCardProps) => (
     <AnimatedVStack
@@ -28,6 +30,7 @@ export const WaitingCard = ({
         alignItems="center"
         paddingTop="sp16"
         spacing="sp16"
+        testID={testID}
     >
         <Spinner loadingState={loadingState} />
         <VStack alignItems="center" spacing="sp4">
