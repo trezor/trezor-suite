@@ -1,8 +1,7 @@
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
-
 import { Row, Text, TextButton } from '@trezor/components';
-import { EventType } from '@suite/analytics';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
