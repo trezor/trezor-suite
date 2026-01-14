@@ -109,7 +109,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        TEST_GROUP: [1, 2, 3, 4]
+        TEST_GROUP: [1, 2, 3, 4, 5]
 
     steps:
       - name: Checkout
@@ -122,10 +122,10 @@ jobs:
       - name: Run Playwright E2E Tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          project: "web:pr"
+          target: "web"
+          pw-config: "./playwright-web-pr.config.ts"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep: "@webOnly"
           additional-grep-invert: "@nightlyOnly"
           fail-fast: 7
           currents-project-id: "Og0NOQ"
