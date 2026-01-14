@@ -22,7 +22,6 @@
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../intl" },
-        { "path": "../module-authorize-device" },
         { "path": "../module-check-backup" },
         { "path": "../navigation" },
         { "path": "../thp" },

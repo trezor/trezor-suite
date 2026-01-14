@@ -8,10 +8,10 @@ import { Translation, TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { DevicePinImage } from './DevicePinImage';
 import { PinFormControlButtons } from './PinFormControlButtons';
 import { PinFormProgress } from './PinFormProgress';
 import { PinMatrixButton } from './PinMatrixButton';
-import { DevicePinImage } from '../../../../device-authorization/src/components/DevicePinImage';
 
 export type PinFormVariant = 'current' | 'new' | 'confirm';
 
