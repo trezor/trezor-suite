@@ -57,7 +57,7 @@ export const useHandleDeviceAuthorization = () => {
         // Feature requests passphrase
         if (selectedDevice?.state?.staticSessionId) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
+                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
         }
     }, [discovery?.isAddingHiddenWallet, selectedDevice?.state?.staticSessionId, navigation]);

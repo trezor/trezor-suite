@@ -171,7 +171,7 @@ export enum AuthorizeDeviceStackRoutes {
     ThpConfirmation = 'ThpConfirmation',
     ThpCodeEntry = 'ThpCodeEntry',
     ConnectingDevice = 'ConnectingDevice',
-    PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
+    PassphraseForm = 'PassphraseForm',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     CoinEnablingInit = 'CoinEnablingInit',

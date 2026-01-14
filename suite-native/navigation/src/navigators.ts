@@ -336,7 +336,7 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.ThpCodeEntry]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
-    [AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseForm]: undefined;
     [AuthorizeDeviceStackRoutes.CoinEnablingInit]: undefined;
     [AuthorizeDeviceStackRoutes.ContinueOnTrezor]: undefined;
 };
