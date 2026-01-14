@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
-
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -15,7 +13,6 @@ type BluetoothEraseBondsProps = {
 export const BluetoothEraseBonds = ({ isDeviceLocked }: BluetoothEraseBondsProps) => {
     const dispatch = useDispatch();
     const device = useSelector(state => state.device.selectedDevice);
-    const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 
     const [inProgress, setInProgress] = useState(false);
 
@@ -33,12 +30,7 @@ export const BluetoothEraseBonds = ({ isDeviceLocked }: BluetoothEraseBondsProps
         <SectionItem data-test="@settings/debug/bluetooth-erase">
             <TextColumn
                 title={<Translation id="TR_BLUETOOTH_ERASE_BONDS_SETTINGS" />}
-                description={
-                    <Translation
-                        id="TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION"
-                        values={{ deviceName: deviceLabel }}
-                    />
-                }
+                description={<Translation id="TR_BLUETOOTH_ERASE_BONDS_SETTINGS_DESCRIPTION" />}
             />
             <ActionColumn>
                 <ActionButton
