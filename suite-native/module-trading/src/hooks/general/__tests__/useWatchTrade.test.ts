@@ -67,7 +67,6 @@ describe('useWatchTrade', () => {
         while (activeSpies.length) {
             activeSpies.pop()!.mockRestore();
         }
-        reportMock = undefined as unknown as jest.Mock;
     });
 
     const getInitializedStore = ({
@@ -115,7 +114,6 @@ describe('useWatchTrade', () => {
 
         const spy = hook.result.current;
         activeSpies.push(spy);
-        reportMock = spy as unknown as jest.Mock;
 
         return hook;
     };
