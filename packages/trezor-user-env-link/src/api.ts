@@ -70,6 +70,7 @@ interface GenerateBlock {
 
 interface ApplySettings {
     passphrase_always_on_device?: boolean;
+    auto_lock_delay_ms?: number;
 }
 
 interface ReadAndConfirmShamirMnemonicEmu {

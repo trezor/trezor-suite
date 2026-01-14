@@ -12,6 +12,7 @@ import { onDevicePrompt } from '../pageObjects/devicePromptActions';
 
 type PrepareTrezorEmulatorProps = {
     seed?: string;
+    pin?: string;
     passphrase_protection?: boolean;
     model?: Model;
     version?: string;
@@ -130,6 +131,7 @@ const getFwVersion = (model: Model, version: string | undefined) => {
 export const prepareTrezorEmulator = async ({
     version,
     seed = MNEMONICS.mnemonic_immune,
+    pin = '',
     passphrase_protection = false,
     model = getModelFromEnv(),
     args,
@@ -148,6 +150,7 @@ export const prepareTrezorEmulator = async ({
             await TrezorUserEnvLink.setupEmu({
                 label: TREZOR_E2E_DEVICE_LABEL,
                 mnemonic: seed,
+                pin,
                 passphrase_protection,
             });
         }
