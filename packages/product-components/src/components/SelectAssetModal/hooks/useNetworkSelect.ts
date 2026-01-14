@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 
 export interface SearchAssetSelectConfig {

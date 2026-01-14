@@ -3,6 +3,7 @@ import { SVGProps } from 'react';
 import { SVGMotionProps, type Transition, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { motionEasing } from '@trezor/components';
 import { coinsColors } from '@trezor/theme';

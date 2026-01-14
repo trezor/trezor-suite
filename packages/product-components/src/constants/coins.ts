@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 // These coins are not supported in Suite, but exist in Trezor Connect

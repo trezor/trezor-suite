@@ -9,7 +9,9 @@ import {
 } from 'react';
 import { Control, FieldValues, UseControllerProps, useController } from 'react-hook-form';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { Locale } from '@suite-common/suite-types';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Input, InputProps } from '@trezor/components';
 import { getLocaleSeparators } from '@trezor/utils';

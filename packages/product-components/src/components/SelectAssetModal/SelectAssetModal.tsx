@@ -1,7 +1,9 @@
 import { ReactNode, useCallback, useState } from 'react';
 import { useIntl } from 'react-intl';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { NetworkSymbolExtended } from '@suite-common/wallet-config';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Modal, VirtualizedList, useScrollShadow } from '@trezor/components';
 import { mapElevationToBackgroundToken, spacings } from '@trezor/theme';

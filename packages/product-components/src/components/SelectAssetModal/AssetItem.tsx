@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';

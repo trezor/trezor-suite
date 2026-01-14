@@ -3,6 +3,7 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import { borders } from '@trezor/theme';
 import { roundTo } from '@trezor/utils';

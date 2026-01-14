@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import styled, { css } from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';

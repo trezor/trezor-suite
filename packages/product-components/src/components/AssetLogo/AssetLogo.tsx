@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import {
     NetworkSymbol,
     type NetworkSymbolExtended,
@@ -10,6 +11,7 @@ import {
     getNetworkFeatures,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
 import {

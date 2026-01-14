@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react';
 import styled from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { networksCollection } from '@suite-common/wallet-config';
 import { StoryColumn } from '@trezor/components';
 

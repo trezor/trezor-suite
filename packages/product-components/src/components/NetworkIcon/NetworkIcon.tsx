@@ -2,6 +2,7 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { LegacyNetworkSymbol, NETWORK_ICONS } from '../../constants/networks';
