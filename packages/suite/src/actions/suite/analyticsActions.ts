@@ -53,7 +53,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
     const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
-
     extra.services.legacyAnalytics.init(hasUserAllowedTracking, {
         instanceId,
         sessionId,

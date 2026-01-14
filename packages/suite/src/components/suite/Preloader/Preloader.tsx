@@ -52,7 +52,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
     );
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
-    console.log('___', { isAnalyticsConsentConfirmed });
 
     const { device } = useDevice();
     useReportDeviceCompromised({ device });
@@ -91,7 +90,6 @@ export const Preloader = ({ children }: PropsWithChildren) => {
         return <DatabaseCorruptedModal />;
     }
 
-    console.log('___', { status: lifecycle.status, loaded: router.loaded, isTransportInitialized });
     // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
     // display Loader as full page view
     if (lifecycle.status !== 'ready' || !router.loaded || !isTransportInitialized) {
