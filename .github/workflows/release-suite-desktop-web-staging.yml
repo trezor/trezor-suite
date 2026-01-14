@@ -83,6 +83,7 @@ jobs:
             Trezor-Suite*
             latest*.yml
           retention-days: 7
+          compression-level: 0
 
   suite-desktop-github-release:
     if: github.repository == 'trezor/trezor-suite-release'
