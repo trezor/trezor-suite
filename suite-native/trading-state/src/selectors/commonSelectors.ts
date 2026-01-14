@@ -109,9 +109,6 @@ export const selectIsTradingEnabled = (
     );
 };
 
-export const selectIsStakingEnabled = (state: MessageSystemRootState & FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsStakingEnabled);
-
 export const selectEnabledTradingTypes = createFeatureFlagsMemoizedSelector(
     [selectIsTradingBuyEnabled, selectIsTradingExchangeEnabled, selectIsTradingSellEnabled],
     (isTradingBuyEnabled, isTradingExchangeEnabled, isTradingSellEnabled) => {
