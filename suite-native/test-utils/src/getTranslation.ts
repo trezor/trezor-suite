@@ -42,6 +42,25 @@ export const getTranslation = (
         throw new Error(`Translation ID "${translationId}" not found in en-US.json!`);
     }
 
+    // Throw an error if translation expects a value that was not provided.
+    const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?\}/g;
+    const matches = template.matchAll(placeholderRegex);
+    const placeholders = Array.from(new Set(Array.from(matches, m => m[1])));
+
+    if (placeholders.length > 0) {
+        const providedKeys = values ? Object.keys(values) : [];
+        const missingValues = placeholders.filter(
+            placeholder => !providedKeys.includes(placeholder),
+        );
+
+        if (missingValues.length > 0) {
+            throw new Error(
+                `Translation "${translationId}" expects value "${missingValues[0]}" but it was not provided. ` +
+                    `Translation text: "${template}"`,
+            );
+        }
+    }
+
     return values && Object.keys(values).length > 0
         ? String(intlEn.formatMessage({ id: translationId, defaultMessage: template }, values))
         : template;
