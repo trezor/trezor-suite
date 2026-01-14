@@ -31,9 +31,8 @@ export const FailedBackup = () => {
                         <Translation id={buttonTranslation} />
                     </Banner.Button>
                 }
-            >
-                <Translation id="TR_FAILED_BACKUP" />
-            </Banner>
+                description={<Translation id="TR_FAILED_BACKUP" />}
+            />
         </>
     );
 };

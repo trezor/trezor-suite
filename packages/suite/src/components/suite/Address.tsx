@@ -32,7 +32,7 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.span<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
+const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
     letter-spacing: 0;
     word-break: ${({ $isChunked }) => ($isChunked ? 'normal' : 'break-all')};
     white-space: ${({ $isChunked }) => ($isChunked ? 'pre-line' : 'break-all')};

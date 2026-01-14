@@ -49,12 +49,18 @@ export const FirmwareRevisionOptOutModal = ({ onCancel }: DeviceAuthenticityOptO
                 <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_3" />
             </Paragraph>
             <Column gap={spacings.sm} margin={{ top: spacings.xl }} alignItems="center">
-                <Banner icon="questionFilled">
-                    <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1" />
-                </Banner>
-                <Banner icon="warningFilled">
-                    <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2" />
-                </Banner>
+                <Banner
+                    icon="questionFilled"
+                    description={
+                        <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_1" />
+                    }
+                />
+                <Banner
+                    icon="warningFilled"
+                    description={
+                        <Translation id="TR_DEVICE_FIRMWARE_REVISION_CHECK_MODAL_DESCRIPTION_2" />
+                    }
+                />
             </Column>
             <Card margin={{ top: spacings.lg }}>
                 <CheckItem

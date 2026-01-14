@@ -237,30 +237,40 @@ export const StakeInputs = () => {
                 ]}
             />
             {shouldShowAmountForWithdrawalWarning && (
-                <Banner data-testid="@staking/form/withdrawal-warning" intent="info" width="100%">
-                    <Translation
-                        id={
-                            isLessAmountForWithdrawalWarningShown
-                                ? 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL'
-                                : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
-                        }
-                        values={{
-                            amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
-                            networkDisplaySymbol,
-                        }}
-                    />
-                </Banner>
+                <Banner
+                    data-testid="@staking/form/withdrawal-warning"
+                    intent="info"
+                    width="100%"
+                    description={
+                        <Translation
+                            id={
+                                isLessAmountForWithdrawalWarningShown
+                                    ? 'TR_STAKE_LEFT_SMALL_AMOUNT_FOR_WITHDRAWAL'
+                                    : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
+                            }
+                            values={{
+                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                networkDisplaySymbol,
+                            }}
+                        />
+                    }
+                />
             )}
             {showAdviceBanner && !isAmountForWithdrawalWarningShown && (
-                <Banner data-testid="@staking/form/withdrawal-warning" intent="info" width="100%">
-                    <Translation
-                        id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
-                        values={{
-                            amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
-                            networkDisplaySymbol,
-                        }}
-                    />
-                </Banner>
+                <Banner
+                    data-testid="@staking/form/withdrawal-warning"
+                    intent="info"
+                    width="100%"
+                    description={
+                        <Translation
+                            id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
+                            values={{
+                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                networkDisplaySymbol,
+                            }}
+                        />
+                    }
+                />
             )}
         </Column>
     );

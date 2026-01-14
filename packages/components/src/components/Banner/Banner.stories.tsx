@@ -13,7 +13,8 @@ export default meta;
 
 export const Banner: StoryObj<typeof meta> = {
     args: {
-        children:
+        title: 'Lorem ipsum',
+        description:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
         isLoading: false,
         intent: undefined,
@@ -22,6 +23,12 @@ export const Banner: StoryObj<typeof meta> = {
         ...getFramePropsStory(allowedBannerFrameProps).args,
     },
     argTypes: {
+        title: {
+            control: 'text',
+        },
+        description: {
+            control: 'text',
+        },
         icon: {
             options: [undefined, true, ...variables.ICONS],
             control: {

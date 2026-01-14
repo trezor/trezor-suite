@@ -23,8 +23,7 @@ export const DeviceUnavailable = () => {
                     <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
                 </Banner.Button>
             }
-        >
-            <Translation id="TR_ACCOUNT_PASSPHRASE_DISABLED" />
-        </Banner>
+            description={<Translation id="TR_ACCOUNT_PASSPHRASE_DISABLED" />}
+        />
     );
 };

@@ -28,9 +28,8 @@ export const CustomFeeTooLowBanner = memo(function CustomFeeTooLowBannerInner() 
                     rightContent={
                         <LearnMoreButton url={HELP_CENTER_TRANSACTION_FEES_URL} intent="warning" />
                     }
-                >
-                    <Translation id="TR_CUSTOM_FEE_WARNING" />
-                </Banner>
+                    description={<Translation id="TR_CUSTOM_FEE_WARNING" />}
+                />
             </Collapsible.Content>
         </Collapsible>
     );

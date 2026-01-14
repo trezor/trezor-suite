@@ -67,18 +67,19 @@ export const TransactionReviewOutputTimer = ({
                     <Translation id="TR_RETRY" />
                 </Banner.Button>
             }
-        >
-            <TimerBox>
-                <Text typographyStyle="callout" as="div">
-                    <CountdownTimer
-                        deadline={deadline}
-                        unitDisplay="long"
-                        message="TR_TX_CONFIRMATION_TIMER"
-                        pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
-                    />
-                </Text>
-                <Translation id="TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION" />
-            </TimerBox>
-        </Banner>
+            description={
+                <TimerBox>
+                    <Text typographyStyle="callout" as="div">
+                        <CountdownTimer
+                            deadline={deadline}
+                            unitDisplay="long"
+                            message="TR_TX_CONFIRMATION_TIMER"
+                            pastDeadlineMessage="TR_TX_SEND_FAILED_TITLE"
+                        />
+                    </Text>
+                    <Translation id="TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION" />
+                </TimerBox>
+            }
+        />
     );
 };

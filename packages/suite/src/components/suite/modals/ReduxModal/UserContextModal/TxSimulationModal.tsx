@@ -179,25 +179,26 @@ export const TxSimulationBanner = ({
     <Banner
         intent={type === 'warning' ? 'warning' : 'critical'}
         data-testid="@tx-simulation-modal/error-banner"
-    >
-        <Column width="100%" padding={{ vertical: spacings.xxs }}>
-            <Text typographyStyle="callout">{title}</Text>
-            <Text>{description}</Text>
+        description={
+            <Column width="100%" padding={{ vertical: spacings.xxs }}>
+                <Text typographyStyle="callout">{title}</Text>
+                <Text>{description}</Text>
 
-            <Card margin={{ top: spacings.sm }} paddingType="small">
-                <Checkbox
-                    data-testid="@tx-simulation-modal/disclaimer-checkbox"
-                    isChecked={disclaimerAccepted}
-                    onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
-                    verticalAlignment="center"
-                >
-                    <Text variant="default" typographyStyle="hint">
-                        <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />
-                    </Text>
-                </Checkbox>
-            </Card>
-        </Column>
-    </Banner>
+                <Card margin={{ top: spacings.sm }} paddingType="small">
+                    <Checkbox
+                        data-testid="@tx-simulation-modal/disclaimer-checkbox"
+                        isChecked={disclaimerAccepted}
+                        onClick={() => setDisclaimerAccepted(!disclaimerAccepted)}
+                        verticalAlignment="center"
+                    >
+                        <Text variant="default" typographyStyle="hint">
+                            <Translation id="TR_SIMULATION_DISCLAIMER_OVERRIDE" />
+                        </Text>
+                    </Checkbox>
+                </Card>
+            </Column>
+        }
+    />
 );
 
 export const TxSimulationModal = () => {

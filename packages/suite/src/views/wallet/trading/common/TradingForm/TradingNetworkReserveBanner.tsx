@@ -49,14 +49,15 @@ export const TradingNetworkReserveBanner = ({
                     <Translation id="TR_NETWORK_RESERVE_MANAGE" />
                 </Banner.Button>
             }
-        >
-            <Translation
-                id="TR_NETWORK_RESERVE_BANNER"
-                values={{
-                    amount: networkReserve,
-                    displaySymbol: network.displaySymbol,
-                }}
-            />
-        </Banner>
+            description={
+                <Translation
+                    id="TR_NETWORK_RESERVE_BANNER"
+                    values={{
+                        amount: networkReserve,
+                        displaySymbol: network.displaySymbol,
+                    }}
+                />
+            }
+        />
     );
 };

@@ -83,18 +83,23 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     </Row>
                 </>
             )}
-            <Banner intent="info" icon="info" margin={{ top: spacings.md }}>
-                <Translation
-                    id={
-                        isUpdateProviderFlow
-                            ? 'TR_STAKING_REWARDS_REMAIN_INTACT'
-                            : 'TR_STAKE_FUNDS_WARNING'
-                    }
-                    values={{
-                        networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
-                    }}
-                />
-            </Banner>
+            <Banner
+                intent="info"
+                icon="info"
+                margin={{ top: spacings.md }}
+                description={
+                    <Translation
+                        id={
+                            isUpdateProviderFlow
+                                ? 'TR_STAKING_REWARDS_REMAIN_INTACT'
+                                : 'TR_STAKE_FUNDS_WARNING'
+                        }
+                        values={{
+                            networkDisplaySymbol: getNetworkDisplaySymbol(symbol),
+                        }}
+                    />
+                }
+            />
         </Card>
     );
 };

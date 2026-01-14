@@ -104,11 +104,12 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
                         <Translation id="TR_LEARN_MORE" />
                     </Banner.Button>
                 }
-            >
-                <Paragraph typographyStyle="label">
-                    <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />
-                </Paragraph>
-            </Banner>
+                description={
+                    <Paragraph typographyStyle="label">
+                        <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />
+                    </Paragraph>
+                }
+            />
             <Card paddingType="none">
                 <Column gap={40} padding={16} alignItems="center">
                     <Grid columns={count === 9 ? 3 : 2} gap={20}>

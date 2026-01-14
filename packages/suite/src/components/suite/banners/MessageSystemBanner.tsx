@@ -51,8 +51,7 @@ export const MessageSystemBanner = ({ message, margin, width }: MessageSystemBan
             }
             margin={margin}
             width={width}
-        >
-            {resolveMessageContent(content, language) || content.en}
-        </Banner>
+            description={resolveMessageContent(content, language) || content.en}
+        />
     );
 };

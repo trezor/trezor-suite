@@ -35,16 +35,20 @@ export const TradingDetailSupportBanner = ({
     }
 
     return (
-        <Banner intent="neutral" icon="question">
-            <Paragraph typographyStyle="hint">
-                <Translation
-                    id="TR_TRADING_PROCESSING_SUPPORT"
-                    values={{
-                        providerName,
-                        link: chunks => <Link href={supportUrl}>{chunks}</Link>,
-                    }}
-                />
-            </Paragraph>
-        </Banner>
+        <Banner
+            intent="neutral"
+            icon="question"
+            description={
+                <Paragraph typographyStyle="hint">
+                    <Translation
+                        id="TR_TRADING_PROCESSING_SUPPORT"
+                        values={{
+                            providerName,
+                            link: chunks => <Link href={supportUrl}>{chunks}</Link>,
+                        }}
+                    />
+                </Paragraph>
+            }
+        />
     );
 };

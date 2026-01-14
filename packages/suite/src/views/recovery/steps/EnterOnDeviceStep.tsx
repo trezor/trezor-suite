@@ -1,4 +1,4 @@
-import { Banner, Paragraph } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -14,9 +14,10 @@ export const EnterOnDeviceStep = ({
         intent="info"
         icon={mapTrezorModelToIcon[deviceModelInternal]}
         margin={{ top: spacings.xs }}
-    >
-        <Paragraph data-testid="@recovery/paragraph">
-            <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
-        </Paragraph>
-    </Banner>
+        description={
+            <span data-testid="@recovery/paragraph">
+                <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
+            </span>
+        }
+    />
 );

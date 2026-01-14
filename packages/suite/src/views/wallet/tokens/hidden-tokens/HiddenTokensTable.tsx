@@ -70,9 +70,11 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
                     <H3>
                         <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
                     </H3>
-                    <Banner intent="warning" icon>
-                        <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
-                    </Banner>
+                    <Banner
+                        intent="warning"
+                        icon
+                        description={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />}
+                    />
                     <TokensTable
                         account={account}
                         hideRates

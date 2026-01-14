@@ -68,5 +68,5 @@ export const TradingUtilsKyc = ({
         );
     }
 
-    return <Banner icon>{kycPolicyTranslation}</Banner>;
+    return <Banner icon description={kycPolicyTranslation} />;
 };

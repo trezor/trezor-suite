@@ -15,8 +15,10 @@ export const CardanoLegacyBanner = ({ account }: CardanoLegacyBannerProps) => {
     }
 
     return (
-        <Banner intent="critical" icon="warning">
-            <Translation id="TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER" />
-        </Banner>
+        <Banner
+            intent="critical"
+            icon="warning"
+            description={<Translation id="TR_ACCOUNT_TYPE_CARDANO_LEGACY_BANNER" />}
+        />
     );
 };

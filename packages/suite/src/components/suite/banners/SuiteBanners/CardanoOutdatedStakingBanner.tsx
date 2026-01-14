@@ -33,8 +33,7 @@ export const CardanoOutdatedStakingBanner = () => {
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }
-        >
-            <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy }} />
-        </Banner>
+            description={<Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy }} />}
+        />
     );
 };

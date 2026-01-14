@@ -128,9 +128,11 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <Banner icon="warning" intent="warning">
-                            <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
-                        </Banner>
+                        <Banner
+                            icon="warning"
+                            intent="warning"
+                            description={<Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />}
+                        />
                     }
                     buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
                 />

@@ -91,19 +91,22 @@ export const SolanaStakingLimitBanner = ({
     if (!isAccountLimitExeeded) return null;
 
     return (
-        <Banner intent="info">
-            <Translation
-                id={
-                    type === 'claim'
-                        ? 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS'
-                        : 'TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS'
-                }
-                values={{
-                    limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
-                    amount: formatNetworkAmount(estimatedAmount, account.symbol),
-                    symbol: getDisplaySymbol(account.symbol),
-                }}
-            />
-        </Banner>
+        <Banner
+            intent="info"
+            description={
+                <Translation
+                    id={
+                        type === 'claim'
+                            ? 'TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS'
+                            : 'TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS'
+                    }
+                    values={{
+                        limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+                        amount: formatNetworkAmount(estimatedAmount, account.symbol),
+                        symbol: getDisplaySymbol(account.symbol),
+                    }}
+                />
+            }
+        />
     );
 };

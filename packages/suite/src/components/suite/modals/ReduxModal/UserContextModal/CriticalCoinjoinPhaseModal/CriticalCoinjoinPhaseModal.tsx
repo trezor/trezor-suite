@@ -40,9 +40,11 @@ export const CriticalCoinjoinPhaseModal = ({
             }
         >
             <Column gap={spacings.md} margin={{ top: spacings.xs }}>
-                <Banner intent="warning" icon="warning">
-                    <Translation id="TR_DO_NOT_DISCONNECT_DEVICE" />
-                </Banner>
+                <Banner
+                    intent="warning"
+                    icon="warning"
+                    description={<Translation id="TR_DO_NOT_DISCONNECT_DEVICE" />}
+                />
                 <Card>
                     <CoinjoinPhaseProgress
                         roundPhase={roundPhase}

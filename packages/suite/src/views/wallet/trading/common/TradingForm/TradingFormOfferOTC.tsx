@@ -111,39 +111,42 @@ export const TradingFormOfferOTC = () => {
     }
 
     return (
-        <Banner intent="info">
-            <Text margin={{ bottom: spacings.xxs }}>
-                <Translation
-                    id={
-                        context.type === 'buy'
-                            ? 'TR_TRADING_OTC_INFO_BUY'
-                            : 'TR_TRADING_OTC_INFO_SELL'
-                    }
-                    values={{
-                        minimumFiat: localizeNumber(displayedFiatLimit, locale),
-                        fiatSymbol: displayedFiatCurrency.toUpperCase(),
-                    }}
-                />{' '}
-                <FormattedList
-                    type="disjunction"
-                    value={links.map((link, index) => (
-                        <Fragment key={index}>
-                            <TrezorLink href={link.url} target="_blank" typographyStyle="hint">
-                                <Translation
-                                    id={
-                                        context.type === 'buy'
-                                            ? 'TR_TRADING_OTC_LINK_BUY'
-                                            : 'TR_TRADING_OTC_LINK_SELL'
-                                    }
-                                    values={{
-                                        providerName: link.name,
-                                    }}
-                                />
-                            </TrezorLink>
-                        </Fragment>
-                    ))}
-                />
-            </Text>
-        </Banner>
+        <Banner
+            intent="info"
+            description={
+                <Text margin={{ bottom: spacings.xxs }}>
+                    <Translation
+                        id={
+                            context.type === 'buy'
+                                ? 'TR_TRADING_OTC_INFO_BUY'
+                                : 'TR_TRADING_OTC_INFO_SELL'
+                        }
+                        values={{
+                            minimumFiat: localizeNumber(displayedFiatLimit, locale),
+                            fiatSymbol: displayedFiatCurrency.toUpperCase(),
+                        }}
+                    />{' '}
+                    <FormattedList
+                        type="disjunction"
+                        value={links.map((link, index) => (
+                            <Fragment key={index}>
+                                <TrezorLink href={link.url} target="_blank" typographyStyle="hint">
+                                    <Translation
+                                        id={
+                                            context.type === 'buy'
+                                                ? 'TR_TRADING_OTC_LINK_BUY'
+                                                : 'TR_TRADING_OTC_LINK_SELL'
+                                        }
+                                        values={{
+                                            providerName: link.name,
+                                        }}
+                                    />
+                                </TrezorLink>
+                            </Fragment>
+                        ))}
+                    />
+                </Text>
+            }
+        />
     );
 };

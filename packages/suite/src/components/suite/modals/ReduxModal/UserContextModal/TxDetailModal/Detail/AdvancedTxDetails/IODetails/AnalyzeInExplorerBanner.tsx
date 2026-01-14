@@ -1,7 +1,7 @@
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
-import { Banner, Column, H4, Paragraph } from '@trezor/components';
+import { Banner } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink, useSelector } from 'src/hooks/suite';
@@ -21,20 +21,13 @@ export const AnalyzeInExplorerBanner = ({ txid, symbol }: AnalyzeInExplorerBanne
         <Banner
             intent="info"
             icon="cube"
+            title={<Translation id="TR_ANALYZE_IN_EXPLORER" />}
+            description={<Translation id="TR_ANALYZE_IN_EXPLORER_DESC" />}
             rightContent={
                 <Banner.Button size="small" href={href}>
                     <Translation id="TR_ANALYZE_IN_EXPLORER_OPEN" />
                 </Banner.Button>
             }
-        >
-            <Column>
-                <H4>
-                    <Translation id="TR_ANALYZE_IN_EXPLORER" />
-                </H4>
-                <Paragraph>
-                    <Translation id="TR_ANALYZE_IN_EXPLORER_DESC" />
-                </Paragraph>
-            </Column>
-        </Banner>
+        />
     );
 };

@@ -53,9 +53,13 @@ const SelectWrapper = styled.div<{ $elevation: Elevation }>`
 `;
 
 const BackupWarning = ({ id }: { id: TranslationKey }) => (
-    <Banner intent="info" icon>
-        <Translation id={id} values={{ strong: chunks => <strong>{chunks}</strong> }} />
-    </Banner>
+    <Banner
+        intent="info"
+        icon
+        description={
+            <Translation id={id} values={{ strong: chunks => <strong>{chunks}</strong> }} />
+        }
+    />
 );
 
 type SelectBackupTypeProps = {

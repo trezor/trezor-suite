@@ -68,7 +68,6 @@ jobs:
           e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
           enable-coverage: "true"
 
-
   run-e2e-suite-web-tests-fw-canary:
     if: ${{ github.repository == 'trezor/trezor-suite' && always() && !cancelled() }} # make sure this job runs even if others fail
     runs-on: ubuntu-latest

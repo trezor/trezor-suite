@@ -41,8 +41,7 @@ export const SafetyChecksBanner = ({ onDismiss }: SafetyChecksBannerProps) => {
                     )}
                 </>
             }
-        >
-            <Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />
-        </Banner>
+            description={<Translation id="TR_SAFETY_CHECKS_DISABLED_WARNING" />}
+        />
     );
 };

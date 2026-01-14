@@ -9,7 +9,5 @@ type AccountOutOfSyncProps = {
 
 export const AccountOutOfSync = ({ account }: AccountOutOfSyncProps) =>
     account?.backendType === 'coinjoin' && account.status === 'out-of-sync' ? (
-        <Banner intent="warning">
-            <Translation id="TR_ACCOUNT_OUT_OF_SYNC" />
-        </Banner>
+        <Banner intent="warning" description={<Translation id="TR_ACCOUNT_OUT_OF_SYNC" />} />
     ) : null;

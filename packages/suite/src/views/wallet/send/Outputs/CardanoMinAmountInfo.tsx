@@ -81,9 +81,16 @@ export const CardanoMinAmountInfo = () => {
                 </Text>
             </InfoItem>
             {!hasEnoughADA && (
-                <Banner intent="critical" icon>
-                    <Translation id="TR_SEND_MIN_ADA_AMOUNT" values={{ networkDisplaySymbol }} />
-                </Banner>
+                <Banner
+                    intent="critical"
+                    icon
+                    description={
+                        <Translation
+                            id="TR_SEND_MIN_ADA_AMOUNT"
+                            values={{ networkDisplaySymbol }}
+                        />
+                    }
+                />
             )}
         </>
     );

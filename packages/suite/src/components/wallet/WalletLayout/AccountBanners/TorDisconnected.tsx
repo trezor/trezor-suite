@@ -29,13 +29,14 @@ export const TorDisconnected = () => {
                     )}
                 </Banner.Button>
             }
-        >
-            <Translation
-                id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
-                values={{
-                    b: chunks => <b>{chunks}</b>,
-                }}
-            />
-        </Banner>
+            description={
+                <Translation
+                    id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_TITLE"
+                    values={{
+                        b: chunks => <b>{chunks}</b>,
+                    }}
+                />
+            }
+        />
     );
 };

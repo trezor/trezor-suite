@@ -67,10 +67,16 @@ export const DisableTorModal = ({ onCancel, decision }: DisableTorModalProps) =>
         >
             {onionBackends.length ? (
                 <Column gap={spacings.md}>
-                    <Banner intent="warning" icon="torBrowser">
-                        <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
-                        <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION" />
-                    </Banner>
+                    <Banner
+                        intent="warning"
+                        icon="torBrowser"
+                        description={
+                            <>
+                                <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_TITLE" />{' '}
+                                <Translation id="TR_TOR_DISABLE_ONIONS_ONLY_DESCRIPTION" />
+                            </>
+                        }
+                    />
                     <Card>
                         <Column gap={spacings.xxl} hasDivider>
                             {onionBackends.map(({ symbol, urls }) => (

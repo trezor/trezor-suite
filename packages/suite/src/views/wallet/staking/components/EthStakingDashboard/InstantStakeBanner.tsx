@@ -5,9 +5,8 @@ import { fromWei } from 'web3-utils';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { StakeType, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { Banner, Column, H3, Paragraph } from '@trezor/components';
+import { Banner } from '@trezor/components';
 import { InternalTransfer } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
@@ -83,9 +82,8 @@ export const InstantStakeBanner = ({
                     <Translation id="TR_GOT_IT" />
                 </Banner.Button>
             }
-        >
-            <Column gap={spacings.xxs} alignItems="flex-start">
-                <H3 data-testid="@staking/instant-stake-banner/header" typographyStyle="highlight">
+            title={
+                <span data-testid="@staking/instant-stake-banner/header">
                     <Translation
                         id={getHeadingTranslationId(stakeType)}
                         values={{
@@ -93,8 +91,10 @@ export const InstantStakeBanner = ({
                             symbol: displaySymbol,
                         }}
                     />
-                </H3>
-                <Paragraph data-testid="@staking/instant-stake-banner/paragraph">
+                </span>
+            }
+            description={
+                <span data-testid="@staking/instant-stake-banner/paragraph">
                     <Translation
                         id={getSubheadingTranslationId(stakeType)}
                         values={{
@@ -103,8 +103,8 @@ export const InstantStakeBanner = ({
                             days: remainingDays ?? 0,
                         }}
                     />
-                </Paragraph>
-            </Column>
-        </Banner>
+                </span>
+            }
+        />
     );
 };
