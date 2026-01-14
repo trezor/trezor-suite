@@ -52,6 +52,6 @@ export class TorProcess extends BaseProcess {
 
         await super.start(torConfiguration);
 
-        return this.torController.waitUntilAlive();
+        return await this.torController.waitUntilAlive();
     }
 }
