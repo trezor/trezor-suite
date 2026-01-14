@@ -53,7 +53,6 @@ export const Settings = () => {
             value: connectOptions?.coreMode || 'auto',
             data: [
                 { value: 'auto', label: 'Auto' },
-                { value: 'iframe', label: 'Iframe' },
                 { value: 'deeplink', label: 'Deeplink (mobile)' },
                 { value: 'suite-desktop', label: 'Suite desktop' },
                 { value: 'suite-web', label: 'Suite web' },
