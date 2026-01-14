@@ -20,8 +20,8 @@ import { DeviceConnectionGuardScreen } from '../screens/connect/DeviceConnection
 import { PinScreen } from '../screens/connect/PinScreen';
 import { RemoveBluetoothDeviceScreen } from '../screens/connect/RemoveBluetoothDeviceScreen';
 import { TurnOnAndUnlockDeviceScreen } from '../screens/connect/TurnOnAndUnlockDeviceScreen';
-import { PassphraseConfirmFeatureUnlockEnterOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmFeatureUnlockEnterOnTrezorScreen';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
+import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseEnterOnTrezorScreen';
 import { PassphraseFormScreen } from '../screens/passphrase/PassphraseFormScreen';
 import { ThpCodeEntryScreen } from '../screens/thp/ThpCodeEntryScreen';
 import { ThpConfirmationScreen } from '../screens/thp/ThpConfirmationScreen';
@@ -93,7 +93,7 @@ export const AuthorizeDeviceStackNavigator = () => {
             />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
-                component={PassphraseConfirmFeatureUnlockEnterOnTrezorScreen}
+                component={PassphraseEnterOnTrezorScreen}
             />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}

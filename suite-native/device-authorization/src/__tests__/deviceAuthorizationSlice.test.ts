@@ -16,7 +16,6 @@ describe('deviceAuthorizationSlice', () => {
         it('should have correct initial state', () => {
             expect(deviceAuthorizationReducer(undefined, { type: 'unknown' })).toEqual({
                 deviceState: DeviceAuthorizationStep.Idle,
-                deviceAuthorizationIntent: null,
             });
         });
     });
@@ -25,7 +24,6 @@ describe('deviceAuthorizationSlice', () => {
         it('should set `hasDeviceRequestedPin`', () => {
             expect(deviceAuthorizationReducer(undefined, { type: UI.REQUEST_PIN })).toEqual({
                 deviceState: DeviceAuthorizationStep.PinRequested,
-                deviceAuthorizationIntent: null,
             });
         });
     });
@@ -33,14 +31,12 @@ describe('deviceAuthorizationSlice', () => {
         it('should set hasDeviceRequestedPassphrase', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PinRequested,
-                deviceAuthorizationIntent: null,
             });
 
             const state = deviceAuthorizationReducer(prevState, { type: UI.REQUEST_PASSPHRASE });
 
             expect(state).toEqual({
                 deviceState: DeviceAuthorizationStep.PassphraseRequested,
-                deviceAuthorizationIntent: null,
             });
         });
     });
@@ -49,7 +45,6 @@ describe('deviceAuthorizationSlice', () => {
         it('should react to code `ButtonRequest_PinEntry`', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
-                deviceAuthorizationIntent: null,
             });
             const action = { type: UI.REQUEST_BUTTON, payload: { code: 'ButtonRequest_PinEntry' } };
 
@@ -57,14 +52,12 @@ describe('deviceAuthorizationSlice', () => {
 
             expect(state).toEqual({
                 deviceState: DeviceAuthorizationStep.PinRequested,
-                deviceAuthorizationIntent: null,
             });
         });
 
         it('should react to code  `PinMatrixRequestType_Current`', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
-                deviceAuthorizationIntent: null,
             });
             const action = {
                 type: UI.REQUEST_BUTTON,
@@ -75,7 +68,6 @@ describe('deviceAuthorizationSlice', () => {
 
             expect(state).toEqual({
                 deviceState: DeviceAuthorizationStep.PinRequested,
-                deviceAuthorizationIntent: null,
             });
         });
     });
@@ -84,13 +76,11 @@ describe('deviceAuthorizationSlice', () => {
         it('should set correct state', () => {
             const prevState = getDeviceAuthorizationState({
                 deviceAuthorizationStep: DeviceAuthorizationStep.PassphraseRequested,
-                deviceAuthorizationIntent: null,
             });
             const action = { type: UI.CLOSE_UI_WINDOW };
 
             expect(deviceAuthorizationReducer(prevState, action)).toEqual({
                 deviceState: DeviceAuthorizationStep.Idle,
-                deviceAuthorizationIntent: null,
             });
         });
     });

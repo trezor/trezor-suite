@@ -9,10 +9,6 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
-import {
-    DeviceAuthorizationIntent,
-    changeDeviceAuthorizationIntent,
-} from '@suite-native/device-authorization';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -63,8 +59,6 @@ export const AddHiddenWalletButton = () => {
             }),
         );
         dispatch(runDiscoveryThunk(device));
-        // TODO remove
-        dispatch(changeDeviceAuthorizationIntent(DeviceAuthorizationIntent.AddHiddenWallet));
 
         navigation.navigate(RootStackRoutes.PassphraseStack, {
             screen: PassphraseStackRoutes.PassphraseForm,
