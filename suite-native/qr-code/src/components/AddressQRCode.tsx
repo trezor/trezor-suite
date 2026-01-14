@@ -63,6 +63,7 @@ export const AddressQRCode = ({
                 address={address}
                 deviceStaticSessionId={deviceStaticSessionId}
                 networkSymbol={networkSymbol}
+                testID="@receive/address-label"
             />
             <HStack spacing="sp8" justifyContent="center">
                 <Button

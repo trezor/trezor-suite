@@ -28,7 +28,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         const fiatInUSDRegex = /^.*\$.*$/i;
         await waitForVisible(by.text(fiatInUSDRegex));
         await onTabBar.navigateToSettings();
-        await onSettings.tapPreferences();
+        await onSettings.openSection('preferences');
         await onSettings.changeLocalizationCurrency('czk');
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
@@ -39,7 +39,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     it('Localization - Bitcoin Units', async () => {
         await detoxExpect(element(by.text('0 BTC'))).toBeVisible();
         await onTabBar.navigateToSettings();
-        await onSettings.tapPreferences();
+        await onSettings.openSection('preferences');
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
@@ -50,7 +50,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     it('Localization - Language', async () => {
         await onTabBar.assertHomeTabBarItemTitle(EN_TRANSLATIONS['navigation.tabs.home']);
         await onTabBar.navigateToSettings();
-        await onSettings.tapPreferences();
+        await onSettings.openSection('preferences');
         await onSettings.changeLanguage('cs-CZ');
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
@@ -62,7 +62,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onHome.assertIsDiscreetModeDisabled();
 
         await onTabBar.navigateToSettings();
-        await onSettings.tapPrivacyAndSecurity();
+        await onSettings.openSection('privacy');
         await onSettings.toggleDiscreetMode();
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();

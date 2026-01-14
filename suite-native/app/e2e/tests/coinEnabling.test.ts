@@ -35,7 +35,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1
         await waitForVisible(by.text('Bitcoin'));
 
         await onTabBar.navigateToSettings();
-        await onSettings.tapCoinEnabling();
+        await onSettings.openSection('coin-enabling');
         await onCoinEnabling.toggleNetwork('eth');
 
         await device.pressBack();
@@ -45,7 +45,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1
         await waitForVisible(by.text('Ethereum'));
 
         await onTabBar.navigateToSettings();
-        await onSettings.tapCoinEnabling();
+        await onSettings.openSection('coin-enabling');
         await onCoinEnabling.toggleNetwork('eth');
         await device.pressBack();
         await onTabBar.navigateToHome();

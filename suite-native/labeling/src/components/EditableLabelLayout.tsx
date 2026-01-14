@@ -14,9 +14,10 @@ import { selectIsLabelingEnabled } from '../selectors';
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
     label: string | null;
+    testID?: string;
 };
 
-export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutParams) => {
+export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLayoutParams) => {
     const { showAlert } = useAlert();
     const { suiteSync } = useNativeServices();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -53,7 +54,7 @@ export const EditableLabelLayout = ({ children, label }: EditableLabelLayoutPara
 
     return (
         <>
-            <TextButton onPress={handleAddLabel} viewRight="pencil" testID="@labeling/addLabel">
+            <TextButton onPress={handleAddLabel} viewRight="pencil" testID={testID}>
                 {label ?? <Translation id="suiteSync.addLabel" />}
             </TextButton>
             <BottomSheetModal

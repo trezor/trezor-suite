@@ -115,7 +115,7 @@ export const AccountsListItemBase = ({
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">{icon}</Box>
                 <Box style={applyStyle(accountDescriptionStyle)}>
-                    <Text>{title}</Text>
+                    <Text testID="@accountList/item/title">{title}</Text>
                     {secondaryTitle}
                     <HStack spacing="sp4" alignItems="center">
                         {badges}

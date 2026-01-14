@@ -23,7 +23,7 @@ const preloadedState = preparePreloadedReduxState(
 
 const navigateToEjectWallets = async () => {
     await onTabBar.navigateToSettings();
-    await onSettings.tapEjectWallets();
+    await onSettings.openSection('eject-wallets');
 };
 
 conditionalDescribe(device.getPlatform() === 'android', 'Eject wallets [@fixT3W1]', () => {

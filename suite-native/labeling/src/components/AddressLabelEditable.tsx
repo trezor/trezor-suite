@@ -15,6 +15,7 @@ type AddressLabelEditableProps = {
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
+    testID?: string;
 };
 
 export const AddressLabelEditable = ({
@@ -22,6 +23,7 @@ export const AddressLabelEditable = ({
     deviceStaticSessionId,
     accountDescriptor,
     networkSymbol,
+    testID,
 }: AddressLabelEditableProps) => {
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const { suiteSync } = useNativeServices();
@@ -45,7 +47,7 @@ export const AddressLabelEditable = ({
     }
 
     return (
-        <EditableLabelLayout label={label}>
+        <EditableLabelLayout label={label} testID={testID}>
             {({ onClose }) => (
                 <LabelEditForm
                     label={label ?? ''}

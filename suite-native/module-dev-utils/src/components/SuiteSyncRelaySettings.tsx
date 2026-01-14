@@ -59,8 +59,11 @@ export const SuiteSyncRelaySettings = () => {
         <Card>
             <VStack paddingTop="sp16">
                 <HStack justifyContent="space-between">
-                    <Text variant="highlight">Enable Suite Sync in settings (Evolu)</Text>
+                    <Text testID="@suiteSync/header" variant="highlight">
+                        Enable Suite Sync in settings (Evolu)
+                    </Text>
                     <CheckBox
+                        testID="@suiteSync/enable-toggle"
                         isChecked={isFeatureSuiteSyncEnabled}
                         onChange={handleSuiteSyncEnableToggle}
                     />
@@ -69,10 +72,16 @@ export const SuiteSyncRelaySettings = () => {
                     <Text>Custom relay URL</Text>
                     <Form form={form}>
                         <TextInputField
+                            testID="@suiteSync/custom-relay-url-input"
                             name="suiteSyncRelayUrl"
                             placeholder="Enter custom relay URL"
                         />
-                        <Button colorScheme="tertiaryElevation0" size="small" onPress={onSubmit}>
+                        <Button
+                            testID="@suiteSync/custom-relay-url-save-button"
+                            colorScheme="tertiaryElevation0"
+                            size="small"
+                            onPress={onSubmit}
+                        >
                             Save
                         </Button>
                     </Form>

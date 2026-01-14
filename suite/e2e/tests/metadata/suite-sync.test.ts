@@ -1,7 +1,7 @@
 import { generateMnemonic } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
-import { skipFixture } from '../../support/common';
+import { isWebProject, skipFixture } from '../../support/common';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 
@@ -18,6 +18,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware',
             passphrase_protection: true,
         },
     });
+
     test('Sync account label across sessions', async ({
         page,
         onboardingPage,
@@ -58,6 +59,78 @@ test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware',
             await expect(
                 walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
             ).toHaveText(newLabel, { timeout: 30_000 });
+        });
+    });
+});
+
+const MNEMONIC = 'ugly rally dial movie exhibit annual bean slender illegal frown giraffe scare';
+// These labels were set manually on this seed
+const ACCOUNT_LABEL = 'Evolu synced BTC account';
+const WALLET_INDEX = 0;
+const WALLET_LABEL = 'Evolu synced wallet';
+const ADDRESS = 'bc1q8aekqmmpxujx8xpgxp9mcwe6kdjpcnpzpehsmm';
+const ADDRESS_LABEL = 'Evolu synced BTC address';
+
+test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1'] }, () => {
+    test.use({
+        emulatorStartConf: { model: 'T3W1', version: '2-main', wipe: true },
+        emulatorSetupConf: { mnemonic: MNEMONIC, passphrase_protection: true },
+    });
+
+    test('Sync labels from server', async ({
+        page,
+        devicePrompt,
+        onboardingPage,
+        dashboardPage,
+        walletPage,
+        metadataPage,
+    }, testInfo) => {
+        await test.step('Enable Suite Sync', async () => {
+            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await metadataPage.initiateSuiteSyncSetup();
+            if (isWebProject(testInfo)) {
+                // eslint-disable-next-line playwright/no-conditional-expect
+                await expect(devicePrompt).toDisplayOnEmulator({
+                    T3W1: {
+                        header: { title: 'Suite Sync' },
+                        body: [
+                            [
+                                'Allow Trezor Suite',
+                                '\n',
+                                'on Chrome to use',
+                                '\n',
+                                'Suite Sync with this',
+                                '\n',
+                                'Trezor?',
+                            ],
+                        ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                });
+            }
+            await metadataPage.confirmSuiteSyncSetup();
+        });
+
+        await test.step('Verify BTC account label is synced', async () => {
+            await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
+            await expect(
+                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+            ).toHaveText(ACCOUNT_LABEL, { timeout: 30_000 });
+        });
+
+        await test.step('Verify wallet label is synced', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await expect(metadataPage.wallet.walletLabel(WALLET_INDEX)).toHaveText(WALLET_LABEL);
+            await dashboardPage.deviceSwitchingCloseButton.click();
+        });
+
+        await test.step('Verify address label is synced', async () => {
+            await walletPage.openAccount();
+            await walletPage.receiveButton.click();
+            await walletPage.revealAddressButton.click();
+            await devicePrompt.waitForPromptAndConfirm();
+            await page.modalCloseButton.click();
+            await expect(metadataPage.address.label(ADDRESS)).toHaveText(ADDRESS_LABEL);
         });
     });
 });

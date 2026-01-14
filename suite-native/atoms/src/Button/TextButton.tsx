@@ -20,6 +20,7 @@ type TextButtonProps = Omit<ButtonProps, 'colorScheme'> & {
     variant?: TextButtonVariant;
     isBold?: boolean;
     justifyContent?: FlexStyle['justifyContent'];
+    testID?: string;
 };
 
 const variantToColorsMap = {
@@ -79,6 +80,7 @@ export const TextButton = ({
     isUnderlined = false,
     isBold = false,
     justifyContent,
+    testID,
     ...pressableProps
 }: TextButtonProps) => {
     const { applyStyle, utils } = useNativeStyles();
@@ -121,6 +123,7 @@ export const TextButton = ({
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             style={applyStyle(buttonContainerStyle)}
+            testID={`${testID}/button`}
             {...pressableProps}
         >
             <HStack alignItems="center" justifyContent={justifyContent}>
@@ -128,6 +131,7 @@ export const TextButton = ({
                     <ButtonAccessoryView element={viewLeft} iconColor={iconColor} iconSize={size} />
                 )}
                 <Animated.Text
+                    testID={`${testID}/text`}
                     style={[
                         applyStyle(textStyle, { buttonSize: size, isUnderlined, isBold }),
                         animatedTextStyle,

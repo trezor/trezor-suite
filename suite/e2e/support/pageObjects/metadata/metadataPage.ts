@@ -51,7 +51,7 @@ export class MetadataPage {
     }
 
     @step()
-    async enableSuiteSync() {
+    async initiateSuiteSyncSetup() {
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncCheckbox.click();
         await this.settingsPage.debugTab.suiteSyncUrlInput.fill(
@@ -64,9 +64,18 @@ export class MetadataPage {
             this.settingsPage.metadataSelectInput,
             this.settingsPage.metadataSelectInputOption('secure-sync'),
         );
+    }
 
+    @step()
+    async confirmSuiteSyncSetup() {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await TrezorUserEnvLinkProxy.pressYes();
         await this.page.waitForTimeout(2000); // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+    }
+
+    @step()
+    async enableSuiteSync() {
+        await this.initiateSuiteSyncSetup();
+        await this.confirmSuiteSyncSetup();
     }
 }

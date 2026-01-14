@@ -107,7 +107,12 @@ export const WalletItemBase = ({
             <HStack style={applyStyle(walletItemBaseStyle, { isSelected, isSelectable })}>
                 <HStack alignItems="center" flex={1}>
                     <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
-                    <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
+                    <Text
+                        testID="@wallet/label"
+                        variant="callout"
+                        numberOfLines={1}
+                        style={applyStyle(labelStyle)}
+                    >
                         <WalletLabel
                             deviceStaticSessionId={device?.state?.staticSessionId}
                             fallbackLabel={fallbackLabel}
