@@ -1,7 +1,6 @@
 import type { BlockchainEventMessage } from './blockchain';
 import type { IFrameCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
-import type { IFrameEventMessage, IFrameInit, IFrameLogRequest } from './iframe';
 import type { PopupAnalyticsResponse, PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
     TransportDisableWebUSB,
@@ -25,9 +24,7 @@ export type CoreRequestMessage =
     | TransportRequestWebUSBDevice
     | TransportGetInfo
     | UiResponseEvent
-    | IFrameInit
-    | IFrameCallMessage
-    | IFrameLogRequest;
+    | IFrameCallMessage;
 
 export type CoreEventMessage = {
     success?: boolean; // response status in ResponseMessage
@@ -38,7 +35,6 @@ export type CoreEventMessage = {
     | TransportEventMessage
     | UiEventMessage
     | MethodResponseMessage
-    | IFrameEventMessage
     | PopupEventMessage
 );
 

@@ -3,14 +3,7 @@
 import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import {
-    CoreEventMessage,
-    DEVICE_EVENT,
-    IFRAME,
-    IFrameLoaded,
-    POPUP,
-    UI,
-} from '@trezor/connect/src/events';
+import { CoreEventMessage, DEVICE_EVENT, POPUP, UI } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
@@ -59,11 +52,7 @@ export class PopupManager extends EventEmitter {
 
     channel: AbstractMessageChannel<CoreEventMessage>;
 
-    channelIframe?: AbstractMessageChannel<CoreEventMessage>;
-
     handshakePromise: Deferred<void> | undefined;
-
-    iframeHandshakePromise: Deferred<IFrameLoaded['payload']> | undefined;
 
     popupPromise: Deferred<void> | undefined;
 
@@ -108,22 +97,6 @@ export class PopupManager extends EventEmitter {
                 logger,
                 origin: this.origin,
             });
-        }
-
-        if (!this.settings.useCoreInPopup) {
-            // If not in core, we need to create a channel for the iframe
-            this.iframeHandshakePromise = createDeferred(IFRAME.LOADED);
-            this.channelIframe = new WindowWindowChannel<CoreEventMessage>({
-                windowHere: window,
-                windowPeer: () => window,
-                channel: {
-                    here: '@trezor/connect-web',
-                    peer: '@trezor/connect-iframe',
-                },
-                logger,
-                origin: this.origin,
-            });
-            this.channelIframe?.on('message', this.handleMessage.bind(this));
         }
 
         if (this.settings.useCoreInPopup) {
@@ -380,9 +353,7 @@ export class PopupManager extends EventEmitter {
     }
 
     handleMessage(data: Message<CoreEventMessage>) {
-        if (data.type === IFRAME.LOADED) {
-            this.iframeHandshakePromise?.resolve(data.payload);
-        } else if (data.type === POPUP.BOOTSTRAP) {
+        if (data.type === POPUP.BOOTSTRAP) {
             // popup is opened properly, now wait for POPUP.LOADED message
             if (this.openTimeout) clearTimeout(this.openTimeout);
         } else if (data.type === POPUP.ERROR && this.popupWindow) {
@@ -398,19 +369,6 @@ export class PopupManager extends EventEmitter {
                 this.popupPromise.resolve();
                 this.popupPromise = undefined;
             }
-            // popup is successfully loaded
-            this.iframeHandshakePromise?.promise.then(payload => {
-                // send ConnectSettings to popup
-                // note this settings and iframe.ConnectSettings could be different (especially: origin, popup, webusb, debug)
-                // now popup is able to load assets
-                this.channel.postMessage({
-                    type: POPUP.INIT,
-                    payload: {
-                        ...payload,
-                        settings: this.settings,
-                    },
-                });
-            });
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
             clearTimeout(this.requestTimeout);
             if (this.popupPromise) {
