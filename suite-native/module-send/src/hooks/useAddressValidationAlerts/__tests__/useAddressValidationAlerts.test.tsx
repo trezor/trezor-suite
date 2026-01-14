@@ -2,7 +2,12 @@ import { useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Form } from '@suite-native/forms';
-import { PreloadedState, act, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    PreloadedState,
+    act,
+    renderHookWithStoreProviderAsync,
+    waitFor,
+} from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { useAddressValidationAlerts } from '../useAddressValidationAlerts';
@@ -182,7 +187,7 @@ describe('useAddressValidationAlerts', () => {
                 contractAddressChecksum,
                 { shouldValidate: true },
             );
-            expect(result.current.wasAddressChecksummed).toBe(true);
+            await waitFor(() => expect(result.current.wasAddressChecksummed).toBe(true));
             expect(mockShowAlert).not.toHaveBeenCalled();
         });
 
@@ -203,7 +208,7 @@ describe('useAddressValidationAlerts', () => {
                 contractAddressChecksum,
                 { shouldValidate: true },
             );
-            expect(result.current.wasAddressChecksummed).toBe(true);
+            await waitFor(() => expect(result.current.wasAddressChecksummed).toBe(true));
         });
 
         it('should not show checksum alert for valid checksum addresses', async () => {
