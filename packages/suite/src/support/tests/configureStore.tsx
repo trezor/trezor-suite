@@ -4,6 +4,7 @@ import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
 import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 
 import { extraDependencies } from '../extraDependencies';
 
@@ -24,7 +25,11 @@ export const configureStore = <S, DispatchExts = {}>(
     additionalExtraDeps?: Partial<ExtraDependencies>,
 ): MockStoreCreator<S, DispatchExts> =>
     reduxMockStore([
-        withExtraArgument({ ...extraDependencies, ...additionalExtraDeps }),
+        withExtraArgument({
+            ...extraDependenciesMock,
+            ...extraDependencies,
+            ...additionalExtraDeps,
+        }),
         ...(middlewares || []),
     ]);
 

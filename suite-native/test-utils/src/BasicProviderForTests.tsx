@@ -5,8 +5,9 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { FormatterProvider, FormatterProviderConfig } from '@suite-common/formatters';
+import { extraDependenciesMock } from '@suite-common/test-utils';
 import { IntlProviderForTests } from '@suite-native/intl';
-import { NativeServicesProvider } from '@suite-native/services';
+import { NativeServices, NativeServicesProvider } from '@suite-native/services';
 import { StylesProvider, createRenderer } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
 
@@ -25,18 +26,14 @@ const DEFAULT_FORMATTERS_CONFIG: FormatterProviderConfig = {
     is24HourFormat: true,
 };
 
-const mockServices = {
-    analytics: {
-        report: () => {},
-    },
-};
-
 export const BasicProviderForTests = ({ children, formattersConfig }: ProviderProps) => (
     <SafeAreaProvider>
         <IntlProviderForTests>
             <StylesProvider theme={theme} renderer={renderer}>
                 <NavigationContainer>
-                    <NativeServicesProvider services={mockServices}>
+                    <NativeServicesProvider
+                        services={extraDependenciesMock.services as NativeServices}
+                    >
                         <FormatterProvider config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}>
                             <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
                         </FormatterProvider>
