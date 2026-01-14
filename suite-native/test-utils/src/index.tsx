@@ -8,4 +8,4 @@ export * from './StoreProviderForTests';
 export * from './renderBasic';
 export * from './renderWithStore';
 
-export { getByTranslationId } from './getByTranslationId';
+export { getTranslation } from './getTranslation';
