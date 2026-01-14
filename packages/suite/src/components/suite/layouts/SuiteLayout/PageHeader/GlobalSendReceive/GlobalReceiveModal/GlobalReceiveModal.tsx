@@ -1,7 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-import { useTheme } from 'styled-components';
-
 import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Divider, Link, Modal } from '@trezor/components';
