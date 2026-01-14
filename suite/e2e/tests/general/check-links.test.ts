@@ -78,9 +78,7 @@ async function fetchWithRetry(page: Page, url: string, maxRetries = 3) {
     return response;
 }
 
-test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorStartConf: { model: 'T3T1', wipe: true } });
-
+test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });
