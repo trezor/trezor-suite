@@ -166,7 +166,7 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
             challenge_from_server: 'aa55',
             size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
             proof_of_delegated_identity:
-                'a526cae01826e660a9a2580ccbeb008c768cea6039f3a00f894b8c9a619bbdc21caa7acb1e7648e6af3174dfb4df84e04862f88f9188a215882694fb447ce937',
+                '9d40167d8ec7ce7949f1675d60a4d5c2a6ec5f16152bdc6c7959af99c856d31570c0d262996917cf424a3e638a7ee10b57aa2864c06895b0728d09f040496177',
         });
         expect(registerStorageThunkMock).toHaveBeenCalledWith({
             size: DEFAULT_DEVICE_SIZE_QUOTA,
