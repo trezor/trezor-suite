@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { IconButton, ScreenHeaderWrapper, Text, VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useIsConnectPopupOpened } from '@suite-native/module-connect-popup';
 import {
@@ -9,10 +9,10 @@ import {
     RootStackParamList,
     Screen,
     StackToStackCompositeNavigationProps,
-    useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { PassphraseForm } from '@suite-native/passphrase';
-import TrezorConnect from '@trezor/connect';
+
+import { AuthorizeDeviceScreenHeader } from '../../components/AuthorizeDeviceScreenHeader';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -20,37 +20,18 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const PassphraseFeatureUnlockFormScreen = () => {
+export const PassphraseFormScreen = () => {
     const navigation = useNavigation<NavigationProp>();
-    const navigateToInitialScreen = useNavigateToInitialScreen();
     const isConnectPopupOpened = useIsConnectPopupOpened();
 
     const { translate } = useTranslate();
-
-    const handleClose = () => {
-        TrezorConnect.cancel();
-        navigateToInitialScreen();
-    };
 
     const handleAfterSubmit = () => {
         navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor);
     };
 
     return (
-        <Screen
-            header={
-                <ScreenHeaderWrapper>
-                    <IconButton
-                        iconName="x"
-                        onPress={handleClose}
-                        colorScheme="tertiaryElevation0"
-                        size="medium"
-                        accessibilityRole="button"
-                        accessibilityLabel="Close"
-                    />
-                </ScreenHeaderWrapper>
-            }
-        >
+        <Screen header={<AuthorizeDeviceScreenHeader />}>
             <VStack spacing="sp24">
                 <Text variant="titleMedium">
                     <Translation id="modulePassphrase.passphraseFeatureUnlock.title" />
