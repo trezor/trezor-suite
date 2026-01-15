@@ -10,23 +10,6 @@
 /scripts/list-outdated-dependencies/wallet-dependencies.txt @tomasklim
 /scripts @karliatto
 
-
-/packages/analytics @jvaclavik
-/suite/analytics @jvaclavik
-/suite/analytics/src/events @kolomaznikt
-/suite/analytics/src/constants.ts @kolomaznikt
-/suite/analytics/src/types.ts @kolomaznikt
-
-/suite-common/analytics @jvaclavik
-/suite-common/analytics/src/sharedEvents/events @kolomaznikt
-/suite-common/analytics/src/sharedEvents/events/constants.ts @kolomaznikt
-/suite-common/analytics/src/sharedEvents/events/types.ts @kolomaznikt
-
-/suite-native/analytics @jvaclavik
-/suite-native/analytics/src/events @kolomaznikt
-/suite-native/analytics/src/constants.ts @kolomaznikt
-/suite-native/analytics/src/types.ts @kolomaznikt
-
 /packages/blockchain-link @mroz22 @marekrjpolak
 
 /packages/blockchain-link-utils @marekrjpolak
@@ -115,3 +98,24 @@
 /suite/e2e @HajekOndrej @Vere-Grey
 
 /packages/e2e-utils @HajekOndrej @Vere-Grey
+
+# Analytics uploader
+/packages/analytics @jvaclavik
+
+# Desktop analytics
+/suite/analytics @jvaclavik
+/suite/analytics/src/events @kolomaznikt
+/suite/analytics/src/constants.ts @kolomaznikt
+/suite/analytics/src/types.ts @kolomaznikt
+
+# Mobile analytics
+/suite-native/analytics @jvaclavik
+/suite-native/analytics/src/events @kolomaznikt
+/suite-native/analytics/src/constants.ts @kolomaznikt
+/suite-native/analytics/src/types.ts @kolomaznikt
+
+# Common analytics
+/suite-common/analytics-types @jvaclavik
+/suite-common/analytics-types/src/events @kolomaznikt
+/suite-common/analytics-types/src/constants.ts @kolomaznikt
+/suite-common/analytics-types/src/types.ts @kolomaznikt
