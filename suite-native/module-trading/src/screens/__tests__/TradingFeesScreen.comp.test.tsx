@@ -48,7 +48,7 @@ const preloadedState = {
 describe('TradingFeesScreen', () => {
     let unmount: (() => void) | undefined;
 
-    const renderScreen = async () => {
+    const renderScreen = async (state = preloadedState) => {
         const reportMock = jest.fn();
         jest.clearAllMocks();
 
@@ -56,7 +56,7 @@ describe('TradingFeesScreen', () => {
             report: reportMock,
         });
         const result = await renderWithStoreProviderAsync(<TradingFeesScreen />, {
-            preloadedState,
+            preloadedState: state,
         });
 
         ({ unmount } = result);
@@ -151,9 +151,7 @@ describe('TradingFeesScreen', () => {
             params: { accountKey: 'btc1', tradingType: 'sell' },
         });
 
-        const { reportMock } = await renderScreen(<TradingFeesScreen />, {
-            preloadedState: sellPreloadedState,
-        });
+        const { reportMock } = await renderScreen(sellPreloadedState);
 
         expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingSell,
