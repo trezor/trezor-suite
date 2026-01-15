@@ -16,6 +16,7 @@ const initialSettings: ConnectSettings = {
     version: VERSION, // constant
     debug: false,
     priority: DEFAULT_PRIORITY,
+    // todo: trustedHost can be removed now, I just didn't want to touch core at the moment
     trustedHost: true,
     popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
@@ -83,11 +84,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         } else if (typeof input.debug === 'string') {
             settings.debug = input.debug === 'true';
         }
-    }
-
-    // trust level can only be lowered by implementator!
-    if (input.trustedHost === false) {
-        settings.trustedHost = input.trustedHost;
     }
 
     if (typeof input.transportReconnect === 'boolean') {
