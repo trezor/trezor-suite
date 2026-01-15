@@ -4,7 +4,6 @@ const settings = {
     connectSrc: 'https://connect.trezor.io/9/',
     transportReconnect: true,
     debug: false,
-    popup: false,
     webusb: true,
     pendingTransportEvent: false,
     manifest: {

@@ -132,7 +132,6 @@ export const init =
         const connectOptions = {
             coreMode,
             transportReconnect: true,
-            popup: true,
             debug: true,
             lazyLoad: true,
             manifest: {

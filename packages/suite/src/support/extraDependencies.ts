@@ -56,7 +56,6 @@ const connectInitSettings = {
     connectSrc,
     transportReconnect: true,
     debug: false,
-    popup: false,
     manifest: {
         email: 'info@trezor.io',
         appName: isDesktop() ? 'Trezor Suite desktop' : 'Trezor Suite web',

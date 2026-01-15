@@ -36,7 +36,7 @@ export const init = async (api: TrezorConnect) => {
         const { payload } = settings;
         payload.manifest?.appUrl.toLowerCase();
         payload.connectSrc?.toLowerCase();
-        if (payload.debug === true && payload.popup === true) {
+        if (payload.debug === true) {
             //
         }
     }
