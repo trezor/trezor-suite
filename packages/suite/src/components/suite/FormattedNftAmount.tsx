@@ -18,6 +18,7 @@ import { RedactNumericalValue } from './RedactNumericalValue';
 export interface FormattedNftAmountProps {
     transfer: TokenTransfer;
     signValue?: SignValue;
+    signGrayscale?: boolean;
     className?: string;
     isWithLink?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
@@ -27,6 +28,7 @@ export interface FormattedNftAmountProps {
 export const FormattedNftAmount = ({
     transfer,
     signValue,
+    signGrayscale,
     className,
     isWithLink,
     alignMultitoken = 'flex-end',
@@ -53,7 +55,9 @@ export const FormattedNftAmount = ({
                 {tokens?.map((token, index) => (
                     <Row key={`${token.id}-${index}`} gap={spacings.xxs}>
                         <Row>
-                            {signValue ? <Sign value={signValue} /> : null}
+                            {signValue ? (
+                                <Sign value={signValue} grayscale={signGrayscale} />
+                            ) : null}
                             {transfer.name ? (
                                 <BlurUrls
                                     text={translationString('TR_COLLECTION_NAME_OF_TOKEN_ID', {
@@ -90,7 +94,7 @@ export const FormattedNftAmount = ({
 
     return (
         <Row className={className}>
-            {signValue ? <Sign value={signValue} /> : null}
+            {signValue ? <Sign value={signValue} grayscale={signGrayscale} /> : null}
             <Box margin={{ right: spacings.xxs }}>
                 <Translation id="TR_TOKEN_ID_COLON" />
             </Box>

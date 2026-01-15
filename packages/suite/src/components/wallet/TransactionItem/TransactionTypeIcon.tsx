@@ -1,45 +1,37 @@
-import styled, { useTheme } from 'styled-components';
-
 import { getTxIcon } from '@suite-common/wallet-utils';
-import { Icon, IconProps } from '@trezor/components';
+import { IconCircle } from '@trezor/components';
 
 import { WalletAccountTransaction } from 'src/types/wallet';
 
-const IconsWrapper = styled.div<{ $isJoint: boolean }>`
-    position: relative;
-    width: 24px;
-    transform: ${({ $isJoint }) => $isJoint && 'translate(2px, 0)'};
-`;
-
-// eslint-disable-next-line local-rules/no-override-ds-component
-const ClockIcon = styled(Icon)`
-    position: absolute;
-    top: -2px;
-    right: 0;
-    background: ${({ theme }) => theme.backgroundNeutralBoldInverted};
-    border-radius: 50%;
-`;
-
-interface TransactionTypeIconProps extends Omit<IconProps, 'name' | 'variant'> {
-    type: WalletAccountTransaction['type'];
+type TransactionTypeIconProps = {
+    transaction: WalletAccountTransaction;
     isPending: boolean;
-}
-
-export const TransactionTypeIcon = ({ type, isPending, ...rest }: TransactionTypeIconProps) => {
-    const theme = useTheme();
-
-    const isJoint = type === 'joint';
-
-    return (
-        <IconsWrapper $isJoint={isJoint} {...rest}>
-            <Icon
-                name={getTxIcon(type)}
-                color={type === 'failed' ? theme.iconAlertRed : theme.textSubdued}
-                size={isJoint ? 20 : 24}
-                {...rest}
-            />
-
-            {isPending && <ClockIcon name="clock" size={12} color={theme.iconAlertYellow} />}
-        </IconsWrapper>
-    );
+    isPhishingTransaction: boolean;
 };
+
+const getIconVariant = (
+    type: WalletAccountTransaction['type'],
+    isPending: boolean,
+    isPhishingTransaction: boolean,
+) => {
+    if (isPending) {
+        return 'warning';
+    } else if (isPhishingTransaction || type === 'failed') {
+        return 'destructive';
+    } else {
+        return 'tertiary';
+    }
+};
+
+export const TransactionTypeIcon = ({
+    transaction,
+    isPending,
+    isPhishingTransaction,
+}: TransactionTypeIconProps) => (
+    <IconCircle
+        name={getTxIcon(transaction, isPhishingTransaction)}
+        variant={getIconVariant(transaction.type, isPending, isPhishingTransaction)}
+        size={48}
+        hasBorder={false}
+    />
+);

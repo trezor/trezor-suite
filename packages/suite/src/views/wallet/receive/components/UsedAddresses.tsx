@@ -31,7 +31,6 @@ type ItemProps = {
 
 const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }: ItemProps) => {
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
-    const [isHovered, setIsHovered] = useState(false);
     const { translationString } = useTranslation();
 
     const amount = formatNetworkAmount(addr.received || '0', symbol);
@@ -39,7 +38,7 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
     const isDisabled = locked || isReceiveDisabled;
 
     return (
-        <Table.Row onHover={setIsHovered}>
+        <Table.Row>
             <Table.Cell>
                 <Text typographyStyle="body" data-testid={`@wallet/receive/used-address/${index}`}>
                     <Labeling
@@ -51,29 +50,26 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                         placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
                         margin={{ vertical: 4 }}
                         minHeight={28}
-                        maxWidth={400}
-                        gap={8}
-                        rightAddon={
-                            isHovered && (
-                                <ReceiveDisabledWrapper>
-                                    <Button
-                                        data-testid={`@wallet/receive/reveal-address-button/${index}`}
-                                        intent="neutral"
-                                        priority="secondary"
-                                        isDisabled={isDisabled}
-                                        isLoading={locked}
-                                        onClick={onClick}
-                                        size="small"
-                                    >
-                                        <Translation id="TR_REVEAL_ADDRESS" />
-                                    </Button>
-                                </ReceiveDisabledWrapper>
-                            )
-                        }
+                        maxWidth={300}
                     >
                         {metadataPayload.value}
                     </Labeling>
                 </Text>
+            </Table.Cell>
+            <Table.Cell align="end">
+                <ReceiveDisabledWrapper>
+                    <Button
+                        data-testid={`@wallet/receive/reveal-address-button/${index}`}
+                        intent="neutral"
+                        priority="secondary"
+                        isDisabled={isDisabled}
+                        isLoading={locked}
+                        onClick={onClick}
+                        size="small"
+                    >
+                        <Translation id="RECEIVE_ADDRESS_REVEAL" />
+                    </Button>
+                </ReceiveDisabledWrapper>
             </Table.Cell>
             <Table.Cell align="end">
                 <Text typographyStyle="hint">
@@ -150,7 +146,7 @@ export const UsedAddresses = ({
                             <Table.Cell>
                                 <Translation id="RECEIVE_TABLE_ADDRESS" />
                             </Table.Cell>
-                            <Table.Cell align="end">
+                            <Table.Cell align="end" colSpan={2}>
                                 <Translation id="RECEIVE_TABLE_RECEIVED" />
                             </Table.Cell>
                         </Table.Row>

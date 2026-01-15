@@ -119,7 +119,7 @@ export const Tooltip = ({
             <TooltipTrigger>
                 <Content as={as} {...frameProps}>
                     {children}
-                    {hasIcon && <Icon name="question" size="medium" />}
+                    {hasIcon && isActive && <Icon name="question" size="medium" />}
                 </Content>
             </TooltipTrigger>
 

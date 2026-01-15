@@ -1,6 +1,4 @@
-import { ReactNode, useState } from 'react';
-
-import styled from 'styled-components';
+import { ReactNode } from 'react';
 
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -21,9 +19,7 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { DayHeader } from './DayHeader';
 
-const TransactionsGroupWrapper = styled.div``;
-
-interface TransactionsGroupProps {
+type TransactionsGroupProps = {
     dateKey: string;
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
@@ -31,7 +27,7 @@ interface TransactionsGroupProps {
     baseCurrencyCode: BaseCurrencyCode;
     index: number;
     isPending: boolean;
-}
+};
 
 export const TransactionsGroup = ({
     dateKey,
@@ -41,9 +37,7 @@ export const TransactionsGroup = ({
     isPending,
     children,
     index,
-    ...rest
 }: TransactionsGroupProps) => {
-    const [isHovered, setIsHovered] = useState(false);
     const historicFiatRates = useSelector(selectHistoricFiatRates);
     const tokenDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const totalAmountPerDay = sumTransactions(transactions);
@@ -82,25 +76,20 @@ export const TransactionsGroup = ({
     });
 
     return (
-        <TransactionsGroupWrapper
+        <Column
+            gap={10}
             key={dateKey}
-            onMouseEnter={() => setIsHovered(true)}
             data-testid={`@wallet/accounts/transaction-list/${isPending ? 'pending' : 'confirmed'}/group/${index}`}
-            onMouseLeave={() => setIsHovered(false)}
-            {...rest}
         >
-            <Column gap={10}>
-                <DayHeader
-                    dateKey={dateKey}
-                    symbol={symbol}
-                    isHovered={isHovered}
-                    totalAmount={totalAmountPerDay}
-                    totalFiatAmountPerDay={totalFiatAmountPerDay}
-                    localCurrency={baseCurrencyCode}
-                    isMissingFiatRates={isMissingFiatRates}
-                />
-                {children}
-            </Column>
-        </TransactionsGroupWrapper>
+            <DayHeader
+                dateKey={dateKey}
+                symbol={symbol}
+                totalAmount={totalAmountPerDay}
+                totalFiatAmountPerDay={totalFiatAmountPerDay}
+                localCurrency={baseCurrencyCode}
+                isMissingFiatRates={isMissingFiatRates}
+            />
+            <Column gap={16}>{children}</Column>
+        </Column>
     );
 };

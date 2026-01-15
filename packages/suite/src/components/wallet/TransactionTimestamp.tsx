@@ -1,22 +1,10 @@
-import styled from 'styled-components';
-
-import { typography } from '@trezor/theme';
-
 import { FormattedDate } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
-const TimestampLink = styled.div`
-    display: block;
-    font-variant-numeric: tabular-nums;
-    color: ${({ theme }) => theme.textSubdued};
-    ${typography.hint}
-    white-space: nowrap;
-`;
-
-interface TransactionTimestampProps {
-    showDate?: boolean;
+type TransactionTimestampProps = {
     transaction: WalletAccountTransaction;
-}
+    showDate?: boolean;
+};
 
 export const TransactionTimestamp = ({
     showDate = false,
@@ -24,9 +12,5 @@ export const TransactionTimestamp = ({
 }: TransactionTimestampProps) => {
     const { blockTime } = transaction;
 
-    return (
-        <TimestampLink>
-            {blockTime && <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />}
-        </TimestampLink>
-    );
+    return blockTime && <FormattedDate value={new Date(blockTime * 1000)} time date={showDate} />;
 };

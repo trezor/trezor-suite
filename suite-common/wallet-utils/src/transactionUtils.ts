@@ -33,7 +33,9 @@ import { arrayPartition } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
+import { isCardanoStakingTx } from './cardanoStakingUtils';
 import { getEvmApprovalTxData, getEvmTransactionTextSignature } from './ethUtils';
+import { isStakeTypeTx } from './ethereumStakingUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 import { getMyInputsFromTransaction } from './getMyInputsFromTransaction';
@@ -536,18 +538,76 @@ export const getNftTokenId = (transfer: TokenTransfer) =>
         ? transfer.multiTokenValues[0].id
         : transfer.amount;
 
-export const getTxIcon = (txType: WalletAccountTransaction['type']) => {
-    switch (txType) {
+export const isSwapTransaction = (transaction: WalletAccountTransaction) => {
+    const { tokens, internalTransfers, targets, cardanoSpecific } = transaction;
+
+    // Swap transaction - 2 tokens, token to native or native to token
+    if (
+        tokens.length === 2 ||
+        (tokens.length === 1 && (internalTransfers.length === 1 || targets.length === 1))
+    ) {
+        const hasSent =
+            tokens.some(t => t.type === 'sent') ||
+            internalTransfers.some(t => t.type === 'sent') ||
+            targets.length > 0;
+
+        const hasRecv =
+            tokens.some(t => t.type === 'recv') || internalTransfers.some(t => t.type === 'recv');
+
+        return hasSent && hasRecv && !cardanoSpecific;
+    }
+
+    return false;
+};
+
+export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
+    // Cardano staking transactions
+    if (isCardanoStakingTx(transaction)) {
+        return true;
+    }
+
+    // Solana staking transactions
+    if (transaction.solanaSpecific?.stakeOperation?.type) {
+        return true;
+    }
+
+    // Ethereum staking transactions
+    if (isStakeTypeTx(transaction.ethereumSpecific?.parsedData?.methodId)) {
+        return true;
+    }
+
+    return false;
+};
+
+export const getTxIcon = (
+    transaction: WalletAccountTransaction,
+    isPhishingTransaction: boolean,
+) => {
+    if (isPhishingTransaction) {
+        return 'ghost';
+    }
+
+    if (isSwapTransaction(transaction)) {
+        return 'arrowsDownUp';
+    }
+
+    if (isStakingTransaction(transaction)) {
+        return 'piggyBank';
+    }
+
+    switch (transaction.type) {
         case 'recv':
             return 'arrowDown';
         case 'sent':
-        case 'contract':
-        case 'self':
             return 'arrowUp';
-        case 'failed':
-            return 'x';
+        case 'self':
+            return 'arrowURightDown';
+        case 'contract':
+            return 'fileCode';
         case 'joint':
             return 'shuffle';
+        case 'failed':
+            return 'x';
         default:
             return 'questionSimple';
     }

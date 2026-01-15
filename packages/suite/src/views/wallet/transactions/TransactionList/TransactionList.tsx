@@ -21,7 +21,6 @@ import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
-import { TransactionCandidates } from './TransactionCandidates';
 import { TransactionGroupedList } from './TransactionGroupedList';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
@@ -164,11 +163,7 @@ export const TransactionList = ({
             }
             data-testid="@wallet/accounts/transaction-list"
         >
-            <Column gap={32}>
-                {account.accountType === 'coinjoin' && !isSearching && (
-                    <TransactionCandidates accountKey={account.key} />
-                )}
-
+            <Column gap={32} padding={{ top: 16 }}>
                 {/* TODO: show this skeleton also while searching in txs */}
                 {isLoading ||
                 (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (

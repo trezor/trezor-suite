@@ -82,7 +82,7 @@ export function TxSimulationContractInfo({
                             justifyContent="flex-start"
                         >
                             <Text flex="1">{item.label}</Text>
-                            <Text flex="2" wordBreak="break-all" typographyStyle="label">
+                            <Text flex="2" overflowWrap="break-word" typographyStyle="label">
                                 {item.value}
                             </Text>
                         </Row>

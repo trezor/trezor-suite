@@ -20,7 +20,7 @@ export const BulletList: StoryObj<typeof BulletListComponent> = {
                 Lorem ipsum odor amet, consectetuer adipiscing elit. Rutrum varius aptent sapien at
                 facilisis consectetur aliquam blandit.
             </BulletListComponent.Item>
-            <BulletListComponent.Item title="Dolor sit">
+            <BulletListComponent.Item title="Dolor sit" state="active">
                 Diam sociosqu mi nisl duis aliquet faucibus venenatis nullam. Leo lobortis semper
                 himenaeos cras facilisi ac consectetur. Netus vestibulum praesent feugiat nam
                 potenti cursus.

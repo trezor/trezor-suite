@@ -21,7 +21,7 @@ export const mapVariantToIconBorderColor = ({ $variant, theme }: VariantMapArgs)
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
-        tertiary: 'backgroundTertiaryDefaultOnElevation0',
+        tertiary: 'baseFillElementNeutralSofter',
     };
 
     return theme[colorMap[$variant]];
@@ -37,7 +37,7 @@ export const mapVariantToIconBackground = ({
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
-        tertiary: 'backgroundTertiaryDefaultOnElevation0',
+        tertiary: 'baseFillElementNeutralSofter',
     };
 
     const borderColorMap: Record<IconCircleVariant, Color> = {
@@ -45,7 +45,7 @@ export const mapVariantToIconBackground = ({
         warning: 'backgroundAlertYellowSubtleOnElevation1',
         destructive: 'backgroundAlertRedSubtleOnElevation1',
         info: 'backgroundAlertBlueSubtleOnElevation1',
-        tertiary: 'backgroundTertiaryDefaultOnElevation1',
+        tertiary: 'baseFillElementNeutralSoftest',
     };
 
     return theme[($hasBorder ? borderColorMap : noBorderColorMap)[$variant]];

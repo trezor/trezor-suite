@@ -156,7 +156,7 @@ export const FreshAddress = ({
                 </InfoItem>
                 <Tooltip content={buttonTooltipContent()}>
                     {isDeviceConnected ? (
-                        <Button iconLeft="trezorDevices" {...buttonRevealAddressProps}>
+                        <Button {...buttonRevealAddressProps}>
                             <Translation id="RECEIVE_ADDRESS_REVEAL" />
                         </Button>
                     ) : (

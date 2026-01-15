@@ -6,7 +6,7 @@ import { SignValue } from '@suite-common/suite-types';
 const StyledSign = styled.span<{ $color: string }>`
     color: ${({ $color }) => $color};
     width: 1ch;
-    margin-right: 0.3ch;
+    margin-right: 0.1ch;
 `;
 
 interface SignProps {
@@ -25,7 +25,7 @@ export const Sign = ({
     grayscaleColor,
 }: SignProps) => {
     const theme = useTheme();
-    const defaultColor = grayscaleColor ?? theme.textDefault;
+    const defaultColor = grayscaleColor ?? 'inherit';
 
     if (value === undefined || value === null) {
         return null;

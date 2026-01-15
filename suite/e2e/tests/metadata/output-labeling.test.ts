@@ -37,21 +37,8 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
                 await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 5 });
             });
 
-            await test.step('Try to open multiple metadata inputs', async () => {
-                await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinLegacy6, 0);
-                await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinLegacy6, 1);
-            });
-
-            await test.step('Only one metadata input should be visible at a time', async () => {
-                await expect(
-                    page
-                        .getByTestId('@wallet/accounts/transaction-list')
-                        .getByTestId('@metadata/input'),
-                ).toHaveCount(1);
-            });
-
             await test.step('Add label to output 3 and verify', async () => {
-                await metadataPage.output.addLabel(OutputLabelId.BitcoinLegacy6, 2, 'output 3');
+                await metadataPage.output.editLabel(OutputLabelId.BitcoinLegacy6, 2, 'output 3');
                 await expect(
                     metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy6, 2),
                 ).toContainText('output 3');
@@ -59,7 +46,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
 
             await test.step('Label "send to myself tx"', async () => {
                 await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 9 });
-                await metadataPage.output.addLabel(
+                await metadataPage.output.editLabel(
                     OutputLabelId.BitcoinLegacy10,
                     0,
                     'really to myself',
@@ -76,17 +63,8 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
                 ).toContainText('edited');
             });
 
-            await test.step('Check that there is a copy address button', async () => {
-                await metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0).click();
-                await expect(
-                    metadataPage.output.outputDropdownCopyAddress(OutputLabelId.BitcoinLegacy10, 0),
-                ).toBeVisible();
-            });
-
             await test.step('Test that label can be edited and submitted by submit button', async () => {
-                await metadataPage.output
-                    .outputDropdownEditLabel(OutputLabelId.BitcoinLegacy10, 0)
-                    .click();
+                await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinLegacy10, 0);
                 await metadataPage.output
                     .outputMetadataInput(OutputLabelId.BitcoinLegacy10, 0)
                     .fill('submitted by button');
@@ -97,10 +75,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             });
 
             await test.step('Test canceling label edit does not change label', async () => {
-                await metadataPage.output.outputLabel(OutputLabelId.BitcoinLegacy10, 0).click();
-                await metadataPage.output
-                    .outputDropdownEditLabel(OutputLabelId.BitcoinLegacy10, 0)
-                    .click();
+                await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinLegacy10, 0);
                 await metadataPage.output
                     .outputMetadataInput(OutputLabelId.BitcoinLegacy10, 0)
                     .clear();
