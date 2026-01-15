@@ -257,24 +257,6 @@ const workerPlugin = (): Plugin => ({
     },
 });
 
-// Plugin to serve core.js in dev mode
-const serveCorePlugin = () => ({
-    name: 'serve-core',
-    configureServer(server: ViteDevServer) {
-        server.middlewares.use((req, res, next) => {
-            if (req.url?.includes('/js/core.js')) {
-                const coreEntryPath = resolve(__dirname, '../connect/src/core/index.ts');
-                const moduleSpecifier = `/@fs/${coreEntryPath}`;
-                res.setHeader('Content-Type', 'application/javascript');
-                res.end(`export { initCoreState } from ${JSON.stringify(moduleSpecifier)};\n`);
-
-                return;
-            }
-            next();
-        });
-    },
-});
-
 const commitId = execSync('git rev-parse HEAD').toString().trim();
 
 // Plugin to provide a no-op replacement for core-js/actual as a virtual module
@@ -456,7 +438,6 @@ export default defineConfig({
         guideMarkdownPlugin(),
         trezorLogosRequirePlugin(),
         staticAliasPlugin(),
-        serveCorePlugin(),
         sessionsSharedWorkerPlugin(),
         viteCommonjs(),
         workerPlugin(),
