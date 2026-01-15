@@ -1,11 +1,5 @@
-import { useDispatch } from 'react-redux';
-
 import { Box, Button, Card, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { ConfirmOnTrezorAnimation } from '@suite-native/device';
-import {
-    DeviceAuthorizationStep,
-    changeDeviceAuthorizationStep,
-} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -27,8 +21,6 @@ type PassphraseEnterOnTrezorScreenContentProps = {
 export const PassphraseEnterOnTrezorScreenContent = ({
     onCancel,
 }: PassphraseEnterOnTrezorScreenContentProps) => {
-    const dispatch = useDispatch();
-
     const { applyStyle } = useNativeStyles();
 
     // If this screen was present during authorizing device with passphrase for some feature,
@@ -36,7 +28,6 @@ export const PassphraseEnterOnTrezorScreenContent = ({
     useRedirectOnPassphraseCompletion();
 
     const handleCancel = () => {
-        dispatch(changeDeviceAuthorizationStep(DeviceAuthorizationStep.Idle));
         onCancel();
     };
 
