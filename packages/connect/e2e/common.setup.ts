@@ -201,7 +201,6 @@ export const initTrezorConnect = async (
         },
         transports: ['BridgeTransport'],
         debug: true,
-        popup: false,
         pendingTransportEvent: true,
         transportReconnect: false,
         connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests

@@ -10,7 +10,7 @@ export const getEnv = () => 'webextension' as const;
  * @param input Partial<ConnectSettings>
  */
 export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): ConnectSettings => {
-    const settings = { popup: true, ...input };
+    const settings = { ...input };
 
     if (typeof input.env !== 'string') {
         settings.env = getEnv();

@@ -116,7 +116,6 @@ export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(
                 transportReconnect: false,
                 debug: false,
                 env: 'react-native',
-                popup: false,
                 manifest: {
                     email: 'info@trezor.io',
                     appName: 'Trezor Suite',

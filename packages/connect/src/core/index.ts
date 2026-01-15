@@ -1161,9 +1161,7 @@ export class Core extends EventEmitter {
             enableLog(debug);
 
             // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
-            this._interactionTimeout = new InteractionTimeout(
-                settings.popup ? settings.interactionTimeout : 0,
-            );
+            this._interactionTimeout = new InteractionTimeout(0);
 
             this._deviceList = new DeviceList({
                 debug,

@@ -42,7 +42,6 @@ export interface ConnectSettingsPublic {
     manifest?: Manifest;
     connectSrc?: string;
     debug?: boolean;
-    popup?: boolean;
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;

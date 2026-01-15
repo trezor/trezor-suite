@@ -91,7 +91,6 @@ exports.initTrezorConnect = sender => {
     });
 
     TrezorConnect.init({
-        popup: false, // render your own UI
         debug: false, // see what's going on inside connect
         // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
         // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()

@@ -94,7 +94,7 @@ const onCoreEvent = (message: CoreEventMessage) => {
 };
 
 const initSettings = (settings: Partial<ConnectSettings> = {}) => {
-    _settings = parseConnectSettings({ ..._settings, ...settings, popup: false });
+    _settings = parseConnectSettings({ ..._settings, ...settings });
 
     if (!_settings.manifest) {
         throw ERRORS.TypedError('Init_ManifestMissing');

@@ -28,7 +28,7 @@ declare let global: any;
  * @param input Partial<ConnectSettings>
  */
 export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): ConnectSettings => {
-    const settings = { popup: true, ...input };
+    const settings = { ...input };
     // For debugging purposes `connectSrc` could be defined in `global.__TREZOR_CONNECT_SRC` variable
     let globalSrc: string | undefined;
     if (typeof window !== 'undefined') {

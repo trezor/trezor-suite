@@ -18,7 +18,6 @@ const initialSettings: ConnectSettings = {
     priority: DEFAULT_PRIORITY,
     trustedHost: true,
     connectSrc: DEFAULT_DOMAIN,
-    popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     transports: undefined,
     pendingTransportEvent: true,
@@ -115,8 +114,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
     }
-
-    settings.popup = false;
 
     if (typeof input.lazyLoad === 'boolean') {
         settings.lazyLoad = input.lazyLoad;
