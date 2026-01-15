@@ -17,13 +17,7 @@ import type {
 } from '@trezor/blockchain-link-types/src/common';
 import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 
-import {
-    enhanceVinVout,
-    filterTargets,
-    formatTokenSymbol,
-    sumVinVout,
-    transformTarget,
-} from './utils';
+import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
@@ -95,7 +89,7 @@ export const parseAsset = (hex: string): ParseAssetResult => {
 export const transformToken = (token: AssetBalance) => {
     const { policyId, assetName } = parseAsset(token.unit);
 
-    const symbol = token.ticker || assetName || formatTokenSymbol(token.fingerprint!);
+    const symbol = token.ticker || assetName || token.fingerprint!;
 
     return {
         name: token.name || symbol,
