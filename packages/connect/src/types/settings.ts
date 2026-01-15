@@ -46,7 +46,6 @@ export interface ConnectSettingsPublic {
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
-    interactionTimeout?: number;
     trustedHost: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;

@@ -17,7 +17,6 @@ const colors: Record<string, string> = {
     Device: `color: ${green}; background: #000;`,
     DeviceCommands: `color: ${green}; background: #000;`,
     '@trezor/transport': `color: ${green}; background: #000;`,
-    InteractionTimeout: `color: ${green}; background: #000;`,
 };
 
 const logsManager = new LogsManager({ colors });

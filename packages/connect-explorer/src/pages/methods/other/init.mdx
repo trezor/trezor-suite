@@ -11,7 +11,6 @@ export const InitSchema = Type.Object({
     debug: Type.Optional(Type.Boolean()),
     transportReconnect: Type.Optional(Type.Boolean()),
     pendingTransportEvent: Type.Optional(Type.Boolean()),
-    interactionTimeout: Type.Optional(Type.Number()),
     lazyLoad: Type.Optional(Type.Boolean()),
     transports: Type.Optional(
         Type.Array(
@@ -39,7 +38,6 @@ export const paramDescriptions = {
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',
     pendingTransportEvent:
         'default `true`. Postpone emitting TRANSPORT.START event to the moment when connected device becomes available.',
-    interactionTimeout: 'default `600`. Time in seconds after which popup automatically closes.',
     lazyLoad:
         'default `false`. Postpone iframe creation until TrezorConnect is called for the first time.',
     transports:

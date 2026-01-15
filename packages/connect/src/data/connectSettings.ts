@@ -24,7 +24,6 @@ const initialSettings: ConnectSettings = {
     env: 'node',
     lazyLoad: false,
     timestamp: new Date().getTime(),
-    interactionTimeout: 1200, // 20 minutes
     sharedLogger: true,
     deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
     transportReconnect: true,
@@ -133,10 +132,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input.timestamp === 'number') {
         settings.timestamp = input.timestamp;
-    }
-
-    if (typeof input.interactionTimeout === 'number') {
-        settings.interactionTimeout = input.interactionTimeout;
     }
 
     if (typeof input.manifest === 'object') {
