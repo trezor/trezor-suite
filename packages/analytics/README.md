@@ -3,7 +3,7 @@
 This is a generic analytics package. To use analytics in a specific environment,
 please use one of the following packages or create a new one inspired by existing ones.
 
-- [Suite Analytics](../suite-analytics)
+- [Suite Analytics](../../suite-common/analytics-types/README.md)
 
 Keep in mind that global `fetch` and `URLSearchParams` methods must be available. Node and React Native use polyfills as a substitute.
 
