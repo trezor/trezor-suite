@@ -3,10 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { EventType, analytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
-import {
-    selectInputPassphraseOnDevice,
-    selectIsCreatingNewPassphraseWallet,
-} from '@suite-native/device-authorization';
+import { selectInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
 import {
@@ -16,17 +13,15 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 export const PassphraseEnterOnTrezorScreen = () => {
-    const isCreatingNewPassphraseWallet = useSelector(selectIsCreatingNewPassphraseWallet);
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
     useEffect(() => {
-        if (!isCreatingNewPassphraseWallet && !inputPassphraseOnDevice) {
-            // NOTE: this means that the device passphrase request was fulfilled either success or not,
-            // TrezorConnect will trigger proper events globally and this will be reopened if needed
+        if (!inputPassphraseOnDevice) {
+            // NOTE: This means that the device passphrase request was fulfilled / rejected.
             navigateToInitialScreen();
         }
-    }, [isCreatingNewPassphraseWallet, inputPassphraseOnDevice, navigateToInitialScreen]);
+    }, [inputPassphraseOnDevice, navigateToInitialScreen]);
 
     const handleCancel = () => {
         analytics.report({
