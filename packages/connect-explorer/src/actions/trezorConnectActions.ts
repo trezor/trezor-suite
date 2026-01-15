@@ -30,27 +30,6 @@ const isRelativePath = (path: string) =>
     // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
     // or an absolute path indicator (like //)
     !/^(?:[a-z]+:)?\/\//i.test(path);
-const testLoadingScript = (src: string) =>
-    new Promise((resolve, reject) => {
-        if (process.env.BUILD_TARGET === 'webextension') {
-            // Webextension does not support loading scripts in this way, we skip this check
-            resolve(null);
-
-            return;
-        }
-        const script = document.createElement('script');
-        script.src = src;
-        script.type = 'module';
-        script.onload = data => {
-            document.body.removeChild(script);
-            resolve(data);
-        };
-        script.onerror = error => {
-            document.body.removeChild(script);
-            reject(error);
-        };
-        document.body.appendChild(script);
-    });
 
 export const init =
     (options: ConnectOptions = {}) =>
@@ -103,17 +82,6 @@ export const init =
             // Check if has trailing slash
             if (options.connectSrc.slice(-1) !== '/') {
                 options.connectSrc += '/';
-            }
-            try {
-                // Verify if valid by loading core.js, if this file exists we can assume the connectSrc is valid
-                await testLoadingScript(options.connectSrc + 'js/core.js');
-            } catch {
-                dispatch({
-                    type: ON_INIT_ERROR,
-                    payload: `Invalid connectSrc: ${options.connectSrc}`,
-                });
-
-                return;
             }
 
             window.__TREZOR_CONNECT_SRC = options.connectSrc;
