@@ -26,8 +26,6 @@ import { PROTO } from '@trezor/connect';
 
 import { useSellForm } from '../useSellForm';
 
-const reportMock = jest.fn();
-
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
 
@@ -40,8 +38,18 @@ jest.mock('@suite-native/services', () => {
 describe('useSellForm', () => {
     let store: TestStore;
 
-    const renderUseSellForm = () =>
-        renderHookWithStoreProviderAsync(() => useSellForm(), { store });
+    const renderUseSellForm = async () => {
+        const reportMock = jest.fn();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
+        return {
+            reportMock,
+            result: (await renderHookWithStoreProviderAsync(() => useSellForm(), { store })).result,
+        };
+    };
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
@@ -53,11 +61,6 @@ describe('useSellForm', () => {
 
     beforeEach(async () => {
         store = await getInitializedStore();
-        jest.clearAllMocks();
-
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     describe('sendAccount', () => {
@@ -94,7 +97,7 @@ describe('useSellForm', () => {
         });
 
         it('should report change to analytics', async () => {
-            const { result } = await renderUseSellForm();
+            const { result, reportMock } = await renderUseSellForm();
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
@@ -137,7 +140,7 @@ describe('useSellForm', () => {
         });
 
         it('should report change to analytics', async () => {
-            const { result } = await renderUseSellForm();
+            const { result, reportMock } = await renderUseSellForm();
 
             act(() => {
                 result.current.setValue('fiatCurrency', 'pln');
