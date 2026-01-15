@@ -12250,7 +12250,9 @@ __metadata:
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/services": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
@@ -12883,6 +12885,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"

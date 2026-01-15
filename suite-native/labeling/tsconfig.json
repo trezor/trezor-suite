@@ -25,6 +25,8 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../services" },
-        { "path": "../../packages/connect" }
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/type-utils" }
     ]
 }
