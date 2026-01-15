@@ -24,7 +24,6 @@ import { useExchangeForm } from '../useExchangeForm';
 import { useExchangeSelectQuote } from '../useExchangeSelectQuote';
 
 const mockTokenSupportsIncreasingAllowance = jest.fn();
-let reportMock: jest.Mock;
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
@@ -63,8 +62,6 @@ const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => 
 };
 
 describe('useExchangeSelectQuote', () => {
-    const activeSpies: ReportSpy[] = [];
-
     let exchangeForm: ExchangeFormType;
     let store: TestStore;
 
@@ -99,22 +96,13 @@ describe('useExchangeSelectQuote', () => {
         );
 
         const spy = hook.result.current.reportSpy;
-        activeSpies.push(spy);
-        reportMock = spy as unknown as jest.Mock;
+        const reportMock = spy as unknown as jest.Mock;
 
-        return hook;
+        return { result: hook.result, reportMock };
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
-        if (reportMock) reportMock.mockClear();
-    });
-
-    afterEach(() => {
-        while (activeSpies.length) {
-            activeSpies.pop()!.mockRestore();
-        }
-        reportMock = undefined as unknown as jest.Mock;
     });
 
     describe('while loading quotes', () => {
@@ -203,7 +191,7 @@ describe('useExchangeSelectQuote', () => {
             });
 
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeSelectQuote();
+            const { result, reportMock } = await renderUseExchangeSelectQuote();
 
             dispatchSpy.mockClear();
             act(() => {
