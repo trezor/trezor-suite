@@ -7,8 +7,6 @@ import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-s
 
 import { TradingWebViewScreen } from '../TradingWebViewScreen';
 
-const reportMock = jest.fn();
-
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
 
@@ -49,20 +47,18 @@ describe('TradingWebViewScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderScreen = async (store?: TestStore) => {
-        const result = await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
-
-        ({ unmount } = result);
-
-        return result;
-    };
-
-    beforeEach(() => {
+        const reportMock = jest.fn();
         jest.clearAllMocks();
 
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
-    });
+        const result = await renderWithStoreProviderAsync(<TradingWebViewScreen />, { store });
+
+        ({ unmount } = result);
+
+        return { result, reportMock };
+    };
 
     afterEach(() => {
         if (unmount) {
@@ -77,9 +73,9 @@ describe('TradingWebViewScreen', () => {
             source: { uri: 'SOURCE_URI', html: undefined },
             tradingType: 'buy',
         };
-        const { getByTestId } = await renderScreen();
+        const { result } = await renderScreen();
 
-        expect(getByTestId('@screen/sub-header/icon-left')).toBeTruthy();
+        expect(result.getByTestId('@screen/sub-header/icon-left')).toBeTruthy();
     });
 
     it('should render error when no source is set', async () => {
@@ -87,9 +83,9 @@ describe('TradingWebViewScreen', () => {
             closeCallbackUrl: 'CALLBACK_URL',
             tradingType: 'buy',
         };
-        const { getByText } = await renderScreen();
+        const { result } = await renderScreen();
 
-        expect(getByText('Something went wrong')).toBeTruthy();
+        expect(result.getByText('Something went wrong')).toBeTruthy();
     });
 
     it('should render error when sources are undefined', async () => {
@@ -98,9 +94,9 @@ describe('TradingWebViewScreen', () => {
             source: { uri: undefined, html: undefined },
             tradingType: 'buy',
         };
-        const { getByText } = await renderScreen();
+        const { result } = await renderScreen();
 
-        expect(getByText('Something went wrong')).toBeTruthy();
+        expect(result.getByText('Something went wrong')).toBeTruthy();
     });
 
     describe('analytics', () => {
@@ -123,7 +119,7 @@ describe('TradingWebViewScreen', () => {
                 } as unknown as TradingTransaction,
             ];
 
-            await renderScreen();
+            const { reportMock } = await renderScreen();
 
             expect(reportMock).not.toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
@@ -154,7 +150,7 @@ describe('TradingWebViewScreen', () => {
             ];
             const { store } = initStore(preloadedState);
 
-            await renderScreen(store);
+            const { reportMock } = await renderScreen(store);
 
             expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingExchange,
@@ -178,7 +174,7 @@ describe('TradingWebViewScreen', () => {
             ];
             const { store } = initStore(preloadedState);
 
-            await renderScreen(store);
+            const { reportMock } = await renderScreen(store);
 
             expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingSell,
