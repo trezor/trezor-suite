@@ -79,13 +79,11 @@ export const Assets = () => {
                 ))}
                 {isLoading && <DiscoveryAssetsLoader isListEmpty={deviceNetworks.length < 1} />}
             </AnimatedCard>
-            {selectedAssetSymbol && (
-                <NetworkAssetsBottomSheet
-                    symbol={selectedAssetSymbol}
-                    onSelectAccount={handleSelectAssetsAccount}
-                    onClose={handleCloseBottomSheet}
-                />
-            )}
+            <NetworkAssetsBottomSheet
+                symbol={selectedAssetSymbol}
+                onSelectAccount={handleSelectAssetsAccount}
+                onClose={handleCloseBottomSheet}
+            />
         </>
     );
 };

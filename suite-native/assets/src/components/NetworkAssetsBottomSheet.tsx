@@ -8,7 +8,7 @@ import { AccountSelectBottomSheet } from '@suite-native/accounts/src/components/
 import { AssetsRootState, selectBottomSheetDeviceNetworkItems } from '../assetsSelectors';
 
 type NetworkAssetsBottomSheetProps = {
-    symbol: NetworkSymbol;
+    symbol: NetworkSymbol | null;
     onSelectAccount: OnSelectAccount;
     onClose: () => void;
 };
@@ -25,6 +25,7 @@ export const NetworkAssetsBottomSheet = React.memo(
                 onClose={onClose}
                 onSelectAccount={onSelectAccount}
                 isStakingPressable
+                isVisible={Boolean(symbol && items.length)}
             />
         );
     },
