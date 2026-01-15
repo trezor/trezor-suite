@@ -14,8 +14,6 @@ import {
 
 import { useExchangeFlow } from '../useExchangeFlow';
 
-const reportMock = jest.fn();
-
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
 
@@ -62,15 +60,22 @@ describe('useExchangeFlow', () => {
         return initStore(preloadedState).store;
     };
 
-    const renderUseExchangeFlow = ({ store }: { store: TestStore }) =>
-        renderHookWithStoreProviderAsync(() => useExchangeFlow(), { store });
-
-    beforeEach(() => {
-        jest.clearAllMocks();
+    const renderUseExchangeFlow = async ({ store }: { store: TestStore }) => {
+        const reportMock = jest.fn();
 
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
+
+        return {
+            reportMock,
+            result: (await renderHookWithStoreProviderAsync(() => useExchangeFlow(), { store }))
+                .result,
+        };
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
 
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
@@ -211,7 +216,7 @@ describe('useExchangeFlow', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 
-            const { result } = await renderUseExchangeFlow({ store });
+            const { result, reportMock } = await renderUseExchangeFlow({ store });
 
             const mockTrade = {
                 exchange: 'test-exchange',
