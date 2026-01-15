@@ -49,8 +49,6 @@ const useWatchTradeWithReportSpy = (props: {
 };
 
 describe('useWatchTrade', () => {
-    const activeSpies: ReportSpy[] = [];
-
     beforeEach(() => {
         jest.clearAllMocks();
 
@@ -61,12 +59,6 @@ describe('useWatchTrade', () => {
             shouldReload: false,
             resetCount: 0,
         });
-    });
-
-    afterEach(() => {
-        while (activeSpies.length) {
-            activeSpies.pop()!.mockRestore();
-        }
     });
 
     const getInitializedStore = ({
@@ -111,9 +103,6 @@ describe('useWatchTrade', () => {
             () => useWatchTradeWithReportSpy(props),
             { store },
         );
-
-        const spy = hook.result.current;
-        activeSpies.push(spy);
 
         return hook;
     };
