@@ -28,6 +28,7 @@ export const eslint = [
             '**/coverage/*',
             '**/build/*',
             '**/build-electron/*',
+            '**/build-webextension/*',
             '**/node_modules/*',
             '**/public/*',
             '**/ci/',
