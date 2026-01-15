@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Platform, Pressable } from 'react-native';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { AnimatedBox, Card, HStack, Radio, Text } from '@suite-native/atoms';
+import { AnimatedBox, Box, Card, HStack, Radio, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type CountryListItemProps = {
@@ -27,12 +27,14 @@ export const CountryListItem = ({ label, onPress, value, isSelected }: CountryLi
             <Pressable onPress={onPress} style={applyStyle(wrapperStyle)}>
                 <Card noShadow={noShadow}>
                     <HStack alignItems="center" justifyContent="space-between">
-                        <HStack>
+                        <Box flex={1}>
                             <Text variant="body" color="textDefault">
                                 {label}
                             </Text>
-                        </HStack>
-                        <Radio value={value} onPress={onPress} isChecked={isSelected} />
+                        </Box>
+                        <Box flex={0}>
+                            <Radio value={value} onPress={onPress} isChecked={isSelected} />
+                        </Box>
                     </HStack>
                 </Card>
             </Pressable>
