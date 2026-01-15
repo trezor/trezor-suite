@@ -24,8 +24,6 @@ import { PROTO } from '@trezor/connect';
 
 import { clearExchangeFormQuoteData, useExchangeForm } from '../useExchangeForm';
 
-const reportMock = jest.fn();
-
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
 
@@ -38,8 +36,19 @@ jest.mock('@suite-native/services', () => {
 describe('useExchangeForm', () => {
     let store: TestStore;
 
-    const renderUseExchangeForm = () =>
-        renderHookWithStoreProviderAsync(() => useExchangeForm(), { store });
+    const renderUseExchangeForm = async () => {
+        jest.clearAllMocks();
+        const reportMock = jest.fn();
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
+
+        return {
+            reportMock,
+            result: (await renderHookWithStoreProviderAsync(() => useExchangeForm(), { store }))
+                .result,
+        };
+    };
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) => {
         const preloadedState: PreloadedState = {
@@ -57,10 +66,6 @@ describe('useExchangeForm', () => {
 
     beforeEach(async () => {
         store = await getInitializedStore();
-
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
     });
 
     describe('on quotes change', () => {
@@ -244,7 +249,7 @@ describe('useExchangeForm', () => {
         });
 
         it('should report change to analytics', async () => {
-            const { result } = await renderUseExchangeForm();
+            const { result, reportMock } = await renderUseExchangeForm();
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
@@ -295,7 +300,7 @@ describe('useExchangeForm', () => {
 
     describe('receiveAsset', () => {
         it('should report change to analytics', async () => {
-            const { result } = await renderUseExchangeForm();
+            const { result, reportMock } = await renderUseExchangeForm();
 
             act(() => {
                 result.current.setValue('receiveAsset', btcAsset);
