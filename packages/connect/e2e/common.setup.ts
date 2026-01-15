@@ -204,7 +204,6 @@ export const initTrezorConnect = async (
         popup: false,
         pendingTransportEvent: true,
         transportReconnect: false,
-        connectSrc: process.env.TREZOR_CONNECT_SRC, // custom source for karma tests
         coreMode: 'core-in-module', // for connect-web
         thp: {
             appName: 'TrezorConnect',

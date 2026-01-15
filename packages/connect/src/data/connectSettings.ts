@@ -17,7 +17,6 @@ const initialSettings: ConnectSettings = {
     debug: false,
     priority: DEFAULT_PRIORITY,
     trustedHost: true,
-    connectSrc: DEFAULT_DOMAIN,
     popup: false,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     transports: undefined,
@@ -90,15 +89,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
     if (input.trustedHost === false) {
         settings.trustedHost = input.trustedHost;
     }
-
-    if (typeof input.connectSrc === 'string') {
-        settings.connectSrc = corsValidator(input.connectSrc);
-    } else if (settings.trustedHost) {
-        settings.connectSrc = input.connectSrc;
-    }
-
-    const src = settings.connectSrc || DEFAULT_DOMAIN;
-    settings.popupSrc = `${src}popup.html`;
 
     if (typeof input.transportReconnect === 'boolean') {
         settings.transportReconnect = input.transportReconnect;

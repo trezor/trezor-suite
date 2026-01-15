@@ -42,12 +42,7 @@ import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { AppState, TrezorDevice } from '../types/suite';
 
-const connectSrc = '../';
-// 'https://localhost:8088/';
-// 'https://connect.corp.sldev.cz/develop/';
-
 const connectInitSettings = {
-    connectSrc,
     transportReconnect: true,
     debug: false,
     popup: false,

@@ -4,9 +4,6 @@
 // Import using ES6 module TrezorConnect and the DEVICE_EVENT constant from the Trezor Connect WebExtension package
 import TrezorConnect from '@trezor/connect-webextension';
 
-// URL of the Trezor Connect
-const connectSrc = 'https://connect.trezor.io/9/';
-
 chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails) => {
     console.log('details', details);
 
@@ -18,7 +15,6 @@ chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails
             appUrl: 'https://yourAppUrl.com/',
         },
         transports: ['BridgeTransport', 'WebUsbTransport'], // Transport protocols to be used
-        connectSrc,
         _extendWebextensionLifetime: true, // Makes the service worker in @trezor/connect-webextension stay alive longer.
     });
 
