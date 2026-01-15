@@ -61,7 +61,7 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         }
         if (!this._popupManager) {
             this._popupManager = new PopupManager(
-                { ...this._settings, useCoreInPopup: true, popupSrc: this.getSuiteUrl() },
+                { ...this._settings, popupSrc: this.getSuiteUrl() },
                 {
                     logger: this.logger,
                 },

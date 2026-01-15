@@ -16,8 +16,6 @@ import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/w
 import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 
-import { showPopupRequest } from './showPopupRequest';
-
 // Util
 const checkIfTabExists = (tabId: number | undefined) =>
     new Promise(resolve => {
@@ -36,7 +34,6 @@ const checkIfTabExists = (tabId: number | undefined) =>
 // Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
 const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
-const POPUP_OPEN_TIMEOUT = 5000;
 
 export class PopupManager extends EventEmitter {
     popupWindow:
@@ -57,8 +54,6 @@ export class PopupManager extends EventEmitter {
     popupPromise: Deferred<void> | undefined;
 
     requestTimeout: TimerId | undefined;
-
-    openTimeout: TimerId | undefined;
 
     closeInterval: IntervalId | undefined;
 
@@ -99,27 +94,16 @@ export class PopupManager extends EventEmitter {
             });
         }
 
-        if (this.settings.useCoreInPopup) {
-            // Core mode
-            this.handshakePromise = createDeferred();
-            this.channel.on('message', this.handleCoreMessage.bind(this));
-
-            return;
-        } else if (this.isWebExtensionWithTab()) {
-            // Webextension iframe
-            this.channel.on('message', this.handleExtensionMessage.bind(this));
-        } else {
-            // Web
-            this.channel.on('message', this.handleMessage.bind(this));
-        }
-        this.channel.init();
+        // Core mode
+        this.handshakePromise = createDeferred();
+        this.channel.on('message', this.handleCoreMessage.bind(this));
     }
 
     async request() {
         // popup request
 
         // check if current popup window is still open
-        if (this.settings.useCoreInPopup && this.popupWindow?.mode === 'tab') {
+        if (this.popupWindow?.mode === 'tab') {
             const currentPopupExists = await checkIfTabExists(this.popupWindow?.tab?.id);
             if (!currentPopupExists) {
                 this.clear();
@@ -154,11 +138,11 @@ export class PopupManager extends EventEmitter {
         }, timeout);
     }
 
-    unlock() {
+    private unlock() {
         this.locked = false;
     }
 
-    open() {
+    private open() {
         const src = this.settings.popupSrc;
         this.popupPromise = createDeferred(POPUP.LOADED);
         const url = this.buildPopupUrl(src);
@@ -179,22 +163,9 @@ export class PopupManager extends EventEmitter {
                 this.emitClosed();
             }
         }, POPUP_CLOSE_INTERVAL);
-
-        if (this.settings.useCoreInPopup) {
-            // Open timeout not used in Core mode, we can't run showPopupRequest with no DOM
-            return;
-        }
-
-        // open timeout will be cancelled by POPUP.BOOTSTRAP message
-        this.openTimeout = setTimeout(() => {
-            this.clear();
-            showPopupRequest(this.open.bind(this), () => {
-                this.emitClosed();
-            });
-        }, POPUP_OPEN_TIMEOUT);
     }
 
-    buildPopupUrl(src: string) {
+    private buildPopupUrl(src: string) {
         const params = new URLSearchParams();
         params.set('version', VERSION);
         params.set('env', this.settings.env);
@@ -207,7 +178,7 @@ export class PopupManager extends EventEmitter {
         return src + '?' + params.toString();
     }
 
-    openWrapper(url: string) {
+    private openWrapper(url: string) {
         if (this.isWebExtensionWithTab()) {
             chrome.windows.getCurrent(currentWindow => {
                 this.logger.debug('opening popup. currentWindow: ', currentWindow);
@@ -289,7 +260,7 @@ export class PopupManager extends EventEmitter {
         });
     };
 
-    handleCoreMessage(message: Message<CoreEventMessage>) {
+    private handleCoreMessage(message: Message<CoreEventMessage>) {
         if (message.type === POPUP.BOOTSTRAP) {
             this.channel.init();
         } else if (message.type === POPUP.LOADED) {
@@ -322,41 +293,8 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    handleExtensionMessage(data: Message<CoreEventMessage>) {
-        if (
-            data.type === POPUP.ERROR ||
-            data.type === POPUP.LOADED ||
-            data.type === POPUP.BOOTSTRAP
-        ) {
-            this.handleMessage(data);
-        } else if (data.type === POPUP.EXTENSION_USB_PERMISSIONS) {
-            chrome.tabs.query(
-                {
-                    currentWindow: true,
-                    active: true,
-                },
-                tabs => {
-                    chrome.tabs.create(
-                        {
-                            url: 'trezor-usb-permissions.html',
-                            index: tabs[0].index + 1,
-                        },
-                        _tab => {
-                            // do nothing
-                        },
-                    );
-                },
-            );
-        } else if (data.type === POPUP.CLOSE_WINDOW) {
-            this.clear();
-        }
-    }
-
-    handleMessage(data: Message<CoreEventMessage>) {
-        if (data.type === POPUP.BOOTSTRAP) {
-            // popup is opened properly, now wait for POPUP.LOADED message
-            if (this.openTimeout) clearTimeout(this.openTimeout);
-        } else if (data.type === POPUP.ERROR && this.popupWindow) {
+    private handleMessage(data: Message<CoreEventMessage>) {
+        if (data.type === POPUP.ERROR && this.popupWindow) {
             // handle popup error
             const errorMessage =
                 data.payload && typeof data.payload.error === 'string' ? data.payload.error : null;
@@ -364,7 +302,6 @@ export class PopupManager extends EventEmitter {
             this.clear();
         } else if (data.type === POPUP.LOADED) {
             // in case of webextension where bootstrap message is not sent
-            if (this.openTimeout) clearTimeout(this.openTimeout);
             if (this.popupPromise) {
                 this.popupPromise.resolve();
                 this.popupPromise = undefined;
@@ -380,7 +317,7 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    clear(focus = true) {
+    private clear(focus = true) {
         this.locked = false;
         this.popupPromise = undefined;
         this.handshakePromise = createDeferred();
@@ -392,10 +329,6 @@ export class PopupManager extends EventEmitter {
         if (this.requestTimeout) {
             clearTimeout(this.requestTimeout);
             this.requestTimeout = undefined;
-        }
-        if (this.openTimeout) {
-            clearTimeout(this.openTimeout);
-            this.openTimeout = undefined;
         }
         if (this.closeInterval) {
             clearInterval(this.closeInterval);
@@ -410,7 +343,7 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    close() {
+    private close() {
         if (!this.popupWindow) return;
 
         this.logger.debug('closing popup');
@@ -430,9 +363,7 @@ export class PopupManager extends EventEmitter {
         }
 
         this.popupWindow = undefined;
-        if (this.settings?.useCoreInPopup) {
-            this.channel.clear();
-        }
+        this.channel.clear();
     }
 
     private isWebExtensionWithTab() {
@@ -446,15 +377,13 @@ export class PopupManager extends EventEmitter {
     }
 
     public emitClosed() {
-        if (this.settings?.useCoreInPopup) {
-            // When popup is closed we should create a not-real response as if the request was interrupted.
-            // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
-            // it was interrupted so we safely fake it.
-            this.channel.resolveMessagePromises({
-                code: 'Method_Interrupted',
-                error: POPUP.CLOSED,
-            });
-        }
+        // When popup is closed we should create a not-real response as if the request was interrupted.
+        // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
+        // it was interrupted so we safely fake it.
+        this.channel.resolveMessagePromises({
+            code: 'Method_Interrupted',
+            error: POPUP.CLOSED,
+        });
         this.emit(POPUP.CLOSED);
     }
 }
