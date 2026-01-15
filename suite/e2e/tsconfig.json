@@ -7,15 +7,7 @@
         "snapshots",
         "tests",
         "support",
-        "playwright-base.config.ts",
-        "playwright-desktop.config.ts",
-        "playwright-desktop-local.config.ts",
-        "playwright-desktop-pr.config.ts",
-        "playwright-manual.config.ts",
-        "playwright-web-config.ts",
-        "playwright-web-local.config.ts",
-        "playwright-web-pr.config.ts",
-        "playwright.options.d.ts",
+        "playwright-config",
         "scripts/**/*.ts"
     ],
     "references": [

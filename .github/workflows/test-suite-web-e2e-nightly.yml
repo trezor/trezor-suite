@@ -57,7 +57,7 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           target: "web"
-          pw-config: "./playwright-web.config.ts"
+          pw-config: "./playwright-config/playwright-web.config.ts"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
@@ -93,7 +93,7 @@ jobs:
           CANARY_FIRMWARE: "true"
         with:
           target: "web"
-          pw-config: "./playwright-web.config.ts"
+          pw-config: "./playwright-config/playwright-web.config.ts"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false

@@ -10,9 +10,9 @@ import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
-import releases from '../../../submodules/trezor-common/releases.json';
-import { PlaywrightTarget } from '../playwright-base.config';
 import { PercentageOfBalanceParams } from './types';
+import releases from '../../../submodules/trezor-common/releases.json';
+import { PlaywrightTarget } from '../playwright-config/playwright-base.config';
 
 export const isDesktopProject = (testInfo: TestInfo) =>
     testInfo.project.use.target === PlaywrightTarget.Desktop;

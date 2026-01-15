@@ -1,6 +1,6 @@
 import { CurrentsFixtures, CurrentsWorkerFixtures } from '@currents/playwright';
-import type { PlaywrightTestConfig, Project } from '@playwright/test';
-import { defineConfig, devices } from '@playwright/test';
+import type { PlaywrightTestConfig } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -22,41 +22,12 @@ function getTimeout(): number {
     return process.env.GITHUB_ACTION ? CI_TIMEOUT : LOCAL_TIMEOUT;
 }
 
-export function createProject(name: string, base: Project, overrides: Project): Project {
-    return {
-        ...base,
-        ...overrides,
-        name,
-        use: {
-            ...base.use,
-            ...overrides.use,
-        },
-    };
-}
-
-export const baseWebProject: Project = {
-    use: {
-        ...devices['Desktop Chrome'],
-        channel: 'chromium',
-        baseURL: process.env.BASE_URL || 'http://localhost:8000/',
-        target: PlaywrightTarget.Web,
-    },
-    grepInvert: [/@desktopOnly/, /@group=manual/],
-};
-
-export const baseDesktopProject: Project = {
-    use: {
-        target: PlaywrightTarget.Desktop,
-    },
-    grepInvert: [/@webOnly/, /@group=manual/],
-};
-
 export const baseConfig: PlaywrightTestConfig = defineConfig<
     CurrentsFixtures,
     CurrentsWorkerFixtures
 >({
     projects: [],
-    testDir: 'tests',
+    testDir: '../tests',
     workers: 1, // to disable parallelism between test files
     retries: process.env.GITHUB_ACTION ? 2 : 0,
     use: {
