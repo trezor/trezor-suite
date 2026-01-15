@@ -7,7 +7,7 @@ import { DataManager } from '../data/DataManager';
 
 export default class SetProxy extends AbstractMethod<'setProxy'> {
     init() {
-        this.requiredPermissions = [];
+        this.requiredPermissions = ['management'];
         this.useDevice = false;
         this.useUi = false;
 
