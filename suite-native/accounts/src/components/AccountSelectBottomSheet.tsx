@@ -15,6 +15,7 @@ type AccountSelectBottomSheetProps = {
     onSelectAccount: OnSelectAccount;
     isStakingPressable?: boolean;
     onClose: () => void;
+    isVisible: boolean;
 };
 
 const ESTIMATED_ITEM_SIZE = 76;
@@ -23,8 +24,9 @@ export const AccountSelectBottomSheet = React.memo(
     ({
         data,
         onSelectAccount,
-        isStakingPressable = false,
         onClose,
+        isStakingPressable = false,
+        isVisible,
     }: AccountSelectBottomSheetProps) => {
         const { showToast } = useToast();
 
@@ -93,7 +95,7 @@ export const AccountSelectBottomSheet = React.memo(
 
         return (
             <BottomSheetFlashList<AccountSelectBottomSheetSection>
-                isVisible
+                isVisible={isVisible}
                 onClose={onClose}
                 data={data}
                 renderItem={renderItem}

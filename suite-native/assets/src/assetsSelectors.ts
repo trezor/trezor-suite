@@ -83,10 +83,12 @@ export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
     [
         selectVisibleDeviceAccountsByNetworkSymbol,
         selectTokenDefinitions,
-        (_state, symbol: NetworkSymbol) => symbol,
+        (_state, symbol: NetworkSymbol | null) => symbol,
     ],
-    (accounts, tokenDefinitions, symbol) =>
-        pipe(
+    (accounts, tokenDefinitions, symbol) => {
+        if (G.isNull(symbol)) return [];
+
+        return pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
             A.map(account =>
@@ -97,7 +99,8 @@ export const selectBottomSheetDeviceNetworkItems = createMemoizedSelector(
             ),
             A.flat,
             F.toMutable,
-        ),
+        );
+    },
 );
 
 const selectDeviceAssetsWithBalances = createMemoizedSelector(

@@ -22,6 +22,11 @@ export const TokenSelectBottomSheet = ({
 }: TokenSelectBottomSheetProps) => {
     const [selectedAccount, setSelectedAccount] = useAtom(bottomSheetAccountAtom);
 
+    const data = useSelector((state: NativeAccountsRootState) =>
+        selectAccountListSections(state, selectedAccount?.key),
+    );
+
+    const isBottomSheetVisible = Boolean(selectedAccount && data.length);
     const handleSelectAccount: OnSelectAccount = useCallback(
         params => {
             setSelectedAccount(null);
@@ -34,17 +39,11 @@ export const TokenSelectBottomSheet = ({
         setSelectedAccount(null);
     }, [setSelectedAccount]);
 
-    const data = useSelector((state: NativeAccountsRootState) =>
-        selectAccountListSections(state, selectedAccount?.key),
-    );
-    if (!selectedAccount) {
-        return null;
-    }
-
     return (
         <AccountSelectBottomSheet
             onSelectAccount={handleSelectAccount}
             data={data}
+            isVisible={isBottomSheetVisible}
             onClose={handleClose}
             isStakingPressable={isStakingPressable}
         />
