@@ -4,9 +4,11 @@ import {
     selectIsSuiteSyncEnabled,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import type { StaticSessionId } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
+import { exhaustive } from '@trezor/type-utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as metadataThunks from 'src/actions/suite/metadataThunks';
@@ -67,7 +69,22 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
                 provider: 'evolu',
             },
         });
-        suiteSync.turnOnSuiteSync();
+
+        suiteSync.turnOnSuiteSync({
+            onError: ({ error }) => {
+                const { type } = error;
+                switch (type) {
+                    case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'DeviceCancelled':
+                    case 'DeviceError':
+                        dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+
+                        return;
+                    default:
+                        return exhaustive(type);
+                }
+            },
+        });
     };
 
     const legacyEnableIfNeeded = () => {

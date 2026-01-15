@@ -3,9 +3,11 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { TurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
 import { selectDevices } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
+import { isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
 export type CreateTurnOnSuiteSyncDeps = {
     getState: () => any;
@@ -14,7 +16,7 @@ export type CreateTurnOnSuiteSyncDeps = {
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
-    async () => {
+    async ({ onError }) => {
         const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(deps.getState());
 
         if (isSuiteSyncEnabled) {
@@ -28,13 +30,22 @@ export const createTurnOnSuiteSync =
 
         for (const device of devices) {
             if (device?.state?.staticSessionId) {
+                const canTurnOnSuiteSync =
+                    isTrezorDeviceWithState(device) && isSuiteSyncSupportedByDevice(device);
+
+                if (!canTurnOnSuiteSync) {
+                    continue;
+                }
+
                 const result = await deps.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: device.state.staticSessionId,
                 });
 
                 if (!result.success) {
-                    // Todo: notification? Here or in the caller?
-                    console.error('[createTurnOnSuiteSync] error', result.error);
+                    onError({
+                        deviceStaticSessionId: device.state.staticSessionId,
+                        error: result.error,
+                    });
                 }
             }
         }
