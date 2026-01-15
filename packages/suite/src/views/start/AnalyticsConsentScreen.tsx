@@ -20,7 +20,7 @@ export const AnalyticsConsentScreen = () => {
 
     return (
         <WelcomeLayoutWithoutModalSwitcher showPureChildren={true} hideSidebar={true}>
-            <Column width="100%">
+            <Column width="100%" alignItems="center">
                 <DataAnalytics
                     onConfirm={onConfirm}
                     analyticsLink={(chunks: ReactNode[]) => (
