@@ -68,7 +68,7 @@ import {
     selectIsUnhideTokenModalShown,
 } from 'src/selectors/suite/suiteSelectors';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
-import { formatTokenSymbol, getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
+import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
 
@@ -230,7 +230,7 @@ export const TokenRow = ({
                             {/* TODO(stellar): I think it would be better to display the asset code as a symbol. */}
                             <FormattedCryptoAmount
                                 value={token.balance}
-                                symbol={formatTokenSymbol(token.symbol ?? '')}
+                                symbol={token.symbol}
                                 contractAddress={token.contract}
                             />
                         </Text>

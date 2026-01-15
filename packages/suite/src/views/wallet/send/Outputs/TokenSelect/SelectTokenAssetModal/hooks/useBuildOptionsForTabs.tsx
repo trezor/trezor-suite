@@ -16,7 +16,6 @@ import { Account } from 'src/types/wallet';
 import {
     EnahncedTokenInfoWithFiat,
     enhanceTokensWithRates,
-    formatTokenSymbol,
     getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
@@ -38,7 +37,7 @@ const createTokenOption = (
         token.balance && verified
             ? {
                   baseAmount: token.balance,
-                  baseSymbol: formatTokenSymbol(token.symbol ?? ''),
+                  baseSymbol: token.symbol ?? '',
                   fiatAmount: toFiatCurrency({ amount: token.balance, rate: token.fiatRate?.rate }),
               }
             : undefined,

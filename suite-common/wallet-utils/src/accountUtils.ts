@@ -28,7 +28,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { formatTokenSymbol, solanaUtils } from '@trezor/blockchain-link-utils';
+import { solanaUtils } from '@trezor/blockchain-link-utils';
 import TrezorConnect, {
     AccountAddress,
     AccountAddresses,
@@ -384,7 +384,7 @@ export const enhanceTokens = (tokens: Account['tokens']) => {
     if (!tokens) return [];
 
     return tokens.map(t => {
-        const symbol = formatTokenSymbol(t.symbol || t.contract);
+        const symbol = t.symbol || t.contract;
 
         return {
             ...t,
