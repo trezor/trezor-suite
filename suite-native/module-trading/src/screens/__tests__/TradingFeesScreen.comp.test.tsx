@@ -5,8 +5,6 @@ import { accounts, getInitializedTradingState } from '@suite-native/trading-fixt
 
 import { TradingFeesScreen } from '../TradingFeesScreen';
 
-const reportMock = jest.fn();
-
 // Mock analytics hook
 jest.mock('@suite-native/services', () => {
     const original = jest.requireActual('@suite-native/services');
@@ -51,22 +49,22 @@ describe('TradingFeesScreen', () => {
     let unmount: (() => void) | undefined;
 
     const renderScreen = async () => {
+        const reportMock = jest.fn();
+        jest.clearAllMocks();
+
+        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
         const result = await renderWithStoreProviderAsync(<TradingFeesScreen />, {
             preloadedState,
         });
 
         ({ unmount } = result);
 
-        return result;
+        return { result, reportMock };
     };
 
     beforeEach(() => {
-        jest.clearAllMocks();
-
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
-
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
             params: { accountKey: 'btc1' },
@@ -81,9 +79,9 @@ describe('TradingFeesScreen', () => {
     });
 
     it('should render the screen without crashing', async () => {
-        const { root } = await renderScreen();
+        const { result } = await renderScreen();
 
-        expect(root).toBeTruthy();
+        expect(result.root).toBeTruthy();
     });
 
     it('should render TradingFeesForm with correct accountKey', async () => {
@@ -106,14 +104,14 @@ describe('TradingFeesScreen', () => {
             params: { accountKey: 'nonexistent-account' },
         });
 
-        const { queryByTestId } = await renderScreen();
+        const { result } = await renderScreen();
 
-        expect(queryByTestId('trading-fees-form')).not.toBeOnTheScreen();
+        expect(result.queryByTestId('trading-fees-form')).not.toBeOnTheScreen();
         expect(mockTradingFeesForm).not.toHaveBeenCalled();
     });
 
     it('should report to analytics on mount for exchange (default)', async () => {
-        await renderScreen();
+        const { reportMock } = await renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
@@ -130,7 +128,7 @@ describe('TradingFeesScreen', () => {
             params: { accountKey: 'btc1', tradingType: 'exchange' },
         });
 
-        await renderScreen();
+        const { reportMock } = await renderScreen();
 
         expect(reportMock).toHaveBeenCalledWith({
             type: EventType.TradingExchange,
@@ -153,7 +151,7 @@ describe('TradingFeesScreen', () => {
             params: { accountKey: 'btc1', tradingType: 'sell' },
         });
 
-        await renderWithStoreProviderAsync(<TradingFeesScreen />, {
+        const { reportMock } = await renderScreen(<TradingFeesScreen />, {
             preloadedState: sellPreloadedState,
         });
 
