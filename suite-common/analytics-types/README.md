@@ -4,11 +4,11 @@ This is the shared analytics package for Trezor Suite, containing all event type
 
 Depending on your platform, you can choose one of the following packages. Each with its own set of events:
 
-| Package                         | Platform           | Events Defined In                                                      |
-|---------------------------------|--------------------|------------------------------------------------------------------------|
-| `@suite/analytics`              | `desktop`          | [`suite/analytics/src/events`](suite/analytics/src/events)               |
-| `@suite-native/analytics`       | `mobile`           | [`suite-native/analytics/src/events`](suite-native/analytics/src/events) |
-| `@suite-common/analytics-types` | `mobile & desktop` | [`suite-common/analytics-types/src/events`](suite-common/analytics-types/src/events)      |
+| Package                         | Platform           | Events Defined In                                                                    |
+| ------------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| `@suite/analytics`              | `desktop`          | [`suite/analytics/src/events`](suite/analytics/src/events)                           |
+| `@suite-native/analytics`       | `mobile`           | [`suite-native/analytics/src/events`](suite-native/analytics/src/events)             |
+| `@suite-common/analytics-types` | `mobile & desktop` | [`suite-common/analytics-types/src/events`](suite-common/analytics-types/src/events) |
 
 Data in these packages is the only source of truth.
 More details can be found in the [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb).
@@ -40,6 +40,7 @@ Navigation between pages is not required to be tracked as it is tracked automati
 All events and their data and attributes should be declared in separated files in `src/events` and exported in `src/events/index.ts`. Selected package is depending on a platform as it's shown in the table above.
 
 Example of an event (and its attributes) definition:
+
 ```ts
 import type { AttributeDef, EventDef } from '@suite-common/analytics-types';
 
@@ -124,7 +125,6 @@ export const sessionRequestThunk = createThunk<
             method: { valeu: event.params.request.method },
         },
     });
-
 });
 ```
 
