@@ -217,3 +217,13 @@ export const getLocalVersion = (packageName: string) => {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
     return packageJson.version;
 };
+
+export const getConnectDependencies = async (rootDir: string) => {
+    const connectPackageJsonPath = path.join(rootDir, 'packages', 'connect', 'package.json');
+    const packageJsonContent = await fs.promises.readFile(connectPackageJsonPath, 'utf-8');
+    const packageJson = JSON.parse(packageJsonContent);
+    const dependencies = packageJson.dependencies ? Object.keys(packageJson.dependencies) : [];
+    return dependencies
+        .filter(dep => dep.startsWith('@trezor/'))
+        .map(dep => dep.replace('@trezor/', ''));
+};
