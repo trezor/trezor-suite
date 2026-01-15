@@ -1,5 +1,5 @@
-# Suite Ananlytics - Native
+# Suite Native Analytics (mobile)
 
-This package is intended to be used only by Suite in native (mobile) environment.
+This package is intended to be used only by Suite on the mobile environment.
 
-It does not contain events by itself, please refer to [`@suite-common/analytics`](../../suite-common/analytics/README.md) for more information.
+All mobile-related events are defined here. For help how to define events or use them please refer to [`@suite-common/analytics-types`](../../suite-common/analytics-types/README.md).

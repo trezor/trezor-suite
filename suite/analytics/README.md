@@ -1,5 +1,5 @@
-# Suite Analytics
+# Suite Analytics (desktop/web)
 
-This package is intended to be used only by Suite in web (or in desktop app renderer) environment.
+This package is intended to be used only by Suite on the desktop (web) environment.
 
-It does not contain events by itself, please refer to [`@suite-common/analytics`](../../suite-common/analytics/README.md) for more information.
+All desktop-related events are defined here. For help how to define events or use them please refer to [`@suite-common/analytics-types`](../../suite-common/analytics-types/README.md).
