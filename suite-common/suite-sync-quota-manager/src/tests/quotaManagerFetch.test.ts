@@ -1,5 +1,14 @@
 import { quotaManagerFetch } from '../quotaManagerFetch';
 
+jest.mock('@trezor/env-utils', () => {
+    const actual = jest.requireActual('@trezor/env-utils');
+
+    return {
+        ...actual,
+        getSuiteVersion: jest.fn().mockReturnValue('mockedVersion'),
+    };
+});
+
 describe(quotaManagerFetch.name, () => {
     it('should call GET with query parameters', async () => {
         const fetchMock = jest
@@ -19,6 +28,7 @@ describe(quotaManagerFetch.name, () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Suite-Version': 'mockedVersion',
                 },
                 body: null,
             },
@@ -44,6 +54,7 @@ describe(quotaManagerFetch.name, () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Suite-Version': 'mockedVersion',
             },
             body: JSON.stringify({ success: true }),
         });
