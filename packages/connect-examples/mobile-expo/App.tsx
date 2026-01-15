@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
 export const App = () => {
     const [errorData, setErrorData] = useState<any>(null);
     const [successData, setSuccessData] = useState<any>(null);
-    const isEmulator = true;
 
     const initialize = () => {
         TrezorConnect.init({
@@ -32,7 +31,7 @@ export const App = () => {
                 appUrl: 'http://your.application.com',
             },
             // for local development purposes. for production, leave it undefined to use the default value.
-            connectSrc: isEmulator ? 'trezorsuite://connect' : undefined,
+            connectSrc: 'trezorsuite://connect',
             deeplinkOpen: url => {
                 // eslint-disable-next-line no-console
                 console.log('deeplinkOpen', url);

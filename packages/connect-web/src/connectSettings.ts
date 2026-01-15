@@ -29,18 +29,6 @@ declare let global: any;
  */
 export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): ConnectSettings => {
     const settings = { popup: true, ...input };
-    // For debugging purposes `connectSrc` could be defined in `global.__TREZOR_CONNECT_SRC` variable
-    let globalSrc: string | undefined;
-    if (typeof window !== 'undefined') {
-        // @ts-expect-error not defined in globals outside of the package
-        globalSrc = window.__TREZOR_CONNECT_SRC;
-    } else if (typeof global !== 'undefined') {
-        globalSrc = global.__TREZOR_CONNECT_SRC;
-    }
-    if (typeof globalSrc === 'string') {
-        settings.connectSrc = globalSrc;
-        settings.debug = true;
-    }
 
     if (typeof input.env !== 'string') {
         settings.env = getEnv();

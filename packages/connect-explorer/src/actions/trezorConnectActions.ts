@@ -26,11 +26,6 @@ export const onConnectOptionChange = (option: Field<any>, value: any) => ({
     },
 });
 
-const isRelativePath = (path: string) =>
-    // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
-    // or an absolute path indicator (like //)
-    !/^(?:[a-z]+:)?\/\//i.test(path);
-
 export const init =
     (options: ConnectOptions = {}) =>
     async (dispatch: Dispatch) => {
@@ -57,42 +52,6 @@ export const init =
             // this type of event should not be emitted in "popup mode"
         });
 
-        const { host } = window.location;
-
-        if (process?.env?.__TREZOR_CONNECT_SRC && host !== 'connect.trezor.io') {
-            let src = process?.env?.__TREZOR_CONNECT_SRC;
-            if (isRelativePath(src)) {
-                src = `${window.location.origin}${src}`;
-            }
-            window.__TREZOR_CONNECT_SRC = src;
-        }
-        // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
-        // so we may use it
-        if (!window.__TREZOR_CONNECT_SRC && host.startsWith('localhost')) {
-            // use local connect for local development
-            window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
-        }
-
-        if (window.location.search.includes('trezor-connect-src')) {
-            const search = new URLSearchParams(window.location.search);
-            window.__TREZOR_CONNECT_SRC = search.get('trezor-connect-src')?.toString();
-        }
-
-        if (options.connectSrc) {
-            // Check if has trailing slash
-            if (options.connectSrc.slice(-1) !== '/') {
-                options.connectSrc += '/';
-            }
-
-            window.__TREZOR_CONNECT_SRC = options.connectSrc;
-        }
-
-        if (!window.__TREZOR_CONNECT_SRC) {
-            console.log('using production @trezor/connect');
-        } else {
-            console.log('using @trezor/connect hosted on: ', window.__TREZOR_CONNECT_SRC);
-        }
-
         // Get default coreMode from URL params (?core-mode=auto)
         const urlParams = new URLSearchParams(window.location.search);
         const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'auto';
@@ -110,7 +69,6 @@ export const init =
                 appIcon: 'https://trezor.io/favicon/apple-touch-icon.png',
             },
             trustedHost: false,
-            connectSrc: window.__TREZOR_CONNECT_SRC,
             ...options,
         };
 
