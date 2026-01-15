@@ -33,7 +33,6 @@ import { useExchangeQuotes } from '../useExchangeQuotes';
 
 let mockTimeSpent: number;
 
-let reportMock: jest.Mock;
 type ReportSpy = jest.SpyInstance;
 
 jest.mock('@trezor/react-utils', () => {
@@ -76,8 +75,6 @@ const useExchangeQuotesWithReportSpy = () => {
 };
 
 describe('useExchangeQuotes', () => {
-    const activeSpies: ReportSpy[] = [];
-
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN): TestStore => {
         const preloadedState: PreloadedState = {
             wallet: {
@@ -101,30 +98,15 @@ describe('useExchangeQuotes', () => {
         );
 
         const spy = hook.result.current.reportSpy;
-        activeSpies.push(spy);
-        reportMock = spy as unknown as jest.Mock;
 
-        return hook;
+        return { hook, reportMock: spy };
     };
-
-    beforeEach(() => {
-        mockTimeSpent = 0;
-        jest.clearAllMocks();
-        if (reportMock) reportMock.mockClear();
-    });
-
-    afterEach(() => {
-        while (activeSpies.length) {
-            activeSpies.pop()!.mockRestore();
-        }
-        reportMock = undefined as unknown as jest.Mock;
-    });
 
     it('should query quotes once all required data is selected', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -150,15 +132,15 @@ describe('useExchangeQuotes', () => {
         });
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
     it('should respect sats setting', async () => {
         const store = await getInitializedStore(PROTO.AmountUnit.SATOSHI);
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -172,7 +154,7 @@ describe('useExchangeQuotes', () => {
         });
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
@@ -181,8 +163,8 @@ describe('useExchangeQuotes', () => {
         async amount => {
             const store = await getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseExchangeQuotes(store);
-            const { form } = result.current;
+            const { hook } = await renderUseExchangeQuotes(store);
+            const { form } = hook.result.current;
 
             await act(async () => {
                 form.setValue('sendAsset', btcAsset);
@@ -202,8 +184,8 @@ describe('useExchangeQuotes', () => {
     it('should not query quotes when form contains error', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -230,8 +212,8 @@ describe('useExchangeQuotes', () => {
     it('should query quotes as soon as form contains no errors', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -255,7 +237,7 @@ describe('useExchangeQuotes', () => {
         );
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
@@ -263,9 +245,9 @@ describe('useExchangeQuotes', () => {
         const store = await getInitializedStore();
         store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { unmount } = await renderUseExchangeQuotes(store);
+        const { hook } = await renderUseExchangeQuotes(store);
 
-        unmount();
+        hook.unmount();
 
         expect(dispatchSpy).toHaveBeenCalledWith({
             payload: undefined,
@@ -280,8 +262,8 @@ describe('useExchangeQuotes', () => {
     ])('should refetch quotes on %s value change', async (field, value) => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -302,15 +284,15 @@ describe('useExchangeQuotes', () => {
         );
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
     it('should re-fetch quotes when re-fetch time elapsed', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -321,7 +303,7 @@ describe('useExchangeQuotes', () => {
         dispatchSpy.mockClear();
 
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+        hook.rerender({});
 
         expect(dispatchSpy).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -338,8 +320,8 @@ describe('useExchangeQuotes', () => {
     it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -348,20 +330,20 @@ describe('useExchangeQuotes', () => {
         dispatchSpy.mockClear();
 
         mockTimeSpent = INVITY_API_RELOAD_QUOTES_AFTER_SECONDS;
-        rerender({});
+        hook.rerender({});
 
         expect(dispatchSpy).not.toHaveBeenCalled();
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
     it('should clear quotes when data in form becomes invalid', async () => {
         const store = await getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseExchangeQuotes(store);
-        const { form } = result.current;
+        const { hook } = await renderUseExchangeQuotes(store);
+        const { form } = hook.result.current;
 
         act(() => {
             form.setValue('sendAsset', btcAsset);
@@ -387,14 +369,14 @@ describe('useExchangeQuotes', () => {
         expect(store.getState().wallet.trading.exchange.quotes).toEqual([]);
 
         await act(async () => {
-            await result.current.quotes.quotesRequest;
+            await hook.result.current.quotes.quotesRequest;
         });
     });
 
     describe('analytics', () => {
         const renderUseExchangeQuotesWithFilledForm = async (store: TestStore) => {
-            const { result } = await renderUseExchangeQuotes(store);
-            const { form } = result.current;
+            const { hook, reportMock } = await renderUseExchangeQuotes(store);
+            const { form } = hook.result.current;
 
             act(() => {
                 form.setValue('sendAsset', btcAsset);
@@ -405,8 +387,10 @@ describe('useExchangeQuotes', () => {
             reportMock.mockClear();
 
             await act(async () => {
-                await result.current.quotes.quotesRequest;
+                await hook.result.current.quotes.quotesRequest;
             });
+
+            return { reportMock };
         };
 
         it('should report when quotes are fetched', async () => {
@@ -419,7 +403,7 @@ describe('useExchangeQuotes', () => {
                 }),
             );
 
-            await renderUseExchangeQuotesWithFilledForm(store);
+            const { reportMock } = await renderUseExchangeQuotesWithFilledForm(store);
 
             expect(reportMock).toHaveBeenCalledWith({
                 type: EventType.TradingQuoteReceived,
@@ -437,7 +421,7 @@ describe('useExchangeQuotes', () => {
                 }),
             );
 
-            await renderUseExchangeQuotesWithFilledForm(store);
+            const { reportMock } = await renderUseExchangeQuotesWithFilledForm(store);
 
             expect(reportMock).not.toHaveBeenCalled();
         });
@@ -452,7 +436,7 @@ describe('useExchangeQuotes', () => {
                 }),
             );
 
-            await renderUseExchangeQuotesWithFilledForm(store);
+            const { reportMock } = await renderUseExchangeQuotesWithFilledForm(store);
 
             expect(reportMock).not.toHaveBeenCalled();
         });
