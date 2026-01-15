@@ -3,4 +3,4 @@ import * as sharedEventsData from './events';
 
 export const sharedEvents = sharedEventsData;
 export type AnySharedEventDef = (typeof sharedEvents)[keyof typeof sharedEvents];
-export type AnalyticsSharedEvents = EventInstance<AnySharedEventDef>; // @TODO rename?
+export type AnalyticsSharedEvents = EventInstance<AnySharedEventDef>;

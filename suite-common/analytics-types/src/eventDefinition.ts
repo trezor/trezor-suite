@@ -19,8 +19,8 @@ export type AttributeDef<T> = AnalyticsBaseAttribute & {
     value?: T;
 };
 
-type Domain = string; //'promo' | 'shared' | 'desktop' | 'mobile' | 'web';
-type EventName = `${Domain}/${string}` | `${string}`; // @TODO
+type Domain = string;
+type EventName = `${Domain}/${string}` | `${string}`;
 
 export type EventDef<A, N extends EventName = EventName> = AnalyticsBaseEvent & {
     name: N;
