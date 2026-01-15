@@ -87,7 +87,7 @@ jobs:
         uses: ./.github/actions/run-e2e-tests
         with:
           target: "desktop"
-          pw-config: "./playwright-desktop.config.ts"
+          pw-config: "./playwright-config/playwright-desktop.config.ts"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
