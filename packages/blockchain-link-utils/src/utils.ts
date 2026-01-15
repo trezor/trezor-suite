@@ -70,13 +70,6 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
     return txs;
 };
 
-// should be aligned with "formatTokenSymbol" in suite
-export const formatTokenSymbol = (symbol: string) => {
-    const isTokenSymbolLong = symbol.length > 7;
-
-    return isTokenSymbolLong ? `${symbol.slice(0, 7)}...` : symbol;
-};
-
 const isOutgoing = (lowerCasedDescriptor: string, tx: Transaction) =>
     tx.details?.vin?.[0]?.addresses?.[0]?.toLowerCase() === lowerCasedDescriptor;
 

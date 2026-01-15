@@ -21,7 +21,6 @@ import type {
     PartiallyDecodedInstruction,
     SolanaValidParsedTxWithMeta,
 } from './solana-types';
-import { formatTokenSymbol } from './utils';
 
 export type ApiTokenAccount = {
     account: AccountInfo<ParsedAccountData>;
@@ -86,7 +85,7 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
         ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
         : {
               name: mint,
-              symbol: formatTokenSymbol(mint),
+              symbol: mint,
           };
 };
 
