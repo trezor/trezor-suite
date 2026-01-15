@@ -4,6 +4,7 @@ import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 export type AssetAmountProps = {
@@ -11,9 +12,16 @@ export type AssetAmountProps = {
     amount: string;
     contractAddress: string;
     fiatAmount?: BaseCurrencyAmount;
+    fiatFallackText?: boolean;
 };
 
-export function AssetAmount({ amount, symbol, fiatAmount, contractAddress }: AssetAmountProps) {
+export function AssetAmount({
+    amount,
+    symbol,
+    fiatAmount,
+    contractAddress,
+    fiatFallackText = false,
+}: AssetAmountProps) {
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const fiatCurrency = useSelector(selectBaseCurrency);
 
@@ -31,6 +39,11 @@ export function AssetAmount({ amount, symbol, fiatAmount, contractAddress }: Ass
             {fiatAmount && (
                 <Text variant="tertiary" typographyStyle="hint">
                     <BaseCurrencyAmountFormatter value={fiatAmount} currency={fiatCurrency} />
+                </Text>
+            )}
+            {!fiatAmount && fiatFallackText && (
+                <Text variant="tertiary" typographyStyle="hint">
+                    <Translation id="TR_HIDDEN_TOKEN_WITHOUT_FIAT" />
                 </Text>
             )}
         </Column>

@@ -7,6 +7,7 @@ import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
+import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
@@ -37,6 +38,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const networks = protocolSymbol ? [protocolSymbol] : enabledNetworks;
 
     const { translationString } = useTranslation();
+
+    useListScrollReset(listRef, search);
 
     return (
         <Box padding={{ horizontal: 16 }}>

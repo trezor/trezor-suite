@@ -6,3 +6,4 @@ export * from './AssetRow/AssetGroupLabel';
 export * from './AssetRow/AssetGroupSpace';
 export * from './AssetRow/AssetRowToken/AssetRowToken';
 export * from './AssetRow/AssetRowAsset/AssetRowAsset';
+export * from './AssetRow/ExpandableAssetRowTokens/ExpandableAssetRowTokens';

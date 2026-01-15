@@ -6,3 +6,5 @@ export const ASSET_ROW_HEIGHTS_BY_SIZE = {
     md: 24,
     lg: 32,
 } as const satisfies Record<AssetGroupSpaceSize, number>;
+
+export const EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT = 46;

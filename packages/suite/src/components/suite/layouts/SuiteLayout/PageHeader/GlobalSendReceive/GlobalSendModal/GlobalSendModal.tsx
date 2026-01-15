@@ -14,10 +14,10 @@ import {
     AssetsList,
     AssetsListEmpty,
     AssetsModal,
+    ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
 import {
     AssetPickerListItem,
-    useAccountWithTokensOptions,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -25,6 +25,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
+import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
+import { useExpandableAccountGroups } from './hooks/useExpandableAccountGroups';
 
 type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;
@@ -38,8 +40,13 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const networkSymbolFilter = useSelector(globalSendReceiveFilters.selectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFilters.selectors.selectSearch);
+    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
+        useExpandableAccountGroups();
 
-    const { accountsWithTokens } = useAccountWithTokensOptions({ networkSymbolFilter });
+    const accountsWithTokens = useAccountWithTokensOptions({
+        networkSymbolFilter,
+        expandedHiddenTokensGroups: expandedAccountTokensGroups,
+    });
     const filteredAccountsWithTokens = useFilterAccountsWithTokens(
         accountsWithTokens,
         searchFilter,
@@ -89,9 +96,21 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                             onClick={handleTokenClick}
                         />
                     );
+
+                case 'hidden-tokens':
+                    return (
+                        <ExpandableAssetRowTokens
+                            account={item.account}
+                            tokens={item.tokens}
+                            expanded={item.expanded}
+                            height={item.height}
+                            onExpandToggle={updateExpandableAccountGroups}
+                            onTokenClick={handleTokenClick}
+                        />
+                    );
             }
         },
-        [handleAccountClick, handleTokenClick],
+        [handleAccountClick, handleTokenClick, updateExpandableAccountGroups],
     );
 
     return (
