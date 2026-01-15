@@ -15,6 +15,7 @@ import {
 
 import { CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import { useNativeStyles } from '@trezor/styles';
+import { paletteV1 } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
 
@@ -94,6 +95,16 @@ export const CryptoIconWithPercentage = ({
                                 style="stroke"
                                 strokeWidth={6}
                                 color={utils.colors.backgroundSurfaceElevation2}
+                            />
+                            {/* Helps to brighten up the stroke color in dark mode */}
+                            <Path
+                                path={path}
+                                start={0}
+                                end={percentageFill}
+                                style="stroke"
+                                strokeWidth={6}
+                                color={paletteV1.lightGray100}
+                                opacity={0.15}
                             />
                             <Path
                                 path={path}
