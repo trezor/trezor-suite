@@ -12,7 +12,7 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling/src/selectors';
+import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,

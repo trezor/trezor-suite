@@ -101,7 +101,7 @@ export const initStore = (preloadedState?: PreloadedState) => {
 
     return {
         ...castedStore,
-        services: castedStore.extra.services, // @TODO as NativeServices?
+        services: castedStore.extra.services,
     };
 };
 
