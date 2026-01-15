@@ -35,7 +35,6 @@ import {
 } from '../events';
 import type { ConnectSettings, DeviceIdentity, Device as DeviceTyped } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
-import { InteractionTimeout } from '../utils/interactionTimeout';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
@@ -49,14 +48,6 @@ const waitForPopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
 
     return popupPromise.wait();
 };
-
-/**
- * Start interaction timeout timer
- */
-const startInteractionTimeout = (context: CoreContext) =>
-    context.interactionTimeout.start(() => {
-        onPopupClosed(context, 'Interaction timeout');
-    });
 
 /**
  * Find device by device path. Returned device may be unacquired.
@@ -588,10 +579,9 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises, popupPromise, interactionTimeout }: CoreContext) => {
+const cleanup = ({ uiPromises, popupPromise }: CoreContext) => {
     popupPromise.clear();
     uiPromises.clear();
-    interactionTimeout.stop();
     _log.debug('Cleanup...');
 };
 
@@ -627,8 +617,6 @@ const onDeviceButtonHandler =
             typeof method?.getButtonRequestData === 'function' && request.code
                 ? method?.getButtonRequestData(request.code, request.name)
                 : undefined;
-        // interaction timeout
-        startInteractionTimeout(context);
         // request view
         sendCoreMessage(
             createDeviceMessage(DEVICE.BUTTON, { ...request, device: device.toMessageObject() }),
@@ -948,16 +936,9 @@ export class Core extends EventEmitter {
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
     private popupPromise = createPopupPromiseManager();
     private methodSynchronize = getSynchronize();
-    private uiPromises = createUiPromiseManager(() =>
-        startInteractionTimeout(this.getCoreContext()),
-    );
+    private uiPromises = createUiPromiseManager();
 
     private waitForFirstMethod = createDeferred();
-
-    private _interactionTimeout?: InteractionTimeout;
-    private get interactionTimeout() {
-        return this._interactionTimeout ?? throwError('Core not initialized: interactionTimeout');
-    }
 
     private _deviceList?: IDeviceList;
     private get deviceList() {
@@ -984,7 +965,6 @@ export class Core extends EventEmitter {
             signal: this.abortController.signal,
             uiPromises: this.uiPromises,
             popupPromise: this.popupPromise,
-            interactionTimeout: this.interactionTimeout,
             deviceList: this.deviceList,
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
@@ -1159,9 +1139,6 @@ export class Core extends EventEmitter {
             const messages = DataManager.getProtobufMessages();
 
             enableLog(debug);
-
-            // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
-            this._interactionTimeout = new InteractionTimeout(0);
 
             this._deviceList = new DeviceList({
                 debug,

@@ -3,7 +3,7 @@ import { arrayPartition, createDeferred } from '@trezor/utils';
 import { AnyUiPromise, DEVICE, UiPromise, UiPromiseCreator, UiPromiseResponse } from '../events';
 import { DeviceUniquePath } from '../types/device';
 
-export const createUiPromiseManager = (interactionTimeout: () => void) => {
+export const createUiPromiseManager = () => {
     let _uiPromises: AnyUiPromise[] = [];
 
     const exists = (type: UiPromiseResponse['type']) => _uiPromises.some(p => p.id === type);
@@ -22,9 +22,6 @@ export const createUiPromiseManager = (interactionTimeout: () => void) => {
         }
 
         _uiPromises.push(uiPromise as unknown as AnyUiPromise);
-
-        // Interaction timeout
-        interactionTimeout();
 
         return uiPromise;
     };
