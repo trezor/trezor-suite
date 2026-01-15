@@ -10,6 +10,7 @@ import { useFirmwareDesktopUpdate } from './useFirmwareDesktopUpdate';
 
 // because the UI is targeted to a specific bootloader screen, we can only reliably target FW versions that share the same bootloader (the 1.12.1)
 const MIN_T1B1_FW_VERSION = '1.12.1';
+const MAX_T1B1_FW_VERSION = '1.13.1';
 
 /**
  * This check is currently targeted only for T1B1 devices, and only for specific versions
@@ -19,7 +20,11 @@ const getCheckSupport = (device?: TrezorDevice): boolean => {
     const deviceFWVersion = getFirmwareVersion(device);
     if (semver.valid(deviceFWVersion) === null) return false;
 
-    return isT1B1 && semver.gte(getFirmwareVersion(device), MIN_T1B1_FW_VERSION);
+    return (
+        isT1B1 &&
+        semver.gte(deviceFWVersion, MIN_T1B1_FW_VERSION) &&
+        semver.lt(deviceFWVersion, MAX_T1B1_FW_VERSION)
+    );
 };
 
 export const useFirmwareInstallationProgressCheck = () => {
