@@ -3,24 +3,22 @@ import { FormattedDate } from 'react-intl';
 import { useFormatters } from '@suite-common/formatters';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { parseTransactionDateKey } from '@suite-common/wallet-utils';
-import { Row } from '@trezor/components';
+import { Grid, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount, HiddenPlaceholder, Sign } from 'src/components/suite';
+import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
-import { ColAmount, ColDate, ColFiat, HeaderWrapper } from './CommonComponents';
-
-interface DayHeaderProps {
+type DayHeaderProps = {
     dateKey: string;
     symbol: NetworkSymbol;
     totalAmount: BigNumber;
     totalFiatAmountPerDay: BaseCurrencyAmount;
     localCurrency: string;
     isMissingFiatRates?: boolean;
-    isHovered?: boolean;
-}
+};
 
 // TODO: Do not show FEE for sent but not mined transactions
 export const DayHeader = ({
@@ -30,9 +28,9 @@ export const DayHeader = ({
     totalFiatAmountPerDay,
     localCurrency,
     isMissingFiatRates,
-    isHovered,
 }: DayHeaderProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
+    const { isAboveTablet } = useLayoutSize();
 
     const parsedDate = parseTransactionDateKey(dateKey);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
@@ -40,9 +38,25 @@ export const DayHeader = ({
     // blockTime can be undefined according to types, although I don't know when that happens.
     const isDateValid = !isNaN(parsedDate.getTime());
 
+    const absoluteTotalAmount = Math.abs(Number(totalAmount.toFixed()));
+    const absoluteTotalFiatAmount = asBaseCurrencyAmount(totalFiatAmountPerDay.abs());
+
+    const commonTextProps = {
+        typographyStyle: 'callout',
+        variant: 'tertiary',
+        as: 'div',
+    } as const;
+
     return (
-        <HeaderWrapper>
-            <ColDate>
+        <Grid
+            columns="1fr max-content minmax(110px, max-content)"
+            rowGap={6}
+            columnGap={24}
+            flex="1"
+            padding={{ right: 24 }}
+            margin={{ right: 1 }}
+        >
+            <Text {...commonTextProps}>
                 {isDateValid && (
                     <FormattedDate
                         value={parsedDate ?? undefined}
@@ -51,24 +65,30 @@ export const DayHeader = ({
                         year="numeric"
                     />
                 )}
-            </ColDate>
-            <ColAmount $isVisible={isHovered}>
-                <Row>
-                    {totalAmount.gt(0) && <span>+</span>}
-                    <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
-                </Row>
-            </ColAmount>
-            {shallDisplayBaseCurrency && !isMissingFiatRates && (
-                <ColFiat>
-                    <HiddenPlaceholder>
-                        {totalFiatAmountPerDay.gt(0) && <span>+</span>}
-                        <BaseCurrencyAmountFormatter
-                            currency={localCurrency}
-                            value={totalFiatAmountPerDay}
+            </Text>
+            {isAboveTablet && (
+                <>
+                    <Text {...commonTextProps} align="end">
+                        <FormattedCryptoAmount
+                            signValue={totalAmount}
+                            signGrayscale
+                            value={absoluteTotalAmount}
+                            symbol={symbol}
                         />
-                    </HiddenPlaceholder>
-                </ColFiat>
+                    </Text>
+                    <Text {...commonTextProps} align="end">
+                        {shallDisplayBaseCurrency && !isMissingFiatRates && (
+                            <HiddenPlaceholder>
+                                <Sign value={totalAmount} grayscale />
+                                <BaseCurrencyAmountFormatter
+                                    currency={localCurrency}
+                                    value={absoluteTotalFiatAmount}
+                                />
+                            </HiddenPlaceholder>
+                        )}
+                    </Text>
+                </>
             )}
-        </HeaderWrapper>
+        </Grid>
     );
 };

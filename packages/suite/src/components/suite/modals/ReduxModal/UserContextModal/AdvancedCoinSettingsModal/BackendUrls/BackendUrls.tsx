@@ -43,7 +43,7 @@ export function BackendUrls({
                         >
                             <Row gap={spacings.sm}>
                                 <Text
-                                    wordBreak="break-all"
+                                    overflowWrap="anywhere"
                                     variant={
                                         url === blockchain[symbol]?.url ? 'default' : 'tertiary'
                                     }

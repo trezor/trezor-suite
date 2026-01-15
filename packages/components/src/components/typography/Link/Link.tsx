@@ -15,6 +15,7 @@ export const allowedLinkTextProps = [
     'typographyStyle',
     'textWrap',
     'wordBreak',
+    'overflowWrap',
 ] as const satisfies TextPropsKeys[];
 type AllowedLinkTextProps = Pick<TextPropsCommon, (typeof allowedLinkTextProps)[number]>;
 

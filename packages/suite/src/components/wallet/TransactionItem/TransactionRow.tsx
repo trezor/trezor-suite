@@ -10,7 +10,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
@@ -29,9 +29,6 @@ export const CustomRow = ({
     title: ExtendedMessageDescriptor['id'];
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
 }) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
@@ -48,16 +45,20 @@ export const CustomRow = ({
                     value={amount}
                     symbol={transaction.symbol}
                     signValue={sign}
+                    signGrayscale
                 />
             }
             fiatAmount={
                 useFiatValues ? (
-                    <BaseCurrencyValue
-                        amount={amount}
-                        symbol={transaction.symbol}
-                        historicRate={historicRate}
-                        useHistoricRate
-                    />
+                    <>
+                        <Sign value={sign} grayscale />
+                        <BaseCurrencyValue
+                            amount={amount}
+                            symbol={transaction.symbol}
+                            historicRate={historicRate}
+                            useHistoricRate
+                        />
+                    </>
                 ) : undefined
             }
         />
@@ -73,9 +74,6 @@ export const FeeRow = ({
     fee: string;
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
 }) => (
     <CustomRow
         {...baseLayoutProps}
@@ -94,9 +92,6 @@ export const WithdrawalRow = ({
 }: {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
 }) => (
     <CustomRow
         {...baseLayoutProps}
@@ -115,9 +110,6 @@ export const DepositRow = ({
 }: {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
-    className?: string;
 }) => (
     <CustomRow
         {...baseLayoutProps}
@@ -171,8 +163,6 @@ export const CoinjoinRow = ({ transaction, useFiatValues }: CoinjoinRowProps) =>
                     }}
                 />
             }
-            isFirst
-            isLast
         />
     );
 };

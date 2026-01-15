@@ -38,8 +38,7 @@ test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
             await walletPage.openAccount();
 
-            await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
-            await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
 
             // Simulated API responses for retries with malformed token must be supplied exactly at this point in the flow
             for (let i = 0; i < 4; i++) {

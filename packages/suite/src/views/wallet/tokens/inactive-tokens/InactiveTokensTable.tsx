@@ -194,7 +194,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                             <Table.Cell>
                                 <Tooltip
                                     content={
-                                        <Text wordBreak="break-all">
+                                        <Text overflowWrap="break-word">
                                             <Translation id="TR_ISSUER_ADDRESS" />:<br />
                                             {token.contract.split('-')[1]}
                                         </Text>

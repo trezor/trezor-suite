@@ -26,11 +26,13 @@ export const allowedTextTextProps = [
     'ellipsisLineCount',
     'case',
     'wordBreak',
+    'overflowWrap',
 ] as const satisfies TextPropsKeys[];
 type AllowedTextTextProps = Pick<TextPropsCommon, (typeof allowedTextTextProps)[number]>;
 
 export const allowedTextFrameProps = [
     'margin',
+    'padding',
     'maxWidth',
     'minWidth',
     'width',
@@ -81,6 +83,7 @@ const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSCol
 type StyledTextProps = ExclusiveColorOrVariant & {
     $isMonospaced?: boolean;
     $isHighlighted?: boolean;
+    $isTabular?: boolean;
 } & TransientProps<AllowedFrameProps & AllowedTextTextProps>;
 
 const StyledText = styled.span<StyledTextProps>`
@@ -90,6 +93,13 @@ const StyledText = styled.span<StyledTextProps>`
         $isMonospaced &&
         css`
             font-family: monospace;
+        `}
+
+    ${({ $isTabular }) =>
+        $isTabular &&
+        css`
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0 !important;
         `}
 
     ${({ $isHighlighted }) =>
@@ -111,6 +121,7 @@ export type TextProps = Pick<HTMLProps<HTMLElement>, 'onCopy' | 'onClick'> & {
     className?: string;
     isMonospaced?: boolean;
     isHighlighted?: boolean;
+    isTabular?: boolean;
     as?: string;
     'data-testid'?: string;
     role?: string;
@@ -130,6 +141,7 @@ export const Text = ({
     isMonospaced,
     isHighlighted,
     role,
+    isTabular,
     ...rest
 }: TextProps) => {
     const frameProps = pickAndPrepareFrameProps(rest, allowedTextFrameProps);
@@ -145,6 +157,7 @@ export const Text = ({
             data-testid={dataTest}
             $isMonospaced={isMonospaced}
             $isHighlighted={isHighlighted}
+            $isTabular={isTabular}
             {...textProps}
             {...frameProps}
         >

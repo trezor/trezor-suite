@@ -50,8 +50,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Discard label changes via Escape', async () => {
-            await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).click();
-            await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.account.metadataInput.fill('bcash is true bitcoin');
             await page.keyboard.press('Escape');
             await expect(
@@ -74,8 +73,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         });
 
         await test.step('Remove metadata by clearing input', async () => {
-            await metadataPage.account.accountLabel(AccountLabelId.BitcoinDefault1).hover();
-            await metadataPage.account.editLabelButton(AccountLabelId.BitcoinDefault1).click();
+            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await metadataPage.account.metadataInput.clear();
             await page.keyboard.press('Enter');
             await expect(

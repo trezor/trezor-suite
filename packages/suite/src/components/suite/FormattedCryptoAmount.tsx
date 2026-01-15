@@ -1,7 +1,5 @@
 import { useMemo } from 'react';
 
-import styled from 'styled-components';
-
 import { isSignValuePositive } from '@suite-common/formatters';
 import { SignValue } from '@suite-common/suite-types';
 import {
@@ -16,8 +14,7 @@ import {
     localizeNumber,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
-import { Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
@@ -29,13 +26,6 @@ import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { RedactNumericalValue } from './RedactNumericalValue';
 
-const Value = styled.span<{ $isTabular: boolean }>`
-    ${({ $isTabular }) => $isTabular && 'font-variant-numeric: tabular-nums;'}
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: 0;
-`;
-
 export interface FormattedCryptoAmountProps {
     value?: string | number | AmountUnit; // Todo: remove `string | number`, its for Back Compatibility only
     symbol?: NetworkSymbolExtended;
@@ -43,6 +33,7 @@ export interface FormattedCryptoAmountProps {
     isBalance?: boolean;
     showApproximation?: boolean;
     signValue?: SignValue;
+    signGrayscale?: boolean;
     disableHiddenPlaceholder?: boolean;
     /**
      * If true, the `FormattedCryptoAmount` expects the `HiddenPlaceholder` upstream (it provides the `RedactNumbersContext`), else an error is thrown.
@@ -60,6 +51,7 @@ export const FormattedCryptoAmount = ({
     isBalance,
     showApproximation = false,
     signValue,
+    signGrayscale,
     disableHiddenPlaceholder,
     isRawString,
     isTabular = true,
@@ -136,18 +128,18 @@ export const FormattedCryptoAmount = ({
     );
 
     const content = (
-        <Row gap={spacings.xxs} data-testid={`${dataTest}-with-symbol`}>
-            <Row data-testid={dataTest}>
-                {!!signValue && <Sign value={signValue} />}
-                <Value $isTabular={isTabular}>{renderedValue}</Value>
-            </Row>
+        <span data-testid={`${dataTest}-with-symbol`}>
+            <span data-testid={dataTest}>
+                {!!signValue && <Sign value={signValue} grayscale={signGrayscale} />}
+                <Text isTabular={isTabular}>{renderedValue}</Text>
+            </span>
             {formattedSymbol && (
                 <>
                     {' '}
                     <BlurUrls text={formattedSymbol} />
                 </>
             )}
-        </Row>
+        </span>
     );
 
     if (disableHiddenPlaceholder) {

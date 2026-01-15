@@ -123,7 +123,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                     <Translation id="AMOUNT" />
                                 </Text>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell align="end">
                                 <Text variant="default">
                                     <FormattedCryptoAmount
                                         value={displayAmount.abs().toString()}
@@ -161,7 +161,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 </Text>
                             ) : undefined}
                         </Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell align="end">
                             <Text variant="default">
                                 <FormattedCryptoAmount
                                     value={formatNetworkAmount(transfer.amount, tx.symbol)}
@@ -214,7 +214,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                         </Text>
                                     ) : undefined}
                                 </Table.Cell>
-                                <Table.Cell>
+                                <Table.Cell align="end">
                                     <Text variant="default">
                                         <AmountComponent
                                             transfer={transfer}
@@ -265,7 +265,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <Translation id="TR_TX_WITHDRAWAL" />
                             </Text>
                         </Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell align="end">
                             <Text variant="default">
                                 <FormattedCryptoAmount
                                     value={cardanoWithdrawal}
@@ -298,7 +298,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <Translation id="TR_TX_DEPOSIT" />
                             </Text>
                         </Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell align="end">
                             <Text variant="default">
                                 <FormattedCryptoAmount
                                     value={cardanoDeposit}
@@ -332,7 +332,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <Translation id="TR_TX_FEE" />
                             </Text>
                         </Table.Cell>
-                        <Table.Cell>
+                        <Table.Cell align="end">
                             <Text variant="default">
                                 <FormattedCryptoAmount
                                     value={fee}

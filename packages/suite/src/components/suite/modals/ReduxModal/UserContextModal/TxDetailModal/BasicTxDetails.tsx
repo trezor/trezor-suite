@@ -91,7 +91,7 @@ export const BasicTxDetails = ({
                         <Icon
                             size={14}
                             variant={tx.type === 'failed' ? 'destructive' : 'default'}
-                            name={getTxIcon(tx.type)}
+                            name={getTxIcon(tx, false)}
                         />
                     </NestedIconWrapper>
                 </IconWrapper>
@@ -277,7 +277,7 @@ export const BasicTxDetails = ({
                     <Link
                         href={explorerLink}
                         data-testid="@tx-detail/txid-value"
-                        wordBreak="break-all"
+                        overflowWrap="anywhere"
                     >
                         {tx.txid}
                     </Link>

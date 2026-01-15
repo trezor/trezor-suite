@@ -50,7 +50,6 @@ export const TransactionGroupedList = ({
                         key={item.rounds[0].txid}
                         transactions={item.rounds}
                         isPending={isPending}
-                        localCurrency={baseCurrencyCode}
                     />
                 ) : (
                     <TransactionItem

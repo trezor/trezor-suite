@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
+import { useTranslation } from '@suite/intl';
 import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
-import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
     selectBaseCurrency,
     selectHistoricFiatRatesByTimestamp,
@@ -15,37 +14,35 @@ import {
     getFiatRateKey,
     getTargetAmount,
     getTxOperation,
+    isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
-import { copyToClipboard } from '@trezor/dom-utils';
+import { Icon } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
 import {
     AddressLabeling,
     BaseCurrencyValue,
     FormattedCryptoAmount,
-    MetadataLabeling,
+    Labeling,
+    Sign,
 } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
+import { CombinedTarget } from './TransactionTargetsList';
 import { AmountComponent } from '../../AmountComponent';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
-import { CombinedTarget } from './TransactionTargetsList';
 
 type TransactionTargetProps = CombinedTarget & {
     transaction: WalletAccountTransaction;
     accountKey: string;
     accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
-    isPhishingTransaction: boolean;
-    singleRowLayout?: boolean;
-    useAnimation?: boolean;
-    isFirst?: boolean;
-    isLast?: boolean;
+    isPhishingTransaction?: boolean;
 };
 
 export const TransactionTarget = ({
@@ -58,7 +55,7 @@ export const TransactionTarget = ({
     isPhishingTransaction,
     ...baseLayoutProps
 }: TransactionTargetProps) => {
-    const dispatch = useDispatch();
+    const { translationString } = useTranslation();
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -100,11 +97,12 @@ export const TransactionTarget = ({
         switch (type) {
             case 'target':
             case 'internal':
-                return amount && !baseLayoutProps.singleRowLayout ? (
+                return amount && transaction.type !== 'self' ? (
                     <FormattedCryptoAmount
                         value={amount}
                         symbol={transaction.symbol}
                         signValue={operation}
+                        signGrayscale
                     />
                 ) : undefined;
             case 'token':
@@ -112,26 +110,45 @@ export const TransactionTarget = ({
                     <AmountComponent
                         transfer={payload}
                         withLink={false}
-                        withSign={true}
+                        withSign
+                        signGrayscale
                         alignMultitoken="flex-end"
                     />
                 );
             default:
                 return exhaustive(type);
         }
-    }, [amount, baseLayoutProps.singleRowLayout, operation, transaction.symbol, type, payload]);
+    }, [amount, operation, transaction.symbol, type, payload, transaction.type]);
+
+    const isNft = type === 'token' && isNftTokenTransfer(payload);
 
     const fiatAmountComponent = useMemo(
         () =>
-            shallDisplayBaseCurrency && amount && transaction.type !== 'self' ? (
-                <BaseCurrencyValue
-                    amount={amount}
-                    symbol={transaction.symbol}
-                    historicRate={historicRate}
-                    useHistoricRate
-                />
+            shallDisplayBaseCurrency &&
+            amount &&
+            transaction.type !== 'self' &&
+            !isPhishingTransaction &&
+            !isNft ? (
+                <>
+                    {operation && <Sign value={operation} grayscale />}
+                    <BaseCurrencyValue
+                        amount={amount}
+                        symbol={transaction.symbol}
+                        historicRate={historicRate}
+                        useHistoricRate
+                    />
+                </>
             ) : undefined,
-        [shallDisplayBaseCurrency, amount, transaction.type, transaction.symbol, historicRate],
+        [
+            shallDisplayBaseCurrency,
+            amount,
+            transaction.type,
+            transaction.symbol,
+            historicRate,
+            isPhishingTransaction,
+            operation,
+            isNft,
+        ],
     );
 
     const metadataId = useMemo(() => {
@@ -152,27 +169,6 @@ export const TransactionTarget = ({
     const defaultMetadataValue = `${transaction.txid}-${metadataId}`;
     const isBeingEdited = defaultMetadataValue === labelingValueBeingEdited;
 
-    const copyAddress = () => {
-        let toast: ToastPayload = { type: 'copy-to-clipboard' };
-        const addresses = type === 'target' ? payload.addresses : [payload.to];
-        if (!addresses) {
-            // probably should not happen?
-            toast = {
-                type: 'error',
-                error: 'There is nothing to copy',
-            };
-        } else {
-            const result = copyToClipboard(addresses.join());
-            if (typeof result === 'string') {
-                toast = {
-                    type: 'error',
-                    error: result,
-                };
-            }
-        }
-        dispatch(notificationsActions.addToast(toast));
-    };
-
     const label = useMemo(() => {
         switch (type) {
             case 'target':
@@ -189,7 +185,6 @@ export const TransactionTarget = ({
                 return (
                     <TokenTransferAddressLabel
                         symbol={transaction.symbol}
-                        isPhishingTransaction={isPhishingTransaction}
                         transfer={payload}
                         type={transaction.type}
                     />
@@ -199,39 +194,42 @@ export const TransactionTarget = ({
             default:
                 return exhaustive(type);
         }
-    }, [type, transaction, payload, accountMetadata, isPhishingTransaction]);
+    }, [type, transaction, payload, accountMetadata]);
+
+    const outputLabel =
+        suiteSyncOutputLabels.find(
+            it => it.txId === transaction.txid && it.outputIndex.toString() === metadataId,
+        )?.label ?? targetMetadata;
 
     return (
         <TransactionTargetLayout
             {...baseLayoutProps}
             useHiddenPlaceholder={!isBeingEdited}
+            isPhishingTransaction={isPhishingTransaction}
             addressLabel={
-                <MetadataLabeling
-                    variant="button"
+                <Labeling
                     deviceStaticSessionId={transaction.deviceState}
                     isDisabled={isActionDisabled}
-                    defaultVisibleValue={label}
-                    dropdownOptions={[
-                        {
-                            onClick: copyAddress,
-                            label: <Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />,
-                            'data-testid': 'copy-address', // hack: This will be prefixed in the withDropdown()
-                        },
-                    ]}
+                    displayValue={label}
+                    placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
                     payload={{
                         type: 'outputLabel',
                         entityKey: accountKey,
                         txid: transaction.txid,
                         outputIndex: metadataId,
                         defaultValue: defaultMetadataValue,
-                        value:
-                            suiteSyncOutputLabels.find(
-                                it => it.txId === transaction.txid && it.outputIndex == metadataId,
-                            )?.label ?? targetMetadata,
+                        value: outputLabel,
                         networkSymbol: transaction.symbol,
                         accountDescriptor: transaction.descriptor,
                     }}
-                />
+                    rightAddon={
+                        outputLabel ? (
+                            <Icon name="tagFilled" size={10} variant="tertiary" />
+                        ) : undefined
+                    }
+                >
+                    {outputLabel}
+                </Labeling>
             }
             amount={amountComponent}
             fiatAmount={fiatAmountComponent}

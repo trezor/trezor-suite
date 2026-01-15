@@ -1,180 +1,85 @@
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
-import { useFormatters } from '@suite-common/formatters';
-import { selectHistoricFiatRates } from '@suite-common/wallet-core';
-import { Timestamp, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import {
-    formatNetworkAmount,
-    getFiatRateKey,
-    isTestnet,
-    roundTimestampToNearestPastHour,
-    sumTransactions,
-    sumTransactionsFiat,
-} from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { Box, CollapsibleBox, Row } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { IconCircle, Link } from '@trezor/components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet/index';
 
-import { Content, Description, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
+import { TransactionLayout } from './TransactionLayout';
 import { TransactionTargetLayout } from './TransactionTargetLayout';
-import { TransactionTypeIcon } from './TransactionTypeIcon';
-
-const CryptoAmount = styled(FormattedCryptoAmount)`
-    width: unset;
-`;
-
-const RoundRow = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    border-radius: ${borders.radii.xs};
-    cursor: pointer;
-
-    &:hover {
-        background-color: ${({ theme }) => theme.backgroundNeutralBoldInverted};
-    }
-
-    > div:first-child {
-        margin-right: 28px;
-    }
-`;
-
-const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
-    const dispatch = useDispatch();
-
-    const transactionAmount = new BigNumber(transaction.amount);
-
-    const openTransactionDetail = () =>
-        dispatch(
-            openModal({
-                type: 'transaction-detail',
-                txid: transaction.txid,
-                descriptor: transaction.descriptor,
-                symbol: transaction.symbol,
-                deviceState: transaction.deviceState,
-                flow: 'detail',
-            }),
-        );
-
-    return (
-        <RoundRow onClick={openTransactionDetail}>
-            <TransactionTypeIcon type="joint" isPending={false} size={20} />
-            <TransactionTimestamp transaction={transaction} />
-            <TransactionTargetLayout
-                addressLabel={
-                    <Translation
-                        id="TR_JOINT_TRANSACTION_TARGET"
-                        values={{
-                            in: transaction.details.vin.length,
-                            inMy: transaction.details.vin.filter(v => v.isAccountOwned).length,
-                            out: transaction.details.vout.length,
-                            outMy: transaction.details.vout.filter(v => v.isAccountOwned).length,
-                        }}
-                    />
-                }
-                amount={
-                    <CryptoAmount
-                        value={formatNetworkAmount(
-                            transactionAmount.abs().toString(),
-                            transaction.symbol,
-                        )}
-                        symbol={transaction.symbol}
-                        signValue={transactionAmount}
-                    />
-                }
-                isFirst
-                isLast
-            />
-        </RoundRow>
-    );
-};
 
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
-    localCurrency: BaseCurrencyCode;
     isPending: boolean;
 };
 
-export const CoinjoinBatchItem = ({
-    transactions,
-    localCurrency,
-    isPending,
-}: CoinjoinBatchItemProps) => {
-    const lastTx = transactions[0];
-    const { BaseCurrencyAmountFormatter } = useFormatters();
-    const historicFiatRates = useSelector(selectHistoricFiatRates);
-    const amount = sumTransactions(transactions);
-    const fiatAmount = sumTransactionsFiat(transactions, localCurrency, historicFiatRates);
-    const isMissingFiatRates = transactions.some(tx => {
-        const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
-        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
-        const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
-
-        return historicRate === undefined || historicRate === 0;
-    });
+export const CoinjoinBatchItem = ({ transactions, isPending }: CoinjoinBatchItemProps) => {
+    const dispatch = useDispatch();
 
     return (
-        <CollapsibleBox
-            paddingType="large"
-            heading={
-                <>
-                    <TxTypeIconWrapper>
-                        <TransactionTypeIcon type="joint" isPending={isPending} />
-                    </TxTypeIconWrapper>
-                    <Content>
-                        <Description>
-                            <Translation id="TR_COINJOIN_TRANSACTION_BATCH" />
-                            <CryptoAmount
-                                value={amount.absoluteValue().toFixed()}
-                                symbol={lastTx.symbol}
-                                signValue={amount}
-                            />
-                        </Description>
-                        <Row flex="1" alignItems="flex-start" margin={{ bottom: spacings.xxs }}>
-                            <TimestampWrapper>
-                                <TransactionTimestamp transaction={lastTx} />
-                            </TimestampWrapper>
-                            <Box flex="1" overflow="hidden">
-                                <TransactionTargetLayout
-                                    addressLabel={
-                                        <Translation
-                                            id="TR_N_TRANSACTIONS"
-                                            values={{ value: transactions.length }}
-                                        />
-                                    }
-                                    fiatAmount={
-                                        !isTestnet(lastTx.symbol) && !isMissingFiatRates ? (
-                                            <HiddenPlaceholder>
-                                                <BaseCurrencyAmountFormatter
-                                                    currency={localCurrency}
-                                                    value={asBaseCurrencyAmount(
-                                                        fiatAmount.absoluteValue(),
-                                                    )}
-                                                />
-                                            </HiddenPlaceholder>
-                                        ) : undefined
-                                    }
-                                    singleRowLayout
-                                    isFirst
-                                    isLast
-                                />
-                            </Box>
-                        </Row>
-                    </Content>
-                </>
+        <TransactionLayout
+            timestamp={<TransactionTimestamp transaction={transactions[0]} />}
+            heading={<Translation id="TR_COINJOIN_TRANSACTION_BATCH" />}
+            icon={
+                <IconCircle
+                    name="shuffle"
+                    variant={isPending ? 'warning' : 'tertiary'}
+                    size={42}
+                    hasBorder={false}
+                />
             }
         >
-            {transactions.map(tx => (
-                <Round key={tx.txid} transaction={tx} />
-            ))}
-        </CollapsibleBox>
+            {transactions.map(transaction => {
+                const transactionAmount = new BigNumber(transaction.amount);
+
+                const openTransactionDetail = () =>
+                    dispatch(
+                        openModal({
+                            type: 'transaction-detail',
+                            txid: transaction.txid,
+                            descriptor: transaction.descriptor,
+                            symbol: transaction.symbol,
+                            deviceState: transaction.deviceState,
+                            flow: 'detail',
+                        }),
+                    );
+
+                return (
+                    <TransactionTargetLayout
+                        key={transaction.txid}
+                        addressLabel={
+                            <Link onClick={openTransactionDetail}>
+                                <Translation
+                                    id="TR_JOINT_TRANSACTION_TARGET"
+                                    values={{
+                                        in: transaction.details.vin.length,
+                                        inMy: transaction.details.vin.filter(v => v.isAccountOwned)
+                                            .length,
+                                        out: transaction.details.vout.length,
+                                        outMy: transaction.details.vout.filter(
+                                            v => v.isAccountOwned,
+                                        ).length,
+                                    }}
+                                />
+                            </Link>
+                        }
+                        amount={
+                            <FormattedCryptoAmount
+                                value={formatNetworkAmount(
+                                    transactionAmount.abs().toString(),
+                                    transaction.symbol,
+                                )}
+                                symbol={transaction.symbol}
+                                signValue={transactionAmount}
+                            />
+                        }
+                    />
+                );
+            })}
+        </TransactionLayout>
     );
 };

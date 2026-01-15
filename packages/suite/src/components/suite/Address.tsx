@@ -32,12 +32,13 @@ const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): Ru
     }
 };
 
-const AddressWrapper = styled.p<{ $device?: DeviceModelInternal; $isChunked: boolean }>`
-    letter-spacing: 0;
-    word-break: ${({ $isChunked }) => ($isChunked ? 'normal' : 'break-all')};
-    white-space: ${({ $isChunked }) => ($isChunked ? 'pre-line' : 'break-all')};
-
-    ${({ $device }) => $device && mapDeviceModelToFontStyle($device)}
+const AddressWrapper = styled.p<{ $device?: DeviceModelInternal }>`
+    ${({ $device }) =>
+        $device &&
+        css`
+            ${mapDeviceModelToFontStyle($device)};
+            white-space: pre-line;
+        `};
 `;
 
 const addSpacing = (value: string) => value?.match(/.{1,4}/g)?.join(' ') ?? value;
@@ -58,7 +59,7 @@ export type AddressProps = {
 
 export const Address = ({
     value,
-    isTruncated,
+    isTruncated = false,
     isChunked,
     isDeviceRendered = false,
     typographyStyle,
@@ -117,13 +118,17 @@ export const Address = ({
             }
             display="inline-flex"
         >
-            <Text typographyStyle={typographyStyle} variant={variant}>
+            <Text
+                typographyStyle={typographyStyle}
+                variant={variant}
+                isTabular
+                overflowWrap="break-word"
+            >
                 <AddressWrapper
                     onCopy={onManualCopy}
                     data-testid={dataTestId}
                     id={value}
                     $device={isDeviceRendered ? deviceModelInternal : undefined}
-                    $isChunked={isAddressChunked}
                 >
                     {formattedValue}
                 </AddressWrapper>

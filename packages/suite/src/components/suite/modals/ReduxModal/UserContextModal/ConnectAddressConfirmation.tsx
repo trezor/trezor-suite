@@ -155,7 +155,7 @@ export const ConnectAddressConfirmation = () => {
                                     gap={spacings.sm}
                                 >
                                     <Row gap={spacings.sm} alignItems="center" flex="1">
-                                        <Paragraph wordBreak="break-all">
+                                        <Paragraph overflowWrap="break-word">
                                             {address.address}
                                         </Paragraph>
                                         {address.validated === 'valid' && (

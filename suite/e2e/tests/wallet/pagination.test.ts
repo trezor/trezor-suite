@@ -44,7 +44,7 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
                     paginationControl.transactionAddress(
                         '6fe27bc17a90fc2ef2e161d333c941e972cd96b6ff9f0831e19348f73275bd35-0',
                     ),
-                ).toHaveText('1DyHzbQUoQEsLxJn6M7fMD8Xdt1XvNiwNE');
+                ).toHaveText('1DyH zbQU ... 1XvN iwNE');
             });
 
             await test.step('Go to page via input field', async () => {
@@ -56,7 +56,7 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
                     paginationControl.transactionAddress(
                         '02e5a4faa8d24d2a8abdfc0baabd03c000cb4c4db2b9441e206a6ec0985f3ac2-1',
                     ),
-                ).toHaveText('128pzPoxQAWKtVPm4ymAqt7vADVbxckWHS');
+                ).toHaveText('128p zPox ... Vbxc kWHS');
             });
 
             await test.step('Go to next page button', async () => {
@@ -66,7 +66,7 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
                     paginationControl.transactionAddress(
                         '424b2e6a4fc3b5702d1a6f9b74175db9cfb8f554f71ed7ee83ee0fa08f839da2-0',
                     ),
-                ).toHaveText('1L7k8mh72oeRitY9PAfb1kJHHeoaKkDqvj');
+                ).toHaveText('1L7k 8mh7 ... oaKk Dqvj');
 
                 await paginationControl.checkIfPageIsActive(4);
                 await paginationControl.checkIfPageIsInactive(3);

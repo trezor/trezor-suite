@@ -268,18 +268,15 @@ export const EditableText = ({
 
     const handleContainerClick = useCallback(
         (e: React.MouseEvent<HTMLElement>) => {
-            if (isEditable) {
-                e.stopPropagation();
+            e.stopPropagation();
 
+            if (isEditable) {
                 return;
             }
 
-            if (isEmpty) {
-                e.stopPropagation();
-                handleEdit();
-            }
+            handleEdit();
         },
-        [handleEdit, isEditable, isEmpty],
+        [handleEdit, isEditable],
     );
 
     const handlePaste = (e: React.ClipboardEvent<HTMLElement>) => {
@@ -330,7 +327,7 @@ export const EditableText = ({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={isDisabled ? undefined : handleContainerClick}
-            cursor={isEmpty && !defaultValueTextContent && !isDisabled ? 'pointer' : undefined}
+            cursor="pointer"
             maxWidth={maxWidth}
             minHeight={minHeight}
             margin={margin}
