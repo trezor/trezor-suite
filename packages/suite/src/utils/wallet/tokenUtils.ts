@@ -66,12 +66,6 @@ export const enhanceTokensWithRates = (
 
 export type EnahncedTokenInfoWithFiat = ReturnType<typeof enhanceTokensWithRates>[number];
 
-export const formatTokenSymbol = (symbol: string) => {
-    const isTokenSymbolLong = symbol.length > 7;
-
-    return isTokenSymbolLong ? `${symbol.slice(0, 7)}...` : symbol;
-};
-
 type GetTokens<T extends EnhancedTokenInfo | TokenInfo | EnahncedTokenInfoWithFiat> = {
     tokens: T[];
     symbol: NetworkSymbol;
