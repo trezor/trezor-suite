@@ -466,7 +466,7 @@ export const getExternalComposeOutput = (
             output = {
                 type: 'send-max',
                 address,
-                amount,
+                amount: formattedAmount,
             };
         } else {
             output = {
