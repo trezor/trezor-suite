@@ -1,6 +1,6 @@
 {
     "name": "@trezor/protobuf",
-    "version": "1.5.1",
+    "version": "10.0.0-alpha.1",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
