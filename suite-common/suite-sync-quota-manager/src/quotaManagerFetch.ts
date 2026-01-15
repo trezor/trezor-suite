@@ -24,7 +24,12 @@ export const quotaManagerFetch = async ({
     body,
     queryParams,
 }: QuotaManagerFetchParams) => {
-    const url = new URL(path, baseUrl ?? DEFAULT_QUOTA_MANAGER_URL);
+    const base = baseUrl ?? DEFAULT_QUOTA_MANAGER_URL;
+
+    const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+    const normalizedPath = path.replace(/^\/+/, '');
+
+    const url = new URL(normalizedPath, normalizedBase);
 
     if (queryParams !== undefined) {
         typedObjectEntries(queryParams).forEach(([key, value]) => {
