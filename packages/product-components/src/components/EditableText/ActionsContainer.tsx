@@ -37,18 +37,17 @@ const Container = styled.div<{
     gap: var(--base-gap);
     position: absolute;
     top: 50%;
-    left: -8px;
+    left: -6px;
     padding: var(--base-gap);
-    padding-left: calc(100% + 8px + var(--base-gap) * 2);
+    padding-left: calc(100% + 6px + var(--base-gap) * 2);
     box-sizing: content-box;
     min-height: 28px;
     z-index: ${zIndices.labeling};
-    background: ${({ theme }) => theme.baseFillElementNeutralSoft};
+    background: ${({ theme }) => theme.baseFillElementNeutralSofter};
     border-radius: ${borders.radii.xs};
-    transform: var(--base-transform) scaleX(0.9);
+    transform: var(--base-transform) scaleX(0.95);
     transform-origin: left;
     opacity: 0;
-    pointer-events: none;
 
     ${({ $isDirty }) =>
         !$isDirty &&
@@ -60,7 +59,6 @@ const Container = styled.div<{
         $isActive &&
         css`
             opacity: 1;
-            pointer-events: auto;
             transform: var(--base-transform);
         `}
 
@@ -173,7 +171,7 @@ export const ActionsContainer = ({
                         <IconButton
                             data-testid="@metadata/edit"
                             intent="neutral"
-                            icon="pencil"
+                            icon="pencilSimple"
                             onClick={() => {
                                 setIsDirty(true);
                                 onEdit();
@@ -213,7 +211,6 @@ export const ActionsContainer = ({
             $isActive={isActive}
             $isDirty={isDirty}
             $savingStatus={savingStatus}
-            inert={!isActive}
         >
             {getContent()}
         </Container>

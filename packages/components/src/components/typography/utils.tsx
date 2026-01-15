@@ -14,6 +14,9 @@ export type TextCase = (typeof textCase)[number];
 export const wordBreaks = ['normal', 'break-all', 'keep-all', 'inherit', 'unset'] as const;
 export type WordBreak = (typeof wordBreaks)[number];
 
+export const overflowWrap = ['normal', 'break-word', 'anywhere', 'inherit', 'unset'] as const;
+export type OverflowWrap = (typeof overflowWrap)[number];
+
 export type TextProps = {
     typographyStyle?: TypographyStyle;
     textWrap?: TextWrap;
@@ -21,6 +24,7 @@ export type TextProps = {
     ellipsisLineCount?: number;
     case?: TextCase;
     wordBreak?: WordBreak;
+    overflowWrap?: OverflowWrap;
 };
 
 export type TextPropsKeys = keyof TextProps;
@@ -42,6 +46,7 @@ export const withTextProps = ({
     $ellipsisLineCount = 0,
     $case,
     $wordBreak,
+    $overflowWrap,
 }: TransientTextProps) => css`
     ${$textWrap &&
     css`
@@ -50,6 +55,10 @@ export const withTextProps = ({
     ${$wordBreak &&
     css`
         word-break: ${$wordBreak};
+    `}
+    ${$overflowWrap &&
+    css`
+        overflow-wrap: ${$overflowWrap};
     `}
     ${$typographyStyle
         ? css`
@@ -98,6 +107,13 @@ const getStorybookType = (key: TextPropsKeys) => {
         case 'textWrap':
             return {
                 options: [undefined, ...textWraps],
+                control: {
+                    type: 'select',
+                },
+            };
+        case 'overflowWrap':
+            return {
+                options: [undefined, ...overflowWrap],
                 control: {
                     type: 'select',
                 },
@@ -163,6 +179,7 @@ export const getTextPropsStory = (allowedTextProps: Array<TextPropsKeys>) => {
                 ? { ellipsisLineCount: undefined }
                 : {}),
             ...(allowedTextProps.includes('case') ? { case: undefined } : {}),
+            ...(allowedTextProps.includes('overflowWrap') ? { overflowWrap: undefined } : {}),
         },
         argTypes,
     };

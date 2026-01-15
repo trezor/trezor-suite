@@ -94,7 +94,10 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await devicePrompt.sendButton.click();
         await expect(
-            page.getByTestId('@wallet/accounts/transaction-list/pending/group/0'),
+            page
+                .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
+                .getByTestId('@wallet/transaction/target-address')
+                .first(),
         ).toContainText('OP_RETURN (meow)');
     });
 });

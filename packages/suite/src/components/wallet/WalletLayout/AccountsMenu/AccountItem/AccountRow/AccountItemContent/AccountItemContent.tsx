@@ -41,8 +41,13 @@ export const AccountItemContent = ({
     return (
         // Content is constant size in discreet mode, so overflow: hidden is unnecessary.
         // Though it would cut off CSS blur effect, so we may turn it off
-        <Column flex="1" overflow={discreetMode ? 'visible' : 'hidden'} gap={2}>
-            <Row gap={16} justifyContent="space-between">
+        <Column
+            flex="1"
+            overflow={discreetMode ? 'visible' : 'hidden'}
+            gap={2}
+            alignItems="flex-start"
+        >
+            <Row gap={16} justifyContent="space-between" width="100%">
                 <Text
                     typographyStyle="hint"
                     ellipsisLineCount={1}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import styled, { DefaultTheme, css } from 'styled-components';
 
@@ -123,35 +123,33 @@ const Container = styled.div<ContainerProps>`
     }
 `;
 
-export type FlexProps = AllowedFrameProps & {
-    gap?: SpacingValues | SpacingValuesNew;
-    rowGap?: SpacingValues | SpacingValuesNew;
-    columnGap?: SpacingValues | SpacingValuesNew;
-    /**
-     * Distributes space between and around content items along the **main** axis
-     */
-    justifyContent?: FlexJustifyContent;
-    /**
-     * Controls the alignment of items on the **cross** axis
-     */
-    alignItems?: FlexAlignItems;
-    alignSelf?: FlexAlignSelf;
-    children: React.ReactNode;
-    direction?: FlexDirection;
-    flex?: FlexType;
-    flexWrap?: FlexWrap;
-    order?: number;
-    isReversed?: boolean;
-    hasDivider?: boolean;
-    dividerColor?: Color;
-    className?: string;
-    onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-    onMouseEnter?: () => void;
-    onMouseLeave?: () => void;
-    'data-testid'?: string;
-    as?: string;
-    ref?: React.RefObject<HTMLElement | null>;
-};
+export type FlexProps = AllowedFrameProps &
+    Pick<HTMLAttributes<HTMLElement>, 'onClick' | 'onMouseEnter' | 'onMouseLeave'> & {
+        gap?: SpacingValues | SpacingValuesNew;
+        rowGap?: SpacingValues | SpacingValuesNew;
+        columnGap?: SpacingValues | SpacingValuesNew;
+        /**
+         * Distributes space between and around content items along the **main** axis
+         */
+        justifyContent?: FlexJustifyContent;
+        /**
+         * Controls the alignment of items on the **cross** axis
+         */
+        alignItems?: FlexAlignItems;
+        alignSelf?: FlexAlignSelf;
+        children: React.ReactNode;
+        direction?: FlexDirection;
+        flex?: FlexType;
+        flexWrap?: FlexWrap;
+        order?: number;
+        isReversed?: boolean;
+        hasDivider?: boolean;
+        dividerColor?: Color;
+        className?: string;
+        'data-testid'?: string;
+        as?: string;
+        ref?: React.RefObject<HTMLElement | null>;
+    };
 
 export const Flex = ({
     gap = 0,

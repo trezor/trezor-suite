@@ -13,6 +13,7 @@ type AmountComponentProps = {
     transfer: TokenTransfer;
     withLink?: boolean;
     withSign?: boolean;
+    signGrayscale?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
     linkTypographyStyle?: TypographyStyle;
 };
@@ -21,6 +22,7 @@ export const AmountComponent = ({
     transfer,
     withLink = false,
     withSign = false,
+    signGrayscale,
     alignMultitoken,
     linkTypographyStyle,
 }: AmountComponentProps): React.ReactNode => {
@@ -32,6 +34,7 @@ export const AmountComponent = ({
                 transfer={transfer}
                 isWithLink={withLink}
                 signValue={withSign ? operation : null}
+                signGrayscale={signGrayscale}
                 alignMultitoken={alignMultitoken}
                 linkTypographyStyle={linkTypographyStyle}
             />
@@ -45,6 +48,7 @@ export const AmountComponent = ({
                 symbol={transfer.symbol}
                 contractAddress={transfer.contract}
                 signValue={operation}
+                signGrayscale={signGrayscale}
             />
         );
     }

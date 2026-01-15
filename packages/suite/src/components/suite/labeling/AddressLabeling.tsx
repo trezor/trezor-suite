@@ -4,6 +4,7 @@ import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { useSelector } from 'src/hooks/suite';
 
 import { AccountLabeling } from './AccountLabeling';
+import { Address } from '../Address';
 
 type AddressLabelingProps = {
     symbol: NetworkSymbol;
@@ -21,7 +22,7 @@ export const AddressLabeling = ({ symbol, address, knownOnly }: AddressLabelingP
     const relevantAccounts = findAccountsByAddress(symbol, address, accounts);
 
     if (relevantAccounts.length < 1) {
-        return !knownOnly ? <span>{address}</span> : null;
+        return !knownOnly ? <Address value={address} isTruncated /> : null;
     }
 
     return (

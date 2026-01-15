@@ -4,7 +4,7 @@ export const BlurWrapper = styled.span<{ $isBlurred: boolean }>`
     ${({ $isBlurred }) =>
         $isBlurred &&
         css`
-            filter: blur(2px);
+            filter: blur(3px);
             transition: filter 0.3s;
 
             &:hover {

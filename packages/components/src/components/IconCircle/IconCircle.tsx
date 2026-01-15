@@ -27,6 +27,7 @@ type IconCircleWrapperProps = TransientProps<AllowedFrameProps> & {
 
 const IconCircleWrapper = styled.div<IconCircleWrapperProps>`
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     background: ${mapVariantToIconBackground};

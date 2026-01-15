@@ -6,14 +6,12 @@ import { Translation } from '@suite/intl';
 import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
-import { formatNetworkAmount, isStakeTypeTx, isTxFeePaid } from '@suite-common/wallet-utils';
-import { Button, Card, Column, Link, Row, Tooltip } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
+import { Button, Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -22,29 +20,16 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
-import { Content, TimestampWrapper, TxTypeIconWrapper } from './CommonComponents';
 import { TransactionHeading } from './TransactionHeading';
-import { BlurWrapper } from './TransactionItemBlurWrapper';
+import { TransactionLayout } from './TransactionLayout';
 import { CoinjoinRow, DepositRow, FeeRow, WithdrawalRow } from './TransactionRow';
+import { TransactionTimestamp } from '../TransactionTimestamp';
 import { TransactionTargetsList } from './TransactionTarget/TransactionTargetsList';
 import { TransactionTypeIcon } from './TransactionTypeIcon';
 
-const Wrapper = styled.div<{
-    $isPhishingTransaction: boolean;
-}>`
-    opacity: ${({ $isPhishingTransaction }) => $isPhishingTransaction && 0.6};
-
+const Wrapper = styled.div`
     /* height of secondary panel and a gap between transactions and graph */
     scroll-margin-top: calc(${SUBPAGE_NAV_HEIGHT} + 115px);
-`;
-
-const ExpandButtonWrapper = styled.div`
-    align-self: flex-start;
-    margin-top: 8px;
-`;
-
-const StyledFeeRow = styled(FeeRow)<{ $noInputsOutputs?: boolean }>`
-    margin-top: ${({ $noInputsOutputs }) => ($noInputsOutputs ? '0px' : '20px')};
 `;
 
 const DEFAULT_LIMIT = 3;
@@ -53,7 +38,7 @@ type OpenModalParams = {
     flow: 'detail' | 'bump-fee' | 'cancel-transaction';
 };
 
-interface TransactionItemProps {
+type TransactionItemProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
@@ -61,10 +46,9 @@ interface TransactionItemProps {
     accountKey: string;
     network: Network;
     accountType: AccountType;
-    className?: string;
     disableBumpFee?: boolean;
     index: number;
-}
+};
 
 export const TransactionItem = memo(
     ({
@@ -75,13 +59,10 @@ export const TransactionItem = memo(
         isPending,
         network,
         accountType,
-        className,
         disableBumpFee,
         index,
     }: TransactionItemProps) => {
         const [limit, setLimit] = useState(0);
-        const [txItemIsHovered, setTxItemIsHovered] = useState(false);
-        const [nestedItemIsHovered, setNestedItemIsHovered] = useState(false);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
         const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
@@ -93,11 +74,7 @@ export const TransactionItem = memo(
             `${AccountTransactionBaseAnchor}/${transaction.txid}`,
         );
 
-        const { type, targets, tokens, internalTransfers, ethereumSpecific } = transaction;
-
-        const txSignature = ethereumSpecific?.parsedData?.methodId;
-
-        const isUnknown = type === 'unknown';
+        const { type, targets, tokens, internalTransfers } = transaction;
 
         // Filter out internal transfers that are instant staking transactions
         const filteredInternalTransfers = useMemo(
@@ -109,20 +86,6 @@ export const TransactionItem = memo(
                 }),
             [internalTransfers, address, symbol],
         );
-
-        const isStakingTx: boolean = useMemo(() => isStakeTypeTx(txSignature), [txSignature]);
-
-        const useSingleRowLayout =
-            !isUnknown &&
-            !isStakingTx &&
-            (targets.length === 1 || transaction.type === 'self') &&
-            !tokens.length &&
-            !filteredInternalTransfers.length &&
-            !transaction.cardanoSpecific?.subtype;
-
-        const noInputsOutputs =
-            (!tokens.length && !filteredInternalTransfers.length && !targets.length) ||
-            type === 'failed';
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
@@ -148,6 +111,12 @@ export const TransactionItem = memo(
             transaction.type !== 'joint' &&
             network.networkType === 'bitcoin';
 
+        const isTxBumpable =
+            !isActionDisabled &&
+            transaction.rbfParams &&
+            networkFeatures?.includes('rbf') &&
+            !transaction?.deadline;
+
         const openTxDetailsModal = ({ flow }: OpenModalParams) => {
             if (isActionDisabled) return; // open explorer
             dispatch(
@@ -169,206 +138,153 @@ export const TransactionItem = memo(
             transaction.deadline ? '/prepending' : ''
         }`;
 
-        const BumpFeeButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <Button
-                intent="neutral"
-                priority="secondary"
-                iconLeft="gauge"
-                onClick={() => openTxDetailsModal({ flow: 'bump-fee' })}
-                isDisabled={isDisabled}
-                data-testid="@transaction-item/bump-fee-button"
-            >
-                <Translation id="TR_BUMP_FEE" />
-            </Button>
-        );
-
-        const CancelTransactionButton = ({ isDisabled }: { isDisabled: boolean }) => (
-            <Button
-                intent="neutral"
-                priority="secondary"
-                iconLeft="x"
-                onClick={() => openTxDetailsModal({ flow: 'cancel-transaction' })}
-                isDisabled={isDisabled}
-            >
-                <Translation id="TR_CANCEL_TX" />
-            </Button>
-        );
-
-        const DisabledBumpFeeButtonWithTooltip = () => (
-            <Tooltip
-                content={
-                    <div>
-                        <Translation
-                            id="TR_BUMP_FEE_DISABLED_TOOLTIP"
-                            values={{
-                                a: chunks => (
-                                    <Link href={HELP_CENTER_REPLACE_BY_FEE_ETHEREUM}>{chunks}</Link>
-                                ),
-                            }}
-                        />
-                    </div>
-                }
-            >
-                <BumpFeeButton isDisabled={true} />
-            </Tooltip>
-        );
-
-        // we are using slightly different layout for 1 targets txs to better match the design
-        // the only difference is that crypto amount is in the same row as tx heading/description
-        // fiat amount is in the second row along with address
-        // multiple targets txs still use more simple layout
         return (
-            <Wrapper
-                onMouseEnter={() => setTxItemIsHovered(true)}
-                onMouseLeave={() => setTxItemIsHovered(false)}
-                ref={anchorRef}
-                $isPhishingTransaction={isPhishingTransaction}
-                className={className}
-                data-testid="@wallet/transaction-item"
-            >
-                <Card variant={isPending ? 'warning' : undefined}>
-                    <OutlineHighlight shouldHighlight={shouldHighlight}>
-                        <Row>
-                            <TxTypeIconWrapper
-                                onMouseEnter={() => setNestedItemIsHovered(true)}
-                                onMouseLeave={() => setNestedItemIsHovered(false)}
-                                onClick={() => openTxDetailsModal({ flow: 'detail' })}
-                            >
-                                <TransactionTypeIcon
-                                    type={transaction.type}
-                                    isPending={isPending}
-                                />
-                            </TxTypeIconWrapper>
-
-                            <Content>
-                                <Row justifyContent="space-between" overflow="hidden">
-                                    <TransactionHeading
-                                        transaction={transaction}
-                                        isPending={isPending}
-                                        useSingleRowLayout={useSingleRowLayout}
-                                        txItemIsHovered={txItemIsHovered}
-                                        nestedItemIsHovered={nestedItemIsHovered}
-                                        onClick={() => openTxDetailsModal({ flow: 'detail' })}
-                                        isPhishingTransaction={isPhishingTransaction}
-                                        dataTestBase={dataTestBase}
-                                    />
-                                </Row>
-                                <Row
-                                    flex="1"
-                                    alignItems="flex-start"
-                                    margin={{ bottom: spacings.xxs }}
-                                >
-                                    <TimestampWrapper
-                                        onMouseEnter={() => setNestedItemIsHovered(true)}
-                                        onMouseLeave={() => setNestedItemIsHovered(false)}
-                                        onClick={() => openTxDetailsModal({ flow: 'detail' })}
-                                    >
-                                        <TransactionTimestamp transaction={transaction} />
-                                    </TimestampWrapper>
-                                    <Column flex="1" overflow="hidden">
-                                        {!isUnknown && type !== 'failed' && allOutputs.length ? (
-                                            <TransactionTargetsList
-                                                transaction={transaction}
-                                                allOutputs={allOutputs}
-                                                isPhishingTransaction={isPhishingTransaction}
-                                                isActionDisabled={isActionDisabled}
-                                                useSingleRowLayout={useSingleRowLayout}
-                                                accountKey={accountKey}
-                                                accountMetadata={accountMetadata}
-                                                limit={limit}
-                                                defaultLimit={DEFAULT_LIMIT}
-                                            />
-                                        ) : null}
-
-                                        {type === 'joint' && (
-                                            <CoinjoinRow
-                                                transaction={transaction}
-                                                useFiatValues={shallDisplayBaseCurrency}
-                                            />
-                                        )}
-
-                                        {transaction.cardanoSpecific?.withdrawal && (
-                                            <WithdrawalRow
-                                                transaction={transaction}
-                                                useFiatValues={shallDisplayBaseCurrency}
-                                                isFirst
-                                                isLast
-                                            />
-                                        )}
-
-                                        {transaction.cardanoSpecific?.deposit && (
-                                            <DepositRow
-                                                transaction={transaction}
-                                                useFiatValues={shallDisplayBaseCurrency}
-                                                isFirst
-                                                isLast
-                                            />
-                                        )}
-
-                                        {showFeeRow && (
-                                            <BlurWrapper $isBlurred={isPhishingTransaction}>
-                                                <StyledFeeRow
-                                                    fee={fee}
-                                                    transaction={transaction}
-                                                    useFiatValues={shallDisplayBaseCurrency}
-                                                    $noInputsOutputs={noInputsOutputs}
-                                                    isFirst
-                                                    isLast
-                                                />
-                                            </BlurWrapper>
-                                        )}
-
-                                        {isExpandable && (
-                                            <ExpandButtonWrapper>
-                                                <Button
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    iconRight={
-                                                        toExpand > 0 ? 'caretDown' : 'caretUp'
-                                                    }
-                                                    onClick={e => {
-                                                        setLimit(toExpand > 0 ? limit + 20 : 0);
-                                                        e.preventDefault();
-                                                        e.stopPropagation();
-                                                    }}
-                                                >
-                                                    <Translation
-                                                        id={
-                                                            toExpand > 0
-                                                                ? 'TR_SHOW_MORE_ADDRESSES'
-                                                                : 'TR_SHOW_LESS'
-                                                        }
-                                                        values={{ count: toExpand }}
-                                                    />
-                                                </Button>
-                                            </ExpandButtonWrapper>
-                                        )}
-                                    </Column>
-                                </Row>
-                                {!isActionDisabled &&
-                                    transaction.rbfParams &&
-                                    networkFeatures?.includes('rbf') &&
-                                    !transaction?.deadline && (
-                                        <Row
-                                            flex="1"
-                                            alignItems="flex-start"
-                                            margin={{ bottom: spacings.xxs }}
-                                            gap={spacings.sm}
+            <Wrapper ref={anchorRef} data-testid="@wallet/transaction-item">
+                <OutlineHighlight shouldHighlight={shouldHighlight}>
+                    <TransactionLayout
+                        onClick={() => openTxDetailsModal({ flow: 'detail' })}
+                        timestamp={<TransactionTimestamp transaction={transaction} />}
+                        heading={
+                            <TransactionHeading
+                                transaction={transaction}
+                                isPending={isPending}
+                                isPhishingTransaction={isPhishingTransaction}
+                                dataTestBase={dataTestBase}
+                            />
+                        }
+                        icon={
+                            <TransactionTypeIcon
+                                transaction={transaction}
+                                isPending={isPending}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        }
+                        actions={
+                            (isTxBumpable || isExpandable) && (
+                                <Row gap={12}>
+                                    {isExpandable && (
+                                        <Button
+                                            intent="neutral"
+                                            priority="secondary"
+                                            iconRight={toExpand > 0 ? 'caretDown' : 'caretUp'}
+                                            size="small"
+                                            onClick={e => {
+                                                setLimit(toExpand > 0 ? limit + 20 : 0);
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                            }}
                                         >
-                                            {disableBumpFee ? (
-                                                <DisabledBumpFeeButtonWithTooltip />
-                                            ) : (
-                                                <BumpFeeButton isDisabled={false} />
-                                            )}
-                                            {isTxCancellable && (
-                                                <CancelTransactionButton isDisabled={false} />
-                                            )}
-                                        </Row>
+                                            <Translation
+                                                id={
+                                                    toExpand > 0
+                                                        ? 'TR_SHOW_MORE_ADDRESSES'
+                                                        : 'TR_SHOW_LESS'
+                                                }
+                                                values={{ count: toExpand }}
+                                            />
+                                        </Button>
                                     )}
-                            </Content>
-                        </Row>
-                    </OutlineHighlight>
-                </Card>
+                                    {isTxBumpable && (
+                                        <Tooltip
+                                            content={
+                                                <Translation
+                                                    id="TR_BUMP_FEE_DISABLED_TOOLTIP"
+                                                    values={{
+                                                        a: chunks => (
+                                                            <Link
+                                                                href={
+                                                                    HELP_CENTER_REPLACE_BY_FEE_ETHEREUM
+                                                                }
+                                                            >
+                                                                {chunks}
+                                                            </Link>
+                                                        ),
+                                                    }}
+                                                />
+                                            }
+                                            isActive={disableBumpFee}
+                                        >
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                iconLeft="gauge"
+                                                onClick={e => {
+                                                    openTxDetailsModal({
+                                                        flow: 'bump-fee',
+                                                    });
+                                                    e.stopPropagation();
+                                                }}
+                                                isDisabled={disableBumpFee}
+                                                data-testid="@transaction-item/bump-fee-button"
+                                                size="small"
+                                            >
+                                                <Translation id="TR_BUMP_FEE" />
+                                            </Button>
+                                        </Tooltip>
+                                    )}
+                                    {isTxCancellable && (
+                                        <Button
+                                            intent="neutral"
+                                            priority="secondary"
+                                            iconLeft="x"
+                                            onClick={e => {
+                                                openTxDetailsModal({
+                                                    flow: 'cancel-transaction',
+                                                });
+                                                e.stopPropagation();
+                                            }}
+                                            size="small"
+                                        >
+                                            <Translation id="TR_CANCEL_TX" />
+                                        </Button>
+                                    )}
+                                </Row>
+                            )
+                        }
+                    >
+                        {type !== 'unknown' && type !== 'failed' && allOutputs.length ? (
+                            <TransactionTargetsList
+                                transaction={transaction}
+                                allOutputs={allOutputs}
+                                isActionDisabled={isActionDisabled}
+                                accountKey={accountKey}
+                                accountMetadata={accountMetadata}
+                                limit={limit}
+                                defaultLimit={DEFAULT_LIMIT}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        ) : null}
+
+                        {type === 'joint' && (
+                            <CoinjoinRow
+                                transaction={transaction}
+                                useFiatValues={shallDisplayBaseCurrency}
+                            />
+                        )}
+
+                        {transaction.cardanoSpecific?.withdrawal && (
+                            <WithdrawalRow
+                                transaction={transaction}
+                                useFiatValues={shallDisplayBaseCurrency}
+                            />
+                        )}
+
+                        {transaction.cardanoSpecific?.deposit && (
+                            <DepositRow
+                                transaction={transaction}
+                                useFiatValues={shallDisplayBaseCurrency}
+                            />
+                        )}
+
+                        {showFeeRow && (
+                            <FeeRow
+                                fee={fee}
+                                transaction={transaction}
+                                useFiatValues={shallDisplayBaseCurrency}
+                            />
+                        )}
+                    </TransactionLayout>
+                </OutlineHighlight>
             </Wrapper>
         );
     },

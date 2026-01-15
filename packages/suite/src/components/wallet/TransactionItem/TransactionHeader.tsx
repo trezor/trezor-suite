@@ -7,9 +7,7 @@ import {
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-utils';
-import { Row } from '@trezor/components';
 import { AccountTransaction } from '@trezor/connect';
-import { spacings } from '@trezor/theme';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
 import { WalletAccountTransaction } from 'src/types/wallet';
@@ -100,23 +98,24 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         transaction.ethereumSpecific.parsedData.name !== 'Transfer'
     ) {
         return (
-            <Row gap={spacings.xxs} overflow="hidden">
-                <span>{transaction.ethereumSpecific.parsedData.name}</span>
+            <>
+                {transaction.ethereumSpecific.parsedData.name}
                 {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}
-            </Row>
+            </>
         );
     }
+
     const solanaStakeType = transaction?.solanaSpecific?.stakeOperation?.type;
     if (solanaStakeType) {
         return (
-            <Row gap={spacings.xxs} overflow="hidden">
-                <span>{getSolTransactionStakeTypeName(solanaStakeType)}</span>
+            <>
+                {getSolTransactionStakeTypeName(solanaStakeType)}
                 {isSupportedSolStakingNetworkSymbol(transaction.symbol) && (
                     <UnstakingTxAmount transaction={transaction} />
                 )}
-            </Row>
+            </>
         );
     }
 
