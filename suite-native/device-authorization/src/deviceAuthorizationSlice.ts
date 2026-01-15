@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import {
     DeviceRootState,
@@ -43,11 +43,8 @@ export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
     reducers: {
-        changeDeviceAuthorizationStep: (
-            state,
-            { payload }: PayloadAction<DeviceAuthorizationStep>,
-        ) => {
-            state.deviceAuthorizationStep = payload;
+        checkPassphraseOnDevice: state => {
+            state.deviceAuthorizationStep = DeviceAuthorizationStep.CheckPassphraseOnDevice;
         },
     },
     extraReducers: builder => {
@@ -59,6 +56,10 @@ export const deviceAuthorizationSlice = createSlice({
                 // @ts-expect-error payload not typed
                 if (action.payload?.device?._state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
+                } else {
+                    // If pin was requested for new passphrase wallet, we can't wait for close window to reset the state
+                    // and need to do it here so we go from device authorization to passphrase flow (for wallet creation).
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
                 }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
@@ -181,6 +182,6 @@ export const selectPassphraseDiscoveryCompleted = (state: DiscoveryRootState & D
     );
 };
 
-export const { changeDeviceAuthorizationStep } = deviceAuthorizationSlice.actions;
+export const { checkPassphraseOnDevice } = deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;
