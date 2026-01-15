@@ -1234,3 +1234,10 @@ export function accountsFiatBalanceInDescOrderComparator({
 
 export const isProgramDerivedAccount = (data: AccountInfo) =>
     !(data?.misc?.owner === SYSTEM_PROGRAM_PUBLIC_KEY || data?.misc?.owner === undefined);
+
+export function filterAccountsByNetworkSymbol(
+    accounts: Account[],
+    networkSymbol: NetworkSymbol | undefined,
+): Account[] {
+    return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
+}

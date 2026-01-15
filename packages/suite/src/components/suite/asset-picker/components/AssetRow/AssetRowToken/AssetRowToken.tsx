@@ -14,14 +14,22 @@ export type AssetRowTokenProps = {
     account: Account;
     onClick: (token: TokensWithRates, account: Account) => void;
     dataTestId?: string;
+    hiddenToken?: boolean;
 };
 
-export function AssetRowToken({ token, account, dataTestId, onClick }: AssetRowTokenProps) {
+export function AssetRowToken({
+    token,
+    account,
+    dataTestId,
+    onClick,
+    hiddenToken = false,
+}: AssetRowTokenProps) {
     return (
         <ItemClickableContainer
             onClick={() => {
                 onClick(token, account);
             }}
+            padding={hiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
         >
             <Row
                 data-testid={`${dataTestId}/${account.symbol}/${token.symbol}`}
@@ -48,6 +56,7 @@ export function AssetRowToken({ token, account, dataTestId, onClick }: AssetRowT
                     fiatAmount={token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined}
                     contractAddress={token.contract}
                     amount={token.balance}
+                    fiatFallackText={hiddenToken}
                 />
             )}
         </ItemClickableContainer>

@@ -1,22 +1,26 @@
 import { useMemo } from 'react';
 import { useThrottle } from 'react-use';
 
+import { CryptoId } from 'invity-api';
+
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
 import {
     accountsFiatBalanceInDescOrderComparator,
-    findAccountsByNetwork,
+    filterAccountsByNetworkSymbol,
+    isTestnet,
 } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
-import { ASSET_ROW_HEIGHT } from 'src/components/suite/asset-picker/constants';
-import { AccountWithTokensOption } from 'src/components/suite/asset-picker/hooks';
+import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
+import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
 import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,
@@ -24,23 +28,14 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
-function filterAccountsByNetworkSymbol(
-    accounts: Account[],
-    networkSymbol: NetworkSymbol | undefined,
-): Account[] {
-    return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
-}
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
-    /**
-     * Filter accounts before they are converted to AccountWithTokensOption.
-     */
-    accountFilter?: (account: Account) => boolean;
+    supportedCryptoIds: Set<CryptoId>;
 }
 
 export function useAccountWithTokensOptions({
     networkSymbolFilter,
-    accountFilter = () => true,
+    supportedCryptoIds,
 }: UseAccountWithTokensOptionsProps): {
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
@@ -64,7 +59,23 @@ export function useAccountWithTokensOptions({
             };
         }
 
-        const validAccounts = throttledAccounts.filter(accountFilter);
+        const validAccounts = throttledAccounts.filter(account => {
+            if (isTestnet(account.symbol) || account.accountType === 'coinjoin') {
+                return false;
+            }
+
+            if (account.tokens?.length === 0) {
+                return new BigNumber(account.balance).gt(0);
+            }
+
+            const tokens = getTokens({
+                tokens: account.tokens ?? [],
+                symbol: account.symbol,
+                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
+            });
+
+            return tokens.shownWithBalance.length > 0;
+        });
 
         const networks = new Set(validAccounts.map(account => account.symbol));
         const orderedNetworks = networkSymbolCollection.filter(network => networks.has(network));
@@ -97,39 +108,40 @@ export function useAccountWithTokensOptions({
                 const sortedTokensByFiatBalance = tokensWithRates.sort(sortTokensWithRates);
 
                 return {
-                    ...account,
+                    account,
                     tokens: sortedTokensByFiatBalance,
                 };
             });
 
         const accountsWithTokens: AccountWithTokensOption[] =
-            accountsAndTokensSortedByFiatBalance.flatMap(account => [
-                {
-                    type: 'account',
-                    account,
-                    height: ASSET_ROW_HEIGHT,
-                },
-                ...(account.tokens ?? []).map(
-                    token =>
-                        ({
-                            type: 'token',
-                            account,
-                            token,
-                            height: ASSET_ROW_HEIGHT,
-                        }) satisfies AccountWithTokensOption,
-                ),
+            accountsAndTokensSortedByFiatBalance.flatMap(({ account, tokens }) => [
+                createAccountOption(account),
+                ...tokens.map(token => createTokenOption(account, token)),
             ]);
 
+        const supportedAccountsWithTokens = accountsWithTokens.filter(option => {
+            switch (option.type) {
+                case 'account':
+                    return supportedCryptoIds.has(getCryptoId(option.account.symbol));
+                case 'token':
+                    return supportedCryptoIds.has(
+                        getCryptoId(option.account.symbol, option.token?.contract),
+                    );
+                default:
+                    return false;
+            }
+        });
+
         return {
-            accountsWithTokens,
+            accountsWithTokens: supportedAccountsWithTokens,
             networks: orderedNetworks,
         };
     }, [
         fiatRatesRef,
         throttledAccounts,
         networkSymbolFilter,
-        accountFilter,
-        baseCurrencyCode,
         tokenDefinitions,
+        baseCurrencyCode,
+        supportedCryptoIds,
     ]);
 }

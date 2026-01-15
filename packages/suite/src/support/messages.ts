@@ -10799,4 +10799,16 @@ export default defineMessages({
         id: 'TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION',
         defaultMessage: 'Check the spelling or browse the list to select an asset.',
     },
+    TR_HIDDEN_TOKENS: {
+        id: 'TR_HIDDEN_TOKENS',
+        defaultMessage: 'Hidden tokens',
+    },
+    TR_HIDDEN_TOKEN_WITHOUT_FIAT: {
+        id: 'TR_HIDDEN_TOKEN_WITHOUT_FIAT',
+        defaultMessage: 'No pair',
+    },
+    TR_NON_TRADABLE_TOKENS: {
+        id: 'TR_NON_TRADABLE_TOKENS',
+        defaultMessage: 'Non-tradable tokens',
+    },
 } as const);

@@ -2,7 +2,8 @@ import { useMemo } from 'react';
 
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
-import { AccountWithTokensOption } from './useInsertGroupLabelsAndSpaces';
+import { AccountWithTokensOption } from '../types';
+import { calculateHiddenTokensHeight } from '../utils';
 
 export function useFilterAccountsWithTokens(
     accountsWithTokens: AccountWithTokensOption[],
@@ -10,21 +11,44 @@ export function useFilterAccountsWithTokens(
 ) {
     return useMemo(
         () =>
-            accountsWithTokens.filter(accountOrToken => {
-                if (!search) {
-                    return true;
-                }
+            accountsWithTokens
+                .filter(item => {
+                    if (!search) {
+                        return true;
+                    }
 
-                switch (accountOrToken.type) {
-                    case 'account':
-                        return accountSearchFn(accountOrToken.account, search, {
-                            tokensMatch: false,
-                        });
+                    switch (item.type) {
+                        case 'account':
+                            return accountSearchFn(item.account, search, {
+                                tokensMatch: false,
+                            });
 
-                    case 'token':
-                        return isTokenMatchesSearch(accountOrToken.token, search);
-                }
-            }),
+                        case 'token':
+                            return isTokenMatchesSearch(item.token, search);
+
+                        case 'hidden-tokens':
+                            return item.tokens.some(token => isTokenMatchesSearch(token, search));
+                    }
+                })
+                .map(item => {
+                    if (item.type === 'hidden-tokens') {
+                        const matchedTokens = item.tokens.filter(token =>
+                            isTokenMatchesSearch(token, search),
+                        );
+
+                        return {
+                            ...item,
+                            tokens: matchedTokens,
+                            // Update height based on matched tokens count
+                            height: calculateHiddenTokensHeight(
+                                item.expanded,
+                                matchedTokens.length,
+                            ),
+                        };
+                    }
+
+                    return item;
+                }),
         [accountsWithTokens, search],
     );
 }
