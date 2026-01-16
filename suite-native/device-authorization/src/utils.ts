@@ -3,15 +3,20 @@ import { UnknownAction } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
 
+export const pinButtonRequestCodes = [
+    'ButtonRequest_PinEntry',
+    'PinMatrixRequestType_Current',
+] as const;
+
 export const isPinButtonRequestCode = (action: UnknownAction) =>
     action.type === UI.REQUEST_BUTTON &&
     G.isNotNullable(action.payload) &&
     'code' in action.payload &&
-    ['ButtonRequest_PinEntry', 'PinMatrixRequestType_Current'].includes(
-        action.payload.code as string,
+    pinButtonRequestCodes.includes(
+        action.payload.code as (typeof pinButtonRequestCodes)[number],
     );
 
-const flowEndingButtonRequests = [
+export const flowEndingButtonRequests = [
     'ButtonRequest_ConfirmOutput',
     'ButtonRequest_SignTx',
     'ButtonRequest_Address',
