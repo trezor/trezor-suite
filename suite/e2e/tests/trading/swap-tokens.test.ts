@@ -48,7 +48,7 @@ test.describe('Trading - Swap tokens', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
                 sellAsset: {
                     networkFilter: 'sol',
                     networkSymbol: 'sol',
-                    tokenSymbol: 'usdt',
+                    tokenSymbol: 'USDT',
                     assetCryptoId: tetherMint as CryptoId,
                     searchFilter: 'USDT',
                 },

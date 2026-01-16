@@ -48,7 +48,7 @@ test.describe('Trading - Swap token to coin', { tag: ['@webOnly', '@T3W1', '@T3T
                 amount: sendAmount,
                 sellAsset: {
                     networkSymbol: 'sol',
-                    tokenSymbol: 'usdt',
+                    tokenSymbol: 'USDT',
                     assetCryptoId: tetherMint as CryptoId,
                 },
                 buyAsset: {
