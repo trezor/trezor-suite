@@ -1,3 +1,5 @@
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import { isDeviceInBootloaderMode } from './modeUtils';
 import {
     FirmwareSource,
@@ -22,6 +24,15 @@ export const getFirmwareSource = (device?: PartialDevice): FirmwareSource => {
 };
 
 export const getFirmwareRevision = (device?: PartialDevice) => device?.features?.revision || '';
+
+/**
+ * Gets the firmware/bootloader version from device features, depending on the mode (it does not distinguish normal | bootloader).
+ */
+export const getFirmwareOrBootloaderVersionArray = (features: PROTO.Features): VersionArray => [
+    features.major_version,
+    features.minor_version,
+    features.patch_version,
+];
 
 export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | null => {
     if (!device?.features) {

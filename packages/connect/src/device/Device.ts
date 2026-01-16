@@ -1,5 +1,10 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { DeviceModelInternal, FirmwareRelease, models } from '@trezor/device-utils';
+import {
+    DeviceModelInternal,
+    FirmwareRelease,
+    getFirmwareOrBootloaderVersionArray,
+    models,
+} from '@trezor/device-utils';
 import {
     type DecodedTrezorPushNotification,
     TransportProtocol,
@@ -875,11 +880,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const version = this.getVersion();
-        const newVersion = [
-            feat.major_version,
-            feat.minor_version,
-            feat.patch_version,
-        ] satisfies VersionArray;
+        const newVersion = getFirmwareOrBootloaderVersionArray(feat);
 
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
@@ -1002,13 +1003,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     getVersion(): VersionArray | undefined {
-        if (!this.features) return;
-
-        return [
-            this.features.major_version,
-            this.features.minor_version,
-            this.features.patch_version,
-        ];
+        return this.features ? getFirmwareOrBootloaderVersionArray(this.features) : undefined;
     }
 
     atLeast(versions: string[] | string) {
