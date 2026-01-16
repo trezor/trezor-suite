@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
-import { selectInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import {
     PassphraseStackParamList,
     PassphraseStackRoutes,
@@ -28,7 +27,6 @@ export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamLi
 export const PassphraseStackNavigator = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
-    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
 
     useRedirectOnPassphraseCompletion();
 
@@ -50,14 +48,11 @@ export const PassphraseStackNavigator = () => {
                         name={PassphraseStackRoutes.PassphraseConfirmOnTrezor}
                         component={PassphraseConfirmOnTrezorScreen}
                     />
+                    <PassphraseStack.Screen
+                        name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
+                        component={PassphraseEnterOnTrezorScreen}
+                    />
                 </>
-            )}
-
-            {inputPassphraseOnDevice && (
-                <PassphraseStack.Screen
-                    name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
-                    component={PassphraseEnterOnTrezorScreen}
-                />
             )}
 
             {passphraseState === 'progress' && (
@@ -82,6 +77,10 @@ export const PassphraseStackNavigator = () => {
                     <PassphraseStack.Screen
                         name={PassphraseStackRoutes.PassphraseConfirmOnTrezor}
                         component={PassphraseConfirmOnTrezorScreen}
+                    />
+                    <PassphraseStack.Screen
+                        name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
+                        component={PassphraseEnterOnTrezorScreen}
                     />
                 </>
             )}

@@ -46,7 +46,7 @@ export const deviceAuthorizationSlice = createSlice({
                 // @ts-expect-error payload not typed
                 if (action.payload?.device?._state?.staticSessionId) {
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.PassphraseRequested;
-                } else {
+                } else if (state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested) {
                     // If pin was requested for new passphrase wallet, we can't wait for close window to reset the state
                     // and need to do it here so we go from device authorization to passphrase flow (for wallet creation).
                     state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
@@ -54,9 +54,6 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
-            })
-            .addCase(UI.REQUEST_PASSPHRASE_ON_DEVICE, state => {
-                state.deviceAuthorizationStep = DeviceAuthorizationStep.InputPassphraseOnDevice;
             })
             .addMatcher(isFlowEndingButtonRequest, state => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
@@ -78,9 +75,7 @@ export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
 
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.deviceAuthorizationStep ===
-        DeviceAuthorizationStep.PassphraseRequested ||
-    state.deviceAuthorization.deviceAuthorizationStep ===
-        DeviceAuthorizationStep.InputPassphraseOnDevice;
+    DeviceAuthorizationStep.PassphraseRequested;
 
 export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.deviceAuthorizationStep ===

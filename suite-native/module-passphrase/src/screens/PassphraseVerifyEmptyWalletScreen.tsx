@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
@@ -9,7 +11,11 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
+import {
+    PassphraseForm,
+    PassphraseScreenHeader,
+    useWaitForUiRequestPassphraseOnDevice,
+} from '@suite-native/passphrase';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -24,6 +30,12 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
     const handleAfterSubmit = () => {
         navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
     };
+
+    const navigateToEnterOnDevice = useCallback(() => {
+        navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);
+    }, [navigation]);
+
+    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<PassphraseScreenHeader />}>
