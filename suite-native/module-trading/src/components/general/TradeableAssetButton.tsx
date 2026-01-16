@@ -93,9 +93,10 @@ export const TradeableAssetButton = ({
                 <NetworkSymbolExtendedFormatter
                     symbol={symbol}
                     variant="callout"
+                    color="textDefault"
                     testID={symbolTestID}
                 />
-                {caret ? <Icon name="caretDown" color="textSubdued" size="medium" /> : <Box />}
+                {caret ? <Icon name="caretDown" color="textDefault" size="medium" /> : <Box />}
             </Pressable>
         </LinearGradient>
     );
