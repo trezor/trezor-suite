@@ -68,7 +68,6 @@ export interface ConnectSettingsInternal {
     timestamp: number;
     proxy?: Proxy;
     sharedLogger?: boolean;
-    useCoreInPopup?: boolean;
     localFirmwares?: LocalFirmwares;
     firmwareUpdateSource?: FirmwareUpdateSource;
 }
