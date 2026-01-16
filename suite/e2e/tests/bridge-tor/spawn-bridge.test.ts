@@ -60,7 +60,6 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         trezorUserEnvLink,
         emulatorStartConf,
-        model,
     }, testInfo) => {
         await trezorUserEnvLink.startEmu(emulatorStartConf);
         await trezorUserEnvLink.setupEmu({});
@@ -73,15 +72,15 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         enhancePage(suite.window);
         await suite.window.title();
 
-        const devicePrompt = new DevicePrompt(suite.window, model);
+        const devicePrompt = new DevicePrompt(suite.window, emulatorStartConf.model);
 
         const onboardingPage = new OnboardingPage(
             suite.window,
-            model,
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
-            emulatorStartConf,
+            emulatorStartConf.model,
+            emulatorStartConf.version,
         );
         await onboardingPage.completeOnboarding();
 

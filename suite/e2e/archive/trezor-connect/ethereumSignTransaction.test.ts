@@ -27,7 +27,7 @@ test.describe(
             connectPermissionsModal,
             trezorUserEnvLink,
             page,
-            model,
+            emulatorStartConf,
         }) => {
             const res = TrezorConnect.ethereumSignTransaction({
                 path: "m/44'/60'/0'/0/0",
@@ -47,7 +47,7 @@ test.describe(
             await page
                 .getByTestId('@prompts/confirm-on-device/step/0/active')
                 .waitFor({ state: 'visible' });
-            await pressContinue(model);
+            await pressContinue(emulatorStartConf.model);
 
             await page
                 .getByTestId('@prompts/confirm-on-device/step/1/active')

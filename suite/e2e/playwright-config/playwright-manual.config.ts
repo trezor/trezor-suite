@@ -1,13 +1,13 @@
 import { defineConfig } from '@playwright/test';
 
-import { PlaywrightTarget, baseConfig } from './playwright-base.config';
+import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 
 const config = defineConfig({
     ...baseConfig,
     projects: [
         new PlaywrightProjectBuilder(PlaywrightTarget.Web, 'manual')
-            .setModel('T1B1') // model has to be set even when not used
             .setGrep(/@group=manual/)
             .build(),
     ],

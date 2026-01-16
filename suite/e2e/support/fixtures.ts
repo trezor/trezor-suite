@@ -62,25 +62,25 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(new WalletPage(page));
     },
     onboardingPage: async (
-        { page, devicePrompt, analyticsSection, settingsPage, emulatorStartConf, model },
+        { page, devicePrompt, analyticsSection, settingsPage, emulatorStartConf },
         use,
     ) => {
         await use(
             new OnboardingPage(
                 page,
-                model,
                 devicePrompt,
                 analyticsSection,
                 settingsPage,
-                emulatorStartConf,
+                emulatorStartConf.model,
+                emulatorStartConf.version,
             ),
         );
     },
     analyticsSection: async ({ page }, use) => {
         await use(new AnalyticsSection(page));
     },
-    devicePrompt: async ({ page, model }, use) => {
-        await use(new DevicePrompt(page, model));
+    devicePrompt: async ({ page, emulatorStartConf }, use) => {
+        await use(new DevicePrompt(page, emulatorStartConf.model));
     },
     recoveryModal: async ({ page }, use) => {
         await use(new RecoveryModal(page));

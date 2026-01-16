@@ -6,62 +6,66 @@ import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 
 test.use({ exceptionLogger: skipFixture });
-test.describe('Suite Sync - Labelling', { tag: ['@webOnly', '@specificFirmware', '@T3W1'] }, () => {
-    test.use({
-        emulatorStartConf: {
-            model: 'T3W1',
-            version: '2-main',
-            wipe: true,
-        },
-        emulatorSetupConf: {
-            mnemonic: generateMnemonic(wordlist),
-            passphrase_protection: true,
-        },
-    });
-
-    test('Sync account label across sessions', async ({
-        page,
-        onboardingPage,
-        settingsPage,
-        walletPage,
-        metadataPage,
-    }) => {
-        await test.step('Onboarding and enable Suite Sync', async () => {
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-            await metadataPage.enableSuiteSync();
+test.describe(
+    'Suite Sync - Labelling',
+    { tag: ['@webOnly', '@specificFirmware', '@T3W1', '@T3T1'] },
+    () => {
+        test.use({
+            firmwareVersion: '2-main',
+            emulatorSetupConf: {
+                mnemonic: generateMnemonic(wordlist),
+                passphrase_protection: true,
+            },
         });
 
-        const newLabel = 'my synced btc account label';
-        await test.step('Change BTC account label in first session', async () => {
-            await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
-            await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
-            await metadataPage.account.metadataInput.fill(newLabel);
-            await page.keyboard.press('Enter');
-            await expect(
-                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
-            ).toHaveText(newLabel);
+        test('Sync account label across sessions', async ({
+            page,
+            onboardingPage,
+            settingsPage,
+            walletPage,
+            metadataPage,
+        }) => {
+            await test.step('Onboarding and enable Suite Sync', async () => {
+                await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+                await metadataPage.enableSuiteSync();
+            });
 
-            await page.waitForTimeout(5_000); // wait for sync to complete
-        });
+            const newLabel = 'my synced btc account label';
+            await test.step('Change BTC account label in first session', async () => {
+                await walletPage
+                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
+                    .click();
+                await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
+                await metadataPage.account.metadataInput.fill(newLabel);
+                await page.keyboard.press('Enter');
+                await expect(
+                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                ).toHaveText(newLabel);
 
-        await test.step('Wipe Suite to simulate new session', async () => {
-            await settingsPage.navigateTo('application');
-            await settingsPage.resetAppButton.click();
-        });
+                await page.waitForTimeout(5_000); // wait for sync to complete
+            });
 
-        await test.step('Onboarding and enable Suite Sync', async () => {
-            await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
-            await metadataPage.enableSuiteSync();
-        });
+            await test.step('Wipe Suite to simulate new session', async () => {
+                await settingsPage.navigateTo('application');
+                await settingsPage.resetAppButton.click();
+            });
 
-        await test.step('Verify BTC account label is synced in second session', async () => {
-            await walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }).click();
-            await expect(
-                walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
-            ).toHaveText(newLabel, { timeout: 30_000 });
+            await test.step('Onboarding and enable Suite Sync', async () => {
+                await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+                await metadataPage.enableSuiteSync();
+            });
+
+            await test.step('Verify BTC account label is synced in second session', async () => {
+                await walletPage
+                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
+                    .click();
+                await expect(
+                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                ).toHaveText(newLabel, { timeout: 30_000 });
+            });
         });
-    });
-});
+    },
+);
 
 const MNEMONIC = 'ugly rally dial movie exhibit annual bean slender illegal frown giraffe scare';
 // These labels were set manually on this seed
@@ -71,24 +75,25 @@ const WALLET_LABEL = 'Evolu synced wallet';
 const ADDRESS = 'bc1q8aekqmmpxujx8xpgxp9mcwe6kdjpcnpzpehsmm';
 const ADDRESS_LABEL = 'Evolu synced BTC address';
 
-test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1'] }, () => {
+test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorStartConf: { model: 'T3W1', version: '2-main', wipe: true },
+        firmwareVersion: '2-main',
         emulatorSetupConf: { mnemonic: MNEMONIC, passphrase_protection: true },
     });
 
     test('Sync labels from server', async ({
         page,
+        target,
         devicePrompt,
         onboardingPage,
         dashboardPage,
         walletPage,
         metadataPage,
-    }, testInfo) => {
+    }) => {
         await test.step('Enable Suite Sync', async () => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
             await metadataPage.initiateSuiteSyncSetup();
-            if (isWebProject(testInfo)) {
+            if (isWebProject(target)) {
                 // eslint-disable-next-line playwright/no-conditional-expect
                 await expect(devicePrompt).toDisplayOnEmulator({
                     T3W1: {

@@ -17,7 +17,7 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
 test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
-        model,
+        emulatorStartConf,
         analyticsSection,
         onboardingPage,
         devicePrompt,
@@ -34,7 +34,7 @@ test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
 
-        if (isModelWithTHP(model)) {
+        if (isModelWithTHP(emulatorStartConf.model)) {
             await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }

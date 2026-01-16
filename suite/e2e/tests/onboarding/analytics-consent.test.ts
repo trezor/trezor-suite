@@ -10,7 +10,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
     });
 
     test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
-        model,
+        emulatorStartConf,
         analyticsSection,
         onboardingPage,
         walletPage,
@@ -20,7 +20,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
         await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
         await analyticsSection.continueButton.click();
 
-        if (isModelWithTHP(model)) {
+        if (isModelWithTHP(emulatorStartConf.model)) {
             await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }

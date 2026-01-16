@@ -16,7 +16,7 @@ test.describe(
         test('should respect disabled analytics in onboarding with following enabling in settings', async ({
             analytics,
             page,
-            model,
+            emulatorStartConf,
             analyticsSection,
             onboardingPage,
             dashboardPage,
@@ -48,7 +48,7 @@ test.describe(
                 });
 
             await test.step('Finish onboarding', async () => {
-                if (isModelWithTHP(model)) {
+                if (isModelWithTHP(emulatorStartConf.model)) {
                     await devicePrompt.allowConnectToTrezor();
                     await onboardingPage.enterTHPPairingCode();
                     await onboardingPage.enableAutoconnect();
@@ -122,7 +122,7 @@ test.describe(
         });
 
         test('should respect enabled analytics in onboarding with following disabling in settings', async ({
-            model,
+            emulatorStartConf,
             analytics,
             analyticsSection,
             onboardingPage,
@@ -142,7 +142,7 @@ test.describe(
             });
 
             await test.step('Finish onboarding', async () => {
-                if (isModelWithTHP(model)) {
+                if (isModelWithTHP(emulatorStartConf.model)) {
                     await devicePrompt.allowConnectToTrezor();
                     await onboardingPage.enterTHPPairingCode();
                 }

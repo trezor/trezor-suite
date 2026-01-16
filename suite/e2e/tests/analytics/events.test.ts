@@ -12,8 +12,8 @@ test.describe(
     'Analytics Events',
     { tag: ['@webOnly', '@specificFirmware', '@T3T1', '@smoke'] },
     () => {
-        const firmwareVersion = findLatestVersionForModel('T3T1');
-        test.use({ emulatorStartConf: { model: 'T3T1', version: firmwareVersion, wipe: true } });
+        const firmwareVersion = findLatestVersionForModel('T3T1'); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
+        test.use({ firmwareVersion });
         test.beforeEach(async ({ analytics, onboardingPage }) => {
             await analytics.interceptAnalytics();
             await onboardingPage.completeOnboarding();
@@ -110,7 +110,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
 
     test('Analytics capture suite-ready after getting enabled', async ({
         analytics,
-        model,
+        emulatorStartConf,
         page,
         analyticsSection,
         settingsPage,
@@ -127,13 +127,13 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             // the only message about the analytics being sent is the "settings/analytics" disabled.
             await analytics.interceptAnalytics();
 
-            await trezorUserEnvLink.startEmu({ wipe: true, model });
+            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: true });
             await trezorUserEnvLink.setupEmu({
                 passphrase_protection: true,
             });
 
             await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
-            if (isModelWithTHP(model)) {
+            if (isModelWithTHP(emulatorStartConf.model)) {
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }

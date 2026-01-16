@@ -4,12 +4,7 @@ import { defineConfig } from '@playwright/test';
 import dotenv from 'dotenv';
 import path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, './.env') });
-
-export enum PlaywrightTarget {
-    Web = 'web',
-    Desktop = 'desktop',
-}
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const CI_TIMEOUT = 1000 * 180;
 const LOCAL_TIMEOUT = 1000 * 90;
@@ -45,6 +40,5 @@ export const baseConfig: PlaywrightTestConfig = defineConfig<
         ? [['@currents/playwright']] // CI run
         : [['list'], ['html', { open: 'never' }]], // Local run
     timeout: getTimeout(),
-    outputDir: path.join(__dirname, 'test-results'),
-    snapshotPathTemplate: 'snapshots/{projectName}/{testFilePath}/{arg}{ext}',
+    outputDir: path.join(__dirname, '../test-results'),
 });
