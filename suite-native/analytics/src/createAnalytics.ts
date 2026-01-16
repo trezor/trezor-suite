@@ -1,3 +1,4 @@
+import { isDebugEnv } from '@suite-native/config';
 import { Analytics, Event, QueuedAnalytics } from '@trezor/analytics';
 import { getSuiteVersion } from '@trezor/env-utils';
 
@@ -12,9 +13,6 @@ export const createAnalytics = (): Analytics<AnalyticsNativeEvents> => {
         version: getSuiteVersion(),
         app: 'suite',
     });
-
-    // Inlined to avoid native dependency
-    const isDebugEnv = () => process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug';
 
     if (isDebugEnv()) {
         // Do not send analytics in development
