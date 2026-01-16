@@ -15,7 +15,7 @@ export const EnterOnDeviceStep = ({
         icon={mapTrezorModelToIcon[deviceModelInternal]}
         margin={{ top: spacings.xs }}
     >
-        <Paragraph>
+        <Paragraph data-testid="@recovery/paragraph">
             <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
         </Paragraph>
     </Banner>

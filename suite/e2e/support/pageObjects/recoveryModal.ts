@@ -19,7 +19,7 @@ export class RecoveryModal {
         this.startButton = page.getByTestId('@recovery/start-button');
         this.successTitle = page.getByTestId('@recovery/success-title');
         this.header = page.getByTestId('@modal/header');
-        this.prompt = page.getByTestId('@modal').locator('div[role="paragraph"]');
+        this.prompt = page.getByTestId('@modal').getByTestId('@recovery/paragraph');
     }
 
     @step()
