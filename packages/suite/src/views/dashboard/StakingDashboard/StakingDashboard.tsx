@@ -16,16 +16,17 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { Badge, BadgeIntent, Card, Table } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { BigNumber, arrayPartition } from '@trezor/utils';
 
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { DashboardSection } from 'src/components/dashboard';
+import { PoweredByBadge } from 'src/components/wallet';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
+import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 import { StakingDashboardAccountRow } from './StakingDashboardAccountRow';
 import { StakingDashboardActivateRow } from './StakingDashboardActivateRow';
@@ -68,6 +69,9 @@ interface StakingDashboardProps {
 
 export const StakingDashboard = ({ collapsible = true }: StakingDashboardProps) => {
     const dispatch = useDispatch();
+
+    const routeName = useSelector(selectRouteName);
+    const isOnEarnPage = routeName === 'suite-earn';
 
     const collapsed = useSelector(state => state.suite.stakingDashboardCollapsed);
 
@@ -203,7 +207,7 @@ export const StakingDashboard = ({ collapsible = true }: StakingDashboardProps) 
                 heading={
                     <>
                         <Translation id="TR_STAKING_DASHBOARD_TITLE" />
-                        <Badge intent={badge.intent} margin={{ left: spacings.sm }}>
+                        <Badge intent={badge.intent} margin={{ left: 12 }}>
                             <Translation id={badge.label} />
                         </Badge>
                     </>
@@ -212,10 +216,11 @@ export const StakingDashboard = ({ collapsible = true }: StakingDashboardProps) 
                 collapsible={collapsible}
                 defaultCollapsed={collapsible ? collapsed : false}
                 onCollapseChange={onCollapseChange}
+                actions={isOnEarnPage ? <PoweredByBadge provider="everstake" /> : undefined}
                 ref={anchorRef}
             >
                 <Card paddingType="none">
-                    <Table isRowHighlightedOnHover margin={{ top: spacings.xs }}>
+                    <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                         <Table.Header>
                             <Table.Row>
                                 <Table.Cell>

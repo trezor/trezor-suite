@@ -50,18 +50,20 @@ export const DashboardSection = forwardRef(
                                         </H3>
                                     )}
 
-                                    {actions && <div>{actions}</div>}
-                                    {collapsible && (
-                                        <Collapsible.Toggle
-                                            onClick={() => setCollapsed(prev => !prev)}
-                                        >
-                                            <IconButton
-                                                icon={collapsed ? 'caretDown' : 'caretUp'}
-                                                intent="neutral"
-                                                priority="secondary"
-                                            />
-                                        </Collapsible.Toggle>
-                                    )}
+                                    <Row gap={8}>
+                                        {actions && <div>{actions}</div>}
+                                        {collapsible && (
+                                            <Collapsible.Toggle
+                                                onClick={() => setCollapsed(prev => !prev)}
+                                            >
+                                                <IconButton
+                                                    icon={collapsed ? 'caretDown' : 'caretUp'}
+                                                    intent="neutral"
+                                                    priority="secondary"
+                                                />
+                                            </Collapsible.Toggle>
+                                        )}
+                                    </Row>
                                 </Row>
                                 {subheading && <Text variant="tertiary">{subheading}</Text>}
                             </Column>

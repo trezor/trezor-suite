@@ -3,6 +3,7 @@ import { CoinjoinAccountDiscoveryProgress } from './CoinjoinAccountDiscoveryProg
 import { DiscoveryProgress } from './DiscoveryProgress';
 import { InputError } from './InputError';
 import { Pagination } from './Pagination';
+import { PoweredByBadge } from './PoweredByBadge';
 import { TransactionTimestamp } from './TransactionTimestamp';
 import { UtxoAnonymity } from './UtxoAnonymity';
 import { WalletLayout } from './WalletLayout/WalletLayout';
@@ -18,4 +19,5 @@ export {
     Pagination,
     TransactionTimestamp,
     CoinjoinAccountDiscoveryProgress,
+    PoweredByBadge,
 };
