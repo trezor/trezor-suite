@@ -15,6 +15,7 @@ export const allowedGhostContainerFrameProps = [
     'position',
     'display',
     'zIndex',
+    'cursor',
 ] as const satisfies FramePropsKeys[];
 type AllowedGhostContainerFrameProps = Pick<
     FrameProps,

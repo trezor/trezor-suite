@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
 
 import { AccountWithTokensOption } from '../types';
-import { calculateHiddenTokensHeight } from '../utils';
+import { calculateExpandableTokensHeight } from '../utils';
 
 export function useFilterAccountsWithTokens(
     accountsWithTokens: AccountWithTokensOption[],
@@ -27,11 +27,12 @@ export function useFilterAccountsWithTokens(
                             return isTokenMatchesSearch(item.token, search);
 
                         case 'hidden-tokens':
+                        case 'non-tradable-tokens':
                             return item.tokens.some(token => isTokenMatchesSearch(token, search));
                     }
                 })
                 .map(item => {
-                    if (item.type === 'hidden-tokens') {
+                    if (item.type === 'hidden-tokens' || item.type === 'non-tradable-tokens') {
                         const matchedTokens = item.tokens.filter(token =>
                             isTokenMatchesSearch(token, search),
                         );
@@ -40,7 +41,7 @@ export function useFilterAccountsWithTokens(
                             ...item,
                             tokens: matchedTokens,
                             // Update height based on matched tokens count
-                            height: calculateHiddenTokensHeight(
+                            height: calculateExpandableTokensHeight(
                                 item.expanded,
                                 matchedTokens.length,
                             ),

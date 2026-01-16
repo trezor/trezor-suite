@@ -18,6 +18,7 @@ import {
 } from 'src/components/suite/asset-picker/components';
 import {
     AssetPickerListItem,
+    useExpandableAccountGroups,
     useFilterAccountsWithTokens,
     useInsertGroupLabelsAndSpaces,
 } from 'src/components/suite/asset-picker/hooks';
@@ -26,7 +27,6 @@ import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFil
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
-import { useExpandableAccountGroups } from './hooks/useExpandableAccountGroups';
 
 type GlobalSendModalProps = {
     onCancel: (filledSearch: boolean) => void;
@@ -100,6 +100,7 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
                 case 'hidden-tokens':
                     return (
                         <ExpandableAssetRowTokens
+                            label="TR_HIDDEN_TOKENS"
                             account={item.account}
                             tokens={item.tokens}
                             expanded={item.expanded}

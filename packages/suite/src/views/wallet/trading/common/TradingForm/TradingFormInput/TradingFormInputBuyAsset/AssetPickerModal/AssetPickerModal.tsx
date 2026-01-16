@@ -26,7 +26,7 @@ import { AssetSearchWithNetworkFilter } from '../../TradingFormInputAssetPicker'
 export type AssetPickerModalProps = {
     closeModal: () => void;
     heading: TranslationKey;
-    dataTestId?: string;
+    dataTestId: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
 };
 

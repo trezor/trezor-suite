@@ -6,6 +6,7 @@ type ItemClickableContainerProps = {
     children: React.ReactNode;
     onClick: () => void;
     padding?: Padding;
+    isDisabled?: boolean;
 };
 
 export function ItemClickableContainer({
@@ -16,6 +17,7 @@ export function ItemClickableContainer({
         vertical: 8,
         right: 12,
     },
+    isDisabled = false,
 }: ItemClickableContainerProps) {
     return (
         <GhostContainer
@@ -26,6 +28,8 @@ export function ItemClickableContainer({
                 e.stopPropagation();
                 onClick();
             }}
+            isDisabled={isDisabled}
+            cursor={isDisabled ? 'not-allowed' : 'pointer'}
         >
             <Row justifyContent="space-between" gap={12} height="100%">
                 {children}

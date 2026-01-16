@@ -20,7 +20,7 @@ import {
     WalletAccountTransaction,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, TokenStandard } from '@trezor/blockchain-link-types';
 import {
     AccountAddress,
     AccountTransaction,
@@ -512,15 +512,21 @@ export const getTxOperation = (
     return null;
 };
 
-export const isNftTokenTransfer = (transfer: TokenTransfer) =>
-    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(transfer.standard || '');
+const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
+    'ERC1155',
+    'ERC721',
+    'BEP1155',
+    'BEP721',
+]);
+
+export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+    NFT_TOKEN_STANDARDS.has(token.standard);
+
+export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
+    transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
 
 export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
     !!transfer.multiTokenValues && transfer.multiTokenValues.length > 0;
-
-// TODO: TokenInfo should use TokenStandard type
-export const isNftToken = (token: TokenInfo) =>
-    ['ERC1155', 'ERC721', 'BEP1155', 'BEP721'].includes(token.standard || '');
 
 export const getNftTokenId = (transfer: TokenTransfer) =>
     // use 0 index, haven't found an example where multiTokenValues.length > 1

@@ -5,7 +5,7 @@ import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { ASSET_ROW_HEIGHT, EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../constants';
 import { AccountWithTokensOption } from '../types';
 
-export function calculateHiddenTokensHeight(expanded: boolean, hiddenTokensLength: number) {
+export function calculateExpandableTokensHeight(expanded: boolean, hiddenTokensLength: number) {
     const tokensHeight = expanded ? hiddenTokensLength * (ASSET_ROW_HEIGHT - 8) : 0;
 
     return EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT + tokensHeight;
@@ -28,9 +28,31 @@ export function createHiddenTokensOption({
         type: 'hidden-tokens',
         account,
         tokens: hiddenTokens,
-        height: calculateHiddenTokensHeight(expanded, hiddenTokens.length),
+        height: calculateExpandableTokensHeight(expanded, hiddenTokens.length),
         expanded,
     } satisfies Extract<AccountWithTokensOption, { type: 'hidden-tokens' }>;
+}
+
+interface CreateNonradableTokensOptionProps {
+    account: Account;
+    nonTradableTokens: TokensWithRates[];
+    expandedNonTradableTokensGroups: AccountKey[];
+}
+
+export function createNonTradableTokensOption({
+    account,
+    nonTradableTokens,
+    expandedNonTradableTokensGroups,
+}: CreateNonradableTokensOptionProps) {
+    const expanded = expandedNonTradableTokensGroups.includes(account.key);
+
+    return {
+        type: 'non-tradable-tokens',
+        account,
+        tokens: nonTradableTokens,
+        height: calculateExpandableTokensHeight(expanded, nonTradableTokens.length),
+        expanded,
+    } satisfies Extract<AccountWithTokensOption, { type: 'non-tradable-tokens' }>;
 }
 
 export const createAccountOption = (account: Account) =>

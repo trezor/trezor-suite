@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
+import { TranslationKey } from '@suite-common/intl-types';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Card, Collapsible, Row, Text } from '@trezor/components';
+import { TokenIconSet } from '@trezor/product-components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
@@ -18,29 +20,35 @@ const CollapsibleContent = styled.div<{ $height: number; $expanded: boolean }>`
         $expanded ? $height - EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT : 0}px;
     overflow: hidden;
     position: relative;
-    transition: opacity 0.4s ease-in-out;
+    transition: opacity 350ms ease-out;
     opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
 `;
 
 export interface ExpandableAssetRowTokensProps {
+    label: TranslationKey;
     account: Account;
     tokens: TokensWithRates[];
     expanded: boolean;
     onExpandToggle: (accountKey: AccountKey, expanded: boolean) => void;
-    onTokenClick: (token: TokenInfo, account: Account) => void;
+    onTokenClick?: (token: TokenInfo, account: Account) => void;
     height: number;
+    dataTestId?: string;
+    showTokensPreview?: boolean;
 }
 
 export function ExpandableAssetRowTokens({
+    label,
     account,
     tokens,
     expanded,
     onExpandToggle,
     onTokenClick,
     height,
+    dataTestId,
+    showTokensPreview = false,
 }: ExpandableAssetRowTokensProps) {
     return (
-        <Collapsible isOpen={expanded}>
+        <Collapsible isOpen={expanded} data-testid={dataTestId}>
             <Card fillType="flat" paddingType="none">
                 <Collapsible.Toggle
                     onClick={() => {
@@ -60,12 +68,25 @@ export function ExpandableAssetRowTokens({
                         }}
                     >
                         <Text typographyStyle="hint">
-                            <Translation id="TR_HIDDEN_TOKENS" />
+                            <Translation id={label} />
                         </Text>
 
-                        <Collapsible.ToggleIcon
-                            iconName={expanded ? 'caretUpDownReverse' : 'caretUpDown'}
-                        />
+                        <Row alignItems="center" gap={12}>
+                            {showTokensPreview && (
+                                <TokenIconSet
+                                    symbol={account.symbol}
+                                    tokens={tokens}
+                                    size={24}
+                                    gap={20}
+                                    isCentered={false}
+                                    isCountVisible
+                                />
+                            )}
+
+                            <Collapsible.ToggleIcon
+                                iconName={expanded ? 'caretUpDownReverse' : 'caretUpDown'}
+                            />
+                        </Row>
                     </Row>
                 </Collapsible.Toggle>
 
@@ -77,7 +98,7 @@ export function ExpandableAssetRowTokens({
                                 token={token}
                                 account={account}
                                 onClick={onTokenClick}
-                                hiddenToken={true}
+                                isHiddenToken={true}
                             />
                         ))}
                 </CollapsibleContent>
