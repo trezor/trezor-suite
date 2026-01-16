@@ -75,12 +75,17 @@ export const getNftContractExplorerUrl = (explorer: Explorer, nft: TokenInfo) =>
     return `${explorerUrl}${contractAddress}${queryString}`;
 };
 
-export const isTokenMatchesSearch = (token: TokenInfo, search: string) =>
-    token.symbol?.toLowerCase().includes(search) ||
-    token.name?.toLowerCase().includes(search) ||
-    token.contract.toLowerCase().includes(search) ||
-    token.fingerprint?.toLowerCase().includes(search) ||
-    token.policyId?.toLowerCase().includes(search);
+export const isTokenMatchesSearch = (token: TokenInfo, rawSearch: string) => {
+    const search = rawSearch.toLowerCase();
+
+    return (
+        token.symbol?.toLowerCase().includes(search) ||
+        token.name?.toLowerCase().includes(search) ||
+        token.contract.toLowerCase().includes(search) ||
+        token.fingerprint?.toLowerCase().includes(search) ||
+        token.policyId?.toLowerCase().includes(search)
+    );
+};
 
 export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: string) =>
     token.symbol?.toLowerCase().includes(search) ||
