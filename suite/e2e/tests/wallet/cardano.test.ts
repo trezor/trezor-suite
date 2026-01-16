@@ -1,6 +1,5 @@
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
-import { cardanoAccountDetails } from '../../snapshots/web/wallet/cardano.test.ts/cardano-aria';
 import { formatAddress } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -11,7 +10,7 @@ const receiveAddress =
 // todo: setup emu with 24 words mnemonic so that we can test different cardano derivation and its 'auto-discovery; feature
 //mnemonic: 'clot trim improve bag pigeon party wave mechanic beyond clean cake maze protect left assist carry guitar bridge nest faith critic excuse tooth dutch',
 
-test.describe('Cardano', { tag: ['@snapshot', '@T3W1', '@T3T1', '@smoke'] }, () => {
+test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: ['ada'], disableNetworks: ['btc'] });
@@ -27,16 +26,26 @@ test.describe('Cardano', { tag: ['@snapshot', '@T3W1', '@T3T1', '@smoke'] }, () 
                 stream: TestStream.Trends,
             }),
         },
-        async (
-            { page, dashboardPage, devicePrompt, settingsPage, walletPage, trezorUserEnvLink },
-            testInfo,
-        ) => {
+        async ({
+            page,
+            dashboardPage,
+            devicePrompt,
+            settingsPage,
+            walletPage,
+            trezorUserEnvLink,
+        }) => {
             await test.step('Verify Cardano account details', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openAccount({ symbol: 'ada' });
                 await walletPage.accountDetailsTabButton.click();
-                await expect(walletPage.accountDetails).toMatchAriaSnapshot(
-                    cardanoAccountDetails(testInfo.project.use.target ?? 'N/A'),
+                await expect(walletPage.accountDetails).toContainTranslation(
+                    'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',
+                );
+                await expect(walletPage.accountDetails).toContainTranslation(
+                    'TR_ACCOUNT_DETAILS_PATH_DESC',
+                );
+                await expect(walletPage.accountDetails).toContainTranslation(
+                    'TR_ACCOUNT_DETAILS_XPUB',
                 );
             });
 

@@ -3,7 +3,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
-test.describe('Doge Send', { tag: ['@snapshot', '@T3W1', '@T3T1'] }, () => {
+test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
         emulatorSetupConf: {
             mnemonic:
@@ -61,9 +61,7 @@ test.describe('Doge Send', { tag: ['@snapshot', '@T3W1', '@T3T1'] }, () => {
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddressWithNewlines(recipientAddress),
             );
-            // await expect(devicePrompt.modal).toHaveScreenshot('send-doge.png');
             await trezorUserEnvLink.pressYes();
-            // await expect(devicePrompt.modal).toHaveScreenshot('send-doge-confirmed.png');
             await trezorUserEnvLink.pressYes();
         });
 
