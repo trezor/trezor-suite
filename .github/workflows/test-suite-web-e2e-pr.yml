@@ -126,7 +126,6 @@ jobs:
           pw-config: "./playwright-config/playwright-web-pr.config.ts"
           containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
-          additional-grep-invert: "@nightlyOnly"
           fail-fast: 7
           currents-project-id: "Og0NOQ"
           currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}

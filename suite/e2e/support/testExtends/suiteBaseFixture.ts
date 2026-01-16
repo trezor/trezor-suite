@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable jest/no-commented-out-tests */
+
 import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { execSync } from 'child_process';
 
@@ -17,16 +17,16 @@ import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
+import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 
-type StartEmuModelRequired = StartEmu & { model: Model };
+type StartEmuModelRequired = StartEmu & { model: Model; version: string };
 
 type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
 
-type suiteBaseFixture = {
+type SuiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
     emulatorStartConf: StartEmuModelRequired;
-    emulatorStartConfFinalizer: void;
     emulatorSetupConf: SetupEmu;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
@@ -34,7 +34,6 @@ type suiteBaseFixture = {
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     page: Page;
     exceptionLogger: void;
-    model: Model;
 };
 
 const electronSetup = async (
@@ -111,13 +110,6 @@ const webSetup = async (browserContext: BrowserContext) => {
     return page;
 };
 
-const getDefaultFirmwareVersion = (model: Model): string => {
-    const DefaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
-    const defaultFirmwareType = process.env.CANARY_FIRMWARE ? '-main' : '-latest';
-
-    return `${DefaultFirmwareMajorVersion}${defaultFirmwareType}`;
-};
-
 // Gives trezorUserEnv promise a 30s to complete, else restart tenv to recover from potential hangs
 export const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -174,36 +166,33 @@ const trezorEnvSetup = async (
 // Depending on the project type (desktop or web) it will launch the appropriate environment
 // and provide the necessary page object which is either electron window or web page
 // Extending our fixtures from currentsTest ensures Currents fixtures initialize first and quarantine works even for fails in beforeEach section
-const suiteBaseTest = currentsTest.extend<suiteBaseFixture>({
+const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
+    target: [PlaywrightTarget.Web, { option: true }],
+    model: [undefined, { option: true }],
+    firmwareVersion: [undefined, { option: true }],
     startEmulator: true,
     setupEmulator: true,
-    model: async ({}, use, testInfo) => {
-        if (!testInfo.project.use.model) {
-            throw new Error('Model is not defined in project.use');
+    emulatorStartConf: async ({ startEmulator, model, firmwareVersion }, use) => {
+        if (startEmulator && !model) {
+            throw new Error('Model is not defined.');
         }
-        await use(testInfo.project.use.model);
+
+        if (startEmulator && !firmwareVersion) {
+            throw new Error('Firmware version is not defined.');
+        }
+
+        await use({
+            model: model!,
+            version: firmwareVersion!,
+            wipe: true,
+        });
     },
-    emulatorStartConf: async ({ model }, use) => {
-        await use({ model, wipe: true });
-    },
-    // emulatorStartConf override from test file:
-    //   test.use({emulatorStartConf: { model: 'T1B1', wipe: true }});
-    // can lack version and it needs to be finalized based on model and CANARY_FIRMWARE env var
-    emulatorStartConfFinalizer: [
-        async ({ emulatorStartConf }, use) => {
-            if (!emulatorStartConf.version) {
-                emulatorStartConf.version = getDefaultFirmwareVersion(emulatorStartConf.model);
-            }
-            await use();
-        },
-        { auto: true },
-    ],
     emulatorSetupConf: {},
     electronConf: {},
     ignoreJSExceptions: [],
 
-    url: async ({}, use, testInfo) => {
-        await use(getUrl(testInfo));
+    url: async ({ target }, use, testInfo) => {
+        await use(getUrl(testInfo, target));
     },
 
     trezorUserEnvLink: async ({}, use) => {
@@ -211,6 +200,7 @@ const suiteBaseTest = currentsTest.extend<suiteBaseFixture>({
     },
     page: async (
         {
+            target,
             locale,
             colorScheme,
             context,
@@ -234,7 +224,7 @@ const suiteBaseTest = currentsTest.extend<suiteBaseFixture>({
             );
         });
 
-        if (isDesktopProject(testInfo)) {
+        if (isDesktopProject(target)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             enhancePage(suite.window);
             await use(suite.window);

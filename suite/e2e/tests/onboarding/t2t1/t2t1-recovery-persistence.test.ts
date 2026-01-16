@@ -67,6 +67,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@webOnly', '@T2T1']
         analyticsSection,
         devicePrompt,
         indexedDb,
+        emulatorStartConf,
     }) => {
         await test.step('Start recovery with some device', async () => {
             await page.getByTestId('@onboarding/recovery/start-button').click();
@@ -87,7 +88,7 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@webOnly', '@T2T1']
         });
 
         await test.step('Restart emulator and disable firmware hash check and analytics', async () => {
-            await trezorUserEnvLink.startEmu({ wipe: false, model: 'T2T1' });
+            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
             await onboardingPage.disableNecessaryFirmwareChecks();
             await analyticsSection.passThroughAnalytics();
         });

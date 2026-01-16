@@ -24,7 +24,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Restart emulator', async () => {
                 await trezorUserEnvLink.stopEmu();
                 await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
-                await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+                await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
                 await expect(walletPage.deviceConnectedStatus).toBeVisible({
                     timeout: 15_000,
                 });

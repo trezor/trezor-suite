@@ -45,7 +45,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Disconnect and reconnect the device', async () => {
             await trezorUserEnvLink.stopEmu();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
-            await trezorUserEnvLink.startEmu({ model: emulatorStartConf.model, wipe: false });
+            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
         });
 
         await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {

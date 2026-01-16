@@ -58,7 +58,9 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To run just one test** you can add: `-g "Basic cardano walkthrough"`
 
-1. **To run on a specific device model** you can only run the device specific project i.e.: `yarn workspace @trezor/suite-e2e test:e2e:web --project=T3T1 general/wallet-discovery.test.ts `
+1. **To run on a specific device model** you can only run the device specific project i.e.: `yarn workspace @trezor/suite-e2e test:e2e:web --project=T3T1 general/wallet-discovery.test.ts`
+
+1. **To run tests with canary FW** you need to use canary yarn script i.e. `yarn workspace @trezor/suite-e2e test:e2e:web:canary general/wallet-discovery.test.ts`
 
 1. **To open advance playwright runner/debugger ui** you can add: `--ui`
 
@@ -73,8 +75,6 @@ _(in case of Linux with X11 support, skip to step 6.)_
 1. **To enable Electron verbose logging** add env variable LOGLEVEL=debug or any other level
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
-
-1. **To run with x-main firmware** instead of x-latest you can use CANARY_FIRMWARE env variable like this: `CANARY_FIRMWARE=true yarn workspace @trezor/suite-e2e test:e2e:web` or `CANARY_FIRMWARE=true yarn workspace @trezor/suite-e2e test:e2e:desktop`
 
 1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @trezor/suite-desktop git:bisect <last_good_commit> <desktop|web> <test_file>`
 

@@ -10,19 +10,17 @@ import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
+import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';
 import releases from '../../../submodules/trezor-common/releases.json';
-import { PlaywrightTarget } from '../playwright-config/playwright-base.config';
 
-export const isDesktopProject = (testInfo: TestInfo) =>
-    testInfo.project.use.target === PlaywrightTarget.Desktop;
+export const isDesktopProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Desktop;
 
-export const isWebProject = (testInfo: TestInfo) =>
-    testInfo.project.use.target === PlaywrightTarget.Web;
+export const isWebProject = (target: PlaywrightTarget) => target === PlaywrightTarget.Web;
 
-export const getUrl = (testInfo: TestInfo) => {
+export const getUrl = (testInfo: TestInfo, target: PlaywrightTarget) => {
     const electronApiURL = 'file:///';
-    const apiURL = isDesktopProject(testInfo) ? electronApiURL : testInfo.project.use.baseURL;
+    const apiURL = isDesktopProject(target) ? electronApiURL : testInfo.project.use.baseURL;
     if (!apiURL) {
         throw new Error('apiURL is not defined');
     }

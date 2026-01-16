@@ -25,10 +25,6 @@ inputs:
     description: "Cancel test run if number of tests fail (number | false)"
     default: "false"
     required: false
-  additional-grep-invert:
-    description: "Exclude grep (regex), passed to --grep-invert"
-    required: false
-    default: ""
   currents-project-id:
     description: "Currents project ID for reporting"
     required: true
@@ -140,8 +136,7 @@ runs:
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
           $COVERAGE_OPT \
           --forbid-only \
-          $REPORTER_OPT \
-          --grep-invert="${{ inputs.additional-grep-invert }}"
+          $REPORTER_OPT
 
     - name: Extract and Upload Logs
       if: ${{ !cancelled() }}

@@ -2,7 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { BackupType } from '@suite-common/suite-types';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
-import { Model, StartEmu } from '@trezor/trezor-user-env-link';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { TrezorUserEnvLinkProxy, step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
@@ -43,11 +43,11 @@ export class OnboardingPage {
 
     constructor(
         public page: Page,
-        private readonly model: Model,
         private readonly devicePrompt: DevicePrompt,
         private readonly analyticsSection: AnalyticsSection,
         private readonly settingsPage: SettingsPage,
-        private readonly emulatorStartConf: StartEmu,
+        private readonly model: Model,
+        private readonly firmwareVersion: string,
     ) {
         this.backup = new BackupSection(page, devicePrompt);
         this.firmware = new FirmwareSection(page);
@@ -228,7 +228,7 @@ export class OnboardingPage {
     @step()
     async disableNecessaryFirmwareChecks(options?: { skipSuiteLoadedCheck?: boolean }) {
         await this.disableFirmwareHashCheck(options);
-        if (this.emulatorStartConf.version?.endsWith('-main')) {
+        if (this.firmwareVersion.endsWith('-main')) {
             await this.disableFirmwareRevisionCheck();
         }
 

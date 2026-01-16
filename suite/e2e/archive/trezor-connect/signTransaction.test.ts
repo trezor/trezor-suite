@@ -24,7 +24,7 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         page,
         connectPermissionsModal,
         trezorUserEnvLink,
-        model,
+        emulatorStartConf,
     }) => {
         TrezorConnect.signTransaction({
             coin: 'btc',
@@ -50,17 +50,17 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         await connectPermissionsModal.confirmButton.click();
 
         await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
-        await pressContinue(model);
+        await pressContinue(emulatorStartConf.model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/1/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(model);
+        await pressContinue(emulatorStartConf.model);
 
         await page
             .getByTestId('@prompts/confirm-on-device/step/2/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(model);
+        await pressContinue(emulatorStartConf.model);
 
         await trezorUserEnvLink.pressYes();
 
