@@ -15,7 +15,6 @@ export enum DeviceAuthorizationStep {
     PinRequested = 'PinRequested',
     AddPassphraseWallet = 'AddPassphraseWallet', // When adding a new passphrase wallet
     PassphraseRequested = 'PassphraseRequested',
-    CheckPassphraseOnDevice = 'CheckPassphraseOnDevice',
     InputPassphraseOnDevice = 'InputPassphraseOnDevice',
 
     // Default continue on your trezor
@@ -37,11 +36,7 @@ export const deviceAuthorizationInitialState: DeviceAuthorizationState = {
 export const deviceAuthorizationSlice = createSlice({
     name: 'deviceAuthorization',
     initialState: deviceAuthorizationInitialState,
-    reducers: {
-        checkPassphraseOnDevice: state => {
-            state.deviceAuthorizationStep = DeviceAuthorizationStep.CheckPassphraseOnDevice;
-        },
-    },
+    reducers: {},
     extraReducers: builder => {
         builder
             .addCase(UI.REQUEST_PIN, state => {
@@ -85,18 +80,10 @@ export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootSt
     state.deviceAuthorization.deviceAuthorizationStep ===
         DeviceAuthorizationStep.PassphraseRequested ||
     state.deviceAuthorization.deviceAuthorizationStep ===
-        DeviceAuthorizationStep.CheckPassphraseOnDevice ||
-    state.deviceAuthorization.deviceAuthorizationStep ===
         DeviceAuthorizationStep.InputPassphraseOnDevice;
 
 export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.deviceAuthorizationStep ===
     DeviceAuthorizationStep.InputPassphraseOnDevice;
-
-export const selectCheckPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.deviceAuthorizationStep ===
-    DeviceAuthorizationStep.CheckPassphraseOnDevice;
-
-export const { checkPassphraseOnDevice } = deviceAuthorizationSlice.actions;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;
