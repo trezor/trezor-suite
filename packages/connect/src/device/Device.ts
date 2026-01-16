@@ -3,6 +3,7 @@ import {
     DeviceModelInternal,
     FirmwareRelease,
     getFirmwareOrBootloaderVersionArray,
+    getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
 import {
@@ -25,7 +26,6 @@ import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
 import { getAllNetworks } from '../data/coinInfo';
 import {
-    getCurrentVersion,
     getFirmwareReleaseConfigInfo,
     getFirmwareStatus,
     getLanguage,
@@ -835,7 +835,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     private async _updateCurrentRelease(feat: Features) {
-        const { firmwareVersion } = getCurrentVersion(feat);
+        const firmwareVersion = getFirmwareVersionArray({ features: feat });
         const newFirmwareType = getFirmwareType(feat);
 
         // We need firmwareVersion to lookup the release.

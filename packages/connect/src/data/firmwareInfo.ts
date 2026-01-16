@@ -8,7 +8,9 @@ import {
     FirmwareType,
     IntermediaryReleaseConfig,
     VersionArray,
+    getBootloaderVersionArray,
     getFirmwareOrBootloaderVersionArray,
+    getFirmwareVersionArray,
 } from '@trezor/device-utils';
 import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
 
@@ -357,46 +359,16 @@ export type CurrentVersion = {
     firmwareVersion: VersionArray | null;
 };
 
-export const getCurrentVersion = (features: Features): CurrentVersion => {
+const getCurrentVersion = (features: Features): CurrentVersion => {
     if (!isStrictFeatures(features)) {
         throw new Error('Features of unexpected shape provided.');
     }
-
-    const {
-        bootloader_mode,
-        major_version,
-        minor_version,
-        patch_version,
-        fw_major,
-        fw_minor,
-        fw_patch,
-    } = features;
-
-    // When Trezor device is in Firmware mode the `features`:
-    //  * `major/minor/patch_version` --> it is the firmware version
-    //  * `fw_major/minor/patch` --> null
-    // When Trezor device is in Bootloader mode the `features`:
-    //  * `major/minor/patch_version` --> it is the bootloader version
-    //  * `fw_major/minor/patch` --> it is the firmware version
-
-    // `fw_version` is the firmware version when in bootloader mode, in firmware mode it will be [null, null, null]
-    // when device is factory reset will always be in bootloader mode.
-    const fw_version = [fw_major, fw_minor, fw_patch];
-    // `version` is bootloader version when in bootloader mode, in firmware mode it is firmware version.
-    const version = [major_version, minor_version, patch_version] as VersionArray;
-
-    // In Firmware mode it is for now not possible to know the bootloader version.
-    const bootloaderVersion = bootloader_mode ? version : null;
-
-    // Some old version of T1B1 do not report FW version in bootloader mode,
-    // so it is not 100% true that in bootloader mode we will know the firmware version,
+    const bootloaderVersion = getBootloaderVersionArray({ features });
+    // Old T1B1 versions do not report FW version in bootloader mode, then it cannot be known,
     // but we are handling it `getReleaseInfo` when device is T1B1 we use bootloader version.
-    const fwVersion = bootloader_mode ? fw_version : version;
+    const firmwareVersion = getFirmwareVersionArray({ features });
 
-    return {
-        bootloaderVersion,
-        firmwareVersion: fwVersion.includes(null) ? null : (fwVersion as VersionArray),
-    };
+    return { bootloaderVersion, firmwareVersion };
 };
 
 const getIntermediaryMessageRelease = (features: Features) => {
