@@ -15,7 +15,6 @@ import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } f
 import { DeviceCommands } from './DeviceCommands';
 import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
-import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { checkFirmwareHashWithRetries } from './workflow/checkFirmwareHashWithRetries';
@@ -184,7 +183,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     // DeviceState list [this.instance]: DeviceState | undefined
     private state: DeviceState[] = [];
-    private stateStorage?: IStateStorage = undefined;
     private busy?: DeviceBusyStatus;
 
     private _unavailableCapabilities: UnavailableCapabilities = {};
@@ -667,7 +665,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             };
 
             this.state[this.instance] = newState;
-            this.stateStorage?.saveState(this, newState);
         }
     }
 
@@ -693,11 +690,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this._updateFeatures(message);
         this._updateCurrentRelease(message);
         this.setState({ deriveCardano: payload?.derive_cardano });
-    }
-
-    initStorage(storage: IStateStorage) {
-        this.stateStorage = storage;
-        this.setState(storage.loadState(this));
     }
 
     async getFeatures() {
