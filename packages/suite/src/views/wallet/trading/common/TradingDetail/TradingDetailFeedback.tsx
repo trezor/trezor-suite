@@ -7,6 +7,7 @@ import {
     SellTradeStatus,
 } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { Rating, buildUserFeedbackData, sendFeedbackAction } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
 import {
@@ -17,7 +18,6 @@ import { TradingType } from '@suite-common/trading';
 import { Button, Card, Column, H3, IconCircle, Paragraph, Row, Textarea } from '@trezor/components';
 
 import { EmojiRatingSelector } from 'src/components/suite/EmojiRatingSelector';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 

@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';

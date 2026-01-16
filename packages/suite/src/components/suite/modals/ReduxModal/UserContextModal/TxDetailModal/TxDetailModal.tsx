@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { getInstantStakeType } from '@suite-common/staking';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -11,7 +12,6 @@ import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wal
 import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 

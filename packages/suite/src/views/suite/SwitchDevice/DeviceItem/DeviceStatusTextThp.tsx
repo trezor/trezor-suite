@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDeviceOrUiLocked } from 'src/selectors/suite/suiteSelectors';
 

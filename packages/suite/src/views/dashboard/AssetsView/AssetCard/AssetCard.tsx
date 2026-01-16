@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
@@ -28,7 +29,6 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 

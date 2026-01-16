@@ -2,10 +2,10 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useScrollShadow } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { ReduxAccountSearchProvider } from 'src/hooks/suite/useAccountSearch';
 

@@ -2,10 +2,10 @@ import { ReactNode, useState } from 'react';
 
 import { ExchangeTrade } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 

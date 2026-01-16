@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
@@ -7,7 +8,6 @@ import { Modal } from '@trezor/components';
 
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
 import { useSelector } from '../../../../../../../hooks/suite';
-import { Translation } from '../../../../../Translation';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 
 type DetailModalProps = {

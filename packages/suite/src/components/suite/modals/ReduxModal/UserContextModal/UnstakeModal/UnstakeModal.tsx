@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
@@ -5,7 +6,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
 

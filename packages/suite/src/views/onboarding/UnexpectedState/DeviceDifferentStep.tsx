@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { IconName } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
-import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 export const DeviceDifferentStep = () => {

@@ -1,9 +1,9 @@
 import { MouseEventHandler } from 'react';
 
+import { Translation } from '@suite/intl';
 import { acquireDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import {
     TROUBLESHOOTING_TIP_CLOSE_ALL_TABS,

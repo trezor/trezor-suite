@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Button, H2, Image, Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
-import { Translation } from '../../suite/Translation';
 
 type ThpAutoconnectInfoModalParams = {
     device: TrezorDevice;

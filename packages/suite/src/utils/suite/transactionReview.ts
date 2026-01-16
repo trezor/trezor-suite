@@ -1,4 +1,4 @@
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor } from '@suite/intl';
 import { NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';

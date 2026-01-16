@@ -17,8 +17,8 @@ import type {
     WatchSellTradeResponse,
 } from 'invity-api';
 
+import { ExtendedMessageDescriptor } from '@suite/intl';
 import { CountryCode } from '@suite-common/geolocation';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { Network } from '@suite-common/wallet-config';
 import {
     Account,

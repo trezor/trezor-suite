@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Card, Column, Paragraph } from '@trezor/components';
 
 import {
@@ -8,7 +9,6 @@ import {
 } from 'src/components/firmware';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { WebUsbButton } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';

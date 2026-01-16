@@ -1,15 +1,15 @@
 import { PropsWithChildren, useMemo } from 'react';
 
+import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { type TradingType, selectTradingActiveSection } from '@suite-common/trading';
 import { Box, Button, IconButton, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
-import { useDispatch, useLayout, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
 const getBackRoute = (route?: Route['name'], activeSection?: TradingType): Route['name'] => {

@@ -2,11 +2,11 @@ import { useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Column, Icon, Row } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { NotificationRenderer } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { mapActionVariantToIntent } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';

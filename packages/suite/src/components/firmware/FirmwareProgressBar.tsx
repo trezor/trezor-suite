@@ -1,11 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { FirmwareOperationStatus } from '@suite-common/firmware';
-import { TranslationKey } from '@suite-common/intl-types';
 import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 const Percentage = styled.div`

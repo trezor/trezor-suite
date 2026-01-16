@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { BackupType } from '@suite-common/suite-types';
 
 export const typesToLabelMap: Record<BackupType, TranslationKey> = {

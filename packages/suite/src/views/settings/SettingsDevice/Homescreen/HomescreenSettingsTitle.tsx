@@ -1,10 +1,9 @@
+import { Translation, useTranslation } from '@suite/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
 import { TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { HAS_MONOCHROME_SCREEN } from 'src/constants/suite/device';
-import { useTranslation } from 'src/hooks/suite';
 import { deviceModelInformation } from 'src/utils/suite/homescreen';
 
 type HomescreenSettingsTitle = {

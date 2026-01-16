@@ -1,3 +1,4 @@
+import { TranslationFunction } from '@suite/intl';
 import { Formatter } from '@suite-common/formatters';
 import { getDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -10,8 +11,6 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 interface ValidateDecimalsOptions {
     decimals: number;

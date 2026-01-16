@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkSymbol, getNetwork, getNetworkFeatures } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -5,8 +6,6 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { union } from '@trezor/utils';
 
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
-
-import { Translation } from '../../../components/suite/Translation';
 
 const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
     accounts.some(account => getNetworkFeatures(account.symbol).includes('tokens'));

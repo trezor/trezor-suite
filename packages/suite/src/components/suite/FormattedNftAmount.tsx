@@ -1,3 +1,4 @@
+import { Translation, useTranslation } from '@suite/intl';
 import { SignValue } from '@suite-common/suite-types';
 import { getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -6,11 +7,9 @@ import { Box, Column, Row, Text } from '@trezor/components';
 import { TokenTransfer } from '@trezor/connect';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
-import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { Sign } from 'src/components/suite/Sign';
-import { Translation } from 'src/components/suite/Translation';
+import { HiddenPlaceholder, Sign } from 'src/components/suite';
+// importing directly, otherwise unit tests fail, seems to be a styled-components issue
 import { TrezorLink } from 'src/components/suite/TrezorLink';
-import { useTranslation } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 

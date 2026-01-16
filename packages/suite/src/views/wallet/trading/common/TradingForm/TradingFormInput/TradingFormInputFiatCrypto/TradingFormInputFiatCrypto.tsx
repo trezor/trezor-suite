@@ -1,10 +1,10 @@
 import { memo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { TRADING_FORM_AMOUNT_IN_CRYPTO, useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     TradingAllFormProps,

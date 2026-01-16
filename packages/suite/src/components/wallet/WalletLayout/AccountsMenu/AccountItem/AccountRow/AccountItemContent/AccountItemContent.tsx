@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { selectCardanoPoolsInfo, selectIsDiscreteModeActive } from '@suite-common/wallet-core';
 import { Account, BaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
@@ -7,7 +8,6 @@ import {
 import { Column, Icon, Row, Text } from '@trezor/components';
 
 import { AccountLabel, CoinBalance } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
 

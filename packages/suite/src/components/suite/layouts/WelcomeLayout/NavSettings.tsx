@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { IconButton, Tooltip } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 export const NavSettings = () => {

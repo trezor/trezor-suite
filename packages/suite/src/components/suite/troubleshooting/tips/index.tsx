@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { SuiteDesktopTip } from './BridgeTip';

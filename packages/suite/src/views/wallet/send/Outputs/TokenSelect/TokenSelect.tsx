@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     Explorer,
@@ -27,7 +28,6 @@ import {
     FormattedCryptoAmount,
     HiddenPlaceholder,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';

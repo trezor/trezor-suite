@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { canContinue } from 'src/utils/backup';
 
 import { BackupStepDescription } from './BackupStepDescription';

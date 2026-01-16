@@ -1,9 +1,7 @@
 import { ReactNode } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Modal, ModalWidth } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface AssetsModalProps {
     children: ReactNode;

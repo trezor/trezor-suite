@@ -1,8 +1,7 @@
 import { ChangeEvent, Dispatch, KeyboardEvent, SetStateAction, useCallback, useRef } from 'react';
 
+import { useTranslation } from '@suite/intl';
 import { Icon, Input, KEYBOARD_CODE } from '@trezor/components';
-
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 export type UtxoSearchProps = {
     searchQuery: string;

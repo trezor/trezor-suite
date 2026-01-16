@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 import { FirmwareVersionString } from '@trezor/device-utils/src/types';
 

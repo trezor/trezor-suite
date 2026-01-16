@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { TextButton } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface TradingFormSwitcherCryptoFiatProps {
     // displaySymbol or fiat currency

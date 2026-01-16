@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Switch } from '@trezor/components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
@@ -7,7 +8,6 @@ import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { toggleTor } from 'src/actions/suite/suiteActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';

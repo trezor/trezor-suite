@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { WordCount, wordCounts } from 'src/types/recovery';
 
 type SelectWordCountStepProps = {

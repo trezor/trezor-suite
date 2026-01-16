@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupCallThunkInner,
@@ -10,7 +11,6 @@ import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';

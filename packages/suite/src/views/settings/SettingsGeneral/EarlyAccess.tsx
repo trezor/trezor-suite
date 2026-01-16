@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { Row } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

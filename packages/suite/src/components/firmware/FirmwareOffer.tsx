@@ -1,3 +1,4 @@
+import { Translation, useTranslation } from '@suite/intl';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
@@ -9,8 +10,7 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 

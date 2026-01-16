@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
@@ -7,7 +8,6 @@ import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
 

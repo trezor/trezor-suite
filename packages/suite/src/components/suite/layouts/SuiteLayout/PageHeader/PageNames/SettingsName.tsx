@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { setDebugMode } from 'src/actions/suite/suiteActions';
@@ -7,7 +8,6 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { BasicName } from './BasicName';
-import { Translation } from '../../../../Translation';
 
 export const SettingsName = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);

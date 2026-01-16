@@ -3,12 +3,11 @@ import { SelectInstance, StylesConfig, createFilter } from 'react-select';
 
 import { CSSObject } from 'styled-components';
 
+import { useTranslation } from '@suite/intl';
 import { Select } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 import { bip39 } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
-
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 const options = bip39.map(item => ({ label: item, value: item }));
 

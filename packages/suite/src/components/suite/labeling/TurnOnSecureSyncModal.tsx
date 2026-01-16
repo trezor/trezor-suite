@@ -1,8 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Card, IconCircle, List, Modal, Paragraph } from '@trezor/components';
 
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
-
-import { Translation } from '../Translation';
 
 type TurnOnSecureSyncModalProps = {
     onClose: () => void;

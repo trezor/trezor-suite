@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Banner, Column, H3 } from '@trezor/components';
@@ -8,7 +9,6 @@ import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModa
 
 import { PassphraseInputCard } from './PassphraseInputCard';
 import { useSelector } from '../../../../../hooks/suite';
-import { Translation } from '../../../Translation';
 
 type PassphraseWalletConfirmationProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;

@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
-
-import { Translation } from '../Translation';
 
 type LabelingSwitchToLegacyModalProps = {
     onSwitch: () => void;

@@ -1,4 +1,4 @@
-import messages from '@trezor/suite/src//support/messages';
+import { messages } from '@suite/intl';
 
 import { expect, test } from '../../support/fixtures';
 import { graphRangeOptions } from '../../support/pageObjects/dashboardPage';

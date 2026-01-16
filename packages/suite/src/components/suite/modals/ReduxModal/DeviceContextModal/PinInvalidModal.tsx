@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 export const PinInvalidModal = ({ onCancel }: { onCancel: () => void }) => {

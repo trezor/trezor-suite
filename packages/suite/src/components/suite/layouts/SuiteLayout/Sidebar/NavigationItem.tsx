@@ -2,7 +2,7 @@ import { MouseEvent } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation, TranslationKey } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { Icon, IconName, IconSize, Paragraph, Tooltip, useElevation } from '@trezor/components';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
@@ -15,7 +15,6 @@ import {
 } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';

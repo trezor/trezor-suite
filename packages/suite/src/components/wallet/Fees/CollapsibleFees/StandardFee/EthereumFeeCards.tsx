@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
@@ -11,7 +12,6 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
-import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

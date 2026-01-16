@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { FractionButtonProps } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
 export const generateFractionButtons = (

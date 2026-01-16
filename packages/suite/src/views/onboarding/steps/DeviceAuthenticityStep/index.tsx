@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectSelectedDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/components';
@@ -7,7 +8,6 @@ import { Card, Column, Grid, Icon, IconName, Paragraph } from '@trezor/component
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

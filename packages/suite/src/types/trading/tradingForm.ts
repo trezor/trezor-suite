@@ -13,6 +13,7 @@ import type {
     SellFiatTradeQuoteRequest,
 } from 'invity-api';
 
+import type { TranslationKey } from '@suite/intl';
 import type {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
@@ -48,7 +49,6 @@ import { FeeInfo, PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-com
 import { FeeLevel } from '@trezor/connect';
 import { Timer } from '@trezor/react-utils';
 
-import type { TranslationKey } from 'src/components/suite/Translation';
 import { useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';
 import { AppState } from 'src/reducers/store';
 import { Dispatch, GetState, TrezorDevice } from 'src/types/suite';

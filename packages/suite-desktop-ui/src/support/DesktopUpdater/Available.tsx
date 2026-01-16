@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { UpdateInfo, desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 import { download } from 'src/actions/suite/desktopUpdateActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { MarkdownWithComponents } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 

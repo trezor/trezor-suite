@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -53,7 +54,6 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import {
     useDevice,

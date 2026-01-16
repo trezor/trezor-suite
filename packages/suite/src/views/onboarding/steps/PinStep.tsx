@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
@@ -9,7 +10,6 @@ import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PinMatrix } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useOnboarding, useSelector } from 'src/hooks/suite';
 
 export const PinStep = () => {

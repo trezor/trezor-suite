@@ -1,7 +1,6 @@
+import { Translation } from '@suite/intl';
 import { DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD } from '@suite-common/wallet-core';
 import { Card, Column, Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { LowBatteryModal } from '../suite/modals/LowBatteryModal';
 

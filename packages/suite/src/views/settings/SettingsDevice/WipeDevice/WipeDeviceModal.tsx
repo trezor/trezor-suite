@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { Translation } from '@suite/intl';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
@@ -10,7 +11,6 @@ import { spacings } from '@trezor/theme';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import { CheckItem } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouterApp } from 'src/reducers/suite/routerReducer';
 

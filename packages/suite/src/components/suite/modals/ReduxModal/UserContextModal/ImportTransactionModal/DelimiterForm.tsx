@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Input, Row, SelectBar } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type DelimiterFormProps = {
     value?: string;

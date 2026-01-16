@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 import { ConnectPermissions } from './ConnectPermissions';

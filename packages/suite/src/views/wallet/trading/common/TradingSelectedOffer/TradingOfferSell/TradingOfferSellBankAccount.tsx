@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { BankAccount } from 'invity-api';
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { type TradingSellType, sellUtils } from '@suite-common/trading';
 import { Button, Icon, Row, Select } from '@trezor/components';
 import { fontWeights, spacingsPx, typography } from '@trezor/theme';
 
 import { QuestionTooltip } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 
 const Wrapper = styled.div`

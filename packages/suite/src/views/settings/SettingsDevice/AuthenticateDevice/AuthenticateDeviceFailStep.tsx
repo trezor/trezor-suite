@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { Button, Modal } from '@trezor/components';
 
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
-import { Translation } from 'src/components/suite/Translation';
 
 type AuthenticateDeviceFailStepProps = {
     handleClose: () => void;

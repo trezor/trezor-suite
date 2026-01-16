@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { fromWei } from 'web3-utils';
 
+import { Translation } from '@suite/intl';
 import { Network } from '@suite-common/wallet-config';
 import { getFeeRate, getTxIcon, isEip1559, isPending } from '@suite-common/wallet-utils';
 import {
@@ -23,7 +24,6 @@ import { Elevation, borders, mapElevationToBorder, spacings, spacingsPx } from '
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
-import { Translation } from 'src/components/suite/Translation';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useExternalLink } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

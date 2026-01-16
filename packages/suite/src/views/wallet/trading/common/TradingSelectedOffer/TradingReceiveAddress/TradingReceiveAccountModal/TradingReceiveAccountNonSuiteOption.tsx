@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { Column, Icon } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';

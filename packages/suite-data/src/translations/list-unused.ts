@@ -2,9 +2,8 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+import { messages } from '@suite/intl';
 import { getGrepCommandOfTranslationKey } from '@suite-common/suite-utils';
-// See comment in list-duplicates.ts
-import messages from '@trezor/suite/src/support/messages';
 
 console.log('unused messages: ');
 

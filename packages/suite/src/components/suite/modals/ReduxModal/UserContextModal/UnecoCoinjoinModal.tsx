@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -5,8 +6,7 @@ import { spacings } from '@trezor/theme';
 import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch } from 'src/hooks/suite/useDispatch';
+import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';

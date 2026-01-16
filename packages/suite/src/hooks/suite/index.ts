@@ -6,7 +6,6 @@ export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
 export { useSelector } from './useSelector';
 export { useLoadingSkeleton } from './useLoadingSkeleton';
-export { useTranslation } from './useTranslation';
 export { useOnboarding } from './useOnboarding';
 export { useRecovery } from './useRecovery';
 export { useExternalLink } from './useExternalLink';

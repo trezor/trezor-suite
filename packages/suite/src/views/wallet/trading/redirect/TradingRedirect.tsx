@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { BuyCryptoPaymentMethod, CryptoId, SellCryptoPaymentMethod } from 'invity-api';
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { FeeLevel } from '@trezor/connect';
 import { typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingRedirect } from 'src/hooks/wallet/useTradingRedirect';
 import { selectRouter } from 'src/reducers/suite/routerReducer';

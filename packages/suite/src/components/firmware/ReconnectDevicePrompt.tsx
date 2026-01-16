@@ -1,6 +1,6 @@
 import * as semver from 'semver';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { BulletList, Column, H2, Modal, Paragraph, Row } from '@trezor/components';
@@ -16,7 +16,6 @@ import { spacings } from '@trezor/theme';
 
 import { WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';

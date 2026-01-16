@@ -2,11 +2,11 @@ import { FormattedNumber } from 'react-intl';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Icon, Spinner, Tooltip } from '@trezor/components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { Translation } from 'src/components/suite/Translation';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {

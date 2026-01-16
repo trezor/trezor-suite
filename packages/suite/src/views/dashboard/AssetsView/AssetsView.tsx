@@ -1,5 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import {
     type Network,
@@ -36,7 +37,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDiscovery, useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';

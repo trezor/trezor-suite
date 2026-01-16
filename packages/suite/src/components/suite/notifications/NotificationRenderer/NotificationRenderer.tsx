@@ -1,7 +1,7 @@
 import { ComponentType, JSX } from 'react';
 import { useSelector } from 'react-redux';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
@@ -15,7 +15,6 @@ import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
-import { Translation } from '../../Translation';
 
 const simple = (
     View: NotificationRendererProps['render'],

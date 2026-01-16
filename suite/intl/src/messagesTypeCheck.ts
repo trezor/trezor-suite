@@ -1,12 +1,8 @@
-import messages from './messages';
+import type { TranslationId, TranslationKey } from './types';
 
 /**
  * This file is here just to be picked up by type-check to check that keys and ids match in `messages.ts`
  */
-
-type Messages = typeof messages;
-type TranslationKey = keyof Messages;
-type TranslationId = Messages[keyof Messages]['id'];
 
 // check if one type is assignable to the other, and then do the same in reverse (i.e. if types exactly match)
 const functionJustForTypeCheck1 = (k: TranslationId): TranslationKey => k;

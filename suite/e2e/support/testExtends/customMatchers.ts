@@ -4,8 +4,7 @@ import { Locator, Request, expect as baseExpect, test } from '@playwright/test';
 import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
-import { TranslationKey } from '@trezor/suite/src//components/suite/Translation';
-import messages from '@trezor/suite/src//support/messages';
+import { type TranslationKey, messages } from '@suite/intl';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';

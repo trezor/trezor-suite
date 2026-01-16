@@ -1,9 +1,10 @@
+import { Translation } from '@suite/intl';
+
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useLayout } from 'src/hooks/suite';
 
 import { PasswordManager } from './PasswordManager/PasswordManager';
-import { Translation } from '../../components/suite/Translation';
 
 const PasswordManagerView = () => {
     useLayout(

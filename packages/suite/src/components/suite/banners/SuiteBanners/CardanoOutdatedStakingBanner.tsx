@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Column, Divider, Icon } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacingsPx, transitions, typography, zIndices } from '@trezor/theme';
@@ -14,7 +15,6 @@ import {
     GuideSearch,
     GuideViewWrapper,
 } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const FeedbackLinkWrapper = styled.div`

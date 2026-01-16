@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { getInputState, isInteger, localizeNumber } from '@suite-common/wallet-utils';
@@ -7,8 +8,7 @@ import { Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 

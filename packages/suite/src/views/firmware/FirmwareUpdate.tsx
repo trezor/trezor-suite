@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware';
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
-import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 
 import { FirmwareModal } from './FirmwareModal';

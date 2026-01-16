@@ -1,9 +1,8 @@
+import { Translation } from '@suite/intl';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_SOL_SEND } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type ExpiredTxValidityProps = {
     symbol: NetworkSymbol;

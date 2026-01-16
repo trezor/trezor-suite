@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Network } from '@suite-common/wallet-config';
 import { ButtonProps, Modal, Tooltip } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type AddButtonProps = Partial<ButtonProps> & {
     disabledMessage: ReactNode;

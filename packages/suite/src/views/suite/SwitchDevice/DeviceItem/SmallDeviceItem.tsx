@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Image, Row } from '@trezor/components';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 
 import { DeviceConnectionText } from './DeviceConnectionText';
 import { DeviceDetail } from './DeviceDetail';
-import { Translation } from '../../../../components/suite/Translation';
 import { useSelector } from '../../../../hooks/suite';
 
 type SmallDeviceItemProps = {

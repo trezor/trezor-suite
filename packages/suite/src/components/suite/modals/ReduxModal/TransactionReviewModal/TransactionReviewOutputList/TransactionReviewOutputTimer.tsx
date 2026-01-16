@@ -2,11 +2,11 @@ import React from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Badge, Banner, Button, Text } from '@trezor/components';
 import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { Translation } from 'src/components/suite/Translation';
 
 const TimerBox = styled.div`
     font-variant-numeric: tabular-nums;

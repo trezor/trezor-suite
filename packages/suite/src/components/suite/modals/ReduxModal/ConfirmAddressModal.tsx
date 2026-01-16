@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Translation } from 'src/components/suite/Translation';
 import {
     ConfirmValueModal,
     ConfirmValueModalProps,

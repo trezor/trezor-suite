@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation } from 'src/components/suite/Translation';
+import { Translation } from '@suite/intl';
 
 const Wrapper = styled.div`
     display: flex;

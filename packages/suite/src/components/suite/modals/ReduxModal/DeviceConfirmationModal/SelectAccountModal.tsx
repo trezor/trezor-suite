@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     Card,
@@ -20,7 +21,6 @@ import { onReceiveAccount } from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 

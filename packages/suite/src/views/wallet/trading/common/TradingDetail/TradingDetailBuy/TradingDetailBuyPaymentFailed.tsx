@@ -1,9 +1,9 @@
 import { BuyProviderInfo, BuyTrade } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { Button, Card, Column, H3, IconCircle, Paragraph } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Network } from '@suite-common/wallet-config';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import type { BackendOption } from 'src/hooks/settings/backends';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

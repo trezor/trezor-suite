@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -8,7 +9,6 @@ import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     LABELING_LEGACY_OPTION_LABEL,
@@ -17,7 +17,7 @@ import {
     LabelingOptionTranslated,
     LabelingSelectValue,
 } from 'src/constants/suite/labeling';
-import { useDevice, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';

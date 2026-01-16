@@ -1,11 +1,10 @@
 import { useWatch } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { Note } from '@trezor/components';
 import { isApproximatelyEqual } from '@trezor/utils';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { useFeesContext } from './context/FeesContext';
 import { useSelector } from '../../../hooks/suite';

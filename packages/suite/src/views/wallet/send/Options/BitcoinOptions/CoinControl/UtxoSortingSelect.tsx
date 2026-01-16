@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { UtxoSorting } from '@suite-common/wallet-types';
 import { Option, Select } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const sortingOptions: { value: UtxoSorting; label: ReactNode }[] = [

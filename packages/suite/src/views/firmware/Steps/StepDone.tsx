@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 
 import { FirmwareInstallation } from '../../../components/firmware';
-import { Translation } from '../../../components/suite/Translation';
 
 type StepDoneProps = {
     onClose: () => void;

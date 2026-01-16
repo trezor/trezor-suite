@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
@@ -14,7 +15,6 @@ import { PassphraseInputCard } from './PassphraseInputCard';
 import { useSelector } from '../../../../../hooks/suite';
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
-import { Translation, TranslationKey } from '../../../Translation';
 
 type EnterPassphraseProps = {
     offerPassphraseOnDevice: boolean;

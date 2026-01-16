@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { networks } from '@suite-common/wallet-config';
 
 import { SUITE } from 'src/actions/suite/constants';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';

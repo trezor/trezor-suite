@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const Pre = styled.pre`
     text-align: left;

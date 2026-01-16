@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -24,7 +25,6 @@ import {
     FormattedCryptoAmount,
     MetadataLabeling,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingValueBeingEdited } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from 'src/types/suite/metadata';

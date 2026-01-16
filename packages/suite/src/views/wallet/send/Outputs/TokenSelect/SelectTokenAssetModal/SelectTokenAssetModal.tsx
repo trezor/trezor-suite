@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -11,9 +12,8 @@ import {
     TokenTabs,
 } from '@trezor/product-components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TokenBalance } from 'src/components/wallet/TokenBalance';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { useBuildOptionsForTabs } from './hooks/useBuildOptionsForTabs';

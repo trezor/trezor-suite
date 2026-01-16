@@ -14,7 +14,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/geolocation": "workspace:*",
-        "@suite-common/intl-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
@@ -23,6 +22,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/address-validator": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-plugin-ethereum": "workspace:*",

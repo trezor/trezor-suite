@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_EXCHANGE_FORM,
@@ -21,7 +22,6 @@ import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints, spacings } from '@trezor/theme';
 
 import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
-import { Translation } from 'src/components/suite/Translation';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';

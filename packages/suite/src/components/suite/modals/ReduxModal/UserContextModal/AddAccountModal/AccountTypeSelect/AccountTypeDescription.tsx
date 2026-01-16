@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import {
     AccountType,
     Bip43PathTemplate,
@@ -10,7 +11,6 @@ import { Column, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation } from 'src/components/suite/Translation';
 
 interface AccountTypeDescriptionProps {
     bip43Path: Bip43PathTemplate;

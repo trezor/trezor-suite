@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Table } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { GetTokensOutputType } from 'src/utils/wallet/tokenUtils';
 
 import NftsRow from './NftsRow';

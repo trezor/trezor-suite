@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { useIntl } from 'react-intl';
 
+import { Translation, messages } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
     Box,
@@ -20,9 +21,7 @@ import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
-import messages from 'src/support/messages';
 
 import { OnboardingCardButton } from './OnboardingCardButton';
 import { OnboardingCardSecondaryButton } from './OnboardingCardSecondaryButton';

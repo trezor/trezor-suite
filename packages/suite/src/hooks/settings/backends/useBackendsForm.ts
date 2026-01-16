@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { useTranslation } from '@suite/intl';
 import { BackendType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { BackendSettings } from '@suite-common/wallet-types';
@@ -9,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { isUrlWithQuery } from '@trezor/utils';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 export type BackendOption = BackendType | 'default';

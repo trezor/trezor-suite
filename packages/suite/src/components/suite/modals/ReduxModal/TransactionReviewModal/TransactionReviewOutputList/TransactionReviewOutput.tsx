@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationFunction, TranslationKey, useTranslation } from '@suite/intl';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -19,10 +19,8 @@ import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
-import { useSelector, useTranslation } from 'src/hooks/suite';
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
+import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 
 import {

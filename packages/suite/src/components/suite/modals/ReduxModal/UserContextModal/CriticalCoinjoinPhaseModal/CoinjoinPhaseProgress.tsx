@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import { RoundPhase } from '@trezor/coinjoin';
 import { BulletList, BulletListItemState, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-import { Translation } from 'src/components/suite/Translation';
 import { ROUND_PHASE_MESSAGES } from 'src/constants/suite/coinjoin';
 import { CoinjoinSession } from 'src/types/wallet/coinjoin';
 

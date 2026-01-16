@@ -1,8 +1,8 @@
+import { Translation, useTranslation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 export const NoBackup = () => {
     const dispatch = useDispatch();

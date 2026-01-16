@@ -2,7 +2,7 @@ import { ChangeEvent, DragEvent, MouseEvent, useCallback, useMemo, useRef, useSt
 
 import styled from 'styled-components';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Column, Icon, IconName, Paragraph, Row, Text, useElevation } from '@trezor/components';
 import {
     Elevation,
@@ -11,8 +11,6 @@ import {
     mapElevationToBorder,
     spacings,
 } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type DropZoneProps = {
     accept?: string;

@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Paragraph, Row, Switch } from '@trezor/components';
 
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectModalType } from 'src/reducers/suite/modalReducer';
 import { TorStatus } from 'src/types/suite';

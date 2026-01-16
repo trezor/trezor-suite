@@ -1,6 +1,6 @@
 import { memo, useCallback, useState } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Divider } from '@trezor/components';
 import { TopAssets } from '@trezor/product-components';

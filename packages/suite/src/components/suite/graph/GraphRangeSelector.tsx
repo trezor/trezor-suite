@@ -11,10 +11,10 @@ import {
 } from 'date-fns';
 import styled, { css } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Popover, PopoverPlacement, PopoverRef, Row, Timerange } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useGraph, useLocales } from 'src/hooks/suite';
 import { GraphRange } from 'src/types/wallet/graph';
 

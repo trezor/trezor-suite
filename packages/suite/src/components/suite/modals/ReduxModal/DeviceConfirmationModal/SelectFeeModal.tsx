@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
+import { Translation, messages } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { sortLevels } from '@suite-common/wallet-core';
@@ -13,11 +14,9 @@ import { spacings } from '@trezor/theme';
 import { onReceiveFee } from 'src/actions/suite/modalActions';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
-import messages from 'src/support/messages';
 
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 

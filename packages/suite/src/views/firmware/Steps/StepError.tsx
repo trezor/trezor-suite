@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
-
-import { Translation } from '../../../components/suite/Translation';
 
 type StepErrorProps = {
     onClose: () => void;

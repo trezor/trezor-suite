@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getCoingeckoId } from '@suite-common/wallet-config';
 import { Account, SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -12,7 +13,6 @@ import { AssetLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { Loading } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useDispatch } from 'src/hooks/suite';
 

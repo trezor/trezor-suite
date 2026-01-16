@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
-import { useLayoutSize, useTranslation } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const OpReturn = ({ outputId }: { outputId: number }) => {

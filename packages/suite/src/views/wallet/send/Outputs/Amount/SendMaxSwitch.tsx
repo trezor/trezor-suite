@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { Switch } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type SendMaxSwitchProps = {
     isSendMaxActive: boolean;

@@ -20,6 +20,7 @@
     "dependencies": {
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
+        "@suite/intl": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "semver": "^7.7.1"
     },

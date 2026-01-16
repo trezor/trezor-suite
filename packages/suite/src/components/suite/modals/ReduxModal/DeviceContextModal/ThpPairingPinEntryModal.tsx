@@ -1,13 +1,12 @@
 import { useIntl } from 'react-intl';
 
+import { Translation, messages } from '@suite/intl';
 import { thpActions } from '@suite-common/thp';
 import { Box, Modal } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { useDispatch } from '../../../../../hooks/suite';
-import messages from '../../../../../support/messages';
 import { ThpPairingCodeEntry } from '../../../../connection/thp/ThpPairingCodeEntry';
-import { Translation } from '../../../Translation';
 
 export const ThpPairingPinEntryModal = () => {
     const intl = useIntl();

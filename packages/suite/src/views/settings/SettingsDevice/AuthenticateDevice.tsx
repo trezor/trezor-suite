@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 
 import { AuthenticateDeviceModal } from './AuthenticateDevice/AuthenticateDeviceModal';
 

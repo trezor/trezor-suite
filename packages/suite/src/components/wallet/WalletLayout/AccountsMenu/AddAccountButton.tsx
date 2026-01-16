@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Button, Icon, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 

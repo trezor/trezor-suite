@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
     invityAPI,
@@ -25,7 +26,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { borders, spacings } from '@trezor/theme';
 
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
-import { Translation } from 'src/components/suite/Translation';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';

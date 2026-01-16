@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { UNINSTALL_BRIDGE_URL } from '@trezor/urls';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useExternalLink, useLayout } from 'src/hooks/suite';
 
 /**

@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_CARDANO_AMOUNT_FOR_SEND } from '@suite-common/wallet-constants';
 import {
@@ -10,7 +11,6 @@ import { Banner, InfoItem, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const CardanoMinAmountInfo = () => {

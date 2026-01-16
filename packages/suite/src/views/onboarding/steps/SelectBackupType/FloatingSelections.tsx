@@ -2,6 +2,7 @@ import { CSSProperties, forwardRef, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { BackupType } from '@suite-common/suite-types';
 import {
     Banner,
@@ -22,7 +23,6 @@ import {
 } from '@trezor/theme';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import { LegacyOptions } from './LegacyOptions';

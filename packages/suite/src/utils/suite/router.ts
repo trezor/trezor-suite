@@ -10,6 +10,8 @@ import {
 
 import routes, { type RouterAppWithParams } from 'src/constants/suite/routes';
 
+export type { RouterPath } from '@suite-common/redux-utils';
+
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg
 export const getPrefixedURL = (url: string) => {
@@ -51,8 +53,6 @@ export const ensureRouterPath = (path: {
     search: ensureSearchString(path.search),
     hash: ensureHashString(path.hash),
 });
-
-export { type RouterPath };
 
 export type RouterPathOptional = {
     pathname: RouterPath['pathname'];

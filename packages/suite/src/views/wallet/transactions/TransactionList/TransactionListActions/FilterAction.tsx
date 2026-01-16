@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import {
     selectIsHideSuspiciousTransactions,
     toggleHideSuspiciousTransactions,
@@ -20,7 +21,6 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
 const options = [

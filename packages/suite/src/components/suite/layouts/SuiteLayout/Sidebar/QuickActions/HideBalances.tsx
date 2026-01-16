@@ -1,8 +1,10 @@
+import { useTranslation } from '@suite/intl';
 import { selectIsDiscreteModeActive, setDiscreetMode } from '@suite-common/wallet-core';
 import { Icon, iconSizes } from '@trezor/components';
 
+import { useDispatch, useSelector } from 'src/hooks/suite';
+
 import { QuickActionButton } from './QuickActionButton';
-import { useDispatch, useSelector, useTranslation } from '../../../../../../hooks/suite';
 
 export const HideBalances = () => {
     const dispatch = useDispatch();

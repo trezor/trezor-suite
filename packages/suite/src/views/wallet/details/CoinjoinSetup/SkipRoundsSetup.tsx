@@ -2,11 +2,11 @@ import { useDispatch } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { H3, Paragraph, Switch, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { coinjoinAccountToggleSkipRounds } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectCurrentCoinjoinSession } from 'src/reducers/wallet/coinjoinReducer';
 

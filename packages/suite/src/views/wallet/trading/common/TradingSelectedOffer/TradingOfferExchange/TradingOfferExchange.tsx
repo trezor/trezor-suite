@@ -1,5 +1,6 @@
 import { CryptoId } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
     selectTradingExchangeFormStep,
@@ -11,7 +12,6 @@ import { useAsyncClickHandler } from '@trezor/react-utils';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';

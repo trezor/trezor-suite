@@ -8,7 +8,7 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,

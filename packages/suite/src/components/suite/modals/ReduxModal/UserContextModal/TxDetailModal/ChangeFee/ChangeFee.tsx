@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
@@ -10,7 +11,6 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { UseRbfProps, useRbfContext } from 'src/hooks/wallet/useRbfForm';
 

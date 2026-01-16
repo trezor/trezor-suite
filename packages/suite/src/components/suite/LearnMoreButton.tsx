@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Button, ButtonProps } from '@trezor/components';
 import { Url } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { useExternalLink } from '../../hooks/suite';
 

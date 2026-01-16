@@ -1,11 +1,11 @@
 import React from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';

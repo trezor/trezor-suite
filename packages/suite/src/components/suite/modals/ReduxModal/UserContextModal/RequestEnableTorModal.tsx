@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
+import { Translation } from '@suite/intl';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { Banner, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
 

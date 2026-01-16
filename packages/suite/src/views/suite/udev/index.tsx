@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
 import { getOsFamily, getUserAgent } from '@trezor/env-utils';
 import { spacings } from '@trezor/theme';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink } from 'src/hooks/suite';
 import type { ForegroundAppProps } from 'src/types/suite';
 

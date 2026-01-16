@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { CryptoId } from 'invity-api';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import {
     TradingAssetOption,
     createAssetNativeTokenOption,

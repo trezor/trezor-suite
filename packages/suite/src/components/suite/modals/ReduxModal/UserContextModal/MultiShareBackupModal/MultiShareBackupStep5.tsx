@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import {
     Banner,
     Card,
@@ -11,8 +11,6 @@ import {
     Paragraph,
 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type CalloutProps = {
     title: TranslationKey;

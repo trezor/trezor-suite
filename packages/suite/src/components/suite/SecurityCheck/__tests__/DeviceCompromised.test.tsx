@@ -1,11 +1,11 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
+import { TranslationKey } from '@suite/intl';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
-import { TranslationKey } from 'src/components/suite/Translation';
 import { AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
 import { configureStore } from 'src/support/tests/configureStore';
@@ -15,9 +15,13 @@ import { DeviceCompromised } from '../DeviceCompromised';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
-// render only Translation.id in data-test attribute
-jest.mock('src/components/suite/Translation', () => ({
+// !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
+const translationStringMock = (id: string) => id;
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
+    useTranslation: () => ({ translationString: translationStringMock }),
 }));
 
 global.ResizeObserver = class MockedResizeObserver {

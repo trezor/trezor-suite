@@ -1,11 +1,11 @@
 import { ExchangeProviderInfo } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import type { TradingTransactionExchange as TradingTxExchange } from '@suite-common/trading';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { Button } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { Account } from 'src/types/wallet';

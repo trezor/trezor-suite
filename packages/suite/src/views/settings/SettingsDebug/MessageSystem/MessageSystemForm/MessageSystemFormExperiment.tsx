@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@suite/intl';
 import {
     ValidateError,
     getDefaultExperiment,
@@ -13,7 +14,7 @@ import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
 import { useConditionControls } from './useConditionControls';

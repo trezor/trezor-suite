@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { lighten, rgba } from 'polished';
 import styled, { DefaultTheme, css, keyframes } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
@@ -13,7 +14,6 @@ import {
     startCoinjoinSession,
 } from 'src/actions/wallet/coinjoinAccountActions';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessionBlockers';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';

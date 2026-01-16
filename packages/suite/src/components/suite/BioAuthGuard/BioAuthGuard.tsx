@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Button, Icon, Paragraph, Row, useElevation } from '@trezor/components';
 import { isMacOs } from '@trezor/env-utils';
 import {
@@ -12,7 +13,6 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import {
     Body,
     Columns,

@@ -1,3 +1,4 @@
+import { Translation, useTranslation } from '@suite/intl';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -5,9 +6,8 @@ import { getFirmwareVersion } from '@trezor/device-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { AcquiredDevice } from 'src/types/suite';
 
 const getButtonLabelId = ({ device }: { device: AcquiredDevice }) => {

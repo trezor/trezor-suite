@@ -16,6 +16,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../../suite/intl" },
         { "path": "../components" },
         { "path": "../connect" },
         { "path": "../ipc-proxy" },

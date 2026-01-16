@@ -1,13 +1,12 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
+import { Translation, messages } from '@suite/intl';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 
 import { ThpPairingCodeEntry } from 'src/components/connection/thp/ThpPairingCodeEntry';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
-import { Translation } from 'src/components/suite/Translation';
-import messages from 'src/support/messages';
 
 export const ThpPairingStep = () => {
     const intl = useIntl();

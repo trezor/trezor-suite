@@ -1,7 +1,5 @@
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { Banner, Paragraph, Text } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 export const FirmwareWipeWarning = () => {
     const warningTranslationValues: ExtendedMessageDescriptor['values'] = {

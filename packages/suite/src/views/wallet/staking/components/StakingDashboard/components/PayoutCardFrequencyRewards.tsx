@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { PayoutCard } from './PayoutCard';
 

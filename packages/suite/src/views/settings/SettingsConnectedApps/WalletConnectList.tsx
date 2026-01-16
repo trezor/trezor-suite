@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import {
     getSessionNetworks,
     selectSessions,
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const WalletConnectList = () => {

@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
     BulletList,
@@ -25,7 +26,6 @@ import { TRADING_DOWNLOAD_INVITY_APP_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { TrezorLink } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 import { TradingContainer } from 'src/views/wallet/trading/common/TradingContainer';

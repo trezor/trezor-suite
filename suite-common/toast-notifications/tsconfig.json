@@ -2,13 +2,13 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../intl-types" },
         { "path": "../redux-utils" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
+        { "path": "../../suite/intl" },
         { "path": "../../packages/connect" }
     ]
 }

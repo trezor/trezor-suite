@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { FormState } from '@suite-common/wallet-types';
 import { getInputState, isEip1559 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite/Translation';
 import { InputError } from 'src/components/wallet';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { validateDecimals } from 'src/utils/suite/validation';

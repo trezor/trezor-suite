@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
@@ -11,7 +12,6 @@ import { useNetworkSupport } from '../../../../../hooks/settings/useNetworkSuppo
 import { useDispatch, useSelector } from '../../../../../hooks/suite';
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
-import { Translation } from '../../../Translation';
 
 type PassphraseWalletIsEmptyProps = {
     onRetry: () => void;

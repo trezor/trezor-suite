@@ -1,10 +1,10 @@
 import { Locator, Page } from '@playwright/test';
 import { CryptoId } from 'invity-api';
 
+import { messages } from '@suite/intl';
 import { TradingCountryCode } from '@suite-common/trading';
 import { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import messages from '@trezor/suite/src//support/messages';
 
 import { FeeSection } from './feeSection';
 import { getCompanyNameFromList, invityEndpoint } from '../../fixtures/invity';

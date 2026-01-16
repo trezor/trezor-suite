@@ -10804,15 +10804,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/intl-types@workspace:*, @suite-common/intl-types@workspace:suite-common/intl-types":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/intl-types@workspace:suite-common/intl-types"
-  dependencies:
-    react: "npm:19.1.0"
-    react-intl: "npm:^8.0.6"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/logger@workspace:*, @suite-common/logger@workspace:suite-common/logger":
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
@@ -11146,13 +11137,13 @@ __metadata:
   resolution: "@suite-common/toast-notifications@workspace:suite-common/toast-notifications"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/intl-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/connect": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -11187,7 +11178,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/geolocation": "workspace:*"
-    "@suite-common/intl-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -11197,6 +11187,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/address-validator": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"
@@ -11293,11 +11284,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-types@workspace:suite-common/wallet-types"
   dependencies:
-    "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/staking-solana": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11312,7 +11303,6 @@ __metadata:
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -11321,6 +11311,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/address-validator": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -13726,6 +13717,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/intl@workspace:*, @suite/intl@workspace:^, @suite/intl@workspace:suite/intl":
+  version: 0.0.0-use.local
+  resolution: "@suite/intl@workspace:suite/intl"
+  dependencies:
+    "@trezor/type-utils": "workspace:^"
+    react: "npm:19.1.0"
+    react-intl: "npm:^8.0.6"
+  languageName: unknown
+  linkType: soft
+
 "@suite/platform-encryption-electron@workspace:*, @suite/platform-encryption-electron@workspace:suite/platform-encryption-electron":
   version: 0.0.0-use.local
   resolution: "@suite/platform-encryption-electron@workspace:suite/platform-encryption-electron"
@@ -14726,6 +14727,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
@@ -14815,6 +14817,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
@@ -14871,6 +14874,7 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@suite/intl": "workspace:^"
     "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -14958,7 +14962,6 @@ __metadata:
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
-    "@suite-common/intl-types": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
@@ -14990,6 +14993,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@suite/platform-encryption-electron": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/suite-sync": "workspace:*"
@@ -15199,7 +15203,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:packages/type-utils":
+"@trezor/type-utils@workspace:*, @trezor/type-utils@workspace:^, @trezor/type-utils@workspace:packages/type-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/type-utils@workspace:packages/type-utils"
   dependencies:

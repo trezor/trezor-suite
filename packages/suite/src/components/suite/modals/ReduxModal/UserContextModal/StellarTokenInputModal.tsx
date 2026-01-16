@@ -1,11 +1,9 @@
 import { useForm } from 'react-hook-form';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { isValidAddress, isValidAssetCode } from '@trezor/blockchain-link-utils/src/stellar';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 
 type StellarTokenInputModalProps = {
     onSubmit: (assetCode: string, assetIssuer: string) => void;

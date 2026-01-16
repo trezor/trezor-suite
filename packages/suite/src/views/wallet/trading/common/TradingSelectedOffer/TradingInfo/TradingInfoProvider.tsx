@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { InfoItem } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingProviderInfo } from 'src/views/wallet/trading/common/TradingProviderInfo';
 

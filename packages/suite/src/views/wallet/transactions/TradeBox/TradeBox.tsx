@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
@@ -13,7 +14,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

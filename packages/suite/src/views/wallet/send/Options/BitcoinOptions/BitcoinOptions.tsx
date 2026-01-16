@@ -1,9 +1,9 @@
 import { useWatch } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { OnOffSwitcher } from '../OnOffSwitcher';

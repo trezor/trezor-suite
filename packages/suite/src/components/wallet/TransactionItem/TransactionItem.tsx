@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -12,7 +13,6 @@ import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
-import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';

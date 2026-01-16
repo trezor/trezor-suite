@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { FeeRate } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
-import { Translation } from 'src/components/suite/Translation';
 import { useLocales, useSelector } from 'src/hooks/suite';
 
 import { FeeCard } from './FeeCard';

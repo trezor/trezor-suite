@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TradingOffersItemProps } from 'src/views/wallet/trading/common/TradingOffers/TradingOffersItem';
 
 const TooltipRow = styled.div`

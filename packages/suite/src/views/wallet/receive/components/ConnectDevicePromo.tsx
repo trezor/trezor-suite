@@ -1,11 +1,10 @@
 import { JSX } from 'react';
 
+import { Translation } from '@suite/intl';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { useSelector } from '../../../../hooks/suite';
 

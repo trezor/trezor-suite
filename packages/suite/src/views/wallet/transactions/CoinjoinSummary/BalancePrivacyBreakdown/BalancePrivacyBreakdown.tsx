@@ -1,9 +1,9 @@
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { isZero } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import {
     selectCurrentCoinjoinBalanceBreakdown,

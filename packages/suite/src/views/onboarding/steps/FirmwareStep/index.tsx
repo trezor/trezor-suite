@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectThpStep } from '@suite-common/thp';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
@@ -9,7 +10,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { MODAL } from 'src/actions/suite/constants';
 import { Fingerprint, FirmwareInstallationProgressCheck } from 'src/components/firmware';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
-import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareInstallationProgressCheck, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';

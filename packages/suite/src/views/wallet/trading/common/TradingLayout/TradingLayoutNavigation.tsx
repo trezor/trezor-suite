@@ -1,9 +1,9 @@
+import { Translation, TranslationKey } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { IconName, SubTabs } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 type TradingLayoutNavigationProps = {

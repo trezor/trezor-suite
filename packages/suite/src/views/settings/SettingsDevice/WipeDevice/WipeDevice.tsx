@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice } from 'src/hooks/suite';
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite';
 import { WipeDeviceModal } from 'src/views/settings/SettingsDevice/WipeDevice/WipeDeviceModal';
 

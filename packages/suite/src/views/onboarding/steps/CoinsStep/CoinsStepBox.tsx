@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { Translation } from '@suite/intl';
 import { changeCoinVisibility, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Badge, CollapsibleBox, Column, Row, Tooltip } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
@@ -9,7 +10,6 @@ import {
     type OnboardingCardProps,
 } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { CoinGroup } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';

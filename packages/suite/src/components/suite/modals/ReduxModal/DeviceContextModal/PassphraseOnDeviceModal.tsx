@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
+import { Translation, messages } from '@suite/intl';
 import {
     selectIsDiscoveryStatusConfirmEmptyPassphrase,
     selectSelectedDeviceLabelOrName,
@@ -12,9 +13,7 @@ import { ConfirmOnDevicePill } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
-import messages from 'src/support/messages';
 import type { TrezorDevice } from 'src/types/suite';
 
 const ImageWrapper = styled.div`

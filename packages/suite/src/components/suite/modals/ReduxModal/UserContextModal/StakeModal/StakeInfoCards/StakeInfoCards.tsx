@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
-import { Translation } from 'src/components/suite/Translation';
 
 import { EstimatedGains } from './EstimatedGains';
 

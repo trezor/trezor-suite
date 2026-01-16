@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Modal, Paragraph } from '@trezor/components';
 
 import { setBluetoothDeviceNeedsManualPairing } from 'src/actions/bluetooth//desktopBluetoothReducer';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 type BluetoothManualPairingModalProps = {

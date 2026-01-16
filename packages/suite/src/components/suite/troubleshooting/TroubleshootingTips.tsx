@@ -1,10 +1,10 @@
 import { ReactNode, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Banner, BannerIntent, Box, Button, Column, IconName, Modal } from '@trezor/components';
 
-import { TroubleshootingTipsList } from './TroubleshootingTipsList';
-import { Translation } from '../Translation';
 import { TroubleshootingTipsFooter } from './TroubleshootingTipsFooter';
+import { TroubleshootingTipsList } from './TroubleshootingTipsList';
 
 export type TroubleshootingTipsItem = {
     key: string;

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
@@ -26,13 +27,11 @@ import { spacings } from '@trezor/theme';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { Labeling } from 'src/components/suite/labeling/MetadataLabeling/MetadataLabeling';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useStore } from 'src/hooks/suite/useStore';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';

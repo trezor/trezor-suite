@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { Card, Column, H3, Modal, Paragraph, Text } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { Metadata } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { AutoStart } from 'src/views/settings/SettingsGeneral/AutoStart';
 

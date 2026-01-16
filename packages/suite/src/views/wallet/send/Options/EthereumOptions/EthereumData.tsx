@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Row, Textarea } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 const inputAsciiName = 'ethereumDataAscii';

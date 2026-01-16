@@ -1,7 +1,6 @@
+import { Translation } from '@suite/intl';
 import { BulletList, Card, Column, H3, H4 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';
 

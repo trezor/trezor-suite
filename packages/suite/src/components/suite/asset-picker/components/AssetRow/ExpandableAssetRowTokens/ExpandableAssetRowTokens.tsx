@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { Account, AccountKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { Card, Collapsible, Row, Text } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { EXPANDABLE_ASSET_ROW_TOKENS_HEADER_HEIGHT } from '../../../constants';
@@ -80,6 +79,7 @@ export function ExpandableAssetRowTokens({
                                     gap={20}
                                     isCentered={false}
                                     isCountVisible
+                                    reverseVisibleTokens={false}
                                 />
                             )}
 

@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { UnavailableCapability } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

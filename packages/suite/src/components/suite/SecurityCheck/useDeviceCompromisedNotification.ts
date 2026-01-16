@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
+import { TranslationKey } from '@suite/intl';
 import {
     RevisionCheckErrorWithNotification,
     isRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
-import { TranslationKey } from '@suite-common/intl-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 

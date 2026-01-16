@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { getIsTorLoading } from 'src/utils/suite/tor';
 

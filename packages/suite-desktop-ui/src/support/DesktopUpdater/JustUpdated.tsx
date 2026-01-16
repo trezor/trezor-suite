@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Card, Modal, Row, TextButton } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { MarkdownWithComponents } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { getReleaseUrl } from 'src/services/github';
 
 interface AvailableProps {

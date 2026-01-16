@@ -1,4 +1,5 @@
-import { Translation } from 'src/components/suite/Translation';
+import { Translation } from '@suite/intl';
+
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 

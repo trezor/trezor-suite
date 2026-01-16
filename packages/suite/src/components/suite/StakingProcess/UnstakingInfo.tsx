@@ -1,5 +1,6 @@
 import React, { JSX } from 'react';
 
+import { Translation } from '@suite/intl';
 import { NetworkSymbol, NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueue } from '@suite-common/wallet-core';
@@ -8,7 +9,6 @@ import { BulletList } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { exhaustive } from '@trezor/type-utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { CoinjoinRootState } from 'src/reducers/wallet/coinjoinReducer';
 

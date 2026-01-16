@@ -3,11 +3,9 @@ import { FormattedNumber } from 'react-intl';
 import type { Duration } from 'date-fns';
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 
 import { useCountdownTimer } from 'src/hooks/suite';
-
-import { Translation } from './Translation';
 
 const UnitWrapper = styled.span`
     font-variant-numeric: tabular-nums;
