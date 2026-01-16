@@ -1,10 +1,9 @@
+import { Translation } from '@suite/intl';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingPaymentMethodType,
 } from '@suite-common/trading';
 import { Text } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface TradingPaymentTypeProps {
     method?: TradingPaymentMethodType;

@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useCoinjoinAccountLoadingProgress } from 'src/hooks/coinjoin';
 import { useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';

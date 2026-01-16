@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 
-import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 export const RewardsEmpty = () => (

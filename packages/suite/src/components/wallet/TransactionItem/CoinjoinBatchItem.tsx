@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { selectHistoricFiatRates } from '@suite-common/wallet-core';
 import { Timestamp, asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -18,7 +19,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp } from 'src/components/wallet/TransactionTimestamp';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet/index';

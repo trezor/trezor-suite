@@ -1,5 +1,5 @@
+import { messages } from '@suite/intl';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import messages from '@trezor/suite/src/support/messages';
 import { BigNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';

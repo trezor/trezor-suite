@@ -1,10 +1,10 @@
 import { ReactNode, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { startThpSessionThunk } from '../../../actions/thp/startThpSessionThunk';
-import { Translation } from '../../../components/suite/Translation';
 import { useDispatch } from '../../../hooks/suite';
 
 type StepThpStartProps = {

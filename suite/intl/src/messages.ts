@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 
-export default defineMessages({
+export const messages = defineMessages({
     TR_404_DESCRIPTION: {
         defaultMessage: 'Looks like a wrong URL or broken link.',
         id: 'TR_404_DESCRIPTION',

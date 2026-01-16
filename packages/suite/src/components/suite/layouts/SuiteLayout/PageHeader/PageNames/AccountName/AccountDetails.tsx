@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
+import { useTranslation } from '@suite/intl';
 import { selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -16,7 +17,6 @@ import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Labeling } from 'src/components/suite/labeling';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -18,9 +19,8 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { activateTokenThunk, deactivateTokenThunk } from 'src/actions/wallet/token';
-import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

@@ -1,7 +1,6 @@
+import { Translation } from '@suite/intl';
 import { Badge, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from './Translation';
 
 type DebugOnlyBadgeProps = {
     children?: React.ReactNode;

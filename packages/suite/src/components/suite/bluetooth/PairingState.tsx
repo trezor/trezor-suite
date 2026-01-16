@@ -1,6 +1,5 @@
+import { Translation, TranslationKey } from '@suite/intl';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
-
-import { Translation, TranslationKey } from '../Translation';
 
 type PairingStateProps = {
     isLoading?: boolean;

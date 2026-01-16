@@ -14,7 +14,7 @@ import {
 } from '@floating-ui/react';
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { BackupType } from '@suite-common/suite-types';
 import { selectDeviceDefaultBackupType } from '@suite-common/wallet-core';
 import { Banner, ElevationUp, Text, useElevation } from '@trezor/components';
@@ -26,7 +26,6 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 
 import { FloatingSelections } from './FloatingSelections';

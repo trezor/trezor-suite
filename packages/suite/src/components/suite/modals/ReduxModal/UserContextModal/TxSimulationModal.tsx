@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { numberToHex, toWei } from 'web3-utils';
 
+import { Translation } from '@suite/intl';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -39,7 +40,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { Address } from 'src/components/suite/Address';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useExternalLink, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';

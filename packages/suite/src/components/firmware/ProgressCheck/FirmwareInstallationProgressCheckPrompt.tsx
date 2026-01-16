@@ -1,7 +1,6 @@
+import { Translation } from '@suite/intl';
 import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { SecurityCheckLayout } from '../../suite/SecurityCheck/SecurityCheckLayout';
 

@@ -1,6 +1,7 @@
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Context } from '@suite-common/message-system';
 import {
     selectDeviceSupportedNetworks,
@@ -17,7 +18,6 @@ import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { CoinGroup } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';

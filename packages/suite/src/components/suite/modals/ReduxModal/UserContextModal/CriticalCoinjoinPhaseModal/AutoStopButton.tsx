@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Checkbox, Text } from '@trezor/components';
 
 import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';

@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/intl-types",
+    "name": "@suite/intl",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -7,9 +7,11 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@trezor/type-utils": "workspace:^",
         "react": "19.1.0",
         "react-intl": "^8.0.6"
     }

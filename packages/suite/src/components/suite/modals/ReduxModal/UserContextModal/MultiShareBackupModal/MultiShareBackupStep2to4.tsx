@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import {
     BulletList,
     BulletListItemState,
@@ -17,7 +17,6 @@ import {
 import { spacings } from '@trezor/theme';
 import { ESHOP_KEEP_METAL_MULTI_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 
 import type { Steps } from './MultiShareBackupModal';

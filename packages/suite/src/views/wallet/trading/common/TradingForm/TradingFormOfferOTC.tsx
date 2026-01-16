@@ -3,6 +3,7 @@ import { FormattedList } from 'react-intl';
 
 import { FiatCurrencyCode } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import {
     TradingOTC,
     TradingTradeBuySellType,
@@ -16,7 +17,6 @@ import { Banner, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { TrezorLink } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

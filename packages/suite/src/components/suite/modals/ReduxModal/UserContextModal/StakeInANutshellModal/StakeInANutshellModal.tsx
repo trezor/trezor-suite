@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_ACTIVATION_PERIOD_DAYS } from '@suite-common/wallet-constants';
@@ -23,7 +23,6 @@ import { spacings } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
-import { Translation } from 'src/components/suite/Translation';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';

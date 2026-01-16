@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { Translation } from '@suite/intl';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { EXPERIMENTAL_FEATURES_KB_URL } from '@trezor/urls';
@@ -10,7 +11,6 @@ import { typedObjectKeys } from '@trezor/utils';
 import { SUITE } from 'src/actions/suite/constants';
 import { goto } from 'src/actions/suite/routerActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';

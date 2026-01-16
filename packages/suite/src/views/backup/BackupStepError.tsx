@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { H3, Modal } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 export const BackupStepError = ({ onCancel }: { onCancel: () => void }) => (
     <Modal

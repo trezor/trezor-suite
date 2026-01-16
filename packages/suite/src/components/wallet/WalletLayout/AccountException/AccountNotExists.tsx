@@ -1,4 +1,5 @@
-import { Translation } from 'src/components/suite/Translation';
+import { Translation } from '@suite/intl';
+
 import { AccountExceptionLayout } from 'src/components/wallet';
 
 /**

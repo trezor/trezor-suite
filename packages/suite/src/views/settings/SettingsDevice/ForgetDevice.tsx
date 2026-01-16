@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     deviceActions,
@@ -11,7 +12,6 @@ import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/componen
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {

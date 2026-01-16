@@ -2,8 +2,9 @@ import { useCallback } from 'react';
 
 import styled from 'styled-components';
 
+import { useTranslation } from '@suite/intl';
+
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { TrezorDevice } from 'src/types/suite';
 

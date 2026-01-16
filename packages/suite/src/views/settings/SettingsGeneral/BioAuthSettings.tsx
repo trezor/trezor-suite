@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
 

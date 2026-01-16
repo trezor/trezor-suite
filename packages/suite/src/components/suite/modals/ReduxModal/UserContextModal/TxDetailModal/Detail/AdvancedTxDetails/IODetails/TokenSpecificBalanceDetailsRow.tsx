@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { TokenTransfer } from '@trezor/blockchain-link-types';
@@ -5,7 +6,6 @@ import { Column, H4 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
-import { Translation } from 'src/components/suite/Translation';
 
 import { IODetails } from './IODetails';
 import { IOGroup } from './IOGroup';

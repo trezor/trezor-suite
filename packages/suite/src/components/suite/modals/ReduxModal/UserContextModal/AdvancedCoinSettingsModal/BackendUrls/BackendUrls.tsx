@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDefaultUrls } from 'src/hooks/settings/backends';
 import { BackendsForm } from 'src/hooks/settings/backends/useBackendsForm';
 import { useSelector } from 'src/hooks/suite';

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
     DeviceRootState,
@@ -31,7 +32,6 @@ import { Deferred } from '@trezor/utils';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 

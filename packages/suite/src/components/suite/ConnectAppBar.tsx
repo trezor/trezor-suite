@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     CALL_SOURCE_WALLETCONNECT,
     connectPopupActions,
@@ -13,7 +14,6 @@ import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSel
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { TrafficLightOffset } from './TrafficLightOffset';
-import { Translation } from './Translation';
 import { SuiteBanners } from './banners';
 
 export const ConnectBarWrapper = styled.div`

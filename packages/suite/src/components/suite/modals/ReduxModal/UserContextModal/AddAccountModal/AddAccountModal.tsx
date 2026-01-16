@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Network,
@@ -23,7 +24,6 @@ import { arrayPartition } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { CoinList } from 'src/components/suite/CoinList/CoinList';
-import { Translation } from 'src/components/suite/Translation';
 import { useAvailableNetworkSymbols } from 'src/components/wallet/WalletLayout/AccountsMenu/useAvailableNetworkSymbols';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';

@@ -1,8 +1,7 @@
 import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { Banner, Link, Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type TradingDetailSupportBannerProps = {
     provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;

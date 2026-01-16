@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
@@ -8,7 +9,6 @@ import { breakpoints } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { Translation } from 'src/components/suite/Translation';
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';

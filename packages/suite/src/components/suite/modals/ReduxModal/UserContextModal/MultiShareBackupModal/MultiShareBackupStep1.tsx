@@ -1,9 +1,8 @@
 import { Dispatch, SetStateAction } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type MultiShareBackupStep1Props = {
     isChecked1: boolean;

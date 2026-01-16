@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { getInstantStakeType } from '@suite-common/staking';
 import { NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { StakeType } from '@suite-common/wallet-types';
@@ -8,7 +9,6 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Badge, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { WalletAccountTransaction } from 'src/types/wallet';
 

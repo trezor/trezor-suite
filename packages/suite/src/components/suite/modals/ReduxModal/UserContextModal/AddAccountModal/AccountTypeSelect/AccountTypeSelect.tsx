@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { NetworkAccount, NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Column, Paragraph, Select } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { AccountTypeDescription } from './AccountTypeDescription';
 

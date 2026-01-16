@@ -1,6 +1,6 @@
 import { RefObject, memo } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey, useTranslation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -8,7 +8,7 @@ import { Box } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
 import { useSearchFilter } from './hooks/useSearchFilter';

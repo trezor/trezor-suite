@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { selectDevices } from '@suite-common/wallet-core';
 import { ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
@@ -11,8 +12,7 @@ import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatt
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
 import { PrerequisitesGuide } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
-import { useDevice, useOnboarding, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

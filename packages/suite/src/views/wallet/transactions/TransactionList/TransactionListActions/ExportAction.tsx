@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -10,10 +11,8 @@ import { Dropdown, Note, Text } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { Account } from 'src/types/wallet';
 

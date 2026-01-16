@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import type {
     Bip43Path,
     Bip43PathTemplate,

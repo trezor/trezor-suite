@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -10,7 +11,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedDate, HiddenPlaceholder } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { Account } from 'src/types/wallet';
 import { AggregatedAccountHistory, GraphRange } from 'src/types/wallet/graph';

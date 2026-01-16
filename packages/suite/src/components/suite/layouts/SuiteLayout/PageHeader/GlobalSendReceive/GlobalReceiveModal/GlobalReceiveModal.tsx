@@ -1,11 +1,11 @@
 import { useCallback, useRef } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Divider, Link, Modal } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite/Translation';
 import {
     AssetRowReceiveToAccount,
     AssetsList,

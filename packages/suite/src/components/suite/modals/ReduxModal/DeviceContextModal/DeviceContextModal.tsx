@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl';
 
+import { messages } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import messages from 'src/support/messages';
 
 import type { ReduxModalProps } from '../ReduxModal';
 import { ConfirmActionModal } from './ConfirmActionModal';

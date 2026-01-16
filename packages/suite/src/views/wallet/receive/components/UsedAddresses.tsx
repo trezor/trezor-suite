@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -10,8 +11,7 @@ import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, FormattedCryptoAmount, Labeling } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite/';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AppState } from 'src/types/suite';

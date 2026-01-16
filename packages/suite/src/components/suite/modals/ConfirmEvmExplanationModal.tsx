@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { Image, Modal, Paragraph } from '@trezor/components';
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { onCancel } from 'src/actions/suite/modalActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 const ImageWrapper = styled.div`

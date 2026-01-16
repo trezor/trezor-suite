@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
 
+import { TranslationKey, useTranslation } from '@suite/intl';
 import { Column, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { PrimitiveType } from '@trezor/type-utils';
 
-import { TranslationKey } from 'src/components/suite/Translation';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout, useTranslation } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 import { AccountHeaderProvider } from 'src/support/suite/AccountHeaderProvider';
 import { AppState } from 'src/types/suite';
 

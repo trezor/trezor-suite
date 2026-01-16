@@ -2,11 +2,11 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { Badge, Icon, Row, Text, TextVariant } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 
 import { HiddenPlaceholder } from 'src/components/suite';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
 const IconWrapper = styled.div<{ $isActive: boolean }>`
     transition: transform 0.2s ease-in-out;

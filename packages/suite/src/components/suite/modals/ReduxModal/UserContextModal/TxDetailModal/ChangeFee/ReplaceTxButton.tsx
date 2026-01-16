@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 

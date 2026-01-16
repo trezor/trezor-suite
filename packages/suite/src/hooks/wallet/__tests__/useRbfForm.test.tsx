@@ -36,8 +36,14 @@ jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
-// render only Translation['id']
-jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
+// !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
+const translationStringMock = (id: string) => id;
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    Translation: ({ id }: any) => id,
+    useTranslation: () => ({ translationString: translationStringMock }),
+}));
 
 // since we are NOT(!) mocking @trezor/connect it fetch real bridge at init
 jest.mock('cross-fetch', () => ({

@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { BulletList, Button, Row } from '@trezor/components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 import { DropZone } from 'src/components/suite/DropZone';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite';
 import { validateFirmware } from 'src/utils/firmware';
 

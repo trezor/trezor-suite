@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { getBip43Type } from '@suite-common/wallet-utils';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';

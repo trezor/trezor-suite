@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -14,7 +15,6 @@ import { spacings } from '@trezor/theme';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { GraphScaleDropdownItem, GraphSkeleton } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useTotalFiatBalance } from 'src/hooks/wallet/useTotalFiatBalance';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';

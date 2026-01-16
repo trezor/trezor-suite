@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
@@ -6,7 +7,6 @@ import { Grid, Modal } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';

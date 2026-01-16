@@ -1,10 +1,10 @@
 import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 import { DefaultTheme, useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { type TradingTransaction, exchangeUtils, sellUtils } from '@suite-common/trading';
 import { Icon, Row, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { getStatusMessage as getBuyStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
 const getBuyTradeData = (status: BuyTradeStatus, theme: DefaultTheme) => {

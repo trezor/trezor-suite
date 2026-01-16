@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 
-import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 

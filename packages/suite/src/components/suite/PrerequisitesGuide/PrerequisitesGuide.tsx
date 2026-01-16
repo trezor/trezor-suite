@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 
+import { Translation } from '@suite/intl';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -16,7 +17,6 @@ import { getMessageId } from 'src/components/suite/getMessageId';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 
-import { Translation } from '../Translation';
 import { BannerAndTroubleshooting } from './BannerAndTroubleshooting';
 
 type PrerequisitesGuideProps = {

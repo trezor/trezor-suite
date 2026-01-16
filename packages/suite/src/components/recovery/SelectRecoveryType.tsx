@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Grid } from '@trezor/components';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type SelectRecoveryTypeProps = {

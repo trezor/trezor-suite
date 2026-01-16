@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { NetworkType } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import {
@@ -17,7 +18,6 @@ import {
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { TrezorDevice } from 'src/types/suite';
 

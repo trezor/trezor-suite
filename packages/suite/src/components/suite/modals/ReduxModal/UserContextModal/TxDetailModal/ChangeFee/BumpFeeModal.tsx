@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
     ChainedTransactions,
@@ -10,7 +11,6 @@ import { ChangeFee } from './ChangeFee';
 import { ReplaceTxButton } from './ReplaceTxButton';
 import { useSelector } from '../../../../../../../hooks/suite';
 import { RbfContext, useRbf } from '../../../../../../../hooks/wallet/useRbfForm';
-import { Translation } from '../../../../../Translation';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
 

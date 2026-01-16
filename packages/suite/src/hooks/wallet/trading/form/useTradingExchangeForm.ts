@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import type { DexApprovalType, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 
+import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_EXCHANGE_FORM_DEX,
@@ -46,7 +47,7 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';

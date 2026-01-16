@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,
@@ -11,11 +12,10 @@ import { BluetoothDeviceId } from '@trezor/connect';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
+import { PairingState } from './PairingState';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
 import { selectConnectingDevices } from '../../../actions/bluetooth/desktopBluetoothSelectors';
 import { useDispatch, useSelector } from '../../../hooks/suite';
-import { Translation, TranslationKey } from '../Translation';
-import { PairingState } from './PairingState';
 import { useConnectionGlobalModalContext } from '../../connection/context/ConnectionGlobalModalContext';
 
 const connectionStatusMap: Record<

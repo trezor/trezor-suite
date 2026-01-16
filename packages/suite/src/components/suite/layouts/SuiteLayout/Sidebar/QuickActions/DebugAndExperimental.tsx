@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Column, Icon, getIconSize, iconSizes } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -10,7 +11,6 @@ import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
-import { Translation } from '../../../../Translation';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;

@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Modal, Tooltip } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { setConnectionModal, setConnectionMode } from 'src/actions/device/deviceSlice';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';

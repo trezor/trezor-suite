@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -16,7 +17,6 @@ import { BigNumber } from '@trezor/utils';
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import type { NotificationRendererProps } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';

@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Network } from '@suite-common/wallet-config';
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 
-import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 

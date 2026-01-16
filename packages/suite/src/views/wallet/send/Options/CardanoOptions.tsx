@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { Button, Row } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 export const CardanoOptions = () => {
     const { addOutput } = useSendFormContext();

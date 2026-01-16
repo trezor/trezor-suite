@@ -1,4 +1,4 @@
-import type { TranslationKey } from '@suite-common/intl-types';
+import type { TranslationKey } from '@suite/intl';
 import type { NetworkFeature } from '@suite-common/wallet-config';
 
 export const getCoinLabel = (

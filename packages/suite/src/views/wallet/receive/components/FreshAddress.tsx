@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import { AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -18,7 +19,6 @@ import { spacings } from '@trezor/theme';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Address, ReadMoreLink } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite/';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 import { AppState } from 'src/types/suite';

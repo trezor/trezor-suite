@@ -3,6 +3,7 @@ import FocusLock from 'react-focus-lock';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation, useTranslation } from '@suite/intl';
 import {
     Box,
     ButtonGroup,
@@ -15,9 +16,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { borders, zIndices } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
 
 import { useFindBarShortcuts } from './useFindBarShortcuts';
 import { useFindInPage } from './useFindInPage';

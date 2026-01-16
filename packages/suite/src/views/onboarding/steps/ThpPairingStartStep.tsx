@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
+
 import { startThpSessionThunk } from 'src/actions/thp/startThpSessionThunk';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 export const ThpPairingStartStep = () => {

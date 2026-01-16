@@ -1,4 +1,4 @@
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { isDesktop } from '@trezor/env-utils';

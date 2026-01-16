@@ -49,8 +49,14 @@ jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));
 
-// render only Translation['id']
-jest.mock('src/components/suite/Translation', () => ({ Translation: ({ id }: any) => id }));
+// !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
+const translationStringMock = (id: string) => id;
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
+    Translation: ({ id }: any) => id,
+    useTranslation: () => ({ translationString: translationStringMock }),
+}));
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -272,8 +278,9 @@ describe('useSendForm hook', () => {
 
     fixtures.setMax.forEach(f => {
         // Add conditional test execution
-        const testFn = f.skip ? it.skip : it;
-        testFn(
+        if (f.skip) return;
+
+        it(
             f.description,
             async () => {
                 testMocks.setTrezorConnectFixtures(f.connect);
@@ -286,17 +293,25 @@ describe('useSendForm hook', () => {
                         <Component callback={callback} />
                     </SendIndex>,
                 );
+                console.log('renderWithProviders');
                 // wait for first render
                 await waitForLoader();
-                await waitForOutputsRender();
+                console.log('waitForLoader');
+                console.log('waitForOutputsRender');
+                const renderedOutputs = await waitForOutputsRender();
+
+                console.log('waitForOutputsRender', renderedOutputs);
                 // execute user actions sequence
                 if (f.actions) {
+                    console.log('actionSequence');
                     await actionSequence(f.actions, a => actionCallback(callback, a));
                 }
 
+                console.log('actionCallback');
                 // validate finalResult
                 actionCallback(callback, { result: f.finalResult });
 
+                console.log('unmount');
                 unmount();
             },
             TEST_TIMEOUT,

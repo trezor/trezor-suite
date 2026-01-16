@@ -1,5 +1,6 @@
 import { JSX } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -8,7 +9,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 

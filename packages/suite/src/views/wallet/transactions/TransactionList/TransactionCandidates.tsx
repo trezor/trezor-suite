@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Card, IMAGES, Paragraph, Tooltip, variables } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { typography } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TxTypeIconWrapper } from 'src/components/wallet/TransactionItem/CommonComponents';
 import { TransactionTypeIcon } from 'src/components/wallet/TransactionItem/TransactionTypeIcon';
 import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
+
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SkipStepConfirmation } from 'src/components/onboarding/SkipStepConfirmation';
-import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding } from 'src/hooks/suite';
 
 export const SecurityStep = () => {

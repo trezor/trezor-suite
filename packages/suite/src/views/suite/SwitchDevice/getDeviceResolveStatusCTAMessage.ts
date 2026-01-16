@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { getStatus } from '@suite-common/suite-utils';
 
 export const getDeviceResolveStatusCTAMessage = (

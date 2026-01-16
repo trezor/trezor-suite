@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 
 export const ROUND_PHASE_MESSAGES: Record<RoundPhase, TranslationKey> = {

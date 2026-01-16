@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
+
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useChangeDeviceLabel } from 'src/hooks/suite/useChangeDeviceLabel';

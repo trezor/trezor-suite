@@ -1,7 +1,8 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
+
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { bluetoothEraseBondsThunk } from '../../../actions/bluetooth/bluetoothEraseBondsThunk';

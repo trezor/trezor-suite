@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 
+import { Translation } from '@suite/intl';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { Badge, Card, Column, Icon, Row, SkeletonStack, Text, Tooltip } from '@trezor/components';
@@ -12,7 +13,6 @@ import {
     FormattedDate,
     HiddenPlaceholder,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { Pagination } from 'src/components/wallet';
 import { type SolanaRewards } from 'src/hooks/wallet/useSolanaRewards';
 import { Account } from 'src/types/wallet';

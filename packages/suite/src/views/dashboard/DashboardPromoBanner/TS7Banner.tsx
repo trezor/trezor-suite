@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Box, Button, Column, Image, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 
 import { AnimatedWrapper, CloseButton } from './CommonPromoBannerComponents';
-import { Translation } from '../../../components/suite/Translation';
 import { useExternalLink, useLayoutSize } from '../../../hooks/suite';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../../support/suite/ContentFlex';
 

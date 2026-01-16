@@ -1,5 +1,6 @@
 import { FormattedList } from 'react-intl';
 
+import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
 import { Switch } from '@trezor/components';
@@ -8,7 +9,6 @@ import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

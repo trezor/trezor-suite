@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { TranslationKey } from '@suite/intl';
 import { typedObjectValues } from '@trezor/utils';
 
 export type LabelingSelectValue = 'off' | 'secure-sync' | 'legacy';

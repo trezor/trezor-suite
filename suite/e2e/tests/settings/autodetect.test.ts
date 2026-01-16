@@ -1,4 +1,4 @@
-import messages from '@trezor/suite/src//support/messages';
+import { messages } from '@suite/intl';
 import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@trezor/suite-data/files/translations/es-ES.json';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';

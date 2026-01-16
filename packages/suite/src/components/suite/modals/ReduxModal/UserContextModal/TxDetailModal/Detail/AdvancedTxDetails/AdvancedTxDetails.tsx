@@ -1,12 +1,11 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Card, Tabs } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { AmountDetails } from './AmountDetails';
 import { Data } from './Data';

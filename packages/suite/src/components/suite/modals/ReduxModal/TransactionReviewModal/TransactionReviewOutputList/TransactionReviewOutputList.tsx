@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { DeviceRootState, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -17,7 +18,6 @@ import {
 import { Column, H4 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import type { Account } from 'src/types/wallet';
 

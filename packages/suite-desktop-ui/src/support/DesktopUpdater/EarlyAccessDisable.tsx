@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface EarlyAccessDisableProps {
     hideWindow: () => void;

@@ -2,6 +2,7 @@ import { ReactElement, useState } from 'react';
 
 import { CryptoId } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cryptoIdToNetwork, getNetworkDecimalsWithFallback } from '@suite-common/trading/src/utils';
 import { Network, getNetwork } from '@suite-common/wallet-config';
@@ -27,7 +28,6 @@ import { spacings } from '@trezor/theme';
 
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
 import { showAddress } from 'src/actions/wallet/receiveActions';
-import { Translation } from 'src/components/suite/Translation';
 import { AccountLabeling } from 'src/components/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import useTradingVerifyAccount from 'src/hooks/wallet/trading/form/useTradingVerifyAccount';

@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeType,
@@ -14,7 +14,6 @@ import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 

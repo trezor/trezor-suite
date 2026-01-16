@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-utils';
 import { Button, Paragraph, Table } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { StakingDashboardAccountCell } from './StakingDashboardAccountCell';

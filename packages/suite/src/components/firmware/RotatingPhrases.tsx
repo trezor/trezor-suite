@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { Card, H4, Paragraph, motionEasing } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const PHRASES: TranslationKey[] = [
     'TR_DYK_ITEM_1',

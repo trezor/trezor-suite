@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     Column,
     ElevationDown,
@@ -19,7 +20,6 @@ import { SuiteBanners } from 'src/components/suite/banners';
 import { useSelector } from 'src/hooks/suite';
 
 import { TrafficLightOffset } from '../../TrafficLightOffset';
-import { Translation } from '../../Translation';
 import { ContentContainer } from '../ContentContainer';
 import { PageHeader } from '../SuiteLayout';
 import { DebugLegend } from '../SuiteLayout/DebugLegend';

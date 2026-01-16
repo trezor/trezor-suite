@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from '@suite/intl';
 import { isMacOs } from '@trezor/env-utils';
 
 import {
@@ -9,7 +10,6 @@ import {
 
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
-import { useTranslation } from './useTranslation';
 
 export const useBioAuthDesktopApi = () => {
     const { isBioAuthAvailable, isBioAuthEnabled, isBioAuthValidationRequired, cancelled } =

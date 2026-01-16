@@ -1,6 +1,6 @@
+import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 
 interface CardanoLegacyBannerProps {

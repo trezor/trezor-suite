@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, Divider, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
     getProvidersInfoProps,

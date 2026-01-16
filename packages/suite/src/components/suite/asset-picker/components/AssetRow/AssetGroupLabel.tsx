@@ -1,8 +1,9 @@
 import { ReactNode } from 'react';
 
+import { Translation, TranslationKey, isTranslationKey } from '@suite/intl';
 import { Row, Text } from '@trezor/components';
 
-import { Translation, TranslationKey, isTranslationKey } from 'src/components/suite/Translation';
+export const ASSET_ROW_GROUP_LABEL_HEIGHT = 24;
 
 export type AssetGroupLabelProps = {
     label: ReactNode | TranslationKey;

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -18,7 +19,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 

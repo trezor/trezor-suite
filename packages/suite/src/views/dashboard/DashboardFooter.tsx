@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -18,7 +19,6 @@ import {
 } from '@trezor/urls';
 
 import { QrCode } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
-
-import { Translation } from '../../Translation';
 
 /**
  * This is very unimportant warning and should be displayed only under specific conditions (see caller) so that we don't bother users that don't need to care.

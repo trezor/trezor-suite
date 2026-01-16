@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, Icon, InfoSegments, Row, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectFullSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

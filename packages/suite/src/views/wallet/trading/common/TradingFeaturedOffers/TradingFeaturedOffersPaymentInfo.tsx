@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import type { TradingType } from '@suite-common/trading';
 import { spacingsPx } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TradingTradeBuySellType, TradingTradeDetailBuySellType } from 'src/types/trading/trading';
 import { TradingPaymentPlainType } from 'src/views/wallet/trading/common/TradingPaymentPlainType';
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { Translation } from '@suite/intl';
 import { formInputsMaxLength } from '@suite-common/validators';
 import {
     Banner,
@@ -15,7 +16,6 @@ import {
 } from '@trezor/components';
 import { HELP_CENTER_PIN_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useExternalLink } from 'src/hooks/suite';
 
 type PinMatrixProps = {

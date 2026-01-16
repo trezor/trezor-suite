@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { SerializedTx, selectSelectedDevice } from '@suite-common/wallet-core';
 import { ReviewOutput } from '@suite-common/wallet-types';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type TransactionReviewModalConfirmOnDeviceProps = {
     outputs: ReviewOutput[];

@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 import {
     NetworkSymbol,
@@ -10,7 +11,6 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { AssetProps, ITEM_HEIGHT, TokenTab } from '@trezor/product-components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import {

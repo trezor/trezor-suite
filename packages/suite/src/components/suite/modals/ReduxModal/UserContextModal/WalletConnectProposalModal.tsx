@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -31,7 +32,6 @@ import { onCancel } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 

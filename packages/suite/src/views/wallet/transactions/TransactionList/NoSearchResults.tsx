@@ -1,10 +1,9 @@
 import { useRef } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Card, Column, H4, Paragraph, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { getWeakRandomInt } from '@trezor/utils';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const getTip = (num: number) => {
     switch (num) {

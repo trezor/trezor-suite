@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 
+import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { SendState, StakeState } from '@suite-common/wallet-core';
 import { Account, FormState, RbfTransactionType, ReviewOutput } from '@suite-common/wallet-types';
@@ -11,8 +11,6 @@ import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { EventType, TransactionCreatedEvent, analytics } from '@trezor/suite-analytics';
 import { Deferred } from '@trezor/utils';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { getTxType } from '../utils';
 

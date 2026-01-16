@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkSymbolForProtocol } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -33,14 +34,13 @@ import { openDeferredModal } from 'src/actions/suite/modalActions';
 import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
-import { useDevice, useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
 import { DevSelfAddress } from './DevSelfAddress';
-import { Translation } from '../../../../components/suite/Translation';
 
 type AddressProps = {
     outputId: number;

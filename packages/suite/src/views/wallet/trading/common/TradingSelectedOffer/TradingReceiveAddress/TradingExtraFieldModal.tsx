@@ -1,10 +1,9 @@
 import { useForm } from 'react-hook-form';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { Button, Input, Modal } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 import { TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';

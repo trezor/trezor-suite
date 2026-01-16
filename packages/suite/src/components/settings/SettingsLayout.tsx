@@ -1,10 +1,10 @@
 import { ReactNode, useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import {
     NavigationItem,
     PageHeader,

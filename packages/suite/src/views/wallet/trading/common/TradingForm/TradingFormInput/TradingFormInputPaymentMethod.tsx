@@ -1,12 +1,12 @@
 import { Control, Controller } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     type TradingPaymentMethodListProps,
 } from '@suite-common/trading';
 import { Select } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingTradeBuySellType } from 'src/types/trading/trading';
 import {

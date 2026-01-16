@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import type { TradingSellType } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Spinner, Text } from '@trezor/components';
@@ -8,7 +9,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { AccountLabeling } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';

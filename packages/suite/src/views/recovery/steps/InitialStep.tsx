@@ -1,3 +1,4 @@
+import { Translation, TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
 import { BulletList, Card, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -5,7 +6,6 @@ import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDevice } from 'src/hooks/suite/useDevice';
 
 const enterSeedInstructionsMap: Record<DeviceModelInternal, TranslationKey> = {

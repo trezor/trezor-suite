@@ -1,9 +1,8 @@
 import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { Column, InfoSegments, Link, Text, Tooltip } from '@trezor/components';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 type TradingFooterProps = {
     provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;

@@ -1,12 +1,12 @@
 import { useEffect, useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { DeviceAnimation } from '@trezor/product-components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTipsItem } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { TroubleshootingTipsList } from 'src/components/suite/troubleshooting/TroubleshootingTipsList';
 import {

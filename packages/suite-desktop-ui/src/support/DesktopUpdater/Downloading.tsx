@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph, ProgressBar, Text } from '@trezor/components';
 import { UpdateProgress } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { bytesToHumanReadable } from '@trezor/utils';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface DownloadingProps {
     hideWindow: () => void;

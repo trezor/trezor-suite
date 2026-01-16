@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import type TrezorConnectWeb from '@trezor/connect-web';
@@ -8,7 +9,6 @@ import {
     ReconnectDevicePrompt,
     RotatingPhrases,
 } from 'src/components/firmware';
-import { Translation } from 'src/components/suite/Translation';
 import { useFirmwareDesktopUpdate } from 'src/hooks/suite/useFirmwareDesktopUpdate';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';

@@ -3,10 +3,9 @@ import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { H3, Spinner, motionEasing } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const Container = styled(motion.div)`
     background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};

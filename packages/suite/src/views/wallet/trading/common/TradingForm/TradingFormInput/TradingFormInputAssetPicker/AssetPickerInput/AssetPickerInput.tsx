@@ -3,7 +3,7 @@ import { useFormContext } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -15,8 +15,7 @@ import {
 } from '@suite-common/trading';
 import { Icon, Input, InputProps, Spinner, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetPickerInputContent } from './AssetPickerInputContent';
 

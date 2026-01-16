@@ -1,9 +1,7 @@
 import { ExchangeProviderInfo, ExchangeTrade } from 'invity-api';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { BulletListItemState, Card, Column } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 
 import { TradingDetailProviderInfo } from '../TradingDetailProviderInfo';
 import { TradingDetailStep } from '../TradingDetailStep';

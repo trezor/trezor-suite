@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Row, Text, TextButton } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';

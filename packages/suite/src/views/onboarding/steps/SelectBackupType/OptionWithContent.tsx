@@ -2,6 +2,7 @@ import { ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { BackupType } from '@suite-common/suite-types';
 import { Icon, Radio, Row, Text, Tooltip, useElevation, variables } from '@trezor/components';
 import {
@@ -12,7 +13,6 @@ import {
     spacingsPx,
 } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useLayoutSize } from 'src/hooks/suite';
 
 import { typesToLabelMap } from './typesToLabelMap';

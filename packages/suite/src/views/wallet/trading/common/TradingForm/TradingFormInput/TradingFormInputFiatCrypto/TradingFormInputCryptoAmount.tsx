@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { FieldErrors, UseFormReturn } from 'react-hook-form';
 
+import { useTranslation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -17,7 +18,7 @@ import { getInputState, getNetworkReserve } from '@suite-common/wallet-utils';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

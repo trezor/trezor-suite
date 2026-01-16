@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { thpActions } from '@suite-common/thp';
 import { acquireDevice, selectSelectedFirstThpDevice } from '@suite-common/wallet-core';
 import { Column, Modal, Paragraph } from '@trezor/components';
 
 import { ThpPairingCodeEntry } from './ThpPairingCodeEntry';
 import { useDispatch, useSelector } from '../../../hooks/suite';
-import { Translation } from '../../suite/Translation';
 
 export const ThpPairingFailedModal = () => {
     const [isLoading, setIsLoading] = useState(false);

@@ -2,13 +2,12 @@ import { ReactElement } from 'react';
 
 import { getUnixTime } from 'date-fns';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { getCurrentUTCDatetime, parseUTCdatetime } from '@suite-common/suite-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { getInputState } from '@suite-common/wallet-utils';
 import { Input, Row, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const inputName = 'bitcoinLocktimeDatetime';

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Box, Icon, Tooltip } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
@@ -14,7 +15,6 @@ import { selectRecentlyConnectedDevice } from 'src/selectors/suite/suiteSelector
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { useResponsiveContext } from '../../../../../support/suite/ResponsiveContext';
-import { Translation } from '../../../Translation';
 import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`

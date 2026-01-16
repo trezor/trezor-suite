@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { Context } from '@suite-common/message-system';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
@@ -7,7 +8,6 @@ import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
-import { Translation } from 'src/components/suite/Translation';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { selectHasActiveTransport } from 'src/selectors/suite/suiteSelectors';

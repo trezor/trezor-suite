@@ -2,11 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../intl-types" },
         { "path": "../metadata-types" },
         { "path": "../staking-solana" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
+        { "path": "../../suite/intl" },
         {
             "path": "../../packages/blockchain-link-types"
         },

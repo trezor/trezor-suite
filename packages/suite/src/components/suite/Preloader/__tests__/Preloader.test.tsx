@@ -27,9 +27,13 @@ class ResizeObserverMock {
 
 window.ResizeObserver = ResizeObserverMock;
 
-// render only Translation.id in data-test attribute
-jest.mock('src/components/suite/Translation', () => ({
+// !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
+const translationStringMock = (id: string) => id;
+
+jest.mock('@suite/intl', () => ({
+    ...jest.requireActual('@suite/intl'),
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
+    useTranslation: () => ({ translationString: translationStringMock }),
 }));
 
 // @trezor/connect fetching ethereum definitions

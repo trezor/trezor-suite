@@ -1,5 +1,5 @@
+import { TranslationKey } from '@suite/intl';
 import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
-import { TranslationKey } from '@suite-common/intl-types';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { FirmwareHashCheckError } from '@trezor/connect';

@@ -1,8 +1,7 @@
+import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 
 import { useDevice } from 'src/hooks/suite';
-
-import { Translation } from '../Translation';
 
 type LowBatteryModalProps = {
     children: React.ReactNode;

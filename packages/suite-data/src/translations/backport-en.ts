@@ -14,16 +14,13 @@
 import fs from 'fs';
 import path from 'path';
 
-// See comment in list-duplicates.ts
-import messages from '@trezor/suite/src/support/messages';
+import { type TranslationId, messages } from '@suite/intl';
 
-const packagesRoot = path.join(__dirname, '../../../');
-const targetPath = path.join(packagesRoot, 'suite/src/support/messages.ts');
-const sourcePath = path.join(packagesRoot, 'suite-data/files/translations/en-US.json');
+const root = path.join(__dirname, '../../../../');
+const targetPath = path.join(root, 'suite/intl/src/messages.ts');
+const sourcePath = path.join(root, 'packages/suite-data/files/translations/en-US.json');
 
-const source: { [key in keyof typeof messages]: string } = JSON.parse(
-    fs.readFileSync(sourcePath, 'utf8'),
-);
+const source: Record<TranslationId, string> = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 
 Object.entries(source).forEach(([key, value]) => {
     if (!messages[key]) {

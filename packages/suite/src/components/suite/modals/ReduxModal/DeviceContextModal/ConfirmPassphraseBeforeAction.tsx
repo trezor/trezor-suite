@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
+import { Translation, messages } from '@suite/intl';
 import {
     selectDeviceModel,
     selectHasDevicePassphraseEntryCapability,
@@ -10,12 +11,10 @@ import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
-import messages from 'src/support/messages';
 
 import { PassphraseInputCard } from './PassphraseInputCard';
 import { CardWithDevice } from '../../../../../views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from '../../../../../views/suite/SwitchDevice/SwitchDeviceModal';
-import { Translation } from '../../../Translation';
 
 export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);

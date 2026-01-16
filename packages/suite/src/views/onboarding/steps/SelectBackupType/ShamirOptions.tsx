@@ -1,5 +1,6 @@
 import { satisfies } from 'semver';
 
+import { Translation } from '@suite/intl';
 import { BackupType } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Badge, Tooltip } from '@trezor/components';
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
-import { Translation } from '../../../../components/suite/Translation';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 
 const UpgradableToMultiTag = () => {

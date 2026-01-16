@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import {
@@ -11,7 +12,6 @@ import {
 } from '@trezor/urls';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 

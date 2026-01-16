@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { Modal } from '@trezor/components';
 import { EventTypeShared, analytics } from '@trezor/suite-analytics';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { Translation } from 'src/components/suite/Translation';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';

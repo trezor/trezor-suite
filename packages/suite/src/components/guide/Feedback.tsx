@@ -2,6 +2,7 @@ import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     FeedbackCategory,
     FeedbackType,
@@ -15,7 +16,6 @@ import { typography } from '@trezor/theme';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 
 import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import {
     VotingDelegationOption,
     selectVotingDelegationOption,
@@ -9,8 +10,7 @@ import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, CollapsibleBox, Column, Input, Radio, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const VOTING_OPTIONS: {

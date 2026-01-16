@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { Tooltip } from '@trezor/components';
 import { typography } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
-
-import { TranslationKey } from '../Translation';
 
 const NoRatesMessage = styled.div`
     ${typography.label};

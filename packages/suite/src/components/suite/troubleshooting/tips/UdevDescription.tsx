@@ -1,5 +1,6 @@
+import { Translation } from '@suite/intl';
+
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useDispatch } from 'src/hooks/suite';
 

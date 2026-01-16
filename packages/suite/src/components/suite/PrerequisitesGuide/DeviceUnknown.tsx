@@ -1,4 +1,5 @@
-import { Translation } from 'src/components/suite/Translation';
+import { Translation } from '@suite/intl';
+
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 
 export const DeviceUnknown = () => (

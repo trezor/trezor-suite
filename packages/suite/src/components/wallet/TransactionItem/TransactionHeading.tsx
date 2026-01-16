@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import {
     formatNetworkAmount,
     getTargetAmount,
@@ -15,7 +16,6 @@ import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { InstantStakeBadge } from './InstantStakeBadge';

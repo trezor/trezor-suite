@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import { cryptoIdToSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column, Icon } from '@trezor/components';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 

@@ -1,9 +1,9 @@
+import { Translation } from '@suite/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 
 import { AssetTableExtraRowsSection as Section } from './AssetTableExtraRowsSection';
 

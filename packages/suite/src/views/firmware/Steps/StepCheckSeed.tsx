@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
@@ -9,7 +10,6 @@ import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/co
 import { spacings } from '@trezor/theme';
 
 import { PrerequisitesGuide } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { goto } from '../../../actions/suite/routerActions';

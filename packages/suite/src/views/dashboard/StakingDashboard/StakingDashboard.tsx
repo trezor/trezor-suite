@@ -1,3 +1,4 @@
+import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -21,7 +22,6 @@ import { BigNumber, arrayPartition } from '@trezor/utils';
 import { setStakingDashboardCollapsed } from 'src/actions/suite/suiteActions';
 import { OutlineHighlight } from 'src/components/OutlineHighlight';
 import { DashboardSection } from 'src/components/dashboard';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { DashboardAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';

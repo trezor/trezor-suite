@@ -1,11 +1,9 @@
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;

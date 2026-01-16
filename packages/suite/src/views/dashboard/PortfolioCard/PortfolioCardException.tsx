@@ -1,5 +1,6 @@
 import { ComponentProps, JSX } from 'react';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus, FailedAccount } from '@suite-common/wallet-types';
@@ -8,7 +9,6 @@ import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { DiscoveryStatusType } from 'src/types/wallet';
 

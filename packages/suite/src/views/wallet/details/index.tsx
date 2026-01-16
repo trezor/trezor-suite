@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
@@ -17,7 +18,6 @@ import { exportMetadataToBip329File } from 'src/actions/suite/metadataThunks';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useDefaultAccountLabel, useDevice, useDispatch, useSelector } from 'src/hooks/suite';

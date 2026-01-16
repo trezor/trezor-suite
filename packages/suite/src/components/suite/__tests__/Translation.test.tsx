@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 
-import { renderWithIntl } from 'src/support/tests/IntlHelper';
+import { Translation } from '@suite/intl';
 
-import { Translation } from '../Translation';
+import { renderWithIntl } from 'src/support/tests/IntlHelper';
 
 const messages = {
     TR_HELLO: {
@@ -22,7 +22,7 @@ const messages = {
         id: 'TR_NAME',
         defaultMessage: 'Age: {age}',
     },
-};
+} as const;
 
 describe('Translation component', () => {
     test('renders id with defaultMessage', () => {

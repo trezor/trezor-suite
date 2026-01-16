@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import type { BankAccount, CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
 
+import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -33,7 +34,7 @@ import { isChanged } from '@trezor/utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { submitRequestForm } from 'src/actions/wallet/trading/tradingCommonActions';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAccountKey } from 'src/hooks/wallet/trading/form/common/useTradingAccountKey';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';

@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { typography } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const StyledBalanceContainer = styled.div`
     padding: 0 24px;

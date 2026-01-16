@@ -1,5 +1,5 @@
+import { messages } from '@suite/intl';
 import TrezorConnect from '@trezor/connect-web';
-import messages from '@trezor/suite/src//support/messages';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';

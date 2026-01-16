@@ -1,3 +1,4 @@
+import { Translation, useTranslation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -9,8 +10,7 @@ import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { Translation } from 'src/components/suite/Translation';
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 import { FIAT_INPUT, OUTPUT_AMOUNT } from 'src/types/wallet/stakeForms';

@@ -1,10 +1,10 @@
 import { BuyProviderInfo, ExchangeProviderInfo, SellProviderInfo } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { invityAPI } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { TradingGetProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingIcon } from 'src/views/wallet/trading/common/TradingIcon';
 

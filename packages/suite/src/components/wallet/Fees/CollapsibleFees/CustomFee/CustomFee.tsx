@@ -1,10 +1,7 @@
+import { Translation, TranslationFunction, useTranslation } from '@suite/intl';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { Column, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
-import { useTranslation } from 'src/hooks/suite';
-import { TranslationFunction } from 'src/hooks/suite/useTranslation';
 
 import { CurrentFee } from './CurrentFee';
 import { CustomFeeEthereum } from './CustomFeeEthereum';

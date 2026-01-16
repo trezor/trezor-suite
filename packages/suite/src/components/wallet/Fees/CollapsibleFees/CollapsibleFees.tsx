@@ -1,13 +1,11 @@
 import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
 import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
 import { CustomFee } from './CustomFee/CustomFee';

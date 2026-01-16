@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { Banner, Card, Row } from '@trezor/components';
 
@@ -7,7 +8,6 @@ import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
 import { PairingState } from './PairingState';
 import { DesktopBluetoothDevice } from '../../../actions/bluetooth/DesktopBluetoothDevice';
-import { Translation } from '../Translation';
 
 export type OkComponentProps = {
     device: DesktopBluetoothDevice;

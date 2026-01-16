@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Button, Tooltip } from '@trezor/components';
 
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, usePasswords } from 'src/hooks/suite';
 import { getNextId } from 'src/utils/suite/passwords';
 

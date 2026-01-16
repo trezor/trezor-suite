@@ -1,7 +1,7 @@
+import { Translation } from '@suite/intl';
 import { FormOptions } from '@suite-common/wallet-types';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 import { EthereumData } from './EthereumData';

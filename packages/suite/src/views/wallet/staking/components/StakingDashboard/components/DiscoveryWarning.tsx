@@ -1,6 +1,5 @@
+import { Translation } from '@suite/intl';
 import { Banner, H4, Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 export const DiscoveryWarning = () => (
     <Banner

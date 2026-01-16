@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getAccountKey } from '@suite-common/wallet-utils';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';

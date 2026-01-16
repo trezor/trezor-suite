@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectDevices, selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -7,7 +8,6 @@ import { EventType, analytics } from '@trezor/suite-analytics';
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

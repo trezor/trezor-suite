@@ -1,8 +1,6 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { Icon, IconName, List, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const items: Array<{ icon: IconName; text: TranslationKey }> = [
     { icon: 'shieldCheck', text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },

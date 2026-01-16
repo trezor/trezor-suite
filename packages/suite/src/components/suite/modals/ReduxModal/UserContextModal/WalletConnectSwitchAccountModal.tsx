@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import { Translation } from '@suite/intl';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import {
@@ -16,7 +17,6 @@ import { spacings } from '@trezor/theme';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 

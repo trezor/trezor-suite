@@ -2,7 +2,7 @@ import { MouseEvent } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Paragraph, useElevation } from '@trezor/components';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
@@ -13,8 +13,6 @@ import {
     mapElevationToBorder,
     paletteV2,
 } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const SettingsWrapper = styled.div<{
     $toggled: boolean;

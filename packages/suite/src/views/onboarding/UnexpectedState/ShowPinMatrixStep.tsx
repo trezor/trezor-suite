@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 import TrezorConnect, { UI } from '@trezor/connect';
 
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { PinMatrix } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useOnboarding, useSelector } from 'src/hooks/suite';
 
 export const ShowPinMatrixStep = () => {

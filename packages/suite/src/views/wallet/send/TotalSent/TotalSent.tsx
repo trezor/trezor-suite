@@ -2,13 +2,13 @@ import { PropsWithChildren, useMemo } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { selectAreFeesLoading, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Card, Column, InfoItem, SkeletonRectangle } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 

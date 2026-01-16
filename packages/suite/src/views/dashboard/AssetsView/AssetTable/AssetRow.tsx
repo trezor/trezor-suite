@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Network } from '@suite-common/wallet-config';
@@ -22,7 +23,6 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 
 import {
@@ -8,7 +9,6 @@ import {
     updateAnalytics,
 } from 'src/actions/onboarding/onboardingActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';
 import { useDispatch } from 'src/hooks/suite';
 

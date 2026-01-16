@@ -3,10 +3,10 @@ import { useMemo, useState } from 'react';
 import { AnimatePresence, MotionProps, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Banner, Icon, motionEasing } from '@trezor/components';
 
 import { coinjoinAccountUpdateAnonymity } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite/Translation';
 import { AnonymityStatus } from 'src/constants/suite/coinjoin';
 import { useAnonymityStatus, useDispatch } from 'src/hooks/suite';
 

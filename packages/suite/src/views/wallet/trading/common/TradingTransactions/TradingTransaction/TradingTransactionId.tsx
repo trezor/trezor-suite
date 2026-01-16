@@ -1,7 +1,6 @@
+import { Translation } from '@suite/intl';
 import { Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 interface TradingTransactionIdProps {
     transactionId: string;

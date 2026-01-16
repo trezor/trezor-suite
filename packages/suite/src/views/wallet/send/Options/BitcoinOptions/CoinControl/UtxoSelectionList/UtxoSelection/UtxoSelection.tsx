@@ -1,5 +1,6 @@
 import { MouseEventHandler, ReactNode } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import {
     selectSuiteSyncAddressLabels,
     selectSuiteSyncOutputLabels,
@@ -22,9 +23,8 @@ import { AccountUtxo } from '@trezor/connect';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { Address, BaseCurrencyValue, FormattedCryptoAmount, Labeling } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { TransactionTimestamp, UtxoAnonymity } from 'src/components/wallet';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useCoinjoinUnavailableUtxos } from 'src/hooks/wallet/form/useCoinjoinUnavailableUtxos';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';

@@ -1,6 +1,6 @@
 import { BuyTrade, ExchangeTrade, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { ExtendedMessageDescriptor } from '@suite/intl';
 import { type TradingType } from '@suite-common/trading';
 import { Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { PrecomposedLevels, PrecomposedLevelsCardano } from '@suite-common/wallet-types';

@@ -1,5 +1,6 @@
+import { Translation } from '@suite/intl';
+
 import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectDefaultMaxMiningFeeByAccountKey,

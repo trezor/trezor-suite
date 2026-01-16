@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
@@ -12,7 +13,6 @@ import {
 } from '@trezor/urls';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';

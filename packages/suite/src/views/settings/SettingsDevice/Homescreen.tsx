@@ -2,12 +2,12 @@ import { useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Paragraph, Tooltip } from '@trezor/components';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import {

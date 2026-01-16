@@ -3,6 +3,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { isFulfilled } from '@reduxjs/toolkit';
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
@@ -12,7 +13,6 @@ import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
 import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
-import { Translation } from 'src/components/suite/Translation';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsLabelingAvailableForEntity,

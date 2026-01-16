@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import { Card, Column } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 

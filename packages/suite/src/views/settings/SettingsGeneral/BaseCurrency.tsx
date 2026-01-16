@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
@@ -12,9 +13,8 @@ import { typedObjectKeys } from '@trezor/utils';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const BaseCurrency = () => {
     const { translationString } = useTranslation();

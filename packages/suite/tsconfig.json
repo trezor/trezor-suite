@@ -45,9 +45,6 @@
         {
             "path": "../../suite-common/geolocation"
         },
-        {
-            "path": "../../suite-common/intl-types"
-        },
         { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/message-system"
@@ -129,6 +126,7 @@
         {
             "path": "../../suite/idb-migration-utils"
         },
+        { "path": "../../suite/intl" },
         {
             "path": "../../suite/platform-encryption-electron"
         },

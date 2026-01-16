@@ -2,10 +2,9 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { H3, IconCircle, IconName, Paragraph, variables } from '@trezor/components';
 import { typography } from '@trezor/theme';
-
-import { Translation } from 'src/components/suite/Translation';
 
 const Image = styled.div`
     margin: -8px;

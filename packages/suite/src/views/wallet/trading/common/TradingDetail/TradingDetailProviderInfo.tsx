@@ -7,11 +7,11 @@ import {
     SellProviderInfo,
 } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Button, Column, InfoItem, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 

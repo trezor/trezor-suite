@@ -1,12 +1,12 @@
 import { MouseEventHandler } from 'react';
 
+import { Translation } from '@suite/intl';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 type EjectConfirmationProps = {

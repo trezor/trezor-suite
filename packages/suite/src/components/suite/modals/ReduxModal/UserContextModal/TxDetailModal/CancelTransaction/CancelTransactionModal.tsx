@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
@@ -19,7 +20,6 @@ import { CancelTransaction } from './CancelTransaction';
 import { CancelTransactionButton } from './CancelTransactionButton';
 import { useDispatch, useSelector } from '../../../../../../../hooks/suite';
 import { CancelTxContext } from '../../../../../../../hooks/wallet/useCancelTxContext';
-import { Translation } from '../../../../../Translation';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';

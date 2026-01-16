@@ -2,12 +2,10 @@ import { useMemo } from 'react';
 
 import { useTheme } from 'styled-components';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
 import { TypographyStyle, spacings } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { useFeesContext } from '../context/FeesContext';
 

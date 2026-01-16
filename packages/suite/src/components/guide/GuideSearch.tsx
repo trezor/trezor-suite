@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
 import { Box, Icon, Input, Paragraph, Spinner } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
 import { GuideNode } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
 import { useGuideSearch } from 'src/hooks/guide';
-import { useTranslation } from 'src/hooks/suite';
 
 const PageFoundList = styled.div`
     margin-top: 10px;

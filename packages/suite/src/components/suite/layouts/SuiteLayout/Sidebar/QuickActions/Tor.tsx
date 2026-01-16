@@ -1,5 +1,6 @@
 import { useTheme } from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import {
     Column,
     ComponentWithSubIcon,
@@ -19,7 +20,6 @@ import { TorStatus } from 'src/types/suite';
 
 import { QuickActionButton } from './QuickActionButton';
 import { TooltipRow } from './TooltipRow';
-import { Translation, TranslationKey } from '../../../../Translation';
 
 const torStatusTranslationMap: Record<TorStatus, TranslationKey> = {
     [TorStatus.Enabled]: 'TR_TOR_ENABLED',

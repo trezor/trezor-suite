@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     CARDANO_ACTIVATION_PERIOD_DAYS,
     CARDANO_EPOCH_DAYS,
@@ -12,8 +13,6 @@ import {
     isPending,
 } from '@suite-common/wallet-utils';
 import { Column, Paragraph } from '@trezor/components';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { ProgressLabelData } from '../components/ProgressLabels/types';
 

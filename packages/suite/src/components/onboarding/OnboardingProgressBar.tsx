@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
 
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { BulletList, BulletListItemState, Text } from '@trezor/components';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsDeviceAuthenticityCheckEnabled } from 'src/selectors/suite/suiteSelectors';
 

@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { DiscoveryStatus } from '@suite-common/wallet-types';
@@ -7,8 +8,6 @@ import { spacings } from '@trezor/theme';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
-
-import { Translation } from '../../../Translation';
 
 export const PassphraseMismatchModal = ({
     device,

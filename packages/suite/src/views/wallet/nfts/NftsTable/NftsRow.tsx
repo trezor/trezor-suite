@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     DefinitionType,
     EnhancedTokenInfo,
@@ -29,7 +30,6 @@ import { copyAddressToClipboard, showCopyAddressModal } from 'src/actions/suite/
 import { goto } from 'src/actions/suite/routerActions';
 import { Address, HiddenPlaceholder } from 'src/components/suite';
 import { RedactNumericalValue } from 'src/components/suite/RedactNumericalValue';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsCopyAddressModalShown } from 'src/selectors/suite/suiteSelectors';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
@@ -15,7 +16,6 @@ import { spacings } from '@trezor/theme';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { Translation } from 'src/components/suite/Translation';
 import { WalletLabeling } from 'src/components/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 

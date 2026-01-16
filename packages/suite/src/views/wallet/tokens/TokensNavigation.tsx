@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 
+import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { NetworkType } from '@suite-common/wallet-config';
@@ -10,13 +11,10 @@ import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
-
-import { TranslationKey } from '../../../components/suite/Translation';
 
 type SubTabConfig = {
     isNft: boolean;

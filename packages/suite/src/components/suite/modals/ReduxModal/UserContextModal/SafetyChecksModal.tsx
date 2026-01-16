@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import {
     Banner,
     Card,
@@ -13,7 +14,6 @@ import {
 import { spacings } from '@trezor/theme';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 
 /**

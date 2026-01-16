@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { findSuiteSyncAccountLabel, selectSuiteSyncAccountLabels } from '@suite-common/suite-sync';
 import { AccountType } from '@suite-common/wallet-config';
 import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wallet-core';
@@ -7,7 +8,6 @@ import { Column } from '@trezor/components';
 import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels as selectAccountLabelsOld } from 'src/reducers/suite/metadataReducer';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';

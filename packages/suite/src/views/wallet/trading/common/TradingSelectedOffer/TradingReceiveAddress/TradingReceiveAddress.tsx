@@ -1,10 +1,10 @@
 import { ReactNode } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Address } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';

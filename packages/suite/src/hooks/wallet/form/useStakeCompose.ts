@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
+import { useTranslation } from '@suite/intl';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
 import {
@@ -13,7 +14,7 @@ import { FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { useDispatch } from 'src/hooks/suite';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 

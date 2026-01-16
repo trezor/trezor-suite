@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import { Translation } from '@suite/intl';
 import { calculateGains, getNetworkAdjustedStakingBalance } from '@suite-common/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
@@ -12,7 +13,6 @@ import {
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
-import { Translation } from 'src/components/suite/Translation';
 import { TrezorLink } from 'src/components/suite/TrezorLink';
 import { useSelector } from 'src/hooks/suite';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';

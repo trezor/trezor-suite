@@ -1,9 +1,9 @@
+import { useTranslation } from '@suite/intl';
 import type { TradingTransaction } from '@suite-common/trading';
 import { InfoSegments } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { FormattedDate } from 'src/components/suite';
-import { useTranslation } from 'src/hooks/suite';
 import { translationKeys } from 'src/utils/wallet/trading/tradingUtils';
 import { TradingTransactionStatus } from 'src/views/wallet/trading/common/TradingTransactions/TradingTransaction/TradingTransactionStatus';
 

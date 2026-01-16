@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite-common/intl-types';
+import { Translation, TranslationKey } from '@suite/intl';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -6,7 +6,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { goToNextStep, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { OnboardingCard } from 'src/components/onboarding/OnboardingCard/OnboardingCard';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useRecovery, useSelector } from 'src/hooks/suite';
 
 import RecoveryStepBox from './RecoveryStepBox';

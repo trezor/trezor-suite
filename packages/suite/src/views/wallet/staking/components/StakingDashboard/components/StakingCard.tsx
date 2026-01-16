@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -31,7 +32,6 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 

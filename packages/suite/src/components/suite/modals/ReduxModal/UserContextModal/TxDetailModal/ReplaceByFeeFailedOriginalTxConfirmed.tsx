@@ -1,3 +1,4 @@
+import { Translation, TranslationKey } from '@suite/intl';
 import { NetworkType } from '@suite-common/wallet-config';
 import { RbfTransactionType } from '@suite-common/wallet-types';
 import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
@@ -8,8 +9,6 @@ import {
     HELP_CENTER_REPLACE_BY_FEE_ETHEREUM,
     Url,
 } from '@trezor/urls';
-
-import { Translation, TranslationKey } from '../../../../Translation';
 
 export type ReplaceByFeeFailedOriginalTxConfirmedProps = {
     type: RbfTransactionType;

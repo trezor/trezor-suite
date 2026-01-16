@@ -3,11 +3,11 @@ import { MouseEvent } from 'react';
 import { type Variants, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Column, ElevationContext, Icon, Row, Text } from '@trezor/components';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import {

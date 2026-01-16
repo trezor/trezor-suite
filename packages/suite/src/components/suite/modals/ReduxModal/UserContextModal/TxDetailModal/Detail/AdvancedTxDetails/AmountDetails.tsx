@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -21,7 +22,6 @@ import { BigNumber } from '@trezor/utils';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { FormattedDate } from 'src/components/suite/FormattedDate';
-import { Translation } from 'src/components/suite/Translation';
 import { AmountComponent } from 'src/components/wallet/AmountComponent';
 import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';

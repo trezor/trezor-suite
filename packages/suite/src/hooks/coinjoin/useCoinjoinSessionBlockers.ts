@@ -1,6 +1,7 @@
+import { useTranslation } from '@suite/intl';
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
 
-import { useSelector, useTranslation } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { selectCoinjoinSessionBlockerByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
 

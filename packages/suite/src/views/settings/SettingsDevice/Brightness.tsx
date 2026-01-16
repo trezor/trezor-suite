@@ -1,8 +1,8 @@
+import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 
 import { useDevice } from '../../../hooks/suite';
 

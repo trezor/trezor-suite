@@ -1,7 +1,7 @@
 # Localization
 
 Suite uses [react-intl](https://github.com/formatjs/formatjs) package for all in-app localization needs.
-Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts).
+Definitions of all messages are stored in [messages.ts](https://github.com/trezor/trezor-suite/blob/develop/suite/intl/src/messages.ts).
 
 To allow non-developers to edit these messages through user-friendly interface, we upload them to [Crowdin](https://crowdin.com/project/trezor-suite) via their [CLI](https://github.com/crowdin/crowdin-cli).
 
@@ -10,7 +10,7 @@ To finish the process these files need to be committed to the repository.
 
 ## Message definitions
 
-[messages.ts](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/support/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
+[messages.ts](https://github.com/trezor/trezor-suite/blob/develop/suite/intl/src/messages.ts) is the place where you add new messages to be used in Suite. It's basically just a huge object where a key is an ID of the message and a value is the message definition.
 
 _Do not manually edit language json files in `suite-data/files/translations/` directory. These are auto-generated, changing them directly is plausible only for development purposes._
 
@@ -37,7 +37,7 @@ Example:
 
 ## Usage in Suite
 
-To render a message use our wrapper for react-intl's `FormattedMessage`, [Translation](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/components/suite/Translation/index.tsx). It will always return `JSX.Element`. If, for some reason, you need to render the message as a string (for example for passing it as a placeholder prop to an input) use [useTranslation](https://github.com/trezor/trezor-suite/blob/develop/packages/suite/src/hooks/suite/useTranslation.ts) hook.
+To render a message use our wrapper for react-intl's `FormattedMessage`, [Translation](https://github.com/trezor/trezor-suite/blob/develop/suite/intl/src/components/Translation.tsx). It will always return `JSX.Element`. If, for some reason, you need to render the message as a string (for example for passing it as a placeholder prop to an input) use [useTranslation](https://github.com/trezor/trezor-suite/blob/develop/suite/intl/src/hooks/useTranslation.ts) hook.
 
 `Translation` accepts the same parameters as `FormattedMessage` and adds a little bit of magic.
 

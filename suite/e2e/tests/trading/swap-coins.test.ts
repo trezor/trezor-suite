@@ -1,6 +1,6 @@
+import { TranslationKey } from '@suite/intl';
 import { getCryptoId } from '@suite-common/trading';
 import { localizeNumber } from '@suite-common/wallet-utils';
-import type { TranslationKey } from '@trezor/suite/src//components/suite/Translation';
 
 import {
     getCompanyNameFromList,

@@ -3,6 +3,7 @@ import { FormattedList } from 'react-intl';
 
 import { ExchangeTrade } from 'invity-api';
 
+import { Translation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
@@ -19,7 +20,6 @@ import { Card, Column, Icon, InfoItem, Row, Text, Tooltip } from '@trezor/compon
 import { spacings } from '@trezor/theme';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';

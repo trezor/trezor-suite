@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Icon, Image, Link, Paragraph } from '@trezor/components';
@@ -11,7 +12,6 @@ import { TREZOR_FORUM_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
 

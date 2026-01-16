@@ -2,10 +2,11 @@ import { useRef } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
+import { useTranslation } from '@suite/intl';
 import { Icon, Input } from '@trezor/components';
 import { borders } from '@trezor/theme';
 
-import { useAccountSearch, useTranslation } from 'src/hooks/suite';
+import { useAccountSearch } from 'src/hooks/suite';
 
 // eslint-disable-next-line local-rules/no-override-ds-component
 const StyledInput = styled(Input)`

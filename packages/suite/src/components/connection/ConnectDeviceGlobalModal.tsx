@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
+import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import {
     Box,
@@ -27,7 +28,6 @@ import {
     selectIsManualPairingRequired,
     selectIsUnpairingDevice,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
-import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';

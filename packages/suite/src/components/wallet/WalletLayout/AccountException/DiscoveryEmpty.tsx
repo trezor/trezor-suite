@@ -1,5 +1,6 @@
+import { Translation } from '@suite/intl';
+
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
 

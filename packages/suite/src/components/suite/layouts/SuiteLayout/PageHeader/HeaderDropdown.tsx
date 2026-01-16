@@ -1,5 +1,6 @@
 import { JSX } from 'react';
 
+import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -10,7 +11,6 @@ import { useSelector } from '../../../../../hooks/suite';
 import { selectSelectedAccount } from '../../../../../reducers/wallet/selectedAccountReducer';
 import { useConditionalRender } from '../../../../../support/suite/ConditionalRender';
 import { AppNavigationTooltip } from '../../../AppNavigation/AppNavigationTooltip';
-import { Translation } from '../../../Translation';
 
 type ActionItem = {
     id: string;

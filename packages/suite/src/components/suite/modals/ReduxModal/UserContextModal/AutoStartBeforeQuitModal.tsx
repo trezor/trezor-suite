@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
+import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useDispatch } from 'src/hooks/suite';
 
 export const AutoStartBeforeQuitModal = () => {

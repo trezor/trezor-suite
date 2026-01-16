@@ -4,6 +4,7 @@ import { usePrevious } from 'react-use';
 import { ExchangeTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
+import { Translation, useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
@@ -13,8 +14,7 @@ import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';

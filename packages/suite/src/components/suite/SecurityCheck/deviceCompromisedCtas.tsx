@@ -1,3 +1,4 @@
+import { Translation } from '@suite/intl';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import {
@@ -6,8 +7,6 @@ import {
     TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
     Url,
 } from '@trezor/urls';
-
-import { Translation } from 'src/components/suite/Translation';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
 

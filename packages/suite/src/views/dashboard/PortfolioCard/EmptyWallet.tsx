@@ -1,10 +1,10 @@
+import { Translation } from '@suite/intl';
 import { selectEnabledNetworks, selectIsDeviceUsingPassphrase } from '@suite-common/wallet-core';
 import { Button, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
 
 import { goto } from 'src/actions/suite/routerActions';
-import { Translation } from 'src/components/suite/Translation';
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 

@@ -1,13 +1,13 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
+import { Translation, useTranslation } from '@suite/intl';
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { EventType, analytics } from '@trezor/suite-analytics';
 
 import { addToken } from 'src/actions/wallet/tokenActions';
-import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { Account } from 'src/types/wallet';
 

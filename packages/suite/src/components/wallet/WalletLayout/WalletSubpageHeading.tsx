@@ -1,9 +1,8 @@
 import { ReactNode } from 'react';
 
+import { Translation, TranslationKey } from '@suite/intl';
 import { H2, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-
-import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
 type WalletSubpageHeadingProps = {
     title: TranslationKey;

@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
@@ -9,7 +10,6 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { MODAL } from 'src/actions/suite/constants';
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { OnboardingProgressBar } from 'src/components/onboarding/OnboardingProgressBar';
-import { Translation } from 'src/components/suite/Translation';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { ReduxModal } from 'src/components/suite/modals/ReduxModal/ReduxModal';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
