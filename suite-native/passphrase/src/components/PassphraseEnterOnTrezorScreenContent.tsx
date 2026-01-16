@@ -4,7 +4,6 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { PassphraseMismatchAlert } from './PassphraseMismatchAlert';
-import { useRedirectOnPassphraseCompletion } from '../useRedirectOnPassphraseCompletion';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -23,14 +22,6 @@ export const PassphraseEnterOnTrezorScreenContent = ({
 }: PassphraseEnterOnTrezorScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
 
-    // If this screen was present during authorizing device with passphrase for some feature,
-    // on success, this hook will close the stack and go back
-    useRedirectOnPassphraseCompletion();
-
-    const handleCancel = () => {
-        onCancel();
-    };
-
     return (
         <>
             <Card style={applyStyle(cardStyle)}>
@@ -47,7 +38,7 @@ export const PassphraseEnterOnTrezorScreenContent = ({
                         />
                     </VStack>
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button onPress={handleCancel} colorScheme="redElevation1">
+                        <Button onPress={onCancel} colorScheme="redElevation1">
                             <Translation id="generic.buttons.cancel" />
                         </Button>
                     </Box>
