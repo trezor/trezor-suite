@@ -40,12 +40,14 @@ export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | 
     }
     const { features } = device;
 
+    // `fw_version` is the firmware version when in bootloader mode, in firmware mode it will be [null, null, null]
     if (isDeviceInBootloaderMode(device)) {
         return features.fw_major
             ? ([features.fw_major, features.fw_minor, features.fw_patch] as VersionArray)
             : null;
     }
 
+    // `version` is bootloader version when in bootloader mode, in firmware mode it is firmware version.
     return getFirmwareOrBootloaderVersionArray(features);
 };
 
