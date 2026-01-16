@@ -14,7 +14,6 @@ import { DataManager } from '../data/DataManager';
 import { parseLocalFirmwares } from '../data/connectSettings';
 import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
-import { WebextensionStateStorage } from '../device/StateStorage';
 import * as workflows from '../device/workflow';
 import {
     CORE_EVENT,
@@ -64,7 +63,6 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
     const origin = DataManager.getSettings('origin')!;
-    const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
     const preferredDeviceInList =
         preferredDevice?.state && deviceList.getDeviceByStaticState(preferredDevice.state);
@@ -99,8 +97,7 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
             device = onlyDevice;
             // Show device selection if device is unreadable or unacquired
             // Also in case of core in popup, so user can press "Remember device"
-            showDeviceSelection =
-                device.isUnreadable() || device.isUnacquired() || !!useCoreInPopup;
+            showDeviceSelection = device.isUnreadable() || device.isUnacquired();
         } else {
             showDeviceSelection = true;
         }
@@ -124,13 +121,7 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
         // check again for available devices
         // there is a possible race condition before popup open
         const onlyDevice = deviceList.getOnlyDevice();
-        if (
-            onlyDevice &&
-            !onlyDevice.isUnreadable() &&
-            !onlyDevice.isUnacquired() &&
-            !isWebUsb &&
-            !useCoreInPopup
-        ) {
+        if (onlyDevice && !onlyDevice.isUnreadable() && !onlyDevice.isUnacquired() && !isWebUsb) {
             // there is one device available. use it
             device = onlyDevice;
         } else {
@@ -396,7 +387,7 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
-    const { origin, env, useCoreInPopup, transports } = DataManager.getSettings();
+    const { env, transports } = DataManager.getSettings();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
@@ -489,10 +480,6 @@ const onCallDevice = async (
     // set public variables, listeners and run method
     registerDeviceEvents(context, method)(device);
 
-    if (useCoreInPopup && env === 'webextension' && origin) {
-        device.initStorage(new WebextensionStateStorage(origin));
-    }
-
     let messageResponse: CoreEventMessage;
 
     try {
@@ -551,11 +538,6 @@ const onCallDevice = async (
             // remove all listeners
             device.eventNames().forEach(e => device.removeAllListeners(e as keyof DeviceEvents));
 
-            if (useCoreInPopup) {
-                // We need to send response before closing popup
-                sendCoreMessage(response);
-            }
-
             closePopup(context);
             cleanup(context);
 
@@ -567,9 +549,7 @@ const onCallDevice = async (
                 deviceList.removeAuthPenalty(device);
             }
 
-            if (!useCoreInPopup) {
-                sendCoreMessage(response);
-            }
+            sendCoreMessage(response);
         }
     }
 };
