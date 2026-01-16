@@ -16,12 +16,10 @@ import {
     StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
+import { selectIsCreatingNewPassphraseWallet } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
 
-import {
-    selectDeviceRequestedPin,
-    selectIsCreatingNewPassphraseWallet,
-} from '../deviceAuthorizationSlice';
+import { selectDeviceRequestedPin } from '../deviceAuthorizationSlice';
 
 type ConnectDeviceScreenHeaderProps = {
     shouldDisplayCancelButton?: boolean;

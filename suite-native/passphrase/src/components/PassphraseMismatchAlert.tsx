@@ -11,7 +11,6 @@ import {
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
-import { selectHasPassphraseMismatchError } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackParamList,
@@ -22,6 +21,8 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
+
+import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,

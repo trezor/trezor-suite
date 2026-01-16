@@ -7,7 +7,6 @@ import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet
 import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -22,6 +21,8 @@ import {
 } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
+
+import { selectIsCreatingNewPassphraseWallet } from '../passphraseSelectors';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,

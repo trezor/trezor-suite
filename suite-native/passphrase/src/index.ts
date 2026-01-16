@@ -10,3 +10,4 @@ export * from './components/PassphraseFlowDoneRedirect';
 export * from './components/EmptyWalletInfoSheet';
 export * from './components/EnterPassphraseOnTrezorButton';
 export * from './components/NoPassphraseButton';
+export * from './passphraseSelectors';
