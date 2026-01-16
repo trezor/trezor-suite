@@ -10,8 +10,13 @@ import {
     AssetRowAccountWithBalance,
     AssetRowToken,
     AssetsModal,
+    ExpandableAssetRowTokens,
 } from 'src/components/suite/asset-picker/components';
-import { AssetPickerListItem, useSearchFilter } from 'src/components/suite/asset-picker/hooks';
+import {
+    AssetPickerListItem,
+    useExpandableAccountGroups,
+    useSearchFilter,
+} from 'src/components/suite/asset-picker/hooks';
 
 import { AssetListWrapper } from './AssetListWrapper';
 import { UseUpdateFormInputProps, useUpdateFormInput } from './hooks/useUpdateFormInput';
@@ -21,7 +26,7 @@ import { useBuildTradingAssetOptions } from './hooks/useBuildTradingAssetOptions
 export type AssetPickerModalProps = {
     closeModal: () => void;
     heading: TranslationKey;
-    dataTestId?: string;
+    dataTestId: string;
     onAssetSelect: UseUpdateFormInputProps['onAssetSelect'];
 };
 
@@ -34,10 +39,13 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
     const { search, throttledSearch, setSearch } = useSearchFilter();
 
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(undefined);
+    const { expandedAccountTokensGroups, updateExpandableAccountGroups } =
+        useExpandableAccountGroups();
 
     const { listItems, networks } = useBuildTradingAssetOptions({
         search: throttledSearch,
         networkSymbol: networkFilter,
+        expandedNonTradableTokensGroups: expandedAccountTokensGroups,
     });
 
     const handleAssetClick = useUpdateFormInput({ closeModal, onAssetSelect });
@@ -69,9 +77,23 @@ export const AssetPickerModal = memo(function AssetPickerModalInner({
 
                 case 'group-space':
                     return <AssetGroupSpace size={item.size} />;
+
+                case 'non-tradable-tokens':
+                    return (
+                        <ExpandableAssetRowTokens
+                            label="TR_NON_TRADABLE_TOKENS"
+                            account={item.account}
+                            tokens={item.tokens}
+                            expanded={item.expanded}
+                            onExpandToggle={updateExpandableAccountGroups}
+                            height={item.height}
+                            dataTestId={`${dataTestId}/non-tradable-tokens`}
+                            showTokensPreview
+                        />
+                    );
             }
         },
-        [dataTestId, handleAssetClick],
+        [dataTestId, handleAssetClick, updateExpandableAccountGroups],
     );
 
     return (

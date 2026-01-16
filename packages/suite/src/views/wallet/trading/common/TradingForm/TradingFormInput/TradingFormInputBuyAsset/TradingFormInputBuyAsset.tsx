@@ -22,7 +22,7 @@ export interface TradingFormInputBuyAssetProps {
     includedCryptoIds: CryptoId[];
     excludedCryptoId?: CryptoId | undefined;
 
-    dataTestId?: string;
+    dataTestId: string;
 }
 
 export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetInner({

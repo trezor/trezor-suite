@@ -22,4 +22,11 @@ export type AccountWithTokensOption =
           tokens: TokensWithRates[];
           height: number;
           expanded: boolean;
+      }
+    | {
+          type: 'non-tradable-tokens';
+          account: Account;
+          tokens: TokensWithRates[];
+          height: number;
+          expanded: boolean;
       };

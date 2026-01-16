@@ -3,7 +3,7 @@ import { useThrottle } from 'react-use';
 
 import { CryptoId } from 'invity-api';
 
-import { selectTokenDefinitions } from '@suite-common/token-definitions';
+import { EnhancedTokenInfo, selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getCryptoId } from '@suite-common/trading';
 import { NetworkSymbol, networkSymbolCollection } from '@suite-common/wallet-config';
 import {
@@ -11,16 +11,22 @@ import {
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     accountsFiatBalanceInDescOrderComparator,
     filterAccountsByNetworkSymbol,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { AccountWithTokensOption } from 'src/components/suite/asset-picker/types';
-import { createAccountOption, createTokenOption } from 'src/components/suite/asset-picker/utils';
+import {
+    createAccountOption,
+    createNonTradableTokensOption,
+    createTokenOption,
+} from 'src/components/suite/asset-picker/utils';
 import { useSelector } from 'src/hooks/suite';
 import {
     enhanceTokensWithRates,
@@ -28,14 +34,42 @@ import {
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 
+function getSupportedAccounts(accounts: Account[], supportedCryptoIds: Set<CryptoId>): Account[] {
+    return accounts.filter(account => supportedCryptoIds.has(getCryptoId(account.symbol)));
+}
+
+interface GetSupportedTokensProps<T extends TokenInfo | EnhancedTokenInfo> {
+    accountSymbol: NetworkSymbol;
+    tokens: T[] | undefined;
+    supportedCryptoIds: Set<CryptoId>;
+}
+
+function getSupportedAndUnsupportedTokens<T extends TokenInfo | EnhancedTokenInfo>({
+    accountSymbol,
+    tokens,
+    supportedCryptoIds,
+}: GetSupportedTokensProps<T>) {
+    const supportedTokens = (tokens ?? []).filter(token =>
+        supportedCryptoIds.has(getCryptoId(accountSymbol, token.contract)),
+    );
+
+    const unsupportedTokens = (tokens ?? []).filter(
+        token => !supportedCryptoIds.has(getCryptoId(accountSymbol, token.contract)),
+    );
+
+    return { supportedTokens, unsupportedTokens };
+}
+
 export interface UseAccountWithTokensOptionsProps {
     networkSymbolFilter: NetworkSymbol | undefined;
     supportedCryptoIds: Set<CryptoId>;
+    expandedNonTradableTokensGroups: AccountKey[];
 }
 
 export function useAccountWithTokensOptions({
     networkSymbolFilter,
     supportedCryptoIds,
+    expandedNonTradableTokensGroups,
 }: UseAccountWithTokensOptionsProps): {
     accountsWithTokens: AccountWithTokensOption[];
     networks: NetworkSymbol[];
@@ -49,7 +83,7 @@ export function useAccountWithTokensOptions({
     const throttledAccounts = useThrottle(accounts, 1000);
     const fiatRatesRef = useCurrentRef(fiatRates);
 
-    return useMemo(() => {
+    const { networks, accountsWithTokens } = useMemo(() => {
         const fiatRates = fiatRatesRef.current;
 
         if (!fiatRates) {
@@ -81,8 +115,9 @@ export function useAccountWithTokensOptions({
         const orderedNetworks = networkSymbolCollection.filter(network => networks.has(network));
 
         const networkAccounts = filterAccountsByNetworkSymbol(validAccounts, networkSymbolFilter);
+        const supportedAccounts = getSupportedAccounts(networkAccounts, supportedCryptoIds);
 
-        const accountsAndTokensSortedByFiatBalance = networkAccounts
+        const accountsAndTokensSortedByFiatBalance = supportedAccounts
             .toSorted(function sortByFiatBalanceInDescOrder(accountA, accountB) {
                 return accountsFiatBalanceInDescOrderComparator({
                     accountA,
@@ -92,48 +127,41 @@ export function useAccountWithTokensOptions({
                 });
             })
             .map(account => {
-                const { shownWithBalance } = getTokens({
+                const { shownWithBalance, hiddenWithBalance } = getTokens({
                     tokens: account.tokens ?? [],
                     symbol: account.symbol,
                     tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
                 });
 
-                const tokensWithRates = enhanceTokensWithRates(
-                    shownWithBalance,
+                const { supportedTokens, unsupportedTokens } = getSupportedAndUnsupportedTokens({
+                    accountSymbol: account.symbol,
+                    tokens: shownWithBalance.concat(hiddenWithBalance),
+                    supportedCryptoIds,
+                });
+
+                const sortedSupportedTokensByFiatBalance = enhanceTokensWithRates(
+                    supportedTokens,
                     baseCurrencyCode,
                     account.symbol,
                     fiatRates,
-                );
+                ).sort(sortTokensWithRates);
 
-                const sortedTokensByFiatBalance = tokensWithRates.sort(sortTokensWithRates);
+                const sortedUnsupportedTokensByFiatBalance = enhanceTokensWithRates(
+                    unsupportedTokens,
+                    baseCurrencyCode,
+                    account.symbol,
+                    fiatRates,
+                ).sort(sortTokensWithRates);
 
                 return {
                     account,
-                    tokens: sortedTokensByFiatBalance,
+                    tokens: sortedSupportedTokensByFiatBalance,
+                    nonTradableTokens: sortedUnsupportedTokensByFiatBalance,
                 };
             });
 
-        const accountsWithTokens: AccountWithTokensOption[] =
-            accountsAndTokensSortedByFiatBalance.flatMap(({ account, tokens }) => [
-                createAccountOption(account),
-                ...tokens.map(token => createTokenOption(account, token)),
-            ]);
-
-        const supportedAccountsWithTokens = accountsWithTokens.filter(option => {
-            switch (option.type) {
-                case 'account':
-                    return supportedCryptoIds.has(getCryptoId(option.account.symbol));
-                case 'token':
-                    return supportedCryptoIds.has(
-                        getCryptoId(option.account.symbol, option.token?.contract),
-                    );
-                default:
-                    return false;
-            }
-        });
-
         return {
-            accountsWithTokens: supportedAccountsWithTokens,
+            accountsWithTokens: accountsAndTokensSortedByFiatBalance,
             networks: orderedNetworks,
         };
     }, [
@@ -144,4 +172,33 @@ export function useAccountWithTokensOptions({
         baseCurrencyCode,
         supportedCryptoIds,
     ]);
+
+    const accountsWithTokensOptions = useMemo<AccountWithTokensOption[]>(() => {
+        const accountsWithTokensOptions: AccountWithTokensOption[] = [];
+
+        for (const { account, tokens, nonTradableTokens } of accountsWithTokens) {
+            accountsWithTokensOptions.push(createAccountOption(account));
+
+            tokens.forEach(token => {
+                accountsWithTokensOptions.push(createTokenOption(account, token));
+            });
+
+            if (nonTradableTokens.length > 0) {
+                accountsWithTokensOptions.push(
+                    createNonTradableTokensOption({
+                        account,
+                        nonTradableTokens,
+                        expandedNonTradableTokensGroups,
+                    }),
+                );
+            }
+        }
+
+        return accountsWithTokensOptions;
+    }, [accountsWithTokens, expandedNonTradableTokensGroups]);
+
+    return {
+        accountsWithTokens: accountsWithTokensOptions,
+        networks,
+    };
 }

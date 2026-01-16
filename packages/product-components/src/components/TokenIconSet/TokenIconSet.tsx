@@ -18,6 +18,10 @@ export type TokenIconSetProps = {
     gap: SpacingValuesNew;
     isCountVisible?: boolean;
     isCentered?: boolean;
+    /**
+     * If true, visible tokens will be displayed from the last token to the first.
+     */
+    reverseVisibleTokens?: boolean;
 };
 
 const Container = styled.div<{
@@ -92,14 +96,16 @@ export const TokenIconSet = ({
     gap,
     isCountVisible = false,
     isCentered = false,
+    reverseVisibleTokens = true,
 }: TokenIconSetProps) => {
     const { length } = tokens;
 
     const visibleTokensContent = useMemo(() => {
-        const visibleTokens = tokens.slice(0, MAX_VISIBLE_TOKENS).reverse();
+        const visibleTokens = tokens.slice(0, MAX_VISIBLE_TOKENS);
+        const orderedTokens = reverseVisibleTokens ? visibleTokens.reverse() : visibleTokens;
         const coingeckoId = getCoingeckoId(symbol);
 
-        return visibleTokens?.map(token => (
+        return orderedTokens?.map(token => (
             <IconWrapper key={token.contract} $size={size} $gap={gap} $length={length}>
                 <AssetLogo
                     size={size}
@@ -111,7 +117,7 @@ export const TokenIconSet = ({
                 />
             </IconWrapper>
         ));
-    }, [symbol, tokens, size, gap, length]);
+    }, [tokens, reverseVisibleTokens, symbol, size, gap, length]);
 
     if (length === 0) {
         return null;

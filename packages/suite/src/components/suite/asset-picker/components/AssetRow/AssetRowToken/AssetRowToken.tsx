@@ -12,9 +12,9 @@ import { AssetDetails } from '../AssetDetails';
 export type AssetRowTokenProps = {
     token: TokensWithRates;
     account: Account;
-    onClick: (token: TokensWithRates, account: Account) => void;
+    onClick?: (token: TokensWithRates, account: Account) => void;
     dataTestId?: string;
-    hiddenToken?: boolean;
+    isHiddenToken?: boolean;
 };
 
 export function AssetRowToken({
@@ -22,17 +22,20 @@ export function AssetRowToken({
     account,
     dataTestId,
     onClick,
-    hiddenToken = false,
+    isHiddenToken = false,
 }: AssetRowTokenProps) {
     return (
         <ItemClickableContainer
             onClick={() => {
-                onClick(token, account);
+                onClick?.(token, account);
             }}
-            padding={hiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
+            padding={isHiddenToken ? { left: 16, vertical: 8, right: 16 } : undefined}
+            isDisabled={!onClick}
         >
             <Row
-                data-testid={`${dataTestId}/${account.symbol}/${token.symbol}`}
+                data-testid={
+                    dataTestId ? `${dataTestId}/${account.symbol}/${token.symbol}` : undefined
+                }
                 gap={12}
                 overflow="hidden"
             >
@@ -56,7 +59,7 @@ export function AssetRowToken({
                     fiatAmount={token.fiatRate ? asBaseCurrencyAmount(token.fiatValue) : undefined}
                     contractAddress={token.contract}
                     amount={token.balance}
-                    fiatFallackText={hiddenToken}
+                    fiatFallackText={isHiddenToken}
                 />
             )}
         </ItemClickableContainer>
