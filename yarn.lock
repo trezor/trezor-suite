@@ -11004,6 +11004,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/suite-rbf-labels-migrations@workspace:*, @suite-common/suite-rbf-labels-migrations@workspace:suite-common/suite-rbf-labels-migrations":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/suite-rbf-labels-migrations@workspace:suite-common/suite-rbf-labels-migrations"
+  dependencies:
+    "@suite-common/metadata-types": "workspace:*"
+    "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/suite-sync-evolu@workspace:*, @suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
@@ -15231,6 +15247,7 @@ __metadata:
     "@suite-common/staking-solana": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"

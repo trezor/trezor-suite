@@ -25,22 +25,20 @@ import {
     PrecomposedTransactionFinalBumpFeeRbf,
 } from '@suite-common/wallet-types';
 import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils';
-import { PROTO, Unsuccessful } from '@trezor/connect';
+import { PROTO, StaticSessionId, Unsuccessful } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
+import { moveLabelsForRbfThunk } from 'src/actions/suite/metadata/moveLabelsForRbfThunk';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import {
     selectIsSelectedAccountLoaded,
     selectSelectedAccountKey,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
-import { findLabelsToBeMovedOrDeletedThunk } from '../moveLabelsForRbf/findLabelsToBeMovedOrDeletedThunk';
-import { moveLabelsForRbfThunk } from '../moveLabelsForRbf/moveLabelsForRbfThunk';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '../processLegacyMetadataIntoSuiteSyncThunk';
 
 export const saveSendFormDraftThunk = createThunk(
@@ -85,18 +83,20 @@ export const removeSendFormDraftThunk = createThunk(
 );
 
 type UpdateRbfLabelsThunkParams = {
-    labelsToBeEdited: RbfLabelsToBeUpdated;
     precomposedTransaction: PrecomposedTransactionFinalBumpFeeRbf;
     txid: string;
+    prevTxid: string;
+    deviceStaticSessionId: StaticSessionId;
 };
 
 const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
-    ({ labelsToBeEdited, precomposedTransaction, txid }, { dispatch }) => {
+    ({ deviceStaticSessionId, precomposedTransaction, txid, prevTxid }, { dispatch }) => {
         dispatch(
             moveLabelsForRbfThunk({
-                toBeMovedOrDeletedList: labelsToBeEdited,
-                newTxid: txid,
+                deviceStaticSessionId,
+                newTxId: txid,
+                prevTxId: prevTxid,
             }),
         );
 
@@ -274,15 +274,6 @@ export const signAndPushSendFormTransactionThunk = createThunk(
 
         const isBumpFeeRbf = isRbfBumpFeeTransaction(enhancedPrecomposedTransaction);
 
-        // This has to be executed prior to pushing the transaction!
-        const rbfLabelsToBeEdited = isBumpFeeRbf
-            ? dispatch(
-                  findLabelsToBeMovedOrDeletedThunk({
-                      prevTxid: enhancedPrecomposedTransaction.prevTxid,
-                  }),
-              )
-            : null;
-
         const isMevProtectionEnabled =
             selectIsMevProtectionEnabled(getState()) &&
             selectIsMevProtectionFeatureEnabled(getState());
@@ -299,12 +290,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const result = pushResponse.payload;
         const { txid } = result.payload;
 
-        if (isBumpFeeRbf && rbfLabelsToBeEdited !== null) {
+        if (isBumpFeeRbf && device.state?.staticSessionId) {
             dispatch(
                 updateRbfLabelsThunk({
-                    labelsToBeEdited: rbfLabelsToBeEdited,
+                    deviceStaticSessionId: device.state.staticSessionId,
                     precomposedTransaction: enhancedPrecomposedTransaction,
                     txid,
+                    prevTxid: enhancedPrecomposedTransaction.prevTxid,
                 }),
             );
         }
