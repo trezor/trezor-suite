@@ -1,23 +1,23 @@
-import { TestCategory, TestPriority } from '@trezor/e2e-utils';
+import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { it } from '../../support/wrappedIt';
 
-// FIXME https://github.com/trezor/trezor-suite/issues/23438
+// Template-based test (unchanged); original had describe.skip
 describe.skip('Settings', () => {
     it(
         'Change currency',
         {
-            testCase: 'Change currency in settings',
-            prerequisites: ['Suite app with an Bitcoin account already imported'],
+            testCase: 'Currency change',
+            prerequisites: ['an app with an Bitcoin account already imported'],
             steps: [
-                'On bottom bar, click on "Settings gear" icon',
-                'Click on "Localization"',
-                'Change fiat "currency"',
-                'Navigate to "Home" section',
-                'Price of imported accounts changed accordingly',
+                'On bottom bar click on Settings gear icon',
+                'Click on Localization',
+                'Change fiat currency',
+                'Navigate to Home section and verify prices of imported accounts changed accordingly',
             ],
             category: TestCategory.Settings,
             priority: TestPriority.Medium,
+            stream: TestStream.Growth,
         },
         async () => {},
     );
