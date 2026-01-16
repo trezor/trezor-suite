@@ -22,7 +22,7 @@ const buttonStyle = prepareNativeStyle(({ borders, colors, spacings }) => ({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.backgroundSurfaceElevation1,
+    backgroundColor: colors.backgroundNeutralSubtleOnElevation1,
     borderColor: colors.borderElevation0,
     borderRadius: borders.radii.round,
     borderWidth: borders.widths.small,
@@ -45,10 +45,10 @@ export const FiatCurrencyButton = ({ currency, onPress, testID }: FiatCurrencyBu
             testID={testID}
         >
             <FiatCurrencyIcon size="small" />
-            <Text variant="callout" color="textSubdued" testID={tickerTestID}>
+            <Text variant="callout" color="textDefault" testID={tickerTestID}>
                 {displayCurrency}
             </Text>
-            <Icon name="caretDown" color="textSubdued" size="medium" />
+            <Icon name="caretDown" color="textDefault" size="medium" />
         </Pressable>
     );
 };
