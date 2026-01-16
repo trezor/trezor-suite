@@ -78,18 +78,6 @@ describe('deviceAuthorizationSlice', () => {
         });
     });
 
-    describe('UI.REQUEST_PASSPHRASE_ON_DEVICE', () => {
-        it('should set deviceAuthorizationStep to InputPassphraseOnDevice', () => {
-            const state = deviceAuthorizationReducer(undefined, {
-                type: UI.REQUEST_PASSPHRASE_ON_DEVICE,
-            });
-
-            expect(state).toEqual({
-                deviceAuthorizationStep: DeviceAuthorizationStep.InputPassphraseOnDevice,
-            });
-        });
-    });
-
     describe('UI.CLOSE_UI_WINDOW', () => {
         it('should reset deviceAuthorizationStep to Idle from any state', () => {
             const prevState = getDeviceAuthorizationState({

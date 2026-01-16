@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useNavigation } from '@react-navigation/native';
 
 import { Text, VStack } from '@suite-native/atoms';
@@ -10,7 +12,7 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { PassphraseForm } from '@suite-native/passphrase';
+import { PassphraseForm, useWaitForUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
 
 import { AuthorizeDeviceScreenHeader } from '../../components/AuthorizeDeviceScreenHeader';
 
@@ -29,6 +31,12 @@ export const PassphraseFormScreen = () => {
     const handleAfterSubmit = () => {
         navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor);
     };
+
+    const navigateToEnterOnDevice = useCallback(() => {
+        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
+    }, [navigation]);
+
+    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<AuthorizeDeviceScreenHeader />}>

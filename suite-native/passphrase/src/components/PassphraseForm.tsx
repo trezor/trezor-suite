@@ -72,9 +72,9 @@ export const PassphraseForm = ({
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         if (!device) return;
         dispatch(submitPassphrase({ device, passphrase, passphraseOnDevice: false }));
-        // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
+        // Reset values so when user comes back to this screen,
+        // it's clean (for example if try again is triggered later in the flow)
         reset();
-        // NOTE: useful for redirets from different contexts eg. passphrase feature unlock
         onAfterSubmit?.();
     });
 

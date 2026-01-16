@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { LayoutChangeEvent, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -16,7 +17,11 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
-import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
+import {
+    PassphraseForm,
+    PassphraseScreenHeader,
+    useWaitForUiRequestPassphraseOnDevice,
+} from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
@@ -89,6 +94,12 @@ export const PassphraseFormScreen = () => {
             cardHeight.value = height;
         }
     };
+
+    const navigateToEnterOnDevice = useCallback(() => {
+        navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);
+    }, [navigation]);
+
+    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<PassphraseScreenHeader />}>

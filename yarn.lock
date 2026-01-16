@@ -12839,7 +12839,6 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.5.1"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-native/device-authorization": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/passphrase": "workspace:*"
     react: "npm:19.1.0"

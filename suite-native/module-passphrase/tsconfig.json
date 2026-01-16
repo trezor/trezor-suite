@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        { "path": "../device-authorization" },
         { "path": "../navigation" },
         { "path": "../passphrase" }
     ]

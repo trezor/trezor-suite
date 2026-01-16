@@ -11,3 +11,4 @@ export * from './components/EmptyWalletInfoSheet';
 export * from './components/EnterPassphraseOnTrezorButton';
 export * from './components/NoPassphraseButton';
 export * from './passphraseSelectors';
+export * from './useWaitForUiRequestPassphraseOnDevice';

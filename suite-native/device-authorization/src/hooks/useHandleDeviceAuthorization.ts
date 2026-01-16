@@ -62,9 +62,6 @@ export const useHandleDeviceAuthorization = () => {
                     screen: AuthorizeDeviceStackRoutes.ContinueOnTrezor,
                 });
                 break;
-            case DeviceAuthorizationStep.InputPassphraseOnDevice:
-                navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
-                break;
             default:
                 return;
         }
