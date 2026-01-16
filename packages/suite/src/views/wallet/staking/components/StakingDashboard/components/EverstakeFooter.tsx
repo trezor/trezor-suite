@@ -2,8 +2,6 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
-import { Icon } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import {
     HELP_CENTER_ADA_STAKING,
@@ -12,6 +10,7 @@ import {
 } from '@trezor/urls';
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
+import { PoweredByBadge } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
@@ -23,13 +22,6 @@ const Wrapper = styled.div`
     justify-content: space-between;
     border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     margin-top: ${spacingsPx.xxl};
-`;
-
-const Left = styled.div`
-    display: flex;
-    align-items: center;
-    color: ${({ theme }) => theme.textSubdued};
-    gap: ${spacingsPx.xs};
 `;
 
 export const EverstakeFooter = () => {
@@ -50,10 +42,7 @@ export const EverstakeFooter = () => {
 
     return (
         <Wrapper>
-            <Left>
-                <Translation id="TR_STAKE_PROVIDED_BY" />{' '}
-                <Icon size={100} name="everstakeLogoText" variant="default" />
-            </Left>
+            <PoweredByBadge provider="everstake" />
             {learnMoreLink && <LearnMoreButton url={learnMoreLink} />}
         </Wrapper>
     );

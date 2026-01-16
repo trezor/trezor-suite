@@ -13,6 +13,7 @@ export const IMAGES = {
     DASHBOARD_PROMO_BANNER_TEX: 'dashboard-promo-banner/tex.webp',
     DASHBOARD_PROMO_BANNER_UNDERLINE: 'dashboard-promo-banner/underline.svg',
     ERROR_404: 'error-404.svg',
+    EVERSTAKE_LOGO: 'everstake-logo.svg',
     GAINS_GRAPH: 'gains-graph.svg',
     GHOST: 'ghost.svg',
     INVITY_LOGO: 'invity-logo.svg',
