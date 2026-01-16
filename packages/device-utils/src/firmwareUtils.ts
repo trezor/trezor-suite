@@ -46,21 +46,13 @@ export const getFirmwareVersionArray = (device?: PartialDevice): VersionArray | 
             : null;
     }
 
-    return [features.major_version, features.minor_version, features.patch_version];
+    return getFirmwareOrBootloaderVersionArray(features);
 };
 
 export const getFirmwareVersion = (device?: PartialDevice): '' | FirmwareVersionString => {
-    if (!device?.features) {
-        return '';
-    }
-    const { features } = device;
-    if (isDeviceInBootloaderMode(device)) {
-        return features.fw_major
-            ? `${features.fw_major}.${features.fw_minor!}.${features.fw_patch!}`
-            : '';
-    }
+    const versionArray = getFirmwareVersionArray(device);
 
-    return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+    return versionArray === null ? '' : (versionArray.join('.') as FirmwareVersionString);
 };
 
 // This can give a false negative in bootloader mode for T1B1 and T2T1.
