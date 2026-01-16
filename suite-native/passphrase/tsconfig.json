@@ -12,7 +12,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../device" },
-        { "path": "../device-authorization" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },

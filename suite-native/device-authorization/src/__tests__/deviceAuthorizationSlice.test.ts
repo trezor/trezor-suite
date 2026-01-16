@@ -4,7 +4,6 @@ import { UI } from '@trezor/connect';
 import {
     DeviceAuthorizationState,
     DeviceAuthorizationStep,
-    checkPassphraseOnDevice,
     deviceAuthorizationInitialState,
     deviceAuthorizationReducer,
 } from '../deviceAuthorizationSlice';
@@ -101,20 +100,6 @@ describe('deviceAuthorizationSlice', () => {
 
             expect(state).toEqual({
                 deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
-            });
-        });
-    });
-
-    describe('checkPassphraseOnDevice action', () => {
-        it('should set deviceAuthorizationStep to CheckPassphraseOnDevice', () => {
-            const prevState = getDeviceAuthorizationState({
-                deviceAuthorizationStep: DeviceAuthorizationStep.Idle,
-            });
-
-            const state = deviceAuthorizationReducer(prevState, checkPassphraseOnDevice());
-
-            expect(state).toEqual({
-                deviceAuthorizationStep: DeviceAuthorizationStep.CheckPassphraseOnDevice,
             });
         });
     });

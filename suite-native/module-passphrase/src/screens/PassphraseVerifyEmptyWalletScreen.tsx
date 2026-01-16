@@ -1,10 +1,29 @@
+import { useNavigation } from '@react-navigation/native';
+
 import { InlineAlertBox, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { Screen } from '@suite-native/navigation';
+import {
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackParamList,
+    Screen,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
+
+type NavigationProp = StackToStackCompositeNavigationProps<
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackParamList
+>;
 
 export const PassphraseVerifyEmptyWalletScreen = () => {
     const { translate } = useTranslate();
+    const navigation = useNavigation<NavigationProp>();
+
+    const handleAfterSubmit = () => {
+        navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
+    };
 
     return (
         <Screen header={<PassphraseScreenHeader />}>
@@ -31,6 +50,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                 />
                 <PassphraseForm
                     inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
+                    onAfterSubmit={handleAfterSubmit}
                 />
             </VStack>
         </Screen>

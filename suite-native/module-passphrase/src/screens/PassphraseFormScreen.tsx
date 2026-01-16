@@ -1,12 +1,20 @@
 import { LayoutChangeEvent, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { EventType } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { Screen } from '@suite-native/navigation';
+import {
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackParamList,
+    Screen,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
 import { PassphraseForm, PassphraseScreenHeader } from '@suite-native/passphrase';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -36,10 +44,18 @@ const animationWrapperStyle = prepareNativeStyle(() => ({
     overflow: 'hidden',
 }));
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseForm,
+    RootStackParamList
+>;
+
 export const PassphraseFormScreen = () => {
     const { applyStyle } = useNativeStyles();
     const legacyAnalytics = useLegacyAnalytics();
     const { translate } = useTranslate();
+
+    const navigation = useNavigation<NavigationProp>();
 
     const openLink = useOpenLink();
 
@@ -54,6 +70,10 @@ export const PassphraseFormScreen = () => {
             height: withTiming(cardHeight.value, { duration: ANIMATION_DURATION }),
         };
     });
+
+    const handleAfterSubmit = () => {
+        navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
+    };
 
     const handleAnimation = () => (cardHeight.value = 0);
 
@@ -159,6 +179,7 @@ export const PassphraseFormScreen = () => {
                 <PassphraseForm
                     onFocus={handleAnimation}
                     inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
+                    onAfterSubmit={handleAfterSubmit}
                 />
             </VStack>
         </Screen>
