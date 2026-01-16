@@ -1,17 +1,16 @@
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { RbfLabelsToBeUpdated, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import { Dispatch } from 'src/types/suite';
 
+import * as METADATA from './metadataConstants';
 import { selectLabelingDataForAccount } from '../../../reducers/suite/metadataReducer';
-import { RbfLabelsToBeUpdated } from '../../../types/wallet/sendForm';
-import { MODULE_PREFIX } from '../send/sendThunksConsts';
 
-type DeleteAllOutputLabelsParams = {
+export type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];
     dispatch: Dispatch;
     accountKey: AccountKey;
@@ -90,7 +89,7 @@ export const moveLabelsForRbfOldMetadataThunk = createThunk<
     MoveLabelsForRbfOldMetadataThunkParams,
     void
 >(
-    `${MODULE_PREFIX}/applyMetadataLabelsThunk`,
+    `${METADATA.MODULE_PREFIX}/applyMetadataLabelsThunk`,
     async ({ accountKey, data, newTxid }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         const accountMetadata = selectLabelingDataForAccount(getState(), accountKey);

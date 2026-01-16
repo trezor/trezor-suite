@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { suiteSyncReducer } from '@suite-common/suite-sync';
 import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 
 import metadataReducer, {
@@ -18,7 +19,6 @@ import {
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from '../__fixtures__/moveLabelsForRbfTransactions.fixture';
-import { findLabelsToBeMovedOrDeletedThunk } from '../findLabelsToBeMovedOrDeletedThunk';
 import { moveLabelsForRbfThunk } from '../moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
@@ -28,6 +28,7 @@ const rootReducer = combineReducers({
     }),
     metadata: metadataReducer,
     suite: suiteReducer,
+    suiteSync: suiteSyncReducer,
 });
 
 type TestState = ReturnType<typeof rootReducer>;
@@ -67,16 +68,11 @@ describe(moveLabelsForRbfThunk.name, () => {
             metadata: moveLabelsForRbfMetadataStateFixture,
         });
 
-        const toBeMovedOrDeletedList = store.dispatch(
-            findLabelsToBeMovedOrDeletedThunk({
-                prevTxid: originalTransactionSpendAccount.txid,
-            }),
-        );
-
         await store.dispatch(
             moveLabelsForRbfThunk({
-                toBeMovedOrDeletedList,
-                newTxid: transactionSendingCoinsReplacement.txid,
+                newTxId: transactionSendingCoinsReplacement.txid,
+                prevTxId: originalTransactionSpendAccount.txid,
+                deviceStaticSessionId: 'abcd@cdef:1234',
             }),
         );
 
