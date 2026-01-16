@@ -1,18 +1,25 @@
+import { getFirmwareOrBootloaderVersionArray } from './firmwareUtils';
 import { isDeviceInBootloaderMode } from './modeUtils';
-import { PartialDevice } from './types';
+import { FirmwareVersionString, PartialDevice, VersionArray } from './types';
 
 export const getBootloaderHash = (device?: PartialDevice) =>
     device?.features?.bootloader_hash || '';
 
-export const getBootloaderVersion = (device?: PartialDevice) => {
+export const getBootloaderVersionArray = (device?: PartialDevice): VersionArray | null => {
     if (!device?.features) {
-        return '';
+        return null;
     }
     const { features } = device;
 
     if (isDeviceInBootloaderMode(device) && features.major_version) {
-        return `${features.major_version}.${features.minor_version}.${features.patch_version}`;
+        return getFirmwareOrBootloaderVersionArray(features);
     }
 
-    return '';
+    return null;
+};
+
+export const getBootloaderVersion = (device?: PartialDevice): '' | FirmwareVersionString => {
+    const versionArray = getBootloaderVersionArray(device);
+
+    return versionArray === null ? '' : (versionArray.join('.') as FirmwareVersionString);
 };
