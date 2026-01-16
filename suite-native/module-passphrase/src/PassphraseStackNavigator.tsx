@@ -45,6 +45,13 @@ export const PassphraseStackNavigator = () => {
         <PassphraseStack.Navigator
             screenOptions={{ ...stackNavigationOptionsConfig, gestureEnabled: false }}
         >
+            {['starting', 'enter-passphrase'].includes(passphraseState) && (
+                <PassphraseStack.Screen
+                    name={PassphraseStackRoutes.PassphraseForm}
+                    component={PassphraseFormScreen}
+                />
+            )}
+
             {inputPassphraseOnDevice && (
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
@@ -56,13 +63,6 @@ export const PassphraseStackNavigator = () => {
                 <PassphraseStack.Screen
                     name={PassphraseStackRoutes.PassphraseLoading}
                     component={PassphraseLoadingScreen}
-                />
-            )}
-
-            {['starting', 'enter-passphrase'].includes(passphraseState) && (
-                <PassphraseStack.Screen
-                    name={PassphraseStackRoutes.PassphraseForm}
-                    component={PassphraseFormScreen}
                 />
             )}
 
