@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { ExtraDependencies } from '@suite-common/redux-utils';
 import { Translation, TranslationKey } from '@suite/intl';
+import { ExtraDependencies } from '@suite-common/redux-utils';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 

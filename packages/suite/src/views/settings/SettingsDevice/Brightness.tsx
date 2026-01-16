@@ -3,7 +3,6 @@ import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { Translation } from 'src/components/suite/Translation';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useDevice } from '../../../hooks/suite';

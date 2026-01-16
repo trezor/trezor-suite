@@ -1,5 +1,5 @@
-import { Translation, useTranslation } from '@suite/intl';
 import { EventType } from '@suite/analytics';
+import { Translation, useTranslation } from '@suite/intl';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ThemeColorVariant } from '@trezor/theme';
 

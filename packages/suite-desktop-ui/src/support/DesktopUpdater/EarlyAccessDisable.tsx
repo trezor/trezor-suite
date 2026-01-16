@@ -7,7 +7,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface EarlyAccessDisableProps {
