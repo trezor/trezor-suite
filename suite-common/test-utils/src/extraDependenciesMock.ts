@@ -112,7 +112,7 @@ const legacyAnalyticsMock: Analytics<any> = {
 // TODO split extra dependencies mock for native/desktop as they mock different type (native services vs suite services)
 // issue is caused by analytics and legacyAnalytics being different in native/desktop
 // issue: https://github.com/trezor/trezor-suite/issues/24261
-export const extraDependenciesMock: ExtraDependencies = {
+export const extraDependenciesMock = {
     thunks: {
         cardanoValidatePendingTxOnBlock: mockThunk('validatePendingTxOnBlock'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),

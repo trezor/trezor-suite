@@ -144,11 +144,11 @@ describe('Header', () => {
             exchangeEnabled: true,
         },
     ])('should display Header tabs with Buy, Swap and Sell tabs, case %#', async config => {
-        const { getByText } = await renderHeader(config);
+        const { renderer } = await renderHeader(config);
 
-        expect(getByText('Buy')).toBeOnTheScreen();
-        expect(getByText('Swap')).toBeOnTheScreen();
-        expect(getByText('Sell')).toBeOnTheScreen();
+        expect(renderer.getByText('Buy')).toBeOnTheScreen();
+        expect(renderer.getByText('Swap')).toBeOnTheScreen();
+        expect(renderer.getByText('Sell')).toBeOnTheScreen();
     });
 
     it('should display nothing when isAmountInputActive is true', async () => {
