@@ -1,3 +1,4 @@
+import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
@@ -156,16 +157,8 @@ const waitForReconnectedDevice = async (
             bootloader === !reconnectedDevice.features.bootloader_mode ||
             (intermediary &&
                 !isNewer(
-                    [
-                        reconnectedDevice.features.major_version,
-                        reconnectedDevice.features.minor_version,
-                        reconnectedDevice.features.patch_version,
-                    ],
-                    [
-                        device.features.major_version,
-                        device.features.minor_version,
-                        device.features.patch_version,
-                    ],
+                    getFirmwareOrBootloaderVersionArray(reconnectedDevice.features),
+                    getFirmwareOrBootloaderVersionArray(device.features),
                 )))
     );
 
@@ -224,11 +217,7 @@ const getInstallationParams = (device: Device, params: Params) => {
             : undefined;
         const isUpdatingToNewerVersion = !version
             ? device.firmwareReleaseConfigInfo?.isNewer
-            : isNewer(version, [
-                  device.features.major_version,
-                  device.features.minor_version,
-                  device.features.patch_version,
-              ]);
+            : isNewer(version, getFirmwareOrBootloaderVersionArray(device.features));
         const isUpdatingToEqualFirmwareType =
             (device.firmwareType === FirmwareType.BitcoinOnly) === btcOnly;
 

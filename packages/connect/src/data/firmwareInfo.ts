@@ -8,6 +8,7 @@ import {
     FirmwareType,
     IntermediaryReleaseConfig,
     VersionArray,
+    getFirmwareOrBootloaderVersionArray,
 } from '@trezor/device-utils';
 import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from '@trezor/utils';
 
@@ -500,11 +501,7 @@ const getChangelog = (releases: FirmwareRelease[], features: StrictFeatures) => 
     // version higher than the previous one, we can filter out the version that is already
     // installed and show only what's new!
     return releases.filter(r =>
-        versionUtils.isNewer(r.version, [
-            features.major_version,
-            features.minor_version,
-            features.patch_version,
-        ]),
+        versionUtils.isNewer(r.version, getFirmwareOrBootloaderVersionArray(features)),
     );
 };
 

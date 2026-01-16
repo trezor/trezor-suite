@@ -14506,6 +14506,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/device-utils@workspace:packages/device-utils"
   dependencies:
+    "@trezor/protobuf": "workspace:*"
     tsx: "npm:^4.20.3"
   languageName: unknown
   linkType: soft

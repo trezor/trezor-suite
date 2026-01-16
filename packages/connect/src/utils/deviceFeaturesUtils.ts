@@ -1,4 +1,4 @@
-import { DeviceModelInternal } from '@trezor/device-utils';
+import { DeviceModelInternal, getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isArrayMember, versionUtils } from '@trezor/utils';
 
@@ -45,7 +45,7 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
     const { capabilities } = features;
     const list: UnavailableCapabilities = {};
     if (!capabilities) return list;
-    const fw = [features.major_version, features.minor_version, features.patch_version].join('.');
+    const fw = getFirmwareOrBootloaderVersionArray(features).join('.');
     const key = features.internal_model;
 
     // 1. check if firmware version is supported by CoinInfo.support

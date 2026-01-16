@@ -1,3 +1,5 @@
+import type { MessagesSchema as PROTO } from '@trezor/protobuf';
+
 import { DeviceModelInternal } from './deviceModelInternal';
 
 export type FirmwareVersionString = `${number}.${number}.${number}`;
@@ -72,7 +74,6 @@ export type FeaturesNarrowing =
           firmware_present: null;
       };
 
-// todo: this is copy-pasted from packages/protobuf/src/messages
 export type PartialDevice = {
     firmwareType?: FirmwareType;
     authenticityChecks?: {
@@ -81,20 +82,7 @@ export type PartialDevice = {
     };
     mode?: 'normal' | 'bootloader' | 'initialize' | 'seedless';
 
-    features?: {
-        major_version: number;
-        minor_version: number;
-        patch_version: number;
-        bootloader_mode: boolean | null;
-        initialized: boolean | null;
-        revision: string | null;
-        bootloader_hash: string | null;
-        fw_major: number | null;
-        fw_minor: number | null;
-        fw_patch: number | null;
-        no_backup: boolean | null;
-        unit_btconly?: boolean;
-    };
+    features?: PROTO.Features;
 };
 
 export type FirmwareSource = 'official' | 'unknown' | 'NA - bootloader';
