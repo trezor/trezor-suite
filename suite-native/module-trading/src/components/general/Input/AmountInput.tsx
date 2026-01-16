@@ -45,7 +45,7 @@ const inputStyle = prepareNativeStyle<{ hasError: boolean; fontSize: number }>(
     }),
 );
 
-const useInputLayoutControls = () => {
+const useInputLayoutControls = (value: string | undefined) => {
     const [availableWidth, setAvailableWidth] = useState(
         MIN_INPUT_WIDTH + FONT_SIZE_SHRINK_THRESHOLD,
     );
@@ -60,7 +60,7 @@ const useInputLayoutControls = () => {
         ({ nativeEvent }: LayoutChangeEvent) => {
             const contentWidth = nativeEvent.layout.width;
 
-            if (contentWidth === 0 || availableWidth === 0) {
+            if (contentWidth === 0 || availableWidth === 0 || !value) {
                 setFontSize(MAX_FONT_SIZE);
 
                 return;
@@ -84,7 +84,7 @@ const useInputLayoutControls = () => {
                 setFontSize(newFontSize);
             }
         },
-        [availableWidth, fontSize],
+        [availableWidth, fontSize, value],
     );
 
     return {
@@ -116,7 +116,7 @@ export const AmountInput = forwardRef<TextInput, AmountInputProps>(
         useImperativeHandle(ref, () => innerRef.current!, []);
 
         const { applyStyle, utils } = useNativeStyles();
-        const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls();
+        const { fontSize, onBoxLayout, onInputLayout } = useInputLayoutControls(value);
 
         const handleTextChange = useCallback(
             (text: string) => {

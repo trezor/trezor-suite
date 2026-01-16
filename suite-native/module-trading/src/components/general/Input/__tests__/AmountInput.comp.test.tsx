@@ -75,7 +75,7 @@ describe('AmountInput', () => {
         let box: ReturnType<ReturnType<typeof renderAmountInput>['getByTestId']>;
 
         beforeEach(() => {
-            const { getByLabelText, getByTestId } = renderAmountInput({});
+            const { getByLabelText, getByTestId } = renderAmountInput({ value: '1234567890' });
             input = getByLabelText('INPUT');
             box = getByTestId(AMOUNT_INPUT_TEST_ID);
 
