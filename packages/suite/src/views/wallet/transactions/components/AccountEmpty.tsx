@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { EventType } from '@suite/analytics';
+import { Translation } from '@suite/intl';
 import {
     getNetwork,
     getNetworkDisplaySymbol,

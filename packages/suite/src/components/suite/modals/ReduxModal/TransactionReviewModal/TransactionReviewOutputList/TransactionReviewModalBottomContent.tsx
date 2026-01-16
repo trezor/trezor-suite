@@ -12,7 +12,6 @@ import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { Deferred } from '@trezor/utils';
 
-import { Translation } from 'src/components/suite/Translation';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { getTxType } from '../utils';

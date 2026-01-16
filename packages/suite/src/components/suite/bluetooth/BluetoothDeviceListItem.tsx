@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { EventType } from '@suite-common/analytics-types';
 import { Translation, TranslationKey } from '@suite/intl';
+import { EventType } from '@suite-common/analytics-types';
 import {
     DeviceBluetoothConnectionStatusType,
     bluetoothActions,

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { EventType } from '@suite/analytics';
+import { Translation } from '@suite/intl';
 
 import { changePin } from 'src/actions/settings/deviceSettingsActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';

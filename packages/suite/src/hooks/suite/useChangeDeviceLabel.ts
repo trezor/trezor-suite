@@ -2,19 +2,16 @@ import { UseFormReturn, useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { EventType } from '@suite-common/analytics-types';
 import { TranslationFunction, useTranslation } from '@suite/intl';
+import { EventType } from '@suite-common/analytics-types';
 import { yup } from '@suite-common/validators';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/wallet-core';
 import { isAscii } from '@trezor/utils';
 
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
-
-import { TranslationFunction } from './useTranslation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
