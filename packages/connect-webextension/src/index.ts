@@ -10,9 +10,10 @@ import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory
 import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
+import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
 import { parseConnectSettings } from './connectSettings';
-import { CoreInSuiteDesktopWebextension, CoreInSuiteWebWebextension } from './impl';
 
 const _settings = parseConnectSettings();
 
@@ -24,11 +25,11 @@ const impl = new TrezorConnectDynamic<
     implementations: [
         {
             type: 'core-in-suite-desktop',
-            impl: new CoreInSuiteDesktopWebextension(),
+            impl: new CoreInSuiteDesktop(),
         },
         {
             type: 'core-in-suite-web',
-            impl: new CoreInSuiteWebWebextension(),
+            impl: new CoreInSuiteWeb(),
         },
     ],
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
@@ -36,6 +37,16 @@ const impl = new TrezorConnectDynamic<
             return 'core-in-suite-desktop';
         } else {
             return 'core-in-suite-web';
+        }
+    },
+    handleBeforeInit: () => {
+        if (impl.lastSettings?._extendWebextensionLifetime) {
+            // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
+            // We could make it to be continuously alive but it is probably overkilling.
+            // https://developer.chrome.com/blog/longer-esw-lifetimes
+            // https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#keep-sw-alive
+            // https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
+            chrome.runtime.onMessage.addListener(() => false);
         }
     },
     handleBeforeCall: async () => {
