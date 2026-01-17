@@ -30,6 +30,7 @@ import {
     DevicePassphraseStackRoutes,
     DevicePinProtectionStackRoutes,
     DeviceSettingsStackRoutes,
+    EarnStackRoutes,
     FirmwareLanguageStackRoutes,
     FirmwareUpdateStackRoutes,
     HomeStackRoutes,
@@ -66,6 +67,10 @@ type AccountDetailParams = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: undefined;
+};
+
+export type EarnStackParamList = {
+    [EarnStackRoutes.Earn]: undefined;
 };
 
 export type HomeStackParamList = {
@@ -141,6 +146,7 @@ export type SendStackParamList = {
 export type AppTabsParamList = {
     [AppTabsRoutes.HomeStack]: NavigatorScreenParams<HomeStackParamList>;
     [AppTabsRoutes.AccountsStack]: NavigatorScreenParams<AccountsStackParamList>;
+    [AppTabsRoutes.EarnStack]: NavigatorScreenParams<EarnStackParamList>;
     [AppTabsRoutes.TradeStack]: NavigatorScreenParams<TradingStackParamList>;
     [AppTabsRoutes.Settings]: undefined;
 };
