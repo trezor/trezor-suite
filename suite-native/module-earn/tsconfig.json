@@ -12,6 +12,8 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },
+        { "path": "../clipboard" },
+        { "path": "../device-manager" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },

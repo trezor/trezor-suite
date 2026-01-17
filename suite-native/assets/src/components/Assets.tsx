@@ -14,6 +14,7 @@ import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
 import {
     AppTabsParamList,
     AppTabsRoutes,
+    EarnStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
@@ -44,8 +45,11 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
-                navigation.navigate(RootStackRoutes.StakingDetail, {
-                    accountKey: account.key,
+                navigation.navigate(RootStackRoutes.AppTabs, {
+                    screen: AppTabsRoutes.EarnStack,
+                    params: {
+                        screen: EarnStackRoutes.Earn,
+                    },
                 });
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetail, {

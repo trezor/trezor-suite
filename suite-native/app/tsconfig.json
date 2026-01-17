@@ -55,14 +55,12 @@
         { "path": "../module-dev-utils" },
         { "path": "../module-device-onboarding" },
         { "path": "../module-device-settings" },
+        { "path": "../module-earn" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
         { "path": "../module-passphrase" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
-        {
-            "path": "../module-earn"
-        },
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },

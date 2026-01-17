@@ -43,7 +43,7 @@ const getCardAlertProps = (
 
     if (isStakeConfirming && !isStakePending) {
         return {
-            title: <Translation id="staking.stakePendingCard.transactionPending" />,
+            title: <Translation id="earn.stakePendingCard.transactionPending" />,
             variant: 'warning',
             iconName: 'spinnerGap',
         };
@@ -51,9 +51,9 @@ const getCardAlertProps = (
     if (!isStakeConfirming && isStakePending) {
         return {
             title: isSolana(symbol) ? (
-                <Translation id="staking.stakePendingCard.activatingStake" />
+                <Translation id="earn.stakePendingCard.activatingStake" />
             ) : (
-                <Translation id="staking.stakePendingCard.addingToStakingPool" />
+                <Translation id="earn.stakePendingCard.addingToStakingPool" />
             ),
             variant: 'warning',
             iconName: 'spinnerGap',
@@ -65,9 +65,9 @@ const getCardAlertProps = (
 
 const getTitle = (symbol: NetworkSymbol) =>
     isSolana(symbol) ? (
-        <Translation id="staking.stakePendingCard.totalStakeActivating" />
+        <Translation id="earn.stakePendingCard.totalStakeActivating" />
     ) : (
-        <Translation id="staking.stakePendingCard.totalStakePending" />
+        <Translation id="earn.stakePendingCard.totalStakePending" />
     );
 
 export const StakePendingCard = ({

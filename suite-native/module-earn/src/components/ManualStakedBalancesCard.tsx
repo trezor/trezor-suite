@@ -53,9 +53,9 @@ export const ManualStakedBalancesCard = ({
     if (!symbol) return null;
 
     const rewardsTitle = ['sol', 'dsol'].includes(symbol) ? (
-        <Translation id="staking.rewardsPerEpoch" />
+        <Translation id="earn.rewardsPerEpoch" />
     ) : (
-        <Translation id="staking.rewards" />
+        <Translation id="earn.rewards" />
     );
 
     return (
@@ -66,7 +66,7 @@ export const ManualStakedBalancesCard = ({
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="lock" color="textSubdued" size="medium" />
                             <Text color="textSubdued" variant="label">
-                                <Translation id="staking.staked" />
+                                <Translation id="earn.staked" />
                             </Text>
                         </Box>
                         <CryptoAmountFormatter
@@ -120,9 +120,9 @@ export const ManualStakedBalancesCard = ({
                     paddingTop="sp16"
                 >
                     <Text color="textSubdued">
-                        <Translation id="staking.apy" />
+                        <Translation id="earn.apy" />
                     </Text>
-                    <Text>{apy ? `${apy}%` : <Translation id="staking.notAvailable" />}</Text>
+                    <Text>{apy ? `${apy}%` : <Translation id="earn.notAvailable" />}</Text>
                 </Box>
             </Card>
         </PressableOpacity>

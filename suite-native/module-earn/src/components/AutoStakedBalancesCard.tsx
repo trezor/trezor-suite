@@ -68,19 +68,19 @@ export const AutoStakedBalancesCard = ({
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="check" color="textSubdued" size="medium" />
                             <Text color="textSubdued" variant="label">
-                                <Translation id="staking.stakedAutomatically" />
+                                <Translation id="earn.stakedAutomatically" />
                             </Text>
                         </Box>
 
                         <Text color="textDefault" variant="titleSmall">
-                            <Translation id="staking.fullBalance" />
+                            <Translation id="earn.fullBalance" />
                         </Text>
                     </Box>
                     <Box flex={1}>
                         <Box style={applyStyle(stakingItemStyle)}>
                             <Icon name="plusCircle" color="textSubdued" size="medium" />
                             <Text color="textSubdued" variant="label">
-                                <Translation id="staking.rewards" />
+                                <Translation id="earn.rewards" />
                             </Text>
                         </Box>
                         <CryptoAmountFormatter
@@ -110,13 +110,13 @@ export const AutoStakedBalancesCard = ({
                     paddingTop="sp16"
                 >
                     <Text color="textSubdued">
-                        <Translation id="staking.apy" />
+                        <Translation id="earn.apy" />
                     </Text>
                     <Text>
                         {!isAdaStakedOutsideEverstake && apy ? (
                             `${apy}%`
                         ) : (
-                            <Translation id="staking.notAvailable" />
+                            <Translation id="earn.notAvailable" />
                         )}
                     </Text>
                 </Box>
@@ -128,7 +128,7 @@ export const AutoStakedBalancesCard = ({
                         <Icon name="info" color="textSubdued" size="mediumLarge" />
                         <Box flexShrink={1}>
                             <Text color="textSubdued" variant="hint" numberOfLines={0}>
-                                <Translation id="staking.adaStaysFullyAccessuble" />
+                                <Translation id="earn.adaStaysFullyAccessuble" />
                             </Text>
                         </Box>
                     </Box>

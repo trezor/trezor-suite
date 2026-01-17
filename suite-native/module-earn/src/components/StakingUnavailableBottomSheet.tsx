@@ -24,7 +24,7 @@ export const StakingUnavailableBottomSheet = ({
             ref={ref}
             title={
                 <Text variant="titleSmall" textAlign="center">
-                    <Translation id="staking.stakingBottomSheet.title" />
+                    <Translation id="earn.stakingBottomSheet.title" />
                 </Text>
             }
             paddingHorizontal="sp24"
@@ -34,7 +34,7 @@ export const StakingUnavailableBottomSheet = ({
                 textAlign="center"
                 style={applyStyle(bottomSheetElementStyle)}
             >
-                <Translation id="staking.stakingBottomSheet.description" />
+                <Translation id="earn.stakingBottomSheet.description" />
             </Text>
 
             <Button onPress={onClose} style={applyStyle(bottomSheetElementStyle)}>
@@ -47,7 +47,7 @@ export const StakingUnavailableBottomSheet = ({
                 viewLeft="arrowSquareOut"
                 style={applyStyle(bottomSheetElementStyle)}
             >
-                <Translation id="staking.trezorDesktop" />
+                <Translation id="earn.trezorDesktop" />
             </Button>
         </BottomSheetModal>
     );

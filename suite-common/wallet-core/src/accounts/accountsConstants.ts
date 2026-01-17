@@ -19,4 +19,7 @@ export const formattedAccountTypeMap: Partial<
         legacy: 'Legacy',
         ledger: 'Ledger',
     },
+    solana: {
+        ledger: 'Ledger',
+    },
 };

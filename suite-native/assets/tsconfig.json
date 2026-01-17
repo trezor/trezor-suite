@@ -30,9 +30,7 @@
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
-        {
-            "path": "../module-earn"
-        },
+        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../staking" },
         { "path": "../tokens" },
