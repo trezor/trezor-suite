@@ -1,6 +1,5 @@
 export { createLegacyAnalytics, type DesktopLegacyAnalyticsDep } from './createLegacyAnalytics';
 export { createAnalytics, type DesktopAnalyticsDep } from './createAnalytics';
-export * from './events';
 export type {
     SuiteAnalyticsEventSuiteReady,
     SuiteDesktopLegacyAnalyticsEvents,
@@ -10,3 +9,5 @@ export type { OnboardingAnalytics, AppUpdateEvent, FirmwareSource } from './defi
 export { EventType, AppUpdateEventStatus } from './constants';
 export { getTypedDesktopLegacyAnalytics } from './getTypedDesktopLegacyAnalytics';
 export type { AnalyticsDesktopEvents } from './analyticsEvents';
+
+export * as events from './events';

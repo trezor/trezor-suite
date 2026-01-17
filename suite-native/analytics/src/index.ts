@@ -23,6 +23,7 @@ export type {
 } from './types';
 export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
 export { createLegacyAnalytics, type NativeLegacyAnalyticsDep } from './createLegacyAnalytics';
-export * from './events';
 export { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
 export type { AnalyticsNativeEvents } from './analyticsEvents';
+
+export * as events from './events';
