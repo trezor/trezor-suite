@@ -11,14 +11,14 @@ import { spacings } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface NewProviderCardProps {
     account: Account;
 }
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
@@ -38,7 +38,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                 }),
             );
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.StakingUpdateProvider,
                 payload: {
                     action: 'continue',
