@@ -12,7 +12,7 @@ import {
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { getTrackingRandomId } from '@trezor/analytics';
+import { type InitOptions, getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
 import type { Dispatch, GetState } from 'src/types/suite';
@@ -53,7 +53,7 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
     const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
-    extra.services.legacyAnalytics.init(hasUserAllowedTracking, {
+    const options: InitOptions = {
         instanceId,
         sessionId,
         environment: getEnvironment(),
@@ -63,18 +63,10 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
             onEnable: () => dispatch(enableAnalyticsThunk()),
             onDisable: () => dispatch(disableAnalyticsThunk()),
         },
-    });
-    extra.services.analytics.init(hasUserAllowedTracking, {
-        instanceId,
-        sessionId,
-        environment: getEnvironment(),
-        commitId: getCommitHash(),
-        isDev: !isCodesignBuild(),
-        callbacks: {
-            onEnable: () => dispatch(enableAnalyticsThunk()),
-            onDisable: () => dispatch(disableAnalyticsThunk()),
-        },
-    });
+    };
+
+    extra.services.legacyAnalytics.init(hasUserAllowedTracking, options);
+    extra.services.analytics.init(hasUserAllowedTracking, options);
 
     allowSentryReport(isAnalyticsEnabled);
     setSentryUser(instanceId);
