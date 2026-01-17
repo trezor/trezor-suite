@@ -87,8 +87,8 @@ const ActionButton = ({
     const handleOnClick = () => {
         analytics.report({
             type: EventType.DeviceConnectionDeviceFound,
-            attributes: {
-                option: { value: 'connect' },
+            payload: {
+                option: 'connect',
             },
         });
         onConnect(device.id);

@@ -81,10 +81,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
         analytics.report({
             type: EventType.StakingNavigate,
-            attributes: {
-                action: { value: 'cancel' },
-                from: { value: 'account/banner' },
-                networkSymbol: { value: account.symbol },
+            payload: {
+                action: 'cancel',
+                from: 'account/banner',
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -94,10 +94,10 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
 
         analytics.report({
             type: EventType.StakingNavigate,
-            attributes: {
-                action: { value: 'navigate' },
-                from: { value: 'account/banner' },
-                networkSymbol: { value: account.symbol },
+            payload: {
+                action: 'navigate',
+                from: 'account/banner',
+                networkSymbol: account.symbol,
             },
         });
     };

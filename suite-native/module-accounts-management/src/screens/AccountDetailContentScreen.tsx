@@ -30,10 +30,10 @@ export const AccountDetailContentScreen = ({
         if (account) {
             analytics.report({
                 type: EventType.AssetDetail,
-                attributes: {
-                    assetSymbol: { value: account.symbol },
-                    tokenSymbol: token ? { value: token?.symbol } : undefined,
-                    tokenAddress: token ? { value: token?.contract } : undefined,
+                payload: {
+                    assetSymbol: account.symbol,
+                    tokenSymbol: token?.symbol,
+                    tokenAddress: token?.contract,
                 },
             });
         }

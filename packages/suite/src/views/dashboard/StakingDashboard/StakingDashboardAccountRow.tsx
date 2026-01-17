@@ -131,10 +131,10 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
         analytics.report({
             type: EventType.StakingNavigate,
-            attributes: {
-                action: { value: 'navigate' },
-                from: { value: `dashboard/staking-dashboard/${state}` },
-                networkSymbol: { value: account.symbol },
+            payload: {
+                action: 'navigate',
+                from: `dashboard/staking-dashboard/${state}`,
+                networkSymbol: account.symbol,
             },
         });
     };

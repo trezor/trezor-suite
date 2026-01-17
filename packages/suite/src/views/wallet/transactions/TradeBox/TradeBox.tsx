@@ -75,10 +75,10 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 case 'stake': {
                     analytics.report({
                         type: EventType.StakingNavigate,
-                        attributes: {
-                            action: { value: 'navigate' },
-                            from: { value: 'account/tradebox' },
-                            networkSymbol: { value: account.symbol },
+                        payload: {
+                            action: 'navigate',
+                            from: 'account/tradebox',
+                            networkSymbol: account.symbol,
                         },
                     });
 

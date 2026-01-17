@@ -38,8 +38,8 @@ export const ConnectBluetoothDeviceScreen = () => {
         (device: BluetoothDevice) => {
             analytics.report({
                 type: EventType.DeviceConnectionDeviceFound,
-                attributes: {
-                    option: { value: 'connect' },
+                payload: {
+                    option: 'connect',
                 },
             });
             connectBluetoothDevice(device);

@@ -14,7 +14,7 @@ import {
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
 
 const DiscreetTextExample = () => {
@@ -64,15 +64,18 @@ const DiscreetModeSwitchRow = () => {
 
 const AnalyticsSwitchRow = () => {
     const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {
         if (isEnabled) {
             legacyAnalytics.enable();
+            analytics.enable();
 
             return;
         }
         legacyAnalytics.disable();
+        analytics.disable();
     };
 
     return (

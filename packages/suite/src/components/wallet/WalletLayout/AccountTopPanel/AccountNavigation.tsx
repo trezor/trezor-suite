@@ -57,10 +57,10 @@ export const AccountNavigation = () => {
 
                 analytics.report({
                     type: EventType.StakingNavigate,
-                    attributes: {
-                        action: { value: 'navigate' },
-                        from: { value: 'account/navigation' },
-                        networkSymbol: network ? { value: network.symbol } : undefined,
+                    payload: {
+                        action: 'navigate',
+                        from: 'account/navigation',
+                        networkSymbol: network?.symbol,
                     },
                 });
             },

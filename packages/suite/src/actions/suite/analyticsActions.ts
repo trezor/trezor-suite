@@ -64,6 +64,17 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
             onDisable: () => dispatch(disableAnalyticsThunk()),
         },
     });
+    extra.services.analytics.init(hasUserAllowedTracking, {
+        instanceId,
+        sessionId,
+        environment: getEnvironment(),
+        commitId: getCommitHash(),
+        isDev: !isCodesignBuild(),
+        callbacks: {
+            onEnable: () => dispatch(enableAnalyticsThunk()),
+            onDisable: () => dispatch(disableAnalyticsThunk()),
+        },
+    });
 
     allowSentryReport(isAnalyticsEnabled);
     setSentryUser(instanceId);
