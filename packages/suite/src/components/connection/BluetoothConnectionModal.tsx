@@ -27,8 +27,8 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
         if (selectedDevice) {
             analytics.report({
                 type: EventType.DeviceConnectionDeviceFound,
-                attributes: {
-                    option: { value: 'close' },
+                payload: {
+                    option: 'close',
                 },
             });
         }

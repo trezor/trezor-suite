@@ -27,14 +27,14 @@ export type EventDef<A, N extends EventName = EventName> = AnalyticsBaseEvent & 
     attributes: A;
 };
 
-type AttributePayload<T> = NonNullable<T> extends AttributeDef<infer V> ? { value: V } : never;
+type AttributePayload<T> = NonNullable<T> extends AttributeDef<infer V> ? V : never;
 
 export type EventInstance<E extends EventDef<any, any>> =
     E extends EventDef<infer A, infer N>
         ? {
               type: N;
               timestamp?: string;
-              attributes: {
+              payload: {
                   [K in keyof A]: AttributePayload<A[K]>;
               };
           }

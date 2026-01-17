@@ -103,7 +103,7 @@ After that, you can use `report` method anywhere in your project scope.
 analytics.report({
     type: 'event',
     payload: {
-        attribute: { value: attributeValue },
+        attribute: attributeValue,
     },
 });
 ```
@@ -120,9 +120,9 @@ export const sessionRequestThunk = createThunk<
     extra.services.analytics.report({
         type: EventType.WalletConnectSessionRequest,
         payload: {
-            origin: { valeu: event.verifyContext.verified.origin },
-            chainId: { valeu: event.params.chainId },
-            method: { valeu: event.params.request.method },
+            origin: event.verifyContext.verified.origin,
+            chainId: event.params.chainId,
+            method: event.params.request.method,
         },
     });
 });

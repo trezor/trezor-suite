@@ -106,10 +106,10 @@ export const AssetRow = memo(
         const onStakeButtonClick = () => {
             analytics.report({
                 type: EventType.StakingNavigate,
-                attributes: {
-                    action: { value: 'navigate' },
-                    from: { value: 'dashboard/assets' },
-                    networkSymbol: { value: symbol },
+                payload: {
+                    action: 'navigate',
+                    from: 'dashboard/assets',
+                    networkSymbol: symbol,
                 },
             });
         };

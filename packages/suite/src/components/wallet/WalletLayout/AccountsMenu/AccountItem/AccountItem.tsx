@@ -76,10 +76,10 @@ export const AccountItem = ({
         if (type === 'staking') {
             analytics.report({
                 type: EventType.StakingNavigate,
-                attributes: {
-                    action: { value: 'navigate' },
-                    from: { value: 'sidebar' },
-                    networkSymbol: { value: symbol },
+                payload: {
+                    action: 'navigate',
+                    from: 'sidebar',
+                    networkSymbol: symbol,
                 },
             });
         }
