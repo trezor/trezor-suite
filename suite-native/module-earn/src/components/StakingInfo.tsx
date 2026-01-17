@@ -53,12 +53,12 @@ export const StakingInfo = ({ accountKey }: StakingInfoProps) => {
 
                 <Box justifyContent="center" alignItems="center" marginTop="sp8">
                     <Text color="textSubdued" textAlign="center">
-                        <Translation id="staking.stakingCanBeManaged" />
+                        <Translation id="earn.stakingCanBeManaged" />
                     </Text>
 
                     <PressableOpacity onPress={handleDesktopClick}>
                         <Text color="textSubdued" style={applyStyle(linkStyle)}>
-                            <Translation id="staking.trezorDesktop" />
+                            <Translation id="earn.trezorDesktop" />
                         </Text>
                     </PressableOpacity>
                 </Box>

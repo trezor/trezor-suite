@@ -51,7 +51,7 @@ export const StakeClaimableCard = ({
                 <Box style={applyStyle(stakingItemStyle)}>
                     <Box flex={1}>
                         <Text>
-                            <Translation id="staking.claimableCard.claimable" />
+                            <Translation id="earn.claimableCard.claimable" />
                         </Text>
                     </Box>
                     <Box style={applyStyle(valuesContainerStyle)}>

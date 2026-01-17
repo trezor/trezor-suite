@@ -30,10 +30,10 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
         return null;
     }
 
-    const apyValue = apy ?? <Translation id="staking.notAvailableShort" />;
+    const apyValue = apy ?? <Translation id="earn.notAvailableShort" />;
     const translationId = isStakedWithFiveBinaries
-        ? 'staking.infoBanner.providerReducingRewards'
-        : 'staking.infoBanner.updateToNewProvider';
+        ? 'earn.infoBanner.providerReducingRewards'
+        : 'earn.infoBanner.updateToNewProvider';
 
     return (
         <InlineAlertBox

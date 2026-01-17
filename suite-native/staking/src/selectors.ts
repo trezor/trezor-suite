@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol, StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
@@ -184,6 +184,33 @@ export const selectAPYByAccountKey = (state: NativeStakingRootState, accountKey:
     }
 
     return selectPoolStatsApyData(state, account);
+};
+
+export const selectAPYBySymbol = (state: NativeStakingRootState, symbol: StakingNetworkSymbol) => {
+    if (!symbol || !doesCoinSupportStaking(symbol)) {
+        return null;
+    }
+
+    const { data } = state.wallet.stake;
+
+    switch (symbol) {
+        case 'eth':
+            return data.eth?.poolStats?.data.ethApy;
+        case 'sol':
+            return data.sol?.stakingInfo?.data.apy;
+        case 'ada': {
+            const pools = data.ada?.stakingInfo?.data.pools;
+
+            if (!pools || pools.length === 0) {
+                return null;
+            }
+
+            // returning the Highest value
+            return Math.max(...pools.map(pool => pool.apy ?? 0));
+        }
+        default:
+            return null;
+    }
 };
 
 export const selectStakedBalanceByAccountKey = (

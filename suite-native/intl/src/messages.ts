@@ -2274,9 +2274,25 @@ export const messages = {
             buttonContactSupport: 'Contact Trezor Support',
         },
     },
-    staking: {
+    earn: {
         stakingDetailScreen: {
             title: 'Staking',
+        },
+        earnScreen: {
+            title: 'Earn',
+            // TODO: implement correct subtitle with stablecoin yield once available
+            //  Stablecoin yield and Staking can be currently managed only in Trezor Suite for desktop.
+            subtitle: 'Staking can be currently managed only in Trezor Suite for desktop.',
+            earnItem: {
+                rewards: 'Rewards',
+                pending: 'Activation pending',
+            },
+            infoModal: {
+                title: `Manage {earnType} in Trezor Suite for desktop`,
+                subtitle: 'Go to the link below on your computer and download the desktop app.',
+                copyLabel: 'Hold to copy',
+            },
+            adaInfo: 'Your ADA stays fully accesible while earning rewards.',
         },
         staked: 'Staked',
         stakedAutomatically: 'Staked automatically',

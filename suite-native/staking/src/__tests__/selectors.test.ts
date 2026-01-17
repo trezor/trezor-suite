@@ -1,6 +1,10 @@
 import { Account } from '@suite-common/wallet-types';
 
-import { selectCanClaimByAccountKey, selectClaimableAmountByAccountKey } from '../selectors';
+import {
+    selectAPYBySymbol,
+    selectCanClaimByAccountKey,
+    selectClaimableAmountByAccountKey,
+} from '../selectors';
 
 const ethAccountWithClaimableStake: Account = {
     symbol: 'eth',
@@ -68,7 +72,46 @@ const getTestState = (accounts: Account[]) => ({
             state: 'device@state:1',
         },
         stake: {
-            data: {},
+            data: {
+                eth: {
+                    poolStats: {
+                        data: {
+                            ethApy: 3.08,
+                            nextRewardPayout: 5,
+                        },
+                    },
+                },
+                sol: {
+                    stakingInfo: {
+                        data: {
+                            apy: 6.24,
+                        },
+                    },
+                },
+                ada: {
+                    stakingInfo: {
+                        data: {
+                            pools: [
+                                {
+                                    apy: 2.43,
+                                    saturation: 0.05,
+                                    id: '',
+                                },
+                                {
+                                    apy: 2.43,
+                                    saturation: 81.08999999999999,
+                                    id: '',
+                                },
+                                {
+                                    apy: 5.8,
+                                    saturation: 1.92,
+                                    id: '',
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
         },
         transactions: { transactions: {}, fetchStatusDetail: {} },
     },
@@ -142,4 +185,32 @@ describe('main staking selectors', () => {
             expect(result).toBe(false);
         });
     });
+
+    describe('selectApyBySymbol', () => {
+        it('should return correct apy for eht', () => {
+            const testState = getTestState([]);
+
+            const result = selectAPYBySymbol(testState as any, 'eth');
+
+            expect(result).toBe(3.08);
+        });
+
+        it('should return correct apy for sol', () => {
+            const testState = getTestState([]);
+
+            const result = selectAPYBySymbol(testState as any, 'sol');
+
+            expect(result).toBe(6.24);
+        });
+
+        it('should return the highest apy for cardano', () => {
+            const testState = getTestState([]);
+
+            const result = selectAPYBySymbol(testState as any, 'ada');
+
+            expect(result).toBe(5.8);
+        });
+    });
+
+    // TODO: test
 });

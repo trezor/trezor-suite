@@ -663,12 +663,16 @@ export type StakingNetworkSymbol = NetworkWithFeature<'staking'>['symbol'];
 
 export type StakingNetworkType = NetworksConfigs[StakingNetworkSymbol]['networkType'];
 
-export const [STAKING_SYMBOLS, STAKING_TYPES] = (
+export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = (
     Object.entries(networks) as Array<[keyof NetworksConfigs, NetworkConfig]>
-).reduce<[StakingNetworkSymbol[], StakingNetworkType[]]>(
-    (acc, [symbol, { features, networkType }]) => {
+).reduce<[StakingNetworkSymbol[], StakingNetworkType[], StakingNetworkSymbol[]]>(
+    (acc, [symbol, { features, networkType, testnet }]) => {
         if ((features as readonly string[]).includes('staking')) {
             acc[0].push(symbol as StakingNetworkSymbol);
+
+            if (!testnet) {
+                acc[2].push(symbol as StakingNetworkSymbol);
+            }
 
             const t = networkType as StakingNetworkType;
             if (!acc[1].includes(t)) acc[1].push(t);
@@ -676,5 +680,9 @@ export const [STAKING_SYMBOLS, STAKING_TYPES] = (
 
         return acc;
     },
-    [[], []],
-) as readonly [readonly StakingNetworkSymbol[], readonly StakingNetworkType[]];
+    [[], [], []],
+) as readonly [
+    readonly StakingNetworkSymbol[],
+    readonly StakingNetworkType[],
+    readonly StakingNetworkSymbol[],
+];

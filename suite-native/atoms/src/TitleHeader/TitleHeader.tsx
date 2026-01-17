@@ -11,6 +11,7 @@ export type TitleHeaderProps = {
     subtitle?: ReactNode;
     textAlign?: 'left' | 'center';
     titleSpacing?: NativeSpacing;
+    subtitleVariant?: NativeTypographyStyle;
 } & TextProps;
 
 export const TitleHeader = ({
@@ -19,6 +20,7 @@ export const TitleHeader = ({
     titleVariant = 'titleSmall',
     textAlign = 'left',
     titleSpacing = 'sp8',
+    subtitleVariant = 'body',
     ...textProps
 }: TitleHeaderProps) => (
     <VStack spacing={titleSpacing} alignItems={textAlign === 'center' ? 'center' : 'flex-start'}>
@@ -28,7 +30,7 @@ export const TitleHeader = ({
             </Text>
         )}
         {subtitle && (
-            <Text color="textSubdued" textAlign={textAlign}>
+            <Text color="textSubdued" variant={subtitleVariant} textAlign={textAlign}>
                 {subtitle}
             </Text>
         )}

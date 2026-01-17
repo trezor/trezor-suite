@@ -1,0 +1,1 @@
+export const CRYPTO_BALANCE_DECIMALS = 5;

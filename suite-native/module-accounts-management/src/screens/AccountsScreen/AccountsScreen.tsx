@@ -12,6 +12,8 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
+    AppTabsRoutes,
+    EarnStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -26,8 +28,11 @@ export const AccountsScreen = () => {
 
     const handleSelectAccount: OnSelectAccount = ({ account, tokenAddress, isStaking }) => {
         if (isStaking) {
-            navigation.navigate(RootStackRoutes.StakingDetail, {
-                accountKey: account.key,
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.EarnStack,
+                params: {
+                    screen: EarnStackRoutes.Earn,
+                },
             });
 
             return;

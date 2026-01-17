@@ -1,27 +1,14 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    AppTabsParamList,
-    AppTabsRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    TabToStackCompositeNavigationProp,
-} from '@suite-native/navigation';
+import { useOpenLink } from '@suite-native/link';
 import { selectFirstCardanoAccountStakedWithFiveBinaries } from '@suite-native/staking/src/cardanoStakingSelectors';
-
-type NavigationProp = TabToStackCompositeNavigationProp<
-    AppTabsParamList,
-    AppTabsRoutes.HomeStack,
-    RootStackParamList
->;
+import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 export const FiveBinariesHomeBanner = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const openLink = useOpenLink();
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectFirstCardanoAccountStakedWithFiveBinaries(state),
@@ -30,15 +17,13 @@ export const FiveBinariesHomeBanner = () => {
     if (!account) return null;
 
     const handleButtonPress = () => {
-        navigation.navigate(RootStackRoutes.StakingDetail, {
-            accountKey: account.key,
-        });
+        openLink(`${HELP_CENTER_ADA_STAKING}#migrating-staking-pools`);
     };
 
     return (
         <InlineAlertBox
             variant="warning"
-            title={<Translation id="staking.infoBanner.rewardsReduced" />}
+            title={<Translation id="earn.infoBanner.rewardsReduced" />}
             buttonLabel={<Translation id="generic.buttons.learnMore" />}
             onButtonPress={handleButtonPress}
         />

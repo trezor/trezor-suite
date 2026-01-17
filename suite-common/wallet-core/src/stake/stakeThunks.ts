@@ -1,5 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { TimerId } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -23,7 +23,7 @@ import {
     TotalStakeRewardsByAccount,
     ValidatorsQueue,
 } from './stakeTypes';
-import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
+import { selectHasBitcoinOnlyFirmware } from '../device/deviceSelectors';
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
@@ -198,16 +198,9 @@ export const initStakeDataThunk = createThunk(
     (_, { getState, dispatch }) => {
         // because fetch only happens every 5 minutes we fetch according all devices in case a device is changed within those 5 minutes
 
-        const enabledNetworks = selectEnabledNetworks(getState());
+        const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
 
-        if (
-            !networksCollection.some(
-                network =>
-                    network.networkType !== 'bitcoin' && enabledNetworks.includes(network.symbol),
-            )
-        ) {
-            return;
-        }
+        if (isBitcoinOnlyFirmware) return;
 
         const createPromises = (
             networks: ['eth' | 'sol' | 'ada'],

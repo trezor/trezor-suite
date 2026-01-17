@@ -42,7 +42,7 @@ export const StakingDetailScreenHeader = () => {
                             numberOfLines={1}
                             style={applyStyle(headerTextStyle)}
                         >
-                            <Translation id="staking.stakingDetailScreen.title" />
+                            <Translation id="earn.stakingDetailScreen.title" />
                         </Text>
                     </HStack>
                     <Text variant="hint" color="textSubdued">
