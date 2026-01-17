@@ -61,7 +61,7 @@
         { "path": "../module-send" },
         { "path": "../module-settings" },
         {
-            "path": "../module-staking-management"
+            "path": "../module-earn"
         },
         { "path": "../module-trading" },
         { "path": "../module-transactions" },

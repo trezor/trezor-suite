@@ -10,7 +10,7 @@ import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-comm
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner } from '@suite-native/module-staking-management';
+import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
 import {
     AppTabsParamList,
     AppTabsRoutes,
