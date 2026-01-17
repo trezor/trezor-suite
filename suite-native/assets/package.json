@@ -26,7 +26,7 @@
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/module-staking-management": "workspace:*",
+        "@suite-native/module-earn": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/staking": "workspace:*",
         "@suite-native/tokens": "workspace:*",
