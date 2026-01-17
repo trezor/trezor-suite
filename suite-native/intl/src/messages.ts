@@ -2956,6 +2956,7 @@ export const messages = {
         tabs: {
             home: 'Home',
             accounts: 'My assets',
+            earn: 'Earn',
             trade: 'Trade',
             settings: 'Settings',
         },
