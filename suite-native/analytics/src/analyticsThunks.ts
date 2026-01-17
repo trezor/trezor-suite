@@ -62,6 +62,18 @@ export const initAnalyticsThunk = createThunk(
             },
         });
 
+        extra.services.analytics.init(hasUserAllowedTracking, {
+            instanceId,
+            sessionId,
+            environment: 'mobile',
+            commitId: getCommitHash(),
+            isDev: isDevelopEnv(),
+            callbacks: {
+                onEnable: () => dispatch(enableAnalyticsThunk()),
+                onDisable: () => dispatch(disableAnalyticsThunk()),
+            },
+        });
+
         allowSentryReport(isAnalyticsEnabled);
         setSentryUser(instanceId);
 
