@@ -2,6 +2,8 @@
 
 Welcome to the Trezor Suite repository! This repository contains the source code for 3 projects:
 
+
+
 - **Connect** - tool that offers developers an easy way to integrate Trezor's functionality into their own applications
 - **Trezor Suite** - desktop and web application for managing Trezor hardware wallet
 - **Trezor Suite Mobile** - Mobile/Tablet application designed for managing Trezor hardware wallet
