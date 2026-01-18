@@ -26,7 +26,16 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
         'fired when the user navigates from any staking button to the staking dashboard',
     changelog: [
         { version: '25.4.0', notes: 'added' },
-        { version: '25.12.0', notes: '`dashboard/staking-dashboard` changed' },
+        {
+            version: '25.12.0',
+            notes: `\`dashboard/staking-dashboard\` changed
+                | 'dashboard/staking-dashboard/staking-outdated-provider'
+                | 'dashboard/staking-dashboard/staking-max'
+                | 'dashboard/staking-dashboard/staked-but-insufficient-funds'
+                | 'dashboard/staking-dashboard/staking-active'
+                | 'dashboard/staking-dashboard/insufficient-funds'
+                | 'dashboard/staking-dashboard/staking-inactive'`,
+        },
     ],
 
     attributes: {
@@ -34,7 +43,10 @@ export const stakingNavigateEvent: EventDef<Attributes, EventType.StakingNavigat
             changelog: [{ version: '25.4.0', notes: 'added' }],
         },
         from: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                { version: '25.12.0', notes: 'dashboard/staking-dashboard changed in 25.12' },
+            ],
         },
         networkSymbol: {
             changelog: [{ version: '25.4.0', notes: 'added' }],
