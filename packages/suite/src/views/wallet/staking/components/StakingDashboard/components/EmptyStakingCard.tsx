@@ -34,12 +34,12 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { DiscoveryWarning } from './DiscoveryWarning';
 
 export const EmptyStakingCard = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isBelowLaptop } = useLayoutSize();
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
@@ -140,7 +140,7 @@ export const EmptyStakingCard = () => {
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake-in-a-nutshell', flow: StakingFlow.Stake }));
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.StakingStake,
                 payload: {
                     action: 'continue',

@@ -447,21 +447,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.StakingStake;
-          payload: {
-              action: 'continue' | 'cancel';
-              step:
-                  | 'staking-dashboard'
-                  | 'stake-in-a-nutshell-modal'
-                  | 'funds-maintained-modal'
-                  | 'stake-form-modal'
-                  | 'entry-period-stake-modal';
-              networkSymbol?: string;
-              currency?: 'crypto' | 'fiat';
-              votingDelegation?: 'everstake' | 'another_drep';
-          };
-      }
-    | {
           type: EventType.StakingUnstake;
           payload: {
               action: 'continue' | 'cancel';
