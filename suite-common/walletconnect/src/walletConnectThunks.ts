@@ -164,7 +164,7 @@ export const sessionRequestThunk = createThunk<
                 result: result.payload,
             },
         });
-        extra.services.legacyAnalytics.report({
+        extra.services.analytics.report({
             type: EventType.WalletConnectSessionRequest,
             payload: {
                 origin: event.verifyContext.verified.origin,
@@ -314,7 +314,7 @@ export const sessionProposalApproveThunk = createThunk<
                     }),
                 );
             }
-            extra.services.legacyAnalytics.report({
+            extra.services.analytics.report({
                 type: EventType.WalletConnectProposalApproved,
                 payload: {
                     origin: pendingProposal.origin,
@@ -343,7 +343,7 @@ export const sessionProposalRejectThunk = createThunk<
         });
         const pendingProposal = selectPendingProposal(getState());
         dispatch(walletConnectActions.clearSessionProposal());
-        extra.services.legacyAnalytics.report({
+        extra.services.analytics.report({
             type: EventType.WalletConnectProposalRejected,
             payload: {
                 origin: pendingProposal?.origin,

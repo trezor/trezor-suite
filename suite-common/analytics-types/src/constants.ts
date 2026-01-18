@@ -5,7 +5,6 @@ export enum EventType {
     WalletConnectProposalApproved = 'wallet-connect/proposal-approved',
     WalletConnectProposalRejected = 'wallet-connect/proposal-rejected',
     WalletConnectSessionRequest = 'wallet-connect/session-request',
-    WalletConnectError = 'wallet-connect/error',
 
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceWipe = 'settings/device/wipe',

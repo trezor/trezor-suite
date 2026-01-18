@@ -2,32 +2,6 @@ import { EventType } from './constants';
 
 /** @deprecated use `AnalyticsSharedEvents` */
 export type SuiteSharedLegacyAnalyticsEvents =
-    | {
-          type: EventType.WalletConnectSessionRequest;
-          payload: {
-              origin: string;
-              chainId: string;
-              method: string;
-          };
-      }
-    | {
-          type: EventType.WalletConnectProposalApproved;
-          payload: {
-              origin?: string;
-          };
-      }
-    | {
-          type: EventType.WalletConnectProposalRejected;
-          payload: {
-              origin?: string;
-          };
-      }
-    | {
-          type: EventType.WalletConnectError;
-          payload: {
-              error: string;
-          };
-      }
     | { type: EventType.SettingsDeviceChangeLabel }
     | { type: EventType.SettingsDeviceWipe }
     | {
