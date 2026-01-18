@@ -3,13 +3,16 @@ import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     origin: AttributeDef<string>;
-    validation: AttributeDef<'UNKNOWN' | 'VALID' | 'INVALID'>;
-    networks: AttributeDef<string[]>;
+    chainId: AttributeDef<string>;
+    method: AttributeDef<string>;
 };
 
-export const walletConnectProposalEvent: EventDef<Attributes, EventType.WalletConnectProposal> = {
-    name: EventType.WalletConnectProposal,
-    descriptionTrigger: 'WalletConnect DApp requesting connection',
+export const WalletConnectSessionRequestEvent: EventDef<
+    Attributes,
+    EventType.WalletConnectSessionRequest
+> = {
+    name: EventType.WalletConnectSessionRequest,
+    descriptionTrigger: 'WalletConnect DApp call to device',
     changelog: [{ version: '25.5.0', notes: 'added' }],
 
     attributes: {
@@ -17,10 +20,11 @@ export const walletConnectProposalEvent: EventDef<Attributes, EventType.WalletCo
             changelog: [{ version: '25.5.0', notes: 'added' }],
             description: 'Source of the call (URL)',
         },
-        validation: {
+        chainId: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
+            description: 'Connect method name',
         },
-        networks: {
+        method: {
             changelog: [{ version: '25.5.0', notes: 'added' }],
         },
     },
