@@ -3,25 +3,11 @@ import { EventType } from './constants';
 /** @deprecated use `AnalyticsSharedEvents` */
 export type SuiteSharedLegacyAnalyticsEvents =
     | {
-          type: EventType.WalletConnectInit;
-      }
-    | {
-          type: EventType.WalletConnectPaired;
-      }
-    | {
           type: EventType.WalletConnectSessionRequest;
           payload: {
               origin: string;
               chainId: string;
               method: string;
-          };
-      }
-    | {
-          type: EventType.WalletConnectProposal;
-          payload: {
-              origin: string;
-              validation: 'UNKNOWN' | 'VALID' | 'INVALID';
-              networks: string[];
           };
       }
     | {

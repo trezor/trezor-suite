@@ -129,7 +129,7 @@ export const sessionProposalThunk = createThunk<
             ...event.verifyContext.verified,
         }),
     );
-    extra.services.legacyAnalytics.report({
+    extra.services.analytics.report({
         type: EventType.WalletConnectProposal,
         payload: {
             origin: event.verifyContext.verified.origin,
@@ -401,7 +401,7 @@ export const walletConnectInitThunk = createThunk(
         for (const proposal of Object.values(proposals)) {
             dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
         }
-        extra.services.legacyAnalytics.report({
+        extra.services.analytics.report({
             type: EventType.WalletConnectInit,
         });
     },
@@ -417,7 +417,7 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
 
         try {
             await walletKit.pair({ uri });
-            extra.services.legacyAnalytics.report({
+            extra.services.analytics.report({
                 type: EventType.WalletConnectPaired,
             });
         } catch {
