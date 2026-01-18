@@ -65,7 +65,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
         },
     };
 
-    extra.services.legacyAnalytics.init(hasUserAllowedTracking, options);
     extra.services.analytics.init(hasUserAllowedTracking, options);
 
     allowSentryReport(isAnalyticsEnabled);
