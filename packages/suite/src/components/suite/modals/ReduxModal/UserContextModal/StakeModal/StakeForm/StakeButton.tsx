@@ -9,7 +9,7 @@ import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useStakeFormContext } from 'src/hooks/wallet/useStakeForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 interface StakeButtonProps {
@@ -31,7 +31,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -68,7 +68,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
             handleSubmit(onSubmit)();
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',

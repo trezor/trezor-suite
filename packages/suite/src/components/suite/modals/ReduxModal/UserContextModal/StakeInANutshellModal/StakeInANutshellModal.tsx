@@ -25,7 +25,7 @@ import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface StakingDetails {
     id: number;
@@ -100,7 +100,7 @@ interface StakeInANutshellModalProps {
 }
 
 export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { validatorWithdrawTime, validatorExitTime } = useSelector(state =>
@@ -120,7 +120,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
         onCancel();
         dispatch(openModal({ type: 'everstake', flow }));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
@@ -133,7 +133,7 @@ export const StakeInANutshellModal = ({ onCancel, flow }: StakeInANutshellModalP
     const onCancelClick = () => {
         onCancel();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
