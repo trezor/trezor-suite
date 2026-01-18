@@ -18,7 +18,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const getStakeEnteringMessage = (networkType?: NetworkType) => {
     if (networkType === 'ethereum') return 'TR_STAKE_ENTERING_POOL_MAY_TAKE';
@@ -39,7 +39,7 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
@@ -53,7 +53,7 @@ export const ConfirmStakeModal = ({
         onCancel();
         dispatch(openModal({ type: 'stake', flow }));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
@@ -66,7 +66,7 @@ export const ConfirmStakeModal = ({
     const onClick = () => {
         onConfirm();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',

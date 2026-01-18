@@ -15,7 +15,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { VotingDelegations } from './VotingDelegations';
 
@@ -26,7 +26,7 @@ interface EverstakeModalProps {
 
 export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
     const isStakingActive = useSelector(state =>
@@ -48,13 +48,15 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
         onCancel();
         dispatch(openModal({ type: 'stake', flow }));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'funds-maintained-modal',
                 networkSymbol: account?.symbol,
-                votingDelegation: selectedVotingDelegation.type,
+                ...(flow === StakingFlow.UpdateProvider
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
             },
         });
     };
@@ -62,13 +64,15 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     const onCancelClick = () => {
         onCancel();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'funds-maintained-modal',
                 networkSymbol: account?.symbol,
-                votingDelegation: selectedVotingDelegation.type,
+                ...(flow === StakingFlow.UpdateProvider
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
             },
         });
     };
