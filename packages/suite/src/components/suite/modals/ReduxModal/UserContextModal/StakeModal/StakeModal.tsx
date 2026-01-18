@@ -9,7 +9,7 @@ import { spacings } from '@trezor/theme';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StakeButton } from './StakeForm/StakeButton';
 import { StakeForm } from './StakeForm/StakeForm';
@@ -23,7 +23,7 @@ interface StakeModalModalProps {
 
 export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModalModalProps) => {
     const { account } = selectedAccount;
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const stakeContextValues = useStakeForm({ selectedAccount });
     const { isBelowTablet } = useLayoutSize();
 
@@ -33,7 +33,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModal
     const onCancelClick = () => {
         onCancel?.();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: stakingFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',

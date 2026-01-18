@@ -34,7 +34,7 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
@@ -94,6 +94,7 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const { isBelowLaptop } = useLayoutSize();
 
@@ -165,7 +166,7 @@ export const StakingCard = ({
         if (!isStakingDisabled) {
             dispatch(openModal({ type: 'stake', flow: StakingFlow.Stake }));
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.StakingStake,
                 payload: {
                     action: 'continue',
