@@ -1,4 +1,3 @@
-import { CONTENT_SCRIPT_VERSION } from '@trezor/connect/src/data/version';
 import { POPUP } from '@trezor/connect/src/events/popup';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
@@ -40,19 +39,6 @@ function trezorContentScript() {
     window.addEventListener('message', event => {
         if (event.data?.channel?.here === '@trezor/connect-webextension') {
             return;
-        }
-        if (event.data?.type === POPUP.LOADED) {
-            window.postMessage(
-                {
-                    type: POPUP.CONTENT_SCRIPT_LOADED,
-                    payload: {
-                        ...chrome.runtime.getManifest(),
-                        id: chrome.runtime.id,
-                        contentScriptVersion: CONTENT_SCRIPT_VERSION,
-                    },
-                },
-                window.location.origin,
-            );
         }
 
         if (event.source === window && event.data) {

@@ -4,8 +4,6 @@ import type { ConnectSettings, SystemInfo } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
-    // Message from popup.js to window.opener, called after "window.onload" event. This is second message from popup to window.opener.
-    LOADED: 'popup-loaded',
     // Message from popup run in "core" mode. Connect core has been loaded, popup is ready to handle messages
     CORE_LOADED: 'popup-core-loaded',
     // Message from window.opener to popup.js. Send settings to popup. This is first message from window.opener to popup.
@@ -81,7 +79,7 @@ export interface PopupCloseWindow {
 
 export type PopupEvent =
     | {
-          type: typeof POPUP.LOADED | typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
+          type: typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
           payload?: typeof undefined;
       }
     | PopupInit
