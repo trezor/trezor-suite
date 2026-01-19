@@ -34,3 +34,4 @@ export {
     findSuiteSyncAccountLabel,
 } from './data/suiteSyncDataSelectors';
 export { suiteSyncToBip329 } from './data/labeling/suiteSyncToBip329';
+export { isSuiteSyncSupportedByDevice } from './suiteSyncUtils';

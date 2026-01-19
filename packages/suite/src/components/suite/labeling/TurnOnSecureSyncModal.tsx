@@ -8,9 +8,7 @@ type TurnOnSecureSyncModalProps = {
 };
 
 export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) => {
-    const { enableSuiteSyncIfNeeded } = useLabelingCombined({
-        deviceStaticSessionId: undefined,
-    });
+    const { enableSuiteSyncIfNeeded } = useLabelingCombined();
 
     const onSwitch = () => {
         enableSuiteSyncIfNeeded();

@@ -1,13 +1,6 @@
 import { EventType } from '@suite/analytics';
-import {
-    selectIsFeatureSuiteSyncAvailable,
-    selectIsSuiteSyncDebugEnabled,
-    selectIsSuiteSyncEnabled,
-    suiteSyncActions,
-} from '@suite-common/suite-sync';
+import { selectIsFeatureSuiteSyncAvailable, suiteSyncActions } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
-import type { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -18,30 +11,16 @@ import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { useDispatch } from './useDispatch';
 import { useSelector } from './useSelector';
 
-type UseLabelingCombinedParams = {
-    // This needs to be passed, as labeling can be attached to remembered wallets
-    // and different devices can have different states (FW versions)
-    deviceStaticSessionId: StaticSessionId | undefined;
-};
-
 /**
  * @deprecated This hook is obsolete. Once legacy metadata labeling is removed -> use only the hook
  * `useSuiteSync` from `@suite-common/suite-sync`.
  */
-export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombinedParams) => {
+export const useLabelingCombined = () => {
     const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
 
-    const device = useSelector(state =>
-        deviceStaticSessionId !== undefined
-            ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
-            : undefined,
-    );
-
-    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
@@ -96,23 +75,12 @@ export const useLabelingCombined = ({ deviceStaticSessionId }: UseLabelingCombin
         }
     };
 
-    const isEvoluSupportedByDevice = device?.unavailableCapabilities?.evolu === undefined;
-
-    const hasDeviceSuiteSyncOwner = device?.suiteSyncOwner !== undefined;
-
     return {
         /** New Labeling: SuiteSync (Evolu) */
-        isFeatureSuiteSyncAvailable,
         toggleIsFeatureSuiteSyncAvailable,
-        isSuiteSyncEnabled,
-        isEvoluSupportedByDevice,
-        isSuiteSyncDebugEnabled,
-        hasDeviceSuiteSyncOwner,
         enableSuiteSyncIfNeeded,
 
         /** Legacy Labeling */
-        isMetadataEnabled: legacyMetadataState.enabled,
-        legacyMetadataState,
         legacyEnableIfNeeded,
         legacyDisableIfNeeded,
     };

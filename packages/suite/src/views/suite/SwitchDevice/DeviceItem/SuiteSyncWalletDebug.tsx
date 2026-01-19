@@ -1,24 +1,30 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import {
+    isSuiteSyncSupportedByDevice,
+    selectIsSuiteSyncDebugEnabled,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { deviceActions } from '@suite-common/wallet-core';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { useDispatch } from 'src/hooks/suite';
-
-import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => {
     const dispatch = useDispatch();
-    const {
-        legacyMetadataState,
-        isSuiteSyncEnabled,
-        isSuiteSyncDebugEnabled,
-        isEvoluSupportedByDevice,
-    } = useLabelingCombined({ deviceStaticSessionId: device.state?.staticSessionId });
 
-    if (!isSuiteSyncDebugEnabled || !isEvoluSupportedByDevice || !device.state?.staticSessionId) {
+    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
+    const legacyMetadataState = useSelector(state => state.metadata);
+
+    if (
+        !isSuiteSyncDebugEnabled ||
+        !isSuiteSyncSupportedByDevice(device) ||
+        !device.state?.staticSessionId
+    ) {
         return;
     }
 

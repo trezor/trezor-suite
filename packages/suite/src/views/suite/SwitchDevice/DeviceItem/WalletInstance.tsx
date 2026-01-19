@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncWalletLabel } from '@suite-common/suite-sync';
 import {
     getAccountsByDeviceState,
     selectAllAccountsToList,
@@ -39,7 +39,6 @@ import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 import { EjectConfirmation } from './EjectConfirmation';
 import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
 import { METADATA_LABELING } from '../../../../actions/suite/constants';
-import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;
@@ -82,9 +81,7 @@ export const WalletInstance = ({
     const dispatch = useDispatch();
     const store = useStore();
     const { translationString } = useTranslation();
-    const { isSuiteSyncEnabled } = useLabelingCombined({
-        deviceStaticSessionId: instance?.state?.staticSessionId,
-    });
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const { defaultAccountLabelString } = useWalletLabeling();
 
