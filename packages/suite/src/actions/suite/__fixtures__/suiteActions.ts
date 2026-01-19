@@ -180,6 +180,7 @@ const initialRun: Array<{ description: string; state?: Partial<SuiteState> }> = 
                 showUnhideTokenModal: true,
                 enableAutoupdateOnNextRun: false,
                 showBluetoothDebugInfo: false,
+                isAnalyticsDebuggingEnabled: false,
                 stellarLimitedHistoryBannerClosed: false,
                 solanaLimitedHistoryBannerClosed: false,
                 hasSeenDisconnectTooltip: false,

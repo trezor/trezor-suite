@@ -8,6 +8,7 @@ import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanner
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
 
+import { AnalyticsDebugging } from './Analytics';
 import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { CoinjoinApi } from './CoinjoinApi';
@@ -63,6 +64,7 @@ export const SettingsDebug = () => {
                 <DeviceAuthenticity />
                 <Devkit />
                 <CheckFirmwareAuthenticity />
+                <AnalyticsDebugging />
             </SettingsSection>
             <SettingsSection title="Testing">
                 <ThrowTestingError />
