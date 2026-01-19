@@ -39,10 +39,7 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
             // hasDeviceRequestedPin is false when the user unlocks the device again
             // after it was already unlocked and then became locked.
             // (e.g., when attempting to verify the receive address with locked device).
-            if (
-                deviceAuthorizationStep === DeviceAuthorizationStep.Idle ||
-                deviceAuthorizationStep === DeviceAuthorizationStep.AddPassphraseWallet
-            ) {
+            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle) {
                 navigation.goBack();
             }
         }, [deviceAuthorizationStep, navigation]),

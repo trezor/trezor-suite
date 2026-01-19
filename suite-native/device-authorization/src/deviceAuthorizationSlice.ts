@@ -13,9 +13,7 @@ export enum DeviceAuthorizationStep {
 
     // Custom continue on your trezor
     PinRequested = 'PinRequested',
-    AddPassphraseWallet = 'AddPassphraseWallet', // When adding a new passphrase wallet
     PassphraseRequested = 'PassphraseRequested',
-    InputPassphraseOnDevice = 'InputPassphraseOnDevice',
 
     // Default continue on your trezor
     ContinueOnTrezorRequested = 'ContinueOnTrezorRequested',
@@ -72,13 +70,5 @@ export const selectDeviceAuthorizationStep = (state: DeviceAuthorizationRootStat
 
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested;
-
-export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.deviceAuthorizationStep ===
-    DeviceAuthorizationStep.PassphraseRequested;
-
-export const selectInputPassphraseOnDevice = (state: DeviceAuthorizationRootState) =>
-    state.deviceAuthorization.deviceAuthorizationStep ===
-    DeviceAuthorizationStep.InputPassphraseOnDevice;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;
