@@ -8,10 +8,13 @@ import { EventType } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    TRADING_EXCHANGE_FORM,
+    TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_PROVIDER_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
     TradingExchangeType,
@@ -164,6 +167,7 @@ export const useTradingExchangeForm = ({
 
     const { reset, register, getValues, setValue, formState, control } = methods;
     const values = useWatch({ control }) as TradingExchangeFormProps;
+    const { provider } = values;
     const {
         rateType,
         exchangeType,
@@ -778,6 +782,26 @@ export const useTradingExchangeForm = ({
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
+
+    useEffect(() => {
+        if (!preselectedQuote) {
+            return;
+        }
+
+        const preselectedProvider = preselectedQuote.exchange;
+        if (preselectedProvider && preselectedProvider !== provider) {
+            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
+        }
+
+        const preselectedFormType = preselectedQuote.isDex
+            ? TRADING_EXCHANGE_FORM_DEX
+            : TRADING_EXCHANGE_FORM_CEX;
+        if (preselectedFormType !== exchangeType) {
+            setValue(TRADING_EXCHANGE_FORM, preselectedFormType);
+        }
+
+        dispatch(tradingExchangeActions.savePreselectedQuote(undefined));
+    }, [dispatch, preselectedQuote, provider, setValue, exchangeType]);
 
     // Subscribe to blocks for Solana, since they are not fetched globally
     useSolanaSubscribeBlocks(account);
