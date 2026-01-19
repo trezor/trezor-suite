@@ -13772,6 +13772,7 @@ __metadata:
   resolution: "@suite/analytics@workspace:suite/analytics"
   dependencies:
     "@suite-common/analytics-types": "workspace:*"
+    "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/analytics": "workspace:*"
     "@trezor/device-utils": "workspace:*"

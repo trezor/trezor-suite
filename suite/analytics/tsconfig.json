@@ -6,6 +6,9 @@
             "path": "../../suite-common/analytics-types"
         },
         {
+            "path": "../../suite-common/metadata-types"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         { "path": "../../packages/analytics" },
