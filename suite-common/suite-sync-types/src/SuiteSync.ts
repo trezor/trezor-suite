@@ -18,3 +18,5 @@ export type SuiteSync = ChangeRelayUrlDep &
             UpdateAddressLabelDep &
             UpdateOutputLabelDep;
     };
+
+export type SuiteSyncDep = { suiteSync: SuiteSync };

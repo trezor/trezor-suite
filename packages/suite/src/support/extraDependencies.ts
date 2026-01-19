@@ -10,7 +10,10 @@ import {
 } from '@suite/analytics';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
-import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import {
+    DisableLegacyMetadataIfNeededDep,
+    createSuiteSyncDesktopCompositionRoot,
+} from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { CommonServices, ExtraDependenciesStatic, RouterServices } from '@suite-common/redux-utils';
@@ -44,6 +47,7 @@ import { reportSecurityCheck } from 'src/utils/suite/sentry';
 import { fixLoadedCoinjoinAccount } from 'src/utils/wallet/coinjoinUtils';
 
 import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
+import { createDisableLegacyMetadataIfNeeded } from '../actions/suite/metadata/disableLegacyMetadateIfNeeded';
 import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { AppState, TrezorDevice } from '../types/suite';
@@ -88,7 +92,10 @@ type SuiteAppDeps = {
     dispatch: any;
 };
 
-export type SuiteServices = CommonServices & DesktopAnalyticsDep & DesktopLegacyAnalyticsDep;
+export type SuiteServices = CommonServices &
+    DesktopAnalyticsDep &
+    DesktopLegacyAnalyticsDep &
+    DisableLegacyMetadataIfNeededDep;
 
 export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
@@ -102,6 +109,14 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices =>
         trezorConnect: TrezorConnect,
     });
 
+    /** @deprecated Compatibility for Legacy Labeling */
+    const disableLegacyMetadataIfNeeded = createDisableLegacyMetadataIfNeeded({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
+
+    const legacyAnalytics = createLegacyAnalytics();
+
     return {
         suiteSync: createSuiteSyncDesktopCompositionRoot({
             dispatch: deps.dispatch,
@@ -109,10 +124,13 @@ export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices =>
             platformEncryption,
             trezorConnect: TrezorConnect,
             ensureDelegatedIdentityKey,
+            disableLegacyMetadataIfNeeded,
+            legacyAnalytics,
         }),
         platformEncryption,
-        legacyAnalytics: createLegacyAnalytics(),
+        legacyAnalytics,
         analytics: createAnalytics(),
+        disableLegacyMetadataIfNeeded,
     };
 };
 

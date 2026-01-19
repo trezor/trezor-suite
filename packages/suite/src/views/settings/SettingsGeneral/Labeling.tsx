@@ -7,10 +7,12 @@ import {
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { LoadingContent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
+import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -21,8 +23,7 @@ import {
     LabelingOptionTranslated,
     LabelingSelectValue,
 } from 'src/constants/suite/labeling';
-import { useDevice, useSelector } from 'src/hooks/suite';
-import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
@@ -31,7 +32,8 @@ import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/
 
 export const Labeling = () => {
     const { translationString } = useTranslation();
-    const { suiteSync } = useSuiteServices();
+    const { suiteSync, disableLegacyMetadataIfNeeded } = useSuiteServices();
+    const dispatch = useDispatch();
     const legacyAnalytics = useLegacyAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
@@ -39,10 +41,15 @@ export const Labeling = () => {
 
     const showSuiteSync = useSelector(selectIsFeatureSuiteSyncAvailable);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    const { legacyEnableIfNeeded, legacyDisableIfNeeded, enableSuiteSyncIfNeeded } =
-        useLabelingCombined();
+    const legacyEnableIfNeeded = () => {
+        if (!legacyMetadataState.enabled) {
+            suiteSync.turnOffSuiteSync(); // Enabling Legacy Labeling implicitly disables Evolu
+            dispatch(metadataLabelingActions.init(true));
+        }
+    };
 
     const translatedOptions: LabelingOption<string>[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,
@@ -64,12 +71,28 @@ export const Labeling = () => {
 
         switch (value) {
             case 'off':
-                legacyDisableIfNeeded();
+                disableLegacyMetadataIfNeeded();
                 suiteSync.turnOffSuiteSync();
                 break;
 
             case 'secure-sync':
-                enableSuiteSyncIfNeeded();
+                suiteSync.turnOnSuiteSync({
+                    onError: ({ error }) => {
+                        const { type } = error;
+                        switch (type) {
+                            case 'SuiteSyncUnavailableOnDeviceError':
+                            case 'DeviceCancelled':
+                            case 'DeviceError':
+                                dispatch(
+                                    notificationsActions.addToast({ type: 'error', error: type }),
+                                );
+
+                                return;
+                            default:
+                                return exhaustive(type);
+                        }
+                    },
+                });
                 break;
 
             case 'legacy':

@@ -1,17 +1,36 @@
 import { Translation } from '@suite/intl';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, IconCircle, List, Modal, Paragraph } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
-import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
+import { useDispatch } from '../../../hooks/suite';
+import { useSuiteServices } from '../../../support/SuiteServicesProvider';
 
 type TurnOnSecureSyncModalProps = {
     onClose: () => void;
 };
 
 export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) => {
-    const { enableSuiteSyncIfNeeded } = useLabelingCombined();
+    const { suiteSync } = useSuiteServices();
+    const dispatch = useDispatch();
 
     const onSwitch = () => {
-        enableSuiteSyncIfNeeded();
+        suiteSync.turnOnSuiteSync({
+            onError: ({ error }) => {
+                const { type } = error;
+                switch (type) {
+                    case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'DeviceCancelled':
+                    case 'DeviceError':
+                        dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+
+                        return;
+                    default:
+                        return exhaustive(type);
+                }
+            },
+        });
+
         onClose();
     };
 

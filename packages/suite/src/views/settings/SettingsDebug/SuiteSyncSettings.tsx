@@ -13,7 +13,6 @@ import { spacings } from '@trezor/theme';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 
 import { useSuiteServices } from '../../../support/SuiteServicesProvider';
 
@@ -26,7 +25,17 @@ export const SuiteSyncSettings = () => {
     const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
 
-    const { toggleIsFeatureSuiteSyncAvailable } = useLabelingCombined();
+    const toggleIsFeatureSuiteSyncAvailable = () => {
+        dispatch(
+            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
+                isShownInSettings: !isFeatureSuiteSyncAvailable,
+            }),
+        );
+
+        if (isFeatureSuiteSyncAvailable) {
+            suiteSync.turnOffSuiteSync();
+        }
+    };
 
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 
