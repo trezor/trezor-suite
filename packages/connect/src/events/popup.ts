@@ -4,8 +4,6 @@ import type { ConnectSettings, SystemInfo } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
-    // Message called from popup.html inline script before "window.onload" event. This is first message from popup to window.opener.
-    BOOTSTRAP: 'popup-bootstrap',
     // Message from popup.js to window.opener, called after "window.onload" event. This is second message from popup to window.opener.
     LOADED: 'popup-loaded',
     // Message from popup run in "core" mode. Connect core has been loaded, popup is ready to handle messages
@@ -85,12 +83,6 @@ export interface PopupExtensionUsbPermissions {
     type: typeof POPUP.EXTENSION_USB_PERMISSIONS;
     payload: typeof undefined;
 }
-
-export interface PopupBootstrap {
-    type: typeof POPUP.BOOTSTRAP;
-    payload: typeof undefined;
-}
-
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
     payload: typeof undefined;
@@ -107,7 +99,6 @@ export type PopupEvent =
     | PopupContentScriptLoaded
     | PopupMethodInfo
     | PopupExtensionUsbPermissions
-    | PopupBootstrap
     | PopupCloseWindow
     | PopupClosedMessage;
 
