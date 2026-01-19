@@ -261,6 +261,11 @@ export const MoneroSignedTransaction = Type.Object(
         tx_enc_keys: Type.Optional(Type.String()),
         opening_key: Type.Optional(Type.String()),
         pseudo_outs: Type.Array(Type.String()),
+        out_pks: Type.Array(Type.String()),
+        ecdh_infos: Type.Array(Type.String()),
+        tx_outs: Type.Array(Type.String()),
+        rsig_parts: Type.Array(Type.String()),
+        extra: Type.Optional(Type.String()),
     },
     {
         $id: 'MoneroSignedTransaction',
