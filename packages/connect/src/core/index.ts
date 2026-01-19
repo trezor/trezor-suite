@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
-import { storage } from '@trezor/connect-common';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
@@ -62,30 +61,12 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
-    const origin = DataManager.getSettings('origin')!;
-    const { preferredDevice } = storage.load().origin[origin] || {};
-    const preferredDeviceInList =
-        preferredDevice?.state && deviceList.getDeviceByStaticState(preferredDevice.state);
 
     if (methodCallDevice?.state?.staticSessionId) {
         device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
     }
     if (!device && methodCallDevice?.path) {
         device = deviceList.getDeviceByPath(methodCallDevice.path);
-    }
-
-    if (preferredDevice && !device) {
-        if (preferredDeviceInList) {
-            device = preferredDeviceInList;
-        } else {
-            // we detected that there is a preferred device (user stored previously) but it's not in the list anymore (disconnected now)
-            // we treat this situation as implicit forget
-            storage.save(store => {
-                store.origin[origin] = { ...store.origin[origin], preferredDevice: undefined };
-
-                return store;
-            });
-        }
     }
 
     if (device) {
@@ -136,17 +117,6 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
             // wait for device selection
             if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
                 const { payload } = await uiPromises.get(UI.RECEIVE_DEVICE);
-                if (payload.remember) {
-                    const { label, path, state } = payload.device;
-                    storage.save(store => {
-                        store.origin[origin] = {
-                            ...store.origin[origin],
-                            preferredDevice: { label, path, state },
-                        };
-
-                        return store;
-                    });
-                }
                 device = deviceList.getDeviceByPath(payload.device.path);
             }
         }
@@ -185,8 +155,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
 
     method.checkDeviceCapability();
 
-    // check and request permissions [read, write...]
-    method.checkPermissions({ origin: DataManager.getSettings('origin') });
     if (!trustedHost && method.requiredPermissions.length > 0) {
         // wait for popup window
         await waitForPopup(context);
@@ -199,11 +167,9 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             }),
         );
         // wait for response
-        const { granted, remember } = await uiPromise.promise.then(({ payload }) => payload);
+        const { granted } = await uiPromise.promise.then(({ payload }) => payload);
 
-        if (granted) {
-            method.savePermissions(!remember, { origin: DataManager.getSettings('origin') });
-        } else {
+        if (!granted) {
             // interrupt process and go to "final" block
             return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
         }

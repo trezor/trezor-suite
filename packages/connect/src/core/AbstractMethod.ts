@@ -1,4 +1,3 @@
-import { storage } from '@trezor/connect-common';
 import { Capability } from '@trezor/protobuf/src/messages';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
@@ -8,17 +7,14 @@ import {
     CallMethodPayload,
     CallMethodResponse,
     CoreEventMessage,
-    DEVICE,
     UI,
     UiPromiseCreator,
     UiRequestButtonData,
     UiRequestConfirmation,
-    createDeviceMessage,
 } from '../events';
 import type { PrecomposeResultFinal } from '../types/api/composeTransaction';
 import type { DeviceState, StaticSessionId } from '../types/device';
 import type { FirmwareRange } from '../types/firmware';
-import type { ConnectSettings } from '../types/settings';
 
 export type Payload<M> = Extract<CallMethodPayload, { method: M }> & { override?: boolean };
 export type MethodReturnType<M extends CallMethodPayload['method']> = CallMethodResponse<M>;
@@ -213,74 +209,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     setDevice(device: Device) {
         this.device = device;
-    }
-
-    private getOriginPermissions({ origin }: Pick<ConnectSettings, 'origin'>) {
-        if (!origin) {
-            return [];
-        }
-
-        return storage.loadForOrigin(origin)?.permissions || [];
-    }
-
-    checkPermissions({ origin }: Pick<ConnectSettings, 'origin'>) {
-        const originPermissions = this.getOriginPermissions({ origin });
-        let notPermitted = [...this.requiredPermissions];
-        if (originPermissions.length > 0) {
-            // check if permission was granted
-            notPermitted = notPermitted.filter(np => {
-                const granted = originPermissions.find(
-                    p => p.type === np && p.device === this.device.features.device_id,
-                );
-
-                return !granted;
-            });
-        }
-        this.requiredPermissions = notPermitted;
-    }
-
-    savePermissions(temporary = false, { origin }: Pick<ConnectSettings, 'origin'>) {
-        const originPermissions = this.getOriginPermissions({ origin });
-
-        let permissionsToSave = this.requiredPermissions.map(p => ({
-            type: p,
-            device: this.device.features.device_id || undefined,
-        }));
-
-        // check if this will be first time granted permission to read this device
-        // if so, emit "device_connect" event because this wasn't send before
-        let emitEvent = false;
-        if (this.requiredPermissions.indexOf('read') >= 0) {
-            const wasAlreadyGranted = originPermissions.filter(
-                p => p.type === 'read' && p.device === this.device.features.device_id,
-            );
-            if (wasAlreadyGranted.length < 1) {
-                emitEvent = true;
-            }
-        }
-
-        if (originPermissions.length > 0) {
-            permissionsToSave = permissionsToSave.filter(p2s => {
-                const granted = originPermissions.find(
-                    p => p.type === p2s.type && p.device === p2s.device,
-                );
-
-                return !granted;
-            });
-        }
-
-        storage.saveForOrigin(
-            state => ({
-                ...state,
-                permissions: [...(state.permissions || []), ...permissionsToSave],
-            }),
-            origin!,
-            temporary,
-        );
-
-        if (emitEvent) {
-            this.postMessage(createDeviceMessage(DEVICE.CONNECT, this.device.toMessageObject()));
-        }
     }
 
     checkFirmwareRange() {
