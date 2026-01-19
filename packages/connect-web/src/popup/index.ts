@@ -292,13 +292,7 @@ export class PopupManager extends EventEmitter {
     }
 
     private handleMessage(data: Message<CoreEventMessage>) {
-        if (data.type === POPUP.ERROR && this.popupWindow) {
-            // handle popup error
-            const errorMessage =
-                data.payload && typeof data.payload.error === 'string' ? data.payload.error : null;
-            this.emit(POPUP.CLOSED, errorMessage ? `Popup error: ${errorMessage}` : null);
-            this.clear();
-        } else if (data.type === POPUP.LOADED) {
+        if (data.type === POPUP.LOADED) {
             // in case of webextension where bootstrap message is not sent
             if (this.popupPromise) {
                 this.popupPromise.resolve();
