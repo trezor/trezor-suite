@@ -261,9 +261,7 @@ export class PopupManager extends EventEmitter {
     };
 
     private handleCoreMessage(message: Message<CoreEventMessage>) {
-        if (message.type === POPUP.BOOTSTRAP) {
-            this.channel.init();
-        } else if (message.type === POPUP.LOADED) {
+        if (message.type === POPUP.LOADED) {
             this.handleMessage(message);
             this.channel.postMessage({
                 type: POPUP.INIT,
