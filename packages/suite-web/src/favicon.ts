@@ -3,7 +3,7 @@ const faviconLight = `${assetPrefix}/static/images/favicons/favicon.png`;
 const faviconDark = `${assetPrefix}/static/images/favicons/favicon_dm.png`;
 
 /**
- * Set favicon according to current system theme 
+ * Set favicon according to current system theme
  */
 function updateFaviconHandler(event: MediaQueryListEvent | MediaQueryList) {
     const isDarkMode = event.matches;
