@@ -327,7 +327,7 @@ type Context = {
     deviceList: DeviceList;
     registerEvents: (device: Device) => void;
     postMessage: PostMessage;
-    initDevice: (path?: DeviceUniquePath) => Promise<Device>;
+    selectDevice: (path?: DeviceUniquePath) => Device;
     log: Log;
     abortSignal: AbortSignal;
     uiPromises: ReconnectContext['uiPromises'];
@@ -342,13 +342,13 @@ export const onCallFirmwareUpdate = async ({
     params,
     context,
 }: OnCallFirmwareUpdateParams): Promise<FirmwareUpdateResponse> => {
-    const { deviceList, registerEvents, postMessage, initDevice, log } = context;
+    const { deviceList, registerEvents, postMessage, selectDevice, log } = context;
     log.debug('onCallFirmwareUpdate with params: ', params);
 
     // Firmware type can be determined by the device.firmwareType but in case of switching form one to other we use params.btcOnly.
     const firmwareType = params.btcOnly ? FirmwareType.BitcoinOnly : FirmwareType.Universal;
 
-    const device = await initDevice(params?.device?.path);
+    const device = selectDevice(params?.device?.path);
     // Sanity check if device is missing `features`.
     if (!device.features) {
         throw ERRORS.TypedError('Device_NotFound', 'Device missing features');

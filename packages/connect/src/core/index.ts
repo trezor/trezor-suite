@@ -31,7 +31,7 @@ import {
     createTransportMessage,
     createUiMessage,
 } from '../events';
-import type { ConnectSettings, DeviceIdentity, Device as DeviceTyped } from '../types';
+import type { ConnectSettings, DeviceIdentity } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
@@ -53,14 +53,10 @@ const waitForPopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentity) => {
-    const { uiPromises, deviceList, sendCoreMessage } = context;
-
+const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
     assertDeviceListConnected(deviceList);
 
-    const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
     let device: Device | typeof undefined;
-    let showDeviceSelection = isWebUsb;
 
     if (methodCallDevice?.state?.staticSessionId) {
         device = deviceList.getDeviceByStaticState(methodCallDevice.state.staticSessionId);
@@ -68,64 +64,9 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
     if (!device && methodCallDevice?.path) {
         device = deviceList.getDeviceByPath(methodCallDevice.path);
     }
-
-    if (device) {
-        showDeviceSelection = device.isUnreadable();
-    } else {
-        const onlyDevice = deviceList.getOnlyDevice();
-        if (onlyDevice) {
-            // there is only one device available. use it
-            device = onlyDevice;
-            // Show device selection if device is unreadable or unacquired
-            // Also in case of core in popup, so user can press "Remember device"
-            showDeviceSelection = device.isUnreadable() || device.isUnacquired();
-        } else {
-            showDeviceSelection = true;
-        }
+    if (!device) {
+        device = deviceList.getOnlyDevice();
     }
-
-    // show device selection when:
-    // - there are no devices
-    // - using webusb and method.devicePath is not set
-    // - device is in unreadable state
-    if (showDeviceSelection) {
-        // initialize uiPromise instance which will catch changes in _deviceList (see: handleDeviceSelectionChanges function)
-        // but do not wait for resolve yet
-        uiPromises.create(UI.RECEIVE_DEVICE);
-
-        // wait for popup handshake
-        await waitForPopup(context);
-
-        // there is await above, _deviceList might have been disconnected.
-        assertDeviceListConnected(deviceList);
-
-        // check again for available devices
-        // there is a possible race condition before popup open
-        const onlyDevice = deviceList.getOnlyDevice();
-        if (onlyDevice && !onlyDevice.isUnreadable() && !onlyDevice.isUnacquired() && !isWebUsb) {
-            // there is one device available. use it
-            device = onlyDevice;
-        } else {
-            // request select device view
-            sendCoreMessage(
-                createUiMessage(UI.SELECT_DEVICE, {
-                    webusb: isWebUsb,
-                    devices: deviceList.getAllDevices().map(d => d.toMessageObject()),
-                }),
-            );
-
-            // wait for device selection
-            if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
-                const { payload } = await uiPromises.get(UI.RECEIVE_DEVICE);
-                device = deviceList.getDeviceByPath(payload.device.path);
-            }
-        }
-    } else if (uiPromises.exists(UI.RECEIVE_DEVICE)) {
-        // In case of second method call quickly after the first one, wait for device selection
-        // (if created during the first call) even if showDeviceSelection is false now
-        await uiPromises.get(UI.RECEIVE_DEVICE);
-    }
-
     if (!device) {
         throw ERRORS.TypedError('Device_NotFound');
     }
@@ -324,7 +265,7 @@ const onCallDevice = async (
     let tempDevice: Device | undefined;
     while (!tempDevice) {
         try {
-            tempDevice = await initDevice(context, message.payload.device);
+            tempDevice = selectDevice(context, message.payload.device);
         } catch (error) {
             if (error.code === 'Transport_Missing') {
                 // wait for popup handshake
@@ -332,7 +273,7 @@ const onCallDevice = async (
                 // show message about transport
                 sendCoreMessage(createUiMessage(UI.TRANSPORT));
 
-                // Retry initDevice again
+                // Retry selectDevice again
                 // NOTE: this should change after multi-transports refactor, where transport will be always alive
                 if (deviceList.pendingConnection() && shouldRetry) {
                     while (deviceList.pendingConnection()) {
@@ -742,67 +683,18 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
     cleanup(context);
 };
 
-/**
- * Handle DeviceList changes.
- * If there is uiPromise waiting for device selection update view.
- * Used in initDevice function
- * @param {DeviceTyped} interruptDevice
- * @returns {void}
- * @memberof Core
- */
-const handleDeviceSelectionChanges = (context: CoreContext, interruptDevice?: DeviceTyped) => {
-    const { uiPromises, deviceList, sendCoreMessage } = context;
-    // update list of devices in popup
-    const promiseExists = uiPromises.exists(UI.RECEIVE_DEVICE);
-    if (promiseExists && deviceList.isConnected()) {
-        const onlyDevice = deviceList.getOnlyDevice();
-        const isWebUsb = deviceList.getActiveTransports().some(t => t.type === 'WebUsbTransport');
-
-        if (onlyDevice && !isWebUsb) {
-            // there is only one device. use it
-            // resolve uiPromise to looks like it's a user choice (see: handleMessage function)
-            uiPromises.resolve({
-                type: UI.RECEIVE_DEVICE,
-                payload: { device: onlyDevice.toMessageObject() },
-            });
-        } else {
-            // update device selection list view
-            sendCoreMessage(
-                createUiMessage(UI.SELECT_DEVICE, {
-                    webusb: isWebUsb,
-                    devices: deviceList.getAllDevices().map(d => d.toMessageObject()),
-                }),
-            );
-        }
-    }
-
-    // device was disconnected, interrupt pending uiPromises for this device
-    if (interruptDevice) {
-        const { path } = interruptDevice;
-        const shouldClosePopup = uiPromises.disconnected(path);
-
-        if (shouldClosePopup) {
-            closePopup(context);
-            cleanup(context);
-        }
-    }
-};
-
 const initDeviceList = (context: CoreContext) => {
     const { deviceList, sendCoreMessage } = context;
 
     deviceList.on(DEVICE.CONNECT, device => {
-        handleDeviceSelectionChanges(context);
         sendCoreMessage(createDeviceMessage(DEVICE.CONNECT, device.toMessageObject()));
     });
 
     deviceList.on(DEVICE.CONNECT_UNACQUIRED, device => {
-        handleDeviceSelectionChanges(context);
         sendCoreMessage(createDeviceMessage(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject()));
     });
 
     deviceList.on(DEVICE.DISCONNECT, device => {
-        handleDeviceSelectionChanges(context);
         sendCoreMessage(createDeviceMessage(DEVICE.DISCONNECT, device.toMessageObject()));
     });
 
@@ -931,7 +823,6 @@ export class Core extends EventEmitter {
                 break;
 
             // messages from UI (popup/modal...)
-            case UI.RECEIVE_DEVICE:
             case UI.RECEIVE_CONFIRMATION:
             case UI.RECEIVE_PIN:
             case UI.RECEIVE_PASSPHRASE:
@@ -966,7 +857,7 @@ export class Core extends EventEmitter {
                         context: {
                             deviceList: this.deviceList,
                             postMessage: this.sendCoreMessage.bind(this),
-                            initDevice: path => initDevice(coreContext, { path }),
+                            selectDevice: path => selectDevice(coreContext, { path }),
                             log: _log,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),

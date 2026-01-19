@@ -1,28 +1,14 @@
 import { MiddlewareAPI } from 'redux';
 
-import TrezorConnect, { UI } from '@trezor/connect';
+import { UI } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { goto } from 'src/actions/suite/routerActions';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 
 const buttonRequest =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        // can happen when there is a Connect Popup call and the device is unreadable/unacquired.
-        // for now we just open the device switcher and cancel the call, user will have to retry manually
-        if (action.type === UI.SELECT_DEVICE) {
-            api.dispatch(
-                goto('suite-switch-device', {
-                    params: {
-                        cancelable: true,
-                    },
-                }),
-            );
-            TrezorConnect.cancel('Device_Unreadable');
-        }
-
         if (action.type === UI.FIRMWARE_DISCONNECT && action.payload.device.bluetoothProps) {
             const { id } = action.payload.device.bluetoothProps;
             bluetoothIpc

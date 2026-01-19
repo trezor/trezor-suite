@@ -54,7 +54,6 @@ export const UI_REQUEST = {
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
     SET_OPERATION: 'ui-set_operation',
-    SELECT_DEVICE: 'ui-select_device',
     SELECT_ACCOUNT: 'ui-select_account',
     SELECT_FEE: 'ui-select_fee',
     UPDATE_CUSTOM_FEE: 'ui-update_custom_fee',
@@ -207,14 +206,6 @@ export interface UiRequestConfirmation {
     };
 }
 
-export interface UiRequestSelectDevice {
-    type: typeof UI_REQUEST.SELECT_DEVICE;
-    payload: {
-        devices: Device[];
-        webusb: boolean;
-    };
-}
-
 export type FirmwareStoreEvent = {
     binary: ArrayBuffer;
     binaryVersion: VersionArray;
@@ -328,7 +319,6 @@ export type UiEvent =
     | UiRequestDeviceAction
     | UiRequestButton
     | UiRequestConfirmation
-    | UiRequestSelectDevice
     | UiRequestUnexpectedDeviceMode
     | UiRequestSelectAccount
     | UiRequestSelectFee
