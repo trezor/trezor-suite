@@ -1,6 +1,10 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import {
+    EventType,
+    getTypedDesktopAnalytics,
+    getTypedDesktopLegacyAnalytics,
+} from '@suite/analytics';
 import { EventType as EventTypeShared } from '@suite-common/analytics-types';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -63,7 +67,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
         const result = next(action);
 
         const state: AppState = getState();
-        const { legacyAnalytics } = extra.services;
+        const { legacyAnalytics, analytics } = extra.services;
 
         if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
@@ -250,7 +254,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
                 ) {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    getTypedDesktopAnalytics(analytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -263,7 +267,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    getTypedDesktopAnalytics(analytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),

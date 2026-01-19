@@ -8,6 +8,7 @@ export type {
 export type { OnboardingAnalytics, AppUpdateEvent, FirmwareSource } from './definitions';
 export { EventType, AppUpdateEventStatus } from './constants';
 export { getTypedDesktopLegacyAnalytics } from './getTypedDesktopLegacyAnalytics';
+export { getTypedDesktopAnalytics } from './getTypedDesktopAnalytics';
 export type { AnalyticsDesktopEvents } from './analyticsEvents';
 
 export * as events from './events';

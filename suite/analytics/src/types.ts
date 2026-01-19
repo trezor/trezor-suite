@@ -69,14 +69,6 @@ export type TransactionCreatedEvent = {
 export type SuiteDesktopLegacyAnalyticsEvents =
     | SuiteSharedLegacyAnalyticsEvents
     | SuiteAnalyticsEventSuiteReady
-    | {
-          type: EventType.RouterLocationChange;
-          payload: {
-              prevRouterUrl: string;
-              nextRouterUrl: string;
-              anchor?: string;
-          };
-      }
     | { type: EventType.TransportType; payload: { type: string; version: string } }
     | {
           type: EventType.AppUpdate;
