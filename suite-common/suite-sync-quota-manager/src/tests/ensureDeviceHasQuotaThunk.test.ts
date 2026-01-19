@@ -117,7 +117,7 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
         const dispatch = jest.fn();
 
         checkStorageByPublicKeyMock.mockResolvedValue(
-            err({ code: 500, message: 'Internal error' }),
+            err({ type: 'HttpError', code: 500, message: 'Internal error' }),
         );
 
         await ensureDeviceHasQuotaThunk({ delegatedKey, device })(dispatch, getState);
@@ -141,7 +141,9 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
             return action;
         });
 
-        checkStorageByPublicKeyMock.mockResolvedValue(err({ code: 404, message: 'Not Found' }));
+        checkStorageByPublicKeyMock.mockResolvedValue(
+            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
+        );
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-123', challenge: 'aa55' }),
         );

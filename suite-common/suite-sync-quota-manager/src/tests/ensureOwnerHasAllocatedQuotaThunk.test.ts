@@ -96,7 +96,9 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
         const getState = createGetState({ enabled: true });
         const dispatch = jest.fn();
 
-        checkStorageByOwnerIdMock.mockResolvedValue(err({ code: 500, message: 'Internal error' }));
+        checkStorageByOwnerIdMock.mockResolvedValue(
+            err({ type: 'HttpError', code: 500, message: 'Internal error' }),
+        );
 
         await ensureOwnerHasAllocatedQuotaThunk({ ownerId, delegatedKey, walletDescriptor })(
             dispatch,
@@ -121,7 +123,9 @@ describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
             return action;
         });
 
-        checkStorageByOwnerIdMock.mockResolvedValue(err({ code: 404, message: 'Not Found' }));
+        checkStorageByOwnerIdMock.mockResolvedValue(
+            err({ type: 'HttpError', code: 404, message: 'Not Found' }),
+        );
         prepareChallengeSessionMock.mockResolvedValue(
             ok({ sessionId: 'session-123', challenge: 'aa55' }),
         );

@@ -53,12 +53,12 @@ export const ensureDeviceHasQuotaThunk =
 
         // 404 is expected when device is not registered yet, other errors should be shown to the user
         // as quota manager unavailability
-        if (!hasPublicKeyStorage.success && hasPublicKeyStorage.error.code !== 404) {
-            dispatch(
-                quotaManagerFetchError({
-                    error: hasPublicKeyStorage.error.message,
-                }),
-            );
+        const isHttp404 =
+            hasPublicKeyStorage.error.type === 'HttpError' &&
+            hasPublicKeyStorage.error.code === 404;
+
+        if (!isHttp404) {
+            dispatch(quotaManagerFetchError({ error: hasPublicKeyStorage.error.message }));
 
             return;
         }
@@ -68,11 +68,7 @@ export const ensureDeviceHasQuotaThunk =
         });
 
         if (!sessionChallenge.success) {
-            dispatch(
-                quotaManagerFetchError({
-                    error: sessionChallenge.error.message,
-                }),
-            );
+            dispatch(quotaManagerFetchError({ error: sessionChallenge.error.message }));
 
             return;
         }

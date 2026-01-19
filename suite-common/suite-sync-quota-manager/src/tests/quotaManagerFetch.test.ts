@@ -78,6 +78,7 @@ describe(quotaManagerFetch.name, () => {
         expect(!result.success && result.error).toStrictEqual({
             code: 404,
             message: 'Not Found',
+            type: 'HttpError',
         });
     });
 });
