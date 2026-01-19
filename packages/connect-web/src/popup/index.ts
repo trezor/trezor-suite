@@ -36,30 +36,30 @@ const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
 
 export class PopupManager extends EventEmitter {
-    popupWindow:
+    private popupWindow:
         | { mode: 'tab'; tab: chrome.tabs.Tab }
         | { mode: 'window'; window: Window }
         | undefined;
 
-    settings: ConnectSettings;
+    private settings: ConnectSettings;
 
-    origin: string;
+    private origin: string;
 
-    locked = false;
+    private locked = false;
 
     channel: AbstractMessageChannel<CoreEventMessage>;
 
     handshakePromise: Deferred<void> | undefined;
 
-    popupPromise: Deferred<void> | undefined;
+    private popupPromise: Deferred<void> | undefined;
 
-    requestTimeout: TimerId | undefined;
+    private requestTimeout: TimerId | undefined;
 
-    closeInterval: IntervalId | undefined;
+    private closeInterval: IntervalId | undefined;
 
-    extensionTabId = 0;
+    private extensionTabId = 0;
 
-    logger: Log;
+    private logger: Log;
 
     constructor(settings: ConnectSettings, { logger }: { logger: Log }) {
         super();
