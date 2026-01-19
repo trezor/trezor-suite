@@ -16,12 +16,12 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PassphraseForm,
     PassphraseScreenHeader,
     useWaitForUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 

@@ -8,8 +8,8 @@ import {
 import { EventType } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { DeviceModelIcon } from '@suite-native/icons';
-import { useLegacyAnalytics } from '@suite-native/services';
 import { Translation } from '@suite-native/intl';
+import { useLegacyAnalytics } from '@suite-native/services';
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();

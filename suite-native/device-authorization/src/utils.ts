@@ -12,9 +12,7 @@ export const isPinButtonRequestCode = (action: UnknownAction) =>
     action.type === UI.REQUEST_BUTTON &&
     G.isNotNullable(action.payload) &&
     'code' in action.payload &&
-    pinButtonRequestCodes.includes(
-        action.payload.code as (typeof pinButtonRequestCodes)[number],
-    );
+    pinButtonRequestCodes.includes(action.payload.code as (typeof pinButtonRequestCodes)[number]);
 
 export const flowEndingButtonRequests = [
     'ButtonRequest_ConfirmOutput',

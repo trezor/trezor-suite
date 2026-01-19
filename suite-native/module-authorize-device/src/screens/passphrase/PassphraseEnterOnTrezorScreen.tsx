@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { EventType, analytics } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { selectInputPassphraseOnDevice } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
@@ -10,11 +10,13 @@ import {
     PassphraseContentScreenWrapper,
     PassphraseEnterOnTrezorScreenContent,
 } from '@suite-native/passphrase';
+import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
+    const legacyAnalytics = useLegacyAnalytics();
 
     useEffect(() => {
         if (!inputPassphraseOnDevice) {
@@ -24,7 +26,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
     }, [inputPassphraseOnDevice, navigateToInitialScreen]);
 
     const handleCancel = () => {
-        analytics.report({
+        legacyAnalytics.report({
             type: EventType.PassphraseExit,
             payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
         });
