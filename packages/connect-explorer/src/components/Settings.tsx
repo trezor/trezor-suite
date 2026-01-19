@@ -25,7 +25,6 @@ export const ErrorMessage = styled(ConfirmationMessage)`
 
 export const Settings = () => {
     const connectOptions = useSelector(state => ({
-        trustedHost: state.connect?.options?.trustedHost,
         connectSrc: state.connect?.options?.connectSrc,
         coreMode: state?.connect?.options?.coreMode,
     }));
@@ -40,12 +39,6 @@ export const Settings = () => {
 
     const submitButton = 'Init Connect';
     const fields = [
-        {
-            name: 'trustedHost',
-            type: 'checkbox' as const,
-            key: 'trustedHost',
-            value: connectOptions?.trustedHost || false,
-        },
         {
             name: 'coreMode',
             type: 'select' as const,

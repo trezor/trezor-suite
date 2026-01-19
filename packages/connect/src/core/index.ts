@@ -138,7 +138,6 @@ const initDevice = async (context: CoreContext, methodCallDevice?: DeviceIdentit
  */
 const inner = async (context: CoreContext, method: AbstractMethod<any>, device: Device) => {
     const { uiPromises, sendCoreMessage } = context;
-    const trustedHost = DataManager.getSettings('trustedHost');
 
     const firmwareException = method.checkFirmwareRange();
     if (firmwareException) {
@@ -154,26 +153,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     }
 
     method.checkDeviceCapability();
-
-    if (!trustedHost && method.requiredPermissions.length > 0) {
-        // wait for popup window
-        await waitForPopup(context);
-        // initialize user response promise
-        const uiPromise = uiPromises.create(UI.RECEIVE_PERMISSION, device);
-        sendCoreMessage(
-            createUiMessage(UI.REQUEST_PERMISSION, {
-                permissions: method.requiredPermissions,
-                device: device.toMessageObject(),
-            }),
-        );
-        // wait for response
-        const { granted } = await uiPromise.promise.then(({ payload }) => payload);
-
-        if (!granted) {
-            // interrupt process and go to "final" block
-            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-        }
-    }
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
@@ -211,27 +190,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         await waitForPopup(context);
         // show notification
         sendCoreMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
-    }
-
-    // ask for confirmation [export xpub, export info, sign message]
-    if (!trustedHost) {
-        const requestConfirmation = method.confirmation;
-        if (requestConfirmation) {
-            // wait for popup window
-            await waitForPopup(context);
-            // initialize user response promise
-            const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
-
-            // request confirmation view
-            sendCoreMessage(createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation));
-
-            // wait for user action
-            const confirmed = await uiPromise.promise.then(({ payload }) => payload);
-            if (!confirmed) {
-                // interrupt process and go to "final" block
-                return Promise.reject(ERRORS.TypedError('Method_Cancel'));
-            }
-        }
     }
 
     const workflowCtx = {

@@ -18,7 +18,6 @@ const settings = {
     deeplinkUrl: '',
     version: '9.0.0',
     priority: 1,
-    trustedHost: true,
     supportedBrowser: true,
     extension: '',
     env: 'node' as const,
