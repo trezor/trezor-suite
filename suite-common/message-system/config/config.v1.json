@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-1-14T00:00:00+00:00",
-    "sequence": 128,
+    "timestamp": "2026-01-20T00:00:00+00:00",
+    "sequence": 129,
     "actions": [
         {
             "conditions": [
@@ -2035,6 +2035,75 @@
                     }
                 ]
             }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "7676247d-c709-43c5-9dcc-1568e73ebc2e",
+                "priority": 1,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "trading.survey",
+                        "flag": true,
+                        "payload": {
+                            "title": {
+                                "en": "What was your trade like? Tell us, get $50",
+                                "es": "¿Cómo fue tu operación? Cuéntanos, gana $50",
+                                "cs": "Jak proběhl váš obchod? Řekněte nám to, získejte 50 $",
+                                "de": "Wie lief Ihr Trade? Erzählen Sie es uns, erhalten Sie 50 $",
+                                "fr": "Comment s'est passée votre transaction ? Dites-nous, recevez 50 $",
+                                "pt": "Como foi sua negociação? Conte-nos, ganhe $50"
+                            },
+                            "description": {
+                                "en": "Answer a short survey to see if you qualify for a 30-minute interview and get a $50 Amazon gift card.",
+                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 30 minutos y recibe una tarjeta de regalo de Amazon de $50.",
+                                "cs": "Vyplňte krátký dotazník, abyste zjistili, zda se kvalifikujete na 30minutový rozhovor a získejte dárkovou kartu Amazon v hodnotě 50 $.",
+                                "de": "Beantworten Sie eine kurze Umfrage, um zu prüfen, ob Sie für ein 30-minütiges Interview in Frage kommen, und erhalten Sie einen Amazon-Gutschein über 50 $.",
+                                "fr": "Répondez à un court sondage pour savoir si vous êtes éligible à un entretien de 30 minutes et recevez une carte cadeau Amazon de 50 $.",
+                                "pt": "Responda a uma breve pesquisa para saber se você se qualifica para uma entrevista de 30 minutos e ganhe um cartão-presente da Amazon de $50."
+                            },
+                            "cta": {
+                                "action": "external-link",
+                                "link": "https://satoshilabs.typeform.com/to/T16Qnfou",
+                                "label": {
+                                    "en": "Take the survey",
+                                    "es": "Take the survey",
+                                    "cs": "Take the survey",
+                                    "de": "Take the survey",
+                                    "fr": "Take the survey",
+                                    "pt": "Take the survey"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
         }
     ],
     "experiments": [
@@ -2053,11 +2122,15 @@
                 "groups": [
                     {
                         "variant": "A",
-                        "percentage": 50
+                        "percentage": 0
                     },
                     {
                         "variant": "B",
-                        "percentage": 50
+                        "percentage": 90
+                    },
+                    {
+                        "variant": "C",
+                        "percentage": 10
                     }
                 ]
             }
@@ -2077,11 +2150,11 @@
                 "groups": [
                     {
                         "variant": "A",
-                        "percentage": 90
+                        "percentage": 0
                     },
                     {
                         "variant": "B",
-                        "percentage": 10
+                        "percentage": 100
                     }
                 ]
             }
