@@ -10,6 +10,8 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TRADING_FORM_PROVIDER_SELECT,
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     type TradingSellType,
@@ -151,6 +153,7 @@ export const useTradingSellForm = ({
     });
     const { register, setValue, reset, control, formState } = methods;
     const values = useWatch<TradingSellFormProps>({ control });
+    const { paymentMethod, provider } = values;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
     const output = values.outputs?.[0];
@@ -460,6 +463,38 @@ export const useTradingSellForm = ({
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
     }, [dispatch]);
+
+    useEffect(() => {
+        if (!preselectedQuote) {
+            return;
+        }
+
+        const preselectedProvider = preselectedQuote.exchange;
+        const preselectedPaymentMethod = preselectedQuote.paymentMethod;
+        const shouldUpdateProvider = !!preselectedProvider && preselectedProvider !== provider;
+        const shouldUpdatePaymentMethod =
+            !!preselectedPaymentMethod && paymentMethod?.value !== preselectedPaymentMethod;
+
+        dispatch(tradingSellActions.savePreselectedQuote(undefined));
+
+        if (shouldUpdateProvider) {
+            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
+        }
+
+        if (shouldUpdatePaymentMethod) {
+            const matchingOption = paymentMethods.find(
+                method => method.value === preselectedPaymentMethod,
+            );
+
+            setValue(
+                TRADING_FORM_PAYMENT_METHOD_SELECT,
+                matchingOption ?? {
+                    value: preselectedPaymentMethod,
+                    label: preselectedQuote.paymentMethodName ?? preselectedPaymentMethod,
+                },
+            );
+        }
+    }, [paymentMethod, paymentMethods, preselectedQuote, provider, setValue, dispatch]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
