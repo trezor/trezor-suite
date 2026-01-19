@@ -2,7 +2,11 @@ import { useState } from 'react';
 
 import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';
+import {
+    isSuiteSyncSupportedByDevice,
+    selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
@@ -34,17 +38,11 @@ export const Labeling = () => {
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
     const showSuiteSync = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const legacyMetadataState = useSelector(state => state.metadata);
 
-    const {
-        legacyMetadataState,
-        legacyEnableIfNeeded,
-        legacyDisableIfNeeded,
-        enableSuiteSyncIfNeeded,
-        isEvoluSupportedByDevice,
-        isSuiteSyncEnabled,
-    } = useLabelingCombined({
-        deviceStaticSessionId: device?.state?.staticSessionId,
-    });
+    const { legacyEnableIfNeeded, legacyDisableIfNeeded, enableSuiteSyncIfNeeded } =
+        useLabelingCombined();
 
     const translatedOptions: LabelingOption<string>[] = LABELING_SELECT_OPTIONS.map(option => ({
         ...option,
@@ -147,7 +145,7 @@ export const Labeling = () => {
                         options={translatedOptions.filter(
                             option =>
                                 option.value !== 'secure-sync' ||
-                                (showSuiteSync && isEvoluSupportedByDevice),
+                                (showSuiteSync && isSuiteSyncSupportedByDevice(device)),
                         )}
                         value={getSelectedOption()}
                         onChange={handleOnChange}

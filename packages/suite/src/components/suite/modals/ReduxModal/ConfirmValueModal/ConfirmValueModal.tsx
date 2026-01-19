@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 
 import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncAddressLabels } from '@suite-common/suite-sync';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -37,7 +37,6 @@ import { QrCode } from 'src/components/suite/QrCode';
 import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
@@ -76,9 +75,9 @@ export const ConfirmValueModal = ({
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
     const legacyAnalytics = useLegacyAnalytics();
-    const { isSuiteSyncEnabled, legacyMetadataState } = useLabelingCombined({
-        deviceStaticSessionId: account?.deviceState,
-    });
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const legacyMetadataState = useSelector(state => state.metadata);
+
     // block labeling if metadata needs to be enabled on device until receive address is confirmed (device locked)
     const isMetadataBlockedByDeviceCall =
         isDeviceLocked &&

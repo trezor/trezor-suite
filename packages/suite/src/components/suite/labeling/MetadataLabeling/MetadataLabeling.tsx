@@ -4,7 +4,12 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectShouldOfferSecureSync } from '@suite-common/suite-sync';
+import {
+    isSuiteSyncSupportedByDevice,
+    selectIsSuiteSyncEnabled,
+    selectShouldOfferSecureSync,
+} from '@suite-common/suite-sync';
+import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { Button, DropdownMenuItemProps, Row, Text, Tooltip } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
@@ -24,7 +29,6 @@ import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } fro
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
 import { processLegacyMetadataIntoSuiteSyncThunk } from '../../../../actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
-import { useLabelingCombined } from '../../../../hooks/suite/useLabelingCombined';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 import { NO_HIGHLIGHT_ATTRIBUTE } from '../../FindBar/consts';
 
@@ -353,16 +357,18 @@ export const Labeling = ({
 }: LabelingProps) => {
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
-    const {
-        isSuiteSyncEnabled,
-        isEvoluSupportedByDevice,
-        legacyMetadataState,
-        hasDeviceSuiteSyncOwner,
-    } = useLabelingCombined({ deviceStaticSessionId });
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const legacyMetadataState = useSelector(state => state.metadata);
     const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
     const shouldOfferSecureSync = useSelector(selectShouldOfferSecureSync);
+    const device = useSelector(state =>
+        selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+    );
+
+    const hasDeviceSuiteSyncOwner = device?.suiteSyncOwner !== undefined;
     const isEvoluLabeling =
-        isSuiteSyncEnabled && isEvoluSupportedByDevice && hasDeviceSuiteSyncOwner;
+        isSuiteSyncEnabled && isSuiteSyncSupportedByDevice(device) && hasDeviceSuiteSyncOwner;
+
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
     const isLegacyLabelingEnabled = useSelector(state =>
@@ -473,17 +479,18 @@ export const MetadataLabeling = ({
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
 
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const legacyMetadataState = useSelector(state => state.metadata);
+    const device = useSelector(state =>
+        selectDeviceByStaticSessionId(state, deviceStaticSessionId),
+    );
+
     const l10nLabelling = getLocalizedActions(payload.type);
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
     const actionButtonsDisabled = isDiscoveryRunning || pending;
     const isSubscribedToSubmitResult = useRef(payload.defaultValue);
 
-    const {
-        isSuiteSyncEnabled,
-        isEvoluSupportedByDevice,
-        legacyMetadataState,
-        hasDeviceSuiteSyncOwner,
-    } = useLabelingCombined({ deviceStaticSessionId });
+    const hasDeviceSuiteSyncOwner = device?.suiteSyncOwner !== undefined;
 
     let timeout: TimerId | undefined;
     useEffect(() => {
@@ -606,7 +613,7 @@ export const MetadataLabeling = ({
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
     const isEvoluLabeling =
-        isSuiteSyncEnabled && isEvoluSupportedByDevice && hasDeviceSuiteSyncOwner;
+        isSuiteSyncEnabled && isSuiteSyncSupportedByDevice(device) && hasDeviceSuiteSyncOwner;
 
     // Should "add label"/"edit label" button be visible?
     const showActionButton =
@@ -634,7 +641,7 @@ export const MetadataLabeling = ({
         <Tooltip
             content={
                 isSuiteSyncEnabled &&
-                !isEvoluSupportedByDevice && (
+                !isSuiteSyncSupportedByDevice(device) && (
                     <Text variant="warning">
                         <Translation id="FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC" />
                     </Text>

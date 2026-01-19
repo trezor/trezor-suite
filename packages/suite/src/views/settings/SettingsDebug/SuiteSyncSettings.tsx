@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
+    selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
     suiteSyncActions,
 } from '@suite-common/suite-sync';
@@ -21,14 +23,10 @@ export const SuiteSyncSettings = () => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
 
-    const {
-        isSuiteSyncDebugEnabled,
-        isFeatureSuiteSyncAvailable,
-        toggleIsFeatureSuiteSyncAvailable,
-    } = useLabelingCombined({
-        // In debug, there may not be any device selected and it is in fact irrelevant
-        deviceStaticSessionId: undefined,
-    });
+    const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
+
+    const { toggleIsFeatureSuiteSyncAvailable } = useLabelingCombined();
 
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 

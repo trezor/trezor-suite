@@ -22,7 +22,6 @@ import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { AccountTypeDescription } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AccountTypeSelect/AccountTypeDescription';
 import { WalletLayout } from 'src/components/wallet';
 import { useDefaultAccountLabel, useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { useLabelingCombined } from 'src/hooks/suite/useLabelingCombined';
 import { useReceiveDisabled } from 'src/hooks/suite/useReceiveDisabled';
 
 import { CoinjoinLogs } from './CoinjoinLogs';
@@ -86,9 +85,7 @@ const Details = () => {
     const isLocalFirstStorageEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
-    const { isMetadataEnabled } = useLabelingCombined({
-        deviceStaticSessionId: device?.state?.staticSessionId,
-    });
+    const isMetadataEnabled = useSelector(state => state.metadata).enabled;
 
     const dispatch = useDispatch();
 
