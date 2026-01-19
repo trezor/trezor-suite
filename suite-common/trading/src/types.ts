@@ -137,6 +137,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_FORM_CRYPTO_CURRENCY_SELECT]: TradingAssetOption;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
+    [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
@@ -201,6 +202,7 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_EXCHANGE_FROM_ADDRESS]?: string | undefined;
     [constants.TRADING_EXCHANGE_RECEIVE_ADDRESS]?: string | undefined;
     [constants.TRADING_EXCHANGE_EXTRA_FIELD]?: string | undefined;
+    [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
 
 export type MinimalExchangeFormProps = {
@@ -243,6 +245,7 @@ export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
 
 export type MinimalSellFormProps = {
