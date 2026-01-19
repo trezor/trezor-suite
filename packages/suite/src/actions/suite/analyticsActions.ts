@@ -18,23 +18,33 @@ import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-util
 import type { Dispatch, GetState } from 'src/types/suite';
 import { allowSentryReport, setSentryUser } from 'src/utils/suite/sentry';
 
+type SendReportProps = {
+    sendReport: boolean;
+};
+
 export const enableAnalyticsThunk =
-    () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
-            type: EventType.SettingsAnalytics,
-            payload: { value: true },
-        });
+    ({ sendReport }: SendReportProps) =>
+    (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+        if (sendReport) {
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+                type: EventType.SettingsAnalytics,
+                payload: { value: true },
+            });
+        }
         allowSentryReport(true);
 
         dispatch(analyticsActions.enableAnalytics());
     };
 
 export const disableAnalyticsThunk =
-    () => (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
-        getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report(
-            { type: EventType.SettingsAnalytics, payload: { value: false } },
-            { force: true },
-        );
+    ({ sendReport }: SendReportProps) =>
+    (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
+        if (sendReport) {
+            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report(
+                { type: EventType.SettingsAnalytics, payload: { value: false } },
+                { force: true },
+            );
+        }
         allowSentryReport(false);
 
         dispatch(analyticsActions.disableAnalytics());
@@ -53,20 +63,23 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
     const hasUserAllowedTracking = selectHasUserAllowedTracking(getState());
     const isAnalyticsEnabled = selectIsAnalyticsEnabled(getState());
     const isAnalyticsConfirmed = selectIsAnalyticsConfirmed(getState());
-    const options: InitOptions = {
+    const getOptions: (props: SendReportProps) => InitOptions = ({
+        sendReport,
+    }: SendReportProps) => ({
         instanceId,
         sessionId,
         environment: getEnvironment(),
         commitId: getCommitHash(),
         isDev: !isCodesignBuild(),
         callbacks: {
-            onEnable: () => dispatch(enableAnalyticsThunk()),
-            onDisable: () => dispatch(disableAnalyticsThunk()),
+            onEnable: () => dispatch(enableAnalyticsThunk({ sendReport })),
+            onDisable: () => dispatch(disableAnalyticsThunk({ sendReport })),
         },
-    };
+    });
 
-    extra.services.legacyAnalytics.init(hasUserAllowedTracking, options);
-    extra.services.analytics.init(hasUserAllowedTracking, options);
+    // `sendReport` argument is used only for not sending event `EventType.SettingsAnalytics` twice and it will not be necessary since we delete legacyAnalytics (https://github.com/trezor/trezor-suite/issues/24428)
+    extra.services.legacyAnalytics.init(hasUserAllowedTracking, getOptions({ sendReport: false }));
+    extra.services.analytics.init(hasUserAllowedTracking, getOptions({ sendReport: true }));
 
     allowSentryReport(isAnalyticsEnabled);
     setSentryUser(instanceId);
