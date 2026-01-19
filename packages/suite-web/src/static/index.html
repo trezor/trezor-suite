@@ -13,30 +13,12 @@
             http-equiv="onion-location"
             content="http://suite.trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion/web"
         />
+        <% } %>
         <style>
             :root {
                 color-scheme: light dark;
             }
         </style>
-        <% } %> <% if(isCrowdinEnabled) { %>
-        <script type="text/javascript">
-            if (localStorage.getItem('translation_mode') === 'true') {
-                console.warn('INJECTING CROWDIN IN-CONTEXT');
-                var _jipt = [];
-                _jipt.push(['project', 'trezor-suite']);
-                _jipt.push([
-                    'escape',
-                    function () {
-                        localStorage.removeItem('translation_mode');
-                        window.location.reload();
-                    },
-                ]);
-                var script = document.createElement('script');
-                script.setAttribute('src', '//cdn.crowdin.com/jipt/jipt.js');
-                document.head.prepend(script);
-            }
-        </script>
-        <% } %>
         <script src="<%= assetPrefix %>/static/browser-detection/index.js" async fetchpriority="high"></script>
         <script src="<%= assetPrefix %>/static/favicon.js" async fetchpriority="low"></script>
     </head>
