@@ -12,18 +12,37 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "lib/index.js"
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./lib/*": "./lib/*.js",
+            "./libESM/*.js": "./libESM/*.js",
+            "./lib/protocol-thp": "./lib/protocol-thp/index.js",
+            "./lib/protocol-thp/messages": "./lib/protocol-thp/messages/index.js",
+            "./lib/protocol-tpn": "./lib/protocol-tpn/index.js",
+            "./libESM/protocol-thp/*": "./libESM/protocol-thp/*",
+            "./libESM/protocol-thp/messages/*": "./libESM/protocol-thp/messages/*",
+            "./libESM/protocol-tpn/*": "./lib/protocol-tpn/*"
+        }
     },
     "npmPublishAccess": "public",
     "files": [
         "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
     },

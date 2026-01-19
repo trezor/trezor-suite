@@ -2,14 +2,12 @@
     "extends": "../../tsconfig.libESM.json",
     "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./libESM"
+        "outDir": "./libESM",
+        "esModuleInterop": false
     },
     "references": [
         {
-            "path": "../crypto-utils"
-        },
-        {
-            "path": "../protobuf"
+            "path": "../env-utils"
         },
         {
             "path": "../utils"

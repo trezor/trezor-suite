@@ -12,22 +12,36 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "publishConfig": {
-        "main": "lib/index.js"
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./lib/*": "./lib/*.js",
+            "./libESM/*.js": "./libESM/*.js",
+            "./messages.json": "./messages.json"
+        }
     },
     "npmPublishAccess": "public",
     "files": [
         "lib/",
+        "libESM/",
+        "CHANGELOG.md",
         "scripts/protobuf-build.sh",
         "scripts/protobuf-patches",
         "scripts/protobuf-types.js",
-        "messages.json",
-        "CHANGELOG.md"
+        "messages.json"
     ],
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
         "update:protobuf": "./scripts/protobuf-build.sh",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",

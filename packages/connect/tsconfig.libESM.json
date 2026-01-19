@@ -1,0 +1,59 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "lib": ["webworker", "ES2022"],
+        "types": ["w3c-web-usb"]
+    },
+    "references": [
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../blockchain-link-utils"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../crypto-utils"
+        },
+        {
+            "path": "../device-authenticity"
+        },
+        {
+            "path": "../device-utils"
+        },
+        {
+            "path": "../env-utils"
+        },
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../type-utils"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../utxo-lib"
+        },
+        {
+            "path": "../eslint"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        }
+    ]
+}

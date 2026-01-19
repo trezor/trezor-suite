@@ -19,12 +19,13 @@
     ],
     "sideEffects": false,
     "publishConfig": {
-        "main": "lib/index.js",
-        "types": "lib/index.d.ts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
                 "import": "./libESM/index.js",
-                "require": "./lib/index.js"
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
             }
         }
     },

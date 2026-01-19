@@ -14,48 +14,20 @@
         "url": "https://github.com/trezor/trezor-suite/issues"
     },
     "sideEffects": false,
+    "main": "src/index.ts",
     "publishConfig": {
-        "main": "lib/index.js",
-        "types": "lib/index.d.ts",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
         "exports": {
             ".": {
                 "import": "./libESM/index.js",
                 "require": "./lib/index.js",
                 "types": "./lib/index.d.ts"
             },
-            "./lib/bigNumber": {
-                "import": "./libESM/bigNumber.js",
-                "require": "./lib/bigNumber.js",
-                "types": "./lib/bigNumber.d.ts"
-            },
-            "./lib/resolveAfter": {
-                "import": "./libESM/resolveAfter.js",
-                "require": "./lib/resolveAfter.js",
-                "types": "./lib/resolveAfter.d.ts"
-            },
-            "./lib/promiseAllSequence": {
-                "import": "./libESM/promiseAllSequence.js",
-                "require": "./lib/promiseAllSequence.js",
-                "types": "./lib/promiseAllSequence.d.ts"
-            },
-            "./lib/cloneObject": {
-                "import": "./libESM/cloneObject.js",
-                "require": "./lib/cloneObject.js",
-                "types": "./lib/cloneObject.d.ts"
-            },
-            "./lib/versionUtils": {
-                "import": "./libESM/versionUtils.js",
-                "require": "./lib/versionUtils.js",
-                "types": "./lib/versionUtils.d.ts"
-            },
-            "./lib/createDeferredManager": {
-                "import": "./libESM/createDeferredManager.js",
-                "require": "./lib/createDeferredManager.js",
-                "types": "./lib/createDeferredManager.d.ts"
-            }
+            "./lib/*": "./lib/*.js",
+            "./libESM/*.js": "./libESM/*.js"
         }
     },
-    "main": "src/index.ts",
     "files": [
         "lib/",
         "libESM/",

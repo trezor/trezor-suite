@@ -1,4 +1,4 @@
-import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 

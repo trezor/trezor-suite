@@ -1,6 +1,9 @@
-import { Enum, Type } from 'protobufjs/light';
+import * as protobuf from 'protobufjs/light';
 
 import { createMessageFromName, isPrimitiveField } from './utils';
+
+type Type = protobuf.Type;
+const { Enum } = protobuf;
 
 const transform = (fieldType: string, value: any) => {
     if (fieldType === 'bytes') {

@@ -28,6 +28,29 @@
     },
     "publishConfig": {
         "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./libESM/constants.js": {
+                "import": "./libESM/constants.js",
+                "require": "./lib/constants.js",
+                "types": "./lib/constants.d.ts"
+            },
+            "./lib/*": "./lib/*.js",
+            "./libESM/*.js": "./libESM/*.js",
+            "./lib/thp": "./lib/thp/index.js",
+            "./lib/types": "./lib/types/index.js",
+            "./libESM/thp": "./libESM/thp/index.js",
+            "./libESM/types": "./libESM/types/index.js",
+            "./lib/thp.js": "./lib/thp/index.js",
+            "./lib/types.js": "./lib/types/index.js",
+            "./libESM/thp.js": "./libESM/thp/index.js",
+            "./libESM/types.js": "./libESM/types/index.js"
+        },
         "browser": {
             "./lib/pinger/ping": "./lib/pinger/ping.browser.ts",
             "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
@@ -41,12 +64,15 @@
     },
     "files": [
         "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",

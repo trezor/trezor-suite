@@ -1,7 +1,11 @@
-import { Field, Message as MessageType, Type } from 'protobufjs/light';
+import * as protobuf from 'protobufjs/light';
 
 import type { MessageResponse } from './messages';
 import { createMessageFromType, isPrimitiveField } from './utils';
+
+type Field = protobuf.Field;
+type MessageType<T extends object> = protobuf.Message<T>;
+type Type = protobuf.Type;
 
 const transform = (field: Field, value: any) => {
     if (isPrimitiveField(field.type)) {
