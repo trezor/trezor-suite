@@ -3,6 +3,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { MetadataProviderType } from '@suite-common/metadata-types';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectRememberedHiddenWalletsCount,
@@ -28,16 +29,18 @@ import { AppState } from 'src/types/suite';
 
 import { getIsTorEnabled } from './tor';
 
-const resolveLabelingType = (state: AppState): 'legacy' | 'evolu' | string => {
+const resolveLabelingType = (
+    state: AppState,
+): MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off' => {
     if (state.metadata.enabled) {
         return (
             state.metadata.providers.find(
                 p => p.clientId === state.metadata.selectedProvider.labels,
-            )?.type || 'legacy'
+            )?.type || 'missing-provider'
         );
     }
 
-    return state.suiteSync.settings.isSuiteSyncEnabled ? 'evolu' : '';
+    return state.suiteSync.settings.isSuiteSyncEnabled ? 'suite-sync' : 'off';
 };
 
 // redact transaction id from account transaction anchor

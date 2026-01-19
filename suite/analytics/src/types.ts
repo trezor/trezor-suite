@@ -1,4 +1,5 @@
 import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
+import { MetadataProviderType } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -18,7 +19,7 @@ export type SuiteAnalyticsEventSuiteReady = {
         screenWidth: number;
         screenHeight: number;
         tor: boolean;
-        labeling: string;
+        labeling: MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off';
         rememberedStandardWallets: number;
         rememberedHiddenWallets: number;
         theme: string;
