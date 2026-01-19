@@ -1099,38 +1099,6 @@
         {
             "conditions": [
                 {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ],
-            "message": {
-                "id": "151c4f91-8bc4-4158-a7e3-c1aae2979742",
-                "priority": 94,
-                "dismissible": true,
-                "variant": "warning",
-                "category": "banner",
-                "content": {
-                    "en": "For your security, never enter your wallet backup on a computer or mobile phone. Only enter it directly on your Trezor hardware wallet.",
-                    "es": "Por tu seguridad, nunca introduzcas la copia de seguridad de tu monedero en un ordenador o teléfono móvil. Introdúcela únicamente en tu monedero de hardware Trezor.",
-                    "cs": "Z bezpečnostních důvodů nikdy nezadávejte zálohu své peněženky do počítače nebo mobilního telefonu. Zadávejte ji pouze přímo na své hardwarové peněžence Trezor.",
-                    "ru": "В целях безопасности никогда не вводите резервную копию кошелька на компьютере или мобильном телефоне. Вводите ее только непосредственно на вашем аппаратном кошельке Trezor.",
-                    "ja": "安全のため、パソコンや携帯電話には絶対にウォレットのバックアップを入力しないでください。必ずTrezorハードウェアウォレット本体に直接入力してください。",
-                    "hu": "Biztonsága érdekében soha ne adja meg a tárca biztonsági mentését számítógépen vagy mobiltelefonon. Kizárólag közvetlenül a Trezor hardveres tárcáján adja meg.",
-                    "it": "Per la tua sicurezza, non inserire mai il backup del portafoglio su computer o cellulare. Inseriscilo solo direttamente sul tuo hardware wallet Trezor.",
-                    "fr": "Pour votre sécurité, ne saisissez jamais votre sauvegarde de portefeuille sur un ordinateur ou un téléphone mobile. Saisissez-la uniquement directement sur votre wallet matériel Trezor.",
-                    "de": "Zu deiner Sicherheit: Gib dein Wallet-Backup niemals auf einem Computer oder Mobiltelefon ein. Gib es nur direkt auf deiner Trezor Hardware-Wallet ein.",
-                    "tr": "Güvenliğiniz için cüzdan yedeğinizi asla bir bilgisayara veya cep telefonuna girmeyin. Yalnızca doğrudan Trezor donanım cüzdanınıza girin.",
-                    "pt": "Para sua segurança, nunca insira o backup da sua carteira em um computador ou celular. Insira-o apenas diretamente na sua carteira hardware Trezor.",
-                    "uk": "Заради вашої безпеки ніколи не вводьте резервну копію гаманця на комп’ютері чи мобільному телефоні. Вводьте її лише безпосередньо на апаратному гаманці Trezor."
-                }
-            }
-        },
-        {
-            "conditions": [
-                {
                     "settings": [
                         {
                             "ada": true
