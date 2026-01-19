@@ -1,5 +1,5 @@
 import { getSuiteVersion } from '@trezor/env-utils';
-import { err, ok } from '@trezor/type-utils';
+import { Result, err, ok } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { DEFAULT_QUOTA_MANAGER_URL } from './constants';
@@ -17,13 +17,26 @@ type QuotaManagerFetchParams = {
     queryParams?: Record<string, string | number | boolean>;
 };
 
+type HttpError = {
+    type: 'HttpError';
+    code: number;
+    message: string;
+};
+
+type FetchError = {
+    type: 'FetchError';
+    message: string;
+};
+
+type QuotaManagerFetchResult = Result<unknown, HttpError | FetchError>;
+
 export const quotaManagerFetch = async ({
     baseUrl,
     path,
     method,
     body,
     queryParams,
-}: QuotaManagerFetchParams) => {
+}: QuotaManagerFetchParams): Promise<QuotaManagerFetchResult> => {
     const base = baseUrl ?? DEFAULT_QUOTA_MANAGER_URL;
 
     const normalizedBase = base.endsWith('/') ? base : `${base}/`;
@@ -37,23 +50,31 @@ export const quotaManagerFetch = async ({
         });
     }
 
-    const response = await fetch(url.toString(), {
-        method,
-        headers: {
-            'Content-Type': 'application/json',
-            'Suite-Version': getSuiteVersion(),
-        },
-        body: body ? JSON.stringify(body) : null,
-    });
+    try {
+        const response = await fetch(url.toString(), {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Suite-Version': getSuiteVersion(),
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
 
-    if (!response.ok) {
+        if (!response.ok) {
+            return err({
+                type: 'HttpError' as const,
+                code: response.status,
+                message: response.statusText,
+            });
+        }
+
+        const data = (await response.json()) as unknown;
+
+        return ok(data);
+    } catch (e) {
         return err({
-            code: response.status,
-            message: response.statusText,
+            type: 'FetchError' as const,
+            message: e.message,
         });
     }
-
-    const data = (await response.json()) as unknown;
-
-    return ok(data);
 };

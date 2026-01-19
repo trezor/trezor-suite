@@ -48,12 +48,11 @@ export const ensureOwnerHasAllocatedQuotaThunk =
             return;
         }
 
-        if (!hasOwnerStorage.success && hasOwnerStorage.error.code !== 404) {
-            dispatch(
-                quotaManagerFetchError({
-                    error: hasOwnerStorage.error.message,
-                }),
-            );
+        const isHttp404 =
+            hasOwnerStorage.error.type === 'HttpError' && hasOwnerStorage.error.code === 404;
+
+        if (!isHttp404) {
+            dispatch(quotaManagerFetchError({ error: hasOwnerStorage.error.message }));
 
             return;
         }
@@ -63,11 +62,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
         });
 
         if (!sessionChallenge.success) {
-            dispatch(
-                quotaManagerFetchError({
-                    error: sessionChallenge.error.message,
-                }),
-            );
+            dispatch(quotaManagerFetchError({ error: sessionChallenge.error.message }));
 
             return;
         }
