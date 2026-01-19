@@ -1,9 +1,14 @@
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
-import { selectInputPassphraseOnDevice } from '@suite-native/device-authorization';
+import {
+    DeviceAuthorizationStep,
+    selectDeviceAuthorizationStep,
+} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
 import {
@@ -14,16 +19,18 @@ import { useLegacyAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 export const PassphraseEnterOnTrezorScreen = () => {
-    const inputPassphraseOnDevice = useSelector(selectInputPassphraseOnDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const legacyAnalytics = useLegacyAnalytics();
+    const deviceAuthorizationStep = useSelector(selectDeviceAuthorizationStep);
 
-    useEffect(() => {
-        if (!inputPassphraseOnDevice) {
-            // NOTE: This means that the device passphrase request was fulfilled / rejected.
-            navigateToInitialScreen();
-        }
-    }, [inputPassphraseOnDevice, navigateToInitialScreen]);
+    useFocusEffect(
+        useCallback(() => {
+            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle) {
+                // NOTE: this means that the device passphrase request was cancelled on the device so we need to navigate back
+                navigateToInitialScreen();
+            }
+        }, [deviceAuthorizationStep, navigateToInitialScreen]),
+    );
 
     const handleCancel = () => {
         legacyAnalytics.report({
