@@ -1,0 +1,67 @@
+import { Translation } from '@suite/intl';
+import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
+import { Card, Modal, Paragraph } from '@trezor/components';
+import { StaticSessionId } from '@trezor/connect';
+import { getFirmwareVersion } from '@trezor/device-utils';
+
+import { goto } from '../../../../actions/suite/routerActions';
+import { useDispatch, useSelector } from '../../../../hooks/suite';
+
+type SuiteSyncFirmwareUpgradeNeededModalProps = {
+    onClose: () => void;
+    deviceStaticSessionId: StaticSessionId | null;
+};
+
+export const SuiteSyncFirmwareUpgradeNeededModal = ({
+    onClose,
+    deviceStaticSessionId,
+}: SuiteSyncFirmwareUpgradeNeededModalProps) => {
+    const dispatch = useDispatch();
+
+    const device = useSelector(state =>
+        deviceStaticSessionId !== null
+            ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
+            : undefined,
+    );
+
+    if (device === undefined) {
+        return null;
+    }
+
+    const currentFwVersion = getFirmwareVersion(device);
+
+    const onClick = () => {
+        // Update will disconnect device in the process and our Firmware Update
+        // flow won't allow us to navigate back. So we just redirect the user
+        // and close the modal.
+        dispatch(goto('firmware-index', { params: { cancelable: true } }));
+        onClose();
+    };
+
+    return (
+        <Modal
+            heading={<Translation id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING" />}
+            onCancel={onClose}
+            width={600}
+            bottomContent={
+                <>
+                    <Modal.Button onClick={onClick}>
+                        <Translation id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE" />
+                    </Modal.Button>
+                    <Modal.Button onClick={onClose} intent="neutral" priority="secondary">
+                        <Translation id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW" />
+                    </Modal.Button>
+                </>
+            }
+        >
+            <Card paddingType="large">
+                <Paragraph variant="tertiary">
+                    <Translation
+                        id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION"
+                        values={{ version: currentFwVersion }}
+                    />
+                </Paragraph>
+            </Card>
+        </Modal>
+    );
+};

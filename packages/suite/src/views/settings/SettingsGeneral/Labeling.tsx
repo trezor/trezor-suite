@@ -27,6 +27,7 @@ import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useLegacyAnalytics } from 'src/support/useAnalytics';
 
+import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
@@ -44,6 +45,9 @@ export const Labeling = () => {
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
+    if (deviceStaticSessionId === undefined) {
+        return null;
+    }
     const legacyEnableIfNeeded = () => {
         if (!legacyMetadataState.enabled) {
             suiteSync.turnOffSuiteSync(); // Enabling Legacy Labeling implicitly disables Evolu
@@ -80,8 +84,11 @@ export const Labeling = () => {
                 if (!result.success) {
                     const { type } = result.error;
                     switch (type) {
-                        case 'SuiteSyncUnavailableOnDeviceError':
                         case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                            dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
+
+                            return;
+                        case 'SuiteSyncUnavailableOnDeviceError':
                         case 'DeviceCancelled':
                         case 'DeviceError':
                             dispatch(notificationsActions.addToast({ type: 'error', error: type }));

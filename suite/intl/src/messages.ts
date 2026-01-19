@@ -6163,6 +6163,11 @@ export const messages = defineMessages({
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC',
         defaultMessage: "Upgrade your Trezor's firmware to use Suite Sync.",
     },
+    FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
+        id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
+        defaultMessage:
+            'Suite Sync works with Trezor Safe 3, Trezor Safe 5, and Trezor Safe 7 devices.',
+    },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
         defaultMessage: 'Connect & unlock device to change',
@@ -10484,9 +10489,34 @@ export const messages = defineMessages({
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
         defaultMessage: 'Your data is stored locally and only synced with devices you’ve approved.',
     },
+    TR_TURN_ON_SECURE_SYNC_DATA_LABELS: {
+        id: 'TR_TURN_ON_SECURE_SYNC_DATA_LABELS',
+        defaultMessage: 'Name your wallets, personalize accounts, and label transactions. ',
+    },
     TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
         id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
         defaultMessage: 'Only devices you’ve authorized through your Trezor can decrypt your data.',
+    },
+    TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING: {
+        id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING',
+        defaultMessage: 'Firmware update needed for Suite Sync',
+    },
+    TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION: {
+        id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION',
+        defaultMessage:
+            'The current firmware version on your Trezor is {version}. Update the firmware to use Suite Sync.',
+    },
+    TR_TURN_ON_SECURE_SYNC_MODAL_TURN_ON_AND_UPGRADE: {
+        id: 'TR_TURN_ON_SECURE_SYNC_MODAL_TURN_ON_AND_UPGRADE',
+        defaultMessage: 'Turn on & update firmware',
+    },
+    TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
+        id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
+        defaultMessage: 'Upgrade',
+    },
+    TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW: {
+        id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW',
+        defaultMessage: 'Not now',
     },
     TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING: {
         id: 'TR_SWITCH_TO_LEGACY_LABELING_MODAL_HEADING',

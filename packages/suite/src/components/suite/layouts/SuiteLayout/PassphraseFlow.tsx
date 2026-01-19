@@ -7,7 +7,7 @@ import { useDispatch, usePreferredModal, useSelector } from '../../../../hooks/s
 import type { AppState, ForegroundAppRoute } from '../../../../types/suite';
 import { SwitchDevice } from '../../../../views/suite/SwitchDevice/SwitchDevice';
 import { ThpGlobalModalManager } from '../../../connection/thp/ThpGlobalModalManager';
-import { LabelingModalManager } from '../../labeling/LabelingModalManager';
+import { TurnOnSuiteSyncModalManager } from '../../labeling/TurnOnSuiteSync/TurnOnSuiteSyncModalManager';
 import { ConfirmPassphraseBeforeAction } from '../../modals/ReduxModal/DeviceContextModal/ConfirmPassphraseBeforeAction';
 import { PassphraseModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseModal';
 import { PassphraseOnDeviceModal } from '../../modals/ReduxModal/DeviceContextModal/PassphraseOnDeviceModal';
@@ -57,11 +57,13 @@ const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
 
     const onCancel = () => dispatch(closeModalApp());
 
+    // IMPORTANT: This is the place where all the modals that need to rendered OVER
+    //            Wallet-Switch needs to be.
     if (app === 'switch-device') {
         return (
             <>
                 <SwitchDevice cancelable={cancelable} onCancel={onCancel} />
-                <LabelingModalManager />
+                <TurnOnSuiteSyncModalManager />
                 {/* THP flow can be triggered by auto-connect and that will open THP modals.
                  *  However, this ForegroundApp takes precedes and prevents ALL other modals
                  *  to render. So we have to render it here as well.*/}

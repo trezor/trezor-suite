@@ -24,15 +24,15 @@ export const createEnsureWalletSuiteSyncOn =
     async ({ deviceStaticSessionId }) => {
         const device = selectDeviceByStaticSessionId(deps.getState(), deviceStaticSessionId);
 
+        if (isFwUpgradeNeededForSuiteSync(device)) {
+            return err({ type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' });
+        }
+
         const canTurnOnSuiteSync =
             device && isTrezorDeviceWithState(device) && isSuiteSyncSupportedByDevice(device);
 
         if (!canTurnOnSuiteSync) {
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
-        }
-
-        if (isFwUpgradeNeededForSuiteSync(device)) {
-            return err({ type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType' });
         }
 
         return await deps.ensureSuiteSyncData({ deviceStaticSessionId });
