@@ -1,10 +1,102 @@
-import { StackProps, TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
+import { TradingType } from '@suite-common/trading';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
+import { Box, VStack } from '@suite-native/atoms';
+import { ConfirmOnTrezorWrapper } from '@suite-native/device';
+import { Translation } from '@suite-native/intl';
+import {
+    ScreenHeader,
+    StackProps,
+    TradingStackParamList,
+    TradingStackRoutes,
+} from '@suite-native/navigation';
+import { ReviewOutputItemList } from '@suite-native/transaction-management';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { DeviceGuardedReviewOutputs } from '../components/reviewOutputs/DeviceGuardedReviewOutputs';
+import { ReviewOutputsFooter } from '../components/reviewOutputs/ReviewOutputsFooter';
+import { ReviewOutputsSkeleton } from '../components/reviewOutputs/ReviewOutputsSkeleton';
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
+import type { UseTradingTransactionReturnProps } from '../hooks/general/useTradingTransaction';
+import { useDelayedReviewOutputListDisplayFlag } from '../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag';
+import {
+    UseTradingOutputsReviewScreenControlsProps,
+    useTradingOutputsReviewScreenControls,
+} from '../hooks/reviewOutputs/useTradingOutputsReviewScreenControls';
 import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
+import { getFormDraftKeyPrefixFromTradingType } from '../utils/general/utils';
+
+const spacerStyle = prepareNativeStyle(_ => ({
+    height: 150,
+}));
+
+type TradingOutputsBaseReviewScreenParams = UseTradingOutputsReviewScreenControlsProps &
+    Pick<
+        UseTradingTransactionReturnProps,
+        'isTransactionSendConsentRequested' | 'resolveTransactionSendConsent'
+    > & {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+        tradingType: TradingType;
+    };
+
+const TradingOutputsBaseReviewScreen = ({
+    accountKey,
+    tokenContract,
+    orderId,
+    tradingType,
+    signAndSendTransaction,
+    isTransactionSendConsentRequested,
+    resolveTransactionSendConsent,
+    reportToAnalytics,
+}: TradingOutputsBaseReviewScreenParams) => {
+    const { applyStyle } = useNativeStyles();
+    const { isTransactionAlreadySigned, confirmOnTrezorRef } =
+        useTradingOutputsReviewScreenControls({
+            orderId,
+            accountKey,
+            signAndSendTransaction,
+            reportToAnalytics,
+        });
+    const shouldDisplayReviewList = useDelayedReviewOutputListDisplayFlag();
+
+    const prefix = getFormDraftKeyPrefixFromTradingType(tradingType);
+
+    return (
+        <ConfirmOnTrezorWrapper
+            controlRef={confirmOnTrezorRef}
+            closeActionType="close"
+            defaultHeader={
+                <ScreenHeader
+                    title={<Translation id="moduleTrading.tradingReviewOutputs.title" />}
+                    closeActionType="close"
+                />
+            }
+        >
+            <VStack flex={1} spacing="sp16" justifyContent="space-between">
+                {shouldDisplayReviewList ? (
+                    <ReviewOutputItemList
+                        prefix={prefix}
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                ) : (
+                    <ReviewOutputsSkeleton />
+                )}
+                {isTransactionAlreadySigned ? (
+                    <ReviewOutputsFooter
+                        isConsentRequested={isTransactionSendConsentRequested}
+                        resolveConsent={resolveTransactionSendConsent}
+                        testID="@trading/outputs-review/footer"
+                    />
+                ) : (
+                    <Box style={applyStyle(spacerStyle)} />
+                )}
+            </VStack>
+        </ConfirmOnTrezorWrapper>
+    );
+};
 
 export const TradingExchangeOutputsReviewScreen = ({
     route,
@@ -18,7 +110,7 @@ export const TradingExchangeOutputsReviewScreen = ({
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
     return (
-        <DeviceGuardedReviewOutputs
+        <TradingOutputsBaseReviewScreen
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}
@@ -43,7 +135,7 @@ export const TradingSellOutputsReviewScreen = ({
     const analyticsReportCallback = useSellAnalyticReportCallback();
 
     return (
-        <DeviceGuardedReviewOutputs
+        <TradingOutputsBaseReviewScreen
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}

@@ -4,7 +4,7 @@ import { AnimatedBox, Card, HStack, VStack } from '@suite-native/atoms';
 import { SkeletonLarge, SkeletonSmall } from '@suite-native/trading-atoms';
 
 export const ReviewOutputsSkeleton = () => (
-    <AnimatedBox entering={FadeIn} exiting={FadeOut} testID="@trading/outputs-review/skeleton">
+    <AnimatedBox entering={FadeIn} exiting={FadeOut}>
         <VStack spacing="sp32">
             <Card>
                 <VStack spacing="sp16">

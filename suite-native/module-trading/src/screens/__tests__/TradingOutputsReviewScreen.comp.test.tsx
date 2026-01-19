@@ -43,14 +43,7 @@ const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
     popToTop: jest.fn(),
-    setOptions: jest.fn(),
 } as any;
-
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => mockNavigation,
-    useRoute: () => ({ name: 'TEST_ROUTE_NAME' }),
-}));
 
 jest.mock('@suite-native/device', () => ({
     ...jest.requireActual('@suite-native/device'),
@@ -86,11 +79,6 @@ jest.mock('../../hooks/reviewOutputs/useTradingOutputsReviewScreenControls', () 
 
 jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () => ({
     useDelayedReviewOutputListDisplayFlag: () => false,
-}));
-
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectIsDeviceConnected: () => true,
 }));
 
 // Test constants
