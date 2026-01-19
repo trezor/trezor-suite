@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import { CoreEventMessage, DEVICE_EVENT, POPUP, UI } from '@trezor/connect/src/events';
+import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
@@ -50,8 +50,6 @@ export class PopupManager extends EventEmitter {
     channel: AbstractMessageChannel<CoreEventMessage>;
 
     handshakePromise: Deferred<void> | undefined;
-
-    private popupPromise: Deferred<void> | undefined;
 
     private requestTimeout: TimerId | undefined;
 
@@ -138,13 +136,8 @@ export class PopupManager extends EventEmitter {
         }, timeout);
     }
 
-    private unlock() {
-        this.locked = false;
-    }
-
     private open() {
         const src = this.settings.popupSrc;
-        this.popupPromise = createDeferred(POPUP.LOADED);
         const url = this.buildPopupUrl(src);
         this.openWrapper(url);
 
@@ -261,16 +254,7 @@ export class PopupManager extends EventEmitter {
     };
 
     private handleCoreMessage(message: Message<CoreEventMessage>) {
-        if (message.type === POPUP.LOADED) {
-            this.handleMessage(message);
-            this.channel.postMessage({
-                type: POPUP.INIT,
-                payload: {
-                    settings: this.settings,
-                    useCore: true,
-                },
-            });
-        } else if (message.type === POPUP.CORE_LOADED) {
+        if (message.type === POPUP.CORE_LOADED) {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
@@ -291,27 +275,8 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    private handleMessage(data: Message<CoreEventMessage>) {
-        if (data.type === POPUP.LOADED) {
-            // in case of webextension where bootstrap message is not sent
-            if (this.popupPromise) {
-                this.popupPromise.resolve();
-                this.popupPromise = undefined;
-            }
-        } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
-            clearTimeout(this.requestTimeout);
-            if (this.popupPromise) {
-                this.close();
-            }
-            this.unlock();
-        } else if (data.type === UI.CLOSE_UI_WINDOW) {
-            this.clear(false);
-        }
-    }
-
     private clear(focus = true) {
         this.locked = false;
-        this.popupPromise = undefined;
         this.handshakePromise = createDeferred();
 
         if (this.channel) {
