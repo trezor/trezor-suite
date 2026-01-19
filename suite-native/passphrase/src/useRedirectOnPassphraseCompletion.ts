@@ -11,12 +11,13 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useLegacyAnalytics } from '@suite-native/services';
+
 import {
     selectHasPassphraseError,
     selectHasVerificationCancelledError,
     selectPassphraseDiscoveryCompleted,
 } from './passphraseSelectors';
-import { useLegacyAnalytics } from '@suite-native/services';
 
 export const useRedirectOnPassphraseCompletion = () => {
     const device = useSelector(selectSelectedDevice);
