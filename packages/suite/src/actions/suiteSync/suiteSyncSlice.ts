@@ -4,18 +4,19 @@ import {
     initialSuiteSyncState as commonInitialState,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
+import { StaticSessionId } from '@trezor/connect';
 
 import { Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 
 export type DesktopSuiteSyncState = SuiteSyncState & {
-    showEnableSuiteSyncModal: boolean;
+    showEnableSuiteSyncModal: StaticSessionId | null;
 };
 
 export const initialSuiteSyncState: DesktopSuiteSyncState = {
     ...commonInitialState,
-    showEnableSuiteSyncModal: false,
+    showEnableSuiteSyncModal: null,
 };
 
 export type DesktopSuiteSyncRootState = {
@@ -27,7 +28,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     initialState: initialSuiteSyncState,
     reducers: {
         updateShowEnableSuiteSyncModal: (state, action) => {
-            state.showEnableSuiteSyncModal = action.payload.show;
+            state.showEnableSuiteSyncModal = action.payload.deviceStaticSessionId;
         },
     },
     extraReducers: builder => {

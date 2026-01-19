@@ -20,15 +20,18 @@ export const SuiteSyncWalletDebug = ({ device }: { device: AcquiredDevice }) => 
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
-    if (
-        !isSuiteSyncDebugEnabled ||
-        !isSuiteSyncSupportedByDevice(device) ||
-        !device.state?.staticSessionId
-    ) {
+    const deviceStaticSessionId = device.state?.staticSessionId;
+
+    const isSuiteSyncDebug =
+        isSuiteSyncDebugEnabled &&
+        isSuiteSyncSupportedByDevice(device) &&
+        deviceStaticSessionId !== undefined;
+
+    if (!isSuiteSyncDebug) {
         return;
     }
 
-    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(device.state.staticSessionId);
+    const { walletDescriptor, deviceId } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
     const handleResetKeysRequest = () => {
         if (!device?.id || device.state?.staticSessionId === undefined) {

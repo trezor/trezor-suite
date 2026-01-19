@@ -118,8 +118,8 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
 
                             <ModalSwitcher />
                             <PassphraseFlow />
-                            <AppShortcuts />
 
+                            <AppShortcuts />
                             <PowerMonitorManager />
 
                             {isBelowTablet && <CoinjoinBars />}
@@ -154,7 +154,6 @@ export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutPr
                                     </Columns>
                                 </Body>
                             </LayoutContext.Provider>
-
                             {!isBelowTablet && <GuideButton />}
                         </Modal.Provider>
                     </PageWrapper>

@@ -71,6 +71,26 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
     });
 
+    it('returns error when device needs firmware upgrade', async () => {
+        const unavailableCapabilities: UnavailableCapabilities = { evolu: 'update-required' };
+
+        const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
+            dispatch: null,
+            getState: () => createMockState([createDevice({ unavailableCapabilities })]),
+            refreshSuiteSyncKeys: null,
+            ensureSuiteSyncData: null,
+            subscriptionStorage: createSubscriptionStorageMock(),
+        });
+
+        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
+        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+
+        expect(!result.success && result.error.type).toBe(
+            'SuiteSyncFirmwareUpgradeNeededDeviceErrorType',
+        );
+        expect(deps.ensureSuiteSyncData).not.toHaveBeenCalled();
+    });
+
     it('calls ensureSuiteSyncData when wallet is eligible', async () => {
         const ensureResult = ok({ data: {} } as any);
 

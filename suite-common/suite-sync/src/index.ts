@@ -2,9 +2,10 @@ export {
     selectIsSuiteSyncEnabled,
     selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
-    selectShouldOfferSecureSync,
+    selectIsTurnOnSuiteSyncInteractionNeeded,
     selectIsSuiteSyncDebugEnabled,
 } from './suiteSyncSelectors';
+export type { SuiteSyncInteraction } from './suiteSyncSelectors';
 export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export { suiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
@@ -34,4 +35,4 @@ export {
     findSuiteSyncAccountLabel,
 } from './data/suiteSyncDataSelectors';
 export { suiteSyncToBip329 } from './data/labeling/suiteSyncToBip329';
-export { isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
+export { isSuiteSyncSupportedByDevice, isFwUpgradeNeededForSuiteSync } from './suiteSyncUtils';
