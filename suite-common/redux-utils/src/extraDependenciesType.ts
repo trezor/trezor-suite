@@ -9,8 +9,8 @@ import type {
     SuiteSharedLegacyAnalyticsEvents,
 } from '@suite-common/analytics-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
-import { PlatformEncryption } from '@suite-common/platform-encryption'; // also only types
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
+import { SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     ReportSecurityCheckProps,
     Route,
@@ -62,12 +62,11 @@ export type RouterServices = {
 
 export type LocationPushState = Record<string, unknown>;
 
-export type CommonServices = {
-    suiteSync: SuiteSync;
-    platformEncryption: PlatformEncryption;
-    analytics: Analytics<AnalyticsSharedEvents>;
-    legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
-};
+export type CommonServices = SuiteSyncDep &
+    PlatformEncryptionDep & {
+        analytics: Analytics<AnalyticsSharedEvents>;
+        legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
+    };
 
 export type ExtraDependenciesStatic = {
     thunks: {
