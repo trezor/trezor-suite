@@ -34,7 +34,9 @@ test.describe(
                     await analyticsSection.continueButton.click();
                     await analytics.waitForAnalyticsRequests();
                     // assert that only "analytics/dispose" event was fired
-                    const request = analytics.findLatestRequestByType(EventType.SettingsAnalytics);
+                    const request = analytics.findLatestRequestByLegacyType(
+                        EventType.SettingsAnalytics,
+                    );
                     expect(request).toHaveProperty('c_type', EventType.SettingsAnalytics);
                     expect(request).toHaveProperty('value', 'false');
                     expect(request).toHaveProperty('c_session_id');
@@ -69,7 +71,7 @@ test.describe(
                 await expect(settingsPage.analyticsSwitchInput).toBeChecked();
                 await analytics.waitForAnalyticsRequests();
 
-                const enableRequest = analytics.findLatestRequestByType(
+                const enableRequest = analytics.findLatestRequestByLegacyType(
                     EventType.SettingsAnalytics,
                 );
                 expect(enableRequest).toHaveProperty('c_type', EventType.SettingsAnalytics);
@@ -89,12 +91,12 @@ test.describe(
             });
 
             await test.step('Change fiat and check analytics event', async () => {
-                const enableRequest = analytics.findLatestRequestByType(
+                const enableRequest = analytics.findLatestRequestByLegacyType(
                     EventType.SettingsAnalytics,
                 );
                 await settingsPage.changeFiatCurrency('huf');
                 await analytics.waitForAnalyticsRequests();
-                const changeFiatRequest = analytics.findLatestRequestByType(
+                const changeFiatRequest = analytics.findLatestRequestByLegacyType(
                     EventType.SettingsGeneralChangeFiat,
                 );
                 expect(changeFiatRequest).toHaveProperty(
@@ -133,9 +135,9 @@ test.describe(
                 await analytics.waitForAnalyticsRequests(3);
 
                 expect(analytics.requests.length).toBeGreaterThan(1);
-                expect(analytics.findLatestRequestByType(EventType.SuiteReady)).toBeDefined();
+                expect(analytics.findLatestRequestByLegacyType(EventType.SuiteReady)).toBeDefined();
                 expect(
-                    analytics.findLatestRequestByType(EventType.SettingsAnalytics),
+                    analytics.findLatestRequestByLegacyType(EventType.SettingsAnalytics),
                 ).toBeDefined();
             });
 
@@ -159,10 +161,10 @@ test.describe(
                 await settingsPage.changeFiatCurrency('huf');
                 await analytics.waitForAnalyticsRequests();
                 expect(
-                    analytics.findLatestRequestByType(EventType.SettingsAnalytics),
+                    analytics.findLatestRequestByLegacyType(EventType.SettingsAnalytics),
                 ).toBeDefined();
                 expect(
-                    analytics.findLatestRequestByType(EventType.SettingsGeneralChangeFiat),
+                    analytics.findLatestRequestByLegacyType(EventType.SettingsGeneralChangeFiat),
                 ).not.toBeDefined();
             });
         });

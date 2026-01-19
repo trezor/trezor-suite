@@ -93,7 +93,7 @@ test.describe(
                     await trezorUserEnvLink.stopEmu();
                     await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
                     expect(
-                        analytics.findLatestRequestByType(EventType.DeviceDisconnect),
+                        analytics.findLatestRequestByLegacyType(EventType.DeviceDisconnect),
                     ).toBeDefined();
                 });
             },

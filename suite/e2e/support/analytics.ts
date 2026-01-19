@@ -1,10 +1,6 @@
 import { Page } from '@playwright/test';
 
-import {
-    AnalyticsDesktopEvents,
-    EventType,
-    SuiteDesktopLegacyAnalyticsEvents,
-} from '@suite/analytics';
+import { EventType, SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
 import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
 
 import { step } from './common';
@@ -20,9 +16,7 @@ export class AnalyticsFixture {
         this.page = page;
     }
 
-    findAnalyticsEventByType<T extends SuiteDesktopLegacyAnalyticsEvents & AnalyticsDesktopEvents>(
-        eventType: EventType,
-    ) {
+    findAnalyticsEventByType<T extends SuiteDesktopLegacyAnalyticsEvents>(eventType: T['type']) {
         const event = this.requests.find(req => req.c_type === eventType) as EventPayload<T>;
 
         if (!event) {
@@ -30,6 +24,11 @@ export class AnalyticsFixture {
         }
 
         return event;
+    }
+
+    // @deprecated use findLatestRequestByType
+    findLatestRequestByLegacyType(eventType: SuiteDesktopLegacyAnalyticsEvents['type']) {
+        return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
     findLatestRequestByType(eventType: EventType) {
