@@ -31,8 +31,8 @@ export const checkStorageByPublicKey = async ({
     const result = await quotaManagerFetch({
         baseUrl,
         path: '/storage/ask',
-        method: 'GET',
-        queryParams: { publicKey },
+        method: 'POST',
+        body: { publicKey },
     });
 
     if (!result.success) {
@@ -49,8 +49,8 @@ export const checkStorageByOwnerId = async ({ baseUrl, ownerId }: CheckStorageBy
     const result = await quotaManagerFetch({
         baseUrl,
         path: '/storage/ask',
-        method: 'GET',
-        queryParams: { ownerId },
+        method: 'POST',
+        body: { ownerId },
     });
 
     if (!result.success) {
