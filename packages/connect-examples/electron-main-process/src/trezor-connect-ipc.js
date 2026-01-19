@@ -68,19 +68,6 @@ exports.initTrezorConnect = sender => {
             }
         }
 
-        if (event.type === UI.SELECT_DEVICE) {
-            if (event.payload.devices.length > 0) {
-                // more then one device connected
-                // example how to respond to select device
-                TrezorConnect.uiResponse({
-                    type: UI.RECEIVE_DEVICE,
-                    payload: event.payload.devices[0],
-                });
-            } else {
-                // no devices connected, waiting for connection
-            }
-        }
-
         // getAddress from device which is not backed up
         // there is a high risk of coin loss at this point
         // warn user about it

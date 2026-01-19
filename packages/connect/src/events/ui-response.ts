@@ -2,7 +2,6 @@ import type { ThpPairingMethod } from '@trezor/protocol';
 
 import { POPUP } from './popup';
 import { UI_EVENT } from './ui-request';
-import type { Device } from '../types/device';
 import type { LocalFirmwares } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
@@ -16,7 +15,6 @@ export const UI_RESPONSE = {
     RECEIVE_PIN: 'ui-receive_pin',
     RECEIVE_PASSPHRASE: 'ui-receive_passphrase',
     RECEIVE_THP_PAIRING_TAG: 'ui-receive_thp_pairing_tag',
-    RECEIVE_DEVICE: 'ui-receive_device',
     RECEIVE_ACCOUNT: 'ui-receive_account',
     RECEIVE_FEE: 'ui-receive_fee',
     RECEIVE_WORD: 'ui-receive_word',
@@ -38,14 +36,6 @@ export interface UiResponseConfirmation {
 export interface UiResponseFirmwares {
     type: typeof UI_RESPONSE.RECEIVE_FIRMWARE;
     payload: LocalFirmwares;
-}
-
-export interface UiResponseDevice {
-    type: typeof UI_RESPONSE.RECEIVE_DEVICE;
-    payload: {
-        device: Device;
-        remember?: boolean;
-    };
 }
 
 export interface UiResponsePin {
@@ -115,7 +105,6 @@ export interface UiResponseLoginChallenge {
 export type UiResponseEvent =
     | UiResponsePopupHandshake
     | UiResponseConfirmation
-    | UiResponseDevice
     | UiResponsePin
     | UiResponseWord
     | UiResponsePassphrase

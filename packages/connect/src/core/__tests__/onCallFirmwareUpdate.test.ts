@@ -215,7 +215,7 @@ const setupTest = () => {
     const context = {
         deviceList,
         postMessage,
-        initDevice: () => Promise.resolve(deviceList.getAllDevices()[0]),
+        selectDevice: () => deviceList.getAllDevices()[0],
         registerEvents: () => {},
         log: new Log('Test', false),
         abortSignal: new AbortController().signal,

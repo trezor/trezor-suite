@@ -27,15 +27,6 @@ describe('TrezorConnect.authorizeCoinjoin', () => {
                 controller.inputEmu('1234');
             }
         });
-        // sometimes device is unacquired due to restarting connect
-        TrezorConnect.on('ui-select_device', ev => {
-            TrezorConnect.uiResponse({
-                type: 'ui-receive_device',
-                payload: {
-                    device: ev.devices[0],
-                },
-            });
-        });
     });
 
     afterAll(() => {
