@@ -881,16 +881,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const version = this.getVersion();
         const newVersion = getFirmwareOrBootloaderVersionArray(feat);
+        this.deviceVersionCheck(feat);
 
         // check if FW version or capabilities did change
         if (!version || !versionUtils.isEqual(version, newVersion)) {
-            if (version) {
-                this.emit(DEVICE.FIRMWARE_VERSION_CHANGED, {
-                    oldVersion: version,
-                    newVersion,
-                    device: this.toMessageObject(),
-                });
-            }
             this._unavailableCapabilities = getUnavailableCapabilities(feat, getAllNetworks());
             this._firmwareStatus = getFirmwareStatus(feat, getFirmwareType(feat));
             this._firmwareReleaseConfigInfo = getFirmwareReleaseConfigInfo(
@@ -927,6 +921,34 @@ export class Device extends TypedEmitter<DeviceEvents> {
             if (deviceUnitColor in deviceInfo.colors) {
                 this.color = (deviceInfo.colors as Record<string, string>)[deviceUnitColor];
             }
+        }
+    }
+
+    // Ensure that FW version is invariable except for firmware update
+    private deviceVersionCheck(feat: Features) {
+        const version = this.getVersion();
+        const oldId = this.features?.device_id;
+        // unacquired, bootloader, or nothing otherwise nothing compare
+        if (!oldId || !!feat.bootloader_mode || !version) return;
+
+        const newVersion = getFirmwareOrBootloaderVersionArray(feat); // guaranteed to be FW mode here
+        // This should never happen, it's indicative of a transport-level bug, so log to Sentry via console.error
+        if (feat.device_id !== oldId) {
+            // transport descriptors are useful debug info, but no need to await, the side-effect to log to Sentry can run async
+            this.transport.enumerate().then(res => {
+                const descriptors = res.success ? res.payload : undefined;
+                const oldDevice = this.toMessageObject();
+                console.error('getFeatures response mismatched', oldDevice, feat, descriptors);
+            });
+
+            return;
+        }
+        if (!versionUtils.isEqual(version, newVersion)) {
+            this.emit(DEVICE.FIRMWARE_VERSION_CHANGED, {
+                oldVersion: version,
+                newVersion,
+                device: this.toMessageObject(),
+            });
         }
     }
 
