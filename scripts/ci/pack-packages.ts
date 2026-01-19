@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'node:util';
 
-import { exec, getConnectDependencies } from './helpers';
+import { exec, getPackageTrezorDependencies } from './helpers';
 
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
@@ -15,10 +15,10 @@ const __dirname = import.meta.dirname;
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'tmp/packed-packages');
 
-const PACKAGES = await getConnectDependencies(ROOT_DIR);
+// Get dependencies for connect.
+const connectDeps = await getPackageTrezorDependencies(ROOT_DIR, 'connect');
 
-// Connect is not a dependency of itself, so we need to add it manually.
-PACKAGES.push('connect');
+const PACKAGES = [...new Set([...connectDeps, 'connect'])];
 
 const buildAllPackages = async () => {
     if (await existsDirectory(OUTPUT_DIR)) {

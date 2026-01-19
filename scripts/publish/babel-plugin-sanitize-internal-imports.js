@@ -57,6 +57,13 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
                 const { callee } = path.node;
                 if (types.isIdentifier(callee) && callee.name === 'require') {
                     modifyCJSRequireArg(path);
+                } else if (types.isImport(callee)) {
+                    // Handle dynamic import() with string literal.
+                    // e.g. import("@trezor/blockchain-link/src/workers/solana") → import("@trezor/blockchain-link/libESM/workers/solana")
+                    const args = path.node.arguments;
+                    if (args?.length > 0 && types.isStringLiteral(args[0])) {
+                        args[0].value = sanitizeInternalImports(args[0].value, 'esm');
+                    }
                 } else if (
                     types.isMemberExpression(callee) &&
                     types.isIdentifier(callee.object) &&
