@@ -41,7 +41,6 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          rm ./patches/app-builder-lib+26.4.0.patch # Hotfix for desktop-only package, which is not installed and crashes patch-package
           npx patch-package # Apply global patches.
       - name: Trigger adhoc build Android
         if: ${{ github.event.inputs.PLATFORM == 'android' || github.event.inputs.PLATFORM == 'all' }}

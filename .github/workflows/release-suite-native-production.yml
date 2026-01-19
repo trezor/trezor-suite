@@ -43,7 +43,6 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          rm ./patches/app-builder-lib+26.4.0.patch # Hotfix for desktop-only package, which is not installed and crashes patch-package
           npx patch-package # Apply global patches.
       - name: Build on EAS iOS
         run: eas build
@@ -74,7 +73,6 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          rm ./patches/app-builder-lib+26.4.0.patch # Hotfix for desktop-only package, which is not installed and crashes patch-package
           npx patch-package # Apply global patches.
       - name: Build on EAS Android
         run: eas build
@@ -111,7 +109,6 @@ jobs:
       - name: Install libs
         run: |
           yarn workspaces focus @suite-native/app
-          rm ./patches/app-builder-lib+26.4.0.patch # Hotfix for desktop-only package, which is not installed and crashes patch-package
           npx patch-package # Apply global patches.
 
       - name: Get Suite version

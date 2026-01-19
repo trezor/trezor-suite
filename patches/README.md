@@ -11,13 +11,6 @@
 
 ---
 
-## app-builder-lib
-
-Desktop-only, is hotfixed in: `build-suite-native-adhoc.yml, build-suite-native-preview.yml, release-suite-native-develop.yml, release-suite-native-production.yml`
-
-Fixes problem with generating `Info.plist` when building for macOS.
-Remove this patch after when this is fixed upstream in [electron-builder PR](https://github.com/electron-userland/electron-builder/pull/9481).
-
 ## expo-modules-core
 
 Native-only, but does not break any CI.
