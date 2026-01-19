@@ -13478,6 +13478,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     expo: "npm:~54.0.30"
     expo-sqlite: "npm:^16.0.8"
+    react-native-restart: "npm:0.0.27"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft

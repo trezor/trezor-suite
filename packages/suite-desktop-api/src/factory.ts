@@ -207,5 +207,8 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         // safeStorage
         safeStoreEncrypt: ({ value }) => ipcRenderer.invoke('safe-storage/encrypt', { value }),
         safeStoreDecrypt: ({ value }) => ipcRenderer.invoke('safe-storage/decrypt', { value }),
+
+        // Browser Window
+        reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
     };
 };

@@ -10,7 +10,7 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
-import { SuiteSync } from '@suite-common/suite-sync-types';
+import { StorageFlusherDep, SuiteSync } from '@suite-common/suite-sync-types';
 import { TrezorConnect } from '@trezor/connect';
 
 import {
@@ -25,7 +25,8 @@ type SuiteSyncDesktopCompositionRootDeps = {
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
     DesktopLegacyAnalyticsDep &
-    DisableLegacyMetadataIfNeededDep;
+    DisableLegacyMetadataIfNeededDep &
+    StorageFlusherDep;
 
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,

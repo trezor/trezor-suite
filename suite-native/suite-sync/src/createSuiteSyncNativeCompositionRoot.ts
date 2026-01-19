@@ -1,3 +1,5 @@
+import RNRestart from 'react-native-restart';
+
 import { evoluReactNativeDeps } from '@evolu/react-native/expo-sqlite';
 import { Dispatch } from '@reduxjs/toolkit';
 
@@ -29,5 +31,8 @@ export const createSuiteSyncNativeCompositionRoot = (
         ...deps,
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
+        flushSuiteSyncStorage: () => {
+            RNRestart.restart();
+        },
     });
 };

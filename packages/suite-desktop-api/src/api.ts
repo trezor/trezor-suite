@@ -144,6 +144,9 @@ export interface InvokeChannels {
     'bio-auth/get-validation-status': () => boolean;
     'safe-storage/decrypt': (params: { value: string }) => Result<string, DecryptionError>;
     'safe-storage/encrypt': (params: { value: string }) => Result<string, EncryptionError>;
+
+    // Browser Window
+    'browser-window/reload': () => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -223,4 +226,7 @@ export type DesktopApi = {
     // safeStorage
     safeStoreEncrypt: DesktopApiInvoke<'safe-storage/encrypt'>;
     safeStoreDecrypt: DesktopApiInvoke<'safe-storage/decrypt'>;
+
+    // Browser Window
+    reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
 };

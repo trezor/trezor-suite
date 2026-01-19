@@ -59,3 +59,5 @@ export type {
     UpdateWalletLabelDep,
     UpdateWalletLabelParams,
 } from './data/updateWalletLabel';
+
+export type { StorageFlusherDep, StorageFlusher } from './storageFlusher';
