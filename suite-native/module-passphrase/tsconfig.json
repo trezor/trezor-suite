@@ -5,7 +5,16 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../analytics" },
+        { "path": "../atoms" },
+        { "path": "../device" },
+        { "path": "../icons" },
+        { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../passphrase" }
+        { "path": "../passphrase" },
+        { "path": "../services" },
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/urls" }
     ]
 }
