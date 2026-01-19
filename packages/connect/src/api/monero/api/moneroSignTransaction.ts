@@ -28,6 +28,11 @@ type ProtocolState = {
     rv?: PROTO.MoneroRingCtSig;
     signatures: string[];
     pseudo_outs: string[];
+    out_pks: string[];
+    ecdh_infos: string[];
+    tx_outs: string[];
+    rsig_parts: string[];
+    extra?: string;
 };
 
 export default class MoneroSignTransactionMethod extends AbstractMethod<
@@ -39,6 +44,10 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
         vinis: [],
         signatures: [],
         pseudo_outs: [],
+        out_pks: [],
+        ecdh_infos: [],
+        tx_outs: [],
+        rsig_parts: [],
     };
 
     init() {
@@ -231,24 +240,38 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
                 {},
             );
 
-        // Step 5: SetOutput - Process each output
+        // Step 5: SetOutput - Process each output and capture response data
         const outputs = this.params.tsx_data.outputs || [];
         for (let i = 0; i < outputs.length; i++) {
-            await this.device
+            const setOutputResponse = await this.device
                 .getCommands()
                 .typedCall('MoneroTransactionSetOutputRequest', 'MoneroTransactionSetOutputAck', {
                     dst_entr: outputs[i],
                     dst_entr_hmac: this.state.hmacs[i],
                 });
+
+            if (setOutputResponse.message.out_pk) {
+                this.state.out_pks.push(setOutputResponse.message.out_pk);
+            }
+            if (setOutputResponse.message.ecdh_info) {
+                this.state.ecdh_infos.push(setOutputResponse.message.ecdh_info);
+            }
+            if (setOutputResponse.message.tx_out) {
+                this.state.tx_outs.push(setOutputResponse.message.tx_out);
+            }
+            if (setOutputResponse.message.rsig_data?.rsig) {
+                this.state.rsig_parts.push(setOutputResponse.message.rsig_data.rsig);
+            }
         }
 
-        // Step 6: AllOutSet - Get RCT signature fields
+        // Step 6: AllOutSet - Get RCT signature fields and extra
         const allOutSetResponse = await this.device
             .getCommands()
             .typedCall('MoneroTransactionAllOutSetRequest', 'MoneroTransactionAllOutSetAck', {});
 
         this.state.tx_prefix_hash = allOutSetResponse.message.tx_prefix_hash;
         this.state.rv = allOutSetResponse.message.rv;
+        this.state.extra = allOutSetResponse.message.extra;
 
         // Step 7: SignInput - Generate CLSAG signatures for each input
         for (let i = 0; i < this.state.vinis.length; i++) {
@@ -288,6 +311,11 @@ export default class MoneroSignTransactionMethod extends AbstractMethod<
             tx_enc_keys: finalResponse.message.tx_enc_keys,
             opening_key: finalResponse.message.opening_key,
             pseudo_outs: this.state.pseudo_outs,
+            out_pks: this.state.out_pks,
+            ecdh_infos: this.state.ecdh_infos,
+            tx_outs: this.state.tx_outs,
+            rsig_parts: this.state.rsig_parts,
+            extra: this.state.extra,
         };
     }
 }
