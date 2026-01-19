@@ -30,11 +30,10 @@ export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddres
 
 export const TradingSelectedOfferProvider = () => {
     const context = useTradingFormContext();
-    const { quotes, preselectedQuote, isAmountEmpty, form, type, goToOffers } = context;
+    const { preselectedQuote, isAmountEmpty, form, type, goToOffers } = context;
 
     const providers = getProvidersInfoProps(context);
-    const bestScoredQuote = quotes?.[0];
-    const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
+    const quote = preselectedQuote ?? getSelectedQuote(context);
 
     const onGoToOffers = async () => {
         await goToOffers();

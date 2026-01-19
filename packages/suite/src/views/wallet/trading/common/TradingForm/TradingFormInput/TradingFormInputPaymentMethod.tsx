@@ -1,7 +1,8 @@
-import { Control, Controller } from 'react-hook-form';
+import { Control, Controller, UseFormSetValue } from 'react-hook-form';
 
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TRADING_FORM_PROVIDER_SELECT,
     type TradingPaymentMethodListProps,
 } from '@suite-common/trading';
 import { Select } from '@trezor/components';
@@ -25,8 +26,10 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
             state: { isFormLoading, isFormInvalid },
         },
         getValues,
+        setValue,
         type,
     } = useTradingFormContext<TradingTradeBuySellType>();
+    const setValueTyped = setValue as UseFormSetValue<TradingBuySellFormProps>;
 
     const amountIsEmpty =
         type === 'buy'
@@ -49,7 +52,10 @@ export const TradingFormInputPaymentMethod = ({ label }: TradingFormInputDefault
             render={({ field: { onChange, value } }) => (
                 <Select
                     value={value}
-                    onChange={onChange}
+                    onChange={selected => {
+                        setValueTyped(TRADING_FORM_PROVIDER_SELECT, undefined);
+                        onChange(selected);
+                    }}
                     options={paymentMethods}
                     labelLeft={label && <Translation id={label} />}
                     formatOptionLabel={(option: TradingPaymentMethodListProps) =>
