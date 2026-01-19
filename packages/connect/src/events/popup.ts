@@ -10,8 +10,6 @@ export const POPUP = {
     CORE_LOADED: 'popup-core-loaded',
     // Message from window.opener to popup.js. Send settings to popup. This is first message from window.opener to popup.
     INIT: 'popup-init',
-    // Error message from popup to window.opener. Could be thrown during popup initialization process (POPUP.INIT)
-    ERROR: 'popup-error',
     // Message to webextensions, opens "trezor-usb-permission.html" within webextension
     EXTENSION_USB_PERMISSIONS: 'open-usb-permissions',
     // Message called from both [popup > iframe] then [iframe > popup] in this exact order.
@@ -52,13 +50,6 @@ export interface PopupHandshake {
     };
 }
 
-export interface PopupError {
-    type: typeof POPUP.ERROR;
-    payload: {
-        error: string;
-    };
-}
-
 export interface PopupClosedMessage {
     type: typeof POPUP.CLOSED;
     payload: { error: any } | null;
@@ -95,7 +86,6 @@ export type PopupEvent =
       }
     | PopupInit
     | PopupHandshake
-    | PopupError
     | PopupContentScriptLoaded
     | PopupMethodInfo
     | PopupExtensionUsbPermissions
