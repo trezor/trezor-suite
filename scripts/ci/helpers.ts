@@ -218,9 +218,12 @@ export const getLocalVersion = (packageName: string) => {
     return packageJson.version;
 };
 
-export const getConnectDependencies = async (rootDir: string) => {
-    const connectPackageJsonPath = path.join(rootDir, 'packages', 'connect', 'package.json');
-    const packageJsonContent = await fs.promises.readFile(connectPackageJsonPath, 'utf-8');
+export const getPackageTrezorDependencies = async (
+    rootDir: string,
+    packageName: string,
+): Promise<string[]> => {
+    const packageJsonPath = path.join(rootDir, 'packages', packageName, 'package.json');
+    const packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf-8');
     const packageJson = JSON.parse(packageJsonContent);
     const dependencies = packageJson.dependencies ? Object.keys(packageJson.dependencies) : [];
     return dependencies
