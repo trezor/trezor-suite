@@ -40,6 +40,7 @@ export const TRADING_FORM_CRYPTO_INPUT = 'cryptoInput';
 export const TRADING_FORM_CRYPTO_CURRENCY_SELECT = 'cryptoSelect';
 export const TRADING_FORM_COUNTRY_SELECT = 'countrySelect';
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
+export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
 
 export const TRADING_EXCHANGE_FROM_ADDRESS = 'fromAddress';

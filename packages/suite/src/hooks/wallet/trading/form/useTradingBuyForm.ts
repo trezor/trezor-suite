@@ -9,6 +9,8 @@ import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
+    TRADING_FORM_PAYMENT_METHOD_SELECT,
+    TRADING_FORM_PROVIDER_SELECT,
     TradingAmountLimitProps,
     TradingBuyFormProps,
     type TradingBuyType,
@@ -121,6 +123,7 @@ export const useTradingBuyForm = ({
     });
     const { formState, reset, setValue, handleSubmit, control } = methods;
     const values = useWatch({ control }) as TradingBuyFormProps;
+    const { paymentMethod, provider } = values;
     const previousValues = useRef<TradingBuyFormProps | null>(
         !isFromRedirect && isNotFormPage ? draftUpdated : null,
     );
@@ -306,6 +309,38 @@ export const useTradingBuyForm = ({
         setValue('receiveAddress', receiveAddress);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [receiveAddress]);
+
+    useEffect(() => {
+        if (!preselectedQuote) {
+            return;
+        }
+
+        const preselectedProvider = preselectedQuote.exchange;
+        const preselectedPaymentMethod = preselectedQuote.paymentMethod;
+        const shouldUpdateProvider = !!preselectedProvider && preselectedProvider !== provider;
+        const shouldUpdatePaymentMethod =
+            !!preselectedPaymentMethod && paymentMethod?.value !== preselectedPaymentMethod;
+
+        dispatch(tradingBuyActions.savePreselectedQuote(undefined));
+
+        if (shouldUpdateProvider) {
+            setValue(TRADING_FORM_PROVIDER_SELECT, preselectedProvider);
+        }
+
+        if (shouldUpdatePaymentMethod) {
+            const matchingOption = paymentMethods.find(
+                method => method.value === preselectedPaymentMethod,
+            );
+
+            setValue(
+                TRADING_FORM_PAYMENT_METHOD_SELECT,
+                matchingOption ?? {
+                    value: preselectedPaymentMethod,
+                    label: preselectedQuote.paymentMethodName ?? preselectedPaymentMethod,
+                },
+            );
+        }
+    }, [paymentMethod, paymentMethods, preselectedQuote, provider, setValue, dispatch]);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));

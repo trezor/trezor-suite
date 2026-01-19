@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
+import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { ExperimentId } from '@suite-common/message-system';
@@ -54,17 +54,45 @@ import { useIsContentBelowBreakpoint } from '../../../../../support/suite/Conten
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 
-export const getSelectedQuote = (
-    context: TradingFormContextValues<TradingType>,
-    bestScoredQuote: TradingTradeType | undefined,
-) => {
+const getQuotesFilteredByProvider = (quotes: TradingTradeType[], provider: string | undefined) =>
+    quotes?.filter(quote => (provider ? quote.exchange === provider : true));
+
+const getQuotesFilteredByProviderAndPaymentMethod = (
+    quotes: BuyTrade[] | SellFiatTrade[],
+    provider: string | undefined,
+    paymentMethod: string | undefined,
+) =>
+    getQuotesFilteredByProvider(quotes, provider).filter(quote =>
+        paymentMethod ? (quote as BuyTrade | SellFiatTrade).paymentMethod === paymentMethod : true,
+    );
+
+export const getSelectedQuote = (context: TradingFormContextValues<TradingType>) => {
+    const { provider } = context.getValues();
+
+    console.warn('provider', provider);
+
     if (!isTradingExchangeContext(context)) {
-        return bestScoredQuote;
+        const { paymentMethod } = context.getValues();
+        console.warn('paymentMethod', paymentMethod);
+
+        const q = getQuotesFilteredByProviderAndPaymentMethod(
+            context.quotes,
+            provider,
+            paymentMethod?.value,
+        )?.[0];
+
+        console.warn('selected quote', q);
+        
+        return q;
     }
 
     const isDex = context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX;
+    const quotesFilteredByProvider = getQuotesFilteredByProvider(context.quotes, provider);
+    const bestScoredQuote = quotesFilteredByProvider?.[0];
 
-    const selectedQuote = isDex ? context.dexQuotes?.[0] : context.cexQuotes?.[0];
+    const selectedQuote = isDex
+        ? getQuotesFilteredByProvider(context.dexQuotes, provider)?.[0]
+        : getQuotesFilteredByProvider(context.cexQuotes, provider)?.[0];
 
     return selectedQuote ?? bestScoredQuote;
 };
@@ -101,7 +129,7 @@ export const TradingFormOffer = () => {
 
     const bestScoredQuote = quotes?.[0];
     const { preselectedQuote } = context;
-    const quote = preselectedQuote ?? getSelectedQuote(context, bestScoredQuote);
+    const quote = preselectedQuote ?? getSelectedQuote(context);
     const bestScoredQuoteAmounts = getCryptoQuoteAmountProps(quote, context);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, account.symbol));
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
