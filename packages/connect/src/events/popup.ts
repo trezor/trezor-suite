@@ -22,7 +22,7 @@ export const POPUP = {
     CANCEL_POPUP_REQUEST: 'ui-cancel-popup-request',
     // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
     CLOSE_WINDOW: 'window.close',
-    /** webextension injected content script and content script notified popup */
+    // not used anymore, will removed in https://github.com/trezor/trezor-suite/pull/24471
     CONTENT_SCRIPT_LOADED: 'popup-content-script-loaded',
     /** method.info async getter result passed from core to popup */
     METHOD_INFO: 'popup-method-info',
