@@ -10,9 +10,6 @@
         },
         { "path": "../../suite-common/thp" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
@@ -24,12 +21,12 @@
         { "path": "../device-authorization" },
         { "path": "../discovery" },
         { "path": "../firmware" },
-        { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-connect-popup" },
         { "path": "../navigation" },
+        { "path": "../passphrase" },
         { "path": "../services" },
         { "path": "../theme" },
         { "path": "../thp" },

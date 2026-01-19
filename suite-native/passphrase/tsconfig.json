@@ -15,10 +15,9 @@
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/urls" }
+        { "path": "../../packages/styles" }
     ]
 }

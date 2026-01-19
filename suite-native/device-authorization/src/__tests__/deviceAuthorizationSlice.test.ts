@@ -37,7 +37,8 @@ describe('deviceAuthorizationSlice', () => {
             const state = deviceAuthorizationReducer(undefined, {
                 type: UI.REQUEST_PASSPHRASE,
                 payload: {
-                    // @ts-expect-error payload not typed
+                    // @ts-expect-error This is how connect sends the payload for device state, but then it's stored differently in redux so this util doesn't recognize
+                    // this type of property. For testing purposes however, it's fine.
                     device: getSuiteDevice({ _state: { staticSessionId: 'test-session-id' } }),
                 },
             });
