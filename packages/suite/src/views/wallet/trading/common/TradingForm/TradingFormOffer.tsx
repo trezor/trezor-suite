@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { ExperimentId } from '@suite-common/message-system';
 import {
-    TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_DEX,
-    type TradingTradeType,
     type TradingType,
     isSendingEvmNativeToken,
     parseCryptoId,
@@ -54,47 +52,44 @@ import { useIsContentBelowBreakpoint } from '../../../../../support/suite/Conten
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
 
-const getQuotesFilteredByProvider = (quotes: TradingTradeType[], provider: string | undefined) =>
-    quotes?.filter(quote => (provider ? quote.exchange === provider : true));
+const getQuotesFilteredByPaymentMethod = (
+    quotes: BuyTrade[] | SellFiatTrade[],
+    paymentMethod: string | undefined,
+) =>
+    quotes?.filter(quote =>
+        paymentMethod ? (quote as BuyTrade | SellFiatTrade).paymentMethod === paymentMethod : true,
+    ) ?? ([] as BuyTrade[] | SellFiatTrade[]);
 
 const getQuotesFilteredByProviderAndPaymentMethod = (
     quotes: BuyTrade[] | SellFiatTrade[],
     provider: string | undefined,
     paymentMethod: string | undefined,
 ) =>
-    getQuotesFilteredByProvider(quotes, provider).filter(quote =>
-        paymentMethod ? (quote as BuyTrade | SellFiatTrade).paymentMethod === paymentMethod : true,
+    getQuotesFilteredByPaymentMethod(quotes, paymentMethod).filter(quote =>
+        provider ? (quote as BuyTrade | SellFiatTrade).exchange === provider : true,
     );
 
 export const getSelectedQuote = (context: TradingFormContextValues<TradingType>) => {
     const { provider } = context.getValues();
 
-    console.warn('provider', provider);
-
     if (!isTradingExchangeContext(context)) {
-        const { paymentMethod } = context.getValues();
-        console.warn('paymentMethod', paymentMethod);
+        const { provider, paymentMethod } = context.getValues();
 
-        const q = getQuotesFilteredByProviderAndPaymentMethod(
+        return getQuotesFilteredByProviderAndPaymentMethod(
             context.quotes,
             provider,
             paymentMethod?.value,
         )?.[0];
-
-        console.warn('selected quote', q);
-        
-        return q;
     }
 
-    const isDex = context.getValues(TRADING_EXCHANGE_FORM) === TRADING_EXCHANGE_FORM_DEX;
-    const quotesFilteredByProvider = getQuotesFilteredByProvider(context.quotes, provider);
-    const bestScoredQuote = quotesFilteredByProvider?.[0];
+    const { exchangeType } = context.getValues();
+    const isDex = exchangeType === TRADING_EXCHANGE_FORM_DEX;
 
-    const selectedQuote = isDex
-        ? getQuotesFilteredByProvider(context.dexQuotes, provider)?.[0]
-        : getQuotesFilteredByProvider(context.cexQuotes, provider)?.[0];
+    const quotes = isDex ? context.dexQuotes : context.cexQuotes;
+    const selectedQuote =
+        quotes?.find(quote => !provider || quote.exchange === provider) ?? quotes?.[0];
 
-    return selectedQuote ?? bestScoredQuote;
+    return selectedQuote;
 };
 
 export const TradingFormOffer = () => {
