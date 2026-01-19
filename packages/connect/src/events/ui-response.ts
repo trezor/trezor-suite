@@ -11,7 +11,6 @@ import type { MessageFactoryFn } from '../types/utils';
  */
 
 export const UI_RESPONSE = {
-    RECEIVE_PERMISSION: 'ui-receive_permission',
     RECEIVE_CONFIRMATION: 'ui-receive_confirmation',
     RECEIVE_FIRMWARE: 'ui-receive_firmware',
     RECEIVE_PIN: 'ui-receive_pin',
@@ -29,14 +28,6 @@ export const UI_RESPONSE = {
 export interface UiResponsePopupHandshake {
     type: typeof POPUP.HANDSHAKE;
     payload?: typeof undefined;
-}
-
-export interface UiResponsePermission {
-    type: typeof UI_RESPONSE.RECEIVE_PERMISSION;
-    payload: {
-        granted: boolean;
-        remember: boolean;
-    };
 }
 
 export interface UiResponseConfirmation {
@@ -123,7 +114,6 @@ export interface UiResponseLoginChallenge {
 
 export type UiResponseEvent =
     | UiResponsePopupHandshake
-    | UiResponsePermission
     | UiResponseConfirmation
     | UiResponseDevice
     | UiResponsePin

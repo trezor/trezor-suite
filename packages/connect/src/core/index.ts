@@ -933,7 +933,6 @@ export class Core extends EventEmitter {
             // messages from UI (popup/modal...)
             case UI.RECEIVE_DEVICE:
             case UI.RECEIVE_CONFIRMATION:
-            case UI.RECEIVE_PERMISSION:
             case UI.RECEIVE_PIN:
             case UI.RECEIVE_PASSPHRASE:
             case UI.INVALID_PASSPHRASE_ACTION:

@@ -10,7 +10,6 @@ import {
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
-import type { MethodPermission } from '../core/AbstractMethod';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types/coinInfo';
 import type { Device } from '../types/device';
@@ -44,7 +43,6 @@ export const UI_REQUEST = {
     REQUEST_UI_WINDOW: 'ui-request_window',
     CLOSE_UI_WINDOW: 'ui-close_window',
 
-    REQUEST_PERMISSION: 'ui-request_permission',
     REQUEST_CONFIRMATION: 'ui-request_confirmation',
     REQUEST_PIN: 'ui-request_pin',
     INVALID_PIN: 'ui-invalid_pin',
@@ -184,14 +182,6 @@ export interface UiRequestAddressValidation {
 export interface UiRequestSetOperation {
     type: typeof UI_REQUEST.SET_OPERATION;
     payload: string;
-}
-
-export interface UiRequestPermission {
-    type: typeof UI_REQUEST.REQUEST_PERMISSION;
-    payload: {
-        permissions: MethodPermission[];
-        device: Device;
-    };
 }
 
 export interface UiRequestConfirmation {
@@ -337,7 +327,6 @@ export type UiEvent =
     | UiRequestWithoutPayload
     | UiRequestDeviceAction
     | UiRequestButton
-    | UiRequestPermission
     | UiRequestConfirmation
     | UiRequestSelectDevice
     | UiRequestUnexpectedDeviceMode
