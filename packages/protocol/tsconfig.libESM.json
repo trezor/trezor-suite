@@ -2,6 +2,8 @@
     "extends": "../../tsconfig.libESM.json",
     "include": ["./src"],
     "compilerOptions": {
-        "outDir": "./libESM"
+        "outDir": "./libESM",
+        "target": "es2022",
+        "lib": ["es2022", "esnext"]
     }
 }

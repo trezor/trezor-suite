@@ -33,29 +33,59 @@
         "./src/workers/workers": "./src/workers/workers.native.ts"
     },
     "publishConfig": {
-        "main": "lib/index.js",
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./lib/constants/*": "./lib/constants/*.js",
+            "./lib/data/*": "./lib/data/*.js",
+            "./lib/events": "./lib/events/index.js",
+            "./lib/exports": "./lib/exports.js",
+            "./lib/factory": "./lib/factory.js",
+            "./lib/impl/*": "./lib/impl/*.js",
+            "./lib/utils/*": "./lib/utils/*.js",
+            "./libESM/constants/*": "./libESM/constants/*.js",
+            "./libESM/data/*": "./libESM/data/*.js",
+            "./libESM/events": "./libESM/events/index.js",
+            "./libESM/exports": "./libESM/exports.js",
+            "./libESM/factory": "./libESM/factory.js",
+            "./libESM/impl/*": "./libESM/impl/*.js"
+        },
         "browser": {
             "./lib/index.js": "./lib/index-browser.js",
             "./lib/index": "./lib/index-browser.js",
             "./lib/utils/assets": "./lib/utils/assets-browser.js",
-            "./lib/workers/workers": "./lib/workers/workers-browser.js"
+            "./lib/workers/workers": "./lib/workers/workers-browser.js",
+            "./libESM/index.js": "./libESM/index-browser.js",
+            "./libESM/utils/assets.js": "./libESM/utils/assets-browser.js",
+            "./libESM/workers/workers.js": "./libESM/workers/workers-browser.js"
         },
         "react-native": {
             "./lib/index": "./lib/index.js",
             "./lib/index.ts": "./lib/index.js",
             "./lib/utils/assets": "./lib/utils/assets.native.js",
-            "./lib/workers/workers": "./lib/workers/workers.native.js"
+            "./lib/workers/workers": "./lib/workers/workers.native.js",
+            "./libESM/index.js": "./libESM/index.js",
+            "./libESM/utils/assets.js": "./libESM/utils/assets.native.js",
+            "./libESM/workers/workers.js": "./libESM/workers/workers.native.js"
         }
     },
     "files": [
         "lib/",
+        "libESM/",
         "CHANGELOG.md"
     ],
     "scripts": {
         "test:unit": "jest --version && jest",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:prepatch": "yarn g:tsx scripts/bump-version.ts prepatch",

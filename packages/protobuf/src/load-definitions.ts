@@ -1,5 +1,6 @@
-import { Root } from 'protobufjs/light';
+import * as protobuf from 'protobufjs/light';
 
+type Root = protobuf.Root;
 type Definitions = Record<string, unknown>;
 
 export const loadDefinitions = async (

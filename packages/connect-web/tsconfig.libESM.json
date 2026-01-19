@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "types": ["chrome", "w3c-web-usb"]
+    },
+    "references": [
+        {
+            "path": "../connect"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../websocket-client"
+        },
+        {
+            "path": "../eslint"
+        },
+        {
+            "path": "../type-utils"
+        }
+    ]
+}

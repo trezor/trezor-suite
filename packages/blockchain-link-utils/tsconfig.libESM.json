@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM"
+    },
+    "references": [
+        {
+            "path": "../env-utils"
+        },
+
+        {
+            "path": "../utils"
+        },
+
+        {
+            "path": "../blockchain-link-types"
+        },
+
+        {
+            "path": "../eslint"
+        },
+
+        {
+            "path": "../type-utils"
+        }
+    ]
+}

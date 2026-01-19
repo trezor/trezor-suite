@@ -20,18 +20,30 @@
     "main": "./src/index.ts",
     "files": [
         "lib/",
+        "libESM/",
         "files/**/*.json",
         "files/**/*.txt",
         "CHANGELOG.md"
     ],
     "publishConfig": {
-        "main": "lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts"
+        "main": "./lib/index.js",
+        "types": "./lib/index.d.ts",
+        "exports": {
+            ".": {
+                "import": "./libESM/index.js",
+                "require": "./lib/index.js",
+                "types": "./lib/index.d.ts"
+            },
+            "./lib/*": "./lib/*.js",
+            "./files/*": "./files/*",
+            "./libESM/*.js": "./libESM/*.js"
+        }
     },
     "scripts": {
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
+        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
+        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
