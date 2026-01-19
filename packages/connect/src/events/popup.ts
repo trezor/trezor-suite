@@ -24,8 +24,6 @@ export const POPUP = {
     CLOSE_WINDOW: 'window.close',
     // not used anymore, will removed in https://github.com/trezor/trezor-suite/pull/24471
     CONTENT_SCRIPT_LOADED: 'popup-content-script-loaded',
-    /** method.info async getter result passed from core to popup */
-    METHOD_INFO: 'popup-method-info',
 } as const;
 
 export interface PopupInit {
@@ -51,11 +49,6 @@ export interface PopupClosedMessage {
     payload: { error: any } | null;
 }
 
-export interface PopupMethodInfo {
-    type: typeof POPUP.METHOD_INFO;
-    payload: { info: string; method: string };
-}
-
 export interface PopupContentScriptLoaded {
     type: typeof POPUP.CONTENT_SCRIPT_LOADED;
     payload: { id: string; contentScriptVersion: number };
@@ -78,7 +71,6 @@ export type PopupEvent =
     | PopupInit
     | PopupHandshake
     | PopupContentScriptLoaded
-    | PopupMethodInfo
     | PopupExtensionUsbPermissions
     | PopupCloseWindow
     | PopupClosedMessage;
