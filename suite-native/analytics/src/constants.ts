@@ -19,6 +19,7 @@ export enum EventType {
     SettingsChangeBtcUnit = 'settings/change_btc_unit',
     SettingsDiscreetToggle = 'settings/discreet_toggle',
     SettingsChangeCoinEnabled = 'settings/change_coin_enabled',
+    SettingsChangeCoinBackend = 'settings/change_coin_backend',
     BiometricsChange = 'biometrics_change',
     SettingsDataPermission = 'settings/data_permission',
     EmptyDashboardClick = 'empty_dashboard/action',
