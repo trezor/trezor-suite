@@ -1,4 +1,4 @@
-import { TestStore, initStore, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
+import { TestStore, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
 import { buyMercuryo, getWalletState } from '@suite-native/trading-fixtures';
 import { selectTradingProviderMetadata } from '@suite-native/trading-state';
 
@@ -11,7 +11,7 @@ describe('useProviderMetadataChangeEffect', () => {
     let store: TestStore;
 
     const renderUseProviderMetadataChangeEffect = (watch: QuoteProviderFormWatch) =>
-        renderHookWithStoreProviderAsync(() => useProviderMetadataChangeEffect(watch, 'buy'), {
+        renderHookWithStoreProvider(() => useProviderMetadataChangeEffect(watch, 'buy'), {
             store,
         });
 
@@ -19,15 +19,15 @@ describe('useProviderMetadataChangeEffect', () => {
         ({ store } = initStore({ wallet: getWalletState({ tradeType: 'buy' }) }));
     });
 
-    it('should set currentProviderMetadata when quote is set', async () => {
-        const { result } = await renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
+    it('should set currentProviderMetadata when quote is set', () => {
+        const { result } = renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toEqual(buyMercuryo);
         expect(result.current).toEqual(buyMercuryo);
     });
 
-    it('should clear currentProviderMetadata on unmount', async () => {
-        const { unmount } = await renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
+    it('should clear currentProviderMetadata on unmount', () => {
+        const { unmount } = renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
 
         unmount();
 

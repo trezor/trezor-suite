@@ -4,7 +4,7 @@ import {
     TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     bnbAsset,
@@ -58,7 +58,7 @@ describe('useSellQuotes', () => {
     };
 
     const renderUseSellQuotes = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () => {
                 const form = useSellForm();
                 useSellQuotes(form);
@@ -73,9 +73,9 @@ describe('useSellQuotes', () => {
     });
 
     it('should query quotes once all required data is selected', async () => {
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseSellQuotes(store);
+        const { result } = renderUseSellQuotes(store);
 
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
@@ -98,9 +98,9 @@ describe('useSellQuotes', () => {
     it.each<string>(['0', '-1'])(
         'should not query quotes when amount is zero or less',
         async amount => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseSellQuotes(store);
+            const { result } = renderUseSellQuotes(store);
 
             act(() => {
                 result.current.setValue('sendAsset', bnbAsset);
@@ -121,9 +121,9 @@ describe('useSellQuotes', () => {
     );
 
     it('should accept amount in fiat when requested', async () => {
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseSellQuotes(store);
+        const { result } = renderUseSellQuotes(store);
 
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
@@ -143,11 +143,11 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('should clear sell state on unmount', async () => {
-        const store = await getInitializedStore();
+    it('should clear sell state on unmount', () => {
+        const store = getInitializedStore();
         store.dispatch(tradingSellActions.saveQuotes(sellQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { unmount } = await renderUseSellQuotes(store);
+        const { unmount } = renderUseSellQuotes(store);
 
         unmount();
 
@@ -164,9 +164,9 @@ describe('useSellQuotes', () => {
     ] as [keyof SellFormValues, SellFormValues[keyof SellFormValues]][])(
         'should re-fetch quotes on %s value change',
         async (field, value) => {
-            const store = await getInitializedStore();
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseSellQuotes(store);
+            const { result } = renderUseSellQuotes(store);
             act(() => {
                 result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
@@ -191,9 +191,9 @@ describe('useSellQuotes', () => {
     );
 
     it('should re-fetch quotes when re-fetch time elapsed', async () => {
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseSellQuotes(store);
+        const { result, rerender } = renderUseSellQuotes(store);
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
@@ -217,10 +217,10 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
-        const store = await getInitializedStore();
+    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseSellQuotes(store);
+        const { result, rerender, unmount } = renderUseSellQuotes(store);
 
         dispatchSpy.mockClear();
         act(() => {
@@ -231,12 +231,14 @@ describe('useSellQuotes', () => {
         rerender({});
 
         expect(dispatchSpy).not.toHaveBeenCalled();
+
+        unmount();
     });
 
     it('should clear quotes when data in form becomes invalid', async () => {
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, unmount } = await renderUseSellQuotes(store);
+        const { result, unmount } = renderUseSellQuotes(store);
 
         act(() => {
             result.current.setValue('sendAsset', usdcAsset);
@@ -274,9 +276,9 @@ describe('useSellQuotes', () => {
             ...sellQuotes[0],
             cryptoStringAmount: '2',
         };
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseSellQuotes(store);
+        const { result } = renderUseSellQuotes(store);
 
         act(() => {
             store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
@@ -304,9 +306,9 @@ describe('useSellQuotes', () => {
     });
 
     it('should not query quotes when form contains error', async () => {
-        const store = await getInitializedStore();
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseSellQuotes(store);
+        const { result } = renderUseSellQuotes(store);
 
         await act(async () => {
             result.current.setValue('sendAsset', usdcAsset);

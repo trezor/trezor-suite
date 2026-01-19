@@ -1,6 +1,6 @@
 import { Linking } from 'react-native';
 
-import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
+import { PreloadedState, renderWithStoreProvider, userEvent } from '@suite-native/test-utils';
 import { exchangeCexdirect } from '@suite-native/trading-fixtures';
 import { TREZOR_SUITE_TOS_URL, TREZOR_TRADING_LEARN_MORE_URL } from '@trezor/urls';
 
@@ -10,36 +10,32 @@ describe('Footer', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
     const renderFooter = (preloadedState: PreloadedState) =>
-        renderWithStoreProviderAsync(<Footer />, { preloadedState });
+        renderWithStoreProvider(<Footer />, { preloadedState });
 
     beforeEach(() => {
         mockOpenLink.mockClear();
     });
 
-    it('should render footer links', async () => {
-        const { getByText } = await renderFooter({});
+    it('should render footer links', () => {
+        const { getByText } = renderFooter({});
 
         expect(getByText("Trezor's Terms of Use")).toBeOnTheScreen();
         expect(getByText('Learn more')).toBeOnTheScreen();
     });
 
-    it('should render nothing when isAmountInputActive is true', async () => {
-        const { toJSON } = await renderWithStoreProviderAsync(<Footer />, {
-            preloadedState: {
-                wallet: { trading: { isAmountInputActive: true } },
-            },
+    it('should render nothing when isAmountInputActive is true', () => {
+        const { toJSON } = renderFooter({
+            wallet: { trading: { isAmountInputActive: true } },
         });
 
         expect(toJSON()).toBeNull();
     });
 
     it("should render provider's Terms & Conditions link when quote and provider infos are provided", async () => {
-        const { getByText } = await renderWithStoreProviderAsync(<Footer />, {
-            preloadedState: {
-                wallet: {
-                    trading: {
-                        currentProviderMetadata: exchangeCexdirect,
-                    },
+        const { getByText } = renderFooter({
+            wallet: {
+                trading: {
+                    currentProviderMetadata: exchangeCexdirect,
                 },
             },
         });
@@ -52,7 +48,7 @@ describe('Footer', () => {
     });
 
     it('pressing links should lead to correct URLs', async () => {
-        const { getByText } = await renderFooter({});
+        const { getByText } = renderFooter({});
 
         await userEvent.press(getByText("Trezor's Terms of Use"));
         await userEvent.press(getByText('Learn more'));

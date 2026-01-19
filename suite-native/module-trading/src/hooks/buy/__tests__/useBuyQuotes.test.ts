@@ -5,7 +5,7 @@ import {
     TestStore,
     act,
     initStore,
-    renderHookWithStoreProviderAsync,
+    renderHookWithStoreProvider,
 } from '@suite-native/test-utils';
 import {
     bnbAsset,
@@ -57,7 +57,7 @@ describe('useBuyQuotes', () => {
     };
 
     const renderUseBuyQuotes = (store: TestStore) =>
-        renderHookWithStoreProviderAsync(
+        renderHookWithStoreProvider(
             () => {
                 const form = useBuyForm();
                 useBuyQuotes(form);
@@ -71,10 +71,10 @@ describe('useBuyQuotes', () => {
         mockTimeSpent = 0;
     });
 
-    it('should query quotes once all required data is selected', async () => {
-        const store = await getInitializedStore();
+    it('should query quotes once all required data is selected', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
 
         act(() => {
             result.current.setValue('asset', usdcAsset);
@@ -91,10 +91,10 @@ describe('useBuyQuotes', () => {
         );
     });
 
-    it('should query quotes once all required data is selected for BNB', async () => {
-        const store = await getInitializedStore();
+    it('should query quotes once all required data is selected for BNB', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
 
         act(() => {
             result.current.setValue('asset', bnbAsset);
@@ -111,33 +111,30 @@ describe('useBuyQuotes', () => {
         );
     });
 
-    it.each<string>(['0', '-1'])(
-        'should not query quotes when amount is zero or less',
-        async amount => {
-            const store = await getInitializedStore();
-            const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseBuyQuotes(store);
-
-            act(() => {
-                result.current.setValue('asset', bnbAsset);
-                result.current.setValue('fiatCurrency', 'usd');
-            });
-            act(() => {
-                result.current.setValue('fiatValue', amount);
-            });
-
-            expect(dispatchSpy).not.toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: 'handleRequestThunkMock',
-                }),
-            );
-        },
-    );
-
-    it('should accept amount in crypto when requested', async () => {
-        const store = await getInitializedStore();
+    it.each<string>(['0', '-1'])('should not query quotes when amount is zero or less', amount => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
+
+        act(() => {
+            result.current.setValue('asset', bnbAsset);
+            result.current.setValue('fiatCurrency', 'usd');
+        });
+        act(() => {
+            result.current.setValue('fiatValue', amount);
+        });
+
+        expect(dispatchSpy).not.toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'handleRequestThunkMock',
+            }),
+        );
+    });
+
+    it('should accept amount in crypto when requested', () => {
+        const store = getInitializedStore();
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = renderUseBuyQuotes(store);
 
         act(() => {
             result.current.setValue('asset', usdcAsset);
@@ -155,11 +152,11 @@ describe('useBuyQuotes', () => {
         );
     });
 
-    it('should clear buy state on unmount', async () => {
-        const store = await getInitializedStore();
+    it('should clear buy state on unmount', () => {
+        const store = getInitializedStore();
         store.dispatch(tradingBuyActions.saveQuotes(buyQuotes));
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { unmount } = await renderUseBuyQuotes(store);
+        const { unmount } = renderUseBuyQuotes(store);
 
         unmount();
 
@@ -175,10 +172,10 @@ describe('useBuyQuotes', () => {
         ['receiveAccount', { account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account }],
     ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
         'should re-fetch quotes on %s value change',
-        async (field, value) => {
-            const store = await getInitializedStore();
+        (field, value) => {
+            const store = getInitializedStore();
             const dispatchSpy = jest.spyOn(store, 'dispatch');
-            const { result } = await renderUseBuyQuotes(store);
+            const { result } = renderUseBuyQuotes(store);
             act(() => {
                 result.current.setValue('asset', usdcAsset);
                 result.current.setValue('fiatCurrency', 'usd');
@@ -200,10 +197,10 @@ describe('useBuyQuotes', () => {
         },
     );
 
-    it('should re-fetch quotes when re-fetch time elapsed', async () => {
-        const store = await getInitializedStore();
+    it('should re-fetch quotes when re-fetch time elapsed', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseBuyQuotes(store);
+        const { result, rerender } = renderUseBuyQuotes(store);
         dispatchSpy.mockClear();
 
         act(() => {
@@ -229,10 +226,10 @@ describe('useBuyQuotes', () => {
         );
     });
 
-    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', async () => {
-        const store = await getInitializedStore();
+    it('should not re-fetch quotes when re-fetch time elapsed but not all required data are available', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result, rerender } = await renderUseBuyQuotes(store);
+        const { result, rerender } = renderUseBuyQuotes(store);
 
         dispatchSpy.mockClear();
         act(() => {
@@ -246,10 +243,10 @@ describe('useBuyQuotes', () => {
         expect(dispatchSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('should clear quotes when data in form becomes invalid', async () => {
-        const store = await getInitializedStore();
+    it('should clear quotes when data in form becomes invalid', () => {
+        const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
-        const { result } = await renderUseBuyQuotes(store);
+        const { result } = renderUseBuyQuotes(store);
 
         act(() => {
             result.current.setValue('asset', usdcAsset);
