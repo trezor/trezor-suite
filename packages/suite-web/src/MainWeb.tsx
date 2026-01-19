@@ -55,7 +55,10 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const { store, services } = initStore({ history: createBrowserHistory() }, preloadAction);
+    const { store, services } = initStore(
+        { history: createBrowserHistory(), flushSuiteSyncStorage: () => window.location.reload() },
+        preloadAction,
+    );
 
     root.render(
         <SuiteServicesProvider services={services}>

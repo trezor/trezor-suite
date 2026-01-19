@@ -321,6 +321,12 @@ const init = async () => {
         store,
     });
 
+    ipcMain.handle('browser-window/reload', ipcEvent => {
+        validateIpcMessage({ ipcEvent });
+
+        mainWindowProxy.getInstance()?.webContents.reload();
+    });
+
     loadBioAuthModule();
 
     ipcMain.handle('handshake/load-tor-module', ipcEvent => {

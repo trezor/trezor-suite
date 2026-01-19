@@ -71,6 +71,9 @@ export const init = async (container: HTMLElement) => {
     const { store, services } = initStore(
         {
             history: createMemoryHistory(),
+            flushSuiteSyncStorage: () => {
+                desktopApi.reloadBrowserWindow();
+            },
         },
         preloadAction,
         {

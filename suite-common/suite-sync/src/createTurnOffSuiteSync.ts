@@ -1,6 +1,10 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { TurnOffSuiteSync, TurnOffSuiteSyncForWalletDep } from '@suite-common/suite-sync-types';
+import {
+    StorageFlusherDep,
+    TurnOffSuiteSync,
+    TurnOffSuiteSyncForWalletDep,
+} from '@suite-common/suite-sync-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import { suiteSyncActions } from './suiteSyncActions';
@@ -10,7 +14,8 @@ export type CreateTurnOffSuiteSyncDeps = {
     dispatch: Dispatch;
     getState: () => any;
     getAllDeviceSessionIds: () => StaticSessionId[];
-} & TurnOffSuiteSyncForWalletDep;
+} & TurnOffSuiteSyncForWalletDep &
+    StorageFlusherDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
@@ -28,4 +33,7 @@ export const createTurnOffSuiteSync =
         for (const deviceStaticSessionId of deviceStaticSessionIds) {
             await deps.turnOffSuiteSyncForWallet({ deviceStaticSessionId });
         }
+
+        // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
+        deps.flushSuiteSyncStorage();
     };

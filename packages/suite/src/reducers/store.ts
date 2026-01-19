@@ -19,6 +19,7 @@ import {
     createStoreWithExtraStoreMiddleware,
 } from '@suite-common/redux-utils';
 import { suiteSyncDataReducer } from '@suite-common/suite-sync';
+import { StorageFlusherDep } from '@suite-common/suite-sync-types';
 import { prepareThpReducer } from '@suite-common/thp';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -128,7 +129,7 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
-type SuiteStoreDeps = HistoryDep;
+type SuiteStoreDeps = HistoryDep & StorageFlusherDep;
 
 export const initStore = (
     deps: SuiteStoreDeps,
