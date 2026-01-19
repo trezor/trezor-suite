@@ -23,13 +23,7 @@ export default class RequestLogin extends AbstractMethod<'requestLogin', PROTO.S
         const identity: PROTO.IdentityType = {};
         const settings: ConnectSettings = DataManager.getSettings();
 
-        let origin;
-        if (settings.trustedHost && payload.origin) {
-            // passed from Suite
-            origin = payload.origin;
-        } else if (settings.origin) {
-            origin = settings.origin;
-        }
+        const origin = payload.origin || settings.origin;
 
         if (origin) {
             const [proto, host, port] = origin.split(':');

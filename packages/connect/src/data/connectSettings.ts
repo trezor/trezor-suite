@@ -16,7 +16,6 @@ const initialSettings: ConnectSettings = {
     version: VERSION, // constant
     debug: false,
     priority: DEFAULT_PRIORITY,
-    trustedHost: true,
     connectSrc: DEFAULT_DOMAIN,
     popupSrc: `${DEFAULT_DOMAIN}popup.html`,
     transports: undefined,
@@ -84,15 +83,8 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         }
     }
 
-    // trust level can only be lowered by implementator!
-    if (input.trustedHost === false) {
-        settings.trustedHost = input.trustedHost;
-    }
-
     if (typeof input.connectSrc === 'string') {
         settings.connectSrc = corsValidator(input.connectSrc);
-    } else if (settings.trustedHost) {
-        settings.connectSrc = input.connectSrc;
     }
 
     const src = settings.connectSrc || DEFAULT_DOMAIN;

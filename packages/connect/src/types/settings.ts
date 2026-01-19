@@ -46,7 +46,6 @@ export interface ConnectSettingsPublic {
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
-    trustedHost: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.

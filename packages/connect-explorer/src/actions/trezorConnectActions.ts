@@ -108,7 +108,6 @@ export const init =
                 appName: 'Trezor Connect Explorer',
                 appIcon: 'https://trezor.io/favicon/apple-touch-icon.png',
             },
-            trustedHost: false,
             connectSrc: window.__TREZOR_CONNECT_SRC,
             ...options,
         };
