@@ -54,7 +54,6 @@ export const registerStorageThunk =
             dispatch(
                 quotaManagerDeviceFetched({
                     deviceId: device.id,
-                    publicKey: params.publicKey,
                     totalStorageSize: response.totalStorageSize,
                     unspentStorageSize: response.unspentStorageSize,
                 }),

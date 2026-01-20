@@ -58,7 +58,6 @@ describe(registerStorageThunk.name, () => {
         expect(mockDispatch).toHaveBeenCalledWith(
             quotaManagerDeviceFetched({
                 deviceId: 'device-id',
-                publicKey: 'pubkey',
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,
             }),

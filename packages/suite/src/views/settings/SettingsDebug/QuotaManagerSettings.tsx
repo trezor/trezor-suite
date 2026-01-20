@@ -89,10 +89,8 @@ export const QuotaManagerSettings = () => {
                             <div>No devices registered.</div>
                         ) : (
                             registeredDevices.map(device => (
-                                <div key={device.publicKey} style={{ marginBottom: 8 }}>
+                                <div key={device.deviceId} style={{ marginBottom: 8 }}>
                                     <strong>Device ID:</strong> {device.deviceId}
-                                    <br />
-                                    <strong>Public Key:</strong> {device.publicKey}
                                     <br />
                                     <strong>Total Storage Size:</strong> {device.totalStorageSize}
                                     <br />
