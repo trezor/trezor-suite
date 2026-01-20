@@ -1,6 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
-import { type History } from 'history';
 
 import {
     DesktopAnalyticsDep,
@@ -16,15 +15,7 @@ import {
 } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import {
-    CommonServices,
-    ExtraDependenciesStatic,
-    SuiteRouterHistory,
-} from '@suite-common/redux-utils';
-import {
-    SuiteRouterHistoryDep,
-    SuiteRouterHistoryDeps,
-} from '@suite-common/redux-utils/src/extraDependenciesType';
+import { CommonServices, ExtraDependenciesStatic } from '@suite-common/redux-utils';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -59,6 +50,12 @@ import { createDisableLegacyMetadataIfNeeded } from '../actions/suite/metadata/d
 import * as suiteActions from '../actions/suite/suiteActions';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { AppState, TrezorDevice } from '../types/suite';
+import {
+    HistoryDep,
+    SuiteRouterHistory,
+    SuiteRouterHistoryDep,
+    SuiteRouterHistoryDeps,
+} from './suite/suiteRouterHistory';
 
 const connectSrc = '../';
 // 'https://localhost:8088/';
@@ -96,10 +93,6 @@ export const createSuiteRouterHistory = ({
             listener({ location: ensureRouterPath(location), action }),
         ),
 });
-
-export type HistoryDep = {
-    history: History;
-};
 
 type SuiteAppDeps = {
     getState: () => any;
