@@ -14788,7 +14788,6 @@ __metadata:
     prettier: "npm:^3.7.4"
     semver: "npm:^7.7.1"
     sort-package-json: "npm:^3.6.0"
-    tar: "npm:^7.5.2"
     tsx: "npm:^4.20.3"
     yargs: "npm:^18.0.0"
   languageName: unknown

@@ -83,7 +83,6 @@ socks-proxy-agent
 stream-browserify
 swr
 tailwindcss
-tar
 tiny-worker
 ts-mixer
 ts-node
