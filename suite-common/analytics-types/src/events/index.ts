@@ -1,3 +1,7 @@
+export { connectPopupCallEvent } from './connectPopupCallEvent';
+export { connectPopupErrorEvent } from './connectPopupErrorEvent';
+export { connectPopupInitEvent } from './connectPopupInitEvent';
+export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';

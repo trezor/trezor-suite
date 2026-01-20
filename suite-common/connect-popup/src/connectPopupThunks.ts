@@ -157,7 +157,7 @@ export const connectPopupCallThunkInner = createThunk<
                 );
             }
 
-            extra.services.legacyAnalytics.report({
+            extra.services.analytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,
@@ -189,7 +189,7 @@ export const connectPopupCallThunkInner = createThunk<
                     return;
             }
 
-            extra.services.legacyAnalytics.report({
+            extra.services.analytics.report({
                 type: EventType.ConnectPopupError,
                 payload: {
                     method,
