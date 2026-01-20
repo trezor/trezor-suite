@@ -46,7 +46,7 @@ export const initialState: MetadataState = {
     error: {},
 };
 
-type MetadataRootState = {
+export type MetadataRootState = {
     metadata: MetadataState;
 } & DesktopDeviceRootState &
     SuiteRootState &
@@ -346,5 +346,14 @@ export const selectPasswordManagerState = (
 };
 
 export const selectLabelingValueBeingEdited = ({ metadata }: MetadataRootState) => metadata.editing;
+
+export const selectSelectedLabelsProviderType = (state: MetadataRootState) => {
+    const isMetadataEnabled = selectIsMetadataEnabled(state);
+    if (!isMetadataEnabled) return '';
+
+    const selectedProvider = selectSelectedProviderForLabels(state);
+
+    return selectedProvider?.type ?? 'missing-provider';
+};
 
 export default metadataReducer;

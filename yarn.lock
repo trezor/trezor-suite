@@ -10816,10 +10816,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/logger@workspace:suite-common/logger"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.1.0"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

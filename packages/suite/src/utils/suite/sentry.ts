@@ -1,11 +1,16 @@
 import * as Sentry from '@sentry/core';
 
+import { selectAnalyticsInstanceId } from '@suite-common/analytics';
+import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
 import { allowReportTag } from '@suite-common/sentry';
 import { ReportSecurityCheckProps } from '@suite-common/suite-types';
-import { selectDiscoveryForSelectedDevice, selectSelectedDevice } from '@suite-common/wallet-core';
+import {
+    selectDiscoveryForSelectedDevice,
+    selectEnabledNetworks,
+    selectSelectedDevice,
+} from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-import { getApplicationLog, redactDevice } from 'src/utils/suite/logsUtils';
 
 export const setSentryContext = Sentry.setContext;
 
@@ -26,17 +31,19 @@ export const setSentryUser = (instanceId: string) => {
 };
 
 export const reportToSentry = (error: any) => (_: Dispatch, getState: GetState) => {
-    const { analytics, wallet, logs } = getState();
+    const instanceId = selectAnalyticsInstanceId(getState());
+    const enabledNetworks = selectEnabledNetworks(getState());
     const device = selectSelectedDevice(getState());
     const discovery = selectDiscoveryForSelectedDevice(getState());
+    const redactedActionsLog = selectRedactedActionsLog(getState(), true);
 
     Sentry.withScope(scope => {
-        scope.setUser({ id: analytics.instanceId });
+        scope.setUser({ id: instanceId });
         scope.setContext('suiteState', {
             device: redactDevice(device) ?? null,
             discovery,
-            enabledCoins: wallet.settings.enabledNetworks,
-            suiteLog: getApplicationLog(logs.logEntries, true)?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
+            enabledCoins: enabledNetworks,
+            suiteLog: redactedActionsLog?.slice(-30), // send only the last 30 actions to avoid "413 Request Entity Too Large" response from Sentry
         });
         Sentry.captureException(error);
     });

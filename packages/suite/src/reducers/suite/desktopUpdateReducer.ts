@@ -30,7 +30,7 @@ export interface DesktopUpdateState {
     justUpdatedInteractedWith: boolean;
 }
 
-type DesktopUpdateRootState = {
+export type DesktopUpdateRootState = {
     desktopUpdate: DesktopUpdateState;
 };
 
@@ -116,5 +116,8 @@ export const selectDesktopUpdate = (state: DesktopUpdateRootState) => state.desk
 
 export const selectDesktopUpdateEnabled = (state: DesktopUpdateRootState) =>
     state.desktopUpdate.enabled;
+
+export const selectDesktopUpdateAllowPrerelease = (state: DesktopUpdateRootState) =>
+    state.desktopUpdate.allowPrerelease;
 
 export default desktopUpdateReducer;

@@ -9,6 +9,8 @@ import { AppState, PrerequisiteType, TorStatus, TrezorDevice } from 'src/types/s
 import { getPrerequisiteName, isPrerequisiteGloballyExcluded } from 'src/utils/suite/prerequisites';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 
+export const selectIsSuiteOnline = (state: SuiteRootState) => state.suite.online;
+
 export const selectTorState = (state: SuiteRootState) => {
     const { torStatus, torBootstrap } = state.suite;
 
@@ -30,6 +32,11 @@ export const selectTorOnionLinks = (state: SuiteRootState) => state.suite.settin
 export const selectIsDebugModeActive = (state: SuiteRootState) =>
     state.suite.settings.debug.showDebugMenu;
 export const selectLanguage = (state: SuiteRootState) => state.suite.settings.language;
+export const selectAutodetectLanguage = (state: SuiteRootState) =>
+    state.suite.settings.autodetect.language;
+export const selectTheme = (state: SuiteRootState) => state.suite.settings.theme.variant;
+export const selectAutodetectTheme = (state: SuiteRootState) =>
+    state.suite.settings.autodetect.theme;
 export const selectAddressDisplayType = (state: SuiteRootState) =>
     state.suite.settings.addressDisplayType;
 export const selectIsDeviceLocked = (state: SuiteRootState) =>
@@ -40,6 +47,9 @@ export const selectIsRouterLocked = (state: SuiteRootState) =>
     !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER];
 export const selectIsRouterOrUiLocked = (state: SuiteRootState) =>
     !!state.suite.locks[SUITE.LOCK_TYPE.ROUTER] || !!state.suite.locks[SUITE.LOCK_TYPE.UI];
+
+export const selectSuiteTransports = (state: SuiteRootState) =>
+    state.suite.transport?.transports.map(({ type, version }) => ({ type, version }));
 export const selectIsTransportInitialized = (state: SuiteRootState) => !!state.suite.transport;
 export const selectActiveTransports = (state: SuiteRootState) =>
     state.suite.transport?.transports ?? [];

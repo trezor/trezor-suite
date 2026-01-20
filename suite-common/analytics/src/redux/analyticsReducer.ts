@@ -11,10 +11,9 @@ export type AnalyticsState = {
     confirmed?: boolean | undefined;
 };
 
-type AnalyticsRootState = {
+export type AnalyticsRootState = {
     analytics: AnalyticsState;
 };
-
 const analyticsInitialState: AnalyticsState = {
     sessionId: undefined,
     instanceId: undefined,
@@ -50,6 +49,8 @@ export const prepareAnalyticsReducer = createReducerWithExtraDeps(
 
 // if instanceId does not exist yet (was not loaded from storage), create a new one
 export const selectAnalyticsInstanceId = (state: AnalyticsRootState) => state.analytics.instanceId;
+
+export const selectAnalyticsSessionId = (state: AnalyticsRootState) => state.analytics.sessionId;
 
 export const selectIsAnalyticsConfirmed = (state: AnalyticsRootState) =>
     !!state.analytics.confirmed;

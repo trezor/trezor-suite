@@ -17,7 +17,7 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
-import { usePrintableLog } from 'src/utils/suite/logsUtils';
+import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`
     overflow: auto;
@@ -43,15 +43,17 @@ type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
-    const log = usePrintableLog(hideSensitiveInfo);
-
+    const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
         useScrollShadow();
 
     const download = () => {
-        if (log === null) return;
+        if (applicationLogs === null) return;
         const element = document.createElement('a');
-        element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(log)}`);
+        element.setAttribute(
+            'href',
+            `data:text/plain;charset=utf-8,${encodeURIComponent(applicationLogs)}`,
+        );
         element.setAttribute('download', 'trezor-suite-log.txt');
 
         element.style.display = 'none';
@@ -63,7 +65,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
     };
 
     // usually takes less than 100 ms, so it's ok to delay display without a loader component
-    if (log === null) return null;
+    if (applicationLogs === null) return null;
 
     return (
         <Modal
@@ -82,7 +84,7 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
                     <ShadowTop backgroundColor="backgroundSurfaceElevation1" />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
                         <LogWrapper data-testid="@log/content">
-                            <Text typographyStyle="label">{log}</Text>
+                            <Text typographyStyle="label">{applicationLogs}</Text>
                         </LogWrapper>
                     </ScrollContainer>
                     <ShadowBottom backgroundColor="backgroundSurfaceElevation1" />
