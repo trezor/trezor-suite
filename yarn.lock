@@ -14210,7 +14210,6 @@ __metadata:
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@trezor/env-utils": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"

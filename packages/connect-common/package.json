@@ -52,7 +52,6 @@
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {

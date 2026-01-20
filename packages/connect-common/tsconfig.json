@@ -7,7 +7,6 @@
     "include": ["."],
     "references": [
         { "path": "../env-utils" },
-        { "path": "../type-utils" },
         { "path": "../utils" }
     ]
 }
