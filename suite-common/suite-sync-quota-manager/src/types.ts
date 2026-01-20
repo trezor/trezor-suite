@@ -8,7 +8,6 @@ export const asSuiteSyncOwnerIdHashed = (value: string): SuiteSyncOwnerIdHashed 
 
 export type RegisteredDevice = {
     deviceId: string;
-    publicKey: string;
     totalStorageSize: number;
     unspentStorageSize: number;
 };
