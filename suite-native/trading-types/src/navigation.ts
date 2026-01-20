@@ -5,8 +5,10 @@ import type {
     TradingStackRoutes,
 } from '@suite-native/navigation';
 
-export type TradingOutputsReviewScreenNavigationProp = StackToTabCompositeNavigationProp<
-    TradingStackParamList,
-    TradingStackRoutes.TradingSellOutputsReview | TradingStackRoutes.TradingExchangeOutputsReview,
-    AppTabsParamList
+export type TradingStackNavigationProp<
+    T extends keyof TradingStackParamList = keyof TradingStackParamList,
+> = StackToTabCompositeNavigationProp<TradingStackParamList, T, AppTabsParamList>;
+
+export type TradingOutputsReviewScreenNavigationProp = TradingStackNavigationProp<
+    TradingStackRoutes.TradingSellOutputsReview | TradingStackRoutes.TradingExchangeOutputsReview
 >;

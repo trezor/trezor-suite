@@ -3,7 +3,6 @@ import type { CryptoId, ProviderMetadata } from 'invity-api';
 
 import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import { InvityServerEnvironment, TradingType, prepareTradingReducer } from '@suite-common/trading';
-import { deviceActions } from '@suite-common/wallet-core';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus } from '@suite-native/trading-types';
 
@@ -93,18 +92,18 @@ export const tradingSlice = createSliceWithExtraDeps({
         ) => {
             state.currentProviderMetadata = payload;
         },
+        clearSelectedAccounts: state => {
+            state.buy.tradingAccountKey = undefined;
+            state.buy.receiveAddress = undefined;
+            state.exchange.tradingAccountKey = undefined;
+            state.exchange.receiveAccountKey = undefined;
+            state.exchange.receiveAddress = undefined;
+            state.sell.tradingAccountKey = undefined;
+        },
     },
     extraReducers: (builder, extra) => {
         const commonTradingFormReducer = prepareTradingReducer(extra);
         builder
-            .addCase(deviceActions.selectDevice, state => {
-                state.buy.tradingAccountKey = undefined;
-                state.buy.receiveAddress = undefined;
-                state.exchange.tradingAccountKey = undefined;
-                state.exchange.receiveAccountKey = undefined;
-                state.exchange.receiveAddress = undefined;
-                state.sell.tradingAccountKey = undefined;
-            })
             .addMatcher(
                 isAnyOf(buyActions.clearState, exchangeActions.clearState, sellActions.clearState),
                 state => {

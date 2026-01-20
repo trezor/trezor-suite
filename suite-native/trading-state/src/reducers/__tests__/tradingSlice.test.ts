@@ -1,14 +1,12 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId, ProviderMetadata } from 'invity-api';
 
-import { TrezorDevice } from '@suite-common/suite-types';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { deviceActions } from '@suite-common/wallet-core';
 import { tradingInitialState } from '@suite-native/trading-consts/';
 import {
     adaAsset,
@@ -325,7 +323,7 @@ describe('tradingSlice', () => {
         });
     });
 
-    describe('@suite/device/selectDevice', () => {
+    describe('clearSelectedAccounts', () => {
         it('should clear receiveAddress', () => {
             const prevState: TradingState = {
                 ...tradingInitialState,
@@ -339,10 +337,7 @@ describe('tradingSlice', () => {
                 },
             };
 
-            const state = tradingReducer(
-                prevState,
-                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
-            );
+            const state = tradingReducer(prevState, tradingActions.clearSelectedAccounts());
 
             expect(state.buy.receiveAddress).toBeUndefined();
             expect(state.exchange.receiveAddress).toBeUndefined();
@@ -351,7 +346,7 @@ describe('tradingSlice', () => {
         it('should clear buy.tradingAccountKey', () => {
             const actions = [
                 tradingBuyActions.setTradingAccountKey('account-key'),
-                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+                tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -362,7 +357,7 @@ describe('tradingSlice', () => {
             const actions = [
                 tradingExchangeActions.setReceiveAccountKey('account-key'),
                 tradingExchangeActions.setTradingAccountKey('account-key'),
-                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+                tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
@@ -373,7 +368,7 @@ describe('tradingSlice', () => {
         it('should clear sell.tradingAccountKey', () => {
             const actions = [
                 tradingSellActions.setTradingAccountKey('account-key'),
-                deviceActions.selectDevice({ name: 'TEST_DEVICE' } as TrezorDevice),
+                tradingActions.clearSelectedAccounts(),
             ];
 
             const state = actions.reduce(tradingReducer, undefined) as TradingState;

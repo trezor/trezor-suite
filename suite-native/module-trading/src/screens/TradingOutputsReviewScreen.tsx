@@ -1,6 +1,6 @@
 import { StackProps, TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 
-import { DeviceGuardedReviewOutputs } from '../components/reviewOutputs/DeviceGuardedReviewOutputs';
+import { ReviewOutputsContent } from '../components/reviewOutputs/ReviewOutputsContent';
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticReportCallback';
@@ -18,7 +18,7 @@ export const TradingExchangeOutputsReviewScreen = ({
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
     return (
-        <DeviceGuardedReviewOutputs
+        <ReviewOutputsContent
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}
@@ -43,7 +43,7 @@ export const TradingSellOutputsReviewScreen = ({
     const analyticsReportCallback = useSellAnalyticReportCallback();
 
     return (
-        <DeviceGuardedReviewOutputs
+        <ReviewOutputsContent
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}

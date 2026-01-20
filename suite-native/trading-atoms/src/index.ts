@@ -8,7 +8,6 @@ export * from './components/Error/InfoCard';
 export * from './components/Error/NotAvailableInCountry';
 export * from './components/Error/PortfolioTrackerInfo';
 export * from './components/Error/ServerOffline';
-export * from './components/Error/ViewOnlyWalletInfo';
 export * from './components/Error/WarningCard';
 
 export * from './components/TradeInfo/NetworkAndAccountCard';

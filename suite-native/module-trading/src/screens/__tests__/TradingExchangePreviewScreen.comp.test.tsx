@@ -8,6 +8,7 @@ import { useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
+    getTranslation,
     initStore,
     renderWithStoreProviderAsync,
     userEvent,
@@ -22,6 +23,10 @@ import {
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useNavigation: () => ({
+        navigate: jest.fn(),
+        setOptions: jest.fn(),
+    }),
     useRoute: () =>
         ({
             params: {},
@@ -36,6 +41,12 @@ jest.mock('@suite-native/services', () => {
         useLegacyAnalytics: jest.fn(),
     };
 });
+
+let mockIsDeviceConnected = true;
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectIsDeviceConnected: () => mockIsDeviceConnected,
+}));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
 const mockFetchFeesAndCompose = jest.fn();
@@ -60,6 +71,7 @@ const mockShowAlert = jest.fn();
 jest.mock('@suite-native/alerts', () => ({
     useAlert: () => ({
         showAlert: mockShowAlert,
+        hideAlert: jest.fn(),
     }),
 }));
 
@@ -131,6 +143,7 @@ describe('TradingExchangePreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockTxnErrorString = null;
+        mockIsDeviceConnected = true;
 
         consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -144,6 +157,14 @@ describe('TradingExchangePreviewScreen', () => {
             unmount();
             unmount = undefined;
         }
+    });
+
+    it('should display device guard when device is not connected', async () => {
+        mockIsDeviceConnected = false;
+        const { result } = await renderTradingExchangePreviewScreen();
+        expect(
+            result.getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
+        ).toBeOnTheScreen();
     });
 
     it('should render continue button', async () => {
