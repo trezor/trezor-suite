@@ -11,6 +11,16 @@ export const DEFAULT_DEVICE_SIZE_QUOTA = 1024 * 1024;
  */
 export const DEFAULT_ACCOUNT_SIZE_QUOTA = Math.round(DEFAULT_DEVICE_SIZE_QUOTA / 100);
 
+/**
+ * Default increment account size quota that is used for incrementing quota when no account store is left.
+ */
+export const DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA = DEFAULT_ACCOUNT_SIZE_QUOTA;
+
 export const DEFAULT_QUOTA_MANAGER_URL = isDevEnv
     ? 'https://suite-sync.suite.sldev.cz/quota-manager/'
     : 'https://suite-sync.trezor.io/quota-manager/';
+
+/**
+ * Header used for signing add space to owner requests.
+ */
+export const EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER = 'EvoluAddSpaceToOwnerV1';

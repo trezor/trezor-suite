@@ -2,9 +2,11 @@ import { Evolu, EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex } from '@noble/hashes/utils';
 
+import { SuiteSyncErrorHandler } from '@suite-common/suite-sync-types';
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 
 import { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
+import { createEvoluErrorHandler } from './createEvoluErrorHandler';
 import { Schema } from './schema';
 
 // This is a way how to force change of the SQL files. It was useful for development
@@ -12,7 +14,10 @@ import { Schema } from './schema';
 // See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
 const VERSION = 7;
 
-type CreateEvoluInstanceFactoryDeps = EvoluDeps;
+type CreateEvoluInstanceFactoryDeps = {
+    suiteSyncErrorHandler: SuiteSyncErrorHandler;
+    evoluDeps: EvoluDeps;
+};
 
 export type CreateEvoluInstance = (params: {
     suiteSyncOwner: SuiteSyncOwner;
@@ -45,7 +50,7 @@ export const createEvoluInstanceFactory =
             throw databaseName.error;
         }
 
-        const evolu = createEvolu(deps)(Schema, {
+        const evolu = createEvolu(deps.evoluDeps)(Schema, {
             name: databaseName.value,
             // Intentionally no transport, transport will be passed
             // later on, so we can change the RelayUrl at any time.
@@ -56,10 +61,7 @@ export const createEvoluInstanceFactory =
             encryptionKey: owner.value.encryptionKey,
         });
 
-        evolu.subscribeError(() => {
-            const error = evolu.getError();
-            console.error(JSON.stringify(error));
-        });
+        evolu.subscribeError(createEvoluErrorHandler(evolu, deps.suiteSyncErrorHandler));
 
         return evolu;
     };

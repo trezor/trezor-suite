@@ -1,0 +1,91 @@
+import { Dispatch } from '@reduxjs/toolkit';
+
+import {
+    getProofOfDelegatedIdentity,
+    getPublicIdentityKeyFromDelegatedKey,
+} from '@suite-common/delegated-identity-key';
+import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key/src/delegatedIdentityKeyCompositionRoot';
+import { ExtraDependencies } from '@suite-common/redux-utils';
+import { SuiteSyncOwnerId, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import TrezorConnect from '@trezor/connect';
+
+import { prepareChallengeSession } from './challenge/prepareChallengeSession';
+import {
+    DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+    EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
+} from './constants';
+import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
+import { transferStorageThunk } from './storage/transferStorageThunk';
+import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
+
+type AllocateMoreOwnerQuotaParams = {
+    ownerId: SuiteSyncOwnerId;
+};
+
+export const increaseOwnerQuotaThunk =
+    ({ ownerId }: AllocateMoreOwnerQuotaParams) =>
+    async (dispatch: Dispatch, getState: () => any, extra: ExtraDependencies) => {
+        const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
+        if (!isQuotaManagerEnabled) return;
+
+        const device = selectSelectedDevice(getState());
+
+        if (!device || !isTrezorDeviceWithState(device)) {
+            return;
+        }
+        const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
+        const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
+
+        const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
+            dispatch,
+            getState,
+            trezorConnect: TrezorConnect,
+            platformEncryption: extra.services.platformEncryption,
+        });
+
+        const delegatedKey = await ensureDelegatedIdentityKey({ device });
+        if (!delegatedKey.success) {
+            return;
+        }
+
+        const delegatedPublicKey = getPublicIdentityKeyFromDelegatedKey(delegatedKey.payload);
+
+        const sessionChallenge = await prepareChallengeSession({
+            baseUrl: quotaManagerBaseUrl,
+        });
+
+        if (!sessionChallenge.success) {
+            return;
+        }
+
+        const proof = getProofOfDelegatedIdentity({
+            delegatedKey: asDelegatedIdentityKey(delegatedKey.payload),
+            header: EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
+            appendMessageBuffer: prepareMessageBufferEvoluAddSpaceToOwner({
+                ownerId,
+                challenge: sessionChallenge.payload.challenge,
+                size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                publicKey: delegatedPublicKey,
+            }),
+        });
+
+        if (!proof.success) {
+            return;
+        }
+
+        dispatch(
+            transferStorageThunk({
+                walletDescriptor,
+                params: {
+                    ownerId,
+                    size: DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
+                    proof: proof.payload,
+                    sessionId: sessionChallenge.payload.sessionId,
+                    challenge: sessionChallenge.payload.challenge,
+                    publicKey: delegatedPublicKey,
+                },
+            }),
+        );
+    };
