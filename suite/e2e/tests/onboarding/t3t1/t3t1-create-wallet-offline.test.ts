@@ -6,6 +6,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => {
     test.use({
         setupEmulator: false,
+        electronConf: { offlineMode: true },
     });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -22,7 +23,8 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, device, onboardingPage, devicePrompt, analyticsSection }) => {
+        async ({ page, onboardingPage, devicePrompt, analyticsSection, device, context }) => {
+            await context.setOffline(true);
             await analyticsSection.passThroughAnalytics();
 
             // Device onboarding steps
@@ -42,7 +44,6 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             // Confirm wallet created
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
-
             await onboardingPage.createBackupButton.click();
 
             // Create backup with Shamir shares and threshold

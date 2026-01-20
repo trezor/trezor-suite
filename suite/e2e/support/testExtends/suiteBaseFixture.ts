@@ -14,7 +14,7 @@ import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
 
-type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
+type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'> & {offlineMode?: boolean};
 type TrezorUserEnv = Pick<
     TrezorUserEnvLinkClass,
     | 'logTestDetails'
@@ -57,6 +57,7 @@ const electronSetup = async (
     await suite.window
         .context()
         .tracing.start({ screenshots: true, snapshots: true, sources: true });
+    await suite.electronApp.context().setOffline(electronConf.offlineMode ?? false);
 
     await mockRemoteMessageSystem(suite.window);
 
