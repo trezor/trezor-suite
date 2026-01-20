@@ -200,13 +200,4 @@ export const extraDependenciesMock = {
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
-    routerServices: {
-        getLocation: () => ({
-            pathname: '/mocked_path',
-            hash: '#mocked_hash',
-            search: '?mocked_search',
-        }),
-        navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
-        listen: (_: {}) => () => {},
-    },
 } satisfies ExtraDependencies;

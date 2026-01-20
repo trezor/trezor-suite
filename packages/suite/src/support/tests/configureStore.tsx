@@ -4,9 +4,9 @@ import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
 import type { ExtraDependencies } from '@suite-common/redux-utils';
-import { extraDependenciesMock } from '@suite-common/test-utils';
 
-import { extraDependencies } from '../extraDependencies';
+import { SuiteServices, extraDependencies } from '../extraDependencies';
+import { extraDependenciesDesktopMock } from './extraDependenciesDesktop.mock';
 
 interface MiddlewareAPI<D extends Dispatch = Dispatch<AnyAction>, S = any> {
     dispatch: D;
@@ -22,11 +22,12 @@ interface Middleware<_DispatchExt = {}, S = any, D extends Dispatch = Dispatch<a
  */
 export const configureStore = <S, DispatchExts = {}>(
     middlewares?: Middleware[],
-    additionalExtraDeps?: Partial<ExtraDependencies>,
+    additionalExtraDeps?: Partial<Omit<ExtraDependencies, 'services'>> &
+        Partial<{ services: Partial<SuiteServices> }>,
 ): MockStoreCreator<S, DispatchExts> =>
     reduxMockStore([
         withExtraArgument({
-            ...extraDependenciesMock,
+            ...extraDependenciesDesktopMock,
             ...extraDependencies,
             ...additionalExtraDeps,
         }),

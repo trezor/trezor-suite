@@ -4,7 +4,7 @@ import { AppState } from 'src/reducers/store';
 import modalReducer from 'src/reducers/suite/modalReducer';
 import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { createRouterServices } from 'src/support/extraDependencies';
+import { createSuiteRouterHistory } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import * as fixtures from '../__fixtures__/routerActions';
@@ -52,9 +52,9 @@ const getInitialState = (
 type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
-    const routerServices = createRouterServices(createMemoryHistory());
+    const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
     const store = configureStore<State, any>([], {
-        routerServices,
+        services: { suiteRouterHistory },
     })(state);
     store.subscribe(() => {
         const action = store.getActions().pop();
@@ -65,15 +65,15 @@ const initStore = (state: State) => {
         store.getActions().push(action);
     });
 
-    return { store, routerServices };
+    return { store, suiteRouterHistory };
 };
 
 describe('Suite Actions', () => {
     fixtures.init.forEach(f => {
         it(`init: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState | undefined);
-            const { store, routerServices } = initStore(state);
-            routerServices.navigate(defaultLocation);
+            const { store, suiteRouterHistory } = initStore(state);
+            suiteRouterHistory.navigate(defaultLocation);
             store.dispatch(routerActions.init());
             if (f.result) {
                 expect(store.getState().router).toEqual(f.result);
@@ -94,9 +94,9 @@ describe('Suite Actions', () => {
     fixtures.initialRedirection.forEach(f => {
         it(`initialRedirection: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
-            const { store, routerServices } = initStore(state);
+            const { store, suiteRouterHistory } = initStore(state);
 
-            routerServices.navigate({
+            suiteRouterHistory.navigate({
                 ...defaultLocation,
                 pathname: f.pathname || '/',
             });
@@ -109,14 +109,15 @@ describe('Suite Actions', () => {
     fixtures.goto.forEach(f => {
         it(`goto: ${f.description}`, () => {
             const state = getInitialState(f.state as InitialState);
-            const { store, routerServices } = initStore(state);
-            routerServices.navigate({ ...defaultLocation, hash: `#${f.hash}` });
-            store.dispatch(routerActions.onLocationChange(routerServices.getLocation()));
+            const { store, suiteRouterHistory } = initStore(state);
+            suiteRouterHistory.navigate({ ...defaultLocation, hash: `#${f.hash}` });
+            store.dispatch(routerActions.onLocationChange(suiteRouterHistory.getLocation()));
 
             store.dispatch(routerActions.goto(f.url as any, { preserveParams: f.preserveHash }));
             if (f.result) {
                 expect(
-                    routerServices.getLocation().pathname + routerServices.getLocation().hash,
+                    suiteRouterHistory.getLocation().pathname +
+                        suiteRouterHistory.getLocation().hash,
                 ).toEqual(f.result);
             }
         });
@@ -135,8 +136,8 @@ describe('Suite Actions', () => {
     it('closeModalApp', () => {
         // @ts-expect-error this test is interested only in router.pathname, for better maintainability ignore other properties
         const state = getInitialState({ router: { pathname: '/firmware' } });
-        const { store, routerServices } = initStore(state);
-        routerServices.navigate({
+        const { store, suiteRouterHistory } = initStore(state);
+        suiteRouterHistory.navigate({
             ...defaultLocation,
             pathname: '/accounts/send',
         });

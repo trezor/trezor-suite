@@ -40,7 +40,7 @@ import routerReducer from 'src/reducers/suite/routerReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import walletReducers from 'src/reducers/wallet';
-import { createRouterServices, extraDependencies } from 'src/support/extraDependencies';
+import { createSuiteRouterHistory, extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
 
@@ -263,11 +263,13 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
     const memoryHistory = createMemoryHistory();
-    const routerServices = createRouterServices(memoryHistory);
+    const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
     const mockStore = configureStore<State, any>(
         [prepareSuiteMiddleware(() => extraDependenciesMock)],
         {
-            routerServices,
+            services: {
+                suiteRouterHistory,
+            },
         },
     );
     const store = mockStore(state);
@@ -280,17 +282,17 @@ const initStore = (state: State) => {
 
     return {
         store,
-        routerServices,
+        suiteRouterHistory,
     };
 };
 
 describe('Suite init action', () => {
     fixtures.forEach(({ description, options, actions }) => {
         it(description, async () => {
-            const { store, routerServices } = initStore(getInitialState(options.initialRun));
+            const { store, suiteRouterHistory } = initStore(getInitialState(options.initialRun));
 
             if (options?.initialPath) {
-                routerServices.navigate({ pathname: options.initialPath as PathString });
+                suiteRouterHistory.navigate({ pathname: options.initialPath as PathString });
             }
 
             if (options?.trezorConnectError) {
