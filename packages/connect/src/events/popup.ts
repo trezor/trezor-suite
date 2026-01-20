@@ -17,9 +17,6 @@ export const POPUP = {
     // Event emitted from PopupManager at the end of popup closing process.
     // Sent from popup thru window.opener to an iframe because message channel between popup and iframe is no longer available
     CLOSED: 'popup-closed',
-    // Message called from iframe to popup, it means that popup will not be needed (example: Blockchain methods are not using popup at all)
-    // This will close active popup window and/or clear opening process in PopupManager (maybe popup wasn't opened yet)
-    CANCEL_POPUP_REQUEST: 'ui-cancel-popup-request',
     // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
     CLOSE_WINDOW: 'window.close',
     // not used anymore, will removed in https://github.com/trezor/trezor-suite/pull/24471
@@ -65,7 +62,7 @@ export interface PopupCloseWindow {
 
 export type PopupEvent =
     | {
-          type: typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
+          type: typeof POPUP.CORE_LOADED;
           payload?: typeof undefined;
       }
     | PopupInit
