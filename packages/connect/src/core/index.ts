@@ -32,7 +32,6 @@ import {
 } from '../events';
 import type { ConnectSettings, DeviceIdentity } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
-import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 
 // custom log
@@ -407,8 +406,7 @@ const onCallDevice = async (
  * @returns {void}
  * @memberof Core
  */
-const cleanup = ({ uiPromises, popupPromise }: CoreContext) => {
-    popupPromise.clear();
+const cleanup = ({ uiPromises }: CoreContext) => {
     uiPromises.clear();
     _log.debug('Cleanup...');
 };
@@ -628,14 +626,8 @@ const registerDeviceEvents =
  * @memberof Core
  */
 const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
-    const {
-        uiPromises,
-        popupPromise,
-        deviceList,
-        callMethods,
-        resetWaitForFirstMethod,
-        sendCoreMessage,
-    } = context;
+    const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
+        context;
     const error = customErrorMessage
         ? ERRORS.TypedError('Method_Cancel', customErrorMessage)
         : ERRORS.TypedError('Method_Interrupted');
@@ -658,7 +650,6 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
         // Waiting for device. Throw error before onCall try/catch block
     } else {
         uiPromises.rejectAll(error);
-        popupPromise.reject(error);
     }
     cleanup(context);
 };
@@ -710,7 +701,6 @@ const initDeviceList = (context: CoreContext) => {
 export class Core extends EventEmitter {
     private abortController = new AbortController();
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
-    private popupPromise = createPopupPromiseManager();
     private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
 
@@ -740,7 +730,6 @@ export class Core extends EventEmitter {
         return {
             signal: this.abortController.signal,
             uiPromises: this.uiPromises,
-            popupPromise: this.popupPromise,
             deviceList: this.deviceList,
             callMethods: this.callMethods,
             methodSynchronize: this.methodSynchronize,
@@ -759,7 +748,6 @@ export class Core extends EventEmitter {
 
         switch (message.type) {
             case POPUP.CLOSED:
-                this.popupPromise.clear();
                 onPopupClosed(
                     this.getCoreContext(),
                     message.payload ? message.payload.error : null,
