@@ -39,8 +39,6 @@ const _log = initLog('Core');
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
 
-const waitForPopup = (_: CoreContext) => {};
-
 /**
  * Find device by device path. Returned device may be unacquired.
  * @param {AbstractMethod} method
@@ -92,8 +90,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
         if (method.confirmMissingBackup) {
-            // wait for popup window
-            await waitForPopup(context);
             // initialize user response promise
             const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
 
@@ -112,17 +108,12 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                 return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
             }
         }
-
-        // wait for popup handshake
-        await waitForPopup(context);
         // show notification
         sendCoreMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
     }
 
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
-        // wait for popup handshake
-        await waitForPopup(context);
         // show notification
         sendCoreMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
     }
@@ -136,11 +127,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     // Make sure that device will display pin/passphrase
     if (method.useDeviceState) {
         await workflows.validateState(workflowCtx);
-    }
-
-    if (method.useUi) {
-        // make sure that popup is opened
-        await waitForPopup(context);
     }
 
     // run method
@@ -215,11 +201,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     // this method is not using the device, there is no need to acquire
     if (!method.useDevice) {
         try {
-            if (method.useUi) {
-                // wait for popup handshake
-                await waitForPopup(context);
-            }
-
             const response = await method.run();
             sendCoreMessage(createResponseMessage(method.responseID, true, response));
         } catch (error) {
@@ -255,8 +236,6 @@ const onCallDevice = async (
             tempDevice = selectDevice(context, message.payload.device);
         } catch (error) {
             if (error.code === 'Transport_Missing') {
-                // wait for popup handshake
-                await waitForPopup(context);
                 // show message about transport
                 sendCoreMessage(createUiMessage(UI.TRANSPORT));
 
@@ -429,13 +408,9 @@ const closePopup = ({ sendCoreMessage }: CoreContext) => {
  */
 const onDeviceButtonHandler =
     (device: Device, context: CoreContext, method?: AbstractMethod<any>) =>
-    async ({ payload: request }: DeviceEvents['button']) => {
+    ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
-        // wait for popup handshake
         const addressRequest = request.code === 'ButtonRequest_Address';
-        if (!addressRequest || (addressRequest && method?.useUi)) {
-            await waitForPopup(context);
-        }
         const data =
             typeof method?.getButtonRequestData === 'function' && request.code
                 ? method?.getButtonRequestData(request.code, request.name)
@@ -460,8 +435,6 @@ const onDevicePinHandler =
     (device: Device, context: CoreContext) =>
     async ({ type, callback }: DeviceEvents['pin']) => {
         const { uiPromises, sendCoreMessage } = context;
-        // wait for popup handshake
-        await waitForPopup(context);
         // create ui promise
         const uiPromise = uiPromises.create(UI.RECEIVE_PIN, device);
         // request pin view
@@ -485,8 +458,6 @@ const onDeviceWordHandler =
     (device: Device, context: CoreContext) =>
     async ({ type, callback }: DeviceEvents['word']) => {
         const { uiPromises, sendCoreMessage } = context;
-        // wait for popup handshake
-        await waitForPopup(context);
         // create ui promise
         const uiPromise = uiPromises.create(UI.RECEIVE_WORD, device);
         sendCoreMessage(
@@ -512,8 +483,6 @@ const onDevicePassphraseHandler =
     (device: Device, context: CoreContext) =>
     async ({ callback }: DeviceEvents['passphrase']) => {
         const { uiPromises, sendCoreMessage } = context;
-        // wait for popup handshake
-        await waitForPopup(context);
         // create ui promise
         const uiPromise = uiPromises.create(UI.RECEIVE_PASSPHRASE, device);
         // request passphrase view
@@ -553,8 +522,6 @@ const onThpPairingHandler =
     (device: Device, context: CoreContext) =>
     async ({ callback, payload }: DeviceEvents['thp_pairing']) => {
         const { uiPromises, sendCoreMessage } = context;
-        // wait for popup handshake
-        await waitForPopup(context);
         // create ui promise
         const uiPromise = uiPromises.create(UI.RECEIVE_THP_PAIRING_TAG, device);
 
