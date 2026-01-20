@@ -21,7 +21,7 @@ export function BackendUrls({
     removeUrl,
 }: BackendUrlsProps) {
     const blockchain = useSelector(state => state.wallet.blockchain);
-    const { defaultUrls } = useDefaultUrls(symbol);
+    const { data: defaultUrls } = useDefaultUrls(symbol);
 
     const { ref: inputRef, ...inputField } = input.register(input.name, {
         validate: input.validate,
