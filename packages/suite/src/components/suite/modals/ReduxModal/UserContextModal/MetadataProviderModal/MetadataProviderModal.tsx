@@ -5,7 +5,7 @@ import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import type { Deferred } from '@trezor/utils';
 
-import { connectProvider } from 'src/actions/suite/metadataProviderThunks';
+import { connectProvider } from 'src/actions/suite/metadata/metadataProviderThunks';
 import { useDispatch } from 'src/hooks/suite';
 import { MetadataProviderType } from 'src/types/suite/metadata';
 

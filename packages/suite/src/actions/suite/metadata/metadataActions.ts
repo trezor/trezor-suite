@@ -3,9 +3,10 @@ import { createAction } from '@reduxjs/toolkit';
 import { Account } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
-import { METADATA } from 'src/actions/suite/constants';
 import { DataType, DeviceMetadata, Labels, MetadataProvider } from 'src/types/suite/metadata';
 import type { PasswordManagerState } from 'src/types/suite/metadata';
+
+import * as METADATA from './metadataConstants';
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }

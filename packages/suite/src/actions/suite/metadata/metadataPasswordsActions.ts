@@ -4,12 +4,14 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
-import { METADATA, METADATA_PASSWORDS, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
 import { LabelableEntityKeys, PasswordEntry, ProviderErrorAction } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 
+import * as METADATA from './metadataConstants';
+import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
+import * as METADATA_PROVIDER from './metadataProviderConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import type { FetchIntervalTrackingId } from './metadataProviderThunks';
 import * as metadataThunks from './metadataThunks';

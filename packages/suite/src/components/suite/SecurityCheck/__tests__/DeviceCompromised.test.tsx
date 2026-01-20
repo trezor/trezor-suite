@@ -2,7 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { TranslationKey } from '@suite/intl';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
@@ -11,6 +11,7 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders } from 'src/support/tests/hooksHelper';
 
+import { extraDependenciesDesktopMock } from '../../../../support/tests/extraDependenciesDesktop.mock';
 import { DeviceCompromised } from '../DeviceCompromised';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -154,7 +155,7 @@ describe(`${DeviceCompromised.name} component`, () => {
             const store = initStore(getInitialState(device));
             const { getByText, unmount } = renderWithProviders(
                 store,
-                extraDependenciesMock.services,
+                extraDependenciesDesktopMock.services,
                 <DeviceCompromised />,
             );
             expect(getByText(result)).not.toBeNull();

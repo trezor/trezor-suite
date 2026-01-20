@@ -16,7 +16,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { bluetoothOnDeviceConnectedThunk } from 'src/actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import * as languageActions from 'src/actions/settings/languageActions';
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';

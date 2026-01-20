@@ -2,11 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import {
-    configureMockStore,
-    extraDependenciesMock,
-    initPreloadedState,
-} from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState } from '@suite-common/test-utils';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
@@ -20,6 +16,7 @@ import {
     waitForLoader,
 } from 'src/support/tests/hooksHelper';
 
+import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';
 import * as fixtures from '../__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from '../useRbfForm';
 
@@ -187,7 +184,7 @@ describe('useRbfForm hook', () => {
 
             const { unmount } = renderWithProviders(
                 store,
-                extraDependenciesMock.services,
+                extraDependenciesDesktopMock.services,
                 <TestComponent />,
             );
 

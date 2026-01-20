@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
+import GoogleClient from 'src/actions/suite/metadata/google';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import GoogleClient from 'src/services/google';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 
 const StyledActionSelect = styled(ActionSelect)`

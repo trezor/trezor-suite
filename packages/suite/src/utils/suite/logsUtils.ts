@@ -28,7 +28,7 @@ import {
 } from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
 
-import { METADATA_LABELING } from 'src/actions/suite/constants';
+import * as METADATA_LABELING from 'src/actions/suite/metadata/metadataLabelingConstants';
 import { useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { AppState, TrezorDevice } from 'src/types/suite';

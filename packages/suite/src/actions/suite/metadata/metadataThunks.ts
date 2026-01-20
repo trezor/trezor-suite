@@ -27,8 +27,9 @@ import type {
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { slip15ToBip329 } from 'src/utils/suite/slip15ToBip329';
 
-import { METADATA, METADATA_LABELING } from './constants';
 import { setAccountAdd } from './metadataActions';
+import * as METADATA from './metadataConstants';
+import * as METADATA_LABELING from './metadataLabelingConstants';
 
 /**
  * dispose metadata from all labelable objects.

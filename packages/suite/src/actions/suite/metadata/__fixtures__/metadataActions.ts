@@ -1,10 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
-import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants/';
-
 import * as metadataActions from '../metadataActions';
+import * as METADATA from '../metadataConstants';
 import * as metadataLabelingActions from '../metadataLabelingActions';
+import * as METADATA_LABELING from '../metadataLabelingConstants';
 import * as metadataProviderActions from '../metadataProviderThunks';
 import * as metadataThunks from '../metadataThunks';
 

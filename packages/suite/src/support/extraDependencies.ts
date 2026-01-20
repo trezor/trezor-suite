@@ -36,8 +36,8 @@ import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import * as metadataActions from 'src/actions/suite/metadataActions';
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as metadataActions from 'src/actions/suite/metadata/metadataActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';

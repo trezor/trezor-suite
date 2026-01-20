@@ -14,16 +14,14 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { DeviceState, StaticSessionId } from '@trezor/connect';
 
 import { DesktopDeviceRootState } from 'src/actions/device/deviceSlice';
-import {
-    METADATA,
-    METADATA_LABELING,
-    METADATA_PASSWORDS,
-    STORAGE,
-} from 'src/actions/suite/constants';
+import { STORAGE } from 'src/actions/suite/constants';
+import * as METADATA from 'src/actions/suite/metadata/metadataConstants';
 import {
     DEFAULT_ACCOUNT_METADATA,
     DEFAULT_WALLET_METADATA,
-} from 'src/actions/suite/constants/metadataLabelingConstants';
+} from 'src/actions/suite/metadata/metadataLabelingConstants';
+import * as METADATA_LABELING from 'src/actions/suite/metadata/metadataLabelingConstants';
+import * as METADATA_PASSWORDS from 'src/actions/suite/metadata/metadataPasswordsConstants';
 import { DesktopSuiteSyncRootState } from 'src/actions/suiteSync/suiteSyncSlice';
 import { Action, TrezorDevice } from 'src/types/suite';
 import {

@@ -16,7 +16,7 @@ import { EditableText, EditableTextProps } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
 import { TimerId, exhaustive } from '@trezor/type-utils';
 
-import { addMetadata, init, setEditing } from 'src/actions/suite/metadataLabelingActions';
+import { addMetadata, init, setEditing } from 'src/actions/suite/metadata/metadataLabelingActions';
 import { updateShowEnableSuiteSyncModal } from 'src/actions/suiteSync/suiteSyncSlice';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {

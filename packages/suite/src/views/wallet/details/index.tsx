@@ -15,7 +15,7 @@ import {
     Url,
 } from '@trezor/urls';
 
-import { exportMetadataToBip329File } from 'src/actions/suite/metadataThunks';
+import { exportMetadataToBip329File } from 'src/actions/suite/metadata/metadataThunks';
 import { showXpub } from 'src/actions/wallet/publicKeyActions';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';

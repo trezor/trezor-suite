@@ -11,13 +11,13 @@ import { accountsReducer } from 'src/reducers/wallet';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
-import { DropboxProvider } from '../../../services/suite/metadata/DropboxProvider';
+import { MODAL, STORAGE } from '../../constants';
 import * as fixtures from '../__fixtures__/metadataActions';
-import { MODAL, STORAGE } from '../constants';
 import * as metadataActions from '../metadataActions';
 import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as metadataProviderActions from '../metadataProviderThunks';
 import * as metadataThunks from '../metadataThunks';
+import { DropboxProvider } from '../providers/DropboxProvider';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -122,7 +122,7 @@ const initStore = (state: State) => {
 
 describe('Metadata Actions', () => {
     beforeAll(() => {
-        jest.mock('src/services/suite/metadata/DropboxProvider');
+        jest.mock('../providers/DropboxProvider');
         DropboxProvider.prototype.connect = () =>
             Promise.resolve({ success: true, payload: undefined });
         DropboxProvider.prototype.getProviderDetails = () =>

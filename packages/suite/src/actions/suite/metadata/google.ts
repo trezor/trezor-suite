@@ -8,13 +8,14 @@
 
 import { isDesktop } from '@trezor/env-utils';
 
-import { METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { OAuthServerEnvironment, Tokens } from 'src/types/suite/metadata';
 import {
     extractCredentialsFromAuthorizationFlow,
     getOauthReceiverUrl,
 } from 'src/utils/suite/oauth';
 import { getCodeChallenge } from 'src/utils/suite/random';
+
+import * as METADATA_PROVIDER from './metadataProviderConstants';
 
 const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
 const BOUNDARY = '-------314159265358979323846';

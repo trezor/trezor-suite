@@ -4,7 +4,7 @@ import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 
-import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
+import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
 import { Dispatch } from 'src/types/suite';
 
 import { selectLabelingDataForAccount } from '../../../reducers/suite/metadataReducer';
