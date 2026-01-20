@@ -4,7 +4,11 @@ import { SuiteSyncOwnerId } from '@suite-common/suite-types';
 import { WalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
-import { quotaManagerFetchError, quotaManagerOwnerFetched } from '../quotaManagerActions';
+import {
+    quotaManagerDeviceUnspentStorageFetched,
+    quotaManagerFetchError,
+    quotaManagerOwnerFetched,
+} from '../quotaManagerActions';
 import { quotaManagerFetch } from '../quotaManagerFetch';
 import { selectQuotaManagerBaseUrl } from '../quotaManagerSelectors';
 
@@ -18,16 +22,18 @@ type TransferStorageBody = {
 };
 
 type TransferStorageResponse = {
-    storageLimit: number | null;
+    publicKeyUnspentSpace: number | null;
+    ownerTotalSpace: number | null;
 };
 
 type TransferStorageThunkParams = {
     params: TransferStorageBody;
     walletDescriptor: WalletDescriptor;
+    deviceId?: string;
 };
 
 export const transferStorageThunk =
-    ({ params, walletDescriptor }: TransferStorageThunkParams) =>
+    ({ params, walletDescriptor, deviceId }: TransferStorageThunkParams) =>
     async (dispatch: Dispatch, getState: () => any) => {
         const baseUrl = selectQuotaManagerBaseUrl(getState());
 
@@ -49,9 +55,18 @@ export const transferStorageThunk =
         dispatch(
             quotaManagerOwnerFetched({
                 walletDescriptor,
-                totalSpace: response.storageLimit ?? 0,
+                totalSpace: response.ownerTotalSpace ?? 0,
             }),
         );
+
+        if (deviceId !== undefined && response.publicKeyUnspentSpace !== null) {
+            dispatch(
+                quotaManagerDeviceUnspentStorageFetched({
+                    deviceId,
+                    unspentStorageSize: response.publicKeyUnspentSpace,
+                }),
+            );
+        }
 
         return ok(response);
     };

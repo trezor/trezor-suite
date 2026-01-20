@@ -101,8 +101,6 @@ describe(ensureDeviceHasQuotaThunk.name, () => {
                 type: '@suite/quota-manager/deviceFetched',
                 payload: {
                     deviceId: 'device-id',
-                    publicKey:
-                        '0428a3cefc19b41ff56795e371aab72d6d85a3ca2200bd46c54e611a36222295a88b44d6f23ce94025b6010f9eb0f9168ad35d8396dc865fa0a16f2f5471816a45',
                     totalStorageSize: 5000,
                     unspentStorageSize: 1200,
                 },

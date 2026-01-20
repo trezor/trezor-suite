@@ -79,11 +79,9 @@ export const SuiteSyncQuotaManager = () => {
                         <Text>No devices registered.</Text>
                     ) : (
                         registeredDevices.map(device => (
-                            <VStack key={device.publicKey} spacing="sp2">
+                            <VStack key={device.deviceId} spacing="sp2">
                                 <Text variant="label">Device ID</Text>
                                 <Text>{device.deviceId}</Text>
-                                <Text variant="label">Public Key</Text>
-                                <Text>{device.publicKey}</Text>
                                 <Text variant="label">Total Storage Size</Text>
                                 <Text>{device.totalStorageSize}</Text>
                                 <Text variant="label">Unspent Storage Size</Text>

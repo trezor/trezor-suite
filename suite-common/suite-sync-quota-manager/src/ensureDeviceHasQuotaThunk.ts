@@ -42,7 +42,6 @@ export const ensureDeviceHasQuotaThunk =
             dispatch(
                 quotaManagerDeviceFetched({
                     deviceId: device.id,
-                    publicKey: delegatedKeyPublic,
                     totalStorageSize: hasPublicKeyStorage.payload.totalSpace,
                     unspentStorageSize: hasPublicKeyStorage.payload.unspentSpace,
                 }),
