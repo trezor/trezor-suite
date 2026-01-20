@@ -1,6 +1,5 @@
 import type { ThpPairingMethod } from '@trezor/protocol';
 
-import { POPUP } from './popup';
 import { UI_EVENT } from './ui-request';
 import type { LocalFirmwares } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
@@ -22,11 +21,6 @@ export const UI_RESPONSE = {
     CHANGE_SETTINGS: 'ui-change_settings',
     LOGIN_CHALLENGE_RESPONSE: 'ui-login_challenge_response',
 } as const;
-
-export interface UiResponsePopupHandshake {
-    type: typeof POPUP.HANDSHAKE;
-    payload?: typeof undefined;
-}
 
 export interface UiResponseConfirmation {
     type: typeof UI_RESPONSE.RECEIVE_CONFIRMATION;
@@ -103,7 +97,6 @@ export interface UiResponseLoginChallenge {
 }
 
 export type UiResponseEvent =
-    | UiResponsePopupHandshake
     | UiResponseConfirmation
     | UiResponsePin
     | UiResponseWord

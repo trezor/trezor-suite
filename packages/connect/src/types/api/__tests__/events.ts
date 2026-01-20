@@ -171,9 +171,8 @@ export const events = (api: TrezorConnect) => {
     api.off(UI_EVENT, () => {});
 
     // event without payload
-    api.on(UI.REQUEST_UI_WINDOW, () => {});
-    // @ts-expect-error enforce no payload
-    api.on(UI.REQUEST_UI_WINDOW, _payload => {});
+    api.on(UI.REQUEST_BUTTON, () => {});
+    api.on(UI.REQUEST_BUTTON, _payload => {});
 
     api.on<AccountInfo | null>(UI.BUNDLE_PROGRESS, event => {
         // event.progress as number;

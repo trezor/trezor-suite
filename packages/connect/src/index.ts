@@ -15,7 +15,6 @@ import {
     RESPONSE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
-    UI,
     UI_EVENT,
     UiResponseEvent,
     createErrorMessage,
@@ -48,12 +47,6 @@ const dispose = () => {
 // handle message received from Core
 const onCoreEvent = (message: CoreEventMessage) => {
     const { event, type, payload } = message;
-
-    if (type === UI.REQUEST_UI_WINDOW) {
-        coreManager.get()?.handleMessage({ type: POPUP.HANDSHAKE });
-
-        return;
-    }
 
     _log.debug('handleMessage', message.type);
 

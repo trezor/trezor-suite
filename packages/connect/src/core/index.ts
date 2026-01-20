@@ -40,11 +40,7 @@ const _log = initLog('Core');
 
 type CoreContext = ReturnType<Core['getCoreContext']>;
 
-const waitForPopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
-    sendCoreMessage(createUiMessage(UI.REQUEST_UI_WINDOW));
-
-    return popupPromise.wait();
-};
+const waitForPopup = (_: CoreContext) => {};
 
 /**
  * Find device by device path. Returned device may be unacquired.
@@ -762,9 +758,6 @@ export class Core extends EventEmitter {
         _log.debug('handleMessage', message.type);
 
         switch (message.type) {
-            case POPUP.HANDSHAKE:
-                this.popupPromise.resolve();
-                break;
             case POPUP.CLOSED:
                 this.popupPromise.clear();
                 onPopupClosed(
