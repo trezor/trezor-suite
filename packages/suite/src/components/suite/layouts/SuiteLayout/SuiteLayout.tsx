@@ -96,9 +96,10 @@ export const MainContent = ({ children }: MainContentProps) => {
 
 interface SuiteLayoutProps {
     children: ReactNode;
+    ['data-testid']?: string;
 }
 
-export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
+export const SuiteLayout = ({ children, 'data-testid': dataTest }: SuiteLayoutProps) => {
     const theme = useTheme();
     const [{ title, layoutHeader }, setLayoutPayload] = useState<LayoutContextPayload>({});
 
@@ -138,7 +139,15 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                                 <ElevationUp>
                                                     {layoutHeader}
 
-                                                    <ContentContainer>{children}</ContentContainer>
+                                                    <ContentContainer
+                                                        data-testid={
+                                                            dataTest
+                                                                ? `${dataTest}/content`
+                                                                : '@app/content'
+                                                        }
+                                                    >
+                                                        {children}
+                                                    </ContentContainer>
                                                 </ElevationUp>
                                             </AppWrapper>
                                         </MainContent>

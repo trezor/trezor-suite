@@ -6,6 +6,7 @@ import { TrezorUserEnvLinkProxy, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
+export type PromoBannerType = 'tex' | 'ts7';
 
 export class DashboardPage {
     readonly suiteLayout: Locator;
@@ -43,10 +44,14 @@ export class DashboardPage {
     readonly openUnusedWalletButton2: Locator;
     readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
+    readonly stakeButton = (networkSymbol: NetworkSymbol): Locator =>
+        this.page.getByTestId(`@dashboard/asset/${networkSymbol}/stake-button`);
     readonly walletReady: Locator;
     readonly discoveryEmptyHeader: Locator;
     readonly discoveryEmptyDesc: Locator;
     readonly discoveryEmptyPrimaryButton: Locator;
+    readonly promoBannerButton = (bannerTyp: PromoBannerType): Locator =>
+        this.page.getByTestId(`@dashboard/promo-banner/${bannerTyp}/button`);
 
     constructor(
         private readonly page: Page,

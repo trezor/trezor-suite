@@ -13,6 +13,7 @@ type TS7BannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
     isVisible: boolean;
+    ['data-testid']?: string;
 };
 
 export const ImageContainer = styled.div`
@@ -54,6 +55,7 @@ const CTAButton = ({ onClick, isBelowLaptop }: { onClick: () => void; isBelowLap
             onClick={onClick}
             size={isBelowLaptop ? 'medium' : 'large'}
             href={href}
+            data-testid="@dashboard/promo-banner/ts7/button"
         >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON" />
         </Button>
