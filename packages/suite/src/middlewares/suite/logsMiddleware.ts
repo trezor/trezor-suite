@@ -11,14 +11,8 @@ import {
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import {
-    DESKTOP_UPDATE,
-    METADATA,
-    MODAL,
-    PROTOCOL,
-    ROUTER,
-    SUITE,
-} from 'src/actions/suite/constants';
+import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
+import * as METADATA from 'src/actions/suite/metadata/metadataConstants';
 import { Action, AppState, Dispatch } from 'src/types/suite';
 import { redactTransactionIdFromAnchor } from 'src/utils/suite/analytics';
 

@@ -10,7 +10,7 @@ import TrezorConnect from '@trezor/connect';
 import { spacingsPx } from '@trezor/theme';
 import { isUrl } from '@trezor/utils';
 
-import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
+import { PATH } from 'src/actions/suite/metadata/metadataPasswordsConstants';
 import { usePasswords, useSelector } from 'src/hooks/suite';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { getDisplayKey } from 'src/utils/suite/passwords';

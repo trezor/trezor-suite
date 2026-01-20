@@ -17,6 +17,7 @@
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-evolu": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
+        "@suite/analytics": "workspace:*",
         "@trezor/connect": "workspace:*"
     }
 }

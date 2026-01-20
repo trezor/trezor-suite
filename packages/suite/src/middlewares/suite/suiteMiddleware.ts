@@ -14,7 +14,8 @@ import {
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { DEVICE } from '@trezor/connect';
 
-import { METADATA, ROUTER, SUITE } from 'src/actions/suite/constants';
+import { ROUTER, SUITE } from 'src/actions/suite/constants';
+import * as METADATA from 'src/actions/suite/metadata/metadataConstants';
 import { handleProtocolRequest } from 'src/actions/suite/protocolActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { appChanged, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';

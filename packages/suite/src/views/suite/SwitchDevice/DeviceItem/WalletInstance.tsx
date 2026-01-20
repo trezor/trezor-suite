@@ -25,6 +25,7 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
+import * as METADATA_LABELING from 'src/actions/suite/metadata/metadataLabelingConstants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
 import { Labeling } from 'src/components/suite/labeling/MetadataLabeling/MetadataLabeling';
@@ -38,7 +39,6 @@ import { AcquiredDevice, AppState, ForegroundAppProps } from 'src/types/suite';
 
 import { EjectConfirmation } from './EjectConfirmation';
 import { SuiteSyncWalletDebug } from './SuiteSyncWalletDebug';
-import { METADATA_LABELING } from '../../../../actions/suite/constants';
 
 type WalletInstanceProps = {
     instance: AcquiredDevice;

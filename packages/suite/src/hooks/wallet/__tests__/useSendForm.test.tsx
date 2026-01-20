@@ -5,12 +5,7 @@ import { DeepPartial } from 'react-hook-form';
 
 import { waitFor } from '@testing-library/react';
 
-import {
-    configureMockStore,
-    extraDependenciesMock,
-    initPreloadedState,
-    testMocks,
-} from '@suite-common/test-utils';
+import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { FormState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
@@ -25,6 +20,7 @@ import {
 import { SendContextValues } from 'src/types/wallet/sendForm';
 import SendIndex from 'src/views/wallet/send';
 
+import { extraDependenciesDesktopMock } from '../../../support/tests/extraDependenciesDesktop.mock';
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 
@@ -246,7 +242,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -288,7 +284,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -329,7 +325,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -358,7 +354,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -400,7 +396,7 @@ describe('useSendForm hook', () => {
                 const callback: TestCallback = {};
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,
@@ -432,7 +428,7 @@ describe('useSendForm hook', () => {
 
                 const { unmount } = renderWithProviders(
                     store,
-                    extraDependenciesMock.services,
+                    extraDependenciesDesktopMock.services,
                     <SendIndex>
                         <Component callback={callback} />
                     </SendIndex>,

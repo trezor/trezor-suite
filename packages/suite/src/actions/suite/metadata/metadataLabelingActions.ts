@@ -8,7 +8,6 @@ import {
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
-import { METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
 import {
     selectLabelableEntities,
     selectMetadata,
@@ -28,6 +27,8 @@ import * as metadataUtils from 'src/utils/suite/metadata';
 
 import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
+import * as METADATA from './metadataConstants';
+import * as METADATA_LABELING from './metadataLabelingConstants';
 import * as metadataProviderActions from './metadataProviderThunks';
 import * as metadataThunks from './metadataThunks';
 

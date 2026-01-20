@@ -6,7 +6,6 @@ import { Device } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
-import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -20,11 +19,13 @@ import {
     Tokens,
 } from 'src/types/suite/metadata';
 
+import * as METADATA from './metadataConstants';
+import * as METADATA_PROVIDER from './metadataProviderConstants';
 import { disposeMetadata } from './metadataThunks';
-import { DropboxProvider } from '../../services/suite/metadata/DropboxProvider';
-import { FileSystemProvider } from '../../services/suite/metadata/FileSystemProvider';
-import { GoogleProvider } from '../../services/suite/metadata/GoogleProvider';
-import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
+import { DropboxProvider } from './providers/DropboxProvider';
+import { FileSystemProvider } from './providers/FileSystemProvider';
+import { GoogleProvider } from './providers/GoogleProvider';
+import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
 
 export type ProviderInstance =
     | DropboxProvider

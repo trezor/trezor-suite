@@ -14,7 +14,7 @@ import { SelectedAccountStatus, WalletParams } from '@suite-common/wallet-types'
 import { isChanged } from '@trezor/utils';
 
 import { ROUTER } from 'src/actions/suite/constants';
-import * as metadataActions from 'src/actions/suite/metadataActions';
+import * as metadataActions from 'src/actions/suite/metadata/metadataActions';
 import { accountSearchActions } from 'src/reducers/wallet/accountSearchReducer';
 import { Action, AppState, Dispatch, GetState } from 'src/types/suite';
 import { getSelectedAccount } from 'src/utils/wallet/accountUtils';
