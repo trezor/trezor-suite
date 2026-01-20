@@ -15,7 +15,6 @@ import {
     RESPONSE_EVENT,
     TRANSPORT,
     TRANSPORT_EVENT,
-    UI,
     UI_EVENT,
     UiResponseEvent,
     createErrorMessage,
@@ -111,12 +110,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
         const message = cloneObject(rawMessage);
 
         const { event, type, payload } = message;
-
-        if (type === UI.REQUEST_UI_WINDOW) {
-            this._coreManager.get()?.handleMessage({ type: POPUP.HANDSHAKE });
-
-            return;
-        }
 
         switch (event) {
             case RESPONSE_EVENT: {

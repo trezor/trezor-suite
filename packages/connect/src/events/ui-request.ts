@@ -40,7 +40,6 @@ export const UI_REQUEST = {
 
     DEVICE_NEEDS_BACKUP: 'ui-device_needs_backup',
 
-    REQUEST_UI_WINDOW: 'ui-request_window',
     CLOSE_UI_WINDOW: 'ui-close_window',
 
     REQUEST_CONFIRMATION: 'ui-request_confirmation',
@@ -69,10 +68,6 @@ export const UI_REQUEST = {
 export type UiRequestWithoutPayload =
     | {
           type: typeof UI_REQUEST.LOADING;
-          payload?: typeof undefined;
-      }
-    | {
-          type: typeof UI_REQUEST.REQUEST_UI_WINDOW;
           payload?: typeof undefined;
       }
     | {
