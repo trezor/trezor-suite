@@ -1,6 +1,6 @@
 import { createMemoryHistory } from 'history';
 
-import { StorageFlusher } from '@suite-common/suite-sync-types';
+import { SuiteSyncStorageFlusher } from '@suite-common/suite-sync-types';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { initStore } from 'src/reducers/store';
@@ -11,7 +11,7 @@ export const createSuiteDesktopCompositionRoot = (
     statePatch: Record<string, any> = {},
 ) => {
     const history = createMemoryHistory();
-    const flushSuiteSyncStorage: StorageFlusher = () => {
+    const flushSuiteSyncStorage: SuiteSyncStorageFlusher = () => {
         desktopApi.reloadBrowserWindow();
     };
 

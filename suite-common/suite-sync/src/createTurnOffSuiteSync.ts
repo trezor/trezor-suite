@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import {
-    StorageFlusherDep,
+    SuiteSyncStorageFlusherDep,
     TurnOffSuiteSync,
     TurnOffSuiteSyncForWalletDep,
 } from '@suite-common/suite-sync-types';
@@ -15,7 +15,7 @@ export type CreateTurnOffSuiteSyncDeps = {
     getState: () => any;
     getAllDeviceSessionIds: () => StaticSessionId[];
 } & TurnOffSuiteSyncForWalletDep &
-    StorageFlusherDep;
+    SuiteSyncStorageFlusherDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
