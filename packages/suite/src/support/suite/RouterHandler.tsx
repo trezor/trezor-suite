@@ -2,14 +2,15 @@ import { useEffect } from 'react';
 
 import { Action } from 'history';
 
-import type { SuiteRouterHistoryDep } from '@suite-common/redux-utils';
-
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-export const RouterHandler = ({ suiteRouterHistory }: SuiteRouterHistoryDep) => {
+import { useSuiteServices } from '../SuiteServicesProvider';
+
+export const RouterHandler = () => {
     const dispatch = useDispatch();
     const routerLoaded = useSelector(state => state.router.loaded);
+    const { suiteRouterHistory } = useSuiteServices();
 
     useEffect(() => {
         const emitLocation = () => {
