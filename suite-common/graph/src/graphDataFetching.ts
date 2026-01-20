@@ -197,8 +197,6 @@ const getAccountBalanceHistory = async ({
             to: endTimeFrameTimestamp,
             groupBy: 1,
             // we don't need currencies at all here, this will just reduce transferred data size
-            // TODO: doesn't work at all, fix it in connect or blockchain-link?
-            // issue: https://github.com/trezor/trezor-suite/issues/8888
             currencies: ['usd'],
         });
 
