@@ -91,6 +91,7 @@ export const DashboardPromoBanner = () => {
                 onClose={() => onCloseBanner(visibleBanner)}
                 onCTAClick={() => onCTAClick(visibleBanner)}
                 isVisible={isVisible}
+                data-testid="@dashboard/promo-banner"
             />
         );
 

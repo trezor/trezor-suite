@@ -17,6 +17,7 @@ type MessageSystemJsonEditorProps = {
     errors: ValidateError[];
     onChange: (next: string) => void;
     onFormat: () => void;
+    ['data-testid']?: string;
 };
 
 export const MessageSystemJsonEditor = ({
@@ -32,6 +33,7 @@ export const MessageSystemJsonEditor = ({
     return (
         <Row gap={spacings.md} alignItems="flex-start">
             <Textarea
+                data-testid="@settings/debug/message-system/json-editor-textarea"
                 innerRef={textareaRef}
                 label="Message config"
                 rows={10}

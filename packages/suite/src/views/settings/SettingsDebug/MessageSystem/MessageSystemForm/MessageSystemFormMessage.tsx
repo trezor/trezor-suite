@@ -104,7 +104,14 @@ export const MessageSystemFormMessage = () => {
     };
 
     if (!showForm) {
-        return <Modal.Button onClick={() => setShowForm(true)}>Add new message</Modal.Button>;
+        return (
+            <Modal.Button
+                onClick={() => setShowForm(true)}
+                data-testid="@settings/debug/message-system/add-new-message-button"
+            >
+                Add new message
+            </Modal.Button>
+        );
     }
 
     return (
@@ -127,7 +134,11 @@ export const MessageSystemFormMessage = () => {
             />
 
             <Row isReversed gap={spacings.xs}>
-                <Modal.Button isDisabled={!isValid} onClick={handleAddMessage}>
+                <Modal.Button
+                    isDisabled={!isValid}
+                    onClick={handleAddMessage}
+                    data-testid="@settings/debug/message-system/json-editor-add-message-button"
+                >
                     Add message
                 </Modal.Button>
                 <Modal.Button

@@ -32,7 +32,12 @@ export const MessageSystemDebug = () => {
                 </Box>
                 <ButtonGroup size="small">
                     <Button onClick={handleCopyConfig}>Copy full config</Button>
-                    <Button onClick={() => toggleOpenMessageManager(true)}>Message Manager</Button>
+                    <Button
+                        onClick={() => toggleOpenMessageManager(true)}
+                        data-testid="@settings/debug/message-system/message-manager-button"
+                    >
+                        Message Manager
+                    </Button>
                     <Button onClick={() => toggleOpenExperiments(true)}>Experiments</Button>
                 </ButtonGroup>
             </Row>

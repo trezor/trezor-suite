@@ -1,13 +1,54 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
+
+import { getPromoBannerJsonContent } from '../../../fixtures/promoBannerFixture';
+import { step } from '../../common';
+import { PromoBannerType } from '../dashboardPage';
 
 export class DebugTab {
     readonly suiteSyncCheckbox: Locator;
     readonly suiteSyncUrlInput: Locator;
     readonly suiteSyncUrlSaveButton: Locator;
+    readonly modal: Locator;
+    readonly modalCloseButton: Locator;
+    readonly messageManagerButton: Locator;
+    readonly addNewMessageButton: Locator;
+    readonly jsonEditor: Locator;
+    readonly addMessageButton: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(private readonly page: Page) {
         this.suiteSyncCheckbox = page.getByTestId('@settings/debug/suite-sync/checkbox');
         this.suiteSyncUrlInput = page.getByTestId('@settings/debug/suite-sync/relay-url-input');
         this.suiteSyncUrlSaveButton = page.getByTestId('@settings/debug/suite-sync/save-button');
+        this.modal = page.getByTestId('@modal');
+        this.modalCloseButton = page.getByTestId('@modal/close-button');
+        this.messageManagerButton = page.getByTestId(
+            '@settings/debug/message-system/message-manager-button',
+        );
+        this.addNewMessageButton = page.getByTestId(
+            '@settings/debug/message-system/add-new-message-button',
+        );
+        this.jsonEditor = page.getByTestId('@settings/debug/message-system/json-editor-textarea');
+        this.addMessageButton = page.getByTestId(
+            '@settings/debug/message-system/json-editor-add-message-button',
+        );
+    }
+
+    @step()
+    async addBanner(bannerType: PromoBannerType) {
+        const messageId = crypto.randomUUID();
+        const jsonContent = getPromoBannerJsonContent(messageId, bannerType);
+
+        await this.messageManagerButton.click();
+        await this.addNewMessageButton.click();
+
+        await this.jsonEditor.focus();
+        await this.jsonEditor.fill(jsonContent);
+        await this.addMessageButton.click();
+
+        await expect(this.page.getByText(messageId, { exact: true })).toBeAttached();
+
+        await this.modalCloseButton.click();
+
+        await expect(this.modal).toBeHidden();
     }
 }

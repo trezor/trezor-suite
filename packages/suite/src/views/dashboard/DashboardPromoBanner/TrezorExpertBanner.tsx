@@ -77,7 +77,12 @@ const CTAButton = ({ onClick }: { onClick: () => void }) => {
     const href = useExternalLink(DASHBOARD_BANNER_TEX_URL);
 
     return (
-        <Button intent="brand" onClick={onClick} href={href}>
+        <Button
+            intent="brand"
+            onClick={onClick}
+            href={href}
+            data-testid="@dashboard/promo-banner/tex/button"
+        >
             <Translation id="TR_PROMO_BANNER_DASHBOARD_TEX_BUTTON" />
         </Button>
     );
@@ -87,6 +92,7 @@ type TrezorExpertBannerProps = {
     onClose: () => void;
     onCTAClick: () => void;
     isVisible: boolean;
+    ['data-testid']?: string;
 };
 
 export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExpertBannerProps) => {
@@ -98,6 +104,7 @@ export const TrezorExpertBanner = ({ onClose, onCTAClick, isVisible }: TrezorExp
                 height={213}
                 padding={{ horizontal: 24 }}
                 backgroundColor="baseFillSurfaceBrandDark"
+                data-testid="@dashboard/promo-banner/trezor-expert"
             >
                 <Row
                     height="100%"

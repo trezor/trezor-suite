@@ -211,6 +211,7 @@ export const AssetCard = ({
                                 {isStakeNetwork && (
                                     <TradingButton
                                         symbol={symbol}
+                                        data-testid={`@dashboard/asset/${symbol}/stake-button`}
                                         onClick={onStakeButtonClick}
                                         routeName="wallet-staking"
                                     >
