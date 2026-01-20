@@ -1,6 +1,5 @@
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
 import TrezorConnect from '@trezor/connect';
@@ -20,7 +19,6 @@ import { BioAuthGuard } from 'src/components/suite/BioAuthGuard/BioAuthGuard';
 import { FindBar } from 'src/components/suite/FindBar/FindBar';
 import { Metadata } from 'src/components/suite/Metadata';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { initStore } from 'src/reducers/store';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { Main } from 'src/support/suite/Main';
@@ -31,6 +29,7 @@ import { useConnectPopupDesktop } from 'src/support/suite/useConnectPopupDesktop
 import { useTor } from 'src/support/suite/useTor';
 
 import { GlobalStyle } from './GlobalStyle';
+import { createSuiteDesktopCompositionRoot } from './createSuiteDesktopCompositionRoot';
 import { initSentry } from './sentry';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
@@ -68,18 +67,8 @@ export const init = async (container: HTMLElement) => {
 
     const preloadAction = await preloadStore();
     const { statePatch } = await desktopApi.handshake();
-    const { store, services } = initStore(
-        {
-            history: createMemoryHistory(),
-            flushSuiteSyncStorage: () => {
-                desktopApi.reloadBrowserWindow();
-            },
-        },
-        preloadAction,
-        {
-            statePatch,
-        },
-    );
+
+    const { store, services } = createSuiteDesktopCompositionRoot(preloadAction, statePatch);
 
     // Expose Redux store for Playwright/e2e tests
     if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
