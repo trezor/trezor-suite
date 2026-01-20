@@ -9,6 +9,16 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     ...extraDependenciesMock,
     services: {
         ...extraDependenciesMock.services,
+        suiteRouterHistory: {
+            getLocation: () => ({
+                pathname: '/mocked_path',
+                hash: '#mocked_hash',
+                search: '?mocked_search',
+            }),
+            navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
+            listen: (_: {}) => () => {},
+        },
+
         disableLegacyMetadataIfNeeded: () => {},
     },
 };

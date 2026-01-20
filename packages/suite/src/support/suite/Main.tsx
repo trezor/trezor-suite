@@ -1,7 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { RouterServices } from '@suite-common/redux-utils';
+import { SuiteRouterHistoryDep } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';
@@ -18,14 +18,13 @@ import { RouterHandler } from './RouterHandler';
 import { useConnectPopupModals } from './useConnectPopupModals';
 
 export const Main = ({
-    routerServices,
+    suiteRouterHistory,
     trafficLightOffset,
     children,
 }: {
-    routerServices: RouterServices;
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
-}) => {
+} & SuiteRouterHistoryDep) => {
     useConnectPopupModals();
     const formattersConfig = useFormattersConfig();
 
@@ -41,7 +40,7 @@ export const Main = ({
                         <Resize />
                         <Protocol />
                         <OnlineStatus />
-                        <RouterHandler routerServices={routerServices} />
+                        <RouterHandler suiteRouterHistory={suiteRouterHistory} />
                         <ConnectedIntlProvider>
                             <SelectCacheProvider>
                                 <FormatterProvider config={formattersConfig}>

@@ -15,6 +15,7 @@ import { isArrayMember } from '@trezor/utils';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { goto } from 'src/actions/suite/routerActions';
 import type { SendFormState } from 'src/reducers/suite/protocolReducer';
+import { asSuiteServices } from 'src/support/extraDependencies';
 import { Dispatch, GetState } from 'src/types/suite';
 import { parseUri } from 'src/utils/suite/parseUri';
 import { CoinProtocolInfo, getProtocolInfo } from 'src/utils/suite/protocol';
@@ -112,7 +113,7 @@ export const handleProtocolRequest =
                 const [, hash] = decodedPath.split('/coinmarket-redirect/');
                 if (hash) {
                     const path = { pathname: '/coinmarket-redirect', hash: `#${hash}` } as const;
-                    extra.routerServices.navigate(path);
+                    asSuiteServices(extra.services).suiteRouterHistory.navigate(path);
                     dispatch(routerActions.onLocationChange(path));
                 }
             }

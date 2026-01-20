@@ -10,6 +10,7 @@ import * as suiteActions from 'src/actions/suite/suiteActions';
 import type { AnchorType } from 'src/constants/suite/anchors';
 import { RouterAppWithParams, SettingsBackRoute } from 'src/constants/suite/routes';
 import { selectIsRouterLocked, selectIsRouterOrUiLocked } from 'src/selectors/suite/suiteSelectors';
+import { asSuiteServices } from 'src/support/extraDependencies';
 import { Dispatch, GetState } from 'src/types/suite';
 import {
     RouteParams,
@@ -80,7 +81,7 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
 export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const location = extra.routerServices.getLocation();
+        const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         dispatch(onLocationChange(location));
     }
 };
@@ -131,13 +132,13 @@ export const goto =
             // where we want to have suite-start router clearing the URL to ensure
             // that there isn't a state stuck
             if (route.clearUrl) {
-                extra.routerServices.navigate({ pathname });
+                asSuiteServices(extra.services).suiteRouterHistory.navigate({ pathname });
             }
 
             return;
         }
 
-        extra.routerServices.navigate({ pathname, hash });
+        asSuiteServices(extra.services).suiteRouterHistory.navigate({ pathname, hash });
     };
 
 /**
@@ -150,7 +151,7 @@ export const closeModalApp =
     (dispatch: Dispatch, _: GetState, extra: ExtraDependencies) => {
         dispatch(suiteActions.lockRouter(false));
 
-        const location = extra.routerServices.getLocation();
+        const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         const route = findRoute(location.pathname);
 
         // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
@@ -160,7 +161,9 @@ export const closeModalApp =
         }
 
         if (!preserveParams && location.hash.length > 0) {
-            extra.routerServices.navigate({ pathname: location.pathname });
+            asSuiteServices(extra.services).suiteRouterHistory.navigate({
+                pathname: location.pathname,
+            });
         } else {
             // + history.location.hash is here to preserve params (e.g. nth account)
             dispatch(onLocationChange(location));
@@ -174,7 +177,7 @@ export const closeModalApp =
 export const initialRedirection = createThunk(
     '@suite/initial-redirection',
     (_, { dispatch, getState, extra }) => {
-        const location = extra.routerServices.getLocation();
+        const location = asSuiteServices(extra.services).suiteRouterHistory.getLocation();
         const route = findRoute(location.pathname);
 
         const { initialRun } = getState().suite.flags;

@@ -8,12 +8,7 @@ import { ExtraDependencies, ExtraDependenciesStatic } from '@suite-common/redux-
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import {
-    type NativeAnalyticsDep,
-    type NativeLegacyAnalyticsDep,
-    createAnalytics,
-    createLegacyAnalytics,
-} from '@suite-native/analytics';
+import { createAnalytics, createLegacyAnalytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -48,9 +43,7 @@ type NativeAppDeps = {
 } & EnsureEncryptionKeyDep &
     MMKVStorageDep;
 
-export const createNativeCompositionRoot = (
-    deps: NativeAppDeps,
-): NativeServices & NativeAnalyticsDep & NativeLegacyAnalyticsDep => {
+export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices => {
     const platformEncryption = createNativePlatformEncryption({
         ensureEncryptionKey: deps.ensureEncryptionKey,
     });
