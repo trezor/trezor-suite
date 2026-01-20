@@ -9,6 +9,9 @@
             "path": "../../suite-common/formatters"
         },
         {
+            "path": "../../suite-common/react-query"
+        },
+        {
             "path": "../../suite-common/suite-constants"
         },
         {

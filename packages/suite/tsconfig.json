@@ -60,6 +60,9 @@
             "path": "../../suite-common/platform-encryption"
         },
         {
+            "path": "../../suite-common/react-query"
+        },
+        {
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite-common/sentry" },
