@@ -9,7 +9,6 @@ import { discovery } from '@trezor/utxo-lib';
 
 import { AddressHistory, Api, discoverAddress, getTransactions, tryGetScripthash } from '../utils';
 
-// const PAGE_DEFAULT = 0;
 const PAGE_SIZE_DEFAULT = 25;
 
 type AddressInfo = Omit<AddressHistory, 'scripthash'> & {
@@ -108,7 +107,9 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         ([c, u], { confirmed, unconfirmed }) => [c + confirmed, u + unconfirmed],
         [0, 0],
     );
-    const history = batch.flatMap(({ history }) => history);
+    const history = [
+        ...new Map(batch.flatMap(({ history }) => history).map(tx => [tx.tx_hash, tx])).values(),
+    ];
     const historyUnconfirmed = history.filter(r => r.height <= 0).length;
 
     const transformAddressInfo = ({ address, path, history, confirmed }: AddressInfo): Address => ({
