@@ -65,7 +65,6 @@
         "test:integration": "yarn g:jest -c jest.config.integration.js",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
         "depcheck": "yarn g:depcheck"
     },
     "devDependencies": {

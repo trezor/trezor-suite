@@ -43,8 +43,7 @@
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",

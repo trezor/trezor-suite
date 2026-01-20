@@ -35,8 +35,7 @@
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "devDependencies": {
         "tsx": "^4.20.3"
