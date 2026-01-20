@@ -1,4 +1,3 @@
-import { HashString, PathString, RouterPath, SearchString } from '@suite-common/redux-utils';
 import { modalAppParams } from '@suite-common/suite-config';
 import { Route } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
@@ -10,7 +9,17 @@ import {
 
 import routes, { type RouterAppWithParams } from 'src/constants/suite/routes';
 
-export type { RouterPath } from '@suite-common/redux-utils';
+export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
+export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
+export type HashString = '' | `#${string}`; // in format `#/alpha/beta/gamma`
+
+// NOTE: this is basically a bit stricter Path from history package (file://./../../../node_modules/history/index.d.ts),
+// but it is satisfied by window.location as well
+export type RouterPath = {
+    pathname: PathString;
+    search: SearchString;
+    hash: HashString;
+};
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
 // Useful with next.js Router.push() that accepts `as` prop as second arg

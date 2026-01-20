@@ -9,7 +9,6 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import type { PathString } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import {
     initTokenDefinitionsThunk,
@@ -43,6 +42,7 @@ import walletReducers from 'src/reducers/wallet';
 import { createSuiteRouterHistory, extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import type { AppState } from 'src/types/suite';
+import { PathString } from 'src/utils/suite/router';
 
 import { initialRedirection } from '../routerActions';
 import { appChanged } from '../suiteActions';

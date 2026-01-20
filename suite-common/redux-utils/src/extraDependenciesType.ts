@@ -3,7 +3,6 @@ import {
     ActionCreatorWithPreparedPayload,
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
-import { type History } from 'history';
 
 import type {
     AnalyticsSharedEvents,
@@ -38,38 +37,6 @@ type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload:
 type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
-
-export type PathString = `/${string}`; // in format `/alpha/beta/gamma`
-export type SearchString = '' | `?${string}`; // in format `?alpha=beta&gamma=delta`
-export type HashString = '' | `#${string}`; // in format `#/alpha/beta/gamma`
-
-// NOTE: this is basically a bit stricter Path from history package (file://./../../../node_modules/history/index.d.ts),
-// but it is satisfied by window.location as well
-export type RouterPath = {
-    pathname: PathString;
-    search: SearchString;
-    hash: HashString;
-};
-
-// This is a Listener from history package
-type Listener = (_: { location: RouterPath; action: 'PUSH' | 'POP' | 'REPLACE' }) => void;
-
-export type SuiteRouterHistory = {
-    getLocation: () => RouterPath;
-    navigate: (to: Partial<RouterPath>, state?: LocationPushState) => void;
-    // calling .listen(listener) returns a cleanup function
-    listen: (listener: Listener) => () => void;
-};
-
-export type SuiteRouterHistoryDep = {
-    suiteRouterHistory: SuiteRouterHistory;
-};
-
-export type SuiteRouterHistoryDeps = {
-    history: History;
-};
-
-export type LocationPushState = Record<string, unknown>;
 
 export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {

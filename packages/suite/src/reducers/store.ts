@@ -41,15 +41,12 @@ import suiteReducers from 'src/reducers/suite';
 import walletReducers from 'src/reducers/wallet';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
+import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
 
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
-import {
-    HistoryDep,
-    createSuiteCompositionRoot,
-    extraDependencies,
-} from '../support/extraDependencies';
+import { createSuiteCompositionRoot, extraDependencies } from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -128,8 +125,10 @@ type RootReducerShape = typeof rootReducer;
 type PreloadedState = Partial<AppState>;
 type InferredAction = Parameters<RootReducerShape>[1];
 
+type SuiteStoreDeps = HistoryDep;
+
 export const initStore = (
-    deps: HistoryDep,
+    deps: SuiteStoreDeps,
     preloadStoreAction?: PreloadStoreAction,
     options: { statePatch?: Record<string, any> } = {},
 ) => {
