@@ -227,6 +227,9 @@ export const exposeConnectWs = ({
                         manifest: {
                             appName: settings.manifest.appName,
                             appIcon: settings.manifest.appIcon,
+                            appUrl: settings.manifest.appUrl,
+                            email: settings.manifest.email,
+                            npmVersion: settings.version,
                         },
                     });
 

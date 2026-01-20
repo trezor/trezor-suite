@@ -5,6 +5,9 @@ import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 export type ManifestPartial = {
     appName: string;
     appIcon?: string;
+    appUrl?: string;
+    email?: string;
+    npmVersion?: string;
 };
 
 export const CALL_SOURCE_DESKTOP_WS = 'desktop-ws';
