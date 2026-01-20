@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
+import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { useCurrentRef } from '@trezor/react-utils';
 import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
 
 /**
@@ -8,54 +10,48 @@ import { IMAGE_PROXY_API_AUTH_BEARER, IMAGE_PROXY_API_URL } from '@trezor/urls';
  * Display fallbackComponent if the image fails to load
  */
 export const useProxyImage = (src?: string) => {
-    const [imageBlob, setImageBlob] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+    const abortControllersRef = useRef(new Map<string, AbortController>());
+    const proxyImageQuery = useQuery({
+        enabled: Boolean(src),
+        queryKey: desktopQueryKeys.proxyImage(src),
+        queryFn: async () => {
+            const abortController = new AbortController();
 
-    useEffect(() => {
-        let isCancelled = false;
-        setLoading(true);
-        setError(false);
-        setImageBlob(null);
+            abortControllersRef.current.set(src!, abortController);
 
-        if (!src) {
-            setLoading(false);
-            setError(true);
-
-            return;
-        }
-
-        fetch(`${IMAGE_PROXY_API_URL}?url=${encodeURIComponent(src)}`, {
-            headers: {
-                Authorization: `Bearer ${IMAGE_PROXY_API_AUTH_BEARER}`,
-            },
-        })
-            .then(res => {
-                if (!res.ok) throw new Error('Image fetch failed');
-
-                return res.blob();
-            })
-            .then(blob => {
-                if (!isCancelled) {
-                    const objectUrl = URL.createObjectURL(blob);
-                    setImageBlob(objectUrl);
-                }
-            })
-            .catch(() => {
-                if (!isCancelled) setError(true);
-            })
-            .finally(() => {
-                if (!isCancelled) setLoading(false);
+            const res = await fetch(`${IMAGE_PROXY_API_URL}?url=${encodeURIComponent(src!)}`, {
+                headers: {
+                    Authorization: `Bearer ${IMAGE_PROXY_API_AUTH_BEARER}`,
+                },
+                signal: abortController.signal,
             });
 
-        return () => {
-            isCancelled = true;
-        };
-    }, [src]);
+            if (!res.ok) {
+                throw new Error('Image fetch failed');
+            }
 
-    return {
-        imageBlob,
-        loading,
-        error,
-    };
+            const blob = await res.blob();
+
+            abortControllersRef.current.delete(src!);
+
+            return URL.createObjectURL(blob);
+        },
+        staleTime: 24 * 60 * 60 * 1000,
+    });
+    const inProgressRef = useCurrentRef(proxyImageQuery.isLoading);
+
+    useEffect(() => {
+        if (!src) return;
+
+        const inProgress = inProgressRef.current;
+        const abortController = abortControllersRef.current.get(src);
+
+        return () => {
+            if (inProgress && abortController) {
+                abortController.abort('Image fetch aborted on unmount.');
+            }
+        };
+    }, [src, inProgressRef]);
+
+    return proxyImageQuery;
 };

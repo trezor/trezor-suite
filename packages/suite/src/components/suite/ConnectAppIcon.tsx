@@ -21,9 +21,9 @@ export const ConnectAppIcon = ({
     type?: 'walletConnect' | 'trezorConnect';
     size?: SpacingValues;
 }) => {
-    const { loading, error, imageBlob } = useProxyImage(src);
+    const proxyImageQuery = useProxyImage(src);
 
-    if (loading || error || !src || !imageBlob) {
+    if (!proxyImageQuery.isSuccess) {
         return (
             <IconCircle
                 name={type === 'walletConnect' ? 'walletConnect' : 'plugs'}
@@ -35,5 +35,5 @@ export const ConnectAppIcon = ({
         );
     }
 
-    return <AppIconImage src={imageBlob} alt="App Icon" size={size} />;
+    return <AppIconImage src={proxyImageQuery.data} alt="App Icon" size={size} />;
 };
