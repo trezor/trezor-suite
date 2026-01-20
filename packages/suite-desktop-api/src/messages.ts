@@ -148,6 +148,9 @@ export type ConnectPopupCall = {
     manifest: {
         appName: string;
         appIcon?: string;
+        appUrl: string;
+        email: string;
+        npmVersion?: string;
     };
 };
 

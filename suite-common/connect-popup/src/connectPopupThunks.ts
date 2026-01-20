@@ -161,6 +161,11 @@ export const connectPopupCallThunkInner = createThunk<
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,
+                    appName: source.manifest.appName,
+                    appUrl: source.manifest.appUrl,
+                    appEmail: source.manifest.email,
+                    npmVersion: source.manifest.npmVersion,
+                    connectionType: source.type,
                     origin: source.origin,
                 },
             });
@@ -195,6 +200,11 @@ export const connectPopupCallThunkInner = createThunk<
                     method,
                     origin: source.origin,
                     error: error?.code,
+                    appName: source.manifest.appName,
+                    appUrl: source.manifest.appUrl,
+                    appEmail: source.manifest.email,
+                    npmVersion: source.manifest.npmVersion,
+                    connectionType: source.type,
                 },
             });
 

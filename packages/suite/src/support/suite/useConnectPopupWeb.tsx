@@ -41,7 +41,10 @@ export const useConnectPopupWeb = () => {
                 event.data.type === POPUP.HANDSHAKE &&
                 event.data.payload?.settings?.manifest
             ) {
-                manifest.current = event.data.payload.settings.manifest;
+                manifest.current = {
+                    ...event.data.payload.settings.manifest,
+                    npmVersion: event.data.payload.settings.version,
+                };
                 setPendingHandshake(event.data.id);
             } else if (event.data?.type === IFRAME.CALL) {
                 if (!manifest.current) {
