@@ -1,0 +1,19 @@
+{
+    "name": "@suite-common/react-query",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/suite-utils": "workspace:^",
+        "@tanstack/react-query": "5.90.16",
+        "@tanstack/react-query-devtools": "5.91.2",
+        "react": "19.1.0"
+    }
+}

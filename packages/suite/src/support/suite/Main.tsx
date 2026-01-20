@@ -1,6 +1,7 @@
 import { HelmetProvider } from 'react-helmet-async';
 
 import { FormatterProvider } from '@suite-common/formatters';
+import { ReactQueryProvider } from '@suite-common/react-query';
 import { SelectCacheProvider } from '@trezor/components';
 
 import { useFormattersConfig } from 'src/hooks/suite';
@@ -34,18 +35,20 @@ export const Main = ({
             <ConnectedThemeProvider>
                 <ResponsiveContextProvider>
                     <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <SelectCacheProvider>
-                                <FormatterProvider config={formattersConfig}>
-                                    {children}
-                                </FormatterProvider>
-                            </SelectCacheProvider>
-                        </ConnectedIntlProvider>
+                        <ReactQueryProvider>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <ConnectedIntlProvider>
+                                <SelectCacheProvider>
+                                    <FormatterProvider config={formattersConfig}>
+                                        {children}
+                                    </FormatterProvider>
+                                </SelectCacheProvider>
+                            </ConnectedIntlProvider>
+                        </ReactQueryProvider>
                     </ErrorBoundary>
                 </ResponsiveContextProvider>
             </ConnectedThemeProvider>

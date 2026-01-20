@@ -10901,6 +10901,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/react-query@workspace:*, @suite-common/react-query@workspace:^, @suite-common/react-query@workspace:suite-common/react-query":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/react-query@workspace:suite-common/react-query"
+  dependencies:
+    "@suite-common/suite-utils": "workspace:^"
+    "@tanstack/react-query": "npm:5.90.16"
+    "@tanstack/react-query-devtools": "npm:5.91.2"
+    react: "npm:19.1.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/redux-utils@workspace:*, @suite-common/redux-utils@workspace:suite-common/redux-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/redux-utils@workspace:suite-common/redux-utils"
@@ -11091,7 +11102,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-utils@workspace:*, @suite-common/suite-utils@workspace:suite-common/suite-utils":
+"@suite-common/suite-utils@workspace:*, @suite-common/suite-utils@workspace:^, @suite-common/suite-utils@workspace:suite-common/suite-utils":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-utils@workspace:suite-common/suite-utils"
   dependencies:
@@ -11230,6 +11241,7 @@ __metadata:
   dependencies:
     "@blockaid/client": "npm:^0.56.0"
     "@suite-common/connect-popup": "workspace:^"
+    "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
     "@trezor/connect": "workspace:^"
     react: "npm:18.2.0"
@@ -11505,6 +11517,7 @@ __metadata:
     "@storybook/react-native": "npm:^10.0.7"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/formatters": "workspace:*"
+    "@suite-common/react-query": "workspace:^"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:^"
@@ -13940,6 +13953,43 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.90.16":
+  version: 5.90.16
+  resolution: "@tanstack/query-core@npm:5.90.16"
+  checksum: 10/25720ff6aa5888550351d92620ca62b6882e80da0fd0428be01c2c6cf4772e6678d7850b88f81916b3ab3fb49dad3b697a3ac84e9e6a90da482ef980c30b7566
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-devtools@npm:5.92.0":
+  version: 5.92.0
+  resolution: "@tanstack/query-devtools@npm:5.92.0"
+  checksum: 10/1be6c1b190f8c2633f19473ee94f752fa449bed135eff05381f5bb2b86e0bf951946b75de4b9339705c7b0ee95024f5badac45305dd625434c238249a6f5970a
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query-devtools@npm:5.91.2":
+  version: 5.91.2
+  resolution: "@tanstack/react-query-devtools@npm:5.91.2"
+  dependencies:
+    "@tanstack/query-devtools": "npm:5.92.0"
+  peerDependencies:
+    "@tanstack/react-query": ^5.90.14
+    react: ^18 || ^19
+  checksum: 10/ce4c4ad391bbe03eb8edd3b41c3349ce4e7f4c1b77045923ca8ab348d46764fd7bca89967b29cb12aca82299b1ecef89173791435c69d97d930b5d72bfa31e66
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:5.90.16":
+  version: 5.90.16
+  resolution: "@tanstack/react-query@npm:5.90.16"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.16"
+  peerDependencies:
+    react: ^18 || ^19
+  checksum: 10/7cd8fa3da43f99ecb52f1ef16fb3fe177957e3bc71d0f367f2e55b9f7bce19984f2d9ff367c909ec10a49ed4d66fc26bb1f3a0088340dfab746be63a51b5bb94
+  languageName: node
+  linkType: hard
+
 "@tanstack/react-virtual@npm:^3.13.9":
   version: 3.13.9
   resolution: "@tanstack/react-virtual@npm:3.13.9"
@@ -15099,6 +15149,7 @@ __metadata:
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/staking": "workspace:*"
