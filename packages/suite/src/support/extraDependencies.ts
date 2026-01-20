@@ -95,11 +95,12 @@ export const createSuiteRouterHistory = ({
         ),
 });
 
-type SuiteAppDeps = {
+export type StoreAPIDep = {
     getState: () => any;
-    dispatch: any;
-} & HistoryDep &
-    StorageFlusherDep;
+    dispatch: (arg1: any) => any;
+};
+
+export type SuiteAppDeps = StoreAPIDep & HistoryDep & StorageFlusherDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &

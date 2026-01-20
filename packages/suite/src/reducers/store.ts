@@ -143,7 +143,7 @@ export const initStore = (
         : undefined;
 
     const patchedState =
-        preloadedState && options.statePatch && patchConfirm(options.statePatch)
+        preloadedState && options?.statePatch && patchConfirm(options.statePatch)
             ? mergeDeepObject.withOptions(
                   { dotNotation: true },
                   preloadedState,
@@ -154,9 +154,10 @@ export const initStore = (
     const extraFactory = (api: MiddlewareAPI) => ({
         ...extraDependencies,
         services: createSuiteServicesCompositionRoot({
-            history: deps.history,
             getState: api.getState,
             dispatch: api.dispatch,
+            flushSuiteSyncStorage: deps.flushSuiteSyncStorage,
+            history: deps.history,
         }),
     });
 

@@ -3,7 +3,6 @@ import 'core-js/actual';
 import { Suspense } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 
-import { createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
 import {
@@ -14,7 +13,6 @@ import {
     ToasterProvider,
 } from 'src/components/suite';
 import { useDebugLanguageShortcut } from 'src/hooks/suite';
-import { initStore } from 'src/reducers/store';
 import { SuiteServicesProvider } from 'src/support/SuiteServicesProvider';
 import { Main } from 'src/support/suite/Main';
 import { preloadStore } from 'src/support/suite/preloadStore';
@@ -22,6 +20,7 @@ import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useConnectPopupWeb } from 'src/support/suite/useConnectPopupWeb';
 import { useTor } from 'src/support/suite/useTor';
 
+import { createSuiteWebCompositionRoot } from './createSuiteWebCompositionRoot';
 import { initSentry } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
@@ -55,10 +54,8 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const { store, services } = initStore(
-        { history: createBrowserHistory(), flushSuiteSyncStorage: () => window.location.reload() },
-        preloadAction,
-    );
+
+    const { store, services } = createSuiteWebCompositionRoot(preloadAction);
 
     root.render(
         <SuiteServicesProvider services={services}>
