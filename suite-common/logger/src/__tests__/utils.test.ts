@@ -1,7 +1,7 @@
 import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 
-import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from 'src/utils/suite/logsUtils';
+import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from '../utils';
 
 describe('logsUtils', () => {
     const account = testMocks.getWalletAccount({

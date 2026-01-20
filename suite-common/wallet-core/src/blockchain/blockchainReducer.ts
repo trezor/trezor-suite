@@ -8,6 +8,7 @@ import {
     networksCollection,
 } from '@suite-common/wallet-config';
 import { Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
+import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     BlockchainBlock,
     BlockchainError,
@@ -17,6 +18,7 @@ import {
 } from '@trezor/connect';
 
 import { blockchainActions } from './blockchainActions';
+import { WalletSettingsRootState, selectEnabledNetworks } from '../settings/walletSettingsReducer';
 
 /*
   get url suffix from default network and generate url for selected network
@@ -194,7 +196,9 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     },
 );
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<BlockchainRootState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<
+    BlockchainRootState & WalletSettingsRootState
+>();
 
 export const selectBlockchainState = (state: BlockchainRootState) => state.wallet.blockchain;
 
@@ -212,4 +216,12 @@ export const selectBlockchainBlockInfoBySymbol = createMemoizedSelector(
         blockhash: blockchain.blockHash,
         blockHeight: blockchain.blockHeight,
     }),
+);
+
+export const selectEnabledCustomBackends = createMemoizedSelector(
+    [selectBlockchainState, selectEnabledNetworks],
+    (blockchainState, enabledNetworks) =>
+        getCustomBackends(blockchainState)
+            .map(({ symbol }) => symbol)
+            .filter(symbol => enabledNetworks.includes(symbol)),
 );

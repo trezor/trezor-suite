@@ -7,12 +7,26 @@
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build"
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.11.0",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*"
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "react": "19.1.0",
+        "react-redux": "9.2.0"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }

@@ -488,20 +488,30 @@ export const selectIsDeviceRemembered = createMemoizedSelector(
     device => !!device?.remember,
 );
 
-export const selectRememberedStandardWalletsCount = createMemoizedSelector(
+export const selectRememberedStandardWallets = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
             devices.filter(device => device.remember && device.useEmptyPassphrase === true),
-        ).length,
+        ),
 );
 
-export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
+export const selectRememberedStandardWalletsCount = createMemoizedSelector(
+    [selectRememberedStandardWallets],
+    wallets => wallets.length,
+);
+
+export const selectRememberedHiddenWallets = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
     devices =>
         returnStableArrayIfEmpty(
             devices.filter(device => device.remember && device.useEmptyPassphrase === false),
-        ).length,
+        ),
+);
+
+export const selectRememberedHiddenWalletsCount = createMemoizedSelector(
+    [selectRememberedHiddenWallets],
+    wallets => wallets.length,
 );
 
 export const selectIsDeviceInViewOnlyMode = createMemoizedSelector(
