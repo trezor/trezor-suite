@@ -118,8 +118,6 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
             return;
         }
 
-        if (type === POPUP.CANCEL_POPUP_REQUEST) return;
-
         switch (event) {
             case RESPONSE_EVENT: {
                 const { id = 0, success, device } = message;

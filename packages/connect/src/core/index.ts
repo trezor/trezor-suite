@@ -26,7 +26,6 @@ import {
     TransportInfo,
     UI,
     createDeviceMessage,
-    createPopupMessage,
     createResponseMessage,
     createTransportMessage,
     createUiMessage,
@@ -147,9 +146,6 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     if (method.useUi) {
         // make sure that popup is opened
         await waitForPopup(context);
-    } else {
-        // popup is not required
-        sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
 
     // run method
@@ -205,7 +201,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         resolveWaitForFirstMethod();
         callMethods.push(method);
     } catch (error) {
-        sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
 
         return Promise.resolve();
@@ -228,9 +223,6 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
             if (method.useUi) {
                 // wait for popup handshake
                 await waitForPopup(context);
-            } else {
-                // cancel popup request
-                sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
 
             const response = await method.run();
@@ -281,9 +273,6 @@ const onCallDevice = async (
                     }
                     continue;
                 }
-            } else {
-                // cancel popup request
-                sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
             }
             // TODO: this should not be returned here before user agrees on "read" perms...
             sendCoreMessage(createResponseMessage(responseID, false, { error }));
@@ -326,8 +315,6 @@ const onCallDevice = async (
             // wait for self-release and then carry on
             await device.currentRun;
         } else {
-            // cancel popup request
-            // sendCoreMessage(UiMessage(POPUP.CANCEL_POPUP_REQUEST));
             sendCoreMessage(
                 createResponseMessage(responseID, false, {
                     error: ERRORS.TypedError('Device_CallInProgress'),
@@ -435,10 +422,7 @@ const cleanup = ({ uiPromises, popupPromise }: CoreContext) => {
  * @returns {void}
  * @memberof Core
  */
-const closePopup = ({ popupPromise, sendCoreMessage }: CoreContext) => {
-    if (popupPromise.isWaiting()) {
-        sendCoreMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
-    }
+const closePopup = ({ sendCoreMessage }: CoreContext) => {
     sendCoreMessage(createUiMessage(UI.CLOSE_UI_WINDOW));
 };
 
