@@ -12,11 +12,11 @@ import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { getPermissionText } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [isRemembered, setIsRemembered] = useState(false);
     const dispatch = useDispatch();
     const popupCall = useSelector(selectConnectPopupCall);
@@ -34,7 +34,7 @@ export const ConnectPermissionsModal = () => {
             dispatch(connectPopupActions.rememberAppPermissions(rememberPayload));
         }
         dispatch(connectPopupActions.approvePermissions());
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.ConnectPopupPermissions,
             payload: {
                 method,
@@ -46,7 +46,7 @@ export const ConnectPermissionsModal = () => {
     const onCancel = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.ConnectPopupPermissions,
             payload: {
                 method,

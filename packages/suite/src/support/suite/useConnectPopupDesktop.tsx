@@ -14,11 +14,11 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const useConnectPopupDesktop = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const popupCall = useSelector(selectConnectPopupCall);
     const initialized = useRef(false);
 
@@ -60,7 +60,7 @@ export const useConnectPopupDesktop = () => {
 
                     desktopApi.connectPopupReady();
 
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.ConnectPopupInit,
                     });
                 }
@@ -75,7 +75,7 @@ export const useConnectPopupDesktop = () => {
                 desktopApi.removeAllListeners('app/auto-start/popup-request');
             }
         };
-    }, [dispatch, legacyAnalytics]);
+    }, [dispatch, analytics]);
 
     // App focus control
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
