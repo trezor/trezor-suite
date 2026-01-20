@@ -6,8 +6,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { createBrowserHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { SuiteRouterHistoryDep } from '@suite-common/redux-utils/src/extraDependenciesType';
-
 import {
     AppRouter,
     BundleLoader,
@@ -28,14 +26,14 @@ import { initSentry } from './sentry';
 import { usePlaywright } from './support/usePlaywright';
 import { webComponents } from './support/webComponents';
 
-const MainWeb = ({ suiteRouterHistory }: SuiteRouterHistoryDep) => {
+const MainWeb = () => {
     usePlaywright();
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupWeb();
 
     return (
-        <Main suiteRouterHistory={suiteRouterHistory}>
+        <Main>
             <Metadata />
             <ToasterProvider />
             <Preloader>
@@ -62,7 +60,7 @@ export const init = async (container: HTMLElement) => {
     root.render(
         <SuiteServicesProvider services={services}>
             <ReduxProvider store={store}>
-                <MainWeb suiteRouterHistory={services.suiteRouterHistory} />
+                <MainWeb />
             </ReduxProvider>
         </SuiteServicesProvider>,
     );

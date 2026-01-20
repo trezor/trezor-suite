@@ -3,7 +3,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { createMemoryHistory } from 'history';
 import { createRoot } from 'react-dom/client';
 
-import { SuiteRouterHistoryDep } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -37,16 +36,13 @@ import { DesktopUpdater } from './support/DesktopUpdater';
 import { desktopComponents } from './support/desktopComponents';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
 
-const MainDesktop = ({ suiteRouterHistory }: SuiteRouterHistoryDep) => {
+const MainDesktop = () => {
     useTor();
     useDebugLanguageShortcut();
     useConnectPopupDesktop();
 
     return (
-        <Main
-            suiteRouterHistory={suiteRouterHistory}
-            trafficLightOffset={<TrafficLightDraggableWindowHeader />}
-        >
+        <Main trafficLightOffset={<TrafficLightDraggableWindowHeader />}>
             <GlobalStyle />
             <DesktopUpdater />
             <Metadata />
@@ -148,7 +144,7 @@ export const init = async (container: HTMLElement) => {
     root.render(
         <SuiteServicesProvider services={services}>
             <ReduxProvider store={store}>
-                <MainDesktop suiteRouterHistory={services.suiteRouterHistory} />
+                <MainDesktop />
             </ReduxProvider>
         </SuiteServicesProvider>,
     );
