@@ -57,6 +57,7 @@ import { getPublicKey } from './getPublicKey';
 import { getSettings } from './getSettings';
 import { init } from './init';
 import { loadDevice } from './loadDevice';
+import { lockDevice } from './lockDevice';
 import { moneroGetAddress } from './moneroGetAddress';
 import { moneroGetWatchKey } from './moneroGetWatchKey';
 import { moneroKeyImageSync } from './moneroKeyImageSync';
@@ -321,6 +322,9 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/device/setBusy/
     setBusy: typeof setBusy;
+
+    // https://connect.trezor.io/9/methods/device/lockDevice/
+    lockDevice: typeof lockDevice;
 
     // https://connect.trezor.io/9/methods/bitcoin/signMessage/
     signMessage: typeof signMessage;
