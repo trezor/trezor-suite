@@ -22,14 +22,17 @@ type SuiteSyncNativeCompositionRootDeps = {
 
 export const createSuiteSyncNativeCompositionRoot = (
     deps: SuiteSyncNativeCompositionRootDeps,
-): SuiteSync => {
-    const createEvoluInstance = createEvoluInstanceFactory(evoluReactNativeDeps);
-    const createEvoluStorage = createEvoluStorageFactory({ createEvoluInstance });
-
-    return createSuiteSyncCompositionRoot({
+): SuiteSync =>
+    createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorage: createEvoluStorage,
+        createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
+            const createEvoluInstance = createEvoluInstanceFactory({
+                evoluDeps: evoluReactNativeDeps,
+                suiteSyncErrorHandler,
+            });
+
+            return createEvoluStorageFactory({ createEvoluInstance });
+        },
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         reloadApp: reloadAppAsync,
     });
-};

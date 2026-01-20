@@ -31,13 +31,18 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
-    // This is the place where we set Evolu as a SuiteSync Storage.
-    const createEvoluInstance = createEvoluInstanceFactory(evoluWebDeps);
-    const createEvoluStorage = createEvoluStorageFactory({ createEvoluInstance });
-
+    // This sets up Evolu as a SuiteSync Storage. We provide a factory that
+    // accepts `suiteSyncErrorHandler` and creates the evolu instance accordingly.
     const suiteSync = createSuiteSyncCompositionRoot({
         ...deps,
-        createSuiteStorage: createEvoluStorage,
+        createSuiteStorageFactory: ({ suiteSyncErrorHandler }) => {
+            const createEvoluInstance = createEvoluInstanceFactory({
+                evoluDeps: evoluWebDeps,
+                suiteSyncErrorHandler,
+            });
+
+            return createEvoluStorageFactory({ createEvoluInstance });
+        },
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
     });
 

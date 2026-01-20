@@ -4,8 +4,12 @@ import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-
 import { toGetter } from '@suite-common/dependency-injection';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
-import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
+import { CreateSuiteStorage, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
+import {
+    SuiteSync,
+    SuiteSyncAppReloaderDep,
+    SuiteSyncErrorHandler,
+} from '@suite-common/suite-sync-types';
 import {
     selectAllDeviceStaticIds,
     selectDeviceByStaticSessionId,
@@ -14,6 +18,7 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 
 import { createRefreshSuiteSync } from './createRefreshSuiteSyncKeys';
+import { createSuiteSyncErrorHandler } from './createSuiteSyncErrorHandler';
 import { createTurnOffSuiteSync } from './createTurnOffSuiteSync';
 import { createTurnOnSuiteSync } from './createTurnOnSuiteSync';
 import { createEnsureSubscribeSuiteSyncData } from './data/createEnsureSuiteSyncData';
@@ -39,12 +44,20 @@ import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStora
 import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 
+type CreateSuiteStorageFactory = (deps: {
+    suiteSyncErrorHandler: SuiteSyncErrorHandler;
+}) => CreateSuiteStorage;
+
+type CreateSuiteStorageFactoryDep = {
+    createSuiteStorageFactory: CreateSuiteStorageFactory;
+};
+
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
     dispatch: Dispatch;
     trezorConnect: RetrieveSuiteSyncOwnerDeps['trezorConnect'];
 } & EnsureDelegatedIdentityKeyDep &
-    CreateSuiteStorageDep &
+    CreateSuiteStorageFactoryDep &
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
     SuiteSyncAppReloaderDep;
@@ -90,10 +103,16 @@ export const createSuiteSyncCompositionRoot = (
             selectHasDeviceAllowance(deps.getState(), deviceId ?? null, walletDescriptor),
     });
 
+    const suiteSyncErrorHandler: SuiteSyncErrorHandler = createSuiteSyncErrorHandler({
+        dispatch: deps.dispatch,
+    });
+
+    const createSuiteStorage = deps.createSuiteStorageFactory({ suiteSyncErrorHandler });
+
     const ensureStorage = createEnsureStorage({
         refreshSuiteSyncKeys,
         suiteSyncStorageRepository,
-        createSuiteStorage: deps.createSuiteStorage,
+        createSuiteStorage,
         defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
         getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,

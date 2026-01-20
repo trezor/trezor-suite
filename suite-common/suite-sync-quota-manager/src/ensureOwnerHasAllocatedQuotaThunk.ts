@@ -8,14 +8,15 @@ import { DelegatedIdentityKey, SuiteSyncOwnerId } from '@suite-common/suite-type
 import { WalletDescriptor } from '@suite-common/wallet-types';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
-import { DEFAULT_ACCOUNT_SIZE_QUOTA } from './constants';
+import {
+    DEFAULT_ACCOUNT_SIZE_QUOTA,
+    EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
+} from './constants';
 import { quotaManagerFetchError, quotaManagerOwnerFetched } from './quotaManagerActions';
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
 import { transferStorageThunk } from './storage/transferStorageThunk';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
-
-const EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER = 'EvoluAddSpaceToOwnerV1';
 
 type EnsureOwnerHasAllocatedQuotaParams = {
     ownerId: SuiteSyncOwnerId;

@@ -13,6 +13,7 @@
         "@evolu/common": "^7.3.0",
         "@noble/hashes": "^1.6.1",
         "@suite-common/suite-sync-storage": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",

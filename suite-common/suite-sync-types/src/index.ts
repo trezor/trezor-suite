@@ -63,3 +63,11 @@ export type {
 } from './data/updateWalletLabel';
 
 export type { SuiteSyncAppReloader, SuiteSyncAppReloaderDep } from './suiteSyncAppReloader';
+
+export type {
+    SuiteSyncErrorHandler,
+    SuiteSyncOtherError,
+    RelayQuotaExceededError,
+    Errors,
+    CreateSuiteSyncErrorHandlerDep,
+} from './SuiteSyncErrorHandler';
