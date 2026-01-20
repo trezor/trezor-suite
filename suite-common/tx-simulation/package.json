@@ -12,6 +12,7 @@
     "dependencies": {
         "@blockaid/client": "^0.56.0",
         "@suite-common/connect-popup": "workspace:^",
+        "@suite-common/react-query": "workspace:^",
         "@suite-common/wallet-config": "workspace:^",
         "@trezor/connect": "workspace:^",
         "react": "18.2.0"
