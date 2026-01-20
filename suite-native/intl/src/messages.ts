@@ -136,7 +136,7 @@ export const messages = {
         buttons: {
             receive: 'Receive',
             send: 'Send',
-            referral: 'Earn $20 per Referral',
+            referral: 'Earn $20 per referral',
         },
         rememberModeModal: {
             title: 'Enable view-only to check balances after you disconnect your Trezor',
@@ -911,8 +911,8 @@ export const messages = {
         },
         autoconnect: {
             settingsCard: {
-                title: 'Auto connect',
-                description: 'Toggle auto connect settings',
+                title: 'Auto-connect',
+                description: 'Toggle auto-connect settings',
             },
             screen: {
                 subtitle:
