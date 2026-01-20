@@ -2,6 +2,7 @@ import type { TradingTransactionSell } from '@suite-common/trading';
 import {
     PreloadedState,
     act,
+    getTranslation,
     renderWithStoreProviderAsync,
     waitFor,
 } from '@suite-native/test-utils';
@@ -12,6 +13,9 @@ import { TradingSellPreviewScreen } from '../TradingSellPreviewScreen';
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ name: 'TradingSellPreviewScreen' }),
+    useNavigation: () => ({
+        setOptions: jest.fn(),
+    }),
 }));
 
 const mockDoBankAccountVerificationCheck = jest.fn();
@@ -41,6 +45,12 @@ jest.mock('../../hooks/general/useWatchTrade', () => ({
     useWatchTrade: jest.fn(),
 }));
 
+let mockIsDeviceConnected = true;
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectIsDeviceConnected: () => mockIsDeviceConnected,
+}));
+
 describe('TradingSellPreviewScreen', () => {
     let unmount: (() => void) | undefined;
 
@@ -59,6 +69,7 @@ describe('TradingSellPreviewScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockUseTradingDetailData.trade = undefined;
+        mockIsDeviceConnected = true;
     });
 
     afterEach(() => {
@@ -66,6 +77,14 @@ describe('TradingSellPreviewScreen', () => {
             unmount();
             unmount = undefined;
         }
+    });
+
+    it('should display device guard when device is not connected', async () => {
+        mockIsDeviceConnected = false;
+        const { getByText } = await renderTradingSellPreviewScreen();
+        expect(
+            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
+        ).toBeOnTheScreen();
     });
 
     it('should render screen with header and preview view', async () => {

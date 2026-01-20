@@ -10,6 +10,7 @@ import {
 import { Screen } from '@suite-native/navigation';
 
 import { Footer } from '../components/general/Footer';
+import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { ProviderConfirmationStatusInfo } from '../components/sell/ProviderConfirmation/ProviderConfirmationStatusInfo';
 import { ProviderStatusDevButtons } from '../components/sell/ProviderConfirmation/ProviderStatusDevButtons';
 import {
@@ -22,7 +23,7 @@ import { useSellAnalyticReportCallback } from '../hooks/sell/useSellAnalyticRepo
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 import { clearTradingStateThunk } from '../thunks';
 
-export const TradingSellPreviewScreen = () => {
+const TradingSellPreviewScreenContent = () => {
     const dispatch = useDispatch();
     const { txnErrorString, doBankAccountVerificationCheck, fetchFeesAndCompose } = useSellFlow();
     const { trade } = useTradingDetailData<TradingSellType>('sell');
@@ -93,3 +94,9 @@ export const TradingSellPreviewScreen = () => {
         </Screen>
     );
 };
+
+export const TradingSellPreviewScreen = () => (
+    <TradingDeviceConnectionGuard>
+        <TradingSellPreviewScreenContent />
+    </TradingDeviceConnectionGuard>
+);

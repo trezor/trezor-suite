@@ -26,6 +26,7 @@ import {
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
 import { Footer } from '../components/general/Footer';
+import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeAnalyticReportCallback } from '../hooks/exchange/useExchangeAnalyticReportCallback';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';
@@ -36,7 +37,7 @@ export type TradingExchangePreviewScreenProps = StackProps<
     TradingStackRoutes.TradingExchangePreview
 >;
 
-export const TradingExchangePreviewScreen = ({
+const TradingExchangePreviewScreenContent = ({
     navigation,
     route: { params },
 }: TradingExchangePreviewScreenProps) => {
@@ -172,3 +173,9 @@ export const TradingExchangePreviewScreen = ({
         </Screen>
     );
 };
+
+export const TradingExchangePreviewScreen = (props: TradingExchangePreviewScreenProps) => (
+    <TradingDeviceConnectionGuard>
+        <TradingExchangePreviewScreenContent {...props} />
+    </TradingDeviceConnectionGuard>
+);

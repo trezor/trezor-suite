@@ -88,11 +88,6 @@ jest.mock('../../hooks/reviewOutputs/useDelayedReviewOutputListDisplayFlag', () 
     useDelayedReviewOutputListDisplayFlag: () => false,
 }));
 
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    selectIsDeviceConnected: () => true,
-}));
-
 // Test constants
 const TEST_ACCOUNT_KEY = 'btc-account-1';
 const TEST_ORDER_ID = 'test-order-id';

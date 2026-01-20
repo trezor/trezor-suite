@@ -84,7 +84,7 @@ describe('SellTab', () => {
         expect(queryByText('View-only wallet')).toBeNull();
     });
 
-    it('should display View-only info with view-only wallet', async () => {
+    it('should display form even with view-only wallet', async () => {
         mockIsDeviceInViewOnlyMode = true;
         const { getByText } = await renderSellTab({
             featureFlags: {
@@ -92,7 +92,7 @@ describe('SellTab', () => {
             },
         });
 
-        expect(getByText('View-only wallet')).toBeOnTheScreen();
+        expect(getByText('Select asset')).toBeOnTheScreen();
     });
 
     it('should display form otherwise', async () => {
