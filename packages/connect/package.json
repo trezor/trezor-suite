@@ -94,8 +94,7 @@
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
         "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "dependencies": {
         "@ethereumjs/common": "^10.1.0",
