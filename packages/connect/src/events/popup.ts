@@ -4,16 +4,10 @@ import type { ConnectSettings, SystemInfo } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {
-    // Message called from popup.html inline script before "window.onload" event. This is first message from popup to window.opener.
-    BOOTSTRAP: 'popup-bootstrap',
-    // Message from popup.js to window.opener, called after "window.onload" event. This is second message from popup to window.opener.
-    LOADED: 'popup-loaded',
     // Message from popup run in "core" mode. Connect core has been loaded, popup is ready to handle messages
     CORE_LOADED: 'popup-core-loaded',
     // Message from window.opener to popup.js. Send settings to popup. This is first message from window.opener to popup.
     INIT: 'popup-init',
-    // Error message from popup to window.opener. Could be thrown during popup initialization process (POPUP.INIT)
-    ERROR: 'popup-error',
     // Message to webextensions, opens "trezor-usb-permission.html" within webextension
     EXTENSION_USB_PERMISSIONS: 'open-usb-permissions',
     // Message called from both [popup > iframe] then [iframe > popup] in this exact order.
@@ -28,12 +22,8 @@ export const POPUP = {
     CANCEL_POPUP_REQUEST: 'ui-cancel-popup-request',
     // Message called from inline element in popup.html (window.closeWindow), this is used only with webextensions to properly handle popup close event
     CLOSE_WINDOW: 'window.close',
-    // todo: shouldn't it be UI_RESPONSE?
-    ANALYTICS_RESPONSE: 'popup-analytics-response',
-    /** webextension injected content script and content script notified popup */
+    // not used anymore, will removed in https://github.com/trezor/trezor-suite/pull/24471
     CONTENT_SCRIPT_LOADED: 'popup-content-script-loaded',
-    /** method.info async getter result passed from core to popup */
-    METHOD_INFO: 'popup-method-info',
 } as const;
 
 export interface PopupInit {
@@ -54,26 +44,9 @@ export interface PopupHandshake {
     };
 }
 
-export interface PopupError {
-    type: typeof POPUP.ERROR;
-    payload: {
-        error: string;
-    };
-}
-
 export interface PopupClosedMessage {
     type: typeof POPUP.CLOSED;
     payload: { error: any } | null;
-}
-
-export interface PopupAnalyticsResponse {
-    type: typeof POPUP.ANALYTICS_RESPONSE;
-    payload: { enabled: boolean };
-}
-
-export interface PopupMethodInfo {
-    type: typeof POPUP.METHOD_INFO;
-    payload: { info: string; method: string };
 }
 
 export interface PopupContentScriptLoaded {
@@ -85,12 +58,6 @@ export interface PopupExtensionUsbPermissions {
     type: typeof POPUP.EXTENSION_USB_PERMISSIONS;
     payload: typeof undefined;
 }
-
-export interface PopupBootstrap {
-    type: typeof POPUP.BOOTSTRAP;
-    payload: typeof undefined;
-}
-
 export interface PopupCloseWindow {
     type: typeof POPUP.CLOSE_WINDOW;
     payload: typeof undefined;
@@ -98,16 +65,13 @@ export interface PopupCloseWindow {
 
 export type PopupEvent =
     | {
-          type: typeof POPUP.LOADED | typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
+          type: typeof POPUP.CORE_LOADED | typeof POPUP.CANCEL_POPUP_REQUEST;
           payload?: typeof undefined;
       }
     | PopupInit
     | PopupHandshake
-    | PopupError
     | PopupContentScriptLoaded
-    | PopupMethodInfo
     | PopupExtensionUsbPermissions
-    | PopupBootstrap
     | PopupCloseWindow
     | PopupClosedMessage;
 

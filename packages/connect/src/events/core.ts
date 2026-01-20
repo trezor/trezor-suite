@@ -1,7 +1,7 @@
 import type { BlockchainEventMessage } from './blockchain';
 import type { IFrameCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
-import type { PopupAnalyticsResponse, PopupClosedMessage, PopupEventMessage } from './popup';
+import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
     TransportDisableWebUSB,
     TransportEventMessage,
@@ -18,7 +18,6 @@ export const CORE_EVENT = 'CORE_EVENT';
 
 export type CoreRequestMessage =
     | PopupClosedMessage
-    | PopupAnalyticsResponse
     | TransportDisableWebUSB
     | TransportSetTransports
     | TransportRequestWebUSBDevice

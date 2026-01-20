@@ -3,7 +3,7 @@
 import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
-import { CoreEventMessage, DEVICE_EVENT, POPUP, UI } from '@trezor/connect/src/events';
+import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
@@ -36,30 +36,28 @@ const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
 
 export class PopupManager extends EventEmitter {
-    popupWindow:
+    private popupWindow:
         | { mode: 'tab'; tab: chrome.tabs.Tab }
         | { mode: 'window'; window: Window }
         | undefined;
 
-    settings: ConnectSettings;
+    private settings: ConnectSettings;
 
-    origin: string;
+    private origin: string;
 
-    locked = false;
+    private locked = false;
 
     channel: AbstractMessageChannel<CoreEventMessage>;
 
     handshakePromise: Deferred<void> | undefined;
 
-    popupPromise: Deferred<void> | undefined;
+    private requestTimeout: TimerId | undefined;
 
-    requestTimeout: TimerId | undefined;
+    private closeInterval: IntervalId | undefined;
 
-    closeInterval: IntervalId | undefined;
+    private extensionTabId = 0;
 
-    extensionTabId = 0;
-
-    logger: Log;
+    private logger: Log;
 
     constructor(settings: ConnectSettings, { logger }: { logger: Log }) {
         super();
@@ -138,13 +136,8 @@ export class PopupManager extends EventEmitter {
         }, timeout);
     }
 
-    private unlock() {
-        this.locked = false;
-    }
-
     private open() {
         const src = this.settings.popupSrc;
-        this.popupPromise = createDeferred(POPUP.LOADED);
         const url = this.buildPopupUrl(src);
         this.openWrapper(url);
 
@@ -261,18 +254,7 @@ export class PopupManager extends EventEmitter {
     };
 
     private handleCoreMessage(message: Message<CoreEventMessage>) {
-        if (message.type === POPUP.BOOTSTRAP) {
-            this.channel.init();
-        } else if (message.type === POPUP.LOADED) {
-            this.handleMessage(message);
-            this.channel.postMessage({
-                type: POPUP.INIT,
-                payload: {
-                    settings: this.settings,
-                    useCore: true,
-                },
-            });
-        } else if (message.type === POPUP.CORE_LOADED) {
+        if (message.type === POPUP.CORE_LOADED) {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
@@ -293,33 +275,8 @@ export class PopupManager extends EventEmitter {
         }
     }
 
-    private handleMessage(data: Message<CoreEventMessage>) {
-        if (data.type === POPUP.ERROR && this.popupWindow) {
-            // handle popup error
-            const errorMessage =
-                data.payload && typeof data.payload.error === 'string' ? data.payload.error : null;
-            this.emit(POPUP.CLOSED, errorMessage ? `Popup error: ${errorMessage}` : null);
-            this.clear();
-        } else if (data.type === POPUP.LOADED) {
-            // in case of webextension where bootstrap message is not sent
-            if (this.popupPromise) {
-                this.popupPromise.resolve();
-                this.popupPromise = undefined;
-            }
-        } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
-            clearTimeout(this.requestTimeout);
-            if (this.popupPromise) {
-                this.close();
-            }
-            this.unlock();
-        } else if (data.type === UI.CLOSE_UI_WINDOW) {
-            this.clear(false);
-        }
-    }
-
     private clear(focus = true) {
         this.locked = false;
-        this.popupPromise = undefined;
         this.handshakePromise = createDeferred();
 
         if (this.channel) {
