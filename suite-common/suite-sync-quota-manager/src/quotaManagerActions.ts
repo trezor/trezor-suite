@@ -23,12 +23,18 @@ export const quotaManagerEnabledUpdated = createAction(
 
 export const quotaManagerDeviceFetched = createAction(
     `${QUOTA_MANAGER_PREFIX}/deviceFetched`,
-    (payload: {
-        deviceId: string;
-        publicKey: string;
-        totalStorageSize: number;
-        unspentStorageSize: number;
-    }) => ({
+    (payload: { deviceId: string; totalStorageSize: number; unspentStorageSize: number }) => ({
+        payload,
+    }),
+);
+
+/**
+ * When we call for transferStorageThunk with deviceId, we want to update device quota info
+ * after successful storage transfer.
+ */
+export const quotaManagerDeviceUnspentStorageFetched = createAction(
+    `${QUOTA_MANAGER_PREFIX}/deviceQuotaUpdate`,
+    (payload: { deviceId: string; unspentStorageSize: number }) => ({
         payload,
     }),
 );

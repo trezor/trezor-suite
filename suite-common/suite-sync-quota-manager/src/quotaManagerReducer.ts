@@ -3,6 +3,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
     eraseFetchedDataDebug,
     quotaManagerDeviceFetched,
+    quotaManagerDeviceUnspentStorageFetched,
     quotaManagerEnabledUpdated,
     quotaManagerOwnerFetched,
     updateQuotaManagerBaseUrl,
@@ -40,7 +41,7 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
             })
             .addCase(quotaManagerDeviceFetched, (state, { payload }) => {
                 const existingDevice = state.registeredDevices.find(
-                    device => device.publicKey === payload.publicKey,
+                    device => device.deviceId === payload.deviceId,
                 );
                 if (existingDevice) {
                     existingDevice.deviceId = payload.deviceId;
@@ -49,10 +50,17 @@ export const suiteSyncQuotaManagerReducer = createReducer<SuiteSyncQuotaManagerS
                 } else {
                     state.registeredDevices.push({
                         deviceId: payload.deviceId,
-                        publicKey: payload.publicKey,
                         totalStorageSize: payload.totalStorageSize,
                         unspentStorageSize: payload.unspentStorageSize,
                     });
+                }
+            })
+            .addCase(quotaManagerDeviceUnspentStorageFetched, (state, { payload }) => {
+                const existingDevice = state.registeredDevices.find(
+                    device => device.deviceId === payload.deviceId,
+                );
+                if (existingDevice) {
+                    existingDevice.unspentStorageSize = payload.unspentStorageSize;
                 }
             })
             .addCase(quotaManagerOwnerFetched, (state, { payload }) => {
