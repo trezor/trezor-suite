@@ -42,14 +42,16 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
                 await onboardingPage.selectSeedType('shamir-advanced');
             });
 
-            // Accept ToS
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
+            await test.step('Accept ToS and confirm wallet creation', async () => {
+                // Accept ToS
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
 
-            // Confirm wallet created
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await onboardingPage.createBackupButton.click();
+                // Confirm wallet created
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
+                await onboardingPage.createBackupButton.click();
+            });
 
             await test.step('Create backup with Shamir shares and threshold', async () => {
                 const shares = 3;
@@ -57,20 +59,22 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
                 await onboardingPage.backup.passThroughShamirBackup(shares, threshold);
             });
 
-            // Set PIN
-            await onboardingPage.pin.setPinButton.click();
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await device.selectNumberOfWords(12);
-            await device.selectNumberOfWords(12);
+            await test.step('Set PIN', async () => {
+                await onboardingPage.pin.setPinButton.click();
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
+                await device.selectNumberOfWords(12);
+                await device.selectNumberOfWords(12);
 
-            await devicePrompt.confirmOnDevicePromptIsShown();
-            await device.pressYes();
-            await onboardingPage.completeOnboardingButton.click();
-            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
-            // electron seems not to be fully offline during the test, will investigate later
-             
-            await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
+                await devicePrompt.confirmOnDevicePromptIsShown();
+                await device.pressYes();
+            });
+
+            await test.step('Complete onboarding and verify offline state', async () => {
+                await onboardingPage.completeOnboardingButton.click();
+                await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+                await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
+            });
 
         },
     );
