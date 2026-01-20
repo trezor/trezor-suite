@@ -210,8 +210,7 @@ export const TxSimulationModal = () => {
         a => popupCall?.state === 'tx-simulation' && a.key === popupCall?.selectedAccountKey,
     );
     const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
-    const { isLoading, simulationResult, error, needsDisclaimer, network, targetContract } =
-        useTxSimulationConnectPopup(popupCall);
+    const { txSimulationQuery, network, targetContract } = useTxSimulationConnectPopup(popupCall);
     const explorer = useSelector(state => selectExplorer(state, network?.symbol));
     const explorerLink = useExternalLink(
         `${getExplorerUrl(explorer, 'address')}${targetContract}${explorer?.queryString ?? ''}`,
@@ -243,16 +242,22 @@ export const TxSimulationModal = () => {
         popupCall?.state === 'tx-simulation' && popupCall?.method === 'ethereumSignTransaction';
 
     useEffect(() => {
+        if (!txSimulationQuery.isSuccess) {
+            return;
+        }
+
+        const { gas_estimation } = txSimulationQuery.data;
+
         // Use TX simulation gas estimation instead of the default
         if (
-            simulationResult?.gas_estimation?.status === 'Success' &&
+            gas_estimation?.status === 'Success' &&
             defaultGasLimit === ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
         ) {
-            const newFeeLimit = Number(simulationResult.gas_estimation.estimate).toString();
+            const newFeeLimit = Number(gas_estimation.estimate).toString();
             setValue('feeLimit', newFeeLimit);
             setValue('estimatedFeeLimit', newFeeLimit);
         }
-    }, [simulationResult, defaultGasLimit, setValue]);
+    }, [txSimulationQuery.isSuccess, txSimulationQuery.data, defaultGasLimit, setValue]);
 
     const onConfirm = () => {
         if (isSigningTransaction) {
@@ -335,7 +340,10 @@ export const TxSimulationModal = () => {
                         <Modal.Button
                             onClick={onConfirm}
                             data-testid="@tx-simulation-modal/confirm-button"
-                            isDisabled={isLoading || (needsDisclaimer && !disclaimerAccepted)}
+                            isDisabled={
+                                txSimulationQuery.isLoading ||
+                                (txSimulationQuery.data?.needsDisclaimer && !disclaimerAccepted)
+                            }
                         >
                             <Translation id="TR_CONFIRM" />
                         </Modal.Button>
@@ -354,11 +362,11 @@ export const TxSimulationModal = () => {
             >
                 <FormProvider {...methods}>
                     <Column gap={spacings.xs}>
-                        {isLoading && <Spinner size={50} />}
+                        {txSimulationQuery.isLoading && <Spinner size={50} />}
 
-                        {simulationResult && (
+                        {txSimulationQuery.isSuccess && (
                             <>
-                                {simulationResult.simulation?.status === 'Success' && (
+                                {txSimulationQuery.data.simulation?.status === 'Success' && (
                                     <>
                                         <Card
                                             header={
@@ -380,7 +388,7 @@ export const TxSimulationModal = () => {
                                                 }}
                                                 hasDivider
                                             >
-                                                {simulationResult.simulation.account_summary.assets_diffs.map(
+                                                {txSimulationQuery.data.simulation.account_summary.assets_diffs.map(
                                                     (assetDiff, index) => (
                                                         <TxSimulationAsset
                                                             key={index}
@@ -389,7 +397,7 @@ export const TxSimulationModal = () => {
                                                         />
                                                     ),
                                                 )}
-                                                {simulationResult.simulation.account_summary.exposures.map(
+                                                {txSimulationQuery.data.simulation.account_summary.exposures.map(
                                                     (assetExposure, index) => (
                                                         <TxSimulationAsset
                                                             key={index}
@@ -398,10 +406,10 @@ export const TxSimulationModal = () => {
                                                         />
                                                     ),
                                                 )}
-                                                {simulationResult.simulation.account_summary
+                                                {txSimulationQuery.data.simulation.account_summary
                                                     .assets_diffs.length === 0 &&
-                                                    simulationResult.simulation.account_summary
-                                                        .exposures.length === 0 && (
+                                                    txSimulationQuery.data.simulation
+                                                        .account_summary.exposures.length === 0 && (
                                                         <Row
                                                             padding={{
                                                                 horizontal: spacings.md,
@@ -445,7 +453,7 @@ export const TxSimulationModal = () => {
                                                         {
                                                             label: <Translation id="TR_PROTOCOL" />,
                                                             value: Object.entries(
-                                                                simulationResult.simulation
+                                                                txSimulationQuery.data.simulation
                                                                     .address_details,
                                                             ).find(
                                                                 ([address]) =>
@@ -476,7 +484,7 @@ export const TxSimulationModal = () => {
                                                             label: (
                                                                 <Translation id="TR_CONTRACT_FUNCTION" />
                                                             ),
-                                                            value: simulationResult.simulation
+                                                            value: txSimulationQuery.data.simulation
                                                                 .params?.calldata
                                                                 ?.function_signature,
                                                         },
@@ -509,33 +517,33 @@ export const TxSimulationModal = () => {
                                     </>
                                 )}
 
-                                {simulationResult.validation?.result_type === 'Malicious' && (
+                                {txSimulationQuery.data.validation?.result_type === 'Malicious' && (
                                     <TxSimulationBanner
                                         type="error"
                                         title={<Translation id="TR_SIMULATION_MALICIOUS" />}
-                                        description={simulationResult.validation?.description}
+                                        description={txSimulationQuery.data.validation?.description}
                                         disclaimerAccepted={disclaimerAccepted}
                                         setDisclaimerAccepted={setDisclaimerAccepted}
                                     />
                                 )}
 
-                                {simulationResult.validation?.result_type === 'Warning' && (
+                                {txSimulationQuery.data.validation?.result_type === 'Warning' && (
                                     <TxSimulationBanner
                                         type="warning"
                                         title={<Translation id="TR_SIMULATION_WARNING" />}
-                                        description={simulationResult.validation?.description}
+                                        description={txSimulationQuery.data.validation?.description}
                                         disclaimerAccepted={disclaimerAccepted}
                                         setDisclaimerAccepted={setDisclaimerAccepted}
                                     />
                                 )}
 
-                                {simulationResult.simulation?.status === 'Error' && (
+                                {txSimulationQuery.data.simulation?.status === 'Error' && (
                                     <TxSimulationBanner
                                         type={getSimulationErrorRiskLevel(
-                                            simulationResult.simulation.error,
+                                            txSimulationQuery.data.simulation.error,
                                         )}
                                         title={<Translation id="TR_SIMULATION_ERROR" />}
-                                        description={simulationResult.simulation.error}
+                                        description={txSimulationQuery.data.simulation.error}
                                         disclaimerAccepted={disclaimerAccepted}
                                         setDisclaimerAccepted={setDisclaimerAccepted}
                                     />
@@ -543,11 +551,11 @@ export const TxSimulationModal = () => {
                             </>
                         )}
 
-                        {error && (
+                        {txSimulationQuery.error && (
                             <TxSimulationBanner
                                 type="error"
                                 title={<Translation id="TR_SIMULATION_ERROR" />}
-                                description={error.message}
+                                description={txSimulationQuery.error.message}
                                 disclaimerAccepted={disclaimerAccepted}
                                 setDisclaimerAccepted={setDisclaimerAccepted}
                             />

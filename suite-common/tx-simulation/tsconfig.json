@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../connect-popup" },
+        { "path": "../react-query" },
         { "path": "../wallet-config" },
         { "path": "../../packages/connect" }
     ],

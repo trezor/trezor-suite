@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { TransactionScanResponse } from '@suite-common/tx-simulation';
+import { TxSimulationResult } from '@suite-common/tx-simulation';
 import { BottomSheetModal, BottomSheetModalRef, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation } from '@suite-native/intl';
@@ -12,7 +12,7 @@ export const ContractInfoBottomSheet = ({
 }: {
     ref: BottomSheetModalRef;
     targetContract: string;
-    simulationResult: TransactionScanResponse | null;
+    simulationResult: TxSimulationResult | undefined;
 }) => {
     const copyToClipboard = useCopyToClipboard();
     const handleCopy = () => copyToClipboard(targetContract);

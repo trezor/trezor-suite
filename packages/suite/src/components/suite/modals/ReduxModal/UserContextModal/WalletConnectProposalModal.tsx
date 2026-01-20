@@ -67,7 +67,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
         selectableAccounts[0] || null,
     );
     const [ignoreWarning, setIgnoreWarning] = useState(false);
-    const { isLoading, isMalicious } = useDappScan(pendingProposal?.params.proposer.metadata.url);
+    const dappScanQuery = useDappScan(pendingProposal?.params.proposer.metadata.url);
 
     const handleAccept = () => {
         dispatch(
@@ -119,9 +119,10 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         isDisabled={
                             pendingProposal.expired ||
                             noNetworksActivated ||
-                            ((pendingProposal.isScam || isMalicious) && !ignoreWarning)
+                            ((pendingProposal.isScam || dappScanQuery.data?.isMalicious) &&
+                                !ignoreWarning)
                         }
-                        isLoading={isLoading}
+                        isLoading={dappScanQuery.isLoading}
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>
@@ -275,7 +276,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                     />
                 )}
 
-                {(isMalicious || pendingProposal.isScam) && (
+                {(dappScanQuery.data?.isMalicious || pendingProposal.isScam) && (
                     <TxSimulationBanner
                         type="error"
                         title={<Translation id="TR_WALLETCONNECT_IS_SCAM" />}
