@@ -10,8 +10,10 @@ import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
     DeviceSettingsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
     Screen,
-    StackNavigationProps,
+    StackToStackCompositeNavigationProps,
     WipeDeviceStackRoutes,
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
@@ -29,9 +31,10 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',
 }));
 
-type NavigationProps = StackNavigationProps<
+type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.WipeDeviceStack
+    DeviceSettingsStackRoutes.WipeDeviceStack,
+    RootStackParamList
 >;
 
 export const BootloaderModeScreen = () => {
@@ -43,8 +46,11 @@ export const BootloaderModeScreen = () => {
     useInterceptNativeNavigation();
 
     const handleRedirectToFactoryReset = () => {
-        navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
-            screen: WipeDeviceStackRoutes.FactoryReset,
+        navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+            screen: DeviceSettingsStackRoutes.WipeDeviceStack,
+            params: {
+                screen: WipeDeviceStackRoutes.FactoryReset,
+            },
         });
     };
 
