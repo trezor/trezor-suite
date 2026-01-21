@@ -1,12 +1,11 @@
-import React from 'react';
-
 import { Divider, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { EarnItem } from '../screens/EarnScreen';
+import { EarnItem } from '../types';
 
-export const EarnItemCardanoInfo = ({ symbol }: EarnItem) => {
+type EarnItemCardanoInfoProps = EarnItem;
+export const EarnItemCardanoInfo = ({ symbol }: EarnItemCardanoInfoProps) => {
     if (symbol !== 'ada') return null;
 
     return (

@@ -10,7 +10,7 @@ import {
 } from '@suite-native/staking';
 
 import { EarnItemRewardInfo } from './EarnItemRewardInfo';
-import { EarnItem } from '../screens/EarnScreen';
+import { EarnItem } from '../types';
 
 type EarnItemRewardSectionProps = {} & EarnItem;
 

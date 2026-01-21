@@ -21,7 +21,7 @@ export const useStakingListData = () => {
             account => account.visible && isCardanoStakedWithFiveBinaries(account),
         );
 
-        const stakingData = PROD_STAKING_SYMBOLS.flatMap(symbol => {
+        const stakingData: EarnItem[] = PROD_STAKING_SYMBOLS.flatMap(symbol => {
             const accs = stakingAccounts.filter(acc => acc.symbol === symbol);
             const accountsStakingActive = accs.flatMap(acc => {
                 const stakedAmount = getAccountTotalStakingBalance(acc);
