@@ -220,11 +220,11 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
     const responseID = message.id;
-    const { env, transports } = DataManager.getSettings();
+    const { env, transports, pendingTransportEvent } = DataManager.getSettings();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
-        deviceList.init({ transports });
+        deviceList.init({ transports, pendingTransportEvent });
     }
     await deviceList.pendingConnection();
 
