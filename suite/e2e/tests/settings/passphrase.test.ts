@@ -13,8 +13,7 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         await devicePrompt.confirmOnDevicePromptIsHidden();
         await test.step('Verifies notification toast is displayed and then disappears', async () => {
             await expect(page.getByTestId('@toast/settings-applied')).toBeVisible();
-            // TODO(e2e): CI only — toast never detaches, while it works locally.
-            // await page.getByTestId('@toast/settings-applied').waitFor({ state: 'detached' });
+            await page.getByTestId('@toast/settings-applied').waitFor({ state: 'detached' });
         });
     });
 });
