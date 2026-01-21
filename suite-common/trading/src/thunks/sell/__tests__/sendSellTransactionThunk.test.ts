@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
@@ -16,7 +16,7 @@ import { sellUtilsFixtures } from '../../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../../common';
 import { sellThunks } from '../index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('sendSellTransactionThunk', () => {
     const date = new Date('2025-04-09');

@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from '../discoveryActions';
 import { DiscoveryRootState, prepareDiscoveryReducer } from '../discoveryReducer';
 
-const discoveryReducer = prepareDiscoveryReducer(extraDependenciesMock);
+const discoveryReducer = prepareDiscoveryReducer(extraDependenciesCommonMock);
 
 type InitStoreArgs = {
     preloadedState?: DiscoveryRootState;

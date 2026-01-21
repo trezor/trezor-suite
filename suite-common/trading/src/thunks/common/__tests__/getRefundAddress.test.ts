@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
@@ -10,7 +10,7 @@ import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getRefundAddress } from '../getRefundAddress';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 // Mock external dependencies
 jest.mock('@suite-common/wallet-core', () => ({
@@ -44,7 +44,7 @@ describe('getRefundAddress thunk', () => {
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
             extra: {
-                ...extraDependenciesMock,
+                ...extraDependenciesCommonMock,
                 selectors: {
                     selectAddressDisplayType: jest
                         .fn()
@@ -111,7 +111,7 @@ describe('getRefundAddress thunk', () => {
 
             const storeWithNonChunked = configureMockStore({
                 extra: {
-                    ...extraDependenciesMock,
+                    ...extraDependenciesCommonMock,
                     selectors: {
                         selectAddressDisplayType: jest
                             .fn()

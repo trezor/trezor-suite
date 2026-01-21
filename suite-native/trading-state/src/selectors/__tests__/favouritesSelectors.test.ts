@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { btcAsset } from '@suite-native/trading-fixtures';
 import { TradeableAsset } from '@suite-native/trading-types';
 
@@ -16,7 +16,7 @@ describe('favouritesSelectors', () => {
     let state: TradingState;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
+        tradingReducer = tradingSlice.prepareReducer(extraDependenciesCommonMock);
         state = tradingReducer(
             undefined,
             tradingActions.addTradeableAssetToFavourites(btcAsset.cryptoId),

@@ -10,7 +10,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction, ExtraDependenciesPartial, createMiddleware } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
-import { extraDependenciesMock } from './extraDependenciesMock';
+import { extraDependenciesCommonMock } from './extraDependenciesCommonMock';
 
 export const initPreloadedState = ({
     rootReducer,
@@ -70,7 +70,7 @@ export function configureMockStore<S = any, A extends AnyAction = AnyAction>({
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
                 thunk: {
-                    extraArgument: mergeDeepObject(extraDependenciesMock, extra),
+                    extraArgument: mergeDeepObject(extraDependenciesCommonMock, extra),
                 },
                 serializableCheck,
             })

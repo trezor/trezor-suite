@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -8,7 +8,7 @@ import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getNonce } from '../getNonce';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -39,7 +39,7 @@ describe('getNonce thunk', () => {
 
     const createMockStore = (preloadedState = {}) =>
         configureMockStore({
-            extra: extraDependenciesMock,
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,

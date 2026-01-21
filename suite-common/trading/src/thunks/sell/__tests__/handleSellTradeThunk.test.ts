@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { CryptoId, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
@@ -11,7 +11,7 @@ import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { handleSellTradeThunk } from '../handleSellTradeThunk';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('handleSellTradeThunk', () => {
     const date = new Date('2025-04-09');

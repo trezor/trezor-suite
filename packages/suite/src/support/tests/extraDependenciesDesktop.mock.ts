@@ -1,14 +1,20 @@
 import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import {
+    analyticsMock,
+    extraDependenciesCommonMock,
+    legacyAnalyticsMock,
+} from '@suite-common/test-utils';
 
 import { SuiteServices } from '../extraDependencies';
 
 type ExtraDependenciesSuiteMock = ExtraDependenciesStatic & { services: SuiteServices };
 
 export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
-    ...extraDependenciesMock,
+    ...extraDependenciesCommonMock,
     services: {
-        ...extraDependenciesMock.services,
+        ...extraDependenciesCommonMock.services,
+        analytics: analyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
+        legacyAnalytics: legacyAnalyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
         suiteRouterHistory: {
             getLocation: () => ({
                 pathname: '/mocked_path',
@@ -18,7 +24,6 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
             navigate: (to, state) => console.warn(`Mock navigating to ${to} with state`, state),
             listen: (_: {}) => () => {},
         },
-
         disableLegacyMetadataIfNeeded: () => {},
     },
 };

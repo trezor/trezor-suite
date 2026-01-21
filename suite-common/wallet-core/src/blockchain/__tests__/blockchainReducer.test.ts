@@ -1,10 +1,10 @@
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { BackendSettings } from '@suite-common/wallet-types';
 
 import { SetBackendPayload, blockchainActions } from '../blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from '../blockchainReducer';
 
-const blockchainReducer = prepareBlockchainReducer(extraDependenciesMock);
+const blockchainReducer = prepareBlockchainReducer(extraDependenciesCommonMock);
 
 const urls = ['http://a, http://b, http://c'];
 

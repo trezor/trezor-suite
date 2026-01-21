@@ -8,7 +8,7 @@ import {
     FiatCurrencyCode,
 } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -19,7 +19,7 @@ import { TradingCountryCode } from '../../../types';
 import { buyThunks } from '../index';
 import { SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('selectBuyQuoteThunk', () => {
     afterEach(() => {

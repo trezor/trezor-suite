@@ -3,7 +3,7 @@ import { CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -15,7 +15,7 @@ import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { exchangeThunks } from '../index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 jest.mock('@trezor/connect-plugin-ethereum', () => ({
     ...jest.requireActual('@trezor/connect-plugin-ethereum'),

@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { prepareThpReducer, thpActions } from '../src';
 import { createCredential } from '../src/support/mocks';
 import { ThpState } from '../src/thpReducer';
 
-const thpReduce = prepareThpReducer(extraDependenciesMock);
+const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
 
 const initialState: ThpState = {
     step: null,

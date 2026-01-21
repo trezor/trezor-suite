@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { exchangeThunks } from '../';
@@ -13,7 +13,7 @@ import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('confirmExchangeTradeThunk', () => {
     afterEach(() => {
