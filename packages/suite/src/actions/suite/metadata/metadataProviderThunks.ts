@@ -2,7 +2,7 @@ import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Device } from '@trezor/connect';
+import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
@@ -40,7 +40,7 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
 };
 
 export type FetchIntervalTrackingId =
-    `${DataType}-${MetadataProvider['clientId']}-${Required<Device>['state']}`;
+    `${DataType}-${MetadataProvider['clientId']}-${StaticSessionId}`;
 export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (

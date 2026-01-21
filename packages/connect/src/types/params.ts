@@ -12,7 +12,7 @@ export interface DeviceIdentity {
 }
 
 export interface CommonParams {
-    device?: DeviceIdentity & { useEmptyPassphrase?: boolean } & { state?: DeviceState | string }; // Note: state as string should be removed https://github.com/trezor/trezor-suite/issues/12710
+    device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
     keepSession?: boolean;
     useCardanoDerivation?: boolean;
     /**

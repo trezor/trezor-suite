@@ -21,7 +21,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Metadata not enabled`,
         params: [
-            mockSuiteDevice({ state: '1stTestnetAddress@device_a_id:0' }),
+            mockSuiteDevice({ state: { staticSessionId: '1stTestnetAddress@device_a_id:0' } }),
             METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
@@ -39,7 +39,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
         description: `Device not connected (remembered)`,
         params: [
             mockSuiteDevice({
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 connected: false,
                 metadata: {},
             }),
@@ -53,7 +53,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
         description: `Master key successfully generated`,
         params: [
             mockSuiteDevice({
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 connected: true,
                 metadata: {},
             }),
@@ -152,7 +152,7 @@ const addDeviceMetadata: Fixture<(typeof metadataLabelingActions)['addDeviceMeta
         initialState: {
             metadata: { selectedProvider: { type: 'dropbox', key: 'A' }, providers: [] },
             device: {
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 metadata: {
                     1: {
                         aesKey: 'eb0f1f0238c7fa8018c6101f4e887b871ce07b99d01d5ea57089b82f93149557',
@@ -611,7 +611,7 @@ const disposeMetadata: Fixture<(typeof metadataThunks)['disposeMetadata']>[] = [
     {
         description: '',
         initialState: {
-            device: { state: '1stTestnetAddress@device_id:0', metadata: {} },
+            device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' }, metadata: {} },
             metadata: {
                 providers: [
                     {
@@ -654,7 +654,7 @@ const disposeMetadataKeys: Fixture<(typeof metadataThunks)['disposeMetadataKeys'
         description: 'keys',
         initialState: {
             device: {
-                state: '1stTestnetAddress@device_id:0',
+                state: { staticSessionId: '1stTestnetAddress@device_id:0' },
                 metadata: { 1: { fileName: 'foo', aesKey: 'bar' } },
             },
             accounts: [
@@ -672,7 +672,12 @@ const disposeMetadataKeys: Fixture<(typeof metadataThunks)['disposeMetadataKeys'
         },
         params: [] as const,
         result: {
-            device: { selectedDevice: { state: '1stTestnetAddress@device_id:0', metadata: {} } },
+            device: {
+                selectedDevice: {
+                    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
+                    metadata: {},
+                },
+            },
             wallet: {
                 accounts: [
                     {

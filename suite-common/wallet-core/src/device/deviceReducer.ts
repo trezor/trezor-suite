@@ -11,14 +11,7 @@ import {
 import * as deviceUtils from '@suite-common/suite-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { shouldDeviceBeRemembered } from '@suite-common/wallet-utils';
-import {
-    Device,
-    DeviceState,
-    Features,
-    KnownDevice,
-    StaticSessionId,
-    Unsuccessful,
-} from '@trezor/connect';
+import { Device, DeviceState, Features, KnownDevice, Unsuccessful } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 
 import { DeviceStateActionPayload, deviceActions } from './deviceActions';
@@ -76,19 +69,16 @@ const isUnlocked = (features: Features): boolean =>
  */
 const mergeDeviceState = (
     device: AcquiredDevice,
-    upcoming: Partial<
-        AcquiredDevice & { state?: DeviceState | StaticSessionId; _state?: DeviceState }
-    >,
+    upcoming: Partial<AcquiredDevice>,
 ): DeviceState | undefined => {
     const currentState = device.state;
-    const upcomingState = typeof upcoming.state === 'string' ? upcoming._state : upcoming.state;
 
     return currentState &&
-        upcomingState &&
-        currentState.staticSessionId === upcomingState.staticSessionId &&
-        currentState.sessionId !== upcomingState.sessionId
+        upcoming.state &&
+        currentState.staticSessionId === upcoming.state.staticSessionId &&
+        currentState.sessionId !== upcoming.state.sessionId
         ? // update sessionId for the same staticSessionId
-          { ...currentState, sessionId: upcomingState.sessionId }
+          { ...currentState, sessionId: upcoming.state.sessionId }
         : // ignore device state updates. we set device state explicitly using addAuthorizedDevice or setDeviceState
           currentState;
 };
@@ -102,12 +92,10 @@ const mergeDeviceState = (
 const merge = (
     device: AcquiredDevice,
     // this method can take the old string state type, since it's not used here
-    upcoming: Partial<
-        AcquiredDevice & { state?: DeviceState | StaticSessionId; _state: DeviceState }
-    >,
+    upcoming: Partial<AcquiredDevice>,
 ): TrezorDevice => ({
     ...device,
-    ...(({ _state, ...rest }) => rest)(upcoming),
+    ...(({ state, ...rest }) => rest)(upcoming),
     id: upcoming.id ?? device.id,
     state: mergeDeviceState(device, upcoming),
     instance: device.instance,
@@ -132,7 +120,7 @@ const merge = (
  */
 const connectDevice = (
     draft: DeviceReducerState,
-    { _state, ...device }: Device,
+    { state, ...device }: Device,
     { isAutoEjectEnabled }: { isAutoEjectEnabled: boolean },
 ) => {
     const currentTime = new Date().getTime();
@@ -211,7 +199,7 @@ const connectDevice = (
     const newDevice: TrezorDevice = {
         ...device,
         ...deviceCommonFields,
-        state: _state,
+        state,
         useEmptyPassphrase: undefined,
         remember: shouldDeviceBeRemembered({ isAutoEjectEnabled, device }),
         temporaryRemember: false,

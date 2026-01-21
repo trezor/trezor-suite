@@ -44,7 +44,7 @@ const runFilterReceiveAccouns = ({
         unavailableCapabilities: {
             dash: 'no-support',
         },
-        state: deviceState,
+        state: { staticSessionId: deviceState },
     });
 
     return filterReceiveAccounts({

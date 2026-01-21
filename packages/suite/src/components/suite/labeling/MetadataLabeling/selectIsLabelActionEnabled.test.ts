@@ -38,7 +38,12 @@ const createMockState = (
     ({
         device: {
             ...deviceReducerInitialState,
-            devices: [mockSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
+            devices: [
+                mockSuiteDevice({
+                    ...deviceOverrides,
+                    state: { staticSessionId: DEVICE_STATIC_SESSION_ID_123 },
+                }),
+            ],
         },
         suiteSync: {
             ...initialSuiteSyncState,

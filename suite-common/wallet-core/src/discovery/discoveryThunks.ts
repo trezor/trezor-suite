@@ -285,7 +285,7 @@ export const runDiscoveryThunk = createThunk(
                 return;
             }
 
-            const deviceState = deviceStateResponse.payload._state;
+            const deviceState = deviceStateResponse.payload.state;
 
             assertStaticSessionId(deviceState);
 
@@ -320,7 +320,7 @@ export const runDiscoveryThunk = createThunk(
                         device: { path: passedDevice.path, useEmptyPassphrase: true },
                     });
 
-                    if (res.success && deviceStateEqualTo(deviceState)(res.payload._state)) {
+                    if (res.success && deviceStateEqualTo(deviceState)(res.payload.state)) {
                         isAddingHiddenWallet = false;
                     }
                 }
@@ -478,7 +478,7 @@ export const runDiscoveryThunk = createThunk(
             }
 
             // todo: not sure about instance, now it looks that there are 2 devices created in connect
-            if (!deviceStateEqualTo(deviceState)(getDeviceState2Res.payload._state)) {
+            if (!deviceStateEqualTo(deviceState)(getDeviceState2Res.payload.state)) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         { status: 'passphrase-mismatch' },
@@ -583,7 +583,7 @@ export const runAdditionalDiscoveryThunk = createThunk(
             device: {
                 path: device.path,
                 instance: device.instance,
-                state: device.state.staticSessionId,
+                state: { staticSessionId: device.state.staticSessionId },
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
         });
@@ -595,14 +595,14 @@ export const runAdditionalDiscoveryThunk = createThunk(
             return;
         }
 
-        assertStaticSessionId(deviceStateResponse.payload._state);
+        assertStaticSessionId(deviceStateResponse.payload.state);
 
         if (device.useEmptyPassphrase) {
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(getState());
             dispatch(
                 deviceActions.setDeviceState({
                     device,
-                    state: deviceStateResponse.payload._state,
+                    state: deviceStateResponse.payload.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                     isAutoEjectEnabled,
                 }),

@@ -32,7 +32,7 @@ export const ethereumGetAddress = async (api: TrezorConnect) => {
         device: {
             path: asDeviceUniquePath('1'),
             instance: 1,
-            state: 'state@device-id:1',
+            state: { staticSessionId: 'state@device-id:1' },
             useEmptyPassphrase: true,
         },
         keepSession: false,
