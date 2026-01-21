@@ -162,8 +162,7 @@ export type KnownDevice = BaseDevice & {
     color?: string;
     status: DeviceStatus;
     mode: DeviceMode;
-    _state?: DeviceState; // TODO: breaking change in next major release
-    state?: DeviceState['staticSessionId'];
+    state?: DeviceState;
     features: PROTO.Features;
     thp?: DeviceThpState;
     unavailableCapabilities: UnavailableCapabilities;
@@ -195,7 +194,6 @@ export type UnknownDevice = BaseDevice & {
     color?: typeof undefined;
     status?: DeviceStatus;
     mode?: typeof undefined;
-    _state?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;
@@ -219,7 +217,6 @@ export type UnreadableDevice = BaseDevice & {
     color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
-    _state?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;

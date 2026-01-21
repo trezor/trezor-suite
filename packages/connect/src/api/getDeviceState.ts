@@ -15,6 +15,6 @@ export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {
             throw ERRORS.TypedError('Runtime', 'Device state not set');
         }
 
-        return Promise.resolve({ state: state.staticSessionId, _state: state });
+        return Promise.resolve({ state });
     }
 }

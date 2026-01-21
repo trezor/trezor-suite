@@ -44,19 +44,19 @@ const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extra
 // TODO: test deleting device instances on parent device forget
 
 const dev1 = mockSuiteDevice({
-    state: '1stTestnetAddress@device_a_id:0',
+    state: { staticSessionId: '1stTestnetAddress@device_a_id:0' },
     path: '1',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2 = mockSuiteDevice({
-    state: '1stTestnetAddress@device_b_id:0',
+    state: { staticSessionId: '1stTestnetAddress@device_b_id:0' },
     path: '2',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 const dev2Instance1 = mockSuiteDevice({
-    state: '1stTestnetAddress@device_c_id:0',
+    state: { staticSessionId: '1stTestnetAddress@device_c_id:0' },
     path: '2',
     instance: 2,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()

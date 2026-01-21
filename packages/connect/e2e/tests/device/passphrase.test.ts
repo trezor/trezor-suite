@@ -63,7 +63,7 @@ describe('TrezorConnect passphrase', () => {
         });
         expect(xpub.device).toMatchObject({
             instance: 0,
-            state: walletDefault.payload._state,
+            state: walletDefault.payload.state,
         });
 
         // get state of walletA using passphrase "a"
@@ -92,7 +92,7 @@ describe('TrezorConnect passphrase', () => {
         });
         expect(xpubA.device).toMatchObject({
             instance: 1,
-            state: walletA.payload._state,
+            state: walletA.payload.state,
         });
 
         // get state of walletB using passphrase "b"
@@ -120,7 +120,7 @@ describe('TrezorConnect passphrase', () => {
         });
         expect(xpubB.device).toMatchObject({
             instance: 2,
-            state: walletB.payload._state,
+            state: walletB.payload.state,
         });
 
         // generate addresses from 3 different wallets in random order using same derivation path
@@ -161,7 +161,9 @@ describe('TrezorConnect passphrase', () => {
         const invalidState = await TrezorConnect.getAddress({
             device: {
                 instance: 0,
-                state: walletA.payload.state, // NOTE: state from different wallet/instance
+                state: {
+                    staticSessionId: walletA.payload.state.staticSessionId, // NOTE: state from different wallet/instance
+                },
             },
             path: "m/84'/0'/0'/0/0",
             showOnTrezor: false,
@@ -192,18 +194,31 @@ describe('TrezorConnect passphrase', () => {
         // try to get passphrase wallet state, with now invalid sessionId
         TrezorConnect.on('ui-request_passphrase', passphraseHandler('a'));
         const passphrase2 = await TrezorConnect.getDeviceState({
-            device: { instance: 1, state: passphrase.payload._state },
+            device: {
+                instance: 1,
+                state: { staticSessionId: passphrase.payload.state.staticSessionId },
+            },
         });
         if (!passphrase2.success) throw new Error(passphrase2.payload.error);
 
         // try to get standard wallet state, with sessionId now used for passphrase wallet
         const standard2 = await TrezorConnect.getDeviceState({
-            device: { instance: 0, state: standard.payload._state, useEmptyPassphrase: true },
+            device: {
+                instance: 0,
+                state: {
+                    staticSessionId: standard.payload.state.staticSessionId,
+                },
+                useEmptyPassphrase: true,
+            },
         });
         if (!standard2.success) throw new Error(standard2.payload.error);
 
-        expect(passphrase2.payload.state).toEqual(passphrase.payload.state);
-        expect(standard2.payload.state).toEqual(standard.payload.state);
+        expect(passphrase2.payload.state.staticSessionId).toEqual(
+            passphrase.payload.state.staticSessionId,
+        );
+        expect(standard2.payload.state.staticSessionId).toEqual(
+            standard.payload.state.staticSessionId,
+        );
     });
 
     it('Passphrase encoding', async () => {

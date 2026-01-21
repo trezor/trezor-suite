@@ -44,7 +44,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
 };
 
 const device = mockSuiteDevice({
-    state: '1stTestnetAddress@device_id:0',
+    state: { staticSessionId: '1stTestnetAddress@device_id:0' },
     connected: true,
     available: true,
 });

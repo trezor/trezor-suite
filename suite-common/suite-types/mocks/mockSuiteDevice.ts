@@ -178,11 +178,7 @@ export const mockConnectDevice = (
  * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not acquired).
  */
 export const mockSuiteDevice = (
-    dev?: Partial<
-        Omit<StringPath<TrezorDevice>, 'state'> & {
-            state?: `${string}@${string}:${number}`;
-        }
-    >,
+    dev?: Partial<StringPath<TrezorDevice>>,
     feat?: Partial<Features>,
 ): TrezorDevice => {
     const bootloader_mode = dev?.mode === 'bootloader';
@@ -200,11 +196,7 @@ export const mockSuiteDevice = (
             suiteSyncOwner: null,
             ...dev,
             ...device,
-            state: dev?.state
-                ? {
-                      staticSessionId: dev.state,
-                  }
-                : undefined,
+            state: dev?.state,
         } as TrezorDevice;
     }
 

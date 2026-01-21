@@ -122,16 +122,16 @@ describe('account utils', () => {
                 }),
                 [
                     mockSuiteDevice({
-                        state: '1stTestnet@device_id:0',
+                        state: { staticSessionId: '1stTestnet@device_id:0' },
                     }),
                     mockSuiteDevice({
-                        state: '1stTestnet@device_id:3',
+                        state: { staticSessionId: '1stTestnet@device_id:3' },
                     }),
                 ],
             ),
         ).toEqual(
             mockSuiteDevice({
-                state: '1stTestnet@device_id:0',
+                state: { staticSessionId: '1stTestnet@device_id:0' },
             }),
         );
     });

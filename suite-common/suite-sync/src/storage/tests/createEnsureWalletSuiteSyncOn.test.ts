@@ -16,7 +16,7 @@ import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
-const DEVICE_123 = mockSuiteDevice({ state: DEVICE_STATIC_SESSION_ID_123 });
+const DEVICE_123 = mockSuiteDevice({ state: { staticSessionId: DEVICE_STATIC_SESSION_ID_123 } });
 
 const createMockState = (devices: TrezorDevice[] = []): DeviceRootState => ({
     device: {
@@ -74,7 +74,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const unavailableCapabilities: UnavailableCapabilities = { evolu: 'update-required' };
         const device = mockSuiteDevice({
             unavailableCapabilities,
-            state: DEVICE_STATIC_SESSION_ID_123,
+            state: { staticSessionId: DEVICE_STATIC_SESSION_ID_123 },
         });
 
         if (device.state?.staticSessionId === undefined) {
