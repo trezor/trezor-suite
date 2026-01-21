@@ -251,18 +251,36 @@ describe('toTokenCryptoId', () => {
 
 describe('getDefaultCountry', () => {
     it('should return default country for unknown country', () => {
-        expect(getDefaultCountry()).toEqual({ label: '🌍 Worldwide', value: 'unknown' });
+        expect(getDefaultCountry()).toEqual({
+            codeAlpha3: 'unknown',
+            flag: '🌍',
+            label: '🌍 Worldwide',
+            name: 'Worldwide',
+            shortLabel: '🌍 Worldwide',
+            value: 'unknown',
+        });
     });
 
     it('should return correct value', () => {
         expect(getDefaultCountry('US')).toEqual({
+            codeAlpha3: 'USA',
+            flag: '🇺🇸',
             label: '🇺🇸 United States of America',
+            name: 'United States of America',
+            shortLabel: '🇺🇸 USA',
             value: 'US',
         });
     });
 
     it('should return default country for non existing code', () => {
-        expect(getDefaultCountry('XX')).toEqual({ label: '🌍 Worldwide', value: 'unknown' });
+        expect(getDefaultCountry('XX')).toEqual({
+            codeAlpha3: 'unknown',
+            flag: '🌍',
+            label: '🌍 Worldwide',
+            name: 'Worldwide',
+            shortLabel: '🌍 Worldwide',
+            value: 'unknown',
+        });
     });
 });
 

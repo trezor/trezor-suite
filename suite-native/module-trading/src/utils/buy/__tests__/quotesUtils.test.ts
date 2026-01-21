@@ -56,8 +56,12 @@ describe('quotesUtils', () => {
                     form.setValue('fiatValue', '100');
                     form.setValue('asset', btcAsset);
                     form.setValue('country', {
+                        codeAlpha3: 'USA',
+                        flag: '🇺🇸',
+                        name: 'United States of America',
                         value: 'US',
-                        label: 'United States of America',
+                        label: '🇺🇸 United States',
+                        shortLabel: '🇺🇸 USA',
                     });
                     form.setValue('quote', buyQuotes[0]);
                 });
@@ -90,8 +94,12 @@ describe('quotesUtils', () => {
                         networkSymbol: 'btc',
                     } satisfies TradingAssetOption,
                     countrySelect: {
+                        label: '🇺🇸 United States',
+                        codeAlpha3: 'USA',
+                        flag: '🇺🇸',
+                        name: 'United States of America',
+                        shortLabel: '🇺🇸 USA',
                         value: 'US',
-                        label: 'United States of America',
                     },
                     paymentMethod: {
                         value: 'applePay',

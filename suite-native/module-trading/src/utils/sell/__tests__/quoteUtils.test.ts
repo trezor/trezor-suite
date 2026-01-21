@@ -68,7 +68,11 @@ describe('quoteUtils', () => {
                 ],
                 countrySelect: {
                     label: '🇨🇿 Czechia',
+                    shortLabel: '🇨🇿 CZE',
                     value: 'CZ',
+                    codeAlpha3: 'CZE',
+                    flag: '🇨🇿',
+                    name: 'Czechia',
                 },
                 sendCryptoSelect: {
                     id: 'bitcoin' as CryptoId,
@@ -94,7 +98,11 @@ describe('quoteUtils', () => {
                 ],
                 countrySelect: {
                     label: '🇨🇿 Czechia',
+                    shortLabel: '🇨🇿 CZE',
                     value: 'CZ',
+                    codeAlpha3: 'CZE',
+                    flag: '🇨🇿',
+                    name: 'Czechia',
                 },
                 sendCryptoSelect: {
                     id: 'bitcoin' as CryptoId,

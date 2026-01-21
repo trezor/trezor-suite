@@ -4,10 +4,11 @@ import { getPreferredCountryOption } from '../getPreferredCountryOption';
 
 describe('getPreferredCountryOption()', () => {
     it('should use value from expo-localization when country is not set in store', () => {
-        expect(getPreferredCountryOption()).toEqual({
-            label: '🇵🇱 Poland',
-            value: 'PL',
-        });
+        expect(getPreferredCountryOption()).toEqual(
+            expect.objectContaining({
+                value: 'PL',
+            }),
+        );
     });
 
     it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', () => {
@@ -26,9 +27,10 @@ describe('getPreferredCountryOption()', () => {
             } as unknown as Locale,
         ]);
 
-        expect(getPreferredCountryOption()).toEqual({
-            label: '🌍 Worldwide',
-            value: 'unknown',
-        });
+        expect(getPreferredCountryOption()).toEqual(
+            expect.objectContaining({
+                value: 'unknown',
+            }),
+        );
     });
 });

@@ -78,7 +78,7 @@ describe('BuyForm', () => {
             expect(queryByText('Receive account')).toBeNull();
 
             expect(getByText('Country of residence')).toBeTruthy();
-            expect(getByText('🇨🇿 Czechia')).toBeTruthy();
+            expect(getByText('🇨🇿 CZE')).toBeTruthy();
 
             expect(queryByText('Provider')).toBeNull();
             expect(queryByText('Continue')).toBeNull();

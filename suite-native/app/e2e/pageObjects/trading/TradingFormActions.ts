@@ -51,7 +51,7 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectCountry(countrySearch: string, country: string) {
+    async selectCountry(countrySearch: string, country: string, shortLabel: string) {
         const countryPicker = this.getElementById('country');
         await waitForVisible(countryPicker, { timeout: this.SHORT_TIMEOUT });
         await countryPicker.tap();
@@ -62,7 +62,7 @@ export abstract class TradingFormActions extends TradingActions {
         await element(by.text(country)).tap();
 
         await waitFor(this.getElementById('country/value'))
-            .toHaveText(country)
+            .toHaveText(shortLabel)
             .withTimeout(this.SHORT_TIMEOUT);
     }
 

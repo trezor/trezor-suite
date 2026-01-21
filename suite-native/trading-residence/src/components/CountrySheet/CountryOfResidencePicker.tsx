@@ -77,7 +77,7 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                             )}
                             testID={valueTestID}
                         >
-                            {selectedValue.label}
+                            {selectedValue.shortLabel}
                         </Text>
                     </HStack>
                 ) : (

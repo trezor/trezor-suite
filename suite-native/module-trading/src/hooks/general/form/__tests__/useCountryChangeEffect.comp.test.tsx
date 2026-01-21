@@ -15,14 +15,28 @@ describe('useCountryChangeEffect', () => {
     });
 
     it('should do nothing on mount', async () => {
-        await renderUseCountryChangeEffect(() => ({ value: 'US', label: 'United States' }));
+        await renderUseCountryChangeEffect(() => ({
+            codeAlpha3: 'USA',
+            flag: '🇺🇸',
+            name: 'United States of America',
+            value: 'US',
+            label: '🇺🇸 United States',
+            shortLabel: '🇺🇸 USA',
+        }));
 
         expect(selectTradingResidenceCountry(store.getState())).toBeUndefined();
     });
 
     it('should update trading residence country on country change', async () => {
         let countryValue: TradingCountryCode = 'US';
-        const watch: CountryFormWatch = () => ({ value: countryValue, label: 'Country' });
+        const watch: CountryFormWatch = () => ({
+            value: countryValue,
+            codeAlpha3: 'USA',
+            flag: 'Flag',
+            name: 'Country long name',
+            label: 'Country label',
+            shortLabel: 'Short label',
+        });
 
         const { rerender } = await renderUseCountryChangeEffect(watch);
 
@@ -33,7 +47,14 @@ describe('useCountryChangeEffect', () => {
     });
 
     it('should not update when country becomes undefined', async () => {
-        let countryOption: TradingCountryOption | undefined = { value: 'US', label: 'Country' };
+        let countryOption: TradingCountryOption | undefined = {
+            codeAlpha3: 'USA',
+            flag: '🇺🇸',
+            name: 'United States of America',
+            value: 'US',
+            label: '🇺🇸 United States',
+            shortLabel: '🇺🇸 USA',
+        };
         const watch: CountryFormWatch = () => countryOption;
         const { rerender } = await renderUseCountryChangeEffect(watch);
 

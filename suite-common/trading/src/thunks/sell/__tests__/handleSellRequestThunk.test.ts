@@ -84,7 +84,14 @@ describe('handleSellRequestThunk', () => {
                     label: '',
                 },
             ],
-            countrySelect: { value: 'US', label: 'United States' },
+            countrySelect: {
+                codeAlpha3: 'USA',
+                flag: '🇺🇸',
+                name: 'United States of America',
+                value: 'US',
+                label: '🇺🇸 United States',
+                shortLabel: '🇺🇸 USA',
+            },
             sendCryptoSelect: {
                 id: 'bitcoin' as CryptoId,
                 isNativeToken: true,

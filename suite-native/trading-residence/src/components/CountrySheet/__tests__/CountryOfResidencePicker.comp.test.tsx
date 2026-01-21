@@ -66,7 +66,7 @@ describe('CountryOfResidencePicker', () => {
     it('should display value from expo-localization (Poland) when in default state', () => {
         const { getByLabelText } = renderCountryOfResidencePicker();
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 Poland');
+        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇵🇱 POL');
     });
 
     it('should allow to select country', async () => {
@@ -75,7 +75,7 @@ describe('CountryOfResidencePicker', () => {
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
 
-        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇩🇿 Algeria');
+        expect(getByLabelText('Selected country of residence')).toHaveTextContent('🇩🇿 DZA');
     });
 
     it('should display empty component when filtered data is empty', async () => {
@@ -104,14 +104,14 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should not report to analytics when user selects already selected country', async () => {
-        const { getByText, getAllByText } = renderCountryOfResidencePicker();
+        const { getByText } = renderCountryOfResidencePicker();
 
         await userEvent.press(getByText('Country of residence'));
         await userEvent.press(getByText(/Algeria/));
         reportMock.mockClear();
 
-        await userEvent.press(getAllByText(/Algeria/)[0]);
-        await userEvent.press(getAllByText(/Algeria/)[1]);
+        await userEvent.press(getByText('Country of residence'));
+        await userEvent.press(getByText(/Algeria/));
 
         expect(reportMock).not.toHaveBeenCalled();
     });

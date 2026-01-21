@@ -65,12 +65,19 @@ describe('TradingCountryOfResidencePicker', () => {
 
     it('should use country from form', async () => {
         act(() => {
-            form.setValue('country', { value: 'US', label: 'United States' });
+            form.setValue('country', {
+                value: 'US',
+                label: '🇺🇸 United States',
+                shortLabel: '🇺🇸 USA',
+                codeAlpha3: 'USA',
+                flag: '🇺🇸',
+                name: 'United States',
+            });
         });
 
         const { getByTestId } = await renderCountryOfResidencePicker(residenceCheckDisabledState);
 
-        expect(getByTestId('testID/value')).toHaveTextContent('United States');
+        expect(getByTestId('testID/value')).toHaveTextContent('🇺🇸 USA');
     });
 
     it('should call analytics on country change', async () => {

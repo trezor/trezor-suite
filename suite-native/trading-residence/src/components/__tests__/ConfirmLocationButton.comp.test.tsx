@@ -18,7 +18,14 @@ const ConfirmLocationButtonWithChangedCountry = () => {
     const { setValue } = useFormContext<TradingLocationFormValues>();
 
     useEffect(() => {
-        setValue('country', { value: 'SK', label: 'SHOULD NOT MATTER' });
+        setValue('country', {
+            value: 'SK',
+            label: '🇸🇰 Slovakia',
+            shortLabel: '🇸🇰 SVK',
+            codeAlpha3: 'SVK',
+            flag: '🇸🇰',
+            name: 'Slovakia',
+        });
     }, [setValue]);
 
     return <ConfirmLocationButton afterConfirm={jest.fn} />;

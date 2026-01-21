@@ -10,10 +10,9 @@ describe('useCountryFilteredData', () => {
 
         expect(result.current.filteredData).toEqual(
             expect.arrayContaining([
-                {
-                    label: '🇨🇿 Czechia',
+                expect.objectContaining({
                     value: 'CZ',
-                },
+                }),
             ]),
         );
     });

@@ -673,7 +673,14 @@ describe('useBuyForm', () => {
             const { result } = await renderUseTradingBuyForm(store);
 
             act(() => {
-                result.current.setValue('country', { value: 'CA', label: 'Canada' });
+                result.current.setValue('country', {
+                    value: 'CA',
+                    label: '🇨🇦 Canada',
+                    shortLabel: '🇨🇦 CAN',
+                    codeAlpha3: 'CAN',
+                    flag: '🇨🇦',
+                    name: 'Canada',
+                });
             });
 
             expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
