@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify/unstyled';
 
 import type { NotificationEntry } from '@suite-common/toast-notifications';
 
