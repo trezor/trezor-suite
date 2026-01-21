@@ -1,15 +1,6 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-
 import { Box, Text } from '@suite-native/atoms';
 import { ConnectorImage } from '@suite-native/device';
-import {
-    DeviceAuthorizationStep,
-    DevicePinImage,
-    selectDeviceAuthorizationStep,
-} from '@suite-native/device-authorization';
+import { DevicePinImage } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { getScreenHeight } from '@trezor/env-utils';
@@ -29,21 +20,7 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
-    const deviceAuthorizationStep = useSelector(selectDeviceAuthorizationStep);
-    const navigation = useNavigation();
-
     const { applyStyle } = useNativeStyles();
-
-    useFocusEffect(
-        useCallback(() => {
-            // hasDeviceRequestedPin is false when the user unlocks the device again
-            // after it was already unlocked and then became locked.
-            // (e.g., when attempting to verify the receive address with locked device).
-            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle) {
-                navigation.goBack();
-            }
-        }, [deviceAuthorizationStep, navigation]),
-    );
 
     return (
         <Box style={applyStyle(wrapperStyle)}>

@@ -1,8 +1,14 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { PinOnKeypad } from '@suite-native/device-authorization';
+import {
+    DeviceAuthorizationStep,
+    PinOnKeypad,
+    selectDeviceAuthorizationStep,
+} from '@suite-native/device-authorization';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -11,12 +17,23 @@ import { PinOnDevice } from '../../components/connect/PinOnDevice';
 
 export const PinScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-
+    const deviceAuthorizationStep = useSelector(selectDeviceAuthorizationStep);
+    const navigation = useNavigation();
     const deviceModel = useSelector(selectDeviceModel);
 
     const onSuccess = useCallback(() => {
         navigateToInitialScreen();
     }, [navigateToInitialScreen]);
+
+    useFocusEffect(
+        useCallback(() => {
+            // This handles a case when device was pin locked and user tried opening new passphrase wallet.
+            // Device authorization step will reset to Idle and we navigate back (into passphrase module for passphrase creation, not feature unlock.)
+            if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle) {
+                navigation.goBack();
+            }
+        }, [deviceAuthorizationStep, navigation]),
+    );
 
     if (!deviceModel) return null;
 
