@@ -1,4 +1,4 @@
-import { Box, Column, Row, Text } from '@trezor/components';
+import { Box, Column, GhostContainer, Row, Text } from '@trezor/components';
 
 import { AssetLogo, AssetLogoProps } from '../AssetLogo/AssetLogo';
 import { CoinLogo } from '../CoinLogo/CoinLogo';
@@ -31,18 +31,17 @@ export function TopAssets({
             borderWidth={1}
             borderColor="baseBorderElementNeutralSoftest"
             width="100%"
-            as="button"
             overflow="hidden"
             data-testid={dataTestId}
         >
             <Row hasDivider dividerColor="baseBorderElementNeutralSoftest" alignItems="stretch">
                 {assets.map(asset => (
-                    <Box
+                    <GhostContainer
                         key={asset.id}
                         onClick={() => onAssetClick(asset)}
                         padding={{ top: 10, horizontal: 12, bottom: 6 }}
+                        borderRadius={0}
                         flex="1"
-                        backgroundColorOnInteraction="stateFillElementGhostHovered"
                         cursor="pointer"
                     >
                         <Column alignItems="center" justifyContent="center" gap={4}>
@@ -66,7 +65,7 @@ export function TopAssets({
                                 {asset.displaySymbol}
                             </Text>
                         </Column>
-                    </Box>
+                    </GhostContainer>
                 ))}
             </Row>
         </Box>

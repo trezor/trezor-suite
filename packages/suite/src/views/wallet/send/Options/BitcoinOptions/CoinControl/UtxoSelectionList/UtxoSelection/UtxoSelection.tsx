@@ -134,6 +134,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             isActive={isChecked}
             padding={12}
             margin={{ horizontal: -12 }}
+            as="div"
         >
             <Row gap={16} width="100%">
                 <Tooltip content={unspendableTooltip}>
