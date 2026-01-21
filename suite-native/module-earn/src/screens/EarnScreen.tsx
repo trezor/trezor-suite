@@ -1,23 +1,19 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
-import { StakingNetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { EventType } from '@suite-native/analytics';
 import { TitleHeader, VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 
 import { EarnListItem } from '../components/EarnListItem';
 import { EarnSectionHeader } from '../components/EarnSectionHeader';
 import { useStakingListData } from '../hooks/useStakingListData';
-
-export type EarnItem = {
-    symbol: StakingNetworkSymbol;
-    accountKey: Account['key'];
-    accountLabel?: Account['accountLabel'];
-};
+import { EarnItem } from '../types';
 
 export type EarnListItem = string | EarnItem;
 
@@ -31,6 +27,13 @@ const renderItem = ({ item }: { item: EarnListItem }) => {
 
 export const EarnScreen = () => {
     const { listData } = useStakingListData();
+    const analytics = useAnalytics();
+
+    useFocusEffect(
+        useCallback(() => {
+            analytics.report({ type: EventType.EearnNavigate });
+        }, [analytics]),
+    );
 
     return (
         <Screen header={<DeviceManagerScreenHeader />}>

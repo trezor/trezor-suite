@@ -11,6 +11,13 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device-manager" },
@@ -19,8 +26,10 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../services" },
         { "path": "../staking" },
         { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" },
         { "path": "../../packages/urls" }
     ]
 }

@@ -1,7 +1,8 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { EventType } from '@suite-native/analytics';
 import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { useAnalytics } from '@suite-native/services';
 import { NativeStakingRootState, selectStakedBalanceByAccountKey } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -9,7 +10,7 @@ import { EarnItemCardanoInfo } from './EarnItemCardanoInfo';
 import { EarnItemInfoModal } from './EarnItemInfoModal';
 import { EarnItemOverviewSection } from './EarnItemOverviewSection';
 import { EarnItemRewardSection } from './EarnItemRewardSection';
-import { EarnItem } from '../screens/EarnScreen';
+import { EarnItem } from '../types';
 
 const earnItemStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -19,18 +20,26 @@ const earnItemStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-export const EarnListItem = (earnItem: EarnItem) => {
+export type EarnListItemProps = EarnItem;
+
+export const EarnListItem = (earnItem: EarnListItemProps) => {
     const { accountKey } = earnItem;
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const analytics = useAnalytics();
 
     const stakedBalance = useSelector((state: NativeStakingRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
 
+    const handlePress = () => {
+        openModal();
+        analytics.report({ type: EventType.EarnStakeTilePressed });
+    };
+
     return (
         <>
-            <PressableOpacity style={applyStyle(earnItemStyle)} onPress={openModal}>
+            <PressableOpacity style={applyStyle(earnItemStyle)} onPress={handlePress}>
                 <VStack flex={1}>
                     <EarnItemOverviewSection stakedBalance={stakedBalance} {...earnItem} />
                     {accountKey && (

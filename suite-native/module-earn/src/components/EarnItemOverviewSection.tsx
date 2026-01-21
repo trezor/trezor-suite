@@ -13,7 +13,7 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { CRYPTO_BALANCE_DECIMALS } from '../constants';
-import { EarnItem } from '../screens/EarnScreen';
+import { EarnItem } from '../types';
 
 const accountDescriptionStyle = prepareNativeStyle(_ => ({
     flexShrink: 1,

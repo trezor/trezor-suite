@@ -80,4 +80,6 @@ export enum EventType {
     DemoAccountQuestionnaireStart = 'demo-account/questionnaire-start',
     DemoAccountQuestionnaireQuestion = 'demo-account/questionnaire-question',
     DemoAccountQuestionnaireLinks = 'demo-account/questionnaire-links',
+    EearnNavigate = 'earn/navigate',
+    EarnStakeTilePressed = 'earn/stake_tile_pressed',
 }
