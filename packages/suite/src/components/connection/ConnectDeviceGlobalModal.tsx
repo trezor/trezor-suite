@@ -247,22 +247,6 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return <BluetoothManualPairingModal onCancel={onCancel} />;
     }
 
-    if (showHints) {
-        return (
-            <CantSeeTrezorModal
-                onClose={() => {
-                    legacyAnalytics.report({
-                        type: EventType.DeviceConnectionHintModal,
-                        payload: {
-                            option: 'close',
-                        },
-                    });
-                    onCancel();
-                }}
-            />
-        );
-    }
-
     // handle Bluetooth adapter non ideal status cases
     if (
         isBluetoothMode &&
@@ -301,6 +285,22 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         manuallyPairedConnectedDevices.length > 0;
     if (isBluetoothMode && areConnectableDevices) {
         return <BluetoothConnectionModal onClose={onCancel} />;
+    }
+
+    if (showHints) {
+        return (
+            <CantSeeTrezorModal
+                onClose={() => {
+                    legacyAnalytics.report({
+                        type: EventType.DeviceConnectionHintModal,
+                        payload: {
+                            option: 'close',
+                        },
+                    });
+                    onCancel();
+                }}
+            />
+        );
     }
 
     // scanning for nearby devices
