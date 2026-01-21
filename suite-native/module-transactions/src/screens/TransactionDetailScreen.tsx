@@ -115,7 +115,6 @@ export const TransactionDetailScreen = ({
                     <TransactionDetailHeader
                         transaction={transaction}
                         tokenTransfer={tokenTransfer as TypedTokenTransfer}
-                        accountKey={accountKey}
                     />
                     <TransactionDetailData
                         transaction={transaction}

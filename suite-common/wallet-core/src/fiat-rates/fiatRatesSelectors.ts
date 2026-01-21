@@ -148,14 +148,15 @@ export const selectTickersToBeUpdated = (
 export const selectTransactionsWithMissingRates = (
     state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
     localCurrency: BaseCurrencyCode,
+    accountKey?: AccountKey,
 ) => {
-    const accountTransactions = selectTransactions(state);
+    const transactions = selectTransactions(state);
     const historicFiatRates = selectHistoricFiatRates(state);
 
     return pipe(
-        accountTransactions,
-        D.mapWithKey((accountKey, txs) => ({
-            account: selectAccountByKey(state, accountKey as AccountKey),
+        accountKey ? { [accountKey]: transactions[accountKey] } : transactions,
+        D.mapWithKey((key, txs) => ({
+            account: selectAccountByKey(state, key as AccountKey),
             txs: txs.filter(tx => {
                 const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as BaseCurrencyCode);
                 const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
