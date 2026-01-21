@@ -19,7 +19,7 @@ import {
 import {
     PassphraseForm,
     PassphraseScreenHeader,
-    useWaitForUiRequestPassphraseOnDevice,
+    useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
 import { useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -99,7 +99,7 @@ export const PassphraseFormScreen = () => {
         navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);
     }, [navigation]);
 
-    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
+    useHandleUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<PassphraseScreenHeader />}>

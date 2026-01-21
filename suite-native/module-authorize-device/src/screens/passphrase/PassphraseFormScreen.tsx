@@ -12,7 +12,7 @@ import {
     Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { PassphraseForm, useWaitForUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
+import { PassphraseForm, useHandleUiRequestPassphraseOnDevice } from '@suite-native/passphrase';
 
 import { AuthorizeDeviceScreenHeader } from '../../components/AuthorizeDeviceScreenHeader';
 
@@ -36,7 +36,7 @@ export const PassphraseFormScreen = () => {
         navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
     }, [navigation]);
 
-    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
+    useHandleUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<AuthorizeDeviceScreenHeader />}>

@@ -27,8 +27,6 @@ export const PinScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            // This handles a case when device was pin locked and user tried opening new passphrase wallet.
-            // Device authorization step will reset to Idle and we navigate back (into passphrase module for passphrase creation, not feature unlock.)
             if (deviceAuthorizationStep === DeviceAuthorizationStep.Idle) {
                 navigation.goBack();
             }

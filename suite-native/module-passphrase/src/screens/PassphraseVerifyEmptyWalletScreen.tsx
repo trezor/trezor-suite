@@ -14,7 +14,7 @@ import {
 import {
     PassphraseForm,
     PassphraseScreenHeader,
-    useWaitForUiRequestPassphraseOnDevice,
+    useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -35,7 +35,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
         navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);
     }, [navigation]);
 
-    useWaitForUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
+    useHandleUiRequestPassphraseOnDevice(navigateToEnterOnDevice);
 
     return (
         <Screen header={<PassphraseScreenHeader />}>
