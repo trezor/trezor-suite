@@ -165,6 +165,12 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         ['expo-localization'],
+        [
+            'expo-sqlite',
+            {
+                useSQLCipher: true,
+            },
+        ],
     ];
 
     return [
