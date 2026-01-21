@@ -8,7 +8,7 @@ import { Schema } from './schema';
 // This is a way how to force change of the SQL files. It was useful for development
 // so not everybody had to delete SQLite file manually:
 // See: https://www.evolu.dev/docs/faq#how-to-delete-opfs-sqlite-in-browser
-const VERSION = 6;
+const VERSION = 7;
 
 type CreateEvoluInstanceFactoryDeps = EvoluDeps;
 
