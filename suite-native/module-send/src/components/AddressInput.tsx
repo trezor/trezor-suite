@@ -117,6 +117,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
             )}
             {isSolATA && (
                 <AddressInfoMessage
+                    type="warning"
                     txId="moduleSend.outputs.recipients.solAssociatedAccountAddress.label"
                     link={HELP_CENTER_SOLANA_HELP_URL}
                 />
