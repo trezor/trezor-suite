@@ -1,4 +1,4 @@
-import { firmwareAssets } from '@trezor/connect-common';
+import { firmwareAssets } from '@trezor/connect-data';
 import {
     DeviceModelInternal,
     FirmwareRelease,
@@ -59,16 +59,16 @@ export const getReleaseAsset = (
     return asset as FirmwareRelease;
 };
 
-export const firmwareReleaseConfigAssets = require('@trezor/connect-common/files/firmware/release/releases.v1.json');
+export const firmwareReleaseConfigAssets = require('@trezor/connect-data/files/firmware/release/releases.v1.json');
 
 export const tryLocalAssetRequire = (url: string): unknown => {
     const fileUrl = url.split('?')[0];
 
     switch (fileUrl) {
         case './data/coins.json':
-            return require('@trezor/connect-common/files/coins.json');
+            return require('@trezor/connect-data/files/coins.json');
         case './data/coins-eth.json':
-            return require('@trezor/connect-common/files/coins-eth.json');
+            return require('@trezor/connect-data/files/coins-eth.json');
         case './data/messages/messages.json':
             return require('@trezor/protobuf/messages.json');
     }

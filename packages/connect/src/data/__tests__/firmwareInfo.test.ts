@@ -1,4 +1,4 @@
-import { firmwareAssets } from '@trezor/connect-common';
+import { firmwareAssets } from '@trezor/connect-data';
 import { FirmwareType } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/protobuf/src/messages-schema';
 import { versionUtils } from '@trezor/utils';

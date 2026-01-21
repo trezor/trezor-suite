@@ -70,7 +70,7 @@ const config: webpack.Configuration = {
                 // include FW binaries from @trezor/connect-common
                 .concat([
                     {
-                        from: path.join(__dirname, '../../', 'connect-common/files/firmware'),
+                        from: path.join(__dirname, '../../', 'connect-data/files/firmware'),
                         to: path.join(baseDir, 'build/static/bin/firmware'),
                     },
                 ])
@@ -81,7 +81,7 @@ const config: webpack.Configuration = {
                               from: path.join(
                                   __dirname,
                                   '../../',
-                                  'connect-common/files/devkit/firmware',
+                                  'connect-data/files/devkit/firmware',
                               ),
                               to: path.join(baseDir, 'build/static/bin/devkit/firmware'),
                           },

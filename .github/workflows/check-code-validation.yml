@@ -186,8 +186,8 @@ jobs:
         with:
           filters: |
             releases-json:
-              - 'packages/connect-common/files/firmware/t1b1/releases.json'
-              - 'packages/connect-common/files/firmware/t2t1/releases.json'
+              - 'packages/connect-data/files/firmware/t1b1/releases.json'
+              - 'packages/connect-data/files/firmware/t2t1/releases.json'
       - name: "Checkout branches for Nx"
         if: steps.changes.outputs.releases-json == 'true'
         uses: ./.github/actions/nx-checkout
@@ -197,4 +197,4 @@ jobs:
 
       - name: Check releases.json revisions
         if: steps.changes.outputs.releases-json == 'true'
-        run: yarn workspace @trezor/connect-common validate-releases.json
+        run: yarn workspace @trezor/connect-data validate-releases.json

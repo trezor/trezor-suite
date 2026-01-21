@@ -20,6 +20,7 @@ on:
       - "packages/react-native-usb/**"
       # ignore unrelated github workflows config files
       - ".github/workflows/connect-common"
+      - ".github/workflows/connect-data"
       - ".github/workflows/connect-examples"
       - ".github/workflows/connect-explorer"
       - ".github/workflows/connect-mobile"

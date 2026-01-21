@@ -8,8 +8,8 @@ packages/suite-data/files/bin/tor/mac-*/*.dylib filter=lfs diff=lfs merge=lfs -t
 packages/suite-data/files/bin/tor/mac-*/tor filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/*.dll filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/tor/win-*/tor.exe filter=lfs diff=lfs merge=lfs -text
-packages/connect-common/files/firmware/*/*.bin filter=lfs diff=lfs merge=lfs -text
-packages/connect-common/files/devkit/firmware/*/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-data/files/firmware/*/*.bin filter=lfs diff=lfs merge=lfs -text
+packages/connect-data/files/devkit/firmware/*/*.bin filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/coinjoin/linux-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/coinjoin/linux-x64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
 packages/suite-data/files/bin/coinjoin/osx-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text

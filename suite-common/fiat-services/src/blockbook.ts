@@ -3,7 +3,7 @@ import type { HistoricRates, TimestampedRates } from '@suite-common/wallet-types
 import { fetchUrl } from './fetch';
 import { RateLimiter } from './limiter';
 
-// TODO: generate from @trezor/connect-common/files/coins.json
+// TODO: generate from @trezor/connect-data/files/coins.json
 const ENDPOINTS = {
     btc: ['btc1', 'btc2', 'btc3', 'btc4', 'btc5'],
 };

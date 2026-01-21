@@ -17,6 +17,7 @@ inputs:
       - blockchain-link-utils
       - blockchain-link
       - connect-common
+      - connect-data
       - transport
       - utils
       - utxo-lib

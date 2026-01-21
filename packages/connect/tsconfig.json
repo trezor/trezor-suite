@@ -9,6 +9,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../connect-common" },
+        { "path": "../connect-data" },
         { "path": "../crypto-utils" },
         { "path": "../device-authenticity" },
         { "path": "../device-utils" },
