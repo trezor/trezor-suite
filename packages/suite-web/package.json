@@ -14,7 +14,6 @@
     },
     "dependencies": {
         "@sentry/browser": "10.32.1",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
