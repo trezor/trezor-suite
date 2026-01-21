@@ -3,5 +3,6 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./libESM"
-    }
+    },
+    "references": []
 }

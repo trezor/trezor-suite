@@ -73,6 +73,7 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
             const workspacePath = path.resolve(process.cwd(), workspace.location);
             const workspaceConfigPath = path.resolve(workspacePath, 'tsconfig.json');
             const workspaceLibConfigPath = path.resolve(workspacePath, 'tsconfig.lib.json');
+            const workspaceLibESMConfigPath = path.resolve(workspacePath, 'tsconfig.libESM.json');
 
             const defaultWorkspaceConfig = {
                 extends: path.relative(workspacePath, path.resolve(process.cwd(), 'tsconfig.json')),
@@ -86,6 +87,9 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
 
             // parse tsconfig.lib.json, which may not exist, and shall not be created
             const workspaceLibConfig = parseTSConfigFile(workspaceLibConfigPath);
+
+            // parse tsconfig.libESM.json, which may not exist, and shall not be created
+            const workspaceLibESMConfig = parseTSConfigFile(workspaceLibESMConfigPath);
 
             // actual references of the workspace from parsed package.json (assigned later)
             const nextWorkspaceReferences: Array<{ path: string }> = [];
@@ -122,7 +126,11 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
                     workspaceLibConfig !== null &&
                     (await isDiffInConfig(workspaceLibConfig.references, expectedLibReferences));
 
-                if (isConfigDiff || isConfigLibDiff) {
+                const isConfigLibESMDiff =
+                    workspaceLibESMConfig !== null &&
+                    (await isDiffInConfig(workspaceLibESMConfig.references, expectedLibReferences));
+
+                if (isConfigDiff || isConfigLibDiff || isConfigLibESMDiff) {
                     console.error(
                         chalk.red(
                             `TypeScript project references in ${workspace.location} are inconsistent with package.json#dependencies.`,
@@ -140,8 +148,20 @@ import { getWorkspacesList } from './utils/getWorkspacesList';
             workspaceConfig.references = expectedReferences;
             fs.writeFileSync(workspaceConfigPath, await serializeConfig(workspaceConfig));
 
-            if (workspaceLibConfig === null) return;
-            workspaceLibConfig.references = expectedLibReferences;
-            fs.writeFileSync(workspaceLibConfigPath, await serializeConfig(workspaceLibConfig, 2));
+            if (workspaceLibConfig !== null) {
+                workspaceLibConfig.references = expectedLibReferences;
+                fs.writeFileSync(
+                    workspaceLibConfigPath,
+                    await serializeConfig(workspaceLibConfig, 2),
+                );
+            }
+
+            if (workspaceLibESMConfig !== null) {
+                workspaceLibESMConfig.references = expectedLibReferences;
+                fs.writeFileSync(
+                    workspaceLibESMConfigPath,
+                    await serializeConfig(workspaceLibESMConfig, 2),
+                );
+            }
         });
 })();

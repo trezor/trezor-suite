@@ -3,5 +3,13 @@
     "include": ["./src"],
     "compilerOptions": {
         "outDir": "./libESM"
-    }
+    },
+    "references": [
+        {
+            "path": "../eslint"
+        },
+        {
+            "path": "../type-utils"
+        }
+    ]
 }
