@@ -48,3 +48,14 @@ export interface Logger {
 
     error(...args: any): void;
 }
+
+export type PingWorkerRequest = { id: number; payload: { url: string } };
+export type PingWorkerResponse = { id: number; payload: { success: boolean } };
+
+export type PingWorker = {
+    postMessage: (_: PingWorkerRequest) => void;
+    onmessage: (_: { data: PingWorkerResponse }) => void;
+    onerror: (_: Error) => void;
+    terminate: () => void;
+};
+

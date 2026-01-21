@@ -16,6 +16,7 @@
         "dev:web": "yarn run web",
         "dev:web:vite": "vite",
         "build:web": "NODE_ENV=production yarn run web",
+        "build:web:vite": "PROJECT=web vite build",
         "desktop": "PROJECT=desktop ASSET_PREFIX=. yarn run base",
         "dev:desktop": "yarn run desktop",
         "build:desktop": "NODE_ENV=production yarn run desktop",

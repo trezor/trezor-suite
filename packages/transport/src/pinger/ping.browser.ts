@@ -2,9 +2,9 @@ import { createDeferredManager, createLazy } from '@trezor/utils';
 
 import PingWorker from './pingWorker';
 
-const init = async () => {
-    const worker = PingWorker();
+const worker = PingWorker()
 
+const init = async () => {
     await new Promise<void>((resolve, reject) => {
         setTimeout(() => reject(new Error('worker_timeout')), 5000);
         worker.onmessage = message => {
