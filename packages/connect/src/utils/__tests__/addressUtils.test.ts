@@ -1,4 +1,4 @@
-import coinsJSON from '@trezor/connect-common/files/coins.json';
+import coinsJSON from '@trezor/connect-data/files/coins.json';
 
 import { getBitcoinNetwork, parseCoinsJson } from '../../data/coinInfo';
 import * as fixtures from '../__fixtures__/addressUtils';

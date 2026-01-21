@@ -112,6 +112,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-data": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-authenticity": "workspace:*",
         "@trezor/device-utils": "workspace:*",

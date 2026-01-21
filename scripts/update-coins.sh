@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 SRC='./submodules/trezor-common/tools'
-DIST='./packages/connect-common/files'
+DIST='./packages/connect-data/files'
 
 # todo:
 # if [ $# -ge 1 ] && [ "$1" == "local" ]

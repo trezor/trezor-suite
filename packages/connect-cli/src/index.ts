@@ -87,7 +87,7 @@ const getFeatures = (device: Device) =>
 const fwUpdate = (device: Device) =>
     TrezorConnect.firmwareUpdate({
         device,
-        baseUrl: path.resolve(__dirname, '../connect-common/files'),
+        baseUrl: path.resolve(__dirname, '../connect-data/files'),
     });
 
 const runTestCase = async (device: Device) => {

@@ -1,4 +1,4 @@
-import { firmwareAssets } from '@trezor/connect-common';
+import { firmwareAssets } from '@trezor/connect-data';
 import { versionUtils } from '@trezor/utils';
 
 import { findBestCompatibleRelease, isStrictFeatures } from '../firmwareUtils';

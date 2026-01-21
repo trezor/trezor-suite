@@ -18,7 +18,7 @@ import { onCallFirmwareUpdate } from '../onCallFirmwareUpdate';
 // - comment one of ASSETS_BASE_URL's (local or online file)
 // - comment jest.setTimeout(30000);
 const ASSETS_BASE_URL = '';
-// const ASSETS_BASE_URL = require('path').resolve(__dirname, '../../../../', 'connect-common/files');
+// const ASSETS_BASE_URL = require('path').resolve(__dirname, '../../../../', 'connect-data/files');
 // const ASSETS_BASE_URL = 'https://suite.trezor.io/web/static/connect/data';
 // jest.setTimeout(30000);
 

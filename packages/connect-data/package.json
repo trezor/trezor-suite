@@ -1,8 +1,8 @@
 {
-    "name": "@trezor/connect-common",
-    "version": "0.5.0",
+    "name": "@trezor/connect-data",
+    "version": "10.0.0-alpha.1",
     "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-common",
+    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-data",
     "keywords": [
         "Trezor",
         "trezor-connect"
@@ -16,11 +16,13 @@
     },
     "npmPublishAccess": "public",
     "license": "SEE LICENSE IN LICENSE.md",
-    "description": "Collection of assets and utils used by trezor-connect library.",
+    "description": "Data used by trezor-connect library.",
     "main": "./src/index.ts",
     "files": [
         "lib/",
         "libESM/",
+        "files/**/*.json",
+        "files/**/*.txt",
         "CHANGELOG.md"
     ],
     "publishConfig": {
@@ -33,20 +35,20 @@
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
+            "./files/*": "./files/*",
             "./libESM/*.js": "./libESM/*.js"
         }
     },
     "scripts": {
+        "test:unit": "yarn g:jest --passWithNoTests",
         "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
         "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
         "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/publish/prepublish.js",
+        "validate-releases.json": "./scripts/check-all-firmware-revisions.sh",
         "depcheck": "yarn g:depcheck"
-    },
-    "dependencies": {
-        "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

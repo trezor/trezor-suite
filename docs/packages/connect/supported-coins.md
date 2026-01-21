@@ -2,7 +2,7 @@
 
 ## The pipeline
 
-Do not change `@trezor/connect-common/files/coins.json` manually.
+Do not change `@trezor/connect-data/files/coins.json` manually.
 
 The one and only source of truth are `*.json` definitions declared and maintained in the [firmware repository](https://github.com/trezor/trezor-firmware/tree/main/common/defs).
 

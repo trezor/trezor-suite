@@ -20,6 +20,9 @@
             "path": "../connect-common"
         },
         {
+            "path": "../connect-data"
+        },
+        {
             "path": "../crypto-utils"
         },
         {

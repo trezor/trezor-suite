@@ -1,0 +1,10 @@
+{
+    "extends": "../../tsconfig.libESM.json",
+    "include": ["./src"],
+    "compilerOptions": {
+        "outDir": "./libESM",
+        "esModuleInterop": false,
+        "types": ["node", "chrome", "jest"]
+    },
+    "references": []
+}

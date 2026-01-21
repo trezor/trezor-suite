@@ -11,6 +11,7 @@ on:
     paths:
       - "packages/blockchain-link/**"
       - "packages/connect-common/**"
+      - "packages/connect-data/**"
       - "packages/connect-web/**"
       - "packages/connect/**"
       - "packages/protobuf/**"

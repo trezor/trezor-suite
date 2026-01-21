@@ -1,6 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import { firmwareAssets } from '@trezor/connect-common';
+import { firmwareAssets } from '@trezor/connect-data';
 import { DeviceModelInternal, FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport, UsbApi } from '@trezor/transport';
 import { versionUtils } from '@trezor/utils';
