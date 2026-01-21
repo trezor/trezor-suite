@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { selectIsDeviceThpRequired } from '@suite-common/wallet-core';
 import { CoinEnablingInitScreen } from '@suite-native/coin-enabling';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import {
@@ -30,7 +29,6 @@ export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceSt
 
 export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
 
     return (
         <AuthorizeDeviceStack.Navigator
@@ -65,12 +63,10 @@ export const AuthorizeDeviceStackNavigator = () => {
                     </AuthorizeDeviceStack.Group>
                 )
             }
-            {!isDeviceThpRequired && (
-                <AuthorizeDeviceStack.Screen
-                    name={AuthorizeDeviceStackRoutes.PinMatrix}
-                    component={PinScreen}
-                />
-            )}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PinMatrix}
+                component={PinScreen}
+            />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.ConnectBluetoothDevice}
                 component={ConnectBluetoothDeviceScreen}

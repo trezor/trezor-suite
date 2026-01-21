@@ -4,6 +4,7 @@ import { UI } from '@trezor/connect';
 
 import {
     isFlowEndingButtonRequest,
+    isPassphraseButtonRequestCode,
     isPinButtonRequestCode,
     isSuiteSyncButtonRequest,
 } from './utils';
@@ -53,14 +54,28 @@ export const deviceAuthorizationSlice = createSlice({
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
             })
-            .addMatcher(isFlowEndingButtonRequest, state => {
-                state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+            .addCase(UI.REQUEST_BUTTON, (state, action) => {
+                if (isPinButtonRequestCode(action)) {
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
+                } else if (isSuiteSyncButtonRequest(action)) {
+                    state.deviceAuthorizationStep =
+                        DeviceAuthorizationStep.ContinueOnTrezorRequested;
+                } else if (isFlowEndingButtonRequest(action)) {
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+                }
             })
-            .addMatcher(isSuiteSyncButtonRequest, state => {
-                state.deviceAuthorizationStep = DeviceAuthorizationStep.ContinueOnTrezorRequested;
-            })
-            .addMatcher(isPinButtonRequestCode, state => {
-                state.deviceAuthorizationStep = DeviceAuthorizationStep.PinRequested;
+            // This matcher is specific for THP flow when:
+            // 1. You have pin locked TS7 and try to open passphrase
+            // 2. You enter passphrase but PIN pops up
+            // 3. After pin is succesfully entered, we receive next step passphrase button request so we reset to Idle so passphrase module gets focused.
+            .addMatcher(isPassphraseButtonRequestCode, (state, action) => {
+                if (
+                    // @ts-expect-error payload not typed
+                    !action.payload.device._state &&
+                    state.deviceAuthorizationStep === DeviceAuthorizationStep.PinRequested
+                ) {
+                    state.deviceAuthorizationStep = DeviceAuthorizationStep.Idle;
+                }
             });
     },
 });
