@@ -105,7 +105,7 @@ export type SuiteServices = CommonServices &
     DisableLegacyMetadataIfNeededDep &
     SuiteRouterHistoryDep;
 
-export const createSuiteCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
+export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
     const platformEncryption = isDesktop()
         ? createElectronPlatformEncryption({ desktopApi })
         : createWebauthnPlatformEncryption();

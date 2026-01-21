@@ -46,7 +46,10 @@ import { HistoryDep } from 'src/support/suite/suiteRouterHistory';
 import { prepareBioAuthReducer } from './bioAuth';
 import { desktopReducer } from './desktop';
 import { bluetoothSlice } from '../actions/bluetooth/desktopBluetoothReducer';
-import { createSuiteCompositionRoot, extraDependencies } from '../support/extraDependencies';
+import {
+    createSuiteServicesCompositionRoot,
+    extraDependencies,
+} from '../support/extraDependencies';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
@@ -149,7 +152,7 @@ export const initStore = (
 
     const extraFactory = (api: MiddlewareAPI) => ({
         ...extraDependencies,
-        services: createSuiteCompositionRoot({
+        services: createSuiteServicesCompositionRoot({
             history: deps.history,
             getState: api.getState,
             dispatch: api.dispatch,
