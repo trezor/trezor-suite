@@ -55,7 +55,8 @@ jobs:
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
       - name: Type Check
-        run: yarn nx:type-check --output-style=stream
+        # Temporarily disabling the cache (false positives because of cache mismatch after NX update)
+        run: yarn nx:type-check --output-style=stream --skip-nx-cache
 
   lint:
     name: Linting and formatting
