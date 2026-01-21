@@ -1,5 +1,9 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 
 import { connectInitThunk } from '../connectInitThunks';
@@ -138,11 +142,11 @@ describe('TrezorConnect Actions', () => {
             type: '@suite/device/removeButtonRequests',
         });
         expect(actions.pop()).toEqual({
-            type: extraDependenciesMock.actions.lockDevice.type,
+            type: extraDependenciesCommonMock.actions.lockDevice.type,
             payload: false,
         });
         expect(actions.pop()).toEqual({
-            type: extraDependenciesMock.actions.lockDevice.type,
+            type: extraDependenciesCommonMock.actions.lockDevice.type,
             payload: true,
         });
     });

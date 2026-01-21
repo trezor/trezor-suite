@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { CryptoId } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
@@ -13,7 +13,7 @@ import { HandleBuyRequestThunkProps, TradingBuyFormProps } from '../../../types'
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('handleBuyRequestThunk', () => {
     afterEach(() => {

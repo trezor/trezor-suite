@@ -1,7 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
-import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
 import { acquireDevice, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { Device } from '@trezor/connect';
 
@@ -9,9 +13,9 @@ import { autoInitThpAfterDeviceConnectionThunk } from '../src/autoInitThpAfterDe
 import { createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
-const thpReduce = prepareThpReducer(extraDependenciesMock);
-const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);
-const deviceReduce = prepareDeviceReducer(extraDependenciesMock);
+const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
+const firmwareReduce = prepareFirmwareReducer(extraDependenciesCommonMock);
+const deviceReduce = prepareDeviceReducer(extraDependenciesCommonMock);
 
 const device = testMocks.getConnectDevice({
     thp: createDeviceThp(),

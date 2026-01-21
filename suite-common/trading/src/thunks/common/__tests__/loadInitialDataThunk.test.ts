@@ -1,6 +1,6 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 
@@ -20,7 +20,7 @@ import { loadInitialDataThunk } from '../loadInitialDataThunk';
 jest.mock('../../../invityAPI');
 invityAPI.setInvityServersEnvironment = () => {};
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 type SelectedAccountStatus = {
     status: string;
@@ -35,7 +35,7 @@ const mockedSelectedAccountReducer = createReducer<SelectedAccountState>(
     () => {},
 );
 
-const mockedAccountReducer = prepareAccountsReducer(extraDependenciesMock);
+const mockedAccountReducer = prepareAccountsReducer(extraDependenciesCommonMock);
 
 const mockedSuiteReducer = createReducer(
     {
@@ -52,7 +52,7 @@ const initStore = (localInitialState?: Partial<TradingState>) =>
     configureMockStore({
         extra: {
             selectors: {
-                ...extraDependenciesMock.selectors,
+                ...extraDependenciesCommonMock.selectors,
                 selectSelectedAccount: () => ({ status: 'loaded', account: accountBtc }) as any,
             },
         },

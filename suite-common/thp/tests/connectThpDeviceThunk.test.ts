@@ -1,15 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Device } from '@trezor/connect';
 
 import { connectThpDeviceThunk } from '../src/connectThpDeviceThunk';
 import { createCredential, createDeviceThp } from '../src/support/mocks';
 import { ThpState, prepareThpReducer } from '../src/thpReducer';
 
-const thpReduce = prepareThpReducer(extraDependenciesMock);
-const firmwareReduce = prepareFirmwareReducer(extraDependenciesMock);
+const thpReduce = prepareThpReducer(extraDependenciesCommonMock);
+const firmwareReduce = prepareFirmwareReducer(extraDependenciesCommonMock);
 
 const thpCredential1 = createCredential({ credential: 'credential-1', connectionCounter: 2 });
 const thpCredential2 = createCredential({ credential: 'credential-2' });

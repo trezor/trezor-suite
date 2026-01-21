@@ -1,4 +1,4 @@
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { initialWalletSettingsState, prepareWalletSettingsReducer } from '../../src';
 import * as walletSettingsActions from '../../src/settings/walletSettingsActions';
@@ -6,7 +6,7 @@ import { WALLET_SETTINGS } from '../../src/settings/walletSettingsConstants';
 
 const initialState = initialWalletSettingsState;
 
-const reducer = prepareWalletSettingsReducer(extraDependenciesMock);
+const reducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 describe('settings reducer', () => {
     it('test initial state', () => {
@@ -20,7 +20,7 @@ describe('settings reducer', () => {
     it('STORAGE.LOAD', () => {
         expect(
             reducer(undefined, {
-                type: extraDependenciesMock.actionTypes.storageLoad,
+                type: extraDependenciesCommonMock.actionTypes.storageLoad,
                 payload: {
                     walletSettings: initialState,
                 },

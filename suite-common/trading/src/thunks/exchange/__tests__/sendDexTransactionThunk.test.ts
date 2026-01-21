@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { CryptoId } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
@@ -14,7 +14,7 @@ import { tradingThunks } from '../../common';
 import * as confirmExchangeTradeThunk from '../confirmExchangeTradeThunk';
 import { exchangeThunks } from '../index';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('sendDexTransactionThunk', () => {
     afterEach(() => {

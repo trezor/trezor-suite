@@ -1,0 +1,160 @@
+import {
+    EncryptableBranded,
+    EncryptedHex,
+    PlatformEncryption,
+    asEncryptedHex,
+} from '@suite-common/platform-encryption';
+import {
+    type ExtraDependencies,
+    notImplementedAction,
+    notImplementedActionType,
+    notImplementedReducer,
+    notImplementedSelector,
+    notImplementedThunk,
+} from '@suite-common/redux-utils';
+import type { SuiteSync } from '@suite-common/suite-sync-types';
+import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
+import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Analytics } from '@trezor/analytics';
+import { err, ok } from '@trezor/type-utils';
+
+import { testMocks } from './mocks';
+
+const suiteSyncMock: SuiteSync = {
+    changeRelayUrl: () => Promise.resolve(),
+    ensureWalletSuiteSyncOn: () =>
+        Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
+    turnOffSuiteSyncForWallet: () => Promise.resolve(),
+    turnOnSuiteSync: () => Promise.resolve(),
+    turnOffSuiteSync: () => Promise.resolve(),
+    labeling: {
+        updateAccountLabel: () => Promise.resolve(ok()),
+        updateAddressLabel: () => Promise.resolve(ok()),
+        updateOutputLabel: () => Promise.resolve(ok()),
+        updateWalletLabel: () => Promise.resolve(ok()),
+    },
+};
+
+const platformEncryptionMock: PlatformEncryption = {
+    encrypt: <T extends EncryptableBranded>({ value }: { value: T }) =>
+        Promise.resolve(ok(asEncryptedHex(value as T))),
+
+    decrypt: <T extends EncryptableBranded>({ value }: { value: EncryptedHex<T> }) =>
+        Promise.resolve(ok(value as unknown as T)),
+};
+
+export const analyticsMock: Analytics<any> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+};
+
+export const legacyAnalyticsMock: Analytics<any> = {
+    report: () => {},
+    isEnabled: () => true,
+    disable: () => {},
+    enable: () => {},
+    init: () => {},
+};
+
+export const extraDependenciesCommonMock: ExtraDependencies = {
+    thunks: {
+        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
+        fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
+        initMetadata: notImplementedThunk('initMetadata'),
+        addAccountMetadata: notImplementedThunk('addAccountMetadata'),
+        forgetBluetoothDevice: notImplementedThunk('forgetBluetoothDevice'),
+    },
+    services: {
+        suiteSync: suiteSyncMock,
+        platformEncryption: platformEncryptionMock,
+        legacyAnalytics: legacyAnalyticsMock,
+        analytics: analyticsMock,
+    },
+    selectors: {
+        selectTokenDefinitionsEnabledNetworks: notImplementedSelector(
+            'selectTokenDefinitonsEnabledNetworks',
+            ['eth'],
+        ),
+        selectDebugSettings: notImplementedSelector('selectDebugSettings', {
+            checkFirmwareAuthenticity: false,
+            showDebugMenu: false,
+            transports: [],
+        }),
+        selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
+        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
+        selectRoute: notImplementedSelector('selectRoute', {} as Route),
+        selectMetadata: notImplementedSelector('selectMetadata', {}),
+        selectDevice: notImplementedSelector('selectDevice', {
+            ...testMocks.getSuiteDevice(),
+        }),
+        selectLanguage: notImplementedSelector('selectLanguage', 'en'),
+        selectAddressDisplayType: notImplementedSelector(
+            'selectAddressDisplayType',
+            AddressDisplayOptions.CHUNKED,
+        ),
+        selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
+            status: 'loaded',
+            account: testMocks.getWalletAccount(),
+        } as SelectedAccountLoaded),
+        selectSelectedAccountStatus: notImplementedSelector(
+            'selectSelectedAccountStatus',
+            'loaded',
+        ),
+        selectIsSuiteSyncEnabled: notImplementedSelector('selectIsLocalFirstStorageEnabled', false),
+        selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
+        selectTradingEnvironment: notImplementedSelector('selectTradingEnvironment', 'localhost'),
+        selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
+            'selectIsViewOnlyByDefaultEnabled',
+            true,
+        ),
+        selectThpSettings: notImplementedSelector('selectThpSettings', {
+            pairingMethods: ['CodeEntry'],
+        }),
+    },
+    actions: {
+        setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),
+        lockDevice: notImplementedAction('lockDevice'),
+        onModalCancel: notImplementedAction('onModalCancel'),
+        openModal: notImplementedAction('openModal'),
+    },
+    actionTypes: {
+        storageLoad: notImplementedActionType('storageLoad'),
+        setDeviceMetadata: notImplementedActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: notImplementedActionType('setDeviceMetadataPasswords'),
+    },
+    reducers: {
+        storageLoadBlockchain: notImplementedReducer('storageLoadBlockchain'),
+        storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
+        storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
+        storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
+        storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),
+        setDeviceMetadataReducer: notImplementedReducer('setDeviceMetadataReducer'),
+        setDeviceMetadataPasswordsReducer: notImplementedReducer(
+            'setDeviceMetadataPasswordsReducer',
+        ),
+        storageLoadDevices: notImplementedReducer('storageLoadDevices'),
+        storageLoadFormDrafts: notImplementedReducer('storageLoadFormDrafts'),
+        storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
+        storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
+        storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+    },
+    utils: {
+        saveAs: (data, fileName) =>
+            console.warn(
+                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
+            ),
+        connectInitSettings: {
+            debug: false,
+            manifest: {
+                email: 'info@trezor.io',
+                appName: 'Trezor Suite',
+                appUrl: '@suite-native/app',
+            },
+        },
+        reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
+            console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
+    },
+};

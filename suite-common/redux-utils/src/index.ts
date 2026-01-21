@@ -9,3 +9,4 @@ export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';
 export * from './extraWithStoreThunkMiddleware';
+export * from './notImplemented';

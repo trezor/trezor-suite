@@ -1,4 +1,4 @@
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { messageSystemActions } from '../messageSystemActions';
 
@@ -100,7 +100,7 @@ export const fixtures = [
         initialState,
         actions: [
             {
-                type: extraDependenciesMock.actionTypes.storageLoad,
+                type: extraDependenciesCommonMock.actionTypes.storageLoad,
                 payload: {
                     messageSystem: {
                         ...initialState,

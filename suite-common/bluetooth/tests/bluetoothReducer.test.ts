@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import { Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -16,8 +16,9 @@ const manufacturerData: BluetoothManufacturerData = {
     filterPolicy: undefined,
 };
 
-const bluetoothReducer =
-    prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(extraDependenciesMock);
+const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()(
+    extraDependenciesCommonMock,
+);
 
 const initialState = prepareInitialState();
 

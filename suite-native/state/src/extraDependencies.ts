@@ -4,10 +4,18 @@ import * as Device from 'expo-device';
 
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
-import { ExtraDependencies, ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import {
+    ExtraDependenciesStatic,
+    notImplementedAction,
+    notImplementedActionType,
+    notImplementedReducer,
+    notImplementedSelector,
+    notImplementedThunk,
+} from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { extraDependenciesMock } from '@suite-common/test-utils/src/extraDependenciesMock'; // precise import path to avoid circular dependencies
+import { Route } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { createAnalytics, createLegacyAnalytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
@@ -21,7 +29,6 @@ import messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
-import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -69,55 +76,120 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
     };
 };
 
-// @TODO test code (extraDependenciesMock) shouldn't be used in production!
-export const extraDependencies: ExtraDependenciesStatic = mergeDeepObject(
-    extraDependenciesMock as ExtraDependencies,
-    {
-        selectors: {
-            selectTokenDefinitionsEnabledNetworks,
-            selectDevice: selectSelectedDevice,
-            selectDebugSettings: () => ({
-                transports,
-            }),
-            selectTradingEnvironment,
-            // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
-            //  and without defining the selector, it would use extraDependenciesMock value there
-            selectSelectedAccount: () => ({
-                status: 'none',
-                loader: undefined,
-                account: undefined,
-                network: undefined,
-                params: undefined,
-            }),
-            selectThpSettings: state => ({
-                // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
-                hostName: Platform.OS === 'ios' ? Device.modelName : Device.deviceName,
-                pairingMethods: ['CodeEntry', 'NFC'],
-                knownCredentials: state.thp?.credentials,
-            }),
-            selectIsSuiteSyncEnabled,
-        } as Partial<ExtraDependenciesStatic['selectors']>,
-        thunks: {
-            forgetBluetoothDevice: forgetBluetoothDeviceThunk,
-        } as Partial<ExtraDependenciesStatic['thunks']>,
-        actions: {} as Partial<ExtraDependenciesStatic['actions']>,
-        actionTypes: {} as Partial<ExtraDependenciesStatic['actionTypes']>,
-        reducers: {} as Partial<ExtraDependenciesStatic['reducers']>,
-        utils: {
-            connectInitSettings: {
-                lazyLoad: false,
-                transportReconnect: false,
-                debug: false,
-                env: 'react-native',
-                manifest: {
-                    email: 'info@trezor.io',
-                    appName: 'Trezor Suite',
-                    appUrl: '@trezor/suite',
-                },
-            },
-            reportSecurityCheck,
-        } as Partial<ExtraDependenciesStatic['utils']>,
-    } as OneLevelPartial<ExtraDependenciesStatic>,
-) as ExtraDependenciesStatic;
+export const extraDependencies: ExtraDependenciesStatic = {
+    selectors: {
+        selectTokenDefinitionsEnabledNetworks,
+        selectDevice: selectSelectedDevice,
+        selectDebugSettings: () => ({
+            transports,
+        }),
+        selectTradingEnvironment,
+        // this selector is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk
+        //  and without defining the selector, it would use extraDependenciesMock value there
+        selectSelectedAccount: () => ({
+            status: 'none',
+            loader: undefined,
+            account: undefined,
+            network: undefined,
+            params: undefined,
+        }),
+        selectThpSettings: state => ({
+            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
+            hostName: (Platform.OS === 'ios' ? Device.modelName : Device.deviceName) ?? undefined,
+            pairingMethods: ['CodeEntry', 'NFC'],
+            knownCredentials: state.thp?.credentials,
+        }),
+        selectIsSuiteSyncEnabled,
 
-type OneLevelPartial<T extends object> = Record<keyof T, Partial<T[keyof T]>>;
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        selectDesktopBinDir: notImplementedSelector('selectDesktopBinDir', '/bin'),
+        selectRouterApp: notImplementedSelector('selectRouterApp', ''),
+        selectRoute: notImplementedSelector('selectRoute', {} as Route),
+        selectMetadata: notImplementedSelector('selectMetadata', {}),
+        selectLanguage: notImplementedSelector('selectLanguage', 'en'),
+        selectAddressDisplayType: notImplementedSelector(
+            'selectAddressDisplayType',
+            AddressDisplayOptions.CHUNKED,
+        ),
+        selectSelectedAccountStatus: notImplementedSelector(
+            'selectSelectedAccountStatus',
+            'loaded',
+        ),
+        selectIsWindowVisible: notImplementedSelector('selectIsWindowVisible', true),
+        selectIsViewOnlyByDefaultEnabled: notImplementedSelector(
+            'selectIsViewOnlyByDefaultEnabled',
+            true,
+        ),
+    },
+    thunks: {
+        forgetBluetoothDevice: forgetBluetoothDeviceThunk,
+
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        cardanoValidatePendingTxOnBlock: notImplementedThunk('validatePendingTxOnBlock'),
+        fetchAndSaveMetadata: notImplementedThunk('fetchAndSaveMetadata'),
+        initMetadata: notImplementedThunk('initMetadata'),
+        addAccountMetadata: notImplementedThunk('addAccountMetadata'),
+    },
+    actions: {
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),
+        lockDevice: notImplementedAction('lockDevice'),
+        onModalCancel: notImplementedAction('onModalCancel'),
+        openModal: notImplementedAction('openModal'),
+    },
+    actionTypes: {
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        storageLoad: notImplementedActionType('storageLoad'),
+        setDeviceMetadata: notImplementedActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: notImplementedActionType('setDeviceMetadataPasswords'),
+    },
+    reducers: {
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        storageLoadBlockchain: notImplementedReducer('storageLoadBlockchain'),
+        storageLoadExplorer: notImplementedReducer('storageLoadExplorer'),
+        storageLoadAccounts: notImplementedReducer('storageLoadAccounts'),
+        storageLoadTransactions: notImplementedReducer('storageLoadTransactions'),
+        storageLoadHistoricRates: notImplementedReducer('storageLoadHistoricRates'),
+        setDeviceMetadataReducer: notImplementedReducer('setDeviceMetadataReducer'),
+        setDeviceMetadataPasswordsReducer: notImplementedReducer(
+            'setDeviceMetadataPasswordsReducer',
+        ),
+        storageLoadDevices: notImplementedReducer('storageLoadDevices'),
+        storageLoadFormDrafts: notImplementedReducer('storageLoadFormDrafts'),
+        storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
+        storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
+        storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
+    },
+    utils: {
+        connectInitSettings: {
+            lazyLoad: false,
+            transportReconnect: false,
+            debug: false,
+            env: 'react-native',
+            manifest: {
+                email: 'info@trezor.io',
+                appName: 'Trezor Suite',
+                appUrl: '@trezor/suite',
+            },
+        },
+        reportSecurityCheck,
+
+        // Not implemented. We assume those are NEVER called on Native
+        // need for this is architectural mistake. Please DO NOT add more and try
+        // to remove them.
+        saveAs: (data, fileName) =>
+            console.warn(
+                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
+            ),
+    },
+};

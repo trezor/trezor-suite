@@ -32,7 +32,7 @@
             "path": "../../suite-common/suite-sync-quota-manager"
         },
         {
-            "path": "../../suite-common/test-utils"
+            "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/thp" },
         {
@@ -43,6 +43,9 @@
         },
         {
             "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
         },
         {
             "path": "../../suite-common/walletconnect"
@@ -79,7 +82,6 @@
         {
             "path": "../../packages/transport-native-usb"
         },
-        { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/type-utils" }
     ]
 }

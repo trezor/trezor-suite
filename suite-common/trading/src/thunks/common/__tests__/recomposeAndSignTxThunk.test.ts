@@ -2,7 +2,11 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { configureMockStore, extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import {
+    configureMockStore,
+    extraDependenciesCommonMock,
+    testMocks,
+} from '@suite-common/test-utils';
 import {
     DeviceReducerState,
     composeSendFormTransactionFeeLevelsThunk,
@@ -25,8 +29,8 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const fees: FeesState = {
     [accountBtc.symbol]: {
         data: {

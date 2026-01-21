@@ -1,7 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { extraDependenciesMock, getSuiteDevice } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock, getSuiteDevice } from '@suite-common/test-utils';
 import {
     deviceActions,
     prepareDeviceReducer,
@@ -23,9 +23,9 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 
 const INIT_ACTION = { type: 'foo' };
 
-const deviceReducer = prepareDeviceReducer(extraDependenciesMock);
-const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesMock);
-const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesMock);
+const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
+const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
+const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 type InitialStateConfig = {
     nativeFirmware?: Partial<NativeFirmwareState>;

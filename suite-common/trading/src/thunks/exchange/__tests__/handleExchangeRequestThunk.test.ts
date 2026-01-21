@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { CryptoId, ExchangeTrade } from 'invity-api';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { exchangeThunks } from '../';
@@ -16,7 +16,7 @@ import {
     TradingExchangeFormProps,
 } from '../../../types';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('handleExchangeRequestThunk', () => {
     afterEach(() => {

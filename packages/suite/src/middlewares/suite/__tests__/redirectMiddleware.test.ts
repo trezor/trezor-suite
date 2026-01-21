@@ -1,4 +1,4 @@
-import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
@@ -49,7 +49,7 @@ const getInitialState = (
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [redirectMiddleware, prepareSuiteMiddleware(() => extraDependenciesMock)];
+const middlewares = [redirectMiddleware, prepareSuiteMiddleware(() => extraDependenciesCommonMock)];
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>(middlewares);

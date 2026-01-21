@@ -1,7 +1,7 @@
 import { CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     type TradingState,
     initialState,
@@ -36,8 +36,8 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
-const accountsReducer = prepareAccountsReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+const accountsReducer = prepareAccountsReducer(extraDependenciesCommonMock);
 
 interface Args {
     trading?: TradingState;

@@ -1,10 +1,10 @@
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/transactionsReducer';
 import { transactionsActions } from '../transactionsActions';
 import { prepareTransactionsReducer, transactionsInitialState } from '../transactionsReducer';
 
-const transactionsReducer = prepareTransactionsReducer(extraDependenciesMock);
+const transactionsReducer = prepareTransactionsReducer(extraDependenciesCommonMock);
 
 describe(transactionsReducer.name, () => {
     describe('addTransaction', () => {

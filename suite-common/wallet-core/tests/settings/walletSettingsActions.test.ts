@@ -1,11 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { walletSettingsFixtures } from './walletSettingsActions.fixtures';
 import { prepareWalletSettingsReducer } from '../../src';
 
-const settingsReducer = prepareWalletSettingsReducer(extraDependenciesMock);
+const settingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
 
 const initStore = (state: any) =>
     configureMockStore({

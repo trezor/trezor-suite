@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { Account } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
@@ -18,7 +18,7 @@ import { watchTradeThunk } from '../watchTradeThunk';
 describe('watchTradeThunk', () => {
     jest.mock('../../../invityAPI');
 
-    const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+    const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
     const account = accountBtc as Account;
     const refreshCount = 1;
 

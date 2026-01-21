@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 import { sendFormSlice, transactionManagementActions } from '../sendFormSlice';
@@ -8,7 +8,7 @@ import { sendFormSlice, transactionManagementActions } from '../sendFormSlice';
 describe('sendFormSlice', () => {
     // Create a test store with the prepared reducer
     const createTestStore = () => {
-        const reducer = sendFormSlice.prepareReducer(extraDependenciesMock);
+        const reducer = sendFormSlice.prepareReducer(extraDependenciesCommonMock);
 
         return configureStore({
             reducer: { send: reducer },

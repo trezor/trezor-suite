@@ -1,5 +1,5 @@
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { ROUTER } from 'src/actions/suite/constants';
@@ -49,7 +49,7 @@ type State = ReturnType<typeof getInitialState>;
 
 const initStore = (state: State) => {
     const mockStore = configureStore<State, Action>([
-        prepareSuiteMiddleware(() => extraDependenciesMock),
+        prepareSuiteMiddleware(() => extraDependenciesCommonMock),
     ]);
     const store = mockStore(state);
     store.subscribe(() => {

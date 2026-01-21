@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
@@ -13,7 +13,7 @@ import { settingsInitialState, tradingSettingsActions } from '../settingsReducer
 import { initialState, tradingActions } from '../tradingCommonReducer';
 import { prepareTradingReducer } from '../tradingReducer';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 
 describe('Testing trading reducer', () => {
     tradingFixtures.forEach(f => {

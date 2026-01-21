@@ -1,6 +1,6 @@
 import { CryptoId, InfoResponse } from 'invity-api';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
@@ -119,7 +119,7 @@ export const tradingFixtures = [
         initialState,
         actions: [
             {
-                type: extraDependenciesMock.actionTypes.storageLoad,
+                type: extraDependenciesCommonMock.actionTypes.storageLoad,
                 payload: {
                     tradingTrades: [tradeBuy],
                 },
@@ -138,7 +138,7 @@ export const tradingFixtures = [
         },
         actions: [
             {
-                type: extraDependenciesMock.actionTypes.storageLoad,
+                type: extraDependenciesCommonMock.actionTypes.storageLoad,
                 payload: {
                     tradingTrades: undefined,
                 },

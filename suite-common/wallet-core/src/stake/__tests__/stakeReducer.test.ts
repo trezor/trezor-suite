@@ -1,4 +1,4 @@
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import * as fixtures from '../__fixtures__/stakeReducer';
 import { prepareStakeReducer, stakeInitialState } from '../stakeReducer';
@@ -8,7 +8,7 @@ import {
     fetchEverstakeStakingInfo,
 } from '../stakeThunks';
 
-const stakeReducer = prepareStakeReducer(extraDependenciesMock);
+const stakeReducer = prepareStakeReducer(extraDependenciesCommonMock);
 
 describe('stakeReducer', () => {
     describe('fetchEverstakeData.pending', () => {

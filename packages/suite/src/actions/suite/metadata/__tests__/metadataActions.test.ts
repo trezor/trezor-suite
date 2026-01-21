@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { extraDependenciesMock, testMocks } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareDeviceReducer } from '@suite-common/wallet-core';
 
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
@@ -90,7 +90,9 @@ const getInitialState = (state?: InitialState) => {
 };
 
 type State = ReturnType<typeof getInitialState>;
-const mockStore = configureStore<State, any>([prepareSuiteMiddleware(() => extraDependenciesMock)]);
+const mockStore = configureStore<State, any>([
+    prepareSuiteMiddleware(() => extraDependenciesCommonMock),
+]);
 
 const initStore = (state: State) => {
     const store = mockStore(state);

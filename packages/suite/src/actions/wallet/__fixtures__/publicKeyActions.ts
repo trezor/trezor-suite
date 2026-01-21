@@ -7,7 +7,7 @@ import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
 
 const { getSuiteDevice } = testMocks;
 
-const LOCK_DEVICE = '@mocked/extraDependency/action/notImplemented/lockDevice';
+const LOCK_DEVICE = 'notImplemented/lockDevice';
 
 export default [
     {

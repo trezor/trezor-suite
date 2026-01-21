@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps, createThunk } from '@suite-common/redux-utils';
-import { configureMockStore, extraDependenciesMock } from '@suite-common/test-utils';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
@@ -10,7 +10,7 @@ import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 
-const tradingReducer = prepareTradingReducer(extraDependenciesMock);
+const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const mockedSuiteReducer = createReducerWithExtraDeps(
     {
         settings: {
@@ -38,7 +38,7 @@ describe('verifyAddressThunk', () => {
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -87,7 +87,7 @@ describe('verifyAddressThunk', () => {
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -120,7 +120,7 @@ describe('verifyAddressThunk', () => {
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -157,12 +157,12 @@ describe('verifyAddressThunk', () => {
 
     it('should not update verified address, but trigger toast when device is not available', async () => {
         const store = configureMockStore({
-            extra: extraDependenciesMock,
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -190,10 +190,10 @@ describe('verifyAddressThunk', () => {
 
         const actionModal = store
             .getActions()
-            .find(action => action.type === extraDependenciesMock.actions.openModal.type);
+            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesMock.actions.openModal.type,
+            type: extraDependenciesCommonMock.actions.openModal.type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,
@@ -204,12 +204,12 @@ describe('verifyAddressThunk', () => {
 
     it('should not update verified address, but trigger toast when device is not connected', async () => {
         const store = configureMockStore({
-            extra: extraDependenciesMock,
+            extra: extraDependenciesCommonMock,
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -237,10 +237,10 @@ describe('verifyAddressThunk', () => {
 
         const actionModal = store
             .getActions()
-            .find(action => action.type === extraDependenciesMock.actions.openModal.type);
+            .find(action => action.type === extraDependenciesCommonMock.actions.openModal.type);
 
         expect(actionModal).toEqual({
-            type: extraDependenciesMock.actions.openModal.type,
+            type: extraDependenciesCommonMock.actions.openModal.type,
             payload: {
                 type: 'unverified-address-proceed',
                 value: addressData?.address,
@@ -256,7 +256,7 @@ describe('verifyAddressThunk', () => {
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {
@@ -301,7 +301,7 @@ describe('verifyAddressThunk', () => {
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
-                suite: mockedSuiteReducer(extraDependenciesMock),
+                suite: mockedSuiteReducer(extraDependenciesCommonMock),
             }),
             preloadedState: {
                 wallet: {

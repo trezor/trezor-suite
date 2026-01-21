@@ -1,7 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId, ProviderMetadata } from 'invity-api';
 
-import { extraDependenciesMock } from '@suite-common/test-utils';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -28,7 +28,7 @@ describe('tradingSlice', () => {
     let tradingReducer: ReturnType<typeof tradingSlice.prepareReducer>;
 
     beforeEach(() => {
-        tradingReducer = tradingSlice.prepareReducer(extraDependenciesMock);
+        tradingReducer = tradingSlice.prepareReducer(extraDependenciesCommonMock);
     });
 
     afterEach(() => {
