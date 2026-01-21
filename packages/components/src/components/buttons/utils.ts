@@ -3,10 +3,6 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 import { BorderRadii, CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
 import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from './types';
-import { addAlphaToHex } from '../../utils/utils';
-
-const OPACITY_HOVER_STATE = 0.82;
-const OPACITY_ACTIVE_STATE = 0.74;
 
 export const pickButtonProps = ({
     href,
@@ -86,18 +82,15 @@ export const mapSizeToTypographyStyle = (size: ButtonSize): TypographyStyle => {
     return typographyStyleMap[size];
 };
 
-export const mapPropsToColor = (
-    intent: ButtonIntent,
-    priority: ButtonPriority,
-    isDisabled: boolean,
-    isInverse: boolean,
-    theme: DefaultTheme,
-): CSSColor => {
-    if (isDisabled) {
-        return theme[isInverse ? 'stateContentDisabledInverse' : 'stateContentDisabled'];
-    }
+type InverseKey = 'normal' | 'inverse';
 
-    const colorMap: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
+const colorMapDisabled: Record<InverseKey, Color> = {
+    normal: 'stateContentDisabled',
+    inverse: 'stateContentDisabledInverse',
+};
+
+const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>> = {
+    normal: {
         primary: {
             brand: 'baseContentOnActionBrandPrimary',
             neutral: 'baseContentReversePrimary',
@@ -116,9 +109,8 @@ export const mapPropsToColor = (
             accentViolet: 'baseContentAccentVioletContrast',
             accentOrange: 'baseContentAccentOrangeContrast',
         },
-    };
-
-    const colorMapInverse: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
+    },
+    inverse: {
         primary: {
             brand: 'baseContentOnActionBrandPrimaryInverse',
             neutral: 'baseContentReversePrimaryInverse',
@@ -137,40 +129,38 @@ export const mapPropsToColor = (
             accentViolet: 'baseContentAccentVioletContrastInverse',
             accentOrange: 'baseContentAccentOrangeContrastInverse',
         },
-    };
-
-    return theme[isInverse ? colorMapInverse[priority][intent] : colorMap[priority][intent]];
+    },
 };
 
-export const mapPropsToCSS = (
+export const mapPropsToColor = (
     intent: ButtonIntent,
     priority: ButtonPriority,
     isDisabled: boolean,
     isInverse: boolean,
     theme: DefaultTheme,
-): RuleSet<object> => {
+): CSSColor => {
+    const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+
     if (isDisabled) {
-        const backgroundMapDisabled: Record<ButtonPriority, Color> = {
-            primary: 'stateFillElementBoldDisabled',
-            secondary: 'stateFillElementSoftDisabled',
-        };
-
-        const backgroundMapDisabledInverse: Record<ButtonPriority, Color> = {
-            primary: 'stateFillElementBoldInverseDisabled',
-            secondary: 'stateFillElementSoftInverseDisabled',
-        };
-
-        const backgroundColor =
-            theme[
-                isInverse ? backgroundMapDisabledInverse[priority] : backgroundMapDisabled[priority]
-            ];
-
-        return css`
-            background: ${backgroundColor};
-        `;
+        return theme[colorMapDisabled[inverseKey]];
     }
 
-    const backgroundMap: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
+    return theme[colorMap[inverseKey][priority][intent]];
+};
+
+const backgroundMapDisabled: Record<InverseKey, Record<ButtonPriority, Color>> = {
+    normal: {
+        primary: 'stateFillElementBoldDisabled',
+        secondary: 'stateFillElementSoftDisabled',
+    },
+    inverse: {
+        primary: 'stateFillElementBoldInverseDisabled',
+        secondary: 'stateFillElementSoftInverseDisabled',
+    },
+};
+
+const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, Color>>> = {
+    normal: {
         primary: {
             brand: 'baseFillElementBrandBold',
             neutral: 'baseFillElementContrast',
@@ -189,9 +179,8 @@ export const mapPropsToCSS = (
             accentViolet: 'baseFillElementAccentVioletSoft',
             accentOrange: 'baseFillElementAccentOrangeSoft',
         },
-    };
-
-    const backgroundMapInverse: Record<ButtonPriority, Record<ButtonIntent, Color>> = {
+    },
+    inverse: {
         primary: {
             brand: 'baseFillElementBrandBoldInverse',
             neutral: 'baseFillElementNeutralLight',
@@ -210,20 +199,125 @@ export const mapPropsToCSS = (
             accentViolet: 'baseFillElementAccentVioletSoftInverse',
             accentOrange: 'baseFillElementAccentOrangeSoftInverse',
         },
-    };
+    },
+};
 
-    const backgroundColor =
-        theme[isInverse ? backgroundMapInverse[priority][intent] : backgroundMap[priority][intent]];
+const backgroundMapHovered: Record<
+    InverseKey,
+    Record<ButtonPriority, Record<ButtonIntent, Color>>
+> = {
+    normal: {
+        primary: {
+            brand: 'stateFillElementBrandBoldHovered',
+            neutral: 'stateFillElementContrastHovered',
+            info: 'stateFillElementInfoBoldHovered',
+            warning: 'stateFillElementWarningBoldHovered',
+            critical: 'stateFillElementNegativeBoldHovered',
+            accentViolet: 'stateFillElementAccentVioletBoldHovered',
+            accentOrange: 'stateFillElementAccentOrangeBoldHovered',
+        },
+        secondary: {
+            brand: 'stateFillElementBrandSoftHovered',
+            neutral: 'stateFillElementNeutralSoftHovered',
+            info: 'stateFillElementInfoSoftHovered',
+            warning: 'stateFillElementWarningSoftHovered',
+            critical: 'stateFillElementNegativeSoftHovered',
+            accentViolet: 'stateFillElementAccentVioletSoftHovered',
+            accentOrange: 'stateFillElementAccentOrangeSoftHovered',
+        },
+    },
+    inverse: {
+        primary: {
+            brand: 'stateFillElementBrandBoldInverseHovered',
+            neutral: 'stateFillElementNeutralLightHovered',
+            info: 'stateFillElementInfoBoldInverseHovered',
+            warning: 'stateFillElementWarningBoldInverseHovered',
+            critical: 'stateFillElementNegativeBoldInverseHovered',
+            accentViolet: 'stateFillElementAccentVioletBoldInverseHovered',
+            accentOrange: 'stateFillElementAccentOrangeBoldInverseHovered',
+        },
+        secondary: {
+            brand: 'stateFillElementBrandSoftInverseHovered',
+            neutral: 'stateFillElementNeutralSoftInverseHovered',
+            info: 'stateFillElementInfoSoftInverseHovered',
+            warning: 'stateFillElementWarningSoftInverseHovered',
+            critical: 'stateFillElementNegativeSoftInverseHovered',
+            accentViolet: 'stateFillElementAccentVioletSoftInverseHovered',
+            accentOrange: 'stateFillElementAccentOrangeSoftInverseHovered',
+        },
+    },
+};
+
+const backgroundMapPressed: Record<
+    InverseKey,
+    Record<ButtonPriority, Record<ButtonIntent, Color>>
+> = {
+    normal: {
+        primary: {
+            brand: 'stateFillElementBrandBoldPressed',
+            neutral: 'stateFillElementContrastPressed',
+            info: 'stateFillElementInfoBoldPressed',
+            warning: 'stateFillElementWarningBoldPressed',
+            critical: 'stateFillElementNegativeBoldPressed',
+            accentViolet: 'stateFillElementAccentVioletBoldPressed',
+            accentOrange: 'stateFillElementAccentOrangeBoldPressed',
+        },
+        secondary: {
+            brand: 'stateFillElementBrandSoftPressed',
+            neutral: 'stateFillElementNeutralSoftPressed',
+            info: 'stateFillElementInfoSoftPressed',
+            warning: 'stateFillElementWarningSoftPressed',
+            critical: 'stateFillElementNegativeSoftPressed',
+            accentViolet: 'stateFillElementAccentVioletSoftPressed',
+            accentOrange: 'stateFillElementAccentOrangeSoftPressed',
+        },
+    },
+    inverse: {
+        primary: {
+            brand: 'stateFillElementBrandBoldInversePressed',
+            neutral: 'stateFillElementNeutralLightPressed',
+            info: 'stateFillElementInfoBoldInversePressed',
+            warning: 'stateFillElementWarningBoldInversePressed',
+            critical: 'stateFillElementNegativeBoldInversePressed',
+            accentViolet: 'stateFillElementAccentVioletBoldInversePressed',
+            accentOrange: 'stateFillElementAccentOrangeBoldInversePressed',
+        },
+        secondary: {
+            brand: 'stateFillElementBrandSoftInversePressed',
+            neutral: 'stateFillElementNeutralSoftInversePressed',
+            info: 'stateFillElementInfoSoftInversePressed',
+            warning: 'stateFillElementWarningSoftInversePressed',
+            critical: 'stateFillElementNegativeSoftInversePressed',
+            accentViolet: 'stateFillElementAccentVioletSoftInversePressed',
+            accentOrange: 'stateFillElementAccentOrangeSoftInversePressed',
+        },
+    },
+};
+
+export const mapPropsToCSS = (
+    intent: ButtonIntent,
+    priority: ButtonPriority,
+    isDisabled: boolean,
+    isInverse: boolean,
+    theme: DefaultTheme,
+): RuleSet<object> => {
+    const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+
+    if (isDisabled) {
+        return css`
+            background: ${theme[backgroundMapDisabled[inverseKey][priority]]};
+        `;
+    }
 
     return css`
-        background: ${backgroundColor};
+        background: ${theme[backgroundMapBase[inverseKey][priority][intent]]};
 
         &:hover {
-            background: ${addAlphaToHex(backgroundColor, OPACITY_HOVER_STATE)};
+            background: ${theme[backgroundMapHovered[inverseKey][priority][intent]]};
         }
 
         &:active {
-            background: ${addAlphaToHex(backgroundColor, OPACITY_ACTIVE_STATE)};
+            background: ${theme[backgroundMapPressed[inverseKey][priority][intent]]};
         }
     `;
 };

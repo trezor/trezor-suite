@@ -1,3 +1,5 @@
+import { HTMLProps } from 'react';
+
 import { FrameProps, FramePropsKeys, pickAndPrepareFrameProps } from '../../utils/frameProps';
 import { Box } from '../Box/Box';
 
@@ -16,20 +18,21 @@ export const allowedGhostContainerFrameProps = [
     'display',
     'zIndex',
     'cursor',
+    'borderRadius',
 ] as const satisfies FramePropsKeys[];
 type AllowedGhostContainerFrameProps = Pick<
     FrameProps,
     (typeof allowedGhostContainerFrameProps)[number]
 >;
 
-type GhostContainerProps = AllowedGhostContainerFrameProps & {
-    onClick: (e: React.MouseEvent<HTMLElement>) => void;
-    children: React.ReactNode;
-    isDisabled?: boolean;
-    isActive?: boolean;
-    'data-testid'?: string;
-    tabIndex?: number;
-};
+type GhostContainerProps = Pick<HTMLProps<HTMLElement>, 'onClick' | 'tabIndex'> &
+    AllowedGhostContainerFrameProps & {
+        children: React.ReactNode;
+        isDisabled?: boolean;
+        isActive?: boolean;
+        as?: React.ElementType;
+        'data-testid'?: string;
+    };
 
 export const GhostContainer = ({
     isDisabled,
@@ -38,9 +41,15 @@ export const GhostContainer = ({
     children,
     'data-testid': dataTestId,
     tabIndex,
+    as = 'button',
+    borderRadius = 10,
     ...rest
 }: GhostContainerProps) => {
-    const frameProps = pickAndPrepareFrameProps(rest, allowedGhostContainerFrameProps, false);
+    const frameProps = pickAndPrepareFrameProps(
+        { ...rest, borderRadius },
+        allowedGhostContainerFrameProps,
+        false,
+    );
 
     return (
         <Box
@@ -50,8 +59,7 @@ export const GhostContainer = ({
             backgroundColorOnInteraction={
                 isActive || isDisabled ? undefined : 'stateFillElementGhostHovered'
             }
-            borderRadius={10}
-            as="button"
+            as={as}
             data-testid={dataTestId}
             tabIndex={tabIndex}
             {...frameProps}
