@@ -116,7 +116,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        test-task: [suite, native]
+        test-task: [suite, native, trading]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
