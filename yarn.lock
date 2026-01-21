@@ -14878,7 +14878,6 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": "npm:^7.5.0"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite/analytics": "workspace:*"
@@ -14979,7 +14978,6 @@ __metadata:
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
     "@sentry/browser": "npm:10.32.1"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@trezor/connect": "workspace:*"
