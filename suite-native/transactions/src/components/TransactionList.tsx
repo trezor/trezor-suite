@@ -11,8 +11,10 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountByKey,
+    selectBaseCurrency,
     selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
+    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
@@ -136,6 +138,8 @@ export const TransactionList = ({
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
+
+    const localCurrency = useSelector(selectBaseCurrency);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -238,6 +242,12 @@ export const TransactionList = ({
             ...accountTransactionsByMonth[monthKey],
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
+
+    useEffect(() => {
+        if (data.length > 0) {
+            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
+        }
+    }, [data, dispatch, localCurrency, accountKey]);
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {

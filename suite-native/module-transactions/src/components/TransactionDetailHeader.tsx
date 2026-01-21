@@ -1,4 +1,6 @@
-import { AccountKey } from '@suite-common/wallet-types';
+import { useSelector } from 'react-redux';
+
+import { FiatRatesRootState, WalletSettingsRootState } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
 import { Badge, Box, DiscreetTextTrigger, Text, VStack } from '@suite-native/atoms';
 import {
@@ -13,14 +15,13 @@ import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/toke
 import {
     TransactionIcon,
     getTransactionValueSign,
-    useTransactionFiatRate,
+    selectTransactionFiatRate,
 } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
     tokenTransfer?: TypedTokenTransfer;
-    accountKey: AccountKey;
 };
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
@@ -39,14 +40,11 @@ const fiatValueStyle = prepareNativeStyle(utils => ({
 export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
-    accountKey,
 }: TransactionDetailHeaderProps) => {
     const { applyStyle } = useNativeStyles();
-    const historicRate = useTransactionFiatRate({
-        accountKey,
-        transaction,
-        tokenAddress: tokenTransfer?.contract,
-    });
+    const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
+        selectTransactionFiatRate(state, transaction, tokenTransfer?.contract),
+    );
 
     const { type } = transaction;
 

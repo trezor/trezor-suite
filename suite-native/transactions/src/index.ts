@@ -7,4 +7,3 @@ export * from './components/TransactionListItemContainer';
 export * from './selectors';
 export * from './types';
 export * from './utils';
-export * from './hooks/useTransactionFiatRate';

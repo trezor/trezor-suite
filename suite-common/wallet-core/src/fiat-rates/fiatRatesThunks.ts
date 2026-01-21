@@ -185,10 +185,14 @@ export const updateFiatRatesThunk = createThunk<
 
 export const updateMissingTxFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateMissingTxRates`,
-    ({ localCurrency }: { localCurrency: BaseCurrencyCode }, { dispatch, getState }) => {
+    (
+        { localCurrency, accountKey }: { localCurrency: BaseCurrencyCode; accountKey?: AccountKey },
+        { dispatch, getState },
+    ) => {
         const transactionsWithMissingRates = selectTransactionsWithMissingRates(
             getState(),
             localCurrency,
+            accountKey,
         );
 
         transactionsWithMissingRates.forEach(({ account, txs }) => {

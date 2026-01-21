@@ -9,14 +9,25 @@ import {
 } from '@suite-common/token-definitions';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
+    FiatRatesRootState,
     TransactionsRootState,
+    WalletSettingsRootState,
     selectAccountNetworkType,
     selectAccountTransactions,
+    selectBaseCurrency,
     selectHasAccountTransactionHistory,
+    selectHistoricFiatRatesByTimestamp,
     selectTransactionByAccountKeyAndTxid,
     selectTransactionTargets,
 } from '@suite-common/wallet-core';
-import { AccountKey, TokenSymbol } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    Timestamp,
+    TokenAddress,
+    TokenSymbol,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import { AddressesType, VinVoutAddress } from './types';
 import { mapTransactionInputsOutputsToAddresses, sortTargetAddressesToBeginning } from './utils';
@@ -178,3 +189,18 @@ export const selectHasAccountAnyTransactions = createMemoizedSelector(
         return transactions.length > 0;
     },
 );
+
+export const selectTransactionFiatRate = (
+    state: WalletSettingsRootState & FiatRatesRootState,
+    transaction: WalletAccountTransaction,
+    tokenAddress?: TokenAddress,
+) => {
+    const localCurrency = selectBaseCurrency(state);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, localCurrency, tokenAddress);
+
+    return selectHistoricFiatRatesByTimestamp(
+        state,
+        fiatRateKey,
+        transaction.blockTime as Timestamp,
+    );
+};
