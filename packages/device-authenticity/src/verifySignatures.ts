@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { getSubtleCrypto } from '@trezor/crypto-utils';
 
 import { VerifySignature } from './types';
-import { AlgorithmName } from './x509certificate';
+import { AlgorithmName, fixSignature } from './x509certificate';
 
 // There is incomparability in results between Node.js and window SubtleCrypto api.
 // window.crypto.subtle.importKey (CryptoKey) cannot be used by `crypto-browserify`.Verify
@@ -34,7 +34,7 @@ export const verifySignatureP256: VerifySignature = async (rawKey, data, signatu
         )}\n-----END PUBLIC KEY-----`;
 
         // verify using PEM key
-        return signer.verify({ key }, Buffer.from(signature));
+        return signer.verify({ key }, fixSignature(signature));
     } catch {
         // invalid inputs shall be considered unsuccessful verification, rather than runtime error
         // (e.g. calling this with a P-256 signature and an Ed25519 key)
