@@ -40,7 +40,7 @@ test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
         await test.step('Simulate reconnect and check errors', async () => {
             await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
             await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
-            await dashboardPage.deviceSwitchingCloseButton.click();
+            await page.getByTestId('@backup/close-button').click();
         });
 
         await test.step('Check dashboard notification error banner', async () => {
