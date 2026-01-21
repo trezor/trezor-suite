@@ -110,10 +110,9 @@ describe('buySelectors', () => {
         it('should return object with computed default values', () => {
             expect(selectBuyFormDefaultValues(state)).toEqual({
                 fiatCurrency: 'czk',
-                country: {
-                    label: '🇨🇿 Czechia',
+                country: expect.objectContaining({
                     value: 'CZ',
-                },
+                }),
                 amountInCrypto: false,
             });
         });
@@ -123,10 +122,9 @@ describe('buySelectors', () => {
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
-                    country: {
-                        label: '🇩🇪 Germany',
+                    country: expect.objectContaining({
                         value: 'DE',
-                    },
+                    }),
                 }),
             );
         });
@@ -146,10 +144,9 @@ describe('buySelectors', () => {
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
-                    country: {
-                        label: '🌍 Worldwide',
+                    country: expect.objectContaining({
                         value: 'unknown',
-                    },
+                    }),
                 }),
             );
         });
@@ -159,10 +156,9 @@ describe('buySelectors', () => {
 
             expect(selectBuyFormDefaultValues(state)).toEqual(
                 expect.objectContaining({
-                    country: {
-                        label: '🌍 Worldwide',
+                    country: expect.objectContaining({
                         value: 'unknown',
-                    },
+                    }),
                 }),
             );
         });

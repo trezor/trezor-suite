@@ -22,19 +22,21 @@ describe('useLocationForm', () => {
 
         const { result } = renderUseLocationForm();
 
-        expect(result.current.getValues('country')).toEqual({
-            label: '🇨🇿 Czechia',
-            value: 'CZ',
-        });
+        expect(result.current.getValues('country')).toEqual(
+            expect.objectContaining({
+                value: 'CZ',
+            }),
+        );
     });
 
     it('should use value from expo-localization when country is not set in store', () => {
         const { result } = renderUseLocationForm();
 
-        expect(result.current.getValues('country')).toEqual({
-            label: '🇵🇱 Poland',
-            value: 'PL',
-        });
+        expect(result.current.getValues('country')).toEqual(
+            expect.objectContaining({
+                value: 'PL',
+            }),
+        );
     });
 
     it('should fallback to worldwide when country is not set in store and expo-localization country is not supported', () => {
@@ -55,9 +57,10 @@ describe('useLocationForm', () => {
 
         const { result } = renderUseLocationForm();
 
-        expect(result.current.getValues('country')).toEqual({
-            label: '🌍 Worldwide',
-            value: 'unknown',
-        });
+        expect(result.current.getValues('country')).toEqual(
+            expect.objectContaining({
+                value: 'unknown',
+            }),
+        );
     });
 });

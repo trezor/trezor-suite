@@ -86,7 +86,11 @@ describe('handleBuyRequestThunk', () => {
             } satisfies TradingAssetOption,
             countrySelect: {
                 value: 'CZ',
-                label: 'Czech Republic',
+                codeAlpha3: 'CZE',
+                flag: '🇨🇿',
+                name: 'Czechia',
+                label: '🇨🇿 Czechia',
+                shortLabel: '🇨🇿 CZE',
             },
             paymentMethod: {
                 value: 'creditCard',

@@ -23,16 +23,25 @@ class Regional {
 
     constructor(countriesFilter: (country: CountryItem) => boolean) {
         this.countriesOptions = [
-            { value: this.UNKNOWN_COUNTRY, label: '🌍 Worldwide' },
+            {
+                value: this.UNKNOWN_COUNTRY,
+                label: '🌍 Worldwide',
+                shortLabel: '🌍 Worldwide',
+                codeAlpha3: this.UNKNOWN_COUNTRY,
+                flag: '🌍',
+                name: 'Worldwide',
+            },
             ...typedObjectValues(countriesRecord)
                 .filter(countriesFilter)
-                .map(({ code, flag, name }) => ({ value: code, label: `${flag} ${name}` })),
-        ].sort((c1, c2) => {
-            const l1 = c1.label.split(' ')[1];
-            const l2 = c2.label.split(' ')[1];
-
-            return l1.localeCompare(l2);
-        });
+                .map(({ code, codeAlpha3, flag, name }) => ({
+                    value: code,
+                    label: `${flag} ${name}`,
+                    shortLabel: `${flag} ${codeAlpha3}`,
+                    codeAlpha3,
+                    flag,
+                    name,
+                })),
+        ].sort((c1, c2) => c1.name.localeCompare(c2.name));
 
         this.countriesOptionsMap = new Map(
             this.countriesOptions.map(option => [option.value, option]),

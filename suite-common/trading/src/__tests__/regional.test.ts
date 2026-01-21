@@ -38,14 +38,22 @@ describe('Regional', () => {
     describe('getCountryOptionWithWorldwideFallback', () => {
         it('should return country option for existing country', () => {
             expect(regional.getCountryOptionWithWorldwideFallback('DE')).toEqual({
+                codeAlpha3: 'DEU',
+                flag: '🇩🇪',
                 label: '🇩🇪 Germany',
+                name: 'Germany',
+                shortLabel: '🇩🇪 DEU',
                 value: 'DE',
             });
         });
 
         it('should fallback to worldwide for non-existing country', () => {
             expect(regional.getCountryOptionWithWorldwideFallback('test')).toEqual({
+                codeAlpha3: 'unknown',
+                flag: '🌍',
                 label: '🌍 Worldwide',
+                name: 'Worldwide',
+                shortLabel: '🌍 Worldwide',
                 value: 'unknown',
             });
         });

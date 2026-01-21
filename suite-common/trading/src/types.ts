@@ -128,6 +128,10 @@ export type TradingCountryCode = CountryCode | 'unknown';
 export type TradingCountryOption = {
     value: TradingCountryCode;
     label: string;
+    shortLabel: string;
+    codeAlpha3: string;
+    flag: string;
+    name: string;
 };
 
 export type TradingBuyFormProps = {
