@@ -68,9 +68,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
-            await tradingExchangeActions.waitForQuotesToLoad();
 
-            await tradingExchangeActions.scrollScreenToBottom();
+            await tradingExchangeActions.scrollToLearnMoreLink();
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
@@ -107,9 +106,8 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
             await tradingExchangeActions.setSendCryptoAmount('10');
-            await tradingExchangeActions.waitForQuotesToLoad();
 
-            await tradingExchangeActions.scrollScreenToBottom();
+            await tradingExchangeActions.scrollToLearnMoreLink();
             await tradingExchangeActions.viewProviders();
             await tradingExchangeActions.expectValidExchangeForm();
 
