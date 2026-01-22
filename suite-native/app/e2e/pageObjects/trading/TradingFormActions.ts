@@ -42,7 +42,11 @@ export abstract class TradingFormActions extends TradingActions {
     async selectFiatCurrency(fiatCurrency: string) {
         await this.getElementById('fiat-button').tap();
         await this.expectSheetHeaderTitle('Currency');
-        await this.getSearchFiatElement().replaceText(fiatCurrency.slice(0, -1));
+
+        const searchFiatInput = this.getSearchFiatElement();
+        await searchFiatInput.tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await searchFiatInput.replaceText(fiatCurrency.slice(0, -1));
         await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         await waitForVisible(by.text(fiatCurrency));
         await element(by.text(fiatCurrency)).tap();
@@ -58,7 +62,10 @@ export abstract class TradingFormActions extends TradingActions {
         await countryPicker.tap();
 
         await this.expectSheetHeaderTitle('Country of residence');
-        await this.getSearchCountryElement().replaceText(countrySearch);
+        const countrySearchInput = this.getSearchCountryElement();
+        await countrySearchInput.tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await countrySearchInput.replaceText(countrySearch);
         await waitForVisible(by.text(country));
         await element(by.text(country)).tap();
 
@@ -130,8 +137,11 @@ export abstract class TradingFormActions extends TradingActions {
         await receiveAssetButton.tap();
 
         await this.expectSheetHeaderTitle('Assets');
-        await this.getSearchReceiveCryptoElement().tap();
-        await this.getSearchReceiveCryptoElement().replaceText(asset.slice(0, -1));
+
+        const searchReceiveCryptoInput = this.getSearchReceiveCryptoElement();
+        await searchReceiveCryptoInput.tap();
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
+        await searchReceiveCryptoInput.replaceText(asset.slice(0, -1));
 
         if (network) {
             const networkFilterTab = element(
