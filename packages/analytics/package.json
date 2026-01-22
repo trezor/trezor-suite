@@ -4,29 +4,10 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
-    "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "./lib/index.d.ts",
-        "exports": {
-            ".": {
-                "import": "./libESM/index.js",
-                "require": "./lib/index.js",
-                "types": "./lib/index.d.ts"
-            }
-        }
-    },
-    "files": [
-        "lib/",
-        "libESM/",
-        "CHANGELOG.md"
-    ],
     "scripts": {
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "depcheck": "yarn g:depcheck",
-        "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn build:lib:cjs && yarn build:lib:esm",
-        "build:lib:cjs": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/publish/replace-imports.sh ./lib cjs",
-        "build:lib:esm": "yarn g:rimraf ./libESM && yarn g:tsc --build tsconfig.libESM.json && ../../scripts/publish/replace-imports.sh ./libESM esm"
+        "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/env-utils": "workspace:*",
