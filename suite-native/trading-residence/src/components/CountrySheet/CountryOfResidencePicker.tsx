@@ -5,7 +5,7 @@ import {
     EventType,
     SuiteNativeLegacyAnalyticsEvents,
 } from '@suite-native/analytics';
-import { HStack, Text } from '@suite-native/atoms';
+import { Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useLegacyAnalytics } from '@suite-native/services';
@@ -68,18 +68,17 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
                 noBottomBorder
             >
                 {selectedValue ? (
-                    <HStack>
-                        <Text
-                            color="textSubdued"
-                            variant="body"
-                            accessibilityLabel={translate(
-                                'tradingResidence.locationSettings.selectedCountryOfResidence',
-                            )}
-                            testID={valueTestID}
-                        >
-                            {selectedValue.shortLabel}
-                        </Text>
-                    </HStack>
+                    <Text
+                        color="textSubdued"
+                        variant="body"
+                        accessibilityLabel={translate(
+                            'tradingResidence.locationSettings.selectedCountryOfResidence',
+                        )}
+                        testID={valueTestID}
+                        numberOfLines={1}
+                    >
+                        {selectedValue.shortLabel}
+                    </Text>
                 ) : (
                     <Text
                         color="textDisabled"
