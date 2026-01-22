@@ -87,12 +87,6 @@ describe('ExchangeForm', () => {
 
                 expect(getByText('Provider')).toBeOnTheScreen();
             });
-
-            it('should display rate', async () => {
-                const { getByText } = await renderExchangeForm();
-
-                expect(getByText('Rate')).toBeOnTheScreen();
-            });
         });
     });
 });

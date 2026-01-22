@@ -61,13 +61,12 @@ describe('ExchangeRateAndProviderPicker', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render provider and rate pickers when no quote is selected and quotes are loading', async () => {
+    it('should render provider picker when no quote is selected and quotes are loading', async () => {
         preloadedState!.wallet!.trading!.exchange!.isLoading = true;
 
         const { getByText } = await renderExchangeRateAndProviderPicker();
 
         expect(getByText('Provider')).toBeOnTheScreen();
-        expect(getByText('Rate')).toBeOnTheScreen();
     });
 
     it('should render provider when quote is selected', async () => {
@@ -79,17 +78,6 @@ describe('ExchangeRateAndProviderPicker', () => {
 
         expect(getByText('Provider')).toBeOnTheScreen();
         expect(getByText('Mercuryo')).toBeOnTheScreen();
-    });
-
-    it('should render rate when quote is selected', async () => {
-        act(() => {
-            exchangeForm.setValue('quote', exchangeQuotes[0]);
-        });
-
-        const { getByText } = await renderExchangeRateAndProviderPicker();
-
-        expect(getByText('Rate')).toBeOnTheScreen();
-        expect(getByText('Fixed')).toBeOnTheScreen();
     });
 
     describe('analytics', () => {
