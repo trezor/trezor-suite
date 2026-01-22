@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Keyboard } from 'react-native';
 
 import { TradingCountryOption } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
@@ -45,6 +45,7 @@ export const CountrySheet = memo(
         );
 
         const onCountrySelectCallback = (country: TradingCountryOption) => {
+            Keyboard.dismiss();
             onCountrySelect(country);
             onClose();
         };
