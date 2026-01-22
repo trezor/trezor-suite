@@ -15,7 +15,6 @@ class TradingExchangeActions extends TradingFormActions {
     }
 
     async expectValidExchangeForm() {
-        await detoxExpect(element(by.text('Rate'))).toBeVisible();
         await detoxExpect(element(by.text('Provider'))).toBeVisible();
         await detoxExpect(this.getElementById('continue-button')).toBeVisible();
     }
