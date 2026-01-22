@@ -61,7 +61,13 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
         },
     );
 
-    test('Swap Solana to Bitcoin', async ({ tradingPage, page, tradingMock, devicePrompt }) => {
+    test('Swap Solana to Bitcoin', async ({
+        device,
+        tradingPage,
+        page,
+        tradingMock,
+        devicePrompt,
+    }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
@@ -94,7 +100,7 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
             await expect(devicePrompt.headerParagraph).toContainText('Solana #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
             const transformedExpectedAddress = transformAddress(sendAddress, 'fullLine');
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Recipient' },
                     body: [transformedExpectedAddress],
@@ -121,14 +127,14 @@ test.describe('Trading - Swap coins', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, (
             await expect(devicePrompt.cryptoAmountOf('fee'), verboseErrorMessage).toHaveText(
                 solanaFee,
             );
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [
                         ['Amount:'],
                         [formattedSendAmount],
                         ['Transaction fee:'],
-                        devicePrompt.wrapText(`${solanaFee} SOL`, { isAmount: true }),
+                        device.wrapText(`${solanaFee} SOL`, { isAmount: true }),
                     ],
                     actions: { right_button: 'Hold to sign' },
                 },

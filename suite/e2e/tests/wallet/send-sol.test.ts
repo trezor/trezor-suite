@@ -42,7 +42,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                 stream: TestStream.NotDefined,
             }),
         },
-        async ({ emulatorStartConf, walletPage, tradingPage, devicePrompt }) => {
+        async ({ device, emulatorStartConf, walletPage, tradingPage, devicePrompt }) => {
             let maxFee: number;
             let sendMaxAmountWithReserve: string;
 
@@ -91,7 +91,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(FORMATTED_ADDRESS);
 
                 // verify recipient address on device
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Recipient' },
                         body: [TRANSFORMED_ADDRESS],
@@ -112,17 +112,17 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                 await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(maxFee.toString());
 
                 // verify amount & fee
-                const amountWrapped = devicePrompt.wrapText(`${sendMaxAmountWithReserve} SOL`, {
+                const amountWrapped = device.wrapText(`${sendMaxAmountWithReserve} SOL`, {
                     isAmount: true,
                 });
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
                         body: [
                             ['Amount:'],
                             amountWrapped,
                             ['Transaction fee:'],
-                            devicePrompt.wrapText(`${maxFee} SOL`, { isAmount: true }),
+                            device.wrapText(`${maxFee} SOL`, { isAmount: true }),
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },

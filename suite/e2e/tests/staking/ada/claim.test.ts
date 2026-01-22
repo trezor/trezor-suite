@@ -72,7 +72,15 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, devicePrompt, walletPage, feeSection, stakingSection, blockbookMock }) => {
+        async ({
+            page,
+            device,
+            devicePrompt,
+            walletPage,
+            feeSection,
+            stakingSection,
+            blockbookMock,
+        }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
                 symbol: 'ada',
                 type: 'normal',
@@ -161,12 +169,12 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Confirm claim on device', async () => {
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
                             ['Confirm withdrawal for reward', '\n', 'address:'],
-                            devicePrompt.wrapText(
+                            device.wrapText(
                                 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             ),
                         ],
@@ -175,7 +183,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     T3T1: {
                         body: [
                             ['Confirm withdrawal for', '\n', 'reward address:'],
-                            devicePrompt.wrapText(
+                            device.wrapText(
                                 'stake1uytalm0k75njyj7v8z580ajs09v5v4lz6yp9akh8cgty43qunjqys',
                             ),
                         ],
@@ -183,12 +191,12 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
                             ['for account #1:'],
-                            devicePrompt.wrapText("m/1852'/1815'/0'/2/0"),
+                            device.wrapText("m/1852'/1815'/0'/2/0"),
                             ['Amount:'],
                             [bigRewardAmountFormatted],
                         ],
@@ -197,7 +205,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [

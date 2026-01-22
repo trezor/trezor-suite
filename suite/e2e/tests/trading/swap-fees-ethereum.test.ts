@@ -20,7 +20,7 @@ const { receiveAddress } = swapTradeEthereumBTC;
 test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock, page }) => {
+        async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage, tradingMock }) => {
             await test.step('Mocking responses', async () => {
                 await tradingMock.routeInvityGeneralEndpoints();
                 await page.route(invityEndpoint.swapQuotes, route => {
@@ -36,7 +36,7 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
         },
     );
 
-    test('Swap custom fees for Ethereum', async ({ page, tradingPage, devicePrompt }) => {
+    test('Swap custom fees for Ethereum', async ({ page, device, tradingPage, devicePrompt }) => {
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
                 amount: sendAmount,
@@ -85,14 +85,14 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
                 devicePrompt.cryptoAmountWithSymbolOf('fee'),
                 errorMessageMaxCalculation,
             ).toHaveText(`${ethereumMaximumFee} ETH`);
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [
                         ['Amount'],
                         [formattedSendAmount],
                         ['Maximum fee'],
-                        devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                        device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
                     ],
                     actions: { right_button: 'Hold to sign' },
                 },
@@ -103,8 +103,8 @@ test.describe('Trading - Swap fees', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await devicePrompt.openFeeInfoOnEmulator();
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await device.openFeeInfo();
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Fee info' },
                     body: [

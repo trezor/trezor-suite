@@ -5,7 +5,7 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { skipFixture } from '../../support/common';
+import { TrezorUserEnvLinkProxy, skipFixture } from '../../support/common';
 import { launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
@@ -20,10 +20,10 @@ test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.describe.configure({ mode: 'serial' });
 
-    test.beforeEach(async ({ trezorUserEnvLink }) => {
+    test.beforeEach(async () => {
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
-        await trezorUserEnvLink.connect();
-        await trezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLinkProxy.connect();
+        await TrezorUserEnvLinkProxy.stopBridge();
     });
 
     test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
@@ -57,13 +57,13 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         await expectBridgeToBeStopped(request);
     });
 
+    test.use({ startEmulator: false, setupEmulator: false });
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
-        trezorUserEnvLink,
-        emulatorStartConf,
+        device,
     }, testInfo) => {
-        await trezorUserEnvLink.startEmu(emulatorStartConf);
-        await trezorUserEnvLink.setupEmu({});
-        await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
+        await device.powerOn({ wipe: true });
+        await device.setup({});
+        await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
 
         const suite = await launchSuite({
             artefactFolder: testInfo.outputDir,
@@ -72,22 +72,22 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         enhancePage(suite.window);
         await suite.window.title();
 
-        const devicePrompt = new DevicePrompt(suite.window, emulatorStartConf.model);
+        const devicePrompt = new DevicePrompt(suite.window, device);
 
         const onboardingPage = new OnboardingPage(
             suite.window,
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
-            emulatorStartConf.model,
-            emulatorStartConf.version,
+            device.model,
+            device.firmwareVersion,
         );
         await onboardingPage.completeOnboarding();
 
-        await trezorUserEnvLink.stopBridge();
+        await TrezorUserEnvLinkProxy.stopBridge();
         await devicePrompt.connectDevicePromptIsShown();
 
-        await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
+        await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
         await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
     });
 });

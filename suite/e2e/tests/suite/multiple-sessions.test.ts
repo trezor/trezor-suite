@@ -85,7 +85,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ context, emulatorStartConf, onboardingPage, dashboardPage }) => {
+        async ({ context, device, onboardingPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
 
             const pageTwo = await context.newPage();
@@ -95,7 +95,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
                 window.Playwright = true;
             });
             await pageTwo.goto('./');
-            const devicePromptTwo = new DevicePrompt(pageTwo, emulatorStartConf.model);
+            const devicePromptTwo = new DevicePrompt(pageTwo, device);
 
             const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
             await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED', {

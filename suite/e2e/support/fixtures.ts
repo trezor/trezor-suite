@@ -79,8 +79,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     analyticsSection: async ({ page }, use) => {
         await use(new AnalyticsSection(page));
     },
-    devicePrompt: async ({ page, emulatorStartConf }, use) => {
-        await use(new DevicePrompt(page, emulatorStartConf.model));
+    devicePrompt: async ({ page, device }, use) => {
+        await use(new DevicePrompt(page, device));
     },
     recoveryModal: async ({ page }, use) => {
         await use(new RecoveryModal(page));

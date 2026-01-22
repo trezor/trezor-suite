@@ -45,7 +45,15 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, devicePrompt, walletPage, feeSection, stakingSection, blockbookMock }) => {
+        async ({
+            page,
+            device,
+            devicePrompt,
+            walletPage,
+            feeSection,
+            stakingSection,
+            blockbookMock,
+        }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
                 symbol: 'ada',
                 type: 'normal',
@@ -92,21 +100,21 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Confirm staking on device', async () => {
                 await stakingSection.continueButton.click();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
                             ['Confirm:'],
                             ['Stake key', '\n', 'registration'],
                             ['for account #1:'],
-                            devicePrompt.wrapText("m/1852'/1815'/0'/2/0"),
+                            device.wrapText("m/1852'/1815'/0'/2/0"),
                         ],
                         actions: { right_button: 'Confirm' },
                     },
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
@@ -128,12 +136,12 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
                             ['to pool:'],
-                            devicePrompt.wrapText(
+                            device.wrapText(
                                 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
                             ),
                         ],
@@ -142,7 +150,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
@@ -164,12 +172,12 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [
                             ['Delegating to key hash:'],
-                            devicePrompt.wrapText(
+                            device.wrapText(
                                 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
                             ),
                         ],
@@ -178,7 +186,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await devicePrompt.waitForPromptAndClick();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm transaction' },
                         body: [

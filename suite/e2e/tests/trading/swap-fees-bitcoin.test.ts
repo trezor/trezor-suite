@@ -26,7 +26,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
         },
     );
 
-    test('Swap custom fees for Bitcoin', async ({ page, tradingPage, devicePrompt }) => {
+    test('Swap custom fees for Bitcoin', async ({ page, device, tradingPage, devicePrompt }) => {
         let feeRate: string;
         await test.step('Fill in a Swap form', async () => {
             await tradingPage.fillSwapForm({
@@ -71,7 +71,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
                 `${totalAmount} BTC`,
             );
             await expect(devicePrompt.headerFeeRate).toContainText(feeRate);
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [
@@ -89,9 +89,9 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@webOnly', '@T3T1', '@T3W1
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await devicePrompt.openFeeInfoOnEmulator({ buttonIndexT3W1: 2 });
+            await device.openFeeInfo({ buttonIndexT3W1: 2 });
             const feeRateWithoutDecimals = feeRate.replace('.00\u00A0', ' ');
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Fee info' },
                     body: [['Fee rate'], [feeRateWithoutDecimals]],

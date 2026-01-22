@@ -24,7 +24,7 @@ test.describe(
         });
 
         test.beforeEach(
-            async ({ onboardingPage, dashboardPage, walletPage, settingsPage, page }) => {
+            async ({ page, onboardingPage, dashboardPage, walletPage, settingsPage }) => {
                 await page.clock.install();
                 await onboardingPage.completeOnboarding();
                 await settingsPage.changeNetworks({
@@ -37,7 +37,12 @@ test.describe(
             },
         );
 
-        test('User can set custom fees', async ({ devicePrompt, walletPage, tradingPage }) => {
+        test('User can set custom fees', async ({
+            device,
+            devicePrompt,
+            walletPage,
+            tradingPage,
+        }) => {
             const gasLimit = '26000';
             const maxFeePerGas = '0.67674454';
             const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(
@@ -75,7 +80,7 @@ test.describe(
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formattedSendAddress,
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
                         body: [transformAddress(sendAddress)],
@@ -103,14 +108,14 @@ test.describe(
                     devicePrompt.cryptoAmountOf('fee'),
                     errorMessageMaxCalculation,
                 ).toHaveText(ethereumMaximumFee);
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
                         body: [
                             ['Amount'],
                             [formattedSendAmount],
                             ['Maximum fee'],
-                            devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                            device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },
@@ -121,8 +126,8 @@ test.describe(
             });
 
             await test.step('Verify Fee Info on emulator', async () => {
-                await devicePrompt.openFeeInfoOnEmulator();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await device.openFeeInfo();
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Fee info' },
                         body: [
@@ -151,6 +156,7 @@ test.describe(
         });
 
         test('User can perform ethereum sending on base network', async ({
+            device,
             devicePrompt,
             walletPage,
             tradingPage,
@@ -184,7 +190,7 @@ test.describe(
                 await expect(devicePrompt.outputValueOf('address')).toHaveText(
                     formattedSendAddress,
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
                         body: [transformAddress(sendAddress)],
@@ -212,10 +218,10 @@ test.describe(
                     devicePrompt.cryptoAmountOf('fee'),
                     errorMessageMaxCalculation,
                 ).toHaveText(ethereumMaximumFee);
-                const maxFeeWrapped = devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, {
+                const maxFeeWrapped = device.wrapText(`${ethereumMaximumFee} ETH`, {
                     isAmount: true,
                 });
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
                         body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
@@ -228,17 +234,17 @@ test.describe(
             });
 
             await test.step('Verify Fee Info on emulator', async () => {
-                await devicePrompt.openFeeInfoOnEmulator();
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await device.openFeeInfo();
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Fee info' },
                         body: [
                             ['Gas limit'],
                             [`${gasLimit} units`],
                             ['Max fee per gas'],
-                            devicePrompt.wrapText(`${maxFeePerGas} Gwei`, { wrapByWords: true }),
+                            device.wrapText(`${maxFeePerGas} Gwei`, { wrapByWords: true }),
                             ['Max priority fee'],
-                            devicePrompt.wrapText(`${maxPriorityFeePerGas} Gwei`, {
+                            device.wrapText(`${maxPriorityFeePerGas} Gwei`, {
                                 wrapByWords: true,
                             }),
                         ],

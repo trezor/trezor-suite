@@ -28,6 +28,7 @@ test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         },
         async ({
             page,
+            device,
             dashboardPage,
             devicePrompt,
             settingsPage,
@@ -66,7 +67,7 @@ test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await walletPage.receiveButton.click();
                 await walletPage.revealAddressButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await expect(devicePrompt).toDisplayReceiveAddress(receiveAddress, {
+                await expect(device).toShowReceiveAddress(receiveAddress, {
                     lineFormat: 'fullLine',
                 });
                 await trezorUserEnvLink.pressYes();
