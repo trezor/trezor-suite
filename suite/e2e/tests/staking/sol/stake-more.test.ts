@@ -40,7 +40,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
+        async ({ page, device, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
@@ -76,7 +76,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     'TR_STAKE_ON_EVERSTAKE',
                     { values: { symbol: 'SOL' } },
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake SOL on', '\n', 'Everstake?']],
@@ -92,14 +92,14 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     solanaStakingMock.feeFormatted,
                 );
 
-                const feeWrapped = devicePrompt.wrapText(solanaStakingMock.feeFormatted, {
+                const feeWrapped = device.wrapText(solanaStakingMock.feeFormatted, {
                     isAmount: true,
                 });
-                const amountAndFeeWrapped = devicePrompt.wrapText(
+                const amountAndFeeWrapped = device.wrapText(
                     solanaStakingMock.addFeeTo(stakeMoreAmount),
                     { isAmount: true },
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [

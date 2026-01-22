@@ -11,12 +11,11 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('after device is reconnected passphrase needs to be confirmed', async ({
         page,
+        device,
         dashboardPage,
         walletPage,
         metadataPage,
         devicePrompt,
-        trezorUserEnvLink,
-        emulatorStartConf,
     }) => {
         await test.step('Add passphrase wallet "abc"', async () => {
             await dashboardPage.openDeviceSwitcher();
@@ -33,8 +32,8 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.revealAddressButton.click();
             await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
-            await trezorUserEnvLink.pressYes(); // confirm address
+            await expect(device).toShowReceiveAddress(abcAddr);
+            await device.pressYes(); // confirm address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await expect(metadataPage.copyAddressButton).toBeEnabled();
@@ -43,9 +42,9 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Disconnect and reconnect the device', async () => {
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
-            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+            await device.powerOn();
         });
 
         await test.step('Check passphrase wallet "abc" is still cached and connected', async () => {
@@ -88,8 +87,8 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
-            await trezorUserEnvLink.pressYes(); // confirm address
+            await expect(device).toShowReceiveAddress(abcAddr);
+            await device.pressYes(); // confirm address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await expect(metadataPage.copyAddressButton).toBeEnabled();
@@ -100,7 +99,7 @@ test.describe('Passphrase reconnection', { tag: ['@T3W1', '@T3T1'] }, () => {
             await walletPage.revealAddressButton.click();
             await expect(devicePrompt.outputValue).toBeVisible();
 
-            await trezorUserEnvLink.pressYes(); // confirm address
+            await device.pressYes(); // confirm address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await expect(metadataPage.copyAddressButton).toBeEnabled();

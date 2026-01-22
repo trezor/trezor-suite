@@ -27,12 +27,12 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
         async ({
             page,
+            device,
             analytics,
             devicePrompt,
             dashboardPage,
             walletPage,
             metadataPage,
-            trezorUserEnvLink,
         }) => {
             await test.step('Add passphrase wallet #1', async () => {
                 await dashboardPage.openDeviceSwitcher();
@@ -51,8 +51,8 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.revealAddressButton.click();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
-                await trezorUserEnvLink.pressYes(); // confirm address
+                await expect(device).toShowReceiveAddress(abcAddr);
+                await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
@@ -82,8 +82,8 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.revealAddressButton.click();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(defAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await expect(devicePrompt).toDisplayReceiveAddress(defAddr);
-                await trezorUserEnvLink.pressYes(); // confirm address
+                await expect(device).toShowReceiveAddress(defAddr);
+                await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();
@@ -104,8 +104,8 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.revealAddressButton.click();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(abcAddr));
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await expect(devicePrompt).toDisplayReceiveAddress(abcAddr);
-                await trezorUserEnvLink.pressYes(); // confirm address
+                await expect(device).toShowReceiveAddress(abcAddr);
+                await device.pressYes(); // confirm address
 
                 await expect(metadataPage.copyAddressButton).toBeVisible();
                 await expect(metadataPage.copyAddressButton).toBeEnabled();

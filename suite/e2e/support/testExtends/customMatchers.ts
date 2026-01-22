@@ -7,9 +7,9 @@ import { isEqualWith } from 'lodash';
 import { type TranslationKey, messages } from '@suite/intl';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
+import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
 import { isT3W1 } from '../helpers/modelHelper';
-import { DevicePrompt } from '../pageObjects/devicePrompt';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
 
@@ -39,14 +39,14 @@ const compareTextAndNumber = async (
 };
 
 const compareDisplayContent = async (
-    devicePrompt: DevicePrompt,
+    device: DeviceFixture,
     expectedContent: NormalizedDisplayContent,
     errorMessage: string,
 ) => {
     await test.step(`expected object: ${JSON.stringify(expectedContent)}`, () => {});
-    const contentRaw = await devicePrompt.getDisplayContent();
+    const contentRaw = await device.getDisplayContent();
     const content = normalizeWhitespace(contentRaw);
-    const debugInfo = JSON.stringify(await devicePrompt.getAnalyzedDisplayContent(), null, 2);
+    const debugInfo = JSON.stringify(await device.getAnalyzedDisplayContent(), null, 2);
 
     const regexAndStringComparator = (expectedValue: any, actualValue: any) => {
         if (expectedValue instanceof RegExp && typeof actualValue === 'string') {
@@ -171,15 +171,15 @@ export const expect = baseExpect.extend({
         };
     },
 
-    async toDisplayReceiveAddress(
-        devicePrompt: DevicePrompt,
+    async toShowReceiveAddress(
+        device: DeviceFixture,
         expectedAddress: string,
         options: { lineFormat: LineFormats } = {
             lineFormat: 'fourTetragrams',
         },
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
-        const expectedContent = isT3W1(devicePrompt.model)
+        const expectedContent = isT3W1(device.model)
             ? {
                   header: { title: 'Receive' },
                   body: [transformedExpectedAddress],
@@ -194,21 +194,21 @@ export const expect = baseExpect.extend({
               };
 
         return await compareDisplayContent(
-            devicePrompt,
+            device,
             expectedContent,
             'expect Receive address to match',
         );
     },
 
-    async toDisplayOnEmulator(
-        devicePrompt: DevicePrompt,
+    async toShowOnDisplay(
+        device: DeviceFixture,
         expected: { T3W1: NormalizedDisplayContent; T3T1?: Partial<NormalizedDisplayContent> },
     ) {
         // default T3W1 model
         let expectedContent = expected.T3W1;
 
         // expected.T3T1 is used as overrides for the default T3W1 model
-        if (!isT3W1(devicePrompt.model)) {
+        if (!isT3W1(device.model)) {
             const DEFAULT_T3T1_FOOTER = { footer: 'Tap to continue' };
             expectedContent = {
                 ...expected.T3W1,
@@ -227,7 +227,7 @@ export const expect = baseExpect.extend({
         }
 
         return await compareDisplayContent(
-            devicePrompt,
+            device,
             expectedContent,
             'expect Emulator display to match',
         );

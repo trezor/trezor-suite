@@ -121,14 +121,14 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
             await expect(devicePrompt.ethereumPriorityFeeRate).toHaveText(
                 `${maxPriorityFeePerGasRounded} Gwei`,
             );
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toDisplayOnEmulator({
                 T3W1: {
                     header: { title: 'Summary' },
                     body: [
                         ['Amount'],
                         [formattedCryptoAmount],
                         ['Maximum fee'],
-                        devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
+                        device.wrapText(`${ethereumMaximumFee} ETH`, { isAmount: true }),
                     ],
 
                     actions: { right_button: 'Confirm' }, 
@@ -143,7 +143,7 @@ test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
 
         await test.step('Verify Fee Info on emulator', async () => {
             await devicePrompt.openFeeInfoOnEmulator();
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toDisplayOnEmulator({
                 T3W1: {
                     header: { title: 'Fee info' },
                     body: [

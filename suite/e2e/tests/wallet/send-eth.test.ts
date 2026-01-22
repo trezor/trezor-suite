@@ -34,6 +34,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     });
 
     test('User can initiate ethereum sending', async ({
+        device,
         devicePrompt,
         walletPage,
         tradingPage,
@@ -62,7 +63,7 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await tradingPage.sendButton.click();
             await expect(devicePrompt.headerParagraph).toContainText('Ethereum #1');
             await expect(devicePrompt.outputValueOf('address')).toHaveText(formattedSendAddress);
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [transformAddress(sendAddress)],
@@ -87,10 +88,10 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             await expect(devicePrompt.cryptoAmountOf('fee'), errorMessageMaxCalculation).toHaveText(
                 ethereumMaximumFee,
             );
-            const maxFeeWrapped = devicePrompt.wrapText(`${ethereumMaximumFee} ETH`, {
+            const maxFeeWrapped = device.wrapText(`${ethereumMaximumFee} ETH`, {
                 isAmount: true,
             });
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Send' },
                     body: [['Amount'], [formattedSendAmount], ['Maximum fee'], maxFeeWrapped],
@@ -104,8 +105,8 @@ test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         });
 
         await test.step('Verify Fee Info on emulator', async () => {
-            await devicePrompt.openFeeInfoOnEmulator();
-            await expect(devicePrompt).toDisplayOnEmulator({
+            await device.openFeeInfo();
+            await expect(device).toShowOnDisplay({
                 T3W1: {
                     header: { title: 'Fee info' },
                     body: [

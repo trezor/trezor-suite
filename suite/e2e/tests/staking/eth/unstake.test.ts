@@ -41,7 +41,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
+        async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
@@ -66,7 +66,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'TR_UNSTAKE_FROM_EVERSTAKE',
                     { values: { symbol: 'ETH' } },
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
                         body: [['Unstake ETH from', '\n', 'Everstake?']],
@@ -80,10 +80,10 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
                     '0.000290278609719 ETH',
                 );
-                const feeMaxWrapped = devicePrompt.wrapText('0.000290278609719 ETH', {
+                const feeMaxWrapped = device.wrapText('0.000290278609719 ETH', {
                     isAmount: true,
                 });
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Unstake' },
                         body: [['Amount'], ['3,234 ETH'], ['Maximum fee'], feeMaxWrapped],
@@ -185,7 +185,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'TR_CLAIM_FROM_EVERSTAKE',
                     { values: { symbol: 'ETH' } },
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Claim' },
                         body: [['Claim ETH from', '\n', 'Everstake?']],
@@ -199,12 +199,12 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('fee')).toHaveText(
                     '0.000290278609719 ETH',
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Claim' },
                         body: [
                             ['Maximum fee'],
-                            devicePrompt.wrapText('0.000290278609719 ETH', { isAmount: true }),
+                            device.wrapText('0.000290278609719 ETH', { isAmount: true }),
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },

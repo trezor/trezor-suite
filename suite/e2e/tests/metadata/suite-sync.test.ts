@@ -84,6 +84,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@
     test('Sync labels from server', async ({
         page,
         target,
+        device,
         devicePrompt,
         onboardingPage,
         dashboardPage,
@@ -95,7 +96,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@
             await metadataPage.initiateSuiteSyncSetup();
             if (isWebProject(target)) {
                 // eslint-disable-next-line playwright/no-conditional-expect
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Suite Sync' },
                         body: [

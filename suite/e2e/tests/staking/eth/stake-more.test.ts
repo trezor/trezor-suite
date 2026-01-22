@@ -54,7 +54,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({ page, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
+        async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
                 await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
@@ -84,7 +84,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     'TR_STAKE_ON_EVERSTAKE',
                     { values: { symbol: 'ETH' } },
                 );
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [['Stake ETH on', '\n', 'Everstake?']],
@@ -99,14 +99,14 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     '0.000290278609719 ETH',
                 );
 
-                await expect(devicePrompt).toDisplayOnEmulator({
+                await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Stake' },
                         body: [
                             ['Amount'],
-                            devicePrompt.wrapText('0.100204158497493752 ETH', { isAmount: true }),
+                            device.wrapText('0.100204158497493752 ETH', { isAmount: true }),
                             ['Maximum fee'],
-                            devicePrompt.wrapText('0.000290278609719 ETH', { isAmount: true }),
+                            device.wrapText('0.000290278609719 ETH', { isAmount: true }),
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },

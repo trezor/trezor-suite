@@ -1,10 +1,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
+import { BrowserContext, Page, TestInfo } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import { Model, SetupEmu, StartEmu, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
+import {
+    Model,
+    SetupEmu,
+    StartEmu,
+    TrezorUserEnvLink,
+    TrezorUserEnvLinkClass,
+} from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -18,6 +24,7 @@ import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
 import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
+import { DeviceFixture } from '../device';
 
 type StartEmuModelRequired = StartEmu & { model: Model; version: string };
 
@@ -26,11 +33,14 @@ type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'e
 type SuiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
+    /** @deprecated */
     emulatorStartConf: StartEmuModelRequired;
     emulatorSetupConf: SetupEmu;
+    device: DeviceFixture;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
     url: string;
+    /** @deprecated */
     trezorUserEnvLink: TrezorUserEnvLinkClass;
     page: Page;
     exceptionLogger: void;
@@ -89,7 +99,7 @@ const electronTeardown = async (suite: Suite, testInfo: TestInfo, electronConf: 
 };
 
 const webSetup = async (browserContext: BrowserContext) => {
-    await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
+    await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
 
     // Need to allow this to be able to access bridge on localhost
     // When running tests against suite deployed elsewhere
@@ -111,7 +121,7 @@ const webSetup = async (browserContext: BrowserContext) => {
 };
 
 // Gives trezorUserEnv promise a 30s to complete, else restart tenv to recover from potential hangs
-export const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
+const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     const timeoutPromise = new Promise(
@@ -130,36 +140,6 @@ export const trezorUserEnvStuckProtection = async (promise: Promise<any>) => {
     };
 
     await Promise.race([promiseWithClearingTimeout(), timeoutPromise]);
-};
-
-const trezorEnvSetup = async (
-    testInfo: TestInfo,
-    startEmulator: boolean,
-    setupEmulator: boolean,
-    emulatorStartConf: StartEmu,
-    emulatorSetupConf: SetupEmu,
-) => {
-    const setupPromise = (async () => {
-        await TrezorUserEnvLinkProxy.logTestDetails(
-            ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
-        );
-        testInfo.annotations.push({
-            type: TestAnnotationType.DeviceModel,
-            description: emulatorStartConf.model,
-        });
-        await TrezorUserEnvLinkProxy.stopBridge();
-        await TrezorUserEnvLinkProxy.stopEmu();
-        await TrezorUserEnvLinkProxy.connect();
-
-        if (startEmulator) {
-            await TrezorUserEnvLinkProxy.startEmu(emulatorStartConf);
-        }
-        if (startEmulator && setupEmulator) {
-            await TrezorUserEnvLinkProxy.setupEmu(emulatorSetupConf);
-        }
-    })();
-
-    await trezorUserEnvStuckProtection(setupPromise);
 };
 
 // This is the base Suite text fixture containing all the necessary setup and core page object
@@ -188,6 +168,58 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         });
     },
     emulatorSetupConf: {},
+    device: [
+        async (
+            { startEmulator, setupEmulator, model, firmwareVersion, emulatorSetupConf },
+            use,
+            testInfo,
+        ) => {
+            await TrezorUserEnvLink.logTestDetails(
+                ` - - - EXECUTING TENV CLEANUP FOR TEST ${testInfo.titlePath.join(' - ')}`,
+            );
+            const setupPromise = (async () => {
+                await TrezorUserEnvLink.stopBridge();
+                await TrezorUserEnvLink.stopEmu();
+                await TrezorUserEnvLink.connect();
+            })();
+
+            await trezorUserEnvStuckProtection(setupPromise);
+
+            await TrezorUserEnvLink.logTestDetails(
+                ` - - - TENV CLEANUP COMPLETED FOR TEST ${testInfo.titlePath.join(' - ')}`,
+            );
+
+            if (!model || !firmwareVersion) {
+                await use(undefined as unknown as DeviceFixture);
+
+                return;
+            }
+            await TrezorUserEnvLink.logTestDetails(
+                ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
+            );
+            testInfo.annotations.push({
+                type: TestAnnotationType.DeviceModel,
+                description: model,
+            });
+
+            const device = new DeviceFixture(model, firmwareVersion);
+
+            if (startEmulator) {
+                await device.powerOn({ wipe: true });
+            }
+
+            if (startEmulator && setupEmulator) {
+                await device.setup(emulatorSetupConf);
+            }
+
+            await use(device);
+
+            await TrezorUserEnvLink.logTestDetails(
+                ` - - - FINISHING TEST ${testInfo.titlePath.join(' - ')}`,
+            );
+        },
+        { auto: true },
+    ],
     electronConf: {},
     ignoreJSExceptions: [],
 
@@ -198,32 +230,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     trezorUserEnvLink: async ({}, use) => {
         await use(TrezorUserEnvLinkProxy);
     },
-    page: async (
-        {
-            target,
-            locale,
-            colorScheme,
-            context,
-            startEmulator,
-            setupEmulator,
-            emulatorStartConf,
-            emulatorSetupConf,
-            electronConf,
-        },
-        use,
-        testInfo,
-    ) => {
-        await base.step(`TrezorUserEnv setup`, async () => {
-            // This Trezor env setup needs to happen before electron or web page are launched
-            await trezorEnvSetup(
-                testInfo,
-                startEmulator,
-                setupEmulator,
-                emulatorStartConf,
-                emulatorSetupConf,
-            );
-        });
-
+    page: async ({ target, locale, colorScheme, context, electronConf }, use, testInfo) => {
         if (isDesktopProject(target)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);
             enhancePage(suite.window);
@@ -234,10 +241,6 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             enhancePage(page);
             await use(page);
         }
-
-        await TrezorUserEnvLinkProxy.logTestDetails(
-            ` - - - FINISHING TEST ${testInfo.titlePath.join(' - ')}`,
-        );
     },
     exceptionLogger: [
         async ({ page, ignoreJSExceptions }, use, testInfo) => {

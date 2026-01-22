@@ -12,19 +12,18 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test('verify cardano address behind passphrase', async ({
+        device,
         settingsPage,
         dashboardPage,
         walletPage,
         metadataPage,
         devicePrompt,
-        trezorUserEnvLink,
-        emulatorStartConf,
     }) => {
-        async function restartEmulator() {
-            await test.step('Restart emulator', async () => {
-                await trezorUserEnvLink.stopEmu();
+        async function restartDevice() {
+            await test.step('Restart device', async () => {
+                await device.powerOff();
                 await expect(walletPage.deviceDisconnectedStatus).toBeVisible();
-                await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+                await device.powerOn();
                 await expect(walletPage.deviceConnectedStatus).toBeVisible({
                     timeout: 15_000,
                 });
@@ -37,7 +36,7 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await dashboardPage.addUnusedHiddenWallet(passphrase);
         });
 
-        await restartEmulator();
+        await restartDevice();
 
         await test.step('Reveal cardano address', async () => {
             await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
@@ -54,17 +53,17 @@ test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(devicePrompt.outputValue).toHaveText(formatAddress(correctPassphraseAddr));
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await expect(devicePrompt).toDisplayReceiveAddress(correctPassphraseAddr, {
+            await expect(device).toShowReceiveAddress(correctPassphraseAddr, {
                 lineFormat: 'fullLine',
             });
-            await trezorUserEnvLink.pressYes(); // Confirm receive address
+            await device.pressYes(); // Confirm receive address
 
             await expect(metadataPage.copyAddressButton).toBeVisible();
             await devicePrompt.closeModal();
             await expect(walletPage.revealAddressButton).toBeVisible();
         });
 
-        await restartEmulator();
+        await restartDevice();
 
         await test.step('Reveal cardano address, now enter wrong passphrase', async () => {
             await walletPage.revealAddressButton.click();
