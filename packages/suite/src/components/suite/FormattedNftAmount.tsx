@@ -70,7 +70,7 @@ export const FormattedNftAmount = ({
                         </Row>
                         {isWithLink && network?.networkType === 'ethereum' ? (
                             <TrezorLink
-                                href={`${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${token.id}`}
+                                href={`${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${token.id}`}
                                 typographyStyle={linkTypographyStyle}
                             >
                                 <Text maxWidth={145} ellipsisLineCount={1} variant="primary">
@@ -98,7 +98,7 @@ export const FormattedNftAmount = ({
                 <TrezorLink
                     href={
                         network?.networkType === 'ethereum'
-                            ? `${getExplorerUrl(explorer, 'nft')}/${transfer.contract}/${transfer.amount}`
+                            ? `${getExplorerUrl(explorer, 'nft')}${transfer.contract}/${transfer.amount}`
                             : undefined
                     }
                     typographyStyle={linkTypographyStyle}
@@ -108,17 +108,18 @@ export const FormattedNftAmount = ({
                             <HiddenPlaceholder>
                                 <RedactNumericalValue value={transfer.amount} />
                             </HiddenPlaceholder>
+                            &nbsp;
                         </Text>
-                        &nbsp;
                         {symbolComponent}
                     </Row>
                 </TrezorLink>
             ) : (
-                <Row gap={spacings.xxs}>
+                <Row padding={{ horizontal: 4 }}>
                     <Text maxWidth={145} ellipsisLineCount={1}>
                         <HiddenPlaceholder>
                             <RedactNumericalValue value={transfer.amount} />
                         </HiddenPlaceholder>
+                        &nbsp;
                     </Text>
                     {symbolComponent}
                 </Row>
