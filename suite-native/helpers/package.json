@@ -19,6 +19,8 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
+        "expo-file-system": "^19.0.21",
+        "expo-sharing": "^14.0.8",
         "react": "19.1.0",
         "react-native": "0.81.5",
         "react-redux": "9.2.0"

@@ -24,6 +24,8 @@
         "expo-system-ui",
         "expo-updates",
         "expo-video",
+        "expo-sharing",
+        "expo-file-system",
         "lottie-react-native",
         "react-intl",
         "react-native-ble-plx",

@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { analyticsActions } from '@suite-common/analytics';
+import { analyticsActions } from '@suite-common/analytics-redux';
 import { createMiddleware } from '@suite-common/redux-utils';
 import {
     WALLET_SETTINGS,

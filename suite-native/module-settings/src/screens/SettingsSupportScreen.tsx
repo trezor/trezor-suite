@@ -6,6 +6,7 @@ import { DATA_PRIVACY_URL, DATA_TOS_MOBILE_URL } from '@trezor/urls';
 
 import { AboutUsBanners } from '../components/AboutUsBanners';
 import { AppCommitHash } from '../components/AppCommitHash';
+import { AppLogsCard } from '../components/AppLogsCard';
 import { FaqInfoPanel } from '../components/FaqInfoPanel';
 import { SupportCard } from '../components/SupportCard';
 
@@ -30,6 +31,7 @@ export const SettingsSupportScreen = () => {
                     <SupportCard />
                 </VStack>
                 <AboutUsBanners />
+                <AppLogsCard />
                 <TitledSection title={<Translation id="moduleSettings.faq.legal.label" />}>
                     <CompactCardWithIconLayout
                         title={<Translation id="moduleSettings.faq.legal.termsAndConditions" />}
