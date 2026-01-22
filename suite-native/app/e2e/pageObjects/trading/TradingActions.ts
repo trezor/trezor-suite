@@ -40,6 +40,10 @@ export class TradingActions {
     }
 
     async scrollScreenToBottom() {
+        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
+    }
+
+    async scrollToLearnMoreLink() {
         // Scroll to bottom of the page.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
         const learnMoreLink = element(by.text('Learn more'));

@@ -111,6 +111,7 @@ export abstract class TradingFormActions extends TradingActions {
         await wait(100);
         await getElement().tapReturnKey();
         await this.waitForQuotesToLoad();
+        await wait(300);
     }
 
     setFiatAmount(amount: string) {
