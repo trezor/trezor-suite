@@ -1,5 +1,6 @@
 import { Middleware, MiddlewareAPI, StoreEnhancer, configureStore } from '@reduxjs/toolkit';
 
+import { logsMiddleware } from '@suite-common/logger';
 import {
     ExtraDependencies,
     castExtraStore,
@@ -42,6 +43,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         prepareTradingMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),
         prepareSuiteSyncMiddleware(getExtra),
+        logsMiddleware,
     ];
 
     if (__DEV__) {
