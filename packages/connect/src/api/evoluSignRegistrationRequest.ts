@@ -13,6 +13,7 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
     init() {
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(this.name, null, this.firmwareRange);
+        this.useEmptyPassphrase = true;
 
         const { payload } = this;
 
