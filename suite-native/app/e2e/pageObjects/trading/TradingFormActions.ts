@@ -126,6 +126,7 @@ export abstract class TradingFormActions extends TradingActions {
         await waitForVisible(providersPicker, { timeout: this.SHORT_TIMEOUT });
         await providersPicker.tap();
 
+        await wait(this.BOTTOM_SHEET_ANIMATION_DURATION);
         await this.expectSheetHeaderTitle('Providers');
         await element(by.label('Close')).tap();
         await waitForVisible(providersPicker);
