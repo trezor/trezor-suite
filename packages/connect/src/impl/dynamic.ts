@@ -8,7 +8,6 @@ import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
 import type { Manifest } from '../types/settings';
-import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
 
 type TrezorConnectDynamicParams<
     ImplType,
@@ -34,7 +33,7 @@ export class TrezorConnectDynamic<
     SettingsType extends Record<string, any>,
     ImplInterface extends ConnectFactoryDependencies<SettingsType>,
 > implements ConnectFactoryDependencies<SettingsType> {
-    public eventEmitter: EventEmitter;
+    public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
     private implementations: TrezorConnectDynamicParams<
@@ -80,9 +79,9 @@ export class TrezorConnectDynamic<
         this.handleBeforeInit = handleBeforeInit;
         this.handleBeforeCall = handleBeforeCall;
         this.handleErrorFallback = handleErrorFallback;
-        this.eventEmitter = new ProxyEventEmitter(
-            this.implementations.map(impl => impl.impl.eventEmitter),
-        );
+        this.implementations.forEach(impl => {
+            impl.impl.eventEmitter = this.eventEmitter;
+        });
     }
 
     public getTarget() {
