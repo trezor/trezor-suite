@@ -11,9 +11,6 @@
             "path": "../env-utils"
         },
         {
-            "path": "../type-utils"
-        },
-        {
             "path": "../utils"
         }
     ]
