@@ -1,14 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { analyticsActions } from '@suite-common/analytics-redux';
 import { addLog } from '@suite-common/logger';
-import {
-    WALLET_SETTINGS,
-    changeNetworks,
-    deviceActions,
-    setBaseCurrency,
-} from '@suite-common/wallet-core';
-import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
 
 import { DESKTOP_UPDATE, MODAL, PROTOCOL, ROUTER, SUITE } from 'src/actions/suite/constants';
@@ -20,43 +12,15 @@ const log =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: Dispatch) =>
     (action: Action): Action => {
-        // IMPORTANT: Part of the middleware that's using actions from suite-common/wallet-core package
-        // can be found in this file: suite-common/logger/src/logsMiddleware.ts
-
-        if (changeNetworks.match(action)) {
-            api.dispatch(
-                addLog({
-                    action,
-                    type: action.type,
-                }),
-            );
-        }
-
-        if (deviceActions.addButtonRequest.match(action)) {
-            if (action.payload.buttonRequest) {
-                api.dispatch(
-                    addLog({
-                        type: action.type,
-                        payload: {
-                            code: action.payload.buttonRequest.code,
-                        },
-                    }),
-                );
-            }
-        }
-
+        // IMPORTANT: Actions that are shared between native and desktop app can be found in this file: suite-common/logger/src/logsMiddleware.ts
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
             case SUITE.SET_AUTODETECT:
-            case setBaseCurrency.type:
-            case WALLET_SETTINGS.SET_HIDE_BALANCE:
             case METADATA.ENABLE:
             case METADATA.DISABLE:
             case SUITE.ONION_LINKS:
-            case analyticsActions.enableAnalytics.type:
-            case analyticsActions.disableAnalytics.type:
             case DESKTOP_UPDATE.CHECKING:
             case DESKTOP_UPDATE.AVAILABLE:
             case DESKTOP_UPDATE.NOT_AVAILABLE:
@@ -85,21 +49,6 @@ const log =
                     }),
                 );
                 break;
-            case DEVICE.CONNECT:
-            case DEVICE.DISCONNECT:
-            case deviceActions.updateSelectedDevice.type:
-            case deviceActions.setRememberDevice.type:
-                api.dispatch(
-                    addLog({
-                        type: action.type,
-                        payload: {
-                            ...action.payload,
-                            firmwareReleaseConfigInfo: undefined,
-                            unavailableCapabilities: undefined,
-                        },
-                    }),
-                );
-                break;
             case METADATA.ADD_PROVIDER:
                 api.dispatch(
                     addLog({
@@ -110,22 +59,6 @@ const log =
                             user: undefined,
                         },
                     }),
-                );
-                break;
-            case TRANSPORT.START:
-                api.dispatch(
-                    addLog({
-                        type: action.type,
-                        payload: {
-                            type: action.payload.type,
-                            version: action.payload.version,
-                        },
-                    }),
-                );
-                break;
-            case TRANSPORT.ERROR:
-                api.dispatch(
-                    addLog({ type: action.type, payload: { error: action.payload.error } }),
                 );
                 break;
             case ROUTER.LOCATION_CHANGE:
