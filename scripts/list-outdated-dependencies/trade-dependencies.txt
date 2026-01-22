@@ -31,6 +31,7 @@ expo-constants
 expo-crypto
 expo-dev-client
 expo-device
+expo-file-system
 expo-haptics
 expo-image
 expo-image-picker
@@ -40,6 +41,7 @@ expo-linking
 expo-local-authentication
 expo-localization
 expo-secure-store
+expo-sharing
 expo-splash-screen
 expo-status-bar
 expo-system-ui

@@ -11645,6 +11645,7 @@ __metadata:
     expo-camera: "npm:~17.0.10"
     expo-clipboard: "npm:~8.0.8"
     expo-dev-client: "npm:~6.0.20"
+    expo-file-system: "npm:^19.0.21"
     expo-haptics: "npm:~15.0.8"
     expo-image: "npm:~3.0.11"
     expo-image-picker: "npm:~17.0.10"
@@ -11653,6 +11654,7 @@ __metadata:
     expo-linking: "npm:~8.0.11"
     expo-localization: "npm:~17.0.8"
     expo-secure-store: "npm:~15.0.8"
+    expo-sharing: "npm:^14.0.8"
     expo-splash-screen: "npm:~31.0.13"
     expo-status-bar: "npm:~3.0.9"
     expo-system-ui: "npm:~6.0.9"
@@ -12291,6 +12293,8 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    expo-file-system: "npm:^19.0.21"
+    expo-sharing: "npm:^14.0.8"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-redux: "npm:9.2.0"
@@ -13041,6 +13045,7 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics-redux": "workspace:*"
+    "@suite-common/logger": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -13060,7 +13065,9 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/experimental-features": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/forms": "workspace:*"
+    "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -25868,7 +25875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-file-system@npm:~19.0.21":
+"expo-file-system@npm:^19.0.21, expo-file-system@npm:~19.0.21":
   version: 19.0.21
   resolution: "expo-file-system@npm:19.0.21"
   peerDependencies:
@@ -26051,6 +26058,15 @@ __metadata:
   version: 1.0.5
   resolution: "expo-server@npm:1.0.5"
   checksum: 10/42cda83d5b514061d4142118fa8590ff8b55218b91a7e6ac131ed71ca743301f7aae7fe6954d96671b6251959b08fe8119eb2f18500b4b5e07ea0c127d2d72c7
+  languageName: node
+  linkType: hard
+
+"expo-sharing@npm:^14.0.8":
+  version: 14.0.8
+  resolution: "expo-sharing@npm:14.0.8"
+  peerDependencies:
+    expo: "*"
+  checksum: 10/452334eb00e6b73700fb9f4be0551febc247930bd3c3a0daa4261a6e92666acaca915b6c4c5e0a4c0dd16d4f1551e0c11d94a881c70c678e23e608dd9a8e396c
   languageName: node
   linkType: hard
 

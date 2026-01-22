@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
+        { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
         {
             "path": "../../suite-common/redux-utils"
@@ -40,7 +41,9 @@
         { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../experimental-features" },
+        { "path": "../feature-flags" },
         { "path": "../forms" },
+        { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
