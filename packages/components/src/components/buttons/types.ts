@@ -21,11 +21,15 @@ export type ButtonPriority = Extract<UIPriority, (typeof buttonPriorities)[numbe
 
 export type CommonButtonProps = {
     intent?: ButtonIntent;
+    priority?: ButtonPriority;
     isLoading?: boolean;
     isDisabled?: boolean;
+    isInverse?: boolean;
     onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick'];
     type?: ButtonHTMLAttributes<HTMLButtonElement>['type'];
     href?: AnchorHTMLAttributes<HTMLAnchorElement>['href'];
     target?: AnchorHTMLAttributes<HTMLAnchorElement>['target'];
     tabIndex?: HTMLAttributes<HTMLElement>['tabIndex'];
 };
+
+export type InverseKey = 'normal' | 'inverse';

@@ -30,5 +30,5 @@ export const uiIntents = [
 ] as const;
 export type UIIntent = (typeof uiIntents)[number];
 
-export const uiPriorities = ['primary', 'secondary'] as const;
+export const uiPriorities = ['primary', 'secondary', 'tertiary'] as const;
 export type UIPriority = (typeof uiPriorities)[number];
