@@ -66,7 +66,13 @@ const useExchangeQuotesChangeEffect = ({ getValues, setValue }: ExchangeFormType
         }
 
         if (!bestQuote) {
-            if (quoteGroups.fixed.length > 0) {
+            if (quoteGroups.fixed.length > 0 && quoteGroups.float.length > 0) {
+                const fixedQuote = quoteGroups.fixed[0];
+                const floatQuote = quoteGroups.float[0];
+                const fixedQuoteRate = fixedQuote?.rate ?? 0;
+                const floatQuoteRate = floatQuote?.rate ?? 0;
+                bestQuote = fixedQuoteRate >= floatQuoteRate ? fixedQuote : floatQuote;
+            } else if (quoteGroups.fixed.length > 0) {
                 bestQuote = quoteGroups.fixed[0];
             } else if (quoteGroups.float.length > 0) {
                 bestQuote = quoteGroups.float[0];
