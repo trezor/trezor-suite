@@ -6,8 +6,7 @@
             "{workspaceRoot}/patches/*.patch",
             "{workspaceRoot}/package.json"
         ],
-        "default": ["{projectRoot}/**/*", "sharedGlobals"],
-        "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
+        "default": ["{projectRoot}/**/*", "sharedGlobals"]
     },
     "tui": {
         "autoExit": true
@@ -16,32 +15,29 @@
         "build:lib": {
             "dependsOn": [],
             "inputs": [
-                "^prod",
+                "default",
                 "{workspaceRoot}/tsconfig.base.json",
                 "{workspaceRoot}/tsconfig.lib.json"
             ],
-            "outputs": ["{projectRoot}/lib", "{projectRoot}/build"],
+            "outputs": ["{projectRoot}/lib", "{projectRoot}/libESM", "{projectRoot}/build"],
             "cache": true
         },
         "type-check": {
             "dependsOn": [
+                "default",
                 "^type-check",
                 "^guide-pull-content",
                 "guide-pull-content",
                 "@suite-common/message-system:build:lib"
             ],
-            "inputs": [
-                "^prod",
-                "{workspaceRoot}/tsconfig.base.json",
-                "{workspaceRoot}/tsconfig.lib.json"
-            ],
+            "inputs": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/tsconfig.lib.json"],
             "outputs": ["{projectRoot}/libDev"],
             "cache": true
         },
         "test:unit": {
             "dependsOn": ["@suite-common/message-system:build:lib"],
             "inputs": [
-                "^prod",
+                "default",
                 "{workspaceRoot}/jest.config.base.js",
                 "{workspaceRoot}/jest.config.native.js"
             ],
