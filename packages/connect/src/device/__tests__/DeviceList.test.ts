@@ -270,18 +270,10 @@ describe('DeviceList', () => {
                     res = '3f2323000300000000000000000000000000000000';
                 } else if (readCount === 1) {
                     // features
-                    res =
-                        // headers
-                        `3f2323001100000017` +
-                        // { major_version: 2, minor_version: 0, patch_version: 0, model: 'T', initialized: false, device_id: 'device-id' }
-                        `10021800200${0}32096465766963652d69646000aa010154`;
+                    res = '3f232300110000000c1002180020006000aa010154'; // 2.0.0;
                 } else {
                     // features
-                    res =
-                        // headers
-                        `3f2323001100000017` +
-                        // { major_version: 2, minor_version: 0, patch_version: 1, model: 'T', initialized: false, device_id: 'device-id' }
-                        `10021800200${1}32096465766963652d69646000aa010154`;
+                    res = `3f232300110000000c10021800200${1}6000aa010154`; // 2.0.1
                 }
                 readCount++;
 
