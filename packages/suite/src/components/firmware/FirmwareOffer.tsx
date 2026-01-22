@@ -99,7 +99,12 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                     }
                     addon={
                         parsedChangelog ? (
-                            <TextButton size="small" intent="neutral" href={changelogUrl}>
+                            <TextButton
+                                size="small"
+                                intent="neutral"
+                                priority="secondary"
+                                href={changelogUrl}
+                            >
                                 <Translation id="TR_VIEW_ALL" />
                             </TextButton>
                         ) : undefined

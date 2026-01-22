@@ -49,24 +49,19 @@ const Container = styled.button<ButtonContainerProps>`
 export type IconButtonProps = CommonButtonProps &
     AllowedIconButtonFrameProps & {
         size?: ButtonSize;
-        isInverse?: boolean;
         icon: IconName;
         'data-testid'?: string;
-        priority?: ButtonPriority;
     };
 
 export const IconButton = ({
     'data-testid': dataTestId,
     icon,
-    intent = 'brand',
-    isInverse = false,
     size = 'medium',
-    priority = 'primary',
     ...props
 }: IconButtonProps) => {
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(props, allowedIconButtonFrameProps);
-    const buttonProps = pickButtonProps(props);
+    const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
     const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
 
     const iconProps = {

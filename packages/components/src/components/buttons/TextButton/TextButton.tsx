@@ -14,7 +14,7 @@ import { Row } from '../../Flex/Flex';
 import { Icon, IconName } from '../../Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { Text } from '../../typography/Text/Text';
-import { ButtonIntent, CommonButtonProps } from '../types';
+import { ButtonIntent, ButtonPriority, CommonButtonProps } from '../types';
 import { TextButtonSize } from './types';
 import { mapIntentToCSS, mapSizeToGap, mapSizeToIconSize, mapSizeToTypographyStyle } from './utils';
 import { pickButtonProps } from '../utils';
@@ -33,7 +33,9 @@ export type AllowedTextButtonFrameProps = Pick<
 const TextButtonContainer = styled.button<
     TransientProps<AllowedTextButtonFrameProps> & {
         $intent: ButtonIntent;
+        $priority: ButtonPriority;
         $isUnderlined: boolean;
+        $isInverse: boolean;
         disabled: boolean;
     }
 >`
@@ -55,7 +57,8 @@ const TextButtonContainer = styled.button<
     }
 
     ${({ $isUnderlined }) => $isUnderlined && 'text-decoration: underline;'}
-    ${({ $intent, disabled, theme }) => mapIntentToCSS($intent, disabled, theme)}
+    ${({ $intent, $priority, disabled, $isInverse, theme }) =>
+        mapIntentToCSS($intent, $priority, $isInverse, disabled, theme)}
 
     ${withFrameProps}
 `;
@@ -76,17 +79,18 @@ export const TextButton = ({
     size = 'large',
     isUnderlined = false,
     children,
-    intent = 'brand',
     'data-testid': dataTestId,
     ...props
 }: TextButtonProps) => {
     const frameProps = pickAndPrepareFrameProps(props, allowedTextButtonFrameProps);
-    const buttonProps = pickButtonProps(props);
+    const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
     const iconSize = mapSizeToIconSize(size);
 
     return (
         <TextButtonContainer
             $intent={intent}
+            $priority={priority}
+            $isInverse={isInverse}
             $isUnderlined={isUnderlined}
             data-testid={dataTestId}
             {...buttonProps}

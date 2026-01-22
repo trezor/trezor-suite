@@ -235,7 +235,13 @@ const SecurityCheckContent = ({
                     {device?.name}
                     {humanizedModelColor && <Text> {humanizedModelColor}</Text>}
                 </Paragraph>
-                <TextButton intent="neutral" size="small" isUnderlined onClick={toggleView}>
+                <TextButton
+                    intent="neutral"
+                    priority="secondary"
+                    size="small"
+                    isUnderlined
+                    onClick={toggleView}
+                >
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
             </Column>

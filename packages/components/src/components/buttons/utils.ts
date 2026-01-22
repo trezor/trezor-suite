@@ -2,7 +2,7 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 
 import { BorderRadii, CSSColor, Color, TypographyStyle } from '@trezor/theme';
 
-import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps } from './types';
+import { ButtonIntent, ButtonPriority, ButtonSize, CommonButtonProps, InverseKey } from './types';
 
 export const pickButtonProps = ({
     href,
@@ -12,6 +12,9 @@ export const pickButtonProps = ({
     tabIndex,
     isLoading = false,
     isDisabled = false,
+    isInverse = false,
+    intent = 'brand',
+    priority = 'primary',
 }: CommonButtonProps) => {
     const isLink = href !== undefined;
 
@@ -24,6 +27,9 @@ export const pickButtonProps = ({
         href,
         target: isLink ? target : undefined,
         rel: isLink ? 'noreferrer noopener' : undefined,
+        intent,
+        isInverse,
+        priority,
     };
 };
 
@@ -81,8 +87,6 @@ export const mapSizeToTypographyStyle = (size: ButtonSize): TypographyStyle => {
 
     return typographyStyleMap[size];
 };
-
-type InverseKey = 'normal' | 'inverse';
 
 const colorMapDisabled: Record<InverseKey, Color> = {
     normal: 'stateContentDisabled',

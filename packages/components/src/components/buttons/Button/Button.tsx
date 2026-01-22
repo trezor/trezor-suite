@@ -57,12 +57,10 @@ const Container = styled.button<ButtonContainerProps>`
 export type ButtonProps = CommonButtonProps &
     AllowedButtonFrameProps & {
         size?: ButtonSize;
-        isInverse?: boolean;
         iconLeft?: IconName;
         iconRight?: IconName;
         children: React.ReactNode;
         'data-testid'?: string;
-        priority?: ButtonPriority;
         shortcut?: Keys[];
         className?: string;
     };
@@ -72,18 +70,15 @@ export const Button = ({
     children,
     iconLeft,
     iconRight,
-    isInverse = false,
-    intent = 'brand',
     shortcut,
     size = 'medium',
-    priority = 'primary',
     // TODO: remove className
     className,
     ...props
 }: ButtonProps) => {
     const theme = useTheme();
     const frameProps = pickAndPrepareFrameProps(props, allowedButtonFrameProps);
-    const buttonProps = pickButtonProps(props);
+    const { intent, priority, isInverse, ...buttonProps } = pickButtonProps(props);
     const color = mapPropsToColor(intent, priority, buttonProps.disabled, isInverse, theme);
 
     const iconProps = {

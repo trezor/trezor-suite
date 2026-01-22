@@ -3,12 +3,12 @@ import { DefaultTheme, RuleSet, css } from 'styled-components';
 import { Color, SpacingValuesNew, TypographyStyle } from '@trezor/theme';
 
 import { TextButtonSize } from './types';
-import { ButtonIntent } from '../types';
+import { ButtonIntent, ButtonPriority, InverseKey } from '../types';
 
 export const mapSizeToGap = (size: TextButtonSize): SpacingValuesNew => {
     const gapMap: Record<TextButtonSize, SpacingValuesNew> = {
         large: 8,
-        small: 4,
+        small: 6,
     };
 
     return gapMap[size];
@@ -32,55 +32,132 @@ export const mapSizeToTypographyStyle = (size: TextButtonSize): TypographyStyle 
     return typographyStyleMap[size];
 };
 
-export const mapIntentToCSS = (
-    intent: ButtonIntent,
-    isDisabled: boolean,
-    theme: DefaultTheme,
-): RuleSet<object> => {
-    const mapIntentToColor: Record<ButtonIntent, Color> = {
+const colorMap: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
+    normal: {
         brand: 'baseContentBrand',
-        neutral: 'baseContentSecondary',
         info: 'baseContentInfo',
         warning: 'baseContentWarning',
         critical: 'baseContentNegative',
         accentViolet: 'baseContentAccentViolet',
         accentOrange: 'baseContentAccentOrange',
-    };
+    },
+    inverse: {
+        brand: 'baseContentBrandInverse',
+        info: 'baseContentInfoInverse',
+        warning: 'baseContentWarningInverse',
+        critical: 'baseContentNegativeInverse',
+        accentViolet: 'baseContentAccentVioletInverse',
+        accentOrange: 'baseContentAccentOrangeInverse',
+    },
+};
 
-    const mapIntentToHoverColor: Record<ButtonIntent, Color> = {
+const neutralColorMap: Record<InverseKey, Record<ButtonPriority, Color>> = {
+    normal: {
+        primary: 'baseContentPrimary',
+        secondary: 'baseContentSecondary',
+    },
+    inverse: {
+        primary: 'baseContentPrimaryInverse',
+        secondary: 'baseContentSecondaryInverse',
+    },
+};
+
+const colorMapHovered: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
+    normal: {
         brand: 'stateContentBrandHovered',
-        neutral: 'stateContentSecondaryHovered',
         info: 'stateContentInfoHovered',
         warning: 'stateContentWarningHovered',
         critical: 'stateContentNegativeHovered',
         accentViolet: 'stateContentAccentVioletHovered',
         accentOrange: 'stateContentAccentOrangeHovered',
-    };
+    },
+    inverse: {
+        brand: 'stateContentBrandInverseHovered',
+        info: 'stateContentInfoInverseHovered',
+        warning: 'stateContentWarningInverseHovered',
+        critical: 'stateContentNegativeInverseHovered',
+        accentViolet: 'stateContentAccentVioletInverseHovered',
+        accentOrange: 'stateContentAccentOrangeInverseHovered',
+    },
+};
 
-    const mapIntentToActiveColor: Record<ButtonIntent, Color> = {
+const neutralColorMapHovered: Record<InverseKey, Record<ButtonPriority, Color>> = {
+    normal: {
+        primary: 'stateContentPrimaryHovered',
+        secondary: 'stateContentSecondaryHovered',
+    },
+    inverse: {
+        primary: 'stateContentPrimaryInverseHovered',
+        secondary: 'stateContentSecondaryInverseHovered',
+    },
+};
+
+const colorMapPressed: Record<InverseKey, Record<Exclude<ButtonIntent, 'neutral'>, Color>> = {
+    normal: {
         brand: 'stateContentBrandPressed',
-        neutral: 'stateContentSecondaryPressed',
         info: 'stateContentInfoPressed',
         warning: 'stateContentWarningPressed',
         critical: 'stateContentNegativePressed',
         accentViolet: 'stateContentAccentVioletPressed',
         accentOrange: 'stateContentAccentOrangePressed',
-    };
+    },
+    inverse: {
+        brand: 'stateContentBrandInversePressed',
+        info: 'stateContentInfoInversePressed',
+        warning: 'stateContentWarningInversePressed',
+        critical: 'stateContentNegativeInversePressed',
+        accentViolet: 'stateContentAccentVioletInversePressed',
+        accentOrange: 'stateContentAccentOrangeInversePressed',
+    },
+};
 
-    return isDisabled
-        ? css`
-              color: ${theme.stateContentDisabled};
-          `
-        : css`
-              color: ${theme[mapIntentToColor[intent]]};
+const neutralColorMapPressed: Record<InverseKey, Record<ButtonPriority, Color>> = {
+    normal: {
+        primary: 'stateContentSecondaryPressed',
+        secondary: 'stateContentNeutralPressed',
+    },
+    inverse: {
+        primary: 'stateContentSecondaryInversePressed',
+        secondary: 'stateContentNeutralInversePressed',
+    },
+};
 
-              &:hover,
-              &:focus {
-                  color: ${theme[mapIntentToHoverColor[intent]]};
-              }
+export const mapIntentToCSS = (
+    intent: ButtonIntent,
+    priority: ButtonPriority,
+    isInverse: boolean,
+    isDisabled: boolean,
+    theme: DefaultTheme,
+): RuleSet<object> => {
+    const inverseKey: InverseKey = isInverse ? 'inverse' : 'normal';
+    const isNeutral = intent === 'neutral';
 
-              &:active {
-                  color: ${theme[mapIntentToActiveColor[intent]]};
-              }
-          `;
+    if (isDisabled) {
+        return css`
+            color: ${theme.stateContentDisabled};
+        `;
+    }
+
+    const colorDefault = isNeutral
+        ? neutralColorMap[inverseKey][priority]
+        : colorMap[inverseKey][intent];
+    const colorHovered = isNeutral
+        ? neutralColorMapHovered[inverseKey][priority]
+        : colorMapHovered[inverseKey][intent];
+    const colorPressed = isNeutral
+        ? neutralColorMapPressed[inverseKey][priority]
+        : colorMapPressed[inverseKey][intent];
+
+    return css`
+        color: ${theme[colorDefault]};
+
+        &:hover,
+        &:focus {
+            color: ${theme[colorHovered]};
+        }
+
+        &:active {
+            color: ${theme[colorPressed]};
+        }
+    `;
 };

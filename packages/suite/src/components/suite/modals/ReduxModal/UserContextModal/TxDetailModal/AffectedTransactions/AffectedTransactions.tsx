@@ -24,7 +24,7 @@ export const AffectedTransactions = ({ chainedTxs, showChained }: AffectedTransa
                     <Text typographyStyle="body">
                         <Translation id="TR_CHAINED_TXS" />
                     </Text>
-                    <TextButton onClick={showChained} size="small" intent="brand" isUnderlined>
+                    <TextButton onClick={showChained} size="small" isUnderlined>
                         <Translation id="TR_SEE_DETAILS" />
                     </TextButton>
                 </Row>

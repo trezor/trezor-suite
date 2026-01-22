@@ -9,7 +9,7 @@ import {
 import { textButtonSizes } from './types';
 import { variables } from '../../../config';
 import { getFramePropsStory } from '../../../utils/frameProps';
-import { buttonIntents } from '../types';
+import { buttonIntents, buttonPriorities } from '../types';
 
 const meta: Meta<typeof TextButtonComponent> = {
     title: '🫵 Buttons',
@@ -22,7 +22,9 @@ export const TextButton: StoryObj<TextButtonProps> = {
         children: 'Button label',
         onClick: action('onClick'),
         intent: 'brand',
+        priority: 'primary',
         size: 'large',
+        isInverse: false,
         isDisabled: false,
         isLoading: false,
         isUnderlined: false,
@@ -44,6 +46,12 @@ export const TextButton: StoryObj<TextButtonProps> = {
             },
             options: buttonIntents,
         },
+        priority: {
+            control: {
+                type: 'select',
+            },
+            options: buttonPriorities,
+        },
         iconLeft: {
             options: [null, ...variables.ICONS],
             control: { type: 'select' },
@@ -57,6 +65,11 @@ export const TextButton: StoryObj<TextButtonProps> = {
                 type: 'select',
             },
             options: textButtonSizes,
+        },
+        isInverse: {
+            control: {
+                type: 'boolean',
+            },
         },
         isDisabled: {
             control: {
