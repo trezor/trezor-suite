@@ -21,6 +21,7 @@
         { "path": "../atoms" },
         { "path": "../clipboard" },
         { "path": "../device-manager" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../icons" },
         { "path": "../intl" },
