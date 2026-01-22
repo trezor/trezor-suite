@@ -269,10 +269,12 @@ describe('DeviceList', () => {
                     // cancel response
                     res = '3f2323000300000000000000000000000000000000';
                 } else if (readCount === 1) {
-                    // features
+                    // featuressssss
+                    console.log('aaaa');
                     res = '3f232300110000000c1002180020006000aa010154'; // 2.0.0;
                 } else {
                     // features
+                    console.log('aaaa');
                     res = `3f232300110000000c10021800200${1}6000aa010154`; // 2.0.1
                 }
                 readCount++;
