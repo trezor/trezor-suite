@@ -38,6 +38,7 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
+        { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../services" },

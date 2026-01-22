@@ -13,4 +13,5 @@ export type LaunchArguments = {
     areTradingExchangeDexesEnabled?: boolean;
     isTradingResidenceCheckEnabled?: boolean;
     isTradingDebugEnabled?: boolean;
+    isEarnEnabled?: boolean;
 };

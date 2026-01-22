@@ -10,11 +10,10 @@ import { selectHasRunningDiscovery, selectIsDeviceAuthorized } from '@suite-comm
 import { OnSelectAccount } from '@suite-native/accounts';
 import { AnimatedCard } from '@suite-native/atoms';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
-import { FiveBinariesHomeBanner } from '@suite-native/module-earn';
+import { FiveBinariesHomeBanner, useHandleEarnNavigation } from '@suite-native/module-earn';
 import {
     AppTabsParamList,
     AppTabsRoutes,
-    EarnStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
@@ -34,6 +33,7 @@ type NavigationProp = TabToStackCompositeNavigationProp<
 export const Assets = () => {
     const navigation = useNavigation<NavigationProp>();
 
+    const { handleEearnNavigation } = useHandleEarnNavigation();
     const deviceNetworks = useSelectorDeepComparison(selectDeviceNetworksWithAssets);
 
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
@@ -45,12 +45,7 @@ export const Assets = () => {
     const handleSelectAssetsAccount: OnSelectAccount = useCallback(
         ({ account, tokenAddress, isStaking }) => {
             if (isStaking) {
-                navigation.navigate(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.EarnStack,
-                    params: {
-                        screen: EarnStackRoutes.Earn,
-                    },
-                });
+                handleEearnNavigation(account.key);
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey: account.key,
@@ -60,7 +55,7 @@ export const Assets = () => {
             }
             setSelectedAssetSymbol(null);
         },
-        [navigation, setSelectedAssetSymbol],
+        [handleEearnNavigation, navigation],
     );
 
     const handleCloseBottomSheet = useCallback(() => {

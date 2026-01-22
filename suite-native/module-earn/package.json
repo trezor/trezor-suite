@@ -23,6 +23,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/clipboard": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
+        "@suite-native/feature-flags": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
