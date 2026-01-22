@@ -43,10 +43,16 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
     }
 
     public dispose() {
-        this.eventEmitter.removeAllListeners();
         this._settings = parseConnectSettings();
 
         return Promise.resolve(undefined);
+    }
+
+    public cancel(_error?: string) {
+        this._popupManager?.channel?.postMessage({
+            type: POPUP.CLOSED,
+            payload: { error: _error },
+        });
     }
 
     public init(settings: InitFullSettings<{}>): Promise<void> {
@@ -132,13 +138,6 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
 
             return createErrorMessage(error);
         }
-    }
-
-    public cancel(_error?: string) {
-        this._popupManager?.channel?.postMessage({
-            type: POPUP.CLOSED,
-            payload: { error: _error },
-        });
     }
 
     // not supported, transports are controlled by suite
