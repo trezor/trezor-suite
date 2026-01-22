@@ -43,7 +43,6 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     }
 
     public dispose() {
-        this.eventEmitter.removeAllListeners();
         this._settings = parseConnectSettings();
         this.ws.dispose();
 
