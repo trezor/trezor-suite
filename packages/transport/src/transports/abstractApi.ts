@@ -269,7 +269,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         apiWrite,
                         apiRead,
                         signal,
-                        graceful: true,
                         logger: this.logger,
                     });
                     if (!callResult.success) {
@@ -361,7 +360,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         apiWrite,
                         apiRead: attemptSignal => this.api.read(path, attemptSignal || signal),
                         signal,
-                        graceful: true,
                         logger: this.logger,
                     });
                     thpState?.sync('send', name);
@@ -410,7 +408,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                             this.api.write(path, chunk, attemptSignal || signal),
                         apiRead,
                         signal,
-                        graceful: true,
                         logger: this.logger,
                     });
 

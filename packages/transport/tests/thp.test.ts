@@ -2,13 +2,20 @@ import { parseConfigure } from '@trezor/protobuf';
 import { thp as protocolThp, v2 } from '@trezor/protocol';
 
 import { parseThpMessage, receiveThpMessage, sendThpMessage } from '../src/thp';
+import {
+    ATTEMPTS_LIMIT,
+    THP_ACK_DEADLINE,
+    THP_ACK_TIMEOUT,
+} from '../src/thp/receiveExpectedMessage';
 
 describe('thp', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+    const HANDSHAKE_COMP_RES = Buffer.from(
+        '13094b0015cc41d620b1ea28111d64e2faf6d34e06e371dd3c4f0000000000000000000000000000000000000000000000000000000000000000000000000000',
+        'hex',
+    );
 
-    const apiChunkSize = 64;
+    const THP_ACK = Buffer.from('200c22000471913136', 'hex');
+
     const thpState = new protocolThp.ThpState();
     const apiRead = jest.fn(
         signal =>
@@ -21,12 +28,18 @@ describe('thp', () => {
 
                 setTimeout(() => {
                     signal.removeEventListener('abort', listener);
-                    resolve({ success: true, payload: Buffer.alloc(apiChunkSize) });
+                    resolve({ success: true, payload: THP_ACK });
                 }, 100);
             }),
     );
 
     const apiWrite = jest.fn(() => Promise.resolve({ success: true } as any));
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        thpState.resetState();
+        thpState.setChannel(THP_ACK.subarray(1, 3));
+    });
 
     describe('receiveThpMessage', () => {
         it('aborted', async () => {
@@ -53,21 +66,20 @@ describe('thp', () => {
                 apiRead,
                 apiWrite,
                 signal: abortController.signal,
-                graceful: true,
             });
 
             expect(apiRead).toHaveBeenCalledTimes(5);
             expect(result).toMatchObject({ success: false, message: 'Aborted by signal in API' });
         });
 
-        it('api write error', async () => {
-            const readResult = Buffer.from('200c22000471913136', 'hex');
-            thpState.setChannel(readResult.subarray(1, 3));
-            thpState.setExpectedResponses([0x20]);
+        it('write ThpAck error', async () => {
+            thpState.setChannel(HANDSHAKE_COMP_RES.subarray(1, 3));
+            thpState.setExpectedResponses([0x03]);
+            thpState.updateSyncBit('recv');
 
             const result = await receiveThpMessage({
                 thpState,
-                apiRead: () => Promise.resolve({ success: true, payload: readResult }),
+                apiRead: () => Promise.resolve({ success: true, payload: HANDSHAKE_COMP_RES }),
                 apiWrite: () => Promise.resolve({ success: false, error: 'unexpected error' }),
             });
 
@@ -75,24 +87,27 @@ describe('thp', () => {
         });
 
         it('success', async () => {
-            const readResult = Buffer.from('200c22000471913136', 'hex');
-            thpState.setChannel(readResult.subarray(1, 3));
-            thpState.setExpectedResponses([0x20]);
+            thpState.setChannel(HANDSHAKE_COMP_RES.subarray(1, 3));
+            thpState.setExpectedResponses([0x03]);
+            thpState.updateSyncBit('recv');
 
             const result = await receiveThpMessage({
                 thpState,
-                apiRead: () => Promise.resolve({ success: true, payload: readResult }),
+                apiRead: () => Promise.resolve({ success: true, payload: HANDSHAKE_COMP_RES }),
                 apiWrite,
             });
-
             expect(apiWrite).toHaveBeenCalledTimes(1);
             expect(result).toMatchObject({ success: true });
         });
 
         it('success. Expected chunk received at 5th attempt', async () => {
-            const readResult = Buffer.from('200c22000471913136', 'hex');
+            const readResult = Buffer.from(
+                '13094b0015cc41d620b1ea28111d64e2faf6d34e06e371dd3c4f0000000000000000000000000000000000000000000000000000000000000000000000000000',
+                'hex',
+            );
             thpState.setChannel(readResult.subarray(1, 3));
-            thpState.setExpectedResponses([0x20]);
+            thpState.setExpectedResponses([0x03]);
+            thpState.updateSyncBit('recv');
 
             let attempt = 0;
             const apiRead = jest.fn(
@@ -149,13 +164,17 @@ describe('thp', () => {
                     ),
                 ],
                 apiWrite,
-                apiRead,
+                apiRead: () =>
+                    Promise.resolve({
+                        success: true,
+                        payload: Buffer.from('400c220004e8a3467b', 'hex'),
+                    }),
             });
 
-            await jest.advanceTimersByTimeAsync(11 * 30_000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
+            await jest.advanceTimersByTimeAsync((ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE);
             const result = await sendPromise;
 
-            expect(result).toMatchObject({ success: false, message: 'Aborted by deadline' });
+            expect(result).toMatchObject({ success: false, message: 'RetriesExceeded' });
             expect(apiWrite).toHaveBeenCalledTimes(10);
         });
 
@@ -185,11 +204,11 @@ describe('thp', () => {
                 apiRead,
             });
 
-            await jest.advanceTimersByTimeAsync(20 * 30_000); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
+            await jest.advanceTimersByTimeAsync(THP_ACK_TIMEOUT + THP_ACK_DEADLINE); // (ATTEMPTS_LIMIT + 1) * THP_ACK_DEADLINE
             const result = await sendPromise;
 
             expect(result).toMatchObject({ success: false, message: 'Aborted by deadline' });
-            expect(apiWrite).toHaveBeenCalledTimes(10);
+            expect(apiWrite).toHaveBeenCalledTimes(3);
         });
 
         it('api read error', async () => {
@@ -258,17 +277,24 @@ describe('thp', () => {
                     ),
                 ],
                 apiWrite,
-                apiRead,
+                apiRead: (signal?: AbortSignal) =>
+                    new Promise<any>((_resolve, reject) => {
+                        const listener = () => {
+                            signal?.removeEventListener('abort', listener);
+                            reject(new Error('Aborted in api'));
+                        };
+                        signal?.addEventListener('abort', listener);
+                    }),
                 signal: abortController.signal,
             });
 
-            await jest.advanceTimersByTimeAsync(40_000);
+            await jest.advanceTimersByTimeAsync(11_000);
             expect(apiWrite).toHaveBeenCalledTimes(2); // there was 1 retransmission
 
             abortController.abort();
 
             const result = await sendPromise;
-            expect(result).toMatchObject({ success: false, message: 'Aborted by signal' });
+            expect(result).toMatchObject({ success: false, error: 'Aborted in api' });
         });
 
         it('success. ThpAck not required', async () => {

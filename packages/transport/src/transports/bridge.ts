@@ -252,6 +252,12 @@ export class BridgeTransport extends AbstractTransport {
                     });
                     thpState?.sync('recv', message.type);
 
+                    if (response.payload.thpState) {
+                        thpState?.setRecentMessage(
+                            Buffer.from(response.payload.thpState.recentMessage || '', 'hex'),
+                        );
+                    }
+
                     return this.success(message);
                 }
 

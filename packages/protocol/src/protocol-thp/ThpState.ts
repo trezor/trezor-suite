@@ -20,6 +20,7 @@ export type ThpChannelState = {
     sendNonce: number; // host nonce
     recvNonce: number; // device nonce
     expectedResponses: number[]; // expected responses from the device
+    recentMessage: string;
 };
 
 export type ThpPhase = 'handshake' | 'pairing' | 'paired';
@@ -44,6 +45,15 @@ export class ThpState {
     private _nfcSecret?: Buffer;
     private _sessionId: Buffer = Buffer.alloc(1);
     private _sessionIdCounter: number = 0;
+    private _recentMessage: Buffer = Buffer.alloc(0);
+
+    get recentMessage() {
+        return this._recentMessage;
+    }
+
+    setRecentMessage(msg: Buffer) {
+        this._recentMessage = msg;
+    }
 
     get pairingTagPromise() {
         return this._pairingTagPromise;
@@ -272,6 +282,7 @@ export class ThpState {
             recvNonce: this.recvNonce,
             expectedResponses: this._expectedResponses.slice(0),
             credentials: this._pairingCredentials.slice(0),
+            recentMessage: this._recentMessage.toString('hex'),
         };
     }
 
@@ -285,6 +296,9 @@ export class ThpState {
             throw error;
         }
         if (typeof json.channel !== 'string') {
+            throw error;
+        }
+        if (typeof json.recentMessage !== 'string') {
             throw error;
         }
         [
@@ -309,6 +323,7 @@ export class ThpState {
         this._recvAckBit = json.recvAckBit;
         this._sendNonce = json.sendNonce;
         this._recvNonce = json.recvNonce;
+        this._recentMessage = Buffer.from(json.recentMessage, 'hex');
     }
 
     get expectedResponses() {

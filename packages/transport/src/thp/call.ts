@@ -1,5 +1,7 @@
-import { receiveThpMessage } from './receive';
-import { SendThpMessageProps, sendThpMessage } from './send';
+import { THP_STATE_ERROR } from '../errors';
+import { thpLoop } from './loop';
+import type { CommonProps } from './receiveExpectedMessage';
+import { error } from '../utils/result';
 
 export const callThpMessage = async ({
     thpState,
@@ -7,32 +9,14 @@ export const callThpMessage = async ({
     apiWrite,
     apiRead,
     signal,
-    graceful,
     logger,
-}: SendThpMessageProps) => {
-    // send and wait for ThpAck
-    const sendResult = await sendThpMessage({
-        chunks,
-        thpState,
-        apiWrite,
-        apiRead,
-        signal,
-        graceful,
-        logger,
-    });
-    if (!sendResult.success) {
-        return sendResult;
+}: CommonProps) => {
+    if (!thpState) {
+        return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
     }
 
-    // read and send ThpAck
-    const receiveResult = await receiveThpMessage({
-        thpState,
-        apiWrite,
-        apiRead,
-        signal,
-        graceful,
-        logger,
-    });
+    const result = await thpLoop({ chunks, thpState, apiWrite, apiRead, signal, logger });
 
-    return receiveResult;
+    // NOTE: result should never be empty
+    return result ?? error({ error: THP_STATE_ERROR, message: 'MissingResponse' });
 };
