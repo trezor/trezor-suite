@@ -12,7 +12,7 @@ import {
 } from '@suite-native/test-utils';
 import {
     btcAsset,
-    exchangeMercuryo,
+    exchangeCexdirect,
     exchangeQuotes,
     getBtcAccount,
     getWalletState,
@@ -63,10 +63,44 @@ describe('useExchangeForm', () => {
     });
 
     describe('on quotes change', () => {
-        it('should select first fixed quote', () => {
+        it('should select first fixed quote if rate is better than first floating quote', () => {
+            const { result } = renderUseExchangeForm();
+            act(() => {
+                store.dispatch(
+                    tradingExchangeActions.saveQuotes([
+                        exchangeQuotes[0],
+                        exchangeQuotes[1],
+                        { ...exchangeQuotes[2], rate: 0.000008 },
+                    ]),
+                );
+            });
+
+            expect(result.current.getValues('quote')).toEqual(
+                expect.objectContaining({
+                    quoteId: 'mercuryo-fixed-worst',
+                }),
+            );
+        });
+
+        it('should select first floating quote if rate is better than first fixed quote', () => {
             const { result } = renderUseExchangeForm();
             act(() => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
+            });
+
+            expect(result.current.getValues('quote')).toEqual(
+                expect.objectContaining({
+                    quoteId: 'cexdirect-floating',
+                }),
+            );
+        });
+
+        it('should select first fixed quote if no floating quote is available', () => {
+            const { result } = renderUseExchangeForm();
+            act(() => {
+                store.dispatch(
+                    tradingExchangeActions.saveQuotes([exchangeQuotes[0], exchangeQuotes[1]]),
+                );
             });
 
             expect(result.current.getValues('quote')).toEqual(
@@ -122,7 +156,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
-            expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00083554');
+            expect(result.current.getValues('receiveCryptoAmount')).toBe('0.00089118');
         });
 
         it('should set receiveCryptoAmount in sats when using BTC and amount in sats', () => {
@@ -133,7 +167,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
-            expect(result.current.getValues('receiveCryptoAmount')).toBe('83554');
+            expect(result.current.getValues('receiveCryptoAmount')).toBe('89118');
         });
 
         it('should persist provider metadata to redux', () => {
@@ -142,7 +176,7 @@ describe('useExchangeForm', () => {
                 store.dispatch(tradingExchangeActions.saveQuotes(exchangeQuotes));
             });
 
-            expect(selectTradingProviderMetadata(store.getState())).toBe(exchangeMercuryo);
+            expect(selectTradingProviderMetadata(store.getState())).toBe(exchangeCexdirect);
         });
 
         describe('when quote is selected and new quotes are fetched', () => {
