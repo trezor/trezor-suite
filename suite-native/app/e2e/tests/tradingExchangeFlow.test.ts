@@ -63,7 +63,7 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.openForm();
         });
 
-        it('should request trezor connect before review', async () => {
+        it('should request trezor connect before preview', async () => {
             await tradingExchangeActions.selectSendAsset('USDC');
             await tradingExchangeActions.selectReceiveAsset('USDT', 'Ethereum');
             await tradingExchangeActions.selectReceiveAccount('Ethereum #1');
@@ -74,11 +74,6 @@ conditionalDescribe(device.getPlatform() === 'android', 'Trade Exchange', () => 
             await tradingExchangeActions.expectValidExchangeForm();
 
             await tradingExchangeActions.confirmTradingForm();
-
-            await exchangePreviewActions.expectExchangePreviewScreenToBeVisible();
-            await exchangePreviewActions.waitForFeesToLoad();
-            await exchangePreviewActions.scrollScreenToBottom();
-            await exchangePreviewActions.goToTransactionSigning();
 
             await exchangeOutputsReviewActions.expectConnectTrezorInfo();
             await exchangeOutputsReviewActions.cancelConnectTrezorInfo();
