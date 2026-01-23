@@ -16,3 +16,4 @@ export * from './wallet';
 export * from './globalSendReceive';
 export * from './device';
 export * from './baseCurrency';
+export * from './transactionSimulation';

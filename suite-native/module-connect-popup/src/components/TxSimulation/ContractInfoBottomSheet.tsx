@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { TxSimulationResult } from '@suite-common/tx-simulation';
+import { TransactionSimulation } from '@suite-common/tx-simulation';
 import { BottomSheetModal, BottomSheetModalRef, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { Translation } from '@suite-native/intl';
@@ -8,18 +8,16 @@ import { Translation } from '@suite-native/intl';
 export const ContractInfoBottomSheet = ({
     ref,
     targetContract,
-    simulationResult,
+    txSimulation,
 }: {
     ref: BottomSheetModalRef;
     targetContract: string;
-    simulationResult: TxSimulationResult | undefined;
+    txSimulation: TransactionSimulation;
 }) => {
     const copyToClipboard = useCopyToClipboard();
     const handleCopy = () => copyToClipboard(targetContract);
 
-    if (simulationResult?.simulation?.status !== 'Success') return null;
-
-    const contractDetails = Object.entries(simulationResult.simulation.address_details).find(
+    const contractDetails = Object.entries(txSimulation.address_details).find(
         ([address]) => address.toLowerCase() === targetContract.toLowerCase(),
     )?.[1];
 
@@ -38,7 +36,7 @@ export const ContractInfoBottomSheet = ({
         },
         {
             label: <Translation id="moduleConnectPopup.simulation.contractFunction" />,
-            value: simulationResult.simulation.params?.calldata?.function_signature,
+            value: txSimulation.params?.calldata?.function_signature,
         },
     ];
 

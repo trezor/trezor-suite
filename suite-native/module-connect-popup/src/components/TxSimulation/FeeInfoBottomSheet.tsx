@@ -1,8 +1,8 @@
 import { fromWei } from 'web3-utils';
 
-import { ConnectPopupCall } from '@suite-common/connect-popup';
 import { useFormatters } from '@suite-common/formatters';
 import { Network } from '@suite-common/wallet-config';
+import { TxSimulationMethod } from '@suite-common/wallet-types';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import {
     BottomSheetModal,
@@ -18,28 +18,22 @@ export const FeeInfoBottomSheet = ({
     ref,
     defaultGasLimit,
     network,
-    popupCall,
+    transaction,
 }: {
     ref: BottomSheetModalRef;
     defaultGasLimit: string;
     network: Network;
-    popupCall: ConnectPopupCall;
+    transaction: TxSimulationMethod<'ethereumSignTransaction'>['payload']['transaction'];
 }) => {
     const { CryptoAmountFormatter } = useFormatters();
     const formattedGasLimit = Number(defaultGasLimit).toLocaleString();
-
-    if (popupCall?.state !== 'tx-simulation') return null;
+    const { maxFeePerGas, maxPriorityFeePerGas, gasPrice } = transaction;
 
     const items = [
         {
             label: <Translation id="moduleSend.fees.custom.bottomSheet.total" />,
             value: CryptoAmountFormatter.format(
-                fromWei(
-                    Number(defaultGasLimit) *
-                        (popupCall.payload?.transaction?.maxFeePerGas ??
-                            popupCall.payload?.transaction?.gasPrice),
-                    'ether',
-                ),
+                fromWei(Number(defaultGasLimit) * Number(maxFeePerGas ?? gasPrice ?? '0'), 'ether'),
                 {
                     symbol: network.symbol,
                     isBalance: true,
@@ -52,8 +46,8 @@ export const FeeInfoBottomSheet = ({
                 <Translation id="transactionManagement.fees.custom.bottomSheet.label.maxFeePerGas" />
             ),
             value:
-                popupCall.payload?.transaction?.maxFeePerGas &&
-                fromWei(popupCall.payload?.transaction?.maxFeePerGas, 'gwei').toLocaleString() +
+                maxFeePerGas &&
+                fromWei(maxFeePerGas, 'gwei').toLocaleString() +
                     ' ' +
                     getFeeUnits(network.networkType),
         },
@@ -62,11 +56,8 @@ export const FeeInfoBottomSheet = ({
                 <Translation id="transactionManagement.fees.custom.bottomSheet.label.maxPriorityFeePerGas" />
             ),
             value:
-                popupCall.payload?.transaction?.maxPriorityFeePerGas &&
-                fromWei(
-                    popupCall.payload?.transaction?.maxPriorityFeePerGas,
-                    'gwei',
-                ).toLocaleString() +
+                maxPriorityFeePerGas &&
+                fromWei(maxPriorityFeePerGas, 'gwei').toLocaleString() +
                     ' ' +
                     getFeeUnits(network.networkType),
         },
@@ -75,8 +66,8 @@ export const FeeInfoBottomSheet = ({
                 <Translation id="transactionManagement.fees.custom.bottomSheet.label.gasPrice" />
             ),
             value:
-                popupCall.payload?.transaction?.gasPrice &&
-                fromWei(Number(popupCall.payload?.transaction?.gasPrice), 'gwei').toLocaleString() +
+                gasPrice &&
+                fromWei(Number(gasPrice), 'gwei').toLocaleString() +
                     ' ' +
                     getFeeUnits(network.networkType),
         },

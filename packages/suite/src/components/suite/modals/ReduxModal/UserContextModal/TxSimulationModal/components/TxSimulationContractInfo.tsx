@@ -20,7 +20,7 @@ export function TxSimulationContractInfo({
     simulation,
     network,
 }: TxSimulationContractInfoProps) {
-    const explorer = useSelector(state => selectExplorer(state, network?.symbol));
+    const explorer = useSelector(state => selectExplorer(state, network.symbol));
     const explorerLink = useExternalLink(
         `${getExplorerUrl(explorer, 'address')}${targetContract}${explorer?.queryString ?? ''}`,
     );

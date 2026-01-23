@@ -8,6 +8,7 @@ import {
     AppRememberedPermission,
     CALL_SOURCE_WALLETCONNECT,
     ConnectPopupCall,
+    ConnectPopupCallWithState,
 } from './connectPopupTypes';
 
 export type ConnectPopupState = {
@@ -15,7 +16,7 @@ export type ConnectPopupState = {
     permissions: AppRememberedPermission[];
 };
 
-type ConnectPopupStateRootState = {
+export type ConnectPopupStateRootState = {
     connectPopup: ConnectPopupState;
 };
 
@@ -136,11 +137,14 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.txSimulation, (state, { payload }) => {
                 if (state.activeCall?.state === 'ongoing') {
-                    state.activeCall = {
-                        ...state.activeCall,
+                    const newActiveCall = {
+                        // Remove this casting once 'ongoing' state is typed accurately
+                        ...(state.activeCall as unknown as ConnectPopupCallWithState<'tx-simulation'>),
                         state: 'tx-simulation',
                         ...payload,
-                    };
+                    } satisfies ConnectPopupCallWithState<'tx-simulation'>;
+
+                    state.activeCall = newActiveCall;
                 }
             })
             .addCase(connectPopupActions.setSelectedFee, (state, { payload }) => {
@@ -168,6 +172,14 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
 
 export const selectConnectPopupCall = (state: ConnectPopupStateRootState) =>
     state.connectPopup.activeCall;
+
+export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCall['state']>(
+    state: ConnectPopupStateRootState,
+    callState: CallState,
+) =>
+    state.connectPopup.activeCall?.state === callState
+        ? (state.connectPopup.activeCall as ConnectPopupCallWithState<CallState>)
+        : null;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
     state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);

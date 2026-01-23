@@ -3,27 +3,23 @@ import { UseFormReturn } from 'react-hook-form';
 import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
-import { FeeInfo } from '@suite-common/wallet-types';
+import { FeeInfo, TxSimulationAction } from '@suite-common/wallet-types';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { useDispatch } from 'src/hooks/suite';
 import { FeesFormValues } from 'src/hooks/wallet/form/useFees';
 
 interface UseTxSimulationActionsProps {
-    isEthereumSigningTransaction: boolean;
+    method: TxSimulationAction['method'];
     form: UseFormReturn<FeesFormValues>;
     feeInfo: FeeInfo;
 }
 
-export function useTxSimulationActions({
-    isEthereumSigningTransaction,
-    form,
-    feeInfo,
-}: UseTxSimulationActionsProps) {
+export function useTxSimulationActions({ method, form, feeInfo }: UseTxSimulationActionsProps) {
     const dispatch = useDispatch();
 
     const confirm = () => {
-        if (isEthereumSigningTransaction) {
+        if (method === 'ethereumSignTransaction') {
             const values = form.getValues();
             const selectedFeeInfo = feeInfo.levels.find(
                 level => level.label === (values.selectedFee ?? 'normal'),
