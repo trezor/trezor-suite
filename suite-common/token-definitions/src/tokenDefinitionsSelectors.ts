@@ -1,3 +1,4 @@
+import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
@@ -44,4 +45,7 @@ export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => tokens.filter(token => selectCoinDefinition(state, symbol, token.contract as TokenAddress));
+) =>
+    returnStableArrayIfEmpty(
+        tokens.filter(token => selectCoinDefinition(state, symbol, token.contract as TokenAddress)),
+    );
