@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/ConnectSettings.js
 
 import { parseThpSettings } from './thpSettings';
-import { DEEPLINK_VERSION, DEFAULT_DOMAIN, VERSION } from './version';
+import { DEFAULT_DOMAIN, VERSION } from './version';
 import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/settings';
 
 /*
@@ -24,11 +24,10 @@ const initialSettings: ConnectSettings = {
     lazyLoad: false,
     timestamp: new Date().getTime(),
     sharedLogger: true,
-    deeplinkUrl: `${DEFAULT_DOMAIN}deeplink/${DEEPLINK_VERSION}/`,
     transportReconnect: true,
 };
 
-const parseManifest = (manifest?: Manifest) => {
+export const parseManifest = (manifest?: Manifest) => {
     if (!manifest) return;
     if (typeof manifest.email !== 'string') return;
     if (typeof manifest.appUrl !== 'string') return;
@@ -73,15 +72,23 @@ export const corsValidator = (url?: string) => {
         return url;
 };
 
-export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
-    const settings: ConnectSettings = { ...initialSettings };
-    if ('debug' in input) {
-        if (typeof input.debug === 'boolean') {
-            settings.debug = input.debug;
-        } else if (typeof input.debug === 'string') {
-            settings.debug = input.debug === 'true';
+export const parseBoolSetting = <T extends keyof ConnectSettings>(
+    input: Partial<ConnectSettings>,
+    name: T,
+) => {
+    if (name in input) {
+        if (typeof input[name] === 'boolean') {
+            return input[name];
+        } else if (typeof input[name] === 'string') {
+            return input[name] === 'true';
         }
     }
+};
+
+export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
+    const settings: ConnectSettings = { ...initialSettings };
+
+    settings.debug = parseBoolSetting(settings, 'debug');
 
     if (typeof input.connectSrc === 'string') {
         settings.connectSrc = corsValidator(input.connectSrc);

@@ -89,7 +89,7 @@ const initProxyChannel = () => {
     const channel = new ServiceWorkerWindowChannel<{
         type: string;
         method: keyof typeof TrezorConnect;
-        settings: { manifest: Manifest } & Partial<ConnectSettings>;
+        settings: { manifest: Manifest };
     }>({
         name: 'trezor-connect-proxy',
         channel: {

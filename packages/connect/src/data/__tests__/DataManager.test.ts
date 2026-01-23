@@ -15,7 +15,6 @@ const settings = {
     origin: '',
     configSrc: 'NOT-USED-ANYMORE',
     popupSrc: '',
-    deeplinkUrl: '',
     version: '9.0.0',
     priority: 1,
     supportedBrowser: true,

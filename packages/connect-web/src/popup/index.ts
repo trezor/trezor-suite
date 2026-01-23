@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
 import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
-import type { ConnectSettings } from '@trezor/connect/src/types';
+import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import {
@@ -35,13 +35,17 @@ const checkIfTabExists = (tabId: number | undefined) =>
 const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
 
+type Params = Pick<ConnectSettings, 'manifest' | 'popupSrc' | 'env'> & { logger: Log };
+
 export class PopupManager extends EventEmitter {
     private popupWindow:
         | { mode: 'tab'; tab: chrome.tabs.Tab }
         | { mode: 'window'; window: Window }
         | undefined;
 
-    private settings: ConnectSettings;
+    private readonly env: Params['env'];
+    private readonly popupSrc: string;
+    private readonly manifest: Manifest | undefined;
 
     private origin: string;
 
@@ -59,10 +63,12 @@ export class PopupManager extends EventEmitter {
 
     private logger: Log;
 
-    constructor(settings: ConnectSettings, { logger }: { logger: Log }) {
+    constructor({ env, popupSrc, manifest, logger }: Params) {
         super();
-        this.settings = settings;
-        this.origin = getOrigin(settings.popupSrc);
+        this.origin = getOrigin(popupSrc);
+        this.env = env;
+        this.popupSrc = popupSrc;
+        this.manifest = manifest;
         this.logger = logger;
 
         if (this.isWebExtensionWithTab()) {
@@ -129,7 +135,7 @@ export class PopupManager extends EventEmitter {
         const openFn = this.open.bind(this);
         this.locked = true;
 
-        const timeout = this.settings.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
+        const timeout = this.env === 'webextension' ? 1 : POPUP_REQUEST_TIMEOUT;
         this.requestTimeout = setTimeout(() => {
             this.requestTimeout = undefined;
             openFn();
@@ -137,8 +143,7 @@ export class PopupManager extends EventEmitter {
     }
 
     private open() {
-        const src = this.settings.popupSrc;
-        const url = this.buildPopupUrl(src);
+        const url = this.buildPopupUrl();
         this.openWrapper(url);
 
         this.closeInterval = setInterval(() => {
@@ -158,17 +163,17 @@ export class PopupManager extends EventEmitter {
         }, POPUP_CLOSE_INTERVAL);
     }
 
-    private buildPopupUrl(src: string) {
+    private buildPopupUrl() {
         const params = new URLSearchParams();
         params.set('version', VERSION);
-        params.set('env', this.settings.env);
+        params.set('env', this.env);
         // Pass extension ID to popup via query string
-        if (this.settings.env === 'webextension' && chrome?.runtime?.id) {
+        if (this.env === 'webextension' && chrome?.runtime?.id) {
             params.set('extension-id', chrome.runtime.id);
             params.set('cs-ver', CONTENT_SCRIPT_VERSION.toString());
         }
 
-        return src + '?' + params.toString();
+        return this.popupSrc + '?' + params.toString();
     }
 
     private openWrapper(url: string) {
@@ -258,7 +263,7 @@ export class PopupManager extends EventEmitter {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
-                payload: { settings: this.settings },
+                payload: { settings: { manifest: this.manifest } },
             });
             this.handshakePromise?.resolve();
         } else if (message.type === POPUP.CLOSED) {
@@ -327,7 +332,7 @@ export class PopupManager extends EventEmitter {
         // Check if webextension actually has access to chrome.tabs API
         // This is not the case when used in offscreen context
         return (
-            this.settings?.env === 'webextension' &&
+            this.env === 'webextension' &&
             typeof chrome !== 'undefined' &&
             typeof chrome?.tabs !== 'undefined'
         );

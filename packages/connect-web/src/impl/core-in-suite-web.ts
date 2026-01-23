@@ -12,11 +12,17 @@ import {
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
-import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 
-import { parseConnectSettings } from '../connectSettings';
+import {
+    InitParams,
+    getEnv,
+    getGlobalConnectSrc,
+    getPopupSrc,
+    parseBoolSetting,
+    parseManifest,
+} from '../connectSettings';
 import { PopupManager } from '../popup';
 
 /**
@@ -25,47 +31,46 @@ import { PopupManager } from '../popup';
  */
 export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
-    protected _settings: ConnectSettings;
     private _popupManager?: PopupManager;
+    private env: ReturnType<typeof getEnv>;
+    private _manifest: Manifest | undefined;
 
     protected logger: Log;
 
     public constructor() {
-        this._settings = parseConnectSettings();
+        this.env = getEnv();
         this.logger = initLog('@trezor/connect-web');
     }
 
     public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
+        this._manifest = parseManifest(data);
     }
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
-        this._settings = parseConnectSettings();
+        this._manifest = undefined;
 
         return Promise.resolve(undefined);
     }
 
-    public init(settings: InitFullSettings<{}>): Promise<void> {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            ...settings,
-        });
-        this.logger.enabled = !!this._settings.debug;
+    public init({ manifest, connectSrc, debug }: InitParams): Promise<void> {
+        const globalSrc = getGlobalConnectSrc();
+        const _debug = parseBoolSetting({ debug }, 'debug');
+        this._manifest = parseManifest(manifest);
+        const popupSrc = getPopupSrc(globalSrc || connectSrc);
 
-        if (!this._settings.manifest) {
+        this.logger.enabled = !!globalSrc || !!_debug;
+
+        if (!this._manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
         if (!this._popupManager) {
-            this._popupManager = new PopupManager(
-                { ...this._settings, popupSrc: this.getSuiteUrl() },
-                {
-                    logger: this.logger,
-                },
-            );
+            this._popupManager = new PopupManager({
+                manifest: this._manifest,
+                env: this.env,
+                popupSrc,
+                logger: this.logger,
+            });
             this._popupManager.on(DEVICE_EVENT, event => {
                 this.eventEmitter.emit(DEVICE_EVENT, event);
             });
@@ -74,22 +79,6 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         this.logger.debug('initiated');
 
         return Promise.resolve();
-    }
-
-    private getSuiteUrl() {
-        if (this._settings.connectSrc?.startsWith('http://localhost')) {
-            return 'http://localhost:8000/connect-popup';
-        }
-        if (this._settings.connectSrc?.startsWith('https://dev.suite.sldev.cz/connect/')) {
-            const branch = this._settings.connectSrc?.replace(
-                'https://dev.suite.sldev.cz/connect/',
-                '',
-            );
-
-            return `https://dev.suite.sldev.cz/suite-web/${branch}web/connect-popup`;
-        }
-
-        return 'https://suite.trezor.io/web/connect-popup';
     }
 
     /**

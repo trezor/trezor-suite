@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
+import { parseManifest } from '@trezor/connect';
 import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     CallMethodAnyResponse,
@@ -10,41 +11,32 @@ import {
     UiResponseEvent,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type {
-    ConnectSettings,
-    ConnectSettingsPublic,
-    ConnectSettingsWeb,
-    Manifest,
-} from '@trezor/connect/src/types';
+import type { ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
 
-import { parseConnectSettings } from '../connectSettings';
+type InitParams = { manifest?: Manifest };
 
 /**
  * CoreInSuiteDesktop implementation for TrezorConnect factory.
  */
 export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSettingsWeb> {
     public eventEmitter = new EventEmitter();
-    protected _settings: ConnectSettings;
+    protected _manifest: Manifest | undefined;
     private ws: WebsocketClient<{}>;
     private localNetworkPermissionState: PermissionState | 'unknown' = 'unknown';
 
     public constructor() {
-        this._settings = parseConnectSettings();
         this.ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
     }
 
     public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
+        this._manifest = parseManifest(data);
     }
 
     public dispose() {
         this.eventEmitter.removeAllListeners();
-        this._settings = parseConnectSettings();
+        this._manifest = undefined;
         this.ws.dispose();
 
         return Promise.resolve(undefined);
@@ -65,9 +57,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             const response = await this.ws.sendMessage(
                 {
                     type: POPUP.HANDSHAKE,
-                    payload: {
-                        settings: this._settings,
-                    },
+                    payload: { settings: { manifest: this._manifest } },
                 },
                 {
                     // can take a while on slower machines due to loading process info
@@ -85,7 +75,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
         }
     }
 
-    public async init(settings: Partial<ConnectSettingsPublic>): Promise<void> {
+    public async init({ manifest }: InitParams): Promise<void> {
         const permission = await navigator.permissions
             .query({
                 // @ts-expect-error outdated type definitions
@@ -99,24 +89,15 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
             };
         }
 
-        const newSettings = parseConnectSettings({
-            ...this._settings,
-            ...settings,
-        });
+        this._manifest = parseManifest(manifest);
 
         // manifest is required in all implementations. for core-in-suite-desktop, also manifest.appName is required
-        if (!newSettings.manifest || !newSettings.manifest.appName) {
+        if (!this._manifest?.appName) {
             throw ERRORS.TypedError(
                 'Init_ManifestMissing',
                 'Manifest is missing or manifest.appName is not set',
             );
         }
-
-        // defaults
-        if (!newSettings.transports?.length) {
-            newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
-        }
-        this._settings = newSettings;
 
         return await this.connect();
     }

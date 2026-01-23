@@ -5,20 +5,33 @@ import { getSynchronize } from '@trezor/utils';
 import { ERRORS } from '../constants';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
-import type { Manifest } from '../types/settings';
+import type { ConnectSettingsExternal, Manifest } from '../types/settings';
+
+type InitExternalSettings<ExtraSettingsType extends Record<string, any>> = {
+    manifest: Manifest;
+} & Partial<
+    Omit<ConnectSettingsExternal, 'manifest'> &
+        Omit<ExtraSettingsType, keyof ConnectSettingsExternal>
+>;
+
+type ConnectFactoryExternalDependencies<SettingsType extends Record<string, any>> = Omit<
+    ConnectFactoryDependencies<SettingsType>,
+    'init'
+> & {
+    init: (settings: InitExternalSettings<SettingsType>) => Promise<void>;
+};
 
 type TrezorConnectDynamicParams<
     ImplType,
     SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
+    ImplInterface extends ConnectFactoryExternalDependencies<SettingsType>,
 > = {
     implementations: {
         type: ImplType;
         impl: ImplInterface;
     }[];
-    getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
+    getInitTarget: (settings: InitExternalSettings<SettingsType>) => ImplType;
     handleBeforeInit?: () => void;
     handleBeforeCall: () => Promise<void>;
     handleErrorFallback: (errorCode: string) => Promise<boolean>;
@@ -31,8 +44,8 @@ type TrezorConnectDynamicParams<
 export class TrezorConnectDynamic<
     ImplType,
     SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
-> implements ConnectFactoryDependencies<SettingsType> {
+    ImplInterface extends ConnectFactoryExternalDependencies<SettingsType>,
+> implements ConnectFactoryExternalDependencies<SettingsType> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
@@ -62,7 +75,7 @@ export class TrezorConnectDynamic<
         ImplInterface
     >['handleErrorFallback'];
 
-    public lastSettings?: InitFullSettings<SettingsType>;
+    public lastSettings?: InitExternalSettings<SettingsType>;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
 
@@ -120,7 +133,7 @@ export class TrezorConnectDynamic<
         this.getTarget().manifest(manifest);
     }
 
-    public async init(settings: InitFullSettings<SettingsType>) {
+    public async init(settings: InitExternalSettings<SettingsType>) {
         if (!settings?.manifest) {
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
@@ -146,7 +159,7 @@ export class TrezorConnectDynamic<
     }
 
     public setTransports({ transports }: SetTransports) {
-        this.lastSettings = { ...this.lastSettings, transports } as typeof this.lastSettings;
+        // TODO this probably always throws anyway
         this.getTarget().setTransports({ transports });
     }
 

@@ -2,14 +2,15 @@ import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
-    ConnectSettings,
     IFRAME,
     IFrameCallMessage,
+    Manifest,
     POPUP,
     PopupClosedMessage,
     PopupHandshake,
-    parseConnectSettings,
+    parseManifest,
 } from '@trezor/connect';
+import { VERSION } from '@trezor/connect/src/data/version'; // TODO fix
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';
@@ -123,7 +124,7 @@ export const exposeConnectWs = ({
 
         let processOnPort: ProcessInfo | undefined;
         const { origin } = req.headers;
-        let settings: ConnectSettings;
+        let manifest: Manifest | undefined;
         logger.info(LOG_PREFIX, `origin: ${origin}`);
 
         ws.on('error', err => {
@@ -160,7 +161,7 @@ export const exposeConnectWs = ({
 
                     return undefined;
                 });
-                settings = parseConnectSettings(message.payload.settings);
+                manifest = parseManifest(message.payload.settings.manifest);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
@@ -176,7 +177,7 @@ export const exposeConnectWs = ({
                         return;
                     }
                 }
-                if (!settings?.manifest?.appName) {
+                if (!manifest?.appName) {
                     // ts check, should be set - if not set, error should be returned client-side
                     logger.error(LOG_PREFIX, 'settings.manifest.appName not found');
 
@@ -225,11 +226,11 @@ export const exposeConnectWs = ({
                               }
                             : undefined,
                         manifest: {
-                            appName: settings.manifest.appName,
-                            appIcon: settings.manifest.appIcon,
-                            appUrl: settings.manifest.appUrl,
-                            email: settings.manifest.email,
-                            npmVersion: settings.version,
+                            appName: manifest.appName,
+                            appIcon: manifest.appIcon,
+                            appUrl: manifest.appUrl,
+                            email: manifest.email,
+                            npmVersion: VERSION,
                         },
                     });
 

@@ -73,7 +73,7 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         _channel.postMessage(
             {
                 type: POPUP.INIT,
-                payload: { settings },
+                payload: { settings: { manifest: settings.manifest } },
             },
             { usePromise: false },
         ),

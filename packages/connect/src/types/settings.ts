@@ -38,10 +38,13 @@ export type ConnectSettingsTransport =
     | Transport
     | (new (...args: any[]) => Transport);
 
-export interface ConnectSettingsPublic {
+export interface ConnectSettingsExternal {
     manifest?: Manifest;
     connectSrc?: string;
     debug?: boolean;
+}
+
+export interface ConnectSettingsPublic extends ConnectSettingsExternal {
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
     pendingTransportEvent?: boolean;
@@ -72,16 +75,18 @@ export interface ConnectSettingsInternal {
 }
 
 export interface ConnectSettingsWeb {
-    hostLabel?: string;
     coreMode?: 'auto' | 'deeplink' | 'suite-desktop' | 'suite-web';
 }
+
 export interface ConnectSettingsWebextension {
     /** _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
     coreMode?: 'auto' | 'suite-desktop' | 'suite-web';
 }
+
 export interface ConnectSettingsMobile {
-    deeplinkUrl: string;
+    connectSrc?: string;
+    manifest?: Manifest;
     deeplinkOpen?: (url: string) => void;
     deeplinkCallbackUrl?: string;
     coreMode?: 'deeplink';
