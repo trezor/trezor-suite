@@ -1047,6 +1047,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return !!this.sessionAcquired;
     }
 
+    getBusy() {
+        return this.busy;
+    }
+
     isUsedElsewhere() {
         return this.isUsed() && !this.isUsedHere();
     }
