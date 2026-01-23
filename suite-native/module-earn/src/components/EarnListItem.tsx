@@ -1,16 +1,14 @@
-import { useSelector } from 'react-redux';
-
 import { EventType } from '@suite-native/analytics';
 import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useAnalytics } from '@suite-native/services';
-import { NativeStakingRootState, selectStakedBalanceByAccountKey } from '@suite-native/staking';
+import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+import { EarnItem } from '../types';
 import { EarnItemCardanoInfo } from './EarnItemCardanoInfo';
 import { EarnItemInfoModal } from './EarnItemInfoModal';
 import { EarnItemOverviewSection } from './EarnItemOverviewSection';
 import { EarnItemRewardSection } from './EarnItemRewardSection';
-import { EarnItem } from '../types';
 
 const earnItemStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
@@ -28,9 +26,7 @@ export const EarnListItem = (earnItem: EarnListItemProps) => {
     const { bottomSheetRef, openModal } = useBottomSheetModal();
     const analytics = useAnalytics();
 
-    const stakedBalance = useSelector((state: NativeStakingRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
-    );
+    const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
 
     const handlePress = () => {
         openModal();

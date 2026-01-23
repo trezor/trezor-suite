@@ -1,29 +1,26 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
 import { Divider, VStack } from '@suite-native/atoms';
 import {
-    NativeStakingRootState,
     selectIsStakePendingByAccountKey,
     selectRewardsBalanceByAccountKey,
     selectTotalStakePendingByAccountKey,
+    useSelector,
 } from '@suite-native/staking';
 
-import { EarnItemRewardInfo } from './EarnItemRewardInfo';
 import { EarnItem } from '../types';
+import { EarnItemRewardInfo } from './EarnItemRewardInfo';
 
 type EarnItemRewardSectionProps = {} & EarnItem;
 
 export const EarnItemRewardSection = ({ accountKey, symbol }: EarnItemRewardSectionProps) => {
-    const rewardsBalance = useSelector((state: NativeStakingRootState) =>
+    const rewardsBalance = useSelector(state =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 
-    const isStakePending = useSelector((state: NativeStakingRootState) =>
+    const isStakePending = useSelector(state =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
 
-    const totalStakePending = useSelector((state: NativeStakingRootState) =>
+    const totalStakePending = useSelector(state =>
         selectTotalStakePendingByAccountKey(state, accountKey),
     );
 

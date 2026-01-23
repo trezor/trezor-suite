@@ -1,11 +1,9 @@
-import { useSelector } from 'react-redux';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { NativeStakingRootState } from '@suite-native/staking';
+import { useSelector } from '@suite-native/staking';
 import { selectIsCardanoStakedOutsideEverstake } from '@suite-native/staking/src/cardanoStakingSelectors';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -54,7 +52,7 @@ export const AutoStakedBalancesCard = ({
 }: AutoStakedBalancesCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const isAdaStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
+    const isAdaStakedOutsideEverstake = useSelector(state =>
         selectIsCardanoStakedOutsideEverstake(state, accountKey),
     );
 

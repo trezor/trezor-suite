@@ -13364,6 +13364,7 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
 

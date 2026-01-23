@@ -1,11 +1,9 @@
-import { useSelector } from 'react-redux';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { NativeStakingRootState, selectStakedBalanceByAccountKey } from '@suite-native/staking';
+import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const stakingItemStyle = prepareNativeStyle(utils => ({
@@ -46,9 +44,7 @@ export const ManualStakedBalancesCard = ({
 }: ManualStakedBalancesCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const stakedBalance = useSelector((state: NativeStakingRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
-    );
+    const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
 
     if (!symbol) return null;
 

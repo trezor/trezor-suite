@@ -1,14 +1,11 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
-import { AccountsRootState, selectFormattedAccountType } from '@suite-common/wallet-core';
+import { selectFormattedAccountType, useAccoutsSelector } from '@suite-common/wallet-core';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import {
-    NativeStakingRootState,
     selectAPYByAccountKey,
     selectAPYBySymbol,
+    useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -39,17 +36,13 @@ export const EarnItemOverviewSection = ({
 }: EarnItemOverviewSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const formattedAccountType = useSelector((state: AccountsRootState) =>
+    const formattedAccountType = useAccoutsSelector(state =>
         selectFormattedAccountType(state, accountKey),
     );
 
-    const apy = useSelector((state: NativeStakingRootState) =>
-        selectAPYByAccountKey(state, accountKey),
-    );
+    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
 
-    const fallbackApy = useSelector((state: NativeStakingRootState) =>
-        selectAPYBySymbol(state, symbol),
-    );
+    const fallbackApy = useNativeStakingSelector(state => selectAPYBySymbol(state, symbol));
 
     return (
         <HStack

@@ -1,12 +1,12 @@
-import { useSelector } from 'react-redux';
-
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
-import { selectClaimableAmountByAccountKey } from '@suite-native/staking';
-import { NativeStakingRootState } from '@suite-native/staking/src/types';
+import {
+    selectClaimableAmountByAccountKey,
+    useSelector as useNativeStakingSelector,
+} from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type StakeClaimableCardProps = {
@@ -33,11 +33,9 @@ export const StakeClaimableCard = ({
 }: StakeClaimableCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
+    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const claimableAmount = useSelector((state: NativeStakingRootState) =>
+    const claimableAmount = useNativeStakingSelector(state =>
         selectClaimableAmountByAccountKey(state, accountKey),
     );
 

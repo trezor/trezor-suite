@@ -1,9 +1,10 @@
-import { useSelector } from 'react-redux';
-
-import { AccountsRootState } from '@suite-common/wallet-core';
+import { useAccoutsSelector } from '@suite-common/wallet-core';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { NativeStakingRootState, selectAPYByAccountKey } from '@suite-native/staking';
+import {
+    selectAPYByAccountKey,
+    useSelector as useNativeStakingSelector,
+} from '@suite-native/staking';
 import {
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
@@ -14,15 +15,13 @@ type CardanoStakingInfoBannerProps = {
 };
 
 export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBannerProps) => {
-    const apy = useSelector((state: NativeStakingRootState) =>
-        selectAPYByAccountKey(state, accountKey),
-    );
+    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
 
-    const isStakedWithFiveBinaries = useSelector((state: AccountsRootState) =>
+    const isStakedWithFiveBinaries = useAccoutsSelector(state =>
         selectIsCardanoStakedWithFiveBinaries(state, accountKey),
     );
 
-    const isStakedOutsideEverstake = useSelector((state: NativeStakingRootState) =>
+    const isStakedOutsideEverstake = useNativeStakingSelector(state =>
         selectIsCardanoStakedOutsideEverstake(state, accountKey),
     );
 
