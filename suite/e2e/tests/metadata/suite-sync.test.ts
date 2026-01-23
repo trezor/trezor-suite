@@ -111,6 +111,17 @@ test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@
                         ],
                         actions: { right_button: 'Confirm' },
                     },
+                    T3T1: {
+                        body: [
+                            [
+                                'Allow Trezor Suite to use',
+                                '\n',
+                                'Suite Sync with this',
+                                '\n',
+                                'Trezor?',
+                            ],
+                        ],
+                    },
                 });
             }
             await metadataPage.confirmSuiteSyncSetup();
