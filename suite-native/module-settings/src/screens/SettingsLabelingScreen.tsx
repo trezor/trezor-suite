@@ -1,7 +1,7 @@
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
-import { ToggleLabelingCard } from '../components/ToggleLabelingCard';
+import { ToggleSuiteSyncCard } from '../components/ToggleSuiteSyncCard';
 
 export const SettingsSuiteSyncScreen = () => (
     <Screen
@@ -14,6 +14,6 @@ export const SettingsSuiteSyncScreen = () => (
             />
         }
     >
-        <ToggleLabelingCard />
+        <ToggleSuiteSyncCard />
     </Screen>
 );

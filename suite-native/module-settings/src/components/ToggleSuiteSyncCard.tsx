@@ -9,7 +9,7 @@ import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
-export const ToggleLabelingCard = () => {
+export const ToggleSuiteSyncCard = () => {
     const { showAlert } = useAlert();
     const { showToast } = useToast();
     const { suiteSync } = useNativeServices();
