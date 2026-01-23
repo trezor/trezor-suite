@@ -7,6 +7,7 @@ import {
 } from '@suite-common/suite-sync-types';
 import { StaticSessionId } from '@trezor/connect';
 
+import { clearAll } from './data/suiteSyncDataReducer';
 import { suiteSyncActions } from './suiteSyncActions';
 import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
@@ -34,6 +35,8 @@ export const createTurnOffSuiteSync =
             await deps.turnOffSuiteSyncForWallet({ deviceStaticSessionId });
         }
 
+        // NOTE: enforce clearing all data from the suite sync
+        deps.dispatch(clearAll());
         // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
         deps.flushSuiteSyncStorage();
     };
