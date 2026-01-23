@@ -1,6 +1,6 @@
 # Basic Syntax
 
-# If - else
+## If - else
 
 ```tsx
 // bad - we don't like inline-if with else branch, harder to read
@@ -18,7 +18,7 @@ if (condition) {
 if (condition) doSomething();
 ```
 
-# Spacing
+## Spacing
 
 Try to use empty lines as a tool for structuring the code even better.
 

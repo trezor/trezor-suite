@@ -29,7 +29,7 @@ Generally, it’s considered a _good_ practice to not use optimisation technique
 
 Whenever you pass props to a component, prefer passing only the parts that are necessary and avoid passing a whole large object of which only one or two properties are used.
 
-It creates a clearer interface of the component (you could see from right from the interface what is used). And it prevents unnecessary re-renders.
+It creates a clearer interface of the component (you can see right from the interface what is used). And it prevents unnecessary re-renders.
 
 ```tsx
 // good
