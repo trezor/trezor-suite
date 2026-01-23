@@ -1,9 +1,6 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-
 import { RouteProp, useRoute } from '@react-navigation/native';
 
-import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
+import { selectAccountLabel, useAccoutsSelector } from '@suite-common/wallet-core';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -26,9 +23,7 @@ export const StakingDetailScreenHeader = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
     const { accountKey } = route.params;
 
-    const accountLabel = useSelector((state: AccountsRootState) =>
-        selectAccountLabel(state, accountKey),
-    );
+    const accountLabel = useAccoutsSelector(state => selectAccountLabel(state, accountKey));
 
     return (
         <ScreenHeader

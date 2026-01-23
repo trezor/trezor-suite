@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
 import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -11,6 +10,7 @@ import {
     selectIsStakeConfirmingByAccountKey,
     selectIsStakePendingByAccountKey,
     selectTotalStakePendingByAccountKey,
+    useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 import { NativeStakingRootState } from '@suite-native/staking/src/types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -76,18 +76,16 @@ export const StakePendingCard = ({
 }: StakePendingCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
+    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const totalStakePending = useSelector((state: NativeStakingRootState) =>
+    const totalStakePending = useNativeStakingSelector(state =>
         selectTotalStakePendingByAccountKey(state, accountKey),
     );
 
-    const isStakePending = useSelector((state: NativeStakingRootState) =>
+    const isStakePending = useNativeStakingSelector((state: NativeStakingRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
-    const isStakeConfirming = useSelector((state: NativeStakingRootState) =>
+    const isStakeConfirming = useNativeStakingSelector((state: NativeStakingRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
 

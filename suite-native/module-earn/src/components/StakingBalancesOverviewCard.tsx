@@ -1,11 +1,9 @@
-import { useSelector } from 'react-redux';
-
-import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
+import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
 import {
     AUTO_STAKED_SYMBOLS,
-    NativeStakingRootState,
     selectAPYByAccountKey,
     selectRewardsBalanceByAccountKey,
+    useSelector as useNativeStakingSelector,
 } from '@suite-native/staking';
 
 import { AutoStakedBalancesCard } from './AutoStakedBalancesCard';
@@ -20,15 +18,11 @@ export const StakingBalancesOverviewCard = ({
     accountKey,
     handleToggleBottomSheet,
 }: StakingBalancesCardProps) => {
-    const symbol = useSelector((state: AccountsRootState) =>
-        selectAccountNetworkSymbol(state, accountKey),
-    );
+    const symbol = useAccoutsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
-    const apy = useSelector((state: NativeStakingRootState) =>
-        selectAPYByAccountKey(state, accountKey),
-    );
+    const apy = useNativeStakingSelector(state => selectAPYByAccountKey(state, accountKey));
 
-    const rewardsBalance = useSelector((state: NativeStakingRootState) =>
+    const rewardsBalance = useNativeStakingSelector(state =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 
