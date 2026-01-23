@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/analytics-docs",
+    "projectType": "application",
+    "targets": {
+        "build-data": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "yarn workspace @trezor/analytics-docs build-data"
+            }
+        },
+        "dev": {
+            "executor": "nx:run-commands",
+            "dependsOn": ["build-data"],
+            "options": {
+                "command": "yarn workspace @trezor/analytics-docs dev"
+            }
+        }
+    }
+}

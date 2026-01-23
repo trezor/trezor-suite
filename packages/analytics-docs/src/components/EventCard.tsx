@@ -1,0 +1,117 @@
+import { useState } from 'react';
+
+import { Badge, Card, H3, IconButton, InfoItem, Row, Tooltip } from '@trezor/components';
+
+import type { EventDoc } from '../types';
+import { AddedBadge } from './AddedBadge';
+import { AttributesTable } from './AttributesTable';
+import { Changelog } from './Changelog';
+import { LastUpdatedBadge } from './LastUpdatedBadge';
+import { useChangelogButton } from '../useChangelogButton';
+import { Markdown } from './Markdown';
+
+const getIcon = (platform: string) => {
+    switch (platform) {
+        case 'mobile':
+            return 'deviceMobile';
+        case 'desktop':
+            return 'desktop';
+        default:
+            return 'desktopTower';
+    }
+};
+
+const getPlatformDirectory = (platform: string) => {
+    switch (platform) {
+        case 'mobile':
+            return 'suite-native/analytics';
+        case 'desktop':
+            return 'suite/analytics';
+        default:
+            return 'suite-common/analytics-types';
+    }
+};
+
+function toEventName(input: string): string {
+    return (
+        input
+            .split(/[/_-]+/)
+            .map((part, index) =>
+                index === 0
+                    ? part.toLowerCase()
+                    : part.charAt(0).toUpperCase() + part.slice(1).toLowerCase(),
+            )
+            .join('') + 'Event'
+    );
+}
+
+const Header = ({ event }: { event: EventDoc }) => {
+    const [isCopied, setIsCopied] = useState<boolean>(false);
+
+    const { ChangelogButton, isChangelogOpened } = useChangelogButton();
+
+    const getEventUrl = (eventName: string) =>
+        `https://github.com/trezor/trezor-suite/blob/develop/${getPlatformDirectory(event.platform)}/src/events/${toEventName(eventName)}.ts`;
+
+    return (
+        <>
+            <Row justifyContent="space-between" alignItems="center" margin={{ bottom: 8 }}>
+                <Row gap={16} alignItems="center">
+                    <H3>{event.name} </H3>
+                    <Row gap={4}>
+                        <ChangelogButton />
+                        <Tooltip content="Copy event name">
+                            <IconButton
+                                onClick={() => {
+                                    setIsCopied(true);
+                                    navigator.clipboard.writeText(event.name);
+                                    setTimeout(() => setIsCopied(false), 1000);
+                                }}
+                                icon={isCopied ? 'check' : 'copy'}
+                                intent={isCopied ? 'brand' : 'neutral'}
+                                size="small"
+                                priority="secondary"
+                            />
+                        </Tooltip>
+                        <Tooltip content="Open in Github">
+                            <IconButton
+                                href={getEventUrl(event.name)}
+                                icon="arrowLineUpRight"
+                                intent="neutral"
+                                size="small"
+                                priority="secondary"
+                            />
+                        </Tooltip>
+                    </Row>
+                </Row>
+                <Row gap={8} margin={{ vertical: 12 }}>
+                    <AddedBadge>{event.changelog.addedInVersion}</AddedBadge>
+                    <LastUpdatedBadge>{event.changelog.lastUpdatedInVersion}</LastUpdatedBadge>
+
+                    <Badge size="small" intent="neutral" iconRight={getIcon(event.platform)}>
+                        {event.platform}
+                    </Badge>
+                </Row>
+            </Row>
+            {isChangelogOpened && <Changelog>{event.changelog}</Changelog>}
+        </>
+    );
+};
+
+export function EventCard({ event }: { event: EventDoc }) {
+    return (
+        <Card paddingType="small">
+            <Header event={event} />
+            <InfoItem label="Trigger" typographyStyle="label">
+                <Markdown>{event.descriptionTrigger}</Markdown>
+            </InfoItem>
+            {event.description && (
+                <InfoItem label="Description" typographyStyle="label" margin={{ top: 12 }}>
+                    <Markdown>{event.description}</Markdown>
+                </InfoItem>
+            )}
+
+            <AttributesTable attributes={event.attributes ?? {}} />
+        </Card>
+    );
+}

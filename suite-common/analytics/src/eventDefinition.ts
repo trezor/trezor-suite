@@ -6,9 +6,7 @@ export type BaseData = {
     description?: string;
 };
 
-export type AnalyticsBaseAttribute = BaseData & {
-    definition?: string;
-};
+export type AnalyticsBaseAttribute = BaseData;
 
 export type AnalyticsBaseEvent = BaseData & {
     name: string;

@@ -29,8 +29,6 @@ import pol from '../cryptoAssets/networkIcons/pol.svg';
 import polInverse from '../cryptoAssets/networkIcons/pol_inverse.svg';
 import sol from '../cryptoAssets/networkIcons/sol.svg';
 import solInverse from '../cryptoAssets/networkIcons/sol_inverse.svg';
-import trx from '../cryptoAssets/networkIcons/trx.svg';
-import trxInverse from '../cryptoAssets/networkIcons/trx_inverse.svg';
 import xlm from '../cryptoAssets/networkIcons/xlm.svg';
 import xlmInverse from '../cryptoAssets/networkIcons/xlm_inverse.svg';
 import xrp from '../cryptoAssets/networkIcons/xrp.svg';
@@ -67,14 +65,14 @@ export const networkIcons = {
     pol_inverse: polInverse,
     sol: sol,
     sol_inverse: solInverse,
-    trx: trx,
-    trx_inverse: trxInverse,
     xlm: xlm,
     xlm_inverse: xlmInverse,
     xrp: xrp,
     xrp_inverse: xrpInverse,
     zec: zec,
     zec_inverse: zecInverse,
-} as const;
+};
 
-export type NetworkIconName = keyof typeof networkIcons;
+/**
+ * @typedef {keyof typeof networkIcons} NetworkIconName
+ */

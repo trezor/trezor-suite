@@ -14,6 +14,7 @@ type SizeMapArgs = {
 export const mapPaddingTypeToHeaderPadding = ({ $paddingType }: PaddingMapArgs): string => {
     const paddingMap: Record<PaddingType, string> = {
         none: '0',
+        small: `${spacingsPx.xs} ${spacingsPx.sm}`,
         normal: `${spacingsPx.sm} ${spacingsPx.md}`,
         large: `${spacingsPx.md} ${spacingsPx.xl}`,
     };
@@ -24,6 +25,7 @@ export const mapPaddingTypeToHeaderPadding = ({ $paddingType }: PaddingMapArgs):
 export const mapPaddingTypeToContentPadding = ({ $paddingType }: PaddingMapArgs): string => {
     const paddingMap: Record<PaddingType, string> = {
         none: `${spacingsPx.sm} 0 0`,
+        small: `${spacingsPx.md} ${spacingsPx.sm}`,
         normal: `${spacingsPx.lg} ${spacingsPx.md}`,
         large: `${spacingsPx.xl}`,
     };

@@ -16,6 +16,7 @@ import { useElevation } from '../ElevationContext/ElevationContext';
 export const Row = styled.tr<{
     $elevation: Elevation;
     $isCollapsed: boolean;
+    $verticalAlign?: string;
     $isHighlighted: boolean;
     $isHeader: boolean;
     $hasBorderTop: boolean;
@@ -29,6 +30,7 @@ export const Row = styled.tr<{
     &:first-child {
         border-top: 0;
     }
+    ${({ $verticalAlign }) => `vertical-align: ${$verticalAlign};`}
 
     ${({ $isHighlighted, theme, $elevation, $isHeader }) =>
         $isHighlighted &&
@@ -74,6 +76,7 @@ export const Row = styled.tr<{
 export interface TableRowProps {
     children: ReactNode;
     isCollapsed?: boolean;
+    verticalAlign?: string;
     isHighlightedOnHover?: boolean;
     onClick?: () => void;
     onHover?: (isHovering: boolean) => void;
@@ -86,6 +89,7 @@ export const TableRow = ({
     isCollapsed = false,
     onClick,
     onHover,
+    verticalAlign,
     isHighlightedOnHover,
     hasBorderTop,
     'data-testid': dataTestId,
@@ -97,6 +101,7 @@ export const TableRow = ({
     return (
         <Row
             $elevation={elevation}
+            $verticalAlign={verticalAlign}
             $isCollapsed={isCollapsed}
             $isHighlighted={isHighlightedOnHover ?? isRowHighlightedOnHover}
             $isHeader={isHeader}
