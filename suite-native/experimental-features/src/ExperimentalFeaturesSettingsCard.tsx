@@ -64,7 +64,6 @@ export const ExperimentalFeaturesSettingsCard = () => {
         enabledFeatures?.forEach(featureKey =>
             EXPERIMENTAL_FEATURES[featureKey]?.onToggle?.({
                 newValue: !areExperimentalFeaturesAllowed,
-                dispatch,
                 services,
             }),
         );

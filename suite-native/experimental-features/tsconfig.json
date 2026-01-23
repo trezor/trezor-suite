@@ -2,10 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/suite-sync"
-        },
-        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
