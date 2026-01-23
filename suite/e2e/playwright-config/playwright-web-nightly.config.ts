@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import { tagsCanary, tagsNightly } from './projectTags';
 import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 const target = PlaywrightTarget.Web;
 
@@ -14,37 +15,45 @@ const target = PlaywrightTarget.Web;
 const config = defineConfig({
     ...baseConfig,
     projects: [
-        new PlaywrightProjectBuilder(target, 'T3W1').build(),
-        new PlaywrightProjectBuilder(target, 'T3T1').build(),
-        new PlaywrightProjectBuilder(target, 'T3B1').build(),
-        new PlaywrightProjectBuilder(target, 'T2T1').build(),
-        new PlaywrightProjectBuilder(target, 'T1B1').build(),
-        new PlaywrightProjectBuilder(target, 'no_device').addGrep(/(?=.*@noDevice)/).build(),
+        new PlaywrightProjectBuilder(target, 'T3W1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, 'T3T1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, 'T3B1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, 'T2T1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, 'T1B1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, 'no_device')
+            .addGrep(/(?=.*@noDevice)/)
+            .setCurrentsTags(tagsNightly)
+            .build(),
         // FW Canary projects
         new PlaywrightProjectBuilder(target, 'T3W1', 'fw_canary')
             .setFirmwareVersion('2-main')
             .setGrep(/(?=.*@T3W1)(?=.*@webOnly)/)
             .addGrepInvert(/@specificFirmware/)
+            .setCurrentsTags(tagsCanary)
             .build(),
         new PlaywrightProjectBuilder(target, 'T3T1', 'fw_canary')
             .setFirmwareVersion('2-main')
             .setGrep(/(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/)
             .addGrepInvert(/@specificFirmware/)
+            .setCurrentsTags(tagsCanary)
             .build(),
         new PlaywrightProjectBuilder(target, 'T3B1', 'fw_canary')
             .setFirmwareVersion('2-main')
             .setGrep(/(?=.*@T3B1)(?=.*@webOnly)/)
             .addGrepInvert(/@specificFirmware/)
+            .setCurrentsTags(tagsCanary)
             .build(),
         new PlaywrightProjectBuilder(target, 'T2T1', 'fw_canary')
             .setFirmwareVersion('2-main')
             .setGrep(/(?=.*@T2T1)(?=.*@webOnly)/)
             .addGrepInvert(/@specificFirmware/)
+            .setCurrentsTags(tagsCanary)
             .build(),
         new PlaywrightProjectBuilder(target, 'T1B1', 'fw_canary')
             .setFirmwareVersion('1-main')
             .setGrep(/(?=.*@T1B1)(?=.*@webOnly)/)
             .addGrepInvert(/@specificFirmware/)
+            .setCurrentsTags(tagsCanary)
             .build(),
     ],
 });

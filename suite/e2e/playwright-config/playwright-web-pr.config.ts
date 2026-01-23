@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import { tagsPr } from './projectTags';
 import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 
 const target = PlaywrightTarget.Web;
@@ -18,26 +19,32 @@ const config = defineConfig({
         new PlaywrightProjectBuilder(target, 'T3W1')
             .setGrep(/(?=.*@T3W1)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
         new PlaywrightProjectBuilder(target, 'T3T1', 'smoke')
             .setGrep(/(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
         new PlaywrightProjectBuilder(target, 'T3B1')
             .setGrep(/(?=.*@T3B1)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
         new PlaywrightProjectBuilder(target, 'T2T1')
             .setGrep(/(?=.*@T2T1)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
         new PlaywrightProjectBuilder(target, 'T1B1')
             .setGrep(/(?=.*@T1B1)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
         new PlaywrightProjectBuilder(target, 'no_device')
             .setGrep(/(?=.*@noDevice)(?=.*@webOnly)/)
             .addGrepInvert(/@nightlyOnly/)
+            .setCurrentsTags(tagsPr)
             .build(),
     ],
 });

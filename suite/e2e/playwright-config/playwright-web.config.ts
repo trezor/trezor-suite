@@ -2,6 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import { tagsRelease } from './projectTags';
 import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 const target = PlaywrightTarget.Web;
 /*
@@ -12,12 +13,15 @@ const target = PlaywrightTarget.Web;
 const config = defineConfig({
     ...baseConfig,
     projects: [
-        new PlaywrightProjectBuilder(target, 'T3W1').build(),
-        new PlaywrightProjectBuilder(target, 'T3T1').build(),
-        new PlaywrightProjectBuilder(target, 'T3B1').build(),
-        new PlaywrightProjectBuilder(target, 'T2T1').build(),
-        new PlaywrightProjectBuilder(target, 'T1B1').build(),
-        new PlaywrightProjectBuilder(target, 'no_device').addGrep(/(?=.*@noDevice)/).build(),
+        new PlaywrightProjectBuilder(target, 'T3W1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, 'T3T1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, 'T3B1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, 'T2T1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, 'T1B1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, 'no_device')
+            .addGrep(/(?=.*@noDevice)/)
+            .setCurrentsTags(tagsRelease)
+            .build(),
     ],
 });
 

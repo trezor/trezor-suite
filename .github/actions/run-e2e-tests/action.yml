@@ -35,9 +35,6 @@ inputs:
     description: "Custom CI build ID for Currents reporting, default is pr-run-RUN_ID-RUN_ATTEMPT"
     required: false
     default: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
-  currents-tags:
-    description: "Additional tags for Currents reporting"
-    required: false
   e2e-passphrase:
     description: "Passphrase for E2E tests"
     required: true
@@ -102,7 +99,6 @@ runs:
         CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
         CURRENTS_RECORD_KEY: ${{ inputs.currents-record-key }}
         CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
-        CURRENTS_TAG: ${{ inputs.currents-tags }}
         GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
         PASSPHRASE: ${{ inputs.e2e-passphrase }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
