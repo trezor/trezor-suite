@@ -8,7 +8,7 @@
 
 Copy in the app may change as translators and copywriters update the strings in Crowdin, independently from developers. To avoid failing tests in Crowdin sync PRs, get a string by its translation ID instead of using the literal text.
 
-```
+```ts
 // bad
 expect(screen.getByText(
 	'This can change with a Crowdin sync and someone will have to fix the test.'
