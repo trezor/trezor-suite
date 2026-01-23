@@ -24,7 +24,7 @@ export const ExperimentalFeatureRow = ({ featureKey }: { featureKey: Experimenta
     const { titleKey, descriptionKey, onToggle } = EXPERIMENTAL_FEATURES[featureKey];
 
     const handleChange = () => {
-        onToggle?.({ newValue: !isFeatureEnabled, dispatch, services });
+        onToggle?.({ newValue: !isFeatureEnabled, services });
 
         if (isFeatureEnabled) {
             dispatch(disableExperimentalFeature(featureKey));
