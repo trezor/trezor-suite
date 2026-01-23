@@ -2,6 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { toGetter } from '@suite-common/redux-utils';
 import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
@@ -36,7 +37,7 @@ import { createEnsureWalletSuiteSyncOn } from './storage/createEnsureWalletSuite
 import { createSubscriptionStorage } from './storage/createSubscriptionStorage';
 import { createSuiteSyncStorageRepository } from './storage/createSuiteSyncStorageRepository';
 import { createTurnOffSuiteSyncForWallet } from './storage/createTurnOffSuiteSyncForWallet';
-import { selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
+import { selectIsSuiteSyncEnabled, selectSuiteSyncRelayUrl } from './suiteSyncSelectors';
 
 type CreateSuiteSyncCompositionRootDeps = {
     getState: () => any;
@@ -94,7 +95,7 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncStorageRepository,
         createSuiteStorage: deps.createSuiteStorage,
         defaultRelayUrl: DEFAULT_SUITE_SYNC_RELAY_URL,
-        getRelayUrl: () => selectSuiteSyncRelayUrl(deps.getState()),
+        getRelayUrl: toGetter(deps.getState, selectSuiteSyncRelayUrl),
         getDeviceForStaticSessionId,
     });
 
@@ -121,7 +122,7 @@ export const createSuiteSyncCompositionRoot = (
         subscriptionStorage,
     });
 
-    const getAllDeviceSessionIds = () => selectAllDeviceStaticIds(deps.getState());
+    const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -139,7 +140,7 @@ export const createSuiteSyncCompositionRoot = (
             reloadApp: deps.reloadApp,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
-            getState: deps.getState,
+            getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
             dispatch: deps.dispatch,
             ensureWalletSuiteSyncOn,
         }),

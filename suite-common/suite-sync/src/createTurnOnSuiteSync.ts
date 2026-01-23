@@ -1,21 +1,19 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { TurnOnSuiteSync } from '@suite-common/suite-sync-types';
-import { EnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types/src/storage/ensureWalletSuiteSyncOn';
+import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
 import { suiteSyncActions } from './suiteSyncActions';
-import { selectIsSuiteSyncEnabled } from './suiteSyncSelectors';
 
 export type CreateTurnOnSuiteSyncDeps = {
-    getState: () => any;
+    getIsSuiteSyncEnabled: () => boolean;
     dispatch: Dispatch;
 } & EnsureWalletSuiteSyncOnDep;
 
 export const createTurnOnSuiteSync =
     (deps: CreateTurnOnSuiteSyncDeps): TurnOnSuiteSync =>
     async ({ deviceStaticSessionId }) => {
-        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(deps.getState());
+        const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
 
         if (isSuiteSyncEnabled) {
             return ok();
