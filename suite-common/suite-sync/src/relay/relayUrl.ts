@@ -4,4 +4,4 @@ import { isDevEnv } from '@suite-common/suite-utils';
 
 export const DEFAULT_SUITE_SYNC_RELAY_URL = isDevEnv
     ? 'https://suite-sync.suite.sldev.cz/evolu/'
-    : 'https://suite-sync.trezor.io/';
+    : 'https://suite-sync.trezor.io/evolu/';
