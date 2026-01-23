@@ -24,13 +24,16 @@
         },
         "type-check": {
             "dependsOn": [
-                "default",
                 "^type-check",
                 "^guide-pull-content",
                 "guide-pull-content",
                 "@suite-common/message-system:build:lib"
             ],
-            "inputs": ["{workspaceRoot}/tsconfig.base.json", "{workspaceRoot}/tsconfig.lib.json"],
+            "inputs": [
+                "default",
+                "{workspaceRoot}/tsconfig.base.json",
+                "{workspaceRoot}/tsconfig.lib.json"
+            ],
             "outputs": ["{projectRoot}/libDev"],
             "cache": true
         },
