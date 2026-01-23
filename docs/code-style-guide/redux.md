@@ -10,9 +10,9 @@
 
 Co-locating logic for a given feature in one place typically makes it easier to maintain that code. This is also known as the ["ducks" pattern](https://github.com/erikras/ducks-modular-redux). While older Redux codebases often used a "file-by-type" approach with separate folders for "actions" and "reducers", keeping related logic together makes it easier to find and update that code.
 
-This [Single-File approach](https://redux.js.org/style-guide/#structure-files-as-feature-folders-with-single-file-logic) is **strongly recommended by official Redux Style Guide** and offers many benefits over a "file-by-type" structure. In our case in monorepo, we do something similar but with packages and folders. Usually we have one package per feature or in some specific cases we have packages where you have multiple feature folders. Benefits of this approach:
+This [Single-File approach](https://redux.js.org/style-guide/#structure-files-as-feature-folders-with-single-file-logic) is **strongly recommended by official Redux Style Guide** and offers many benefits over a "file-by-type" structure. In our case, in our monorepo, we do something similar but with packages and folders. Usually we have one package per feature or in some specific cases we have packages where you have multiple feature folders. Benefits of this approach:
 
-1. **Co-locating logic makes maintenance easier** - Redux code is usually closely tied-up. Are you changing an action? You probably need to update a reducer. Are you changing state shape? You will need to update selectors.
+1. **Co-locating logic makes maintenance easier** - Redux code is usually closely tied-up. Are you changing an action? You probably need to update a reducer. Are you changing the state shape? You will need to update selectors.
 2. **Faster setup and less file system noise** - instead of creating two, three or maybe even four files (actions, reducers, selectors, thunks) in multiple folders you can quickly create all files you need in one folder.
 
 ### Examples of file/folder structure
@@ -111,7 +111,7 @@ const myThunk = createThunk('myThunk', ({ accountKey }, { getState }) => {
 });
 ```
 
-If you decide to refactor for example whole transaction data structure in reducer state, you won’t need to change in every place where accessed. Only place where you will need do changes is that selector. You won’t need to go over all components where you are accessing transactions. That’s a huge benefit 🎉
+If you decide to refactor, for example, the whole transaction data structure in the reducer state, you won't need to make changes in every place where it's accessed. The only place where you will need to make changes is that selector. You won't need to go over all components where you are accessing transactions. That's a huge benefit 🎉
 
 ### Using selectors in components
 
@@ -180,7 +180,7 @@ await TrezorConnect.init({
 });
 ```
 
-- For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the sate (if business logic deems no data better than not-up-to-date data)
+- For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the state (if business logic deems no data better than not-up-to-date data)
 - When using async thunks in effects, cancel the action by calling the [abort() method](https://redux-toolkit.js.org/api/createAsyncThunk#canceling-while-running) in effect cleanup.
 
 ## Middlewares

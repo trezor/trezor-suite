@@ -10,10 +10,7 @@ To address this, TS3.9 ships with a new single-line comment directive: `// @ts-
 
 This directive operates in the same manner as `@ts-ignore`, but will error if the line it's meant to be suppressing doesn't actually contain an error, making it a lot safer.
 
-<aside>
-💡 Sometimes in very rare cases you may still need `@ts-ignore`. In that case you need to disable eslint for that line first; otherwise, eslint will automatically change it to `@ts-expect-error`.
-
-</aside>
+> 💡 Sometimes in very rare cases you may still need `@ts-ignore`. In that case you need to disable eslint for that line first; otherwise, eslint will automatically change it to `@ts-expect-error`.
 
 ## Prefer `unknown` to `any`
 
@@ -55,7 +52,7 @@ Direct assignment may add an import, but it prevents the need to refactor if the
 
 ## Consider using const assertion on objects instead of TS enums
 
-See https://www.youtube.com/watch?v=0fTdCSH_QEU. TypeScript enums are not native to JavaScript sometimes behave unpredictably. The desired functionality can be achieved using plain objects. Follow the same naming conventions as you would with enums. Despite the name of the object and the type are the same, TypeScript is able to tell them apart.
+See https://www.youtube.com/watch?v=0fTdCSH_QEU. TypeScript enums are not native to JavaScript and sometimes behave unpredictably. The desired functionality can be achieved using plain objects. Follow the same naming conventions as you would with enums. Despite the object and the type having the same name, TypeScript is able to tell them apart.
 
 ```tsx
 // definition

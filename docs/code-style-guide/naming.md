@@ -44,7 +44,7 @@ function enterTHPPairingCode;
 
 ```
 
-# Suite specific naming
+## Suite specific naming
 
 Recommended naming for some Suite specific stuff.
 
@@ -88,7 +88,7 @@ const formatFiatCurrency = value => value;
 
 ### Assets
 
-Assets is currently only mobile related thing (requested by product), but this probably go into desktop suite too in future. **Asset is just different name for group of accounts for the same network.**
+Assets are currently only a mobile-related thing (requested by product), but this will probably go into desktop suite too in future. **Asset is just different name for group of accounts for the same network.**
 
 ```tsx
 // We want to show all accounts of given network type
@@ -108,7 +108,7 @@ const AssetsAccountsListScreen = () => <Screen />;
 // We want to show Account Detail
 
 // bad
-// Asset is not single account but all account of given type
+// Asset is not single account but all accounts of given type
 const AssetDetailScreen = () => <Screen />;
 
 // good
