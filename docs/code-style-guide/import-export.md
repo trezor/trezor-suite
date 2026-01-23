@@ -20,7 +20,7 @@ import { colors, Color } from './colors';
 const getColor = (colorName: Color) => colors[colorName];
 ```
 
-Babel see that `Color` is used as type and can safely remove `Color` from code even when it doesn't see context of other.So what will happen if `babel` can't tell from usage if it's import or value? Consider this code:
+Babel see that `Color` is used as type and can safely remove `Color` from code even when it doesn't see context of other files. So what will happen if `babel` can't tell from usage if it's import or value? Consider this code:
 
 ```
 import { Color } from './colors';

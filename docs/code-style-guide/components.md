@@ -17,7 +17,7 @@ The following structure is just a recommendation, in fact it’s not even always
 1. Redux selectors _(aka global state)_
 2. `useState` _(aka local state)_
 3. Non-effect hooks: `useRef`, `useForm`, `useDispatch`, etc
-    1. This one is tricky. Consistency among the non-effect hook order is perhaps too redundant, although I would always put `uesForm` first, for example. Try to place them in the order of subjective importance.
+    1. This one is tricky. Consistency among the non-effect hook order is perhaps too redundant, although I would always put `useForm` first, for example. Try to place them in the order of subjective importance.
 4. Effects
 5. Functions / callbacks
 6. Values / components

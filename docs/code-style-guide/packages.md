@@ -8,8 +8,8 @@ Use command `yarn generate-package @scope/newPackageName`. For example using nam
 | ------------- | ------------- | --------------------------------------------- | -------------------------- |
 | @trezor\*     | /packages     | public packages used by Suite & third parties | No other scope!            |
 | @suite-common | /suite-common | code shared between @suite and @suite native  | @trezor                    |
-| @suite-native | /suite-native | mobile Suite                                  | @trezor and @trezor-common |
-| @suite        | /suite        | desktop & web Suite                           | @trezor and @trezor-common |
+| @suite-native | /suite-native | mobile Suite                                  | @trezor and @suite-common  |
+| @suite        | /suite        | desktop & web Suite                           | @trezor and @suite-common  |
 
 \* TODO: @trezor was originally the only scope in the monorepo and some packages (including desktop entry point!) should be in the @suite scope instead
 

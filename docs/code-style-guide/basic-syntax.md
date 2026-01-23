@@ -62,7 +62,7 @@ Functions accepting multiple parameters tend to be less readable and more error-
 🔴 Confusing function call with many arguments:
 
 ```tsx
-const logAnimalNames = (cat: string, dog: string, guineaPig?: string, showHeading?: boolean;) => {
+const logAnimalNames = (cat: string, dog: string, guineaPig?: string, showHeading?: boolean) => {
 	if (showHeading) {
 		console.log("My Animals");
 	}
@@ -70,7 +70,7 @@ const logAnimalNames = (cat: string, dog: string, guineaPig?: string, showHeadin
 	console.log(dog);
 	if (guineaPig) {
 		console.log(guineaPig);
-	};
+	}
 };
 
 logAnimalNames("Nancy", "Rob", null, true);

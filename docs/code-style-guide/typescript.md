@@ -2,7 +2,7 @@
 
 ## Prefer `@ts-expect-error` to `@ts-ignore`
 
-TypeScript allows you to suppress all errors on a line by placing a single-line comment or a comment block line starting with `@ts-ignore`immediately before the erroring line. While powerful, there is no way to know if a `@ts-ignore` is actually suppressing an error without manually investigating what happens when the `@ts-ignore` is removed.
+TypeScript allows you to suppress all errors on a line by placing a single-line comment or a comment block line starting with `@ts-ignore` immediately before the erroring line. While powerful, there is no way to know if a `@ts-ignore` is actually suppressing an error without manually investigating what happens when the `@ts-ignore` is removed.
 
 This means it's easy for `@ts-ignore`s to be forgotten about and remain in code even after the error they were suppressing is fixed. This is dangerous, as if a new error arises on that line, it'll be suppressed by the forgotten about `@ts-ignore`, and so be missed.
 
@@ -11,7 +11,7 @@ To address this, TS3.9 ships with a new single-line comment directive: `// @ts-
 This directive operates in the same manner as `@ts-ignore`, but will error if the line it's meant to be suppressing doesn't actually contain an error, making it a lot safer.
 
 <aside>
-💡 Sometime in very rare cases you may still need `@ts-ignore`. In that case you need to disable eslint for that line first otherwise, eslint will automatically change it `@ts-expect-error` .
+💡 Sometimes in very rare cases you may still need `@ts-ignore`. In that case you need to disable eslint for that line first; otherwise, eslint will automatically change it to `@ts-expect-error`.
 
 </aside>
 
@@ -51,7 +51,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 const doSomething = (networkSymbol: NetworkSymbol) => {};
 ```
 
-Direct assignment may add an import, but it prevents the need to refactor if the `NetworkSymbol` detaches from `Account`, is easer to read and makes it easier to navigate to the `NetworkSymbol` type definition in the editor.
+Direct assignment may add an import, but it prevents the need to refactor if the `NetworkSymbol` detaches from `Account`, is easier to read and makes it easier to navigate to the `NetworkSymbol` type definition in the editor.
 
 ## Consider using const assertion on objects instead of TS enums
 

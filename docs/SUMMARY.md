@@ -11,7 +11,7 @@
     - [Redux](./code-style-guide/redux.md)
     - [Naming](./code-style-guide/naming.md)
     - [Tests](./code-style-guide/tests.md)
-    - [Comments](./code-style-guide/tests.md)
+    - [Comments](./code-style-guide/comments.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)

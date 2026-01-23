@@ -41,7 +41,7 @@ myPackageSelectors.ts;
     const actionPrefix = `${packageName}/${sliceName}`;
     ```
 
-2. **Slice State type** - this type is used to describe how state will look like and also serves as a simple docuemntation. Name follows pattern `${sliceName}State`.
+2. **Slice State type** - this type is used to describe how state will look like and also serves as a simple documentation. Name follows pattern `${sliceName}State`.
 
     ```tsx
     export interface AppSettingsState {
@@ -105,7 +105,7 @@ const language = useSelector(selectLanguage);
 const myThunk = createThunk('myThunk', ({ accountKey }, { getState }) => {
     // bad
     const transactions = getState().wallet.transactions[accountKey];
-    const language = useSelector(getState().settings.language);
+    const language = getState().settings.language;
 
     // good
     const transactions = selectTransactions(getState(), accountKey);

@@ -119,7 +119,7 @@ const AccountDetailScreen = () => <Screen />;
 // We want to show overview of balances (or anything) per network
 
 // bad
-// Accounts are groupped and hidden under single item per network for assets
+// Accounts are grouped and hidden under single item per network for assets
 // so it's not list of individual accounts.
 const AccountsList = () => <... />;
 
