@@ -2,7 +2,7 @@ import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { Icon } from '@suite-native/icons';
 
-import { AnimatedBox } from '../Box';
+import { AnimatedBox } from '../AnimatedBox';
 import { PressableOpacity } from '../Pressable';
 
 export type SearchInputClearButtonProps = {
