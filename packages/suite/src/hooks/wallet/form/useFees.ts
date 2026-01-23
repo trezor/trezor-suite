@@ -14,7 +14,20 @@ import { useDispatch } from 'src/hooks/suite';
 
 import { SendContextValues } from '../../../types/wallet/sendForm';
 
-interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
+export type FeesFormValues = Pick<
+    FormState,
+    | 'feeLimit'
+    | 'estimatedFeeLimit'
+    | 'outputs'
+    | 'selectedFee'
+    | 'estimatedFeeLimit'
+    | 'feePerUnit'
+    | 'maxPriorityFeePerGas'
+    | 'maxFeePerGas'
+    | 'baseFeePerGas'
+>;
+
+interface Props<TFieldValues extends FeesFormValues> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];
     feeInfo?: FeeInfo;
     onChange?: (prev?: FeeLevel['label'], current?: FeeLevel['label']) => void;
@@ -24,7 +37,7 @@ interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValu
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
-export const useFees = <TFieldValues extends FormState>({
+export const useFees = <TFieldValues extends FeesFormValues>({
     defaultValue,
     feeInfo,
     onChange,

@@ -1,6 +1,10 @@
 import { useMemo } from 'react';
 
-import type { JsonRpcScanParams } from '@blockaid/client/resources/evm';
+import type {
+    AccountSummary,
+    JsonRpcScanParams,
+    TransactionSimulation,
+} from '@blockaid/client/resources/evm';
 
 import { ConnectPopupCall } from '@suite-common/connect-popup';
 import { commonQueryKeys, useQuery } from '@suite-common/react-query';
@@ -9,7 +13,12 @@ import type { EthereumSignTransaction, EthereumSignTypedData } from '@trezor/con
 
 import { client } from './client';
 
-function useTxSimulationEVM(input?: JsonRpcScanParams) {
+export type { TransactionSimulation, AccountSummary };
+
+function useTxSimulationEVM(
+    input?: JsonRpcScanParams,
+    onSuccess?: (result: TxSimulationResult) => void,
+) {
     return useQuery({
         enabled: Boolean(input),
         queryKey: commonQueryKeys.txSimulationEVM(input),
@@ -20,17 +29,28 @@ function useTxSimulationEVM(input?: JsonRpcScanParams) {
                 simulationResult.validation?.result_type === 'Warning' ||
                 simulationResult.simulation?.status === 'Error';
 
-            return {
+            const result = {
                 ...simulationResult,
                 needsDisclaimer,
             };
+
+            onSuccess?.(result);
+
+            return result;
         },
     });
 }
 
 export type TxSimulationResult = NonNullable<ReturnType<typeof useTxSimulationEVM>['data']>;
 
-export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
+interface UseTxSimulationConnectPopupProps {
+    onTxSimulationSuccess?: (result: TxSimulationResult) => void;
+}
+
+export const useTxSimulationConnectPopup = (
+    popupCall: ConnectPopupCall | undefined,
+    { onTxSimulationSuccess }: UseTxSimulationConnectPopupProps = {},
+) => {
     const payload = useMemo(() => {
         // Transform payload to the format expected by the tx simulation API
         if (popupCall?.state !== 'tx-simulation' || !popupCall.payload) return undefined;
@@ -108,7 +128,7 @@ export const useTxSimulationConnectPopup = (popupCall?: ConnectPopupCall) => {
         }
     }, [popupCall]);
 
-    const txSimulationQuery = useTxSimulationEVM(payload);
+    const txSimulationQuery = useTxSimulationEVM(payload, onTxSimulationSuccess);
 
     return {
         txSimulationQuery,

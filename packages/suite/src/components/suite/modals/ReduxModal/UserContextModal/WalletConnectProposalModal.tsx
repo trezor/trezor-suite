@@ -279,7 +279,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                 {(dappScanQuery.data?.isMalicious || pendingProposal.isScam) && (
                     <TxSimulationBanner
                         type="error"
-                        title={<Translation id="TR_WALLETCONNECT_IS_SCAM" />}
+                        title="TR_WALLETCONNECT_IS_SCAM"
                         description={<></>}
                         disclaimerAccepted={ignoreWarning}
                         setDisclaimerAccepted={setIgnoreWarning}
