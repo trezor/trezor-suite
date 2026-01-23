@@ -86,6 +86,17 @@ export class PlaywrightProjectBuilder {
         return this;
     }
 
+    setCurrentsTags(tags: string[]): this {
+        this.project.metadata = {
+            ...this.project.metadata,
+            pwc: {
+                tags,
+            },
+        };
+
+        return this;
+    }
+
     build(): Project {
         return this.project;
     }
