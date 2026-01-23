@@ -1,9 +1,7 @@
+import { MessageSystemRootState } from '@suite-common/message-system';
 import { launchArguments } from '@suite-native/config';
 
-import { useIsFirmwareUpdateFeatureEnabled as useOriginalFirmwareUpdateFeatureEnabled } from './useIsFirmwareUpdateFeatureEnabled';
+import { selectIsFirmwareUpdateFeatureEnabled as selectOriginalIsFirmwareUpdateFeatureEnabled } from './selectIsFirmwareUpdateFeatureEnabled';
 
-export const useIsFirmwareUpdateFeatureEnabled = () => {
-    const isFirmwareUpdateEnabled = useOriginalFirmwareUpdateFeatureEnabled();
-
-    return launchArguments.isFirmwareUpdateEnabled ?? isFirmwareUpdateEnabled;
-};
+export const selectIsFirmwareUpdateFeatureEnabled = (state: MessageSystemRootState) =>
+    launchArguments.isFirmwareUpdateEnabled ?? selectOriginalIsFirmwareUpdateFeatureEnabled(state);

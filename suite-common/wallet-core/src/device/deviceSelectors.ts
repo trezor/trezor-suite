@@ -595,12 +595,6 @@ export const selectDeviceUpdateFirmwareVersion = (state: DeviceRootState) => {
     return device ? getFwUpdateVersion(device) : null;
 };
 
-export const selectIsLatestFirmwareInstalled = createMemoizedSelector(
-    [selectDeviceFirmwareVersionArray, selectDeviceUpdateFirmwareVersion],
-    (deviceFirmwareVersion, updateFirmwareVersion) =>
-        deviceFirmwareVersion?.join('.') === updateFirmwareVersion,
-);
-
 export const selectFirmwareChangelog = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
     const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(state);
@@ -698,4 +692,9 @@ export const selectSuiteSyncOwnerForDeviceStaticId = createMemoizedSelector(
     (devices, deviceStaticId) =>
         devices.find(device => device.state?.staticSessionId === deviceStaticId)?.suiteSyncOwner ??
         null,
+);
+
+export const selectSelectedDevicesOwnerId = createMemoizedSelector(
+    [selectSelectedDevice],
+    selectedDevice => selectedDevice?.suiteSyncOwner ?? null,
 );
