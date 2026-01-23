@@ -1,4 +1,3 @@
-import type { ThpState } from './ThpState';
 import { ThpMessageSyncBit, ThpPairingMethod } from './messages';
 import { THP_CONTROL_BYTE } from '../protocol-v2/constants';
 
@@ -77,60 +76,6 @@ export const getExpectedResponses = (bytes: Buffer) => {
     }
 
     return [];
-};
-
-// get expected responses from ThpState (stored as numbers)
-// and join them with the channel to receive 3 bytes header
-export const getExpectedHeaders = (state: ThpState): Buffer[] =>
-    [...state.expectedResponses, THP_CONTROL_BYTE.ERROR] // error could be sent any time
-        .map(resp => {
-            switch (resp) {
-                case THP_CONTROL_BYTE.CONTINUATION_PACKET:
-                    return Buffer.from([resp]); // THP_CONTROL_BYTE.CONTINUATION_PACKET is not masked with sequence bit
-                case THP_CONTROL_BYTE.ACK_MESSAGE:
-                    return addAckBit(resp, state.sendAckBit);
-                default:
-                    return addSequenceBit(resp, state.recvBit);
-            }
-        })
-        .map(magic => Buffer.concat([magic, state.channel]));
-
-export const isExpectedResponse = (bytes: Buffer, state: ThpState) => {
-    if (bytes.length < 3) {
-        // ignore messages with minimum info
-        return false;
-    }
-
-    const header = readThpHeader(bytes);
-    if (header.channel.compare(state.channel) !== 0) {
-        // ignore messages from different channels
-        return false;
-    }
-
-    const { magic } = header;
-    if (magic === THP_CONTROL_BYTE.ERROR) {
-        // ThpError is always expected
-        return true;
-    }
-
-    const { expectedResponses } = state;
-    for (let i = 0; i < expectedResponses.length; i++) {
-        if (magic === expectedResponses[i]) {
-            // continuation packet is not masked by controlBit
-            if (
-                magic !== THP_CONTROL_BYTE.CONTINUATION_PACKET &&
-                (header.sequenceBit !== state?.recvBit || header.ackBit !== state?.recvAckBit)
-            ) {
-                console.warn('Unexpected control bit');
-
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    return false;
 };
 
 export const isThpMessageName = (name: string) =>

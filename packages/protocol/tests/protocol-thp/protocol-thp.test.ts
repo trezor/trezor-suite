@@ -1,12 +1,10 @@
 import {
     ThpState,
     decode,
-    decodeSendAck,
     encode,
     encodeAck,
     getExpectedResponses,
     isAckExpected,
-    isExpectedResponse,
 } from '../../src/protocol-thp';
 import { decode as decodeV2 } from '../../src/protocol-v2';
 
@@ -86,21 +84,6 @@ describe('protocol-thp', () => {
         expect(thpError.message).toMatchObject({
             code: 'ThpUnallocatedChannel',
         });
-    });
-
-    it('decodeSendAck', () => {
-        const thpError = decodeSendAck(decodeV2(Buffer.from('42122200050270303cfa', 'hex')));
-        expect(thpError?.type).toBe('ThpError');
-
-        const ack = decodeSendAck(decodeV2(Buffer.from('2812340004e98c8599', 'hex')));
-        expect(ack?.type).toBe('ThpAck');
-
-        const unexpected = decodeSendAck(decodeV2(Buffer.from('40ffff0004f9215951', 'hex')));
-        expect(unexpected).toBe(undefined);
-
-        expect(() => decodeSendAck(decodeV2(Buffer.from('40ffff000499999999', 'hex')))).toThrow(
-            'Invalid CRC',
-        );
     });
 
     it('ThpState serialize/deserialize', () => {
@@ -185,28 +168,5 @@ describe('protocol-thp', () => {
 
         // unknown thp message type 33...
         expect(getExpectedResponses(Buffer.from('33123400000', 'hex'))).toEqual([]);
-    });
-
-    it('isExpectedResponse', () => {
-        thpState.setChannel(Buffer.from('1234', 'hex'));
-        thpState.setExpectedResponses([0x20]); // expect ThpAck
-
-        const consoleSpy = jest.fn();
-        jest.spyOn(console, 'warn').mockImplementation(consoleSpy);
-
-        expect(isExpectedResponse(Buffer.from('2012340004d9fcce58', 'hex'), thpState)).toBe(true); // ThpAck
-        expect(isExpectedResponse(Buffer.from('42123400050270303cfa', 'hex'), thpState)).toBe(true); // ThpError
-        expect(isExpectedResponse(Buffer.from('4012340000', 'hex'), thpState)).toBe(false); // something else
-        expect(isExpectedResponse(Buffer.from('4043210000', 'hex'), thpState)).toBe(false); // something else on different channel
-        expect(isExpectedResponse(Buffer.from('20', 'hex'), thpState)).toBe(false); // message to short
-        expect(isExpectedResponse(Buffer.from('2812340004e98c8599', 'hex'), thpState)).toBe(false); // ThpAck with unexpected control bit
-        expect(consoleSpy).toHaveBeenCalledTimes(1); // check unexpected control bit warning
-
-        thpState.setExpectedResponses([0x04, 0x80]); // expect encrypted message and continuation packet
-        thpState.setChannel(Buffer.from('485a', 'hex'));
-        expect(isExpectedResponse(Buffer.from('04485a0000', 'hex'), thpState)).toBe(true);
-        expect(isExpectedResponse(Buffer.from('80485a0000', 'hex'), thpState)).toBe(true);
-        expect(isExpectedResponse(Buffer.from('14485a0000', 'hex'), thpState)).toBe(false); // decrypted with unexpected control bit
-        expect(consoleSpy).toHaveBeenCalledTimes(2); // check unexpected control bit warning
     });
 });
