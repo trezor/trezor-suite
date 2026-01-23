@@ -14,7 +14,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import {
     CombinedLabelingState,
     selectAccountLabel,
-    selectIsLabelingEnabled,
+    selectSuiteSyncLabelingEnabled,
 } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
 
@@ -30,7 +30,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const suiteSyncLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
     const inputRef = useRef<InputType>(null);
 
     const accountLabel = useSelector((state: CombinedLabelingState) => {
@@ -66,13 +66,15 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     if (!account) return null;
 
     const handleRenameAccount = handleSubmit((formValues: AccountFormValues) => {
-        dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
-        if (isLabelingEnabled && account.deviceState) {
+        if (suiteSyncLabelingEnabled) {
+            if (!account.deviceState) return;
             suiteSync.labeling.updateAccountLabel({
                 deviceStaticSessionId: account.deviceState,
                 accountKey,
                 label: formValues.accountLabel,
             });
+        } else {
+            dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
         }
         onSubmit();
     });

@@ -8,7 +8,7 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { selectIsLabelingEnabled } from '../selectors';
+import { selectSuiteSyncLabelingEnabled } from '../selectors';
 
 type AddressLabelEditableProps = {
     address: string;
@@ -25,7 +25,7 @@ export const AddressLabelEditable = ({
     networkSymbol,
     testID,
 }: AddressLabelEditableProps) => {
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
     const { suiteSync } = useNativeServices();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>

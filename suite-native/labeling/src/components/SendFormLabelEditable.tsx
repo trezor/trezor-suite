@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { selectIsLabelingEnabled } from '../selectors';
+import { selectSuiteSyncLabelingEnabled } from '../selectors';
 
 type SendFormLabelEditableProps = {
     label: string | null;
@@ -10,7 +10,7 @@ type SendFormLabelEditableProps = {
 };
 
 export const SendFormLabelEditable = ({ onLabelChange, label }: SendFormLabelEditableProps) => {
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
 
     if (!isLabelingEnabled) {
         return null;

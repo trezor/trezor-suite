@@ -18,11 +18,11 @@ export type CombinedLabelingState = SuiteSyncDataRootState &
     WithSuiteSyncAndDeviceState &
     AccountsRootState;
 
-export const selectIsLabelingEnabled = (state: WithSuiteSyncAndDeviceState) => {
-    const isSuiteSyncAvailable = selectIsSuiteSyncEnabled(state);
+export const selectSuiteSyncLabelingEnabled = (state: WithSuiteSyncAndDeviceState) => {
+    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
     const isPortfolioTracker = selectIsPortfolioTrackerDevice(state);
 
-    return isSuiteSyncAvailable && !isPortfolioTracker;
+    return isSuiteSyncEnabled && !isPortfolioTracker;
 };
 
 export const selectAccountLabel = (
@@ -32,7 +32,7 @@ export const selectAccountLabel = (
     networkSymbol: NetworkSymbol,
     accountKey: string,
 ) => {
-    const isLabelingEnabled = selectIsLabelingEnabled(state);
+    const suiteSyncLabelingEnabled = selectSuiteSyncLabelingEnabled(state);
 
     const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
 
@@ -43,7 +43,7 @@ export const selectAccountLabel = (
         networkSymbol,
     );
 
-    if (isLabelingEnabled && syncedLabel) {
+    if (suiteSyncLabelingEnabled && syncedLabel) {
         return syncedLabel;
     }
 
