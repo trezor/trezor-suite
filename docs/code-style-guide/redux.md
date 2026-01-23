@@ -180,7 +180,7 @@ await TrezorConnect.init({
 });
 ```
 
-- For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the sate (if business logic deems no data better than not-up-to-date data)
+- For async thunks, try to make use of the [lifecycle actions](https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions) whenever it makes sense. For example, when you have an async thunk that fetches something and saves in state. If fetching was not successful, you can explicitly modify the slice state in a relevant way: add an error message, change some status or reset the state (if business logic deems no data better than not-up-to-date data)
 - When using async thunks in effects, cancel the action by calling the [abort() method](https://redux-toolkit.js.org/api/createAsyncThunk#canceling-while-running) in effect cleanup.
 
 ## Middlewares

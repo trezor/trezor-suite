@@ -11,16 +11,16 @@
 
 ## When to use `import type`?
 
-1. If you are compiling code using TS **`tsc`, compiler knows full context and will remove import statement** even without `type` anotation because compiler knows what is type and what is value. You can try and check this in `/libDev` output. You can even combine type and value in one import and will correctly strip only types.
+1. If you are compiling code using TS **`tsc`, compiler knows full context and will remove import statement** even without `type` annotation because compiler knows what is type and what is value. You can try and check this in `/libDev` output. You can even combine type and value in one import and will correctly strip only types.
 2. If you are using `babel` to compile TS, like we do in Webpack that builds Suite, Babel can't tell if it's a type or a value from the import statement. Babel always works in only one file context, but it can tell from usage in rest of file:
 
 ```
 import { colors, Color } from './colors';
-// babel see here it is used as type
+// babel sees here it is used as type
 const getColor = (colorName: Color) => colors[colorName];
 ```
 
-Babel see that `Color` is used as type and can safely remove `Color` from code even when it doesn't see context of other files. So what will happen if `babel` can't tell from usage if it's import or value? Consider this code:
+Babel sees that `Color` is used as type and can safely remove `Color` from code even when it doesn't see context of other files. So what will happen if `babel` can't tell from usage if it's import or value? Consider this code:
 
 ```
 import { Color } from './colors';

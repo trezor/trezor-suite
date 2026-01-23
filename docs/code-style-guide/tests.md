@@ -29,4 +29,4 @@ expect(screen.getByText(getTranslation(
 
 ## Fixtures in tests shall be typed
 
-Although it may produce some boilerplate code, the fixtures shall be decoratively typed. In case the type is changed, without typed fixtures, this will produce a hardly fixable failed test instead of easily fixable type-error.
+Although it may produce some boilerplate code, the fixtures shall be declaratively typed. In case the type is changed, without typed fixtures, this will produce a hardly fixable failed test instead of easily fixable type-error.
