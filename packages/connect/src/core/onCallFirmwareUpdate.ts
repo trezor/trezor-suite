@@ -96,7 +96,7 @@ const waitForReconnectedDevice = async (
 
         await resolveAfter(2000);
         try {
-            reconnectedDevice = deviceList.getOnlyDevice();
+            reconnectedDevice = deviceList.getOnlyDevice(device.descriptor.apiType);
         } catch {
             /* empty */
         }
@@ -353,7 +353,7 @@ export const onCallFirmwareUpdate = async ({
     if (!device.features) {
         throw ERRORS.TypedError('Device_NotFound', 'Device missing features');
     }
-    if (deviceList.getDeviceCount() > 1) {
+    if (deviceList.getDeviceCount() > 1 && !deviceList.getOnlyDevice(device.descriptor.apiType)) {
         throw ERRORS.TypedError(
             'Device_MultipleNotSupported',
             'Firmware update allowed with only 1 device connected',

@@ -319,8 +319,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.getPrioritizedDevices() as readonly Device[];
     }
 
-    getOnlyDevice(): Device | undefined {
-        return this.devices.length === 1 ? this.devices[0] : undefined;
+    getOnlyDevice(apiType?: Descriptor['apiType']): Device | undefined {
+        const devices = apiType
+            ? this.devices.filter(d => d.descriptor.apiType === apiType)
+            : this.devices;
+
+        return devices.length === 1 ? devices[0] : undefined;
     }
 
     getDeviceByPath(path: DeviceUniquePath): Device | undefined {
