@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import type { BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { BottomSheetModal, TextButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -27,28 +28,33 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
         showAlert({
             title: <Translation id="suiteSync.enableAlert.title" />,
             description: <Translation id="suiteSync.enableAlert.description" />,
             primaryButtonTitle: <Translation id="suiteSync.enableAlert.cta" />,
-            onPressPrimaryButton: () => {
-                suiteSync.turnOnSuiteSync({
-                    onError: ({ error }) => {
-                        const { type } = error;
-                        switch (type) {
-                            case 'SuiteSyncUnavailableOnDeviceError':
-                            case 'DeviceCancelled':
-                            case 'DeviceError':
-                                showToast({ variant: 'error', icon: 'warning', message: type });
-
-                                return;
-                            default:
-                                return exhaustive(type);
-                        }
-                    },
+            onPressPrimaryButton: async () => {
+                const result = await suiteSync.turnOnSuiteSync({
+                    deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
                 });
+
+                if (!result.success) {
+                    const { type } = result.error;
+                    switch (type) {
+                        case 'SuiteSyncUnavailableOnDeviceError':
+                        case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                        case 'DeviceCancelled':
+                        case 'DeviceError':
+                            showToast({ variant: 'error', icon: 'warning', message: type });
+
+                            return;
+                        default:
+                            return exhaustive(type);
+                    }
+                }
+
                 onSuccess();
             },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,

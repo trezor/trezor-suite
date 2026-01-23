@@ -5,6 +5,10 @@ import { Result } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
 
+export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
+    type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';
+};
+
 export type EnsureWalletSuiteSyncOnParams = { deviceStaticSessionId: StaticSessionId };
 
 export type EnsureWalletSuiteSyncOn = (
@@ -12,7 +16,10 @@ export type EnsureWalletSuiteSyncOn = (
 ) => Promise<
     Result<
         SuiteSyncStorage,
-        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
+        | DeviceErrorType
+        | DeviceCancelledErrType
     >
 >;
 

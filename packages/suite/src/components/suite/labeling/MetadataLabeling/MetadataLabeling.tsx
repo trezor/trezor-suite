@@ -421,6 +421,7 @@ export const Labeling = ({
                 const { type } = result.payload.error;
                 switch (type) {
                     case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
                     case 'DeviceError':
                     case 'DeviceCancelled':
                     case 'SuiteSyncUpdateError':
@@ -573,6 +574,7 @@ export const MetadataLabeling = ({
                 const { type } = result.payload.error;
                 switch (type) {
                     case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
                     case 'DeviceError':
                     case 'DeviceCancelled':
                     case 'SuiteSyncUpdateError':

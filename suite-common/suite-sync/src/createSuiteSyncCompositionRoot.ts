@@ -144,18 +144,10 @@ export const createSuiteSyncCompositionRoot = (
             ensureWalletSuiteSyncOn,
         }),
         labeling: {
-            updateWalletLabel: createUpdateWalletLabel({
-                ensureWalletSuiteSyncOn,
-            }),
-            updateAccountLabel: createUpdateAccountLabel({
-                ensureWalletSuiteSyncOn,
-            }),
-            updateOutputLabel: createUpdateOutputLabel({
-                ensureWalletSuiteSyncOn,
-            }),
-            updateAddressLabel: createUpdateAddressLabel({
-                ensureWalletSuiteSyncOn,
-            }),
+            updateWalletLabel: createUpdateWalletLabel({ ensureWalletSuiteSyncOn }),
+            updateAccountLabel: createUpdateAccountLabel({ ensureWalletSuiteSyncOn }),
+            updateOutputLabel: createUpdateOutputLabel({ ensureWalletSuiteSyncOn }),
+            updateAddressLabel: createUpdateAddressLabel({ ensureWalletSuiteSyncOn }),
         },
     };
 };
