@@ -2104,6 +2104,38 @@
                     }
                 ]
             }
+        },
+        {
+            "message": {
+                "id": "716e77b4-fb77-4cb1-b1df-6446ee434a7b",
+                "priority": 1,
+                "dismissible": false,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en": "Placeholder",
+                    "cs": "Placeholder",
+                    "es": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "pt": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "demoAccountQuestionnaire",
+                        "flag": false
+                    }
+                ]
+            },
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ]
         }
     ],
     "experiments": [
