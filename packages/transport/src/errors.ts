@@ -97,4 +97,4 @@ export const LIBUSB_ERROR_ACCESS = 'LIBUSB_ERROR_ACCESS' as const;
 /**
  * missing THP state
  */
-export const THP_STATE_MISSING = 'ThpStateMissing' as const;
+export const THP_STATE_ERROR = 'ThpStateError' as const;

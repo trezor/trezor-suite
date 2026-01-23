@@ -1,6 +1,7 @@
 import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
+import { THP_STATE_ERROR } from '../errors';
 import type { ReceiveThpMessageProps } from './receive';
 import { readWithExpectedHeaders } from '../utils/readWithExpectedHeaders';
 import { error, success } from '../utils/result';
@@ -24,7 +25,7 @@ export const sendThpMessage = async ({
     logger,
 }: SendThpMessageProps) => {
     if (!thpState) {
-        return error({ error: 'ThpStateMissing' });
+        return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
     }
 
     const expectedResponses = protocolThp.getExpectedResponses(chunks[0]);

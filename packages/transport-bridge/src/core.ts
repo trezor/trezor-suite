@@ -10,6 +10,7 @@ import {
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { UsbApi } from '@trezor/transport/src/api/usb';
+import { THP_STATE_ERROR } from '@trezor/transport/src/errors';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { callThpMessage, receiveThpMessage, sendThpMessage } from '@trezor/transport/src/thp';
@@ -247,7 +248,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
 
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: 'ThpStateMissing' });
+                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();
@@ -318,7 +319,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         const { path } = sessionsResult.payload;
         if (protocol.name === 'v2') {
             if (!thpState) {
-                return error({ error: 'ThpStateMissing' });
+                return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
             }
 
             const state = new protocolThp.ThpState();
@@ -372,7 +373,7 @@ export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) =>
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             if (protocol.name === 'v2') {
                 if (!thpState) {
-                    return error({ error: 'ThpStateMissing' });
+                    return error({ error: THP_STATE_ERROR, message: 'ThpStateMissing' });
                 }
 
                 const state = new protocolThp.ThpState();
