@@ -12,7 +12,7 @@ import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
-import { selectIsLabelingEnabled } from '../selectors';
+import { selectSuiteSyncLabelingEnabled } from '../selectors';
 
 type EditableLabelLayoutParams = {
     children: (params: { onClose: () => void; ref: Ref<BottomSheetModalMethods> }) => ReactNode;
@@ -27,8 +27,8 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
 
     const showSuiteSyncEnableConfirmationAlert = (onSuccess: () => void) => {
         showAlert({

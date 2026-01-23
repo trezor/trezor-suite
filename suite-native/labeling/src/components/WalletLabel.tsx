@@ -5,7 +5,7 @@ import { SuiteSyncDataRootState, selectSuiteSyncWalletLabel } from '@suite-commo
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { selectIsLabelingEnabled } from '../selectors';
+import { selectSuiteSyncLabelingEnabled } from '../selectors';
 
 type WalletLabelProps = {
     deviceStaticSessionId: StaticSessionId | undefined;
@@ -13,7 +13,7 @@ type WalletLabelProps = {
 };
 
 export const WalletLabel = ({ deviceStaticSessionId, fallbackLabel }: WalletLabelProps) => {
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
 
     const label = useSelector((state: SuiteSyncDataRootState) => {
         if (!deviceStaticSessionId) return null;

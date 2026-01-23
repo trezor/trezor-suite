@@ -8,7 +8,7 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { selectIsLabelingEnabled } from '../selectors';
+import { selectSuiteSyncLabelingEnabled } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
     txId: string;
@@ -25,7 +25,7 @@ export const TransactionOutputLabelEditable = ({
     accountDescriptor,
     networkSymbol,
 }: TransactionOutputLabelEditableProps) => {
-    const isLabelingEnabled = useSelector(selectIsLabelingEnabled);
+    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
     const { suiteSync } = useNativeServices();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
