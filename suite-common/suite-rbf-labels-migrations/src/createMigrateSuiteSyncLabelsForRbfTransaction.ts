@@ -1,19 +1,12 @@
-import {
-    SuiteSyncDataRootState,
-    selectSuiteSyncOutputLabelsByAccount,
-} from '@suite-common/suite-sync';
 import { SuiteSyncOutput } from '@suite-common/suite-sync-storage';
-import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
+import {
+    MigrateSuiteSyncLabelsForRbfTransactionDeps,
+    MigrateSuiteSyncLabelsForRbfTransactionParams,
+    RbfLabelsToBeUpdated,
+} from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { typedObjectEntries } from '@trezor/utils';
-
-import { type RbfLabelsToBeUpdated } from './findLabelsToBeMovedOrDeleted';
-
-export type MigrateSuiteSyncLabelsForRbfTransactionDeps = {
-    dispatch: (args: any) => void;
-    getState: () => SuiteSyncDataRootState;
-} & UpdateOutputLabelDep;
 
 type SuiteSyncTransactionToCopy = {
     data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
@@ -90,12 +83,14 @@ const moveLabelsForSuiteSyncRbf =
         labelsToBeMoved,
     }: MoveLabelsForSuiteSyncRbfParams) => {
         const transactionsToCopy = labelsToBeMoved.flatMap(data =>
-            selectSuiteSyncOutputLabelsByAccount(
-                deps.getState(),
-                parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
-                data.toBeMoved.descriptor,
-                data.toBeMoved.symbol,
-            )
+            deps
+                .getOutputs({
+                    walletDescriptor:
+                        parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    accountDescriptor: data.toBeMoved.descriptor,
+                    networkSymbol: data.toBeMoved.symbol,
+                })
+
                 .filter(output => output.txId === data.toBeMoved.txid)
                 .map(output => ({
                     newTxId,
@@ -111,12 +106,13 @@ const moveLabelsForSuiteSyncRbf =
         });
 
         const transactionOutputsToDelete = labelsToBeMoved.flatMap(data =>
-            selectSuiteSyncOutputLabelsByAccount(
-                deps.getState(),
-                parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
-                data.toBeMoved.descriptor,
-                data.toBeMoved.symbol,
-            )
+            deps
+                .getOutputs({
+                    walletDescriptor:
+                        parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    accountDescriptor: data.toBeMoved.descriptor,
+                    networkSymbol: data.toBeMoved.symbol,
+                })
                 .filter(output => output.txId === data.toBeMoved.txid)
                 .map(output => ({
                     data,
@@ -132,19 +128,13 @@ const moveLabelsForSuiteSyncRbf =
         return await Promise.all([setLabelsForSuiteSyncResult, deleteLabelsForSuiteSyncResult]);
     };
 
-type MoveSuiteSyncLabelsForRbfParams = {
-    deviceStaticSessionId: StaticSessionId;
-    newTxId: string;
-    toBeMovedOrDeletedList: RbfLabelsToBeUpdated;
-};
-
 export const createMigrateSuiteSyncLabelsForRbfTransaction =
     (deps: MigrateSuiteSyncLabelsForRbfTransactionDeps) =>
     ({
         newTxId,
         deviceStaticSessionId,
         toBeMovedOrDeletedList,
-    }: MoveSuiteSyncLabelsForRbfParams) => {
+    }: MigrateSuiteSyncLabelsForRbfTransactionParams) => {
         const labelsToBeMoved = typedObjectEntries(toBeMovedOrDeletedList).map(([_, data]) => data);
 
         return moveLabelsForSuiteSyncRbf(deps)({

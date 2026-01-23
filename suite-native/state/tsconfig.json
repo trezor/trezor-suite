@@ -26,6 +26,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-rbf-labels-migrations"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {

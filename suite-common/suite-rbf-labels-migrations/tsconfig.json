@@ -5,11 +5,8 @@
         "exactOptionalPropertyTypes": true
     },
     "references": [
-        { "path": "../metadata-types" },
-        { "path": "../suite-sync" },
         { "path": "../suite-sync-storage" },
         { "path": "../suite-sync-types" },
-        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         { "path": "../../packages/connect" },

@@ -4,10 +4,6 @@ import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 export const accountSpendingCoins: Account = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
     index: 0,
-    backendType: undefined,
-    misc: undefined,
-    marker: undefined,
-    stellarCursor: undefined,
     path: "m/84'/1'/0'",
     descriptor: asAccountDescriptor(
         '(accountSpendingCoins:descriptor)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
@@ -393,6 +389,9 @@ export const accountSpendingCoins: Account = {
         key: 'tpubDCZB6sR48s4T5Cr8qHUYSZEFCQMMHRg8AoVKVmvcAP5bRw7ArDKeoNwKAJujV3xCPkBvXH5ejSgbgyN6kREmF7sMd41NdbuHa8n1DZNxSMg',
     },
     networkType: 'bitcoin',
+    misc: undefined,
+    marker: undefined,
+    stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
     ts: 0,
 };
@@ -400,10 +399,6 @@ export const accountSpendingCoins: Account = {
 export const accountReceivingCoins: Account = {
     deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
     index: 1,
-    backendType: undefined,
-    misc: undefined,
-    marker: undefined,
-    stellarCursor: undefined,
     path: "m/84'/1'/1'",
     descriptor: asAccountDescriptor(
         '(accountReceivingCoins:descriptor)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks',
@@ -806,6 +801,9 @@ export const accountReceivingCoins: Account = {
         key: 'tpubDCZB6sR48s4T6xoXqaYxScvf23kmQvg5QpyFkYnDBjsmviKHLSG9s6cp593Exg87tuMjXXMWDvBRXnJtzppcQf8Z8HdJP1rothfxm4qnPXo',
     },
     networkType: 'bitcoin',
+    misc: undefined,
+    marker: undefined,
+    stellarCursor: undefined,
     page: { index: 1, size: 25, total: 1 },
     ts: 0,
 };
