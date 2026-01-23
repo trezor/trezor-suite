@@ -130,6 +130,7 @@ runs:
         yarn workspace @trezor/suite-e2e test:orchestrated:e2e \
           --config=${{ inputs.pw-config }} \
           --pwc-cancel-after-failures ${{ inputs.fail-fast }} \
+          --pwc-disable-test-tags \
           $COVERAGE_OPT \
           --forbid-only \
           $REPORTER_OPT
