@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-01-20T00:00:00+00:00",
-    "sequence": 129,
+    "timestamp": "2026-01-23T00:00:00+00:00",
+    "sequence": 130,
     "actions": [
         {
             "conditions": [
@@ -2073,31 +2073,31 @@
                         "flag": true,
                         "payload": {
                             "title": {
-                                "en": "What was your trade like? Tell us, get $50",
-                                "es": "¿Cómo fue tu operación? Cuéntanos, gana $50",
-                                "cs": "Jak proběhl váš obchod? Řekněte nám to, získejte 50 $",
-                                "de": "Wie lief Ihr Trade? Erzählen Sie es uns, erhalten Sie 50 $",
-                                "fr": "Comment s'est passée votre transaction ? Dites-nous, recevez 50 $",
-                                "pt": "Como foi sua negociação? Conte-nos, ganhe $50"
+                                "en": "Help us improve how users trade in Trezor Suite. Join a user feedback session and share your experience.",
+                                "es": "Ayúdanos a mejorar las operaciones en Trezor Suite. Únete a una sesión de feedback y comparte tu experiencia.",
+                                "cs": "Pomozte nám vylepšit obchodování v Trezor Suite. Zúčastněte se sezení pro zpětnou vazbu a podělte se o své zkušenosti.",
+                                "de": "Helfen Sie uns, das Trading in der Trezor Suite zu verbessern. Nehmen Sie an einer Feedback-Session teil und teilen Sie Ihre Erfahrungen.",
+                                "fr": "Aidez-nous à améliorer le trading dans Trezor Suite. Participez à une session de feedback et partagez votre expérience.",
+                                "pt": "Ajude-nos a melhorar as negociações no Trezor Suite. Participe de uma sessão de feedback e compartilhe sua experiência."
                             },
                             "description": {
-                                "en": "Answer a short survey to see if you qualify for a 30-minute interview and get a $50 Amazon gift card.",
-                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 30 minutos y recibe una tarjeta de regalo de Amazon de $50.",
-                                "cs": "Vyplňte krátký dotazník, abyste zjistili, zda se kvalifikujete na 30minutový rozhovor a získejte dárkovou kartu Amazon v hodnotě 50 $.",
-                                "de": "Beantworten Sie eine kurze Umfrage, um zu prüfen, ob Sie für ein 30-minütiges Interview in Frage kommen, und erhalten Sie einen Amazon-Gutschein über 50 $.",
-                                "fr": "Répondez à un court sondage pour savoir si vous êtes éligible à un entretien de 30 minutes et recevez une carte cadeau Amazon de 50 $.",
-                                "pt": "Responda a uma breve pesquisa para saber se você se qualifica para uma entrevista de 30 minutos e ganhe um cartão-presente da Amazon de $50."
+                                "en": "Answer a short survey to see if you qualify for 60 min interview and get free Trezor Model One or Amazon voucher for 30 USD.",
+                                "es": "Responde una breve encuesta para ver si calificas para una entrevista de 60 minutos y recibe un Trezor Model One gratis o un vale de Amazon de 30 USD.",
+                                "cs": "Vyplňte krátký dotazník a zjistěte, zda splňujete podmínky pro 60minutový rozhovor a získejte Trezor Model One, nebo dárkový poukaz na Amazon v hodnotě 30 USD.",
+                                "de": "Beantworten Sie eine kurze Umfrage, um zu sehen, ob Sie für ein 60-minütiges Interview in Frage kommen, und erhalten Sie einen kostenlosen Trezor Model One oder einen Amazon-Gutschein über 30 USD.",
+                                "fr": "Répondez à un court sondage pour voir si vous êtes éligible à un entretien de 60 minutes et recevez un Trezor Model One gratuit ou un bon d'achat Amazon de 30 USD.",
+                                "pt": "Responda a uma breve pesquisa para ver se você se qualifica para uma entrevista de 60 minutos e ganhe um Trezor Model One grátis ou um vale da Amazon de 30 USD."
                             },
                             "cta": {
                                 "action": "external-link",
                                 "link": "https://satoshilabs.typeform.com/to/T16Qnfou",
                                 "label": {
-                                    "en": "Take the survey",
-                                    "es": "Take the survey",
-                                    "cs": "Take the survey",
-                                    "de": "Take the survey",
-                                    "fr": "Take the survey",
-                                    "pt": "Take the survey"
+                                    "en": "Find out more",
+                                    "es": "Saber más",
+                                    "cs": "Zjistit více",
+                                    "de": "Mehr erfahren",
+                                    "fr": "En savoir plus",
+                                    "pt": "Saiba mais"
                                 }
                             }
                         }
