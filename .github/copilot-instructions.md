@@ -12,8 +12,8 @@ The repository uses Yarn workspaces with 60+ packages and NX for build optimizat
 
 ## Setup Requirements
 
-- **Node.js 22.11.0** (use NVM: `nvm install`)
-- **Yarn 4.5.3** (install with: `npm install -g yarn`)
+- **Node.js** (version specified in `.nvmrc`, use NVM: `nvm install`)
+- **Yarn** (version specified in `package.json` packageManager field)
 - **Git LFS** for binary assets
 - **Git submodules** support
 
@@ -29,8 +29,8 @@ git lfs pull
 nvm install
 yarn  # Use --mode=skip-build if Playwright fails
 
-# Build libraries (required before development)
-yarn build:libs  # Allow 5-10 minutes for completion
+# Build essential libraries (required before development)
+yarn build:essential  # Allow 3-5 minutes for completion
 ```
 
 ## Development Commands
@@ -80,8 +80,8 @@ yarn suite:build:web       # Production web build
 
 ### Important Files
 
-- `.nvmrc` - Required Node.js version (22.11.0)
-- `package.json` - Root package with yarn scripts
+- `.nvmrc` - Required Node.js version
+- `package.json` - Root package with yarn scripts and packageManager version
 - `nx.json` - NX build configuration
 - `eslint.config.mjs` - ESLint configuration
 - `jest.config.base.js` - Jest test configuration
@@ -108,7 +108,7 @@ yarn update-submodules     # Update trezor-common submodule
 # Reset environment if builds fail
 rm -rf node_modules .yarn/cache
 yarn --mode=skip-build
-yarn build:libs
+yarn build:essential
 
 # Clear NX cache
 yarn nx reset
@@ -118,13 +118,44 @@ pkill -f "webpack-dev-server"
 yarn suite:dev
 ```
 
+## Git and Commit Guidelines
+
+**IMPORTANT**: This project uses [Conventional Commits](https://www.conventionalcommits.org/). All commits MUST follow this format:
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+### Commit Types and Scopes
+
+- **feat**: New feature (e.g., `feat(suite): add transaction history export`)
+- **fix**: Bug fix (e.g., `fix(components): resolve modal z-index issue`)
+- **docs**: Documentation changes (e.g., `docs: update setup instructions`)
+- **refactor**: Code refactoring without behavior change
+- **test**: Adding or updating tests
+- **chore**: Build process, dependencies, tooling (e.g., `chore(deps): update eslint`)
+
+Common scopes: `suite`, `suite-native`, `connect`, `components`, `analytics`
+
+### Commit Best Practices
+
+- **Plan internally, commit only code**: For complex tasks, use todo lists or internal planning, but only commit actual code changes with conventional commits
+- **If you must commit intermediate work**, use proper conventional commits (e.g., `chore: work in progress on feature X`) and be prepared to squash before final push
+- Write clear, concise commit messages describing the actual change
+- One logical change per commit when possible
+- Reference issue numbers in commit body when applicable (e.g., `Closes #1234`)
+- Avoid committing plan documents or TODO files unless they are part of the project documentation
+
 ## Development Notes
 
 - **Build times**: Initial setup takes 15-20 minutes; builds can take 10-15 minutes
 - **Windows**: Use Git Bash instead of cmd/PowerShell; consider WSL for better performance
 - **Testing**: Some tests may timeout in CI environments without network access
 - **Hardware wallets**: Use trezor/trezor-user-env emulator for development
-- **Commit format**: Use Conventional Commits (e.g., `feat(suite):`, `fix(components):`, `docs:`)
 
 ## Common Issues
 
