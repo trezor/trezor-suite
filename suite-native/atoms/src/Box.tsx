@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, ViewProps, ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
 
 import { D, pipe } from '@mobily/ts-belt';
 
@@ -77,6 +76,3 @@ export const Box = React.forwardRef<View, BoxProps>(({ style, ...props }, ref) =
 });
 
 Box.displayName = 'Box';
-
-export const AnimatedBox = Animated.createAnimatedComponent(Box);
-AnimatedBox.displayName = 'AnimatedBox';

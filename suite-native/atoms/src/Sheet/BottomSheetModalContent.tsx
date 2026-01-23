@@ -5,7 +5,8 @@ import { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AnimatedBox, BoxProps } from '../Box';
+import { AnimatedBox } from '../AnimatedBox';
+import { BoxProps } from '../Box';
 
 const containerStyle = prepareNativeStyle(() => ({
     flex: 1,

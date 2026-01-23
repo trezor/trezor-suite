@@ -9,7 +9,7 @@ import {
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { AnimatedBox } from '../Box';
+import { AnimatedBox } from '../AnimatedBox';
 
 export type AccordionContentProps = {
     isOpened: SharedValue<boolean>;

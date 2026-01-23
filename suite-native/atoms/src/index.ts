@@ -2,6 +2,7 @@ export * from './Accordion/AccordionList';
 export * from './InlineAlertBox/InlineAlertBox';
 export * from './InlineAlertText';
 export * from './Text';
+export * from './AnimatedBox';
 export * from './Box';
 export * from './Hint';
 export * from './HoldToConfirmButton';
