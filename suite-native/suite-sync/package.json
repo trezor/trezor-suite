@@ -21,7 +21,6 @@
         "@trezor/connect": "workspace:*",
         "expo": "~54.0.30",
         "expo-sqlite": "^16.0.8",
-        "react-native-restart": "0.0.27",
         "react-redux": "9.2.0"
     }
 }
