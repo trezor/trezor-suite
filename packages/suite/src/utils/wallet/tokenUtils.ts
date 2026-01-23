@@ -1,3 +1,4 @@
+import { TranslationId } from '@suite/intl';
 import {
     EnhancedTokenInfo,
     TokenDefinition,
@@ -182,7 +183,7 @@ export const hasVisibleTokens = (
     return visibleTokenCount > 0;
 };
 
-export const getTokenAddressTranslationId = (networkType: NetworkType) => {
+export const getTokenAddressTranslationId = (networkType: NetworkType): TranslationId => {
     switch (networkType) {
         case 'solana':
             return 'TR_TOKEN_ADDRESS';

@@ -19,7 +19,9 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:^",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "react": "19.1.0",
+        "react-redux": "9.2.0"
     },
     "peerDependencies": {
         "@trezor/suite-desktop-api": "workspace:*"
@@ -28,5 +30,8 @@
         "@trezor/suite-desktop-api": {
             "optional": true
         }
+    },
+    "devDependencies": {
+        "@types/react": "^19"
     }
 }

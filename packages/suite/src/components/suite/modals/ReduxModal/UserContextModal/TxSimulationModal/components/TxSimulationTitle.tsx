@@ -1,11 +1,12 @@
 import { Translation } from '@suite/intl';
+import { TxSimulationAction } from '@suite-common/wallet-types';
 
 interface TxSimulationTitleProps {
-    isEthereumSigningTypedData: boolean;
+    method: TxSimulationAction['method'];
 }
 
-export function TxSimulationTitle({ isEthereumSigningTypedData }: TxSimulationTitleProps) {
-    if (isEthereumSigningTypedData) {
+export function TxSimulationTitle({ method }: TxSimulationTitleProps) {
+    if (method === 'ethereumSignTypedData') {
         return <Translation id="TR_SIGN_EIP712_TYPED_DATA" />;
     }
 

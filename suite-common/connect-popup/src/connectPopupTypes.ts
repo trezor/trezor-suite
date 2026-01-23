@@ -1,3 +1,4 @@
+import { TxSimulationAction } from '@suite-common/wallet-types';
 import { CallMethodKeys } from '@trezor/connect';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
@@ -47,9 +48,27 @@ export type ConnectCallSource = {
       }
 );
 
+type SelectedFee =
+    | {
+          gasPrice: undefined;
+          maxFeePerGas: string;
+          maxPriorityFeePerGas: string;
+          gasLimit: string;
+      }
+    | {
+          gasPrice: string;
+          maxFeePerGas: undefined;
+          maxPriorityFeePerGas: undefined;
+          gasLimit: string;
+      };
+
+type TxSimulationConnectPopupCallLoaded = {
+    state: 'tx-simulation';
+    selectedAccountKey?: string;
+} & Omit<TxSimulationAction, 'sourceOrigin'>;
+
 export type ConnectPopupCallLoaded = {
     // Common properties that are always present
-    method: CallMethodKeys;
     methodInfo: {
         methodTitle: string;
         confirmLabel?: string;
@@ -57,36 +76,32 @@ export type ConnectPopupCallLoaded = {
         useUi: boolean;
     };
     source: ConnectCallSource;
-    payload: any;
-    selectedFee?:
-        | {
-              gasPrice: undefined;
-              maxFeePerGas: string;
-              maxPriorityFeePerGas: string;
-              gasLimit: string;
-          }
-        | {
-              gasPrice: string;
-              maxFeePerGas: undefined;
-              maxPriorityFeePerGas: undefined;
-              gasLimit: string;
-          };
+    selectedFee?: SelectedFee;
 } & (
     | {
+          method: CallMethodKeys;
           state: 'ongoing';
           selectedAccountKey?: string;
+          payload: any;
       }
     | {
+          method: CallMethodKeys;
           state: 'finished';
+          payload: any;
       }
     | {
+          method: CallMethodKeys;
           state: 'permission-request';
+          payload: any;
       }
     | {
+          method: CallMethodKeys;
           state: 'deeplink-callback';
           callbackUrl: string;
+          payload: any;
       }
     | {
+          method: CallMethodKeys;
           state: 'address-confirmation';
           exported: boolean;
           addresses: {
@@ -95,19 +110,20 @@ export type ConnectPopupCallLoaded = {
               validated: 'valid' | 'failed' | 'not-started';
               validatePayload: any;
           }[];
+          payload: any;
       }
     | {
+          method: CallMethodKeys;
           state: 'call-error';
           error: ConnectSerializedError;
+          payload: any;
       }
+    | TxSimulationConnectPopupCallLoaded
     | {
-          state: 'tx-simulation';
-          selectedAccountKey?: string;
-          fromAddress: string;
-      }
-    | {
+          method: CallMethodKeys;
           state: 'switch-device';
           timestamp: number;
+          payload: any;
       }
 );
 
@@ -116,6 +132,11 @@ export type ConnectPopupCallError = {
     error: ConnectSerializedError;
 };
 export type ConnectPopupCall = ConnectPopupCallLoaded | ConnectPopupCallError;
+
+export type ConnectPopupCallWithState<
+    CallState extends ConnectPopupCall['state'],
+    Method extends ConnectPopupCallLoaded['method'] = ConnectPopupCallLoaded['method'],
+> = Extract<ConnectPopupCallLoaded, { state: CallState; method: Method }>;
 
 export type AppRememberedPermission = {
     types: MethodPermission[];

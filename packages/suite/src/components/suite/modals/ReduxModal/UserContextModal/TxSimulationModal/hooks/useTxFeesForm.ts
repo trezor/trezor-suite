@@ -47,6 +47,6 @@ export function useTxFeesForm({
         form,
         changeFeeLevel,
         feeInfo,
-        hasDefaultGasLimit: defaultGasLimit === ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
+        defaultGasLimit,
     };
 }

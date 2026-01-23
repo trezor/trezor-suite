@@ -3,6 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import {
     AppRememberedPermission,
     ConnectPopupCall,
+    ConnectPopupCallWithState,
     ConnectSerializedError,
 } from './connectPopupTypes';
 
@@ -76,14 +77,14 @@ const forgetAppPermissions = createAction(
 
 const txSimulation = createAction(
     `${ACTION_PREFIX}/txSimulation`,
-    (payload: Pick<ConnectPopupCall & { state: 'tx-simulation' }, 'fromAddress'>) => ({
+    (payload: Pick<ConnectPopupCallWithState<'tx-simulation'>, 'fromAddress'>) => ({
         payload,
     }),
 );
 
 const setSelectedFee = createAction(
     `${ACTION_PREFIX}/txSimulationSetFee`,
-    (payload: Pick<ConnectPopupCall & { state: 'tx-simulation' | 'ongoing' }, 'selectedFee'>) => ({
+    (payload: Pick<ConnectPopupCallWithState<'tx-simulation' | 'ongoing'>, 'selectedFee'>) => ({
         payload,
     }),
 );
