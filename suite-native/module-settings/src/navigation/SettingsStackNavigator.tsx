@@ -50,8 +50,8 @@ export const SettingsStackNavigator = () => (
             component={SettingsCoinEnablingScreen}
         />
         <SettingsStack.Screen
-            options={{ title: SettingsStackRoutes.SettingsLabeling }}
-            name={SettingsStackRoutes.SettingsLabeling}
+            options={{ title: SettingsStackRoutes.SettingsSuiteSync }}
+            name={SettingsStackRoutes.SettingsSuiteSync}
             component={SettingsSuiteSyncScreen}
         />
         <SettingsStack.Screen

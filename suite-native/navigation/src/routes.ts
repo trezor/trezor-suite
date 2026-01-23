@@ -243,7 +243,7 @@ export enum SettingsStackRoutes {
     SettingsViewOnly = 'SettingsViewOnly',
     SettingsSupport = 'SettingsSupport',
     SettingsCoinEnabling = 'SettingsCoinEnabling',
-    SettingsLabeling = 'SettingsLabeling',
+    SettingsSuiteSync = 'SettingsSuiteSync',
     SettingsAdvanced = 'SettingsAdvanced',
     TurnOffDeviceAuthenticityCheck = 'TurnOffDeviceAuthenticityCheck',
     TurnOffFirmwareAuthenticityCheck = 'TurnOffFirmwareAuthenticityCheck',
