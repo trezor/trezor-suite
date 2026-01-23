@@ -7,7 +7,7 @@ import { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 export const createSuiteDesktopCompositionRoot = (
     preloadStoreAction?: PreloadStoreAction,
-    statePatch: Record<string, any> = {},
+    statePatch: Record<string, any> = undefined,
 ) => {
     const history = createMemoryHistory();
     const flushSuiteSyncStorage = () => {
