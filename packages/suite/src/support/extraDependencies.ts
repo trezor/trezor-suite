@@ -19,6 +19,7 @@ import {
     CommonServices,
     ConnectInitSettings,
     ExtraDependenciesStatic,
+    toGetter,
 } from '@suite-common/redux-utils';
 import {
     createDeleteLabelsForSuiteSync,
@@ -163,13 +164,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitSettings,
         migrateSuiteSyncLabelsForRbfTransaction: createMigrateSuiteSyncLabelsForRbfTransaction({
             dispatch: deps.dispatch,
-            getOutputs: params =>
-                selectSuiteSyncOutputLabelsByAccount(
-                    deps.getState(),
-                    params.walletDescriptor,
-                    params.accountDescriptor,
-                    params.networkSymbol,
-                ),
+            getOutputs: toGetter(deps.getState, selectSuiteSyncOutputLabelsByAccount),
             deleteLabelsForSuiteSync: createDeleteLabelsForSuiteSync({
                 updateOutputLabel: suiteSync.labeling.updateOutputLabel,
             }),

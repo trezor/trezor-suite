@@ -61,13 +61,11 @@ const moveLabelsForSuiteSyncRbf =
     }: MoveLabelsForSuiteSyncRbfParams) => {
         const transactionsToCopy = labelsToBeMoved.flatMap(data =>
             deps
-                .getOutputs({
-                    walletDescriptor:
-                        parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
-                    accountDescriptor: data.toBeMoved.descriptor,
-                    networkSymbol: data.toBeMoved.symbol,
-                })
-
+                .getOutputs(
+                    parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    data.toBeMoved.descriptor,
+                    data.toBeMoved.symbol,
+                )
                 .filter(output => output.txId === data.toBeMoved.txid)
                 .map(output => ({
                     newTxId,
@@ -84,12 +82,11 @@ const moveLabelsForSuiteSyncRbf =
 
         const transactionOutputsToDelete = labelsToBeMoved.flatMap(data =>
             deps
-                .getOutputs({
-                    walletDescriptor:
-                        parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
-                    accountDescriptor: data.toBeMoved.descriptor,
-                    networkSymbol: data.toBeMoved.symbol,
-                })
+                .getOutputs(
+                    parseDeviceStaticSessionId(deviceStaticSessionId).walletDescriptor,
+                    data.toBeMoved.descriptor,
+                    data.toBeMoved.symbol,
+                )
                 .filter(output => output.txId === data.toBeMoved.txid)
                 .map(output => ({
                     data,

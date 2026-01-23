@@ -11,6 +11,7 @@ import {
     notImplementedReducer,
     notImplementedSelector,
     notImplementedThunk,
+    toGetter,
 } from '@suite-common/redux-utils';
 import {
     createDeleteLabelsForSuiteSync,
@@ -101,13 +102,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         },
         migrateSuiteSyncLabelsForRbfTransaction: createMigrateSuiteSyncLabelsForRbfTransaction({
             dispatch: deps.dispatch,
-            getOutputs: params =>
-                selectSuiteSyncOutputLabelsByAccount(
-                    deps.getState(),
-                    params.walletDescriptor,
-                    params.accountDescriptor,
-                    params.networkSymbol,
-                ),
+            getOutputs: toGetter(deps.getState, selectSuiteSyncOutputLabelsByAccount),
             deleteLabelsForSuiteSync: createDeleteLabelsForSuiteSync({
                 updateOutputLabel: suiteSync.labeling.updateOutputLabel,
             }),

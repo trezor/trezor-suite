@@ -122,8 +122,8 @@ export const createSuiteSyncCompositionRoot = (
         subscriptionStorage,
     });
 
-    const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
     const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
+    const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
 
     return {
         changeRelayUrl: createChangeRelayUrl({

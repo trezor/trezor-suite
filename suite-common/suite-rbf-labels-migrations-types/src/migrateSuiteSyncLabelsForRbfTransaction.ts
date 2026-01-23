@@ -70,11 +70,11 @@ export type SetLabelsForSuiteSyncDep = {
     setLabelsForSuiteSync: SetLabelsForSuiteSync;
 };
 
-export type GetOutputs = (params: {
-    walletDescriptor: WalletDescriptor;
-    accountDescriptor: AccountDescriptor;
-    networkSymbol: NetworkSymbol;
-}) => SuiteSyncOutput[];
+export type GetOutputs = (
+    walletDescriptor: WalletDescriptor,
+    accountDescriptor: AccountDescriptor,
+    networkSymbol: NetworkSymbol,
+) => SuiteSyncOutput[];
 
 export type GetOutputsDep = {
     getOutputs: GetOutputs;
