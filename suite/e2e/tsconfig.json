@@ -11,6 +11,9 @@
         "scripts/**/*.ts"
     ],
     "references": [
+        {
+            "path": "../../suite-common/analytics"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
         {

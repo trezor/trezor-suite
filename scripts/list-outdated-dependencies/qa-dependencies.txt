@@ -12,6 +12,7 @@
 @types/jest
 @types/minimist
 @types/xml2js
+@walletconnect/sign-client
 babel-jest
 better-sqlite3
 chai

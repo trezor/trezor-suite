@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { AnalyticsFixture } from './analytics';
+import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
@@ -39,6 +39,7 @@ type Fixtures = {
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
+    analyticsHelper: AnalyticsHelper;
     indexedDb: IndexedDbFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
@@ -92,6 +93,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     analytics: async ({ page }, use) => {
         await use(new AnalyticsFixture(page));
+    },
+    analyticsHelper: async ({ page }, use) => {
+        await use(new AnalyticsHelper(page));
     },
     indexedDb: async ({ page }, use) => {
         await use(new IndexedDbFixture(page));

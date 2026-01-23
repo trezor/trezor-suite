@@ -120,6 +120,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                 !ignoreWarning)
                         }
                         isLoading={dappScanQuery.isLoading}
+                        data-testid="@walletconnect-proposal/confirm-button"
                     >
                         <Translation id="TR_CONFIRM" />
                     </Modal.Button>

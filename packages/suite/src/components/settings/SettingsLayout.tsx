@@ -71,7 +71,7 @@ const SettingsHeader = () => {
     return (
         <AccountHeaderProvider>
             <PageHeader />
-            <SubpageNavigation items={settingsSubpages} />
+            <SubpageNavigation data-testid="@settings/menu" items={settingsSubpages} />
         </AccountHeaderProvider>
     );
 };
