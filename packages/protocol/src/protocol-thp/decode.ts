@@ -176,19 +176,6 @@ export const validateCrc = (decodedMessage: MessageV2) => {
     }
 };
 
-// Decode protocol-v2 message from thp send process: ThpAck or ThpError
-export const decodeSendAck = (decodedMessage: MessageV2) => {
-    validateCrc(decodedMessage);
-
-    const { messageType } = decodedMessage;
-    if (messageType === THP_CONTROL_BYTE.ERROR) {
-        return decodeThpError(decodedMessage.payload);
-    }
-    if (messageType === THP_CONTROL_BYTE.ACK_MESSAGE) {
-        return decodeReadAck();
-    }
-};
-
 // Decode protocol-v2 message from thp receive process
 export const decode = (
     decodedMessage: MessageV2,
