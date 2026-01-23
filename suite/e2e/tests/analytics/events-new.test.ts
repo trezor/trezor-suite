@@ -1,6 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
+import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
@@ -30,13 +31,17 @@ test.describe('New Analytics Events', { tag: ['@T3T1'] }, () => {
             async ({ analyticsSection, walletPage }) => {
                 await walletPage.openAccount({ symbol: coin });
 
-                const [payload] = await Promise.all([
-                    analyticsSection.waitForAnalytics({
-                        c_type: STAKING_EVENT,
-                        networkSymbol: coin,
-                    }),
-                    walletPage.stakingButton.click(),
-                ]);
+                // Set up listeners
+                const analyticsPromise = analyticsSection.waitForAnalytics({
+                    c_type: STAKING_EVENT,
+                    networkSymbol: coin,
+                });
+
+                // Perform the action
+                await walletPage.stakingButton.click();
+
+                // Await the listeners
+                const payload = await analyticsPromise;
 
                 expect(payload).toMatchObject({ c_type: STAKING_EVENT, networkSymbol: coin });
             },
@@ -55,13 +60,17 @@ test.describe('New Analytics Events', { tag: ['@T3T1'] }, () => {
             async ({ analyticsSection, dashboardPage }) => {
                 await dashboardPage.navigateTo();
 
-                const [payload] = await Promise.all([
-                    analyticsSection.waitForAnalytics({
-                        c_type: STAKING_EVENT,
-                        networkSymbol: coin,
-                    }),
-                    dashboardPage.stakeButton(coin).click(),
-                ]);
+                // Set up listeners
+                const analyticsPromise = analyticsSection.waitForAnalytics({
+                    c_type: STAKING_EVENT,
+                    networkSymbol: coin,
+                });
+
+                // Perform the actin
+                await dashboardPage.stakeButton(coin).click();
+
+                // Await the listeners
+                const payload = await analyticsPromise;
 
                 expect(payload).toMatchObject({ c_type: STAKING_EVENT, networkSymbol: coin });
             },
@@ -83,20 +92,50 @@ test.describe('New Analytics Events', { tag: ['@T3T1'] }, () => {
                     stream: TestStream.Foundation,
                 }),
             },
-            async ({ analyticsSection, dashboardPage, settingsPage }) => {
+            async ({ analyticsSection, dashboardPage, settingsPage, page, target }) => {
                 await test.step('Add dashboard promo banner', async () => {
                     await settingsPage.toggleDebugModeInSettings();
                     await settingsPage.navigateTo('debug');
                     await settingsPage.debugTab.addBanner(bannerType);
                 });
 
-                await test.step(`Tirgger & verify ${PROMO_EVENT} - ${bannerType.toUpperCase()}`, async () => {
+                await test.step(`Trigger & verify ${PROMO_EVENT} - ${bannerType.toUpperCase()}`, async () => {
                     await dashboardPage.navigateTo();
 
-                    const [payload] = await Promise.all([
-                        analyticsSection.waitForAnalytics({ c_type: PROMO_EVENT, bannerType }),
-                        dashboardPage.promoBannerButton(bannerType).click(),
-                    ]);
+                    /**
+                     * Set up listener
+                     *
+                     * analyticsPromise - wait for the analytics event
+                     */
+                    const analyticsPromise = analyticsSection.waitForAnalytics({
+                        c_type: PROMO_EVENT,
+                        bannerType,
+                    });
+
+                    let payload: any;
+
+                    if (isDesktopProject(target)) {
+                        // Perform the action
+                        await dashboardPage.promoBannerButton(bannerType).click();
+
+                        // Await the listeners
+                        payload = await analyticsPromise;
+                    } else {
+                        /**
+                         * Set up listener
+                         *
+                         * pagePromise - wait for new page being opened by open the link from the banner
+                         */
+                        const pagePromise = page.context().waitForEvent('page');
+                        // Perform the action
+                        await dashboardPage.promoBannerButton(bannerType).click();
+
+                        // Await the listeners
+                        let newPage: any;
+                        [payload, newPage] = await Promise.all([analyticsPromise, pagePromise]);
+
+                        await newPage.close();
+                    }
 
                     expect(payload).toMatchObject({ c_type: PROMO_EVENT, bannerType });
                 });
