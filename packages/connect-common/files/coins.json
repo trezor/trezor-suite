@@ -2803,6 +2803,26 @@
         },
         {
             "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://backend14.sldev.cz:9312"]
+            },
+            "curve": "secp256k1",
+            "decimals": 6,
+            "is_testnet": false,
+            "name": "Tron",
+            "shortcut": "TRX",
+            "slip44": 195,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.10.1",
+                "T2T1": "2.10.1",
+                "T3B1": "2.10.1",
+                "T3T1": "2.10.1",
+                "T3W1": "2.10.1"
+            }
+        },
+        {
+            "blockchain_link": {
                 "type": "stellar",
                 "url": ["https://horizon-testnet.stellar.org"]
             },

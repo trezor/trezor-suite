@@ -26,6 +26,7 @@ const DEFAULT_CAPABILITIES_TT: PROTO.Capability[] = [
     'Capability_Monero',
     'Capability_NEM',
     'Capability_Ripple',
+    'Capability_Solana',
     'Capability_Stellar',
     'Capability_Tezos',
     'Capability_U2F',
@@ -85,6 +86,9 @@ export const getUnavailableCapabilities = (features: Features, coins: CoinInfo[]
             return !capabilities.includes('Capability_Ethereum');
         }
         // misc
+        if (info.shortcut === 'TRX' && info.type === 'misc') {
+            return !capabilities.includes('Capability_Tron');
+        }
         if (info.shortcut === 'BNB' && info.type === 'misc') {
             return !capabilities.includes('Capability_Binance');
         }

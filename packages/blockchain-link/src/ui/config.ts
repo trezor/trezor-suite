@@ -156,6 +156,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Tron',
+            worker: 'js/blockbook-worker.js',
+            server: ['https://backend14.sldev.cz:9312/'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
+        blockchain: {
             name: 'BNB Smart Chain',
             worker: 'js/blockbook-worker.js',
             server: ['https://bsc.trezor.io'],
