@@ -12,6 +12,8 @@
     - [Naming](./code-style-guide/naming.md)
     - [Tests](./code-style-guide/tests.md)
     - [Comments](./code-style-guide/comments.md)
+    - [Result Type](./code-style-guide/result-type.md)
+    - [File Structure](./code-style-guide/file-structure.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
