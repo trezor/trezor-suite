@@ -10,6 +10,12 @@ export const selectHasPassphraseMismatchError = (state: DiscoveryRootState & Dev
     return discovery?.status === 'passphrase-mismatch';
 };
 
+export const selectHasPassphraseIncorrectError = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDiscoveryByDevicePath(state, state.device.selectedDevice?.path);
+
+    return discovery?.status === 'failed' && discovery?.error === 'Passphrase is incorrect';
+};
+
 export const selectIsCreatingNewPassphraseWallet = (
     state: DiscoveryRootState & DeviceRootState,
 ) => {

@@ -21,6 +21,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../passphrase" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" }
