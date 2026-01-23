@@ -126,7 +126,7 @@ const { myValue, myAnotherValue } = useSelector(state => ({
 
 // good
 const myValue = useSelector(selectMyValue);
-const myAnotherValue = useSelector(state => selectMyAnotherValue(state));
+const myAnotherValue = useSelector(selectMyAnotherValue);
 ```
 
 ### Naming of selectors
