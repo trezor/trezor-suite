@@ -25,8 +25,8 @@ export type TradingSellState = {
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
     formStep: TradingSellStepType;
-
     transactionId?: string;
+    lastErrorMessage?: string;
 };
 
 export const sellInitialState: TradingSellState = {
@@ -79,6 +79,9 @@ const tradingSellSlice = createSlice({
         },
         setFormStep(state, action: PayloadAction<TradingSellStepType>) {
             state.formStep = action.payload;
+        },
+        setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
+            state.lastErrorMessage = action.payload;
         },
     },
 });

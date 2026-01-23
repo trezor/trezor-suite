@@ -32,8 +32,8 @@ export interface TradingExchangeState {
     isLoading: boolean;
     amountLimits: TradingExchangeAmountLimitProps | undefined;
     formStep: TradingExchangeStepType;
-
     transactionId?: string;
+    lastErrorMessage?: string;
 }
 
 export const exchangeInitialState: TradingExchangeState = {
@@ -101,6 +101,9 @@ const tradingExchangeSlice = createSlice({
         },
         setFormStep(state, action: PayloadAction<TradingExchangeStepType>) {
             state.formStep = action.payload;
+        },
+        setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
+            state.lastErrorMessage = action.payload;
         },
     },
 });
