@@ -1,2 +1,2 @@
 export * from './findLabelsToBeMovedOrDeleted';
-export * from './migrateSuiteSyncLabelsForRbfTransaction';
+export * from './createMigrateSuiteSyncLabelsForRbfTransaction';

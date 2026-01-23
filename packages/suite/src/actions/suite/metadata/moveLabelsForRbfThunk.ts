@@ -1,8 +1,5 @@
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import {
-    createMigrateSuiteSyncLabelsForRbfTransaction,
-    findLabelsToBeMovedOrDeleted,
-} from '@suite-common/suite-rbf-labels-migrations';
+import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-migrations';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectTransactions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
@@ -26,11 +23,7 @@ export const moveLabelsForRbfThunk =
         });
         const suiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
         if (suiteSyncEnabled) {
-            return createMigrateSuiteSyncLabelsForRbfTransaction({
-                dispatch,
-                getState,
-                updateOutputLabel: extra.services.suiteSync.labeling.updateOutputLabel,
-            })({
+            return extra.services.migrateSuiteSyncLabelsForRbfTransaction({
                 toBeMovedOrDeletedList,
                 deviceStaticSessionId,
                 newTxId,

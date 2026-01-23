@@ -11008,11 +11008,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-rbf-labels-migrations@workspace:suite-common/suite-rbf-labels-migrations"
   dependencies:
-    "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -13428,6 +13425,7 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/platform-encryption-native": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-types": "workspace:*"

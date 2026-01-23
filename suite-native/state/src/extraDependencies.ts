@@ -12,7 +12,11 @@ import {
     notImplementedSelector,
     notImplementedThunk,
 } from '@suite-common/redux-utils';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { createMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations';
+import {
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncOutputLabelsByAccount,
+} from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -61,14 +65,16 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         trezorConnect: TrezorConnect,
     });
 
+    const suiteSync = createSuiteSyncNativeCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        platformEncryption,
+        trezorConnect: TrezorConnect,
+        ensureDelegatedIdentityKey,
+    });
+
     return {
-        suiteSync: createSuiteSyncNativeCompositionRoot({
-            dispatch: deps.dispatch,
-            getState: deps.getState,
-            platformEncryption,
-            trezorConnect: TrezorConnect,
-            ensureDelegatedIdentityKey,
-        }),
+        suiteSync,
         platformEncryption,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         legacyAnalytics: createLegacyAnalytics(),
@@ -89,6 +95,17 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 appUrl: '@trezor/suite',
             },
         },
+        migrateSuiteSyncLabelsForRbfTransaction: createMigrateSuiteSyncLabelsForRbfTransaction({
+            dispatch: deps.dispatch,
+            getOutputs: params =>
+                selectSuiteSyncOutputLabelsByAccount(
+                    deps.getState(),
+                    params.walletDescriptor,
+                    params.accountDescriptor,
+                    params.networkSymbol,
+                ),
+            updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+        }),
     };
 };
 
