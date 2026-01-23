@@ -2,11 +2,21 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "./libDev",
-        "types": ["node", "chrome", "jest"]
+        "types": [
+            "node",
+            "chrome",
+            "jest",
+            "w3c-web-usb"
+        ]
     },
     "include": ["."],
     "references": [
+        { "path": "../blockchain-link-types" },
+        { "path": "../device-utils" },
         { "path": "../env-utils" },
+        { "path": "../protocol" },
+        { "path": "../transport" },
+        { "path": "../type-utils" },
         { "path": "../utils" }
     ]
 }

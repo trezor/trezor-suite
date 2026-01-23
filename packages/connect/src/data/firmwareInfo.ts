@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/data/FirmwareInfo.js
 
+import type { FirmwareUpdateSource } from '@trezor/connect-common/src/types';
 import {
     ConditionalRelease,
     DeviceModelInternal,
@@ -16,7 +17,7 @@ import { getIntegerInRangeFromString, removeTrailingSlashes, versionUtils } from
 
 import { DataManager } from './DataManager';
 import { Features, StrictFeatures } from '../types/device';
-import { FirmwareReleaseConfigInfo, FirmwareUpdateSource } from '../types/firmware';
+import { FirmwareReleaseConfigInfo } from '../types/firmware';
 import { getReleaseAsset, getReleasesAssetByDeviceModelAndFirmwareType } from '../utils/assetUtils';
 import { httpRequest } from '../utils/assets';
 import {

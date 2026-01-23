@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import type { ConnectSettings, Manifest } from '@trezor/connect-common/src/types';
 import { createDeferredManager } from '@trezor/utils';
 
 import { ERRORS } from './constants';
@@ -20,7 +21,6 @@ import {
     createErrorMessage,
 } from './events';
 import { factory } from './factory';
-import type { ConnectSettings, Manifest } from './types';
 import { initLog } from './utils/debug';
 
 export const eventEmitter = new EventEmitter();

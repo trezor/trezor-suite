@@ -3,7 +3,7 @@
  * `manifest` is required
  */
 
-import type { ConnectSettingsPublic, Manifest } from '../settings';
+import type { ConnectSettingsPublic, Manifest } from '@trezor/connect-common/src/types';
 
 // explicitly don't overlap types
 export type InitFullSettings<ExtraSettingsType extends Record<string, any>> = {

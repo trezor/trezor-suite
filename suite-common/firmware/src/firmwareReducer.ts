@@ -11,7 +11,7 @@ import {
     FirmwareType,
     UI,
 } from '@trezor/connect';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import type { FirmwareUpdateSource } from '@trezor/connect-common/src/types';
 
 import { firmwareActions } from './firmwareActions';
 

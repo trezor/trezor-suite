@@ -10,6 +10,9 @@
         { "path": "../validators" },
         { "path": "../wallet-config" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },

@@ -1,8 +1,8 @@
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
 import type { Transport } from '@trezor/transport';
 import { TRANSPORT } from '@trezor/transport/src/constants';
 
 import { serializeError } from '../constants/errors';
-import { ConnectSettings } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export { TRANSPORT } from '@trezor/transport/src/constants';

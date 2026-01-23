@@ -1,6 +1,8 @@
+import type { SystemInfo } from '@trezor/connect-common';
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
+
 import type { TransportInfo } from './transport';
 import { UI_EVENT } from './ui-request';
-import type { ConnectSettings, SystemInfo } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 export const POPUP = {

@@ -10723,6 +10723,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -10741,6 +10742,7 @@ __metadata:
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -10847,6 +10849,7 @@ __metadata:
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -10926,6 +10929,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     lodash: "npm:^4.17.21"
     react: "npm:19.1.0"
     react-redux: "npm:9.2.0"
@@ -12663,7 +12667,7 @@ __metadata:
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -14328,6 +14332,7 @@ __metadata:
   resolution: "@trezor/connect-cli@workspace:packages/connect-cli"
   dependencies:
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/protobuf": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/transport-bluetooth": "workspace:*"
@@ -14335,15 +14340,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:^, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
+    "@trezor/blockchain-link-types": "workspace:^"
+    "@trezor/device-utils": "workspace:^"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/protocol": "workspace:^"
+    "@trezor/transport": "workspace:^"
+    "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
     "@types/node": "npm:22.13.10"
+    "@types/w3c-web-usb": "npm:^1.0.10"
     tsx: "npm:^4.20.3"
   peerDependencies:
     tslib: ^2.6.2
@@ -14449,6 +14460,7 @@ __metadata:
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
   dependencies:
     "@trezor/connect": "workspace:^"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:^"
     tsx: "npm:^4.20.3"
   peerDependencies:
@@ -14773,7 +14785,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/protocol@workspace:*, @trezor/protocol@workspace:packages/protocol":
+"@trezor/protocol@workspace:*, @trezor/protocol@workspace:^, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   dependencies:
@@ -14963,6 +14975,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
@@ -15203,6 +15216,7 @@ __metadata:
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"

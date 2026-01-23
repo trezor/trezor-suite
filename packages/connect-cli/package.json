@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:^",
         "@trezor/protobuf": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*"

@@ -15,7 +15,7 @@ import type {
     ConnectSettingsPublic,
     ConnectSettingsWeb,
     Manifest,
-} from '@trezor/connect/src/types';
+} from '@trezor/connect-common/src/types';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
 

@@ -7,6 +7,9 @@
         { "path": "../thp" },
         { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/utils" }

@@ -20,13 +20,8 @@ import {
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
 import { Analytics } from '@trezor/analytics';
-import {
-    BlockchainBlock,
-    BluetoothDeviceId,
-    ConnectSettings,
-    Manifest,
-    StaticSessionId,
-} from '@trezor/connect';
+import { BlockchainBlock, BluetoothDeviceId, StaticSessionId } from '@trezor/connect';
+import { ConnectSettings, Manifest } from '@trezor/connect-common/src/types';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 

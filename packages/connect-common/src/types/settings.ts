@@ -1,12 +1,11 @@
-import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { BlockchainSettings } from '@trezor/blockchain-link-types';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Transport } from '@trezor/transport';
 import { PartialRecord } from '@trezor/type-utils';
 
-import type { FirmwareUpdateSource } from '../types/firmware';
-
-export type { SystemInfo } from '@trezor/connect-common';
+import type { FirmwareUpdateSource } from './firmware';
+export type { SystemInfo } from './../systemInfo';
 export interface Manifest {
     appName: string;
     appIcon?: string;

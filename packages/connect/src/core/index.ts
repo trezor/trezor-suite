@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
@@ -30,7 +31,7 @@ import {
     createTransportMessage,
     createUiMessage,
 } from '../events';
-import type { ConnectSettings, DeviceIdentity } from '../types';
+import type { DeviceIdentity } from '../types';
 import { LogWriter, enableLog, initLog, setLogWriter } from '../utils/debug';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
 

@@ -3,10 +3,11 @@ import BlockchainLink, {
     ServerInfo,
     SubscriptionAccountInfo,
 } from '@trezor/blockchain-link';
+import type { Proxy } from '@trezor/connect-common/src/types';
 
 import { ERRORS } from '../constants';
 import { BLOCKCHAIN, CoreEventMessage, createBlockchainMessage } from '../events';
-import type { CoinInfo, Proxy } from '../types';
+import type { CoinInfo } from '../types';
 import { PushTransaction } from '../types/api/pushTransaction';
 import {
     BlockbookWorker,

@@ -12,9 +12,13 @@ import {
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
+import type {
+    ConnectSettings,
+    ConnectSettingsWeb,
+    Manifest,
+} from '@trezor/connect-common/src/types';
 
 import { parseConnectSettings } from '../connectSettings';
 import { PopupManager } from '../popup';

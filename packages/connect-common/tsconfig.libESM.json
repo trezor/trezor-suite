@@ -4,11 +4,26 @@
     "compilerOptions": {
         "outDir": "./libESM",
         "esModuleInterop": false,
-        "types": ["node", "chrome", "jest"]
+        "types": ["node", "chrome", "jest", "w3c-web-usb"]
     },
     "references": [
         {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../device-utils"
+        },
+        {
             "path": "../env-utils"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../type-utils"
         },
         {
             "path": "../utils"

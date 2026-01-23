@@ -1,8 +1,7 @@
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import { ConnectSettingsWebextension } from '@trezor/connect-common/src/types';
 import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
 import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
-
-import { ConnectSettingsWebextension } from './proxy';
 
 const extendLifetime = () => {
     // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.

@@ -1,4 +1,5 @@
-import { ConnectSettingsTransport, UiRequestThpPairing } from '@trezor/connect';
+import { UiRequestThpPairing } from '@trezor/connect';
+import type { ConnectSettingsTransport } from '@trezor/connect-common/src/types';
 import * as protobufDefinitions from '@trezor/protobuf/messages.json';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BluetoothTransport, TrezorBluetooth } from '@trezor/transport-bluetooth';

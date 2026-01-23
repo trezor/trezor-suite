@@ -1,7 +1,7 @@
+import type { LocalFirmwares } from '@trezor/connect-common/src/types';
 import type { ThpPairingMethod } from '@trezor/protocol';
 
 import { UI_EVENT } from './ui-request';
-import type { LocalFirmwares } from '../types/settings';
 import type { MessageFactoryFn } from '../types/utils';
 
 /*

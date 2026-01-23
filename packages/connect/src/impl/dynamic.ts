@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 
+import type { Manifest } from '@trezor/connect-common/src/types/settings';
 import { getSynchronize } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -7,7 +8,6 @@ import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
-import type { Manifest } from '../types/settings';
 import { ProxyEventEmitter } from '../utils/proxy-event-emitter';
 
 type TrezorConnectDynamicParams<

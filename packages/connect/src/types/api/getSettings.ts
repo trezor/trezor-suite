@@ -1,4 +1,5 @@
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
+
 import type { Response } from '../params';
-import type { ConnectSettings } from '../settings';
 
 export declare function getSettings(): Response<ConnectSettings>;

@@ -2,6 +2,7 @@
 
 import coinsEth from '@trezor/connect-common/files/coins-eth.json';
 import coins from '@trezor/connect-common/files/coins.json';
+import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common/src/types';
 import {
     ConditionalRelease,
     DeviceModelInternal,
@@ -14,7 +15,6 @@ import messages from '@trezor/protobuf/messages.json';
 
 import { parseCoinsJson } from './coinInfo';
 import { initializeFirmwareConfig } from './firmwareInfo';
-import type { ConnectSettings, LocalFirmwares } from '../types/settings';
 import {
     getFirmwareReleaseConfig,
     getOnlyLocalFirmwareReleaseConfig,

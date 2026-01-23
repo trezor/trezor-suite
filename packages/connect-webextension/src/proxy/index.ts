@@ -3,16 +3,15 @@ import EventEmitter from 'events';
 // NOTE: @trezor/connect part is intentionally not imported from the index
 import {
     CallMethod,
-    ConnectSettings,
     ERRORS,
     IFRAME,
-    Manifest,
     POPUP,
     WEBEXTENSION,
     createErrorMessage,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
+import { ConnectSettings, Manifest } from '@trezor/connect-common/src/types';
 
 const eventEmitter = new EventEmitter();
 let _channel: any;

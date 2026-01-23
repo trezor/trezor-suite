@@ -49,7 +49,12 @@
         "depcheck": "yarn g:depcheck"
     },
     "dependencies": {
+        "@trezor/blockchain-link-types": "workspace:^",
+        "@trezor/device-utils": "workspace:^",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/protocol": "workspace:^",
+        "@trezor/transport": "workspace:^",
+        "@trezor/type-utils": "workspace:^",
         "@trezor/utils": "workspace:*"
     },
     "peerDependencies": {
@@ -59,6 +64,7 @@
         "@types/chrome": "^0.0.299",
         "@types/jest": "29.5.12",
         "@types/node": "22.13.10",
+        "@types/w3c-web-usb": "^1.0.10",
         "tsx": "^4.20.3"
     }
 }

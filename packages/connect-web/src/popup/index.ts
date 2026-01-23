@@ -4,7 +4,6 @@ import EventEmitter from 'events';
 
 import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
 import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
-import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
 import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
 

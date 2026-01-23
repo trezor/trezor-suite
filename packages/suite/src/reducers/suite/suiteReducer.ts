@@ -5,7 +5,8 @@ import { Locale } from '@suite-common/suite-types';
 import type { InvityServerEnvironment } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { ConnectSettings, TRANSPORT, TransportInfo } from '@trezor/connect';
+import { TRANSPORT, TransportInfo } from '@trezor/connect';
+import type { ConnectSettings } from '@trezor/connect-common/src/types';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 

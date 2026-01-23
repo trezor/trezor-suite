@@ -2,7 +2,6 @@ import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
-    ConnectSettings,
     IFRAME,
     IFrameCallMessage,
     POPUP,
@@ -10,6 +9,7 @@ import {
     PopupHandshake,
     parseConnectSettings,
 } from '@trezor/connect';
+import { ConnectSettings } from '@trezor/connect-common/src/types';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { ConnectPopupResponse } from '@trezor/suite-desktop-api/src/messages';

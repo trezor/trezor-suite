@@ -1,4 +1,5 @@
-import type { DeviceEvent, FirmwareStoreEvent, LocalFirmwares } from '@trezor/connect';
+import type { DeviceEvent, FirmwareStoreEvent } from '@trezor/connect';
+import type { LocalFirmwares } from '@trezor/connect-common/src/types';
 import { InterceptedEvent } from '@trezor/request-manager';
 import type { HandshakeClient, TorStatus } from '@trezor/suite-desktop-api';
 import { TypedEmitter } from '@trezor/utils';

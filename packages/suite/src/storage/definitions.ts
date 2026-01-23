@@ -22,7 +22,7 @@ import type {
     RatesByTimestamps,
     WalletSettings,
 } from '@suite-common/wallet-types';
-import { FirmwareUpdateSource } from '@trezor/connect/src/types/firmware';
+import type { FirmwareUpdateSource } from '@trezor/connect-common/src/types';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';

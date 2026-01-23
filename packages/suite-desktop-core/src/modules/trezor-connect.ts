@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 
-import TrezorConnect, { ConnectSettings, LocalFirmwares, UI, UI_EVENT } from '@trezor/connect';
+import TrezorConnect, { UI, UI_EVENT } from '@trezor/connect';
+import type { ConnectSettings, LocalFirmwares } from '@trezor/connect-common/src/types';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { parseElectrumUrl } from '@trezor/utils';
 

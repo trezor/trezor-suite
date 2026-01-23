@@ -5,7 +5,6 @@ export * from './device';
 export * from './fees';
 export * from './firmware';
 export * from './params';
-export * from './settings';
 
 // altcoin related types. these exports should satisfy needs of 3rd party apps
 export * from './api/cardano';

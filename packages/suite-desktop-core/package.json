@@ -20,6 +20,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:^",
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",

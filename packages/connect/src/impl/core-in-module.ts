@@ -1,5 +1,10 @@
 import EventEmitter from 'events';
 
+import type {
+    ConnectSettings,
+    ConnectSettingsPublic,
+    Manifest,
+} from '@trezor/connect-common/src/types';
 import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
 
 import * as ERRORS from '../constants/errors';
@@ -20,7 +25,7 @@ import {
     createErrorMessage,
 } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
-import type { ConnectSettings, ConnectSettingsPublic, DeviceIdentity, Manifest } from '../types';
+import type { DeviceIdentity } from '../types';
 import type { SetTransports } from '../types/api/setTransports';
 import { Log, initLog } from '../utils/debug';
 
