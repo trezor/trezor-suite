@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import {
-    isSuiteSyncSupportedByDevice,
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
@@ -37,6 +36,7 @@ export const Labeling = () => {
     const legacyAnalytics = useLegacyAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
+    const deviceStaticSessionId = device?.state?.staticSessionId;
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
     const showSuiteSync = useSelector(selectIsFeatureSuiteSyncAvailable);
@@ -59,7 +59,7 @@ export const Labeling = () => {
                 : translationString(option.label),
     }));
 
-    const handleOnChange = (selected: LabelingOptionTranslated) => {
+    const handleOnChange = async (selected: LabelingOptionTranslated) => {
         const { value } = selected;
 
         // show a warning legacy modal when user selects legacy option while using Suite Sync
@@ -75,25 +75,25 @@ export const Labeling = () => {
                 suiteSync.turnOffSuiteSync();
                 break;
 
-            case 'secure-sync':
-                suiteSync.turnOnSuiteSync({
-                    onError: ({ error }) => {
-                        const { type } = error;
-                        switch (type) {
-                            case 'SuiteSyncUnavailableOnDeviceError':
-                            case 'DeviceCancelled':
-                            case 'DeviceError':
-                                dispatch(
-                                    notificationsActions.addToast({ type: 'error', error: type }),
-                                );
+            case 'secure-sync': {
+                const result = await suiteSync.turnOnSuiteSync({ deviceStaticSessionId });
+                if (!result.success) {
+                    const { type } = result.error;
+                    switch (type) {
+                        case 'SuiteSyncUnavailableOnDeviceError':
+                        case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                        case 'DeviceCancelled':
+                        case 'DeviceError':
+                            dispatch(notificationsActions.addToast({ type: 'error', error: type }));
 
-                                return;
-                            default:
-                                return exhaustive(type);
-                        }
-                    },
-                });
+                            return;
+                        default:
+                            return exhaustive(type);
+                    }
+                }
+
                 break;
+            }
 
             case 'legacy':
                 suiteSync.turnOffSuiteSync();
@@ -165,11 +165,7 @@ export const Labeling = () => {
                 />
                 <ActionColumn>
                     <ActionSelect
-                        options={translatedOptions.filter(
-                            option =>
-                                option.value !== 'secure-sync' ||
-                                (showSuiteSync && isSuiteSyncSupportedByDevice(device)),
-                        )}
+                        options={translatedOptions}
                         value={getSelectedOption()}
                         onChange={handleOnChange}
                         data-testid="@settings/labeling-select"

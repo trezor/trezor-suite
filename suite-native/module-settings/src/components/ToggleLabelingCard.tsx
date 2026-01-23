@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -13,6 +14,7 @@ export const ToggleLabelingCard = () => {
     const { showToast } = useToast();
     const { suiteSync } = useNativeServices();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+    const selectedDevice = useSelector(selectSelectedDevice);
 
     const showSuiteSyncDisableConfirmationAlert = () => {
         showAlert({
@@ -24,25 +26,28 @@ export const ToggleLabelingCard = () => {
         });
     };
 
-    const toggleSuiteSync = () => {
+    const toggleSuiteSync = async () => {
         if (isSuiteSyncEnabled) {
             showSuiteSyncDisableConfirmationAlert();
         } else {
-            suiteSync.turnOnSuiteSync({
-                onError: ({ error }) => {
-                    const { type } = error;
-                    switch (type) {
-                        case 'SuiteSyncUnavailableOnDeviceError':
-                        case 'DeviceCancelled':
-                        case 'DeviceError':
-                            showToast({ variant: 'error', icon: 'warning', message: type });
-
-                            return;
-                        default:
-                            return exhaustive(type);
-                    }
-                },
+            const result = await suiteSync.turnOnSuiteSync({
+                deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
             });
+
+            if (!result.success) {
+                const { type } = result.error;
+                switch (type) {
+                    case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                    case 'DeviceCancelled':
+                    case 'DeviceError':
+                        showToast({ variant: 'error', icon: 'warning', message: type });
+
+                        return;
+                    default:
+                        return exhaustive(type);
+                }
+            }
         }
     };
 

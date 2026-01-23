@@ -25,7 +25,7 @@ const suiteSyncMock: SuiteSync = {
     ensureWalletSuiteSyncOn: () =>
         Promise.resolve(err({ type: 'SuiteSyncUnavailableOnDeviceError' })),
     turnOffSuiteSyncForWallet: () => Promise.resolve(),
-    turnOnSuiteSync: () => Promise.resolve(),
+    turnOnSuiteSync: () => Promise.resolve(ok()),
     turnOffSuiteSync: () => Promise.resolve(),
     labeling: {
         updateAccountLabel: () => Promise.resolve(ok()),

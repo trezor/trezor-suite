@@ -4,6 +4,7 @@ import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
 import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
+import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateAccountLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -17,6 +18,7 @@ export type UpdateAccountLabel = (
     Result<
         void,
         | SuiteSyncUnavailableOnDeviceErrorType
+        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
         | DeviceErrorType
         | DeviceCancelledErrType
         | SuiteSyncUpdateError

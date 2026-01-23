@@ -3,7 +3,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { Card, IconCircle, List, Modal, Paragraph } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useDispatch } from '../../../hooks/suite';
+import { useDevice, useDispatch } from '../../../hooks/suite';
 import { useSuiteServices } from '../../../support/SuiteServicesProvider';
 
 type TurnOnSecureSyncModalProps = {
@@ -14,22 +14,27 @@ export const TurnOnSecureSyncModal = ({ onClose }: TurnOnSecureSyncModalProps) =
     const { suiteSync } = useSuiteServices();
     const dispatch = useDispatch();
 
-    const onSwitch = () => {
-        suiteSync.turnOnSuiteSync({
-            onError: ({ error }) => {
-                const { type } = error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'DeviceCancelled':
-                    case 'DeviceError':
-                        dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+    const { device } = useDevice();
 
-                        return;
-                    default:
-                        return exhaustive(type);
-                }
-            },
+    const onSwitch = async () => {
+        const result = await suiteSync.turnOnSuiteSync({
+            deviceStaticSessionId: device?.state?.staticSessionId,
         });
+
+        if (!result.success) {
+            const { type } = result.error;
+            switch (type) {
+                case 'SuiteSyncUnavailableOnDeviceError':
+                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                case 'DeviceCancelled':
+                case 'DeviceError':
+                    dispatch(notificationsActions.addToast({ type: 'error', error: type }));
+
+                    return;
+                default:
+                    return exhaustive(type);
+            }
+        }
 
         onClose();
     };

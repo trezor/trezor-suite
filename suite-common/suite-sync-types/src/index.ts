@@ -32,6 +32,7 @@ export type {
     EnsureWalletSuiteSyncOn,
     EnsureWalletSuiteSyncOnDep,
     EnsureWalletSuiteSyncOnParams,
+    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
 } from './storage/ensureWalletSuiteSyncOn';
 
 export type {
