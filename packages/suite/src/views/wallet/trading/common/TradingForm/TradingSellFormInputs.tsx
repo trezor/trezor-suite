@@ -131,7 +131,7 @@ export const TradingSellFormInputs = () => {
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
+                isHeaderRowLayout
             />
             <Divider margin={0} />
             <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>

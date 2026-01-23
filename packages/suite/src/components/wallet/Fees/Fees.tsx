@@ -1,4 +1,4 @@
-import { Column, FlexProps } from '@trezor/components';
+import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { Account } from 'src/types/wallet';
@@ -9,7 +9,7 @@ import { FieldErrorBanner } from './FieldErrorBanner';
 
 export type FeesProps = {
     account: Pick<Account, 'symbol' | 'networkType'>;
-    padding?: FlexProps['padding'];
+    isHeaderRowLayout?: boolean;
 } & Pick<
     CollapsibleFeesProps,
     'label' | 'rbfForm' | 'feeInfo' | 'changeFeeLevel' | 'composedLevels' | 'headerTypographyStyle'
@@ -23,12 +23,12 @@ export const Fees = ({
     label,
     rbfForm,
     headerTypographyStyle,
-    padding,
+    isHeaderRowLayout,
 }: FeesProps) => {
     useFetchFees({ networkSymbol });
 
     return (
-        <Column gap={spacings.md} padding={padding} overflow="unset">
+        <Column gap={spacings.md} overflow="unset">
             <CollapsibleFees
                 networkType={networkType}
                 networkSymbol={networkSymbol}
@@ -38,6 +38,7 @@ export const Fees = ({
                 changeFeeLevel={changeFeeLevel}
                 rbfForm={rbfForm}
                 headerTypographyStyle={headerTypographyStyle}
+                isHeaderRowLayout={isHeaderRowLayout}
             />
 
             <FieldErrorBanner fieldName="selectedFee" />
