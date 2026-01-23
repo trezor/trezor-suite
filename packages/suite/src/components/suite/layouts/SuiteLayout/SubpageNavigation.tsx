@@ -39,9 +39,10 @@ export type NavigationItem = {
 
 type SubpageNavigationProps = {
     items: NavigationItem[];
+    ['data-testid']: string;
 };
 
-export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
+export const SubpageNavigation = ({ 'data-testid': dataTest, items }: SubpageNavigationProps) => {
     const routeName = useSelector(selectRouteName);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
@@ -51,7 +52,7 @@ export const SubpageNavigation = ({ items }: SubpageNavigationProps) => {
     )?.id;
 
     return (
-        <Container>
+        <Container data-testid={dataTest}>
             <ScrollContainer>
                 <AppNavigationTooltip>
                     <Tabs

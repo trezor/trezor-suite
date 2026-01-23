@@ -77,5 +77,5 @@ export const AccountNavigation = () => {
         },
     ];
 
-    return <SubpageNavigation items={accountTabs} />;
+    return <SubpageNavigation data-testid="@wallet/menu " items={accountTabs} />;
 };
