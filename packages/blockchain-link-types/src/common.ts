@@ -69,6 +69,8 @@ export interface ServerInfo {
 }
 
 export type TokenStandard =
+    | 'TRC10'
+    | 'TRC20'
     | 'ERC20'
     | 'BEP20'
     | 'BEP721'
