@@ -21,6 +21,7 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
+import { selectHasPassphraseIncorrectError } from '@suite-native/passphrase';
 
 import { AddCoinAccountNavigationProps, useAddCoinAccount } from '../hooks/useAddCoinAccount';
 
@@ -34,6 +35,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     );
 
+    const hasPassphraseIncorrectError = useSelector(selectHasPassphraseIncorrectError);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
@@ -49,6 +51,12 @@ export const AddCoinDiscoveryRunningScreen = ({
     };
 
     const handleFinish = () => {
+        if (loadingResult === 'error') {
+            navigation.goBack();
+
+            return;
+        }
+
         if (accounts.length === 0 || hasDiscovery) {
             return;
         }
@@ -94,6 +102,10 @@ export const AddCoinDiscoveryRunningScreen = ({
             return;
         }
 
+        if (!hasDiscovery && hasPassphraseIncorrectError) {
+            setLoadingResult('error');
+        }
+
         if (accounts.length > 0 && !hasDiscovery) {
             setLoadingResult('success');
         }
@@ -104,6 +116,7 @@ export const AddCoinDiscoveryRunningScreen = ({
         enabledNetworkSymbols,
         loadingResult,
         networkSymbol,
+        hasPassphraseIncorrectError,
     ]);
 
     return (
