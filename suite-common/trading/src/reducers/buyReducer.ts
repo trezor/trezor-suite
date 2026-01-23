@@ -31,8 +31,8 @@ export interface TradingBuyState {
     receiveAddress?: string;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
-
     transactionId?: string;
+    lastErrorMessage?: string;
 }
 
 export const buyInitialState: TradingBuyState = {
@@ -88,6 +88,9 @@ const tradingBuySlice = createSlice({
         },
         setReceiveAddress(state, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
+        },
+        setLastErrorMessage(state, action: PayloadAction<string | undefined>) {
+            state.lastErrorMessage = action.payload;
         },
     },
 });
