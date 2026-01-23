@@ -12,7 +12,7 @@ import {
     ConfirmBottomSheet,
     FirmwareLanguageCard,
     FirmwareVersionCard,
-    useIsFirmwareUpdateFeatureEnabled,
+    selectIsFirmwareUpdateFeatureEnabled,
 } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToCheckBackup } from '@suite-native/module-check-backup';
@@ -35,8 +35,6 @@ export const DeviceFirmwareScreen = ({
     DeviceSettingsStackRoutes.DeviceFirmware,
     RootStackParamList
 >) => {
-    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
-
     const { showAlert } = useAlert();
     const { openModal: openCheckBackupModal, bottomSheetRef, closeModal } = useBottomSheetModal();
     const { navigateToCheckBackup } = useNavigateToCheckBackup();
@@ -44,6 +42,7 @@ export const DeviceFirmwareScreen = ({
     const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
+    const isFirmwareUpdateEnabled = useSelector(selectIsFirmwareUpdateFeatureEnabled);
 
     const withModalClose = (callback: () => void) => () => {
         closeModal();

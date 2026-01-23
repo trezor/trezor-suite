@@ -7,7 +7,7 @@ import {
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { useIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
+import { selectIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
 
 type FirmwareInfoScreenFooterProps = {
     onUpdateConfirmation: () => void;
@@ -20,7 +20,7 @@ export const FirmwareInfoScreenFooter = ({
 }: FirmwareInfoScreenFooterProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
-    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
+    const isFirmwareUpdateEnabled = useSelector(selectIsFirmwareUpdateFeatureEnabled);
 
     const confirmButtonTranslationId = hasDeviceFirmwareInstalled
         ? 'firmware.firmwareInfoScreen.updateButton'

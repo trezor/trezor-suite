@@ -5,18 +5,8 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-import {
-    selectDeviceId,
-    selectDeviceUpdateFirmwareVersion,
-    selectHasRunningDiscovery,
-    selectIsDeviceBackedUp,
-    selectIsDeviceConnected,
-    selectIsFirmwareUpgradable,
-    selectIsPortfolioTrackerDevice,
-    selectShouldOfferUpdateFirmware,
-} from '@suite-common/wallet-core';
+import { selectDeviceId, selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -52,12 +42,7 @@ const closeStateAtom = atom<CloseStateItem[]>([]);
 export const FirmwareUpdateAlert = () => {
     const { applyStyle } = useNativeStyles();
     const updateFirmwareVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
-    const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const deviceId = useSelector(selectDeviceId);
-    const isConnected = useSelector(selectIsDeviceConnected);
-    const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
-    const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
     const setCloseState = useSetAtom(closeStateAtom);
@@ -73,9 +58,6 @@ export const FirmwareUpdateAlert = () => {
     );
 
     const isClosed = useAtomValue(isClosedAtom);
-    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
-
-    const isFirmwareUpgradable = useSelector(selectIsFirmwareUpgradable);
 
     const handleUpdateFirmware = () => {
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
@@ -90,19 +72,7 @@ export const FirmwareUpdateAlert = () => {
         setCloseState(prev => [...prev, { deviceId, version: updateFirmwareVersion }]);
     };
 
-    if (!isFirmwareUpdateEnabled) {
-        return null;
-    }
-
-    if (
-        !isFirmwareUpgradable ||
-        !shouldOfferUpdateFirmware ||
-        isPortfolioTrackerDevice ||
-        isDiscoveryRunning ||
-        !isConnected ||
-        !isDeviceBackedUp ||
-        isClosed
-    ) {
+    if (isClosed) {
         return null;
     }
 
