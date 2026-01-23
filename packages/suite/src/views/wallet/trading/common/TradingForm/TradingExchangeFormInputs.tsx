@@ -205,7 +205,7 @@ export const TradingExchangeFormInputs = () => {
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
+                isHeaderRowLayout
             />
             <TradingSelectedOfferProvider />
             <Divider margin={0} />

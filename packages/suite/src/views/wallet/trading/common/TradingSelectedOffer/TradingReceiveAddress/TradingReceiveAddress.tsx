@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Column, Divider, Icon, Row, Text } from '@trezor/components';
+import { Box, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { AccountLabeling, Address } from 'src/components/suite';
@@ -34,7 +34,7 @@ export const TradingReceiveAddress = () => {
     };
 
     return (
-        <Column cursor="pointer">
+        <Box cursor="pointer" backgroundColorOnInteraction="backgroundSurfaceElevation2">
             <Divider margin={0} />
 
             <Row
@@ -94,6 +94,6 @@ export const TradingReceiveAddress = () => {
                     <Icon name="caretRight" size={20} variant="tertiary" />
                 </Row>
             </Row>
-        </Column>
+        </Box>
     );
 };
