@@ -1,0 +1,21 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "include": [
+        "src/**/*",
+        "package.json",
+        "src/analytics.json"
+    ],
+    "compilerOptions": {
+        "outDir": "libDev",
+        "types": ["vite/client"]
+    },
+    "references": [
+        {
+            "path": "../../suite-common/analytics-types"
+        },
+        {
+            "path": "../../suite-native/analytics"
+        },
+        { "path": "../../suite/analytics" }
+    ]
+}

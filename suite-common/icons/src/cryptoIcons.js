@@ -26,7 +26,6 @@ import regtest from '../cryptoAssets/cryptoIcons/regtest.svg';
 import sol from '../cryptoAssets/cryptoIcons/sol.svg';
 import test from '../cryptoAssets/cryptoIcons/test.svg';
 import thod from '../cryptoAssets/cryptoIcons/thod.svg';
-import trx from '../cryptoAssets/cryptoIcons/trx.svg';
 import tsep from '../cryptoAssets/cryptoIcons/tsep.svg';
 import txlm from '../cryptoAssets/cryptoIcons/txlm.svg';
 import txrp from '../cryptoAssets/cryptoIcons/txrp.svg';
@@ -61,7 +60,6 @@ export const cryptoIcons = {
     sol: sol,
     test: test,
     thod: thod,
-    trx: trx,
     tsep: tsep,
     txlm: txlm,
     txrp: txrp,
@@ -69,6 +67,8 @@ export const cryptoIcons = {
     xlm: xlm,
     xrp: xrp,
     zec: zec,
-} as const;
+};
 
-export type CryptoIconName = keyof typeof cryptoIcons;
+/**
+ * @typedef {keyof typeof cryptoIcons} CryptoIconName
+ */

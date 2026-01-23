@@ -1,6 +1,6 @@
 import { UISize } from '../../config/types';
 
-export const paddingTypes = ['none', 'normal', 'large'] as const;
+export const paddingTypes = ['none', 'small', 'normal', 'large'] as const;
 export type PaddingType = (typeof paddingTypes)[number];
 
 export const fillTypes = ['none', 'default'] as const;

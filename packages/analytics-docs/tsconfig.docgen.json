@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true
+    },
+    "include": [
+        "../../suite-native/analytics/src/events/**/*.ts",
+        "../../suite-native/analytics/src/events/**/*.tsx",
+        "../../packages/**/analytics*/src/**/*.ts",
+        "../../packages/**/analytics*/src/**/*.tsx"
+    ]
+}

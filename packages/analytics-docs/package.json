@@ -1,0 +1,26 @@
+{
+    "name": "@trezor/analytics-docs",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build-data": "tsx ./scripts/buildData.ts",
+        "dev": "vite",
+        "build": "yarn build-data && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@suite-common/analytics-types": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite/analytics": "workspace:*",
+        "react": "19.1.0",
+        "styled-components": "^6.1.19",
+        "ts-morph": "^23.0.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.7.0",
+        "react-dom": "19.1.0",
+        "tsx": "^4.20.3",
+        "vite": "^7.2.4",
+        "vite-plugin-node-polyfills": "^0.24.0"
+    }
+}
