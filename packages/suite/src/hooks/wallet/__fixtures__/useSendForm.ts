@@ -754,7 +754,8 @@ export const composeDebouncedTransaction = [
     },
 ];
 
-export const setMax = [
+// any[] because of TS7056
+export const setMax: any[] = [
     {
         description: 'setMax: utxos are excluded because of insufficient anonymity',
         store: {
