@@ -8,3 +8,9 @@
     ```tsx
     import * as colorUtils from './utils.js';
     ```
+
+## Barrel (index.ts) files
+
+Use them in packages to define public interface.
+
+Do not use them inside a module to export from directory. If you feel it shall be separated, create a new package. They can introduce accidental circular dependencies and may hurt tree-shaking.
