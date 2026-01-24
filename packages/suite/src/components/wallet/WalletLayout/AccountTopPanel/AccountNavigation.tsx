@@ -17,7 +17,6 @@ export const AccountNavigation = () => {
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const enabledNftSection = useSelector(selectHasExperimentalFeature('nft-section'));
     const network = getNetworkOptional(routerParams?.symbol);
-    const networkType = account?.networkType || network?.networkType || '';
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
     const accountTabs: NavigationItem[] = [
@@ -36,7 +35,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-tokens', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !['cardano', 'ethereum', 'solana', 'stellar'].includes(networkType),
+            isHidden: !hasNetworkFeatures(account, 'tokens'),
             activeRoutes: ['wallet-tokens', 'wallet-tokens-hidden', 'wallet-tokens-inactive'],
             'data-testid': '@wallet/menu/wallet-tokens',
         },

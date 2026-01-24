@@ -1,33 +1,30 @@
 import {
     type Explorer,
+    type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
     getExplorerUrl,
+    getNetworkType,
 } from '@suite-common/wallet-config';
 import { TokenInfo, TokenStandard, TokenTransfer } from '@trezor/blockchain-link-types';
 import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 export const getContractAddressForNetworkSymbol = (
-    symbol: NetworkSymbolExtended, // unknown symbols will result to lowerCase
+    symbol: NetworkSymbolExtended,
     contractAddress: string,
 ) => {
-    switch (symbol) {
-        case 'eth':
-            // Specifying most common network as first case improves performance little bit
+    const networkType = getNetworkType(symbol.toLowerCase() as NetworkSymbol);
+
+    switch (networkType) {
+        case 'ethereum':
             return contractAddress.toLowerCase();
-        case 'sol':
-        case 'dsol':
-            return contractAddress;
-        case 'ada': {
+        case 'cardano': {
             const { policyId } = parseAsset(contractAddress);
 
             return policyId.toLowerCase();
         }
-        case 'xlm':
-        case 'txlm':
-            return contractAddress;
         default:
-            return contractAddress.toLowerCase();
+            return contractAddress;
     }
 };
 
@@ -97,7 +94,7 @@ export const isNftMatchesSearch = (token: TokenInfo, search: string) =>
     token.name?.toLowerCase().includes(search) ||
     token.contract?.toLowerCase().includes(search);
 
-const EVM_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
+const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     'ERC20',
     'ERC721',
     'ERC1155',
@@ -106,5 +103,5 @@ const EVM_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     'BEP1155',
 ]);
 
-export const isEvmTokenStandard = (token: TokenInfo) =>
-    token.standard ? EVM_TOKEN_STANDARDS.has(token.standard) : false;
+export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>
+    token.standard ? !PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS.has(token.standard) : true;

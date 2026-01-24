@@ -200,7 +200,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             )}
                         </Column>
                     </Row>
-                    {!hasNoStandardTokens && hasNetworkFeatures(account, 'tokens') && (
+                    {!hasNoStandardTokens && (
                         <IconButton icon="caretDown" intent="neutral" priority="secondary" />
                     )}
                 </Row>

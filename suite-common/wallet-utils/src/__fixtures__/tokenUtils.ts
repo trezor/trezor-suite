@@ -1,9 +1,15 @@
 export const getContractAddressForNetworkSymbolFixtures = [
     {
-        testName: 'Converts to lowercase for non-sol networks',
+        testName: 'Converts to lowercase for evm networks',
         symbol: 'eth' as const,
         contractAddress: '0xABCD',
         expected: '0xabcd',
+    },
+    {
+        testName: 'Keeps case for Tron network',
+        symbol: 'trx' as const,
+        contractAddress: 'T1234',
+        expected: 'T1234',
     },
     {
         testName: 'Preserves case for sol network',
@@ -34,5 +40,11 @@ export const getContractAddressForNetworkSymbolFixtures = [
         symbol: 'ada' as const,
         contractAddress: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc53541474958',
         expected: 'f43a62fdc3965df486de8a0d32fe800963589c41b38946602a0dc535',
+    },
+    {
+        testName: 'Returns same case for random non-existing symbol in networks config',
+        symbol: 'xyz' as const,
+        contractAddress: 'abcDEF',
+        expected: 'abcDEF',
     },
 ];
