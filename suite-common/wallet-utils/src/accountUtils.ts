@@ -260,6 +260,7 @@ export const getAccountTypeDesc = ({ path, accountType, networkType }: getAccoun
 
     switch (networkType) {
         case 'ethereum':
+        case 'tron':
             return 'TR_ACCOUNT_TYPE_NORMAL_EVM_DESC';
         case 'solana':
             return 'TR_ACCOUNT_TYPE_NORMAL_SOLANA_DESC';
@@ -790,6 +791,16 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
         };
     }
 
+    if (networkType === 'tron') {
+        return {
+            networkType,
+            misc: { ...misc },
+            marker: undefined,
+            stellarCursor: undefined,
+            page: accountInfo.page,
+        };
+    }
+
     return {
         networkType,
         misc: undefined,
@@ -1037,19 +1048,8 @@ export const getNetworkAccountFeatures = ({
 export const hasNetworkFeatures = (
     account: Account | undefined,
     features: NetworkFeature | Array<NetworkFeature>,
-    isDebugMode?: boolean,
 ) => {
     if (!account) {
-        return false;
-    }
-
-    // For Stellar tokens feature, return false when not in debug mode
-    // TODO(stellar): remove this when we are ready to release it.
-    if (
-        isDebugMode === false &&
-        account.networkType === 'stellar' &&
-        (features === 'tokens' || (Array.isArray(features) && features.includes('tokens')))
-    ) {
         return false;
     }
 
@@ -1094,6 +1094,7 @@ export const isAddressBasedNetwork = (networkType: NetworkType) => {
     if (networkType === 'bitcoin') return false;
     if (networkType === 'cardano') return false;
     if (networkType === 'ethereum') return true;
+    if (networkType === 'tron') return true;
     if (networkType === 'ripple') return true;
     if (networkType === 'solana') return true;
     if (networkType === 'stellar') return true;

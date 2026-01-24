@@ -73,6 +73,15 @@ type AccountNetworkSpecific =
           page: AccountInfo['page'];
       }
     | {
+          networkType: 'tron';
+          misc: {
+              contractInfo?: ContractInfo;
+          };
+          marker: undefined;
+          stellarCursor: undefined;
+          page: AccountInfo['page'];
+      }
+    | {
           networkType: 'solana';
           misc?: {
               rent?: number;

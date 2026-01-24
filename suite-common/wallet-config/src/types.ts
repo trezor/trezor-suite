@@ -21,6 +21,7 @@ export type NetworkSymbol =
     | 'xlm'
     | 'test'
     | 'regtest'
+    | 'trx'
     | 'tsep'
     | 'thod'
     | 'txrp'
@@ -35,7 +36,14 @@ export const asNetworkSymbol = (value: string) => value as NetworkSymbol;
  */
 export type NetworkSymbolExtended = NetworkSymbol | (string & {});
 
-export type NetworkType = 'bitcoin' | 'ethereum' | 'ripple' | 'cardano' | 'solana' | 'stellar';
+export type NetworkType =
+    | 'bitcoin'
+    | 'ethereum'
+    | 'ripple'
+    | 'cardano'
+    | 'solana'
+    | 'stellar'
+    | 'tron';
 
 type UtilityAccountType = 'normal' | 'imported' | 'placeholder'; // reserved accountTypes to stand in for a real accountType
 type RealAccountType = 'legacy' | 'segwit' | 'coinjoin' | 'taproot' | 'ledger';

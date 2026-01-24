@@ -153,6 +153,7 @@ export const getUnusedAddressFromAccount = (account: Account) => {
         case 'ripple':
         case 'ethereum':
         case 'solana':
+        case 'tron':
         case 'stellar': {
             return {
                 address: account.descriptor,

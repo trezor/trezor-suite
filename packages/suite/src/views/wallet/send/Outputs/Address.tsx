@@ -334,6 +334,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             evmChecks: async (address: string) => {
+                // TODO: tron?
                 if (networkType === 'ethereum') {
                     if (!isOnline) {
                         return translationString('TR_ADDRESS_CANT_VERIFY_HISTORY');

@@ -21,6 +21,13 @@ export const getExplorerUrls = (
             address: `${baseUrl}/address/`,
             nft: `${baseUrl}/nft/`,
         },
+        tron: {
+            base: baseUrl,
+            tx: `${baseUrl}/transaction/`,
+            address: `${baseUrl}/address/`,
+            nft: `${baseUrl}/contract/`, // should be trc721, trc1155 instead of contract
+            token: `${baseUrl}/contract/`, // should be trc10, trc20 instead of contract
+        },
         ripple: {
             base: baseUrl,
             tx: `${baseUrl}/tx/`,

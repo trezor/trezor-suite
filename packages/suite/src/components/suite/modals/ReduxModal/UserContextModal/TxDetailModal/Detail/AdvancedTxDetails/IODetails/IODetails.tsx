@@ -18,7 +18,7 @@ type IODetailsProps = {
     tx: WalletAccountTransaction;
 };
 
-// Not ready for Cardano tokens, they will not be visible, probably
+// Not ready for Cardano tokens because they are utxo based
 export const IODetails = ({ tx }: IODetailsProps) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
     const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
@@ -27,7 +27,7 @@ export const IODetails = ({ tx }: IODetailsProps) => {
     );
 
     const getContent = () => {
-        if (network?.networkType === 'ethereum') {
+        if (network?.networkType === 'ethereum' || network?.networkType === 'tron') {
             return (
                 <>
                     <IOGroup
