@@ -30,6 +30,8 @@ export const networkIcons = {
     pol_inverse: require('../cryptoAssets/networkIcons/pol_inverse.svg'),
     sol: require('../cryptoAssets/networkIcons/sol.svg'),
     sol_inverse: require('../cryptoAssets/networkIcons/sol_inverse.svg'),
+    trx: require('../cryptoAssets/networkIcons/trx.svg'),
+    trx_inverse: require('../cryptoAssets/networkIcons/trx_inverse.svg'),
     xlm: require('../cryptoAssets/networkIcons/xlm.svg'),
     xlm_inverse: require('../cryptoAssets/networkIcons/xlm_inverse.svg'),
     xrp: require('../cryptoAssets/networkIcons/xrp.svg'),
