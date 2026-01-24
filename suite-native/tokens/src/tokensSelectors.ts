@@ -8,7 +8,7 @@ import {
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -24,6 +24,7 @@ import {
     TokenInfoBranded,
     TokenSymbol,
 } from '@suite-common/wallet-types';
+import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
 
 import { TypedTokenTransfer, WalletAccountTransaction } from './types';
@@ -57,8 +58,9 @@ export const selectAccountTokenInfo = createMemoizedSelector(
             return null;
         }
 
-        const isEvmNetwork = getNetworkType(account.symbol) === 'ethereum';
-        const symbol = isEvmNetwork ? token.symbol : token.symbol?.toUpperCase();
+        const symbol = shouldUppercaseTokenSymbol(token)
+            ? token.symbol?.toUpperCase()
+            : token.symbol;
 
         return {
             ...token,

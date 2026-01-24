@@ -25,6 +25,7 @@ export const networkTypeToTitleTxKeyMap: Record<NetworkType, TxKeyPath> = {
     ripple: 'moduleAccountImport.xpubScanScreen.scanButton.address',
     solana: 'moduleAccountImport.xpubScanScreen.scanButton.address',
     stellar: 'moduleAccountImport.xpubScanScreen.scanButton.address',
+    tron: 'moduleAccountImport.xpubScanScreen.scanButton.address',
 };
 
 export const XpubImportSection = ({ onRequestCamera, symbol }: XpubImportSectionProps) => {
