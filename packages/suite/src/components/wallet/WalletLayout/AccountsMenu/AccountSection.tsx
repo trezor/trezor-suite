@@ -1,6 +1,7 @@
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { AccountItemType } from 'src/types/wallet';
@@ -28,7 +29,6 @@ export const AccountSection = ({
         symbol,
         accountType,
         index,
-        networkType,
         descriptor,
         formattedBalance,
         tokens: accountTokens = [],
@@ -36,7 +36,7 @@ export const AccountSection = ({
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
 
-    const showGroup = ['ethereum', 'solana', 'cardano', 'stellar'].includes(networkType);
+    const showGroup = hasNetworkFeatures(account, 'tokens');
 
     const isStakeShownStored = useSelector(state =>
         selectAccountIsStakingActive(state, account.key),
