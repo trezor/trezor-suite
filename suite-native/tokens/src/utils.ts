@@ -1,8 +1,7 @@
 import { G, S } from '@mobily/ts-belt';
 
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
-import { isArrayMember } from '@trezor/utils';
 
 export const getTokenName = (tokenName?: string) => {
     if (G.isNullable(tokenName) || S.isEmpty(tokenName)) return 'Unknown token';
@@ -29,5 +28,5 @@ export const isCoinWithTokens = (symbol: NetworkSymbol): symbol is NetworkSymbol
         return false;
     }
 
-    return isArrayMember(symbol, NETWORK_SYMBOLS_WITH_TOKENS);
+    return getNetworkFeatures(symbol).includes('tokens');
 };

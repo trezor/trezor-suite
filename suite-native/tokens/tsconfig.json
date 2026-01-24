@@ -17,10 +17,12 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../config" },
         {
             "path": "../../packages/blockchain-link"
-        },
-        { "path": "../../packages/utils" }
+        }
     ]
 }
