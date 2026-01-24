@@ -47,7 +47,8 @@ export const SuiteSyncQuotaManager = () => {
 
     return (
         <Card>
-            <VStack paddingTop="sp16">
+            <VStack spacing="sp12">
+                <Text variant="titleSmall">Suite Sync Quota Manager</Text>
                 <HStack justifyContent="space-between">
                     <Text>Quota Manager</Text>
                     <CheckBox
@@ -55,23 +56,15 @@ export const SuiteSyncQuotaManager = () => {
                         onChange={handleQuotaManagerEnableToggle}
                     />
                 </HStack>
-
-                <VStack marginTop="sp8">
-                    <Text variant="hint" color="textSubdued">
-                        Quota Manager URL
-                    </Text>
-                    <Form form={form}>
-                        <TextInputField
-                            name="suiteSyncQuotaManagerUrl"
-                            placeholder="Enter custom Quota Manager URL"
-                        />
+                <Form form={form}>
+                    <VStack>
+                        <TextInputField label="Quota Manager URL" name="suiteSyncQuotaManagerUrl" />
                         <Button colorScheme="tertiaryElevation0" size="small" onPress={onSubmit}>
                             Save
                         </Button>
-                    </Form>
-                </VStack>
-
-                <VStack marginTop="sp16" spacing="sp8">
+                    </VStack>
+                </Form>
+                <VStack>
                     <Text variant="hint" color="textSubdued">
                         Registered Devices
                     </Text>
@@ -90,8 +83,7 @@ export const SuiteSyncQuotaManager = () => {
                         ))
                     )}
                 </VStack>
-
-                <VStack marginTop="sp16" spacing="sp8">
+                <VStack>
                     <Text variant="hint" color="textSubdued">
                         Assigned Owner IDs
                     </Text>
@@ -108,12 +100,9 @@ export const SuiteSyncQuotaManager = () => {
                         ))
                     )}
                 </VStack>
-
-                <HStack marginTop="sp8">
-                    <Button colorScheme="redBold" onPress={onEraseFetchedData}>
-                        Erase fetched data
-                    </Button>
-                </HStack>
+                <Button colorScheme="redBold" onPress={onEraseFetchedData}>
+                    Erase fetched data
+                </Button>
             </VStack>
         </Card>
     );

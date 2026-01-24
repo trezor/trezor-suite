@@ -67,31 +67,33 @@ export const SuiteSyncRelaySettings = () => {
 
     return (
         <Card>
-            <VStack paddingTop="sp16">
-                <HStack justifyContent="space-between">
-                    <Text testID="@suiteSync/header" variant="highlight">
-                        Enable Suite Sync in settings (Evolu)
-                    </Text>
-                    <CheckBox
-                        testID="@suiteSync/enable-toggle"
-                        isChecked={isFeatureSuiteSyncEnabled}
-                        onChange={handleSuiteSyncEnableToggle}
-                    />
-                </HStack>
-                <HStack justifyContent="space-between">
-                    <Text variant="highlight">Enable Suite Sync Debug</Text>
-                    <CheckBox
-                        isChecked={isSuiteSyncDebugEnabled}
-                        onChange={handleSuiteSyncDebugToggle}
-                    />
-                </HStack>
-                <VStack spacing="sp8">
-                    <Text>Custom relay URL</Text>
-                    <Form form={form}>
+            <VStack spacing="sp12">
+                <Text variant="titleSmall">Suite Sync Relay Settings</Text>
+                <VStack>
+                    <HStack justifyContent="space-between">
+                        <Text testID="@suiteSync/header">
+                            Enable Suite Sync in settings (Evolu)
+                        </Text>
+                        <CheckBox
+                            testID="@suiteSync/enable-toggle"
+                            isChecked={isFeatureSuiteSyncEnabled}
+                            onChange={handleSuiteSyncEnableToggle}
+                        />
+                    </HStack>
+                    <HStack justifyContent="space-between">
+                        <Text>Enable Suite Sync Debug</Text>
+                        <CheckBox
+                            isChecked={isSuiteSyncDebugEnabled}
+                            onChange={handleSuiteSyncDebugToggle}
+                        />
+                    </HStack>
+                </VStack>
+                <Form form={form}>
+                    <VStack>
                         <TextInputField
                             testID="@suiteSync/custom-relay-url-input"
                             name="suiteSyncRelayUrl"
-                            placeholder="Enter custom relay URL"
+                            label="Custom relay URL"
                         />
                         <Button
                             testID="@suiteSync/custom-relay-url-save-button"
@@ -101,25 +103,25 @@ export const SuiteSyncRelaySettings = () => {
                         >
                             Save
                         </Button>
-                    </Form>
-                    <Text>
-                        Default:{' '}
-                        <Text
-                            variant="label"
-                            color="textSubdued"
-                            style={{ fontFamily: 'monospace' }}
+                        <Button
+                            colorScheme="tertiaryElevation0"
+                            size="small"
+                            onPress={handleResetToDefault}
                         >
-                            {DEFAULT_SUITE_SYNC_RELAY_URL}
+                            Reset to default
+                        </Button>
+                        <Text>
+                            Default:{' '}
+                            <Text
+                                variant="label"
+                                color="textSubdued"
+                                style={{ fontFamily: 'monospace' }}
+                            >
+                                {DEFAULT_SUITE_SYNC_RELAY_URL}
+                            </Text>
                         </Text>
-                    </Text>
-                    <Button
-                        colorScheme="tertiaryElevation0"
-                        size="small"
-                        onPress={handleResetToDefault}
-                    >
-                        Reset to default
-                    </Button>
-                </VStack>
+                    </VStack>
+                </Form>
             </VStack>
         </Card>
     );

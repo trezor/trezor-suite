@@ -33,10 +33,11 @@ export const FirmwareUpdateEnvironmentSelect = () => {
 
     return (
         <Select<FirmwareUpdateSource>
-            items={options}
             title="Environment"
+            items={options}
             value={selectedFirmwareUpdateSource}
             onSelectItem={handleSelectEnvironment}
+            isLabelShown
         />
     );
 };
