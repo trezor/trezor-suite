@@ -22,10 +22,11 @@ export const TradingEnvironmentSelect = () => {
 
     return (
         <Select<InvityServerEnvironment>
-            items={tradingEnvironmentItems}
             title="Environment"
+            items={tradingEnvironmentItems}
             value={selectedTradingEnvironment}
             onSelectItem={handleSelectEnvironment}
+            isLabelShown
         />
     );
 };

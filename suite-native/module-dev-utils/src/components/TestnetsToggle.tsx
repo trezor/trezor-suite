@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Box, HStack, Switch, Text } from '@suite-native/atoms';
+import { Box, Card, HStack, Switch, Text, VStack } from '@suite-native/atoms';
 import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/settings';
 
 export const TestnetsToggle = () => {
@@ -13,15 +13,19 @@ export const TestnetsToggle = () => {
     };
 
     return (
-        <HStack flexDirection="row" alignItems="center" spacing="sp24">
-            <Box flexShrink={1}>
-                <Text>Testnet coins & features</Text>
-                <Text variant="hint" color="textSubdued">
-                    These coins carry no value and cannot be used to pay transactions. They are used
-                    only for testing.
-                </Text>
-            </Box>
-            <Switch isChecked={areTestnetsEnabled} onChange={handleToggle} />
-        </HStack>
+        <Card>
+            <VStack>
+                <Text variant="titleSmall">Testnet coins & features</Text>
+                <HStack spacing="sp24">
+                    <Box flexShrink={1}>
+                        <Text variant="hint" color="textSubdued">
+                            These coins carry no value and cannot be used to pay transactions. They
+                            are used only for testing.
+                        </Text>
+                    </Box>
+                    <Switch isChecked={areTestnetsEnabled} onChange={handleToggle} />
+                </HStack>
+            </VStack>
+        </Card>
     );
 };

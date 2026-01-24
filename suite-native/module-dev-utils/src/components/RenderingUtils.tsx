@@ -1,4 +1,4 @@
-import { useDebugView } from '@suite-native/atoms';
+import { VStack, useDebugView } from '@suite-native/atoms';
 
 import { DevCheckBoxListItem } from './DevCheckBoxListItem';
 
@@ -11,7 +11,7 @@ export const RenderingUtils = () => {
     } = useDebugView();
 
     return (
-        <>
+        <VStack>
             <DevCheckBoxListItem
                 title="Flash on rerender"
                 onPress={toggleFlashOnRerender}
@@ -22,6 +22,6 @@ export const RenderingUtils = () => {
                 onPress={toggleRerenderCount}
                 isChecked={isRerenderCountEnabled}
             />
-        </>
+        </VStack>
     );
 };

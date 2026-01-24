@@ -20,9 +20,9 @@ export const TradingDeeplinks = () => {
     const { navigate } = useNavigation<NavigationProp>();
 
     return (
-        <VStack paddingTop="sp16">
+        <VStack>
             <Text variant="body" color="textDefault">
-                Trading deeplinks
+                Deeplinks
             </Text>
             <HStack>
                 <Button

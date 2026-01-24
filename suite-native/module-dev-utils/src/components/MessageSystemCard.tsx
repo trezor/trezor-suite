@@ -13,7 +13,7 @@ import { isCodesignBuild } from '@trezor/env-utils';
 
 import { MessageSystemConfigSourceSelect } from './MessageSystemConfigSourceSelect';
 
-export const MessageSystemInfo = () => {
+export const MessageSystemCard = () => {
     const config = useSelector(selectMessageSystemConfig);
     const allValidMessages = useSelector(selectAllValidMessages);
     const copyToClipboard = useCopyToClipboard();
@@ -26,8 +26,8 @@ export const MessageSystemInfo = () => {
 
     return (
         <Card>
-            <VStack paddingTop="sp16">
-                <Text variant="highlight">Message system</Text>
+            <VStack spacing="sp12">
+                <Text variant="titleSmall">Message system</Text>
                 <MessageSystemConfigSourceSelect />
                 <VStack spacing="sp8" paddingBottom="sp16">
                     <Text variant="label">Codesign Build: {isCodesigned.toString()}</Text>

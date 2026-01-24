@@ -26,10 +26,11 @@ export const MessageSystemConfigSourceSelect = () => {
 
     return (
         <Select<MessageSystemConfigSource>
-            items={options}
             title="Environment"
+            items={options}
             value={messageSystemConfigSource}
             onSelectItem={handleSelect}
+            isLabelShown
         />
     );
 };
