@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,8 @@ import { EventType } from '@suite-common/analytics-types';
 import {
     BluetoothDevice,
     BluetoothDeviceList,
-    selectNearbyBluetoothDevices,
+    NativeBluetoothRootState,
+    selectKnownBluetoothDevices,
     selectNearbyPairableBluetoothDevices,
     useBluetoothDevice,
 } from '@suite-native/bluetooth';
@@ -31,8 +32,12 @@ export const ConnectBluetoothDeviceScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const analytics = useAnalytics();
 
-    const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
-    const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
+    // Once a device is connected, it's added to known devices and thus disappears from the list
+    // before the transition to the next screen finishes. This ensures it doesn't feel glitchy.
+    const [knownBluetoothDevices] = useState(useSelector(selectKnownBluetoothDevices));
+    const nearbyPairableBluetoothDevices = useSelector((state: NativeBluetoothRootState) =>
+        selectNearbyPairableBluetoothDevices(state, knownBluetoothDevices),
+    );
 
     const handleDeviceButtonPress = useCallback(
         (device: BluetoothDevice) => {
@@ -48,10 +53,10 @@ export const ConnectBluetoothDeviceScreen = () => {
     );
 
     useEffect(() => {
-        if (nearbyBluetoothDevices.length === 0) {
+        if (nearbyPairableBluetoothDevices.length === 0) {
             navigation.goBack();
         }
-    }, [nearbyBluetoothDevices, navigation]);
+    }, [nearbyPairableBluetoothDevices, navigation]);
 
     return (
         <Screen header={<BluetoothDeviceScreenHeader />}>
