@@ -157,6 +157,17 @@ describe('selectNearbyPairableBluetoothDevices', () => {
                 },
             }),
         ).toStrictEqual(expectedDevices);
+        expect(
+            selectNearbyPairableBluetoothDevices(
+                {
+                    bluetooth: {
+                        ...initialState,
+                        nearbyDevices,
+                    },
+                },
+                knownDevices,
+            ),
+        ).toStrictEqual(expectedDevices);
     });
 });
 

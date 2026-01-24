@@ -8,6 +8,7 @@ import {
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 
 import { NativeBluetoothRootState } from './bluetoothSlice';
+import { BluetoothDevice } from './types';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeBluetoothRootState>();
 
@@ -32,7 +33,11 @@ export const selectNearbyBluetoothDevices = (state: NativeBluetoothRootState) =>
     selectNearbyDevices(state);
 
 export const selectNearbyPairableBluetoothDevices = createMemoizedSelector(
-    [selectNearbyBluetoothDevices, selectKnownBluetoothDevices],
+    [
+        selectNearbyBluetoothDevices,
+        (state: NativeBluetoothRootState, knownBluetoothDevices?: BluetoothDevice[]) =>
+            knownBluetoothDevices ?? selectKnownBluetoothDevices(state),
+    ],
     (nearbyBluetoothDevices, knownBluetoothDevices) =>
         returnStableArrayIfEmpty(
             nearbyBluetoothDevices.filter(
