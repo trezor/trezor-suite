@@ -47,7 +47,9 @@ export type Protocol =
     | 'thod'
     | 'txrp'
     | 'txlm'
-    | 'dsol';
+    | 'dsol'
+    | 'tron'
+    | 'trx';
 
 export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     btc: ['bitcoin', 'btc'],
@@ -60,6 +62,7 @@ export const NETWORK_TO_PROTOCOLS: Record<NetworkSymbol, Protocol[]> = {
     xrp: ['ripple', 'xrp'],
     ada: ['cardano', 'ada'],
     sol: ['solana', 'sol'],
+    trx: ['tron', 'trx'],
     pol: ['polygon', 'matic', 'pol'],
     bsc: ['binance', 'bnb', 'bsc'],
     arb: ['arbitrum', 'arbitrum-one', 'arb', 'arbitrum-ethereum'],

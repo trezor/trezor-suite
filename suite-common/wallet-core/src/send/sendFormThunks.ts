@@ -205,6 +205,8 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
                     isNetworkReserveEnabled,
                 }),
             );
+        } else if (networkType === 'tron') {
+            // TODO: Tron send not yet implemented
         } else {
             return exhaustive(networkType);
         }

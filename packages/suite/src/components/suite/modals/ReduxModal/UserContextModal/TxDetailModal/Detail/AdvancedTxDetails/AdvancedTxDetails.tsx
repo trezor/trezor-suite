@@ -73,7 +73,7 @@ export const AdvancedTxDetails = ({
                         <Translation id="TR_CHAINED_TXS" />
                     </Tabs.Item>
                 )}
-                {network.networkType === 'ethereum' && tx.ethereumSpecific && (
+                {tx.ethereumSpecific?.data && (
                     <Tabs.Item id="data" onClick={() => setSelectedTab('data')}>
                         <Translation id="TR_DATA" />
                     </Tabs.Item>

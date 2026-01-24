@@ -101,6 +101,8 @@ const PRESERVE_TOKEN_SYMBOL_CASE_STANDARDS: ReadonlySet<TokenStandard> = new Set
     'BEP20',
     'BEP721',
     'BEP1155',
+    'TRC10',
+    'TRC20',
 ]);
 
 export const shouldUppercaseTokenSymbol = (token: TokenInfo) =>

@@ -262,6 +262,9 @@ export const confirmAddressOnDeviceThunk = createThunk(
         const isCardanoAddressChunked = getEnvironment() === 'mobile';
 
         switch (account.networkType) {
+            case 'tron':
+                response = await TrezorConnect.tronGetAddress(params);
+                break;
             case 'ethereum':
                 response = await TrezorConnect.ethereumGetAddress(params);
                 break;

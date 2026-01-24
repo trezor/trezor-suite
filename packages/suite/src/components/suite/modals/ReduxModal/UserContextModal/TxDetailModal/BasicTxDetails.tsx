@@ -164,7 +164,7 @@ export const BasicTxDetails = ({
                 )}
 
                 {/* Ethereum */}
-                {tx.ethereumSpecific && (
+                {network.networkType === 'ethereum' && tx.ethereumSpecific && (
                     <>
                         <Item label={<Translation id="TR_NONCE" />} iconName="receipt">
                             {tx.ethereumSpecific?.nonce}
