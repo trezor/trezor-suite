@@ -1,4 +1,4 @@
-import { SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { SuiteSyncOutput, SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -33,11 +33,11 @@ export type DeleteLabelsForSuiteSyncParams = {
 
 export type SetLabelsForSuiteSync = (
     params: SetLabelsForSuiteSyncParams,
-) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>[]>;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>[]>;
 
 export type DeleteLabelsForSuiteSync = (
     params: DeleteLabelsForSuiteSyncParams,
-) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>[]>;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>[]>;
 
 export type DeleteLabelsForSuiteSyncDep = {
     deleteLabelsForSuiteSync: DeleteLabelsForSuiteSync;
@@ -57,12 +57,6 @@ export type GetOutputsDep = {
     getOutputs: GetOutputs;
 };
 
-export type MigrateSuiteSyncLabelsForRbfTransactionDeps = {
-    dispatch: (args: any) => void;
-} & GetOutputsDep &
-    SetLabelsForSuiteSyncDep &
-    DeleteLabelsForSuiteSyncDep;
-
 export type RbfLabelsToBeUpdated = Record<
     AccountKey,
     {
@@ -77,13 +71,15 @@ export type MigrateSuiteSyncLabelsForRbfTransactionParams = {
     toBeMovedOrDeletedList: RbfLabelsToBeUpdated;
 };
 
+export type MigrateSuiteSyncLabelsForRbfTransaction = (
+    params: MigrateSuiteSyncLabelsForRbfTransactionParams,
+) => Promise<
+    [
+        Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>[],
+        Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>[],
+    ]
+>;
+
 export type MigrateSuiteSyncLabelsForRbfTransactionDep = {
-    migrateSuiteSyncLabelsForRbfTransaction: (
-        params: MigrateSuiteSyncLabelsForRbfTransactionParams,
-    ) => Promise<
-        [
-            Result<void, EnsureWalletSuiteSyncOnErrors>[],
-            Result<void, EnsureWalletSuiteSyncOnErrors>[],
-        ]
-    >;
+    migrateSuiteSyncLabelsForRbfTransaction: MigrateSuiteSyncLabelsForRbfTransaction;
 };
