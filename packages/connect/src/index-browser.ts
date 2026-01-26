@@ -1,4 +1,5 @@
-import { config } from './data/config';
+import { config } from '@trezor/connect-common/src/data/config';
+
 import { TRANSPORT } from './events';
 import { factory } from './factory';
 import { CoreInModule } from './impl/core-in-module';

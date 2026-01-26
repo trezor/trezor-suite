@@ -72,7 +72,7 @@ After completing these steps, you can use the module in your Service Worker in t
 
 ## Adding your webextension to `knownHosts`
 
-To ensure your extension is displayed with its name rather than its ID, you need to open a Pull Request to include it in the `knownHosts` section of the file located at https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/data/config.ts#L17.
+To ensure your extension is displayed with its name rather than its ID, you need to open a Pull Request to include it in the `knownHosts` section of the file located at https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/data/config.ts#L17.
 
 ## Examples
 
