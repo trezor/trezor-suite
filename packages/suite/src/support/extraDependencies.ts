@@ -15,7 +15,11 @@ import {
 } from '@suite/suite-sync';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
-import { CommonServices, ExtraDependenciesStatic } from '@suite-common/redux-utils';
+import {
+    CommonServices,
+    ConnectInitSettings,
+    ExtraDependenciesStatic,
+} from '@suite-common/redux-utils';
 import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     TokenDefinitionsState,
@@ -62,7 +66,7 @@ const connectSrc = '../';
 // 'https://localhost:8088/';
 // 'https://connect.corp.sldev.cz/develop/';
 
-const connectInitSettings = {
+const connectInitSettings: ConnectInitSettings = {
     connectSrc,
     transportReconnect: true,
     debug: false,
@@ -148,6 +152,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }),
         reportSecurityCheck,
         saveAs: (data, fileName) => saveAs(data, fileName),
+        connectInitSettings,
     };
 };
 
@@ -318,9 +323,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
 
             return state;
         },
-    },
-    utils: {
-        connectInitSettings,
     },
 };
 

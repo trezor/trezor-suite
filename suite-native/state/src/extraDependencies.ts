@@ -74,6 +74,21 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         legacyAnalytics: createLegacyAnalytics(),
         analytics: createAnalytics(),
         reportSecurityCheck,
+        saveAs: (data, fileName) =>
+            console.warn(
+                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
+            ),
+        connectInitSettings: {
+            lazyLoad: false,
+            transportReconnect: false,
+            debug: false,
+            env: 'react-native',
+            manifest: {
+                email: 'info@trezor.io',
+                appName: 'Trezor Suite',
+                appUrl: '@trezor/suite',
+            },
+        },
     };
 };
 
@@ -170,26 +185,5 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
-    },
-    utils: {
-        connectInitSettings: {
-            lazyLoad: false,
-            transportReconnect: false,
-            debug: false,
-            env: 'react-native',
-            manifest: {
-                email: 'info@trezor.io',
-                appName: 'Trezor Suite',
-                appUrl: '@trezor/suite',
-            },
-        },
-
-        // Not implemented. We assume those are NEVER called on Native
-        // need for this is architectural mistake. Please DO NOT add more and try
-        // to remove them.
-        saveAs: (data, fileName) =>
-            console.warn(
-                `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
-            ),
     },
 };
