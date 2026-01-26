@@ -1,9 +1,11 @@
 import {
     DeleteLabelsForSuiteSync,
-    MigrateSuiteSyncLabelsForRbfTransactionDeps,
-    MigrateSuiteSyncLabelsForRbfTransactionParams,
+    DeleteLabelsForSuiteSyncDep,
+    GetOutputsDep,
+    MigrateSuiteSyncLabelsForRbfTransaction,
     RbfLabelsToBeUpdated,
     SetLabelsForSuiteSync,
+    SetLabelsForSuiteSyncDep,
 } from '@suite-common/suite-rbf-labels-migrations-types';
 import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
@@ -102,13 +104,15 @@ const moveLabelsForSuiteSyncRbf =
         return await Promise.all([setLabelsForSuiteSyncResult, deleteLabelsForSuiteSyncResult]);
     };
 
+export type MigrateSuiteSyncLabelsForRbfTransactionDeps = {
+    dispatch: (args: any) => void;
+} & GetOutputsDep &
+    SetLabelsForSuiteSyncDep &
+    DeleteLabelsForSuiteSyncDep;
+
 export const createMigrateSuiteSyncLabelsForRbfTransaction =
-    (deps: MigrateSuiteSyncLabelsForRbfTransactionDeps) =>
-    ({
-        newTxId,
-        deviceStaticSessionId,
-        toBeMovedOrDeletedList,
-    }: MigrateSuiteSyncLabelsForRbfTransactionParams) => {
+    (deps: MigrateSuiteSyncLabelsForRbfTransactionDeps): MigrateSuiteSyncLabelsForRbfTransaction =>
+    ({ newTxId, deviceStaticSessionId, toBeMovedOrDeletedList }) => {
         const labelsToBeMoved = typedObjectEntries(toBeMovedOrDeletedList).map(([_, data]) => data);
 
         return moveLabelsForSuiteSyncRbf(deps)({
