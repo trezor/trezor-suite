@@ -11,8 +11,63 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { UpdateOutputLabelDep } from './data/updateOutputLabel';
 import { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
+import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from './storage/ensureWalletSuiteSyncOn';
+
+export type SuiteSyncTransactionToCopy = {
+    data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
+    suiteSyncOutputLabelsToBeUpdated: SuiteSyncOutput;
+};
+
+export type SetLabelsForSuiteSyncParams = {
+    newTxId: string;
+    deviceStaticSessionId: StaticSessionId;
+    suiteSyncOutputLabelsToBeUpdated: SuiteSyncTransactionToCopy[];
+};
+
+type SuiteSyncTransactionToDelete = {
+    data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
+    suiteSyncOutputLabelsToBeDeleted: SuiteSyncOutput;
+};
+
+export type DeleteLabelsForSuiteSyncParams = {
+    deviceStaticSessionId: StaticSessionId;
+    transactionOutputsToDelete: SuiteSyncTransactionToDelete[];
+};
+
+export type SetLabelsForSuiteSync = (
+    params: SetLabelsForSuiteSyncParams,
+) => Promise<
+    Result<
+        void,
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | DeviceErrorType
+        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
+        | DeviceCancelledErrType
+        | SuiteSyncUpdateError
+    >[]
+>;
+
+export type DeleteLabelsForSuiteSync = (
+    params: DeleteLabelsForSuiteSyncParams,
+) => Promise<
+    Result<
+        void,
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | DeviceErrorType
+        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
+        | DeviceCancelledErrType
+        | SuiteSyncUpdateError
+    >[]
+>;
+
+export type DeleteLabelsForSuiteSyncDep = {
+    deleteLabelsForSuiteSync: DeleteLabelsForSuiteSync;
+};
+
+export type SetLabelsForSuiteSyncDep = {
+    setLabelsForSuiteSync: SetLabelsForSuiteSync;
+};
 
 export type GetOutputs = (params: {
     walletDescriptor: WalletDescriptor;
@@ -27,7 +82,8 @@ export type GetOutputsDep = {
 export type MigrateSuiteSyncLabelsForRbfTransactionDeps = {
     dispatch: (args: any) => void;
 } & GetOutputsDep &
-    UpdateOutputLabelDep;
+    SetLabelsForSuiteSyncDep &
+    DeleteLabelsForSuiteSyncDep;
 
 export type RbfLabelsToBeUpdated = Record<
     AccountKey,
@@ -52,6 +108,7 @@ export type MigrateSuiteSyncLabelsForRbfTransactionDep = {
                 void,
                 | SuiteSyncUnavailableOnDeviceErrorType
                 | DeviceErrorType
+                | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
                 | DeviceCancelledErrType
                 | SuiteSyncUpdateError
             >[],
@@ -59,6 +116,7 @@ export type MigrateSuiteSyncLabelsForRbfTransactionDep = {
                 void,
                 | SuiteSyncUnavailableOnDeviceErrorType
                 | DeviceErrorType
+                | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
                 | DeviceCancelledErrType
                 | SuiteSyncUpdateError
             >[],

@@ -67,4 +67,8 @@ export type {
     MigrateSuiteSyncLabelsForRbfTransactionParams,
     MigrateSuiteSyncLabelsForRbfTransactionDeps,
     MigrateSuiteSyncLabelsForRbfTransactionDep,
+    SetLabelsForSuiteSync,
+    SetLabelsForSuiteSyncParams,
+    DeleteLabelsForSuiteSync,
+    DeleteLabelsForSuiteSyncParams,
 } from './migrateSuiteSyncLabelsForRbfTransaction';

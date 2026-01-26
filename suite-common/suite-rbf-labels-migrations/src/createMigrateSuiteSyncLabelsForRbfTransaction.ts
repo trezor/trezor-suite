@@ -1,36 +1,18 @@
-import { SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import {
+    DeleteLabelsForSuiteSync,
     MigrateSuiteSyncLabelsForRbfTransactionDeps,
     MigrateSuiteSyncLabelsForRbfTransactionParams,
     RbfLabelsToBeUpdated,
+    SetLabelsForSuiteSync,
+    UpdateOutputLabelDep,
 } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { typedObjectEntries } from '@trezor/utils';
 
-type SuiteSyncTransactionToCopy = {
-    data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
-    suiteSyncOutputLabelsToBeUpdated: SuiteSyncOutput;
-};
-
-type SuiteSyncTransactionToDelete = {
-    data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];
-    suiteSyncOutputLabelsToBeDeleted: SuiteSyncOutput;
-};
-
-type SetLabelsForSuiteSyncParams = {
-    newTxId: string;
-    deviceStaticSessionId: StaticSessionId;
-    suiteSyncOutputLabelsToBeUpdated: SuiteSyncTransactionToCopy[];
-};
-
-const setLabelsForSuiteSync =
-    (deps: MigrateSuiteSyncLabelsForRbfTransactionDeps) =>
-    ({
-        newTxId,
-        deviceStaticSessionId,
-        suiteSyncOutputLabelsToBeUpdated,
-    }: SetLabelsForSuiteSyncParams) =>
+export const createSetLabelsForSuiteSync =
+    (deps: UpdateOutputLabelDep): SetLabelsForSuiteSync =>
+    ({ newTxId, deviceStaticSessionId, suiteSyncOutputLabelsToBeUpdated }) =>
         Promise.all(
             suiteSyncOutputLabelsToBeUpdated.map(outputLabel =>
                 deps.updateOutputLabel({
@@ -44,14 +26,9 @@ const setLabelsForSuiteSync =
             ),
         );
 
-type DeleteLabelsForSuiteSyncParams = {
-    deviceStaticSessionId: StaticSessionId;
-    transactionOutputsToDelete: SuiteSyncTransactionToDelete[];
-};
-
-const deleteLabelsForSuiteSync =
-    (deps: MigrateSuiteSyncLabelsForRbfTransactionDeps) =>
-    ({ deviceStaticSessionId, transactionOutputsToDelete }: DeleteLabelsForSuiteSyncParams) =>
+export const createDeleteLabelsForSuiteSync =
+    (deps: UpdateOutputLabelDep): DeleteLabelsForSuiteSync =>
+    ({ deviceStaticSessionId, transactionOutputsToDelete }) =>
         Promise.all(
             transactionOutputsToDelete.flatMap(deleteOutput =>
                 deleteOutput.data.toBeDeleted.map(toBeDeleted =>
@@ -99,7 +76,7 @@ const moveLabelsForSuiteSyncRbf =
                 })),
         );
 
-        const setLabelsForSuiteSyncResult = setLabelsForSuiteSync(deps)({
+        const setLabelsForSuiteSyncResult = deps.setLabelsForSuiteSync({
             newTxId,
             deviceStaticSessionId,
             suiteSyncOutputLabelsToBeUpdated: transactionsToCopy,
@@ -120,7 +97,7 @@ const moveLabelsForSuiteSyncRbf =
                 })),
         );
 
-        const deleteLabelsForSuiteSyncResult = deleteLabelsForSuiteSync(deps)({
+        const deleteLabelsForSuiteSyncResult = deps.deleteLabelsForSuiteSync({
             deviceStaticSessionId,
             transactionOutputsToDelete,
         });
