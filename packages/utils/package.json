@@ -48,7 +48,7 @@
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "tsx": "^4.20.3"
+        "tsx": "^4.21.0"
     },
     "dependencies": {
         "bignumber.js": "^9.3.1"

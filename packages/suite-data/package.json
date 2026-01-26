@@ -35,7 +35,7 @@
         "postcss-loader": "^8.1.1",
         "simple-git": "^3.29.0",
         "style-loader": "^4.0.0",
-        "tsx": "^4.20.3",
+        "tsx": "^4.21.0",
         "webpack": "5.104.1",
         "webpack-cli": "^6.0.1"
     },
