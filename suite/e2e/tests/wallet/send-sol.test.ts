@@ -42,7 +42,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                 stream: TestStream.NotDefined,
             }),
         },
-        async ({ device, emulatorStartConf, walletPage, tradingPage, devicePrompt }) => {
+        async ({ device, walletPage, tradingPage, devicePrompt }) => {
             let maxFee: number;
             let sendMaxAmountWithReserve: string;
 
@@ -137,7 +137,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
             await test.step('Approve and Verify Send readiness', async () => {
                 // hold & sign
-                if (emulatorStartConf.model !== 'T3W1') {
+                if (device.model !== 'T3W1') {
                     await devicePrompt.waitForPromptAndClick();
                 }
 

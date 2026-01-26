@@ -10,12 +10,11 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
     });
 
     test('Device disconnected during recovery offers retry', async ({
+        device,
         onboardingPage,
         analyticsSection,
         recoveryModal,
         devicePrompt,
-        trezorUserEnvLink,
-        emulatorStartConf,
     }) => {
         await analyticsSection.passThroughAnalytics();
 
@@ -25,12 +24,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
         await recoveryModal.selectWordCount(24);
         await recoveryModal.selectRecoveryButton('standard').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
 
         // Disconnect the device
-        await trezorUserEnvLink.stopEmu();
+        await device.powerOff();
         await devicePrompt.connectDevicePromptIsShown();
-        await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+        await device.powerOn();
 
         // Retry recovery process
         await onboardingPage.retryRecoveryButton.click();

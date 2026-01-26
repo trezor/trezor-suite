@@ -1,7 +1,6 @@
 import { EventType } from '@suite/analytics';
 
 import { expect, test } from '../../support/fixtures';
-import { isModelWithTHP } from '../../support/helpers/modelHelper';
 
 test.describe(
     'Analytics Toggle - Enabling and Disabling',
@@ -16,7 +15,7 @@ test.describe(
         test('should respect disabled analytics in onboarding with following enabling in settings', async ({
             analytics,
             page,
-            emulatorStartConf,
+            device,
             analyticsSection,
             onboardingPage,
             dashboardPage,
@@ -48,7 +47,7 @@ test.describe(
                 });
 
             await test.step('Finish onboarding', async () => {
-                if (isModelWithTHP(emulatorStartConf.model)) {
+                if (device.hasTHP) {
                     await devicePrompt.allowConnectToTrezor();
                     await onboardingPage.enterTHPPairingCode();
                     await onboardingPage.enableAutoconnect();
@@ -122,7 +121,7 @@ test.describe(
         });
 
         test('should respect enabled analytics in onboarding with following disabling in settings', async ({
-            emulatorStartConf,
+            device,
             analytics,
             analyticsSection,
             onboardingPage,
@@ -142,7 +141,7 @@ test.describe(
             });
 
             await test.step('Finish onboarding', async () => {
-                if (isModelWithTHP(emulatorStartConf.model)) {
+                if (device.hasTHP) {
                     await devicePrompt.allowConnectToTrezor();
                     await onboardingPage.enterTHPPairingCode();
                 }

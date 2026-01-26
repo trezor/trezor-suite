@@ -1,5 +1,4 @@
 import { expect, test } from '../../support/fixtures';
-import { isModelWithTHP } from '../../support/helpers/modelHelper';
 
 test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ page, url, onboardingPage }) => {
@@ -10,7 +9,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
     });
 
     test('analytics consent appears on any route that is visited initially. this time /accounts', async ({
-        emulatorStartConf,
+        device,
         analyticsSection,
         onboardingPage,
         walletPage,
@@ -20,7 +19,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
         await expect(analyticsSection.heading).toBeVisible({ timeout: 30000 });
         await analyticsSection.continueButton.click();
 
-        if (isModelWithTHP(emulatorStartConf.model)) {
+        if (device.hasTHP) {
             await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }

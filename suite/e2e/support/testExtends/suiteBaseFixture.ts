@@ -4,13 +4,7 @@ import { BrowserContext, Page, TestInfo } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
-import {
-    Model,
-    SetupEmu,
-    StartEmu,
-    TrezorUserEnvLink,
-    TrezorUserEnvLinkClass,
-} from '@trezor/trezor-user-env-link';
+import { SetupEmu, TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import {
     TrezorUserEnvLinkProxy,
@@ -26,15 +20,11 @@ import { BRIDGE_VERSION } from '../bridge';
 import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
 
-type StartEmuModelRequired = StartEmu & { model: Model; version: string };
-
 type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
 
 type SuiteBaseFixture = {
     startEmulator: boolean;
     setupEmulator: boolean;
-    /** @deprecated */
-    emulatorStartConf: StartEmuModelRequired;
     deviceSetup: SetupEmu;
     device: DeviceFixture;
     electronConf: ElectronConf;
@@ -152,21 +142,6 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     firmwareVersion: [undefined, { option: true }],
     startEmulator: true,
     setupEmulator: true,
-    emulatorStartConf: async ({ startEmulator, model, firmwareVersion }, use) => {
-        if (startEmulator && !model) {
-            throw new Error('Model is not defined.');
-        }
-
-        if (startEmulator && !firmwareVersion) {
-            throw new Error('Firmware version is not defined.');
-        }
-
-        await use({
-            model: model!,
-            version: firmwareVersion!,
-            wipe: true,
-        });
-    },
     deviceSetup: {},
     device: [
         async (
