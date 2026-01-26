@@ -1,15 +1,9 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index
-import {
-    CallMethod,
-    ERRORS,
-    IFRAME,
-    POPUP,
-    WEBEXTENSION,
-    createErrorMessage,
-} from '@trezor/connect/src/exports';
+import { CallMethod, ERRORS, IFRAME, POPUP, createErrorMessage } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
+import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 import { ConnectSettings, Manifest } from '@trezor/connect-common/src/types';
 

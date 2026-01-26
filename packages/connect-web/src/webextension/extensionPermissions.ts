@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/webusb/extensionPermissions.js
 
-import { WEBEXTENSION } from '@trezor/connect/src/events';
+import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import { config } from '@trezor/connect-common/src/data/config';
 
 // This file is hosted on https://connect.trezor.io/*/extension-permissions.html

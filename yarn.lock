@@ -14410,6 +14410,7 @@ __metadata:
     "@hbsnow/rehype-sectionize": "npm:^1.0.7"
     "@sinclair/typebox": "npm:^0.33.12"
     "@trezor/components": "workspace:^"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/connect-explorer-theme": "workspace:^"
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/connect-web": "workspace:^"
