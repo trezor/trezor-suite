@@ -6,7 +6,7 @@ const correctPassphraseAddr =
 const passphrase = 'secret passphrase A';
 
 test.describe('Passphrase with cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

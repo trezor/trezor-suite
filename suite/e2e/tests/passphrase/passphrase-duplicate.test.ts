@@ -3,7 +3,7 @@ import { scheduleAction } from '@trezor/utils';
 import { expect, test } from '../../support/fixtures';
 
 test.describe('Passphrase duplicate', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { passphrase_protection: true } });
+    test.use({ deviceSetup: { passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage, trezorUserEnvLink }) => {
         await scheduleAction(
             () => trezorUserEnvLink.applySettings({ passphrase_always_on_device: false }),

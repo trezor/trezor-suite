@@ -5,7 +5,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Bug report forms', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
     test(
         'Send a bug report',
         {

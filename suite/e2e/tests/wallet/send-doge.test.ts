@@ -5,7 +5,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic:
                 'fantasy auto fancy access ring spring patrol expect common tape talent annual',
         },

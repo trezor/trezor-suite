@@ -1,7 +1,7 @@
 import { test } from '../../support/fixtures';
 
 test.describe('Passphrase cancel', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
 
     test('possible to cancel passphrase', async ({
         devicePrompt,

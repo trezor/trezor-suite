@@ -12,7 +12,7 @@ const rangeData: { range: graphRangeOptions; label: string }[] = [
 ];
 
 test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

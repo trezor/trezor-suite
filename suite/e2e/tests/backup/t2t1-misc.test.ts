@@ -2,7 +2,7 @@ import { expect, test } from '../../support/fixtures';
 
 test.describe('Backup misc', { tag: ['@T2T1'] }, () => {
     test.use({
-        emulatorSetupConf: { needs_backup: true },
+        deviceSetup: { needs_backup: true },
     });
 
     test.beforeEach(async ({ onboardingPage }) => {

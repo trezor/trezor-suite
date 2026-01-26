@@ -3,7 +3,7 @@ import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 test.describe(
     'Suite works with Electrum server',
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },

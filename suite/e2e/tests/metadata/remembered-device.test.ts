@@ -7,7 +7,7 @@ import { MetadataProvider } from '../../support/mocks/metadataMock';
 //On disable, it throws away all metadata related records from memory.
 test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_all' },
+        deviceSetup: { mnemonic: 'mnemonic_all' },
     });
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.GOOGLE);

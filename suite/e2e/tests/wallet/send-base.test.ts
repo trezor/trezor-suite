@@ -20,7 +20,7 @@ test.describe(
     { tag: ['@desktopOnly', '@nightlyOnly', '@T3W1', '@specificFirmware'] },
     () => {
         test.use({
-            emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+            deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
         });
 
         test.beforeEach(

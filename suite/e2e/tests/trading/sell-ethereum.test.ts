@@ -34,7 +34,7 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
 
 test.describe('Trading - Sell Ethereum', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+        deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
     test.beforeEach(
         async ({

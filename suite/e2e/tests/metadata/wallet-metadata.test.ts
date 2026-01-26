@@ -14,7 +14,7 @@ test.describe(
         });
 
         test.use({
-            emulatorSetupConf: {
+            deviceSetup: {
                 mnemonic: 'mnemonic_all',
                 passphrase_protection: true,
             },

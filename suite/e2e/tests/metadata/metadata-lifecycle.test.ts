@@ -4,7 +4,7 @@ import { MetadataProvider } from '../../support/mocks/metadataMock';
 
 test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'mnemonic_all',
             passphrase_protection: true,
         },
