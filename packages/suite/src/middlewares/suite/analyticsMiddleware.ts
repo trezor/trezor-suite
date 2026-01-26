@@ -254,7 +254,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
                 ) {
-                    getTypedDesktopAnalytics(analytics).report({
+                    getTypedDesktopAnalytics(analytics!).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -267,7 +267,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
-                    getTypedDesktopAnalytics(analytics).report({
+                    getTypedDesktopAnalytics(analytics!).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),

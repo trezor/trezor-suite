@@ -1,13 +1,7 @@
 import { useState } from 'react';
 
-import {
-    SuiteSharedLegacyAnalyticsEvents,
-} from '@suite-common/analytics-types';
-import {
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-    analytics,
-} from '@suite-native/analytics';
+import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
+import { EventType, SuiteNativeLegacyAnalyticsEvents, analytics } from '@suite-native/analytics';
 import {
     Box,
     Button,
