@@ -39,7 +39,7 @@ describe(createChangeRelayUrl.name, () => {
         expect(actions).toStrictEqual([
             {
                 payload: { url: 'http://localhost:4000' },
-                type: '@suite/suite-sync/set-local-first-storage-relay-url',
+                type: '@suite/suite-sync/set-suite-sync-relay-url',
             },
         ]);
 
