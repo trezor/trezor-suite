@@ -18,7 +18,6 @@
         "build:lib": "yarn build:js"
     },
     "devDependencies": {
-        "@types/json-stable-stringify": "^1",
         "esbuild": "^0.25.2",
         "html-inline-script-webpack-plugin": "^3.2.1",
         "html-webpack-plugin": "5.6.5",
@@ -32,7 +31,6 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "json-stable-stringify": "^1.2.1",
         "react": "19.1.0",
         "react-dom": "19.1.0",
         "react-intl": "^8.0.6",
