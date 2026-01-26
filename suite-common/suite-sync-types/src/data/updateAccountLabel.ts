@@ -1,10 +1,8 @@
 import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import { type DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
-import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from '../storage/ensureWalletSuiteSyncOn';
+import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
 export type UpdateAccountLabelParams = {
     deviceStaticSessionId: StaticSessionId;
@@ -14,15 +12,6 @@ export type UpdateAccountLabelParams = {
 
 export type UpdateAccountLabel = (
     params: UpdateAccountLabelParams,
-) => Promise<
-    Result<
-        void,
-        | SuiteSyncUnavailableOnDeviceErrorType
-        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-        | DeviceErrorType
-        | DeviceCancelledErrType
-        | SuiteSyncUpdateError
-    >
->;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>>;
 
 export type UpdateAccountLabelDep = { updateAccountLabel: UpdateAccountLabel };
