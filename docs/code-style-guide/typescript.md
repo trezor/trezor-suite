@@ -52,7 +52,7 @@ Direct assignment may add an import, but it prevents the need to refactor if the
 
 ## Consider using const assertion on objects instead of TS enums
 
-See https://www.youtube.com/watch?v=0fTdCSH_QEU. TypeScript enums are not native to JavaScript sometimes behave unpredictably. The desired functionality can be achieved using plain objects. Follow the same naming conventions as you would with enums. Despite the name of the object and the type are the same, TypeScript is able to tell them apart.
+See https://www.youtube.com/watch?v=0fTdCSH_QEU. TypeScript enums are not native to JavaScript and sometimes behave unpredictably. The desired functionality can be achieved using plain objects. Follow the same naming conventions as you would with enums. Despite the object and the type having the same name, TypeScript is able to tell them apart.
 
 ```tsx
 // definition

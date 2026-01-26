@@ -25,7 +25,7 @@ Big packages usually lead to cyclic dependencies. Imagine this pattern:
 
 Now you have two options how to solve it:
 
-1. You can merge `packageB` into `packageA`, but it will only amplify this cyclic deps issue for other packages. More things you will have in `packageA`, then more often you need to use `packageA` in other packages, but that will prevent you from importing any of that packages back into `packageA` because of cyclic dependency. That will force you to place everything into `packageA` which will grow into monolith (that's the exact thing that happened in packages/suite).
+1. You can merge `packageB` into `packageA`, but it will only amplify this cyclic deps issue for other packages. More things you will have in `packageA`, then more often you need to use `packageA` in other packages, but that will prevent you from importing any of that packages back into `packageA` because of cyclic dependency. That will force you to place everything into `packageA` which will grow into a monolith (that's the exact thing that happened in packages/suite).
 2. You can create `packageC` which will contain this `FormInput` and both `packageA` and `packageB` can use it.
 
 So creating smaller packages from start is always better, because you have much lower chances to run into issue with cyclic dependencies, but not only that. Smaller packages give you better control of what you will use in other packages, you can run smaller subsets of tests, lints etc which is faster.

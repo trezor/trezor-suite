@@ -108,7 +108,7 @@ const AssetsAccountsListScreen = () => <Screen />;
 // We want to show Account Detail
 
 // bad
-// Asset is not single account but all account of given type
+// Asset is not single account but all accounts of given type
 const AssetDetailScreen = () => <Screen />;
 
 // good
