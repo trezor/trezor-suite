@@ -27,10 +27,11 @@ import {
 } from '@solana-program/token';
 
 import { TokenInfo } from '@trezor/blockchain-link-types';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { AssertWeak } from '@trezor/schema-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { SolanaSignTransaction as SolanaSignTransactionSchema } from '../../../types/api/solana';

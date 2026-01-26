@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/outputs.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { ComposeOutput as ComposeOutputBase } from '@trezor/utxo-lib';
 
-import { ERRORS, PROTO } from '../../constants';
+import { PROTO } from '../../constants';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { ComposeOutput, ComposeResultFinal } from '../../types/api/composeTransaction';
 import { isValidAddress } from '../../utils/addressUtils';

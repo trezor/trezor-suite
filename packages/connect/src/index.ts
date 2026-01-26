@@ -1,9 +1,9 @@
 import EventEmitter from 'events';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { ConnectSettings, Manifest } from '@trezor/connect-common/src/types';
 import { createDeferredManager } from '@trezor/utils';
 
-import { ERRORS } from './constants';
 import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
 import {

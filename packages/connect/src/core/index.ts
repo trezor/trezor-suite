@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import EventEmitter from 'events';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { ConnectSettings } from '@trezor/connect-common/src/types';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
 
-import { ERRORS } from '../constants';
 import { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';

@@ -52,6 +52,7 @@
         "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/device-utils": "workspace:^",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/protobuf": "workspace:^",
         "@trezor/protocol": "workspace:^",
         "@trezor/transport": "workspace:^",
         "@trezor/type-utils": "workspace:^",

@@ -1,6 +1,6 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TimerId } from '@trezor/type-utils';
 
-import { ERRORS } from '../constants';
 import { Blockchain, BlockchainOptions } from './Blockchain';
 import { DataManager } from '../data/DataManager';
 import { BLOCKCHAIN, createBlockchainMessage } from '../events';

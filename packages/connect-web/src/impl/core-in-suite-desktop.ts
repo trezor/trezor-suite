@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     CallMethodAnyResponse,
     CallMethodPayload,
@@ -10,6 +9,7 @@ import {
     UiResponseEvent,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import type {
     ConnectSettings,
     ConnectSettingsPublic,

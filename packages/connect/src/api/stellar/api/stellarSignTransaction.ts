@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarSignTransaction.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { AssertWeak } from '@trezor/schema-utils';
 
-import { ERRORS } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {

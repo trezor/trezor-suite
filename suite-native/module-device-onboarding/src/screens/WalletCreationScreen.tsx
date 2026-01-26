@@ -19,7 +19,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
-import { ERRORS } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';
 

@@ -14,6 +14,7 @@
         { "path": "../blockchain-link-types" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
+        { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../transport" },
         { "path": "../type-utils" },

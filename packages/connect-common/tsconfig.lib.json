@@ -17,6 +17,9 @@
             "path": "../env-utils"
         },
         {
+            "path": "../protobuf"
+        },
+        {
             "path": "../protocol"
         },
         {

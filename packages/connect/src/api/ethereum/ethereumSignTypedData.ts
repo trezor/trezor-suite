@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/ethereumSignTypedData.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { ERRORS, PROTO } from '../../constants';
+import { PROTO } from '../../constants';
 import type { EthereumSignTypedDataTypes } from '../../types/api/ethereum';
 import { messageToHex } from '../../utils/formatUtils';
 

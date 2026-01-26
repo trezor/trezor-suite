@@ -10,7 +10,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
-import { ERRORS } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { checkBackupThunk } from '../checkBackupThunks';
 

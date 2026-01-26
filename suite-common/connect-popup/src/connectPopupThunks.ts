@@ -10,10 +10,10 @@ import TrezorConnect, {
     CallMethodParams,
     CallMethodPayload,
 } from '@trezor/connect';
-import { TypedError, serializeError } from '@trezor/connect/src/constants/errors';
 import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { connectCallableMethods } from '@trezor/connect/src/factory';
+import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';

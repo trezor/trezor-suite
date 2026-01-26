@@ -1,4 +1,6 @@
-import { ERRORS, PROTO } from '../../../constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
+import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { HD_HARDENED, validatePath } from '../../../utils/pathUtils';

@@ -1,4 +1,5 @@
-import { ERRORS } from '../../constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { DEVICE, UI, createDeviceMessage, createUiMessage } from '../../events';
 import { StaticSessionId } from '../../types';
 import { WorkflowContext } from '../../types/workflow';

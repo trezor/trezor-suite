@@ -1,7 +1,8 @@
 //  origin: https://github.com/trezor/connect/blob/develop/src/js/utils/accountUtils.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { fromHardened, toHardened } from './pathUtils';
-import { ERRORS } from '../constants';
 import { getCoinName } from '../data/coinInfo';
 import type { BitcoinNetworkInfo, CoinInfo } from '../types';
 

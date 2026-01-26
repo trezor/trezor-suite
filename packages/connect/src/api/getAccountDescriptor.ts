@@ -1,6 +1,6 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS } from '../constants';
 import { getFirmwareRange } from './common/paramsValidator';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE, MethodReturnType } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';

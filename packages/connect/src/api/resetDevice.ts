@@ -1,9 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 import { getRandomInt } from '@trezor/utils';
 
 import { generateEntropy, verifyEntropy } from '../api/firmware/verifyEntropy';
-import { ERRORS, PROTO } from '../constants';
+import { PROTO } from '../constants';
 import { TransportError } from '../constants/errors';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';

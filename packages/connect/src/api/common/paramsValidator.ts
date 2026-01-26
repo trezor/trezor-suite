@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/paramsValidator.js
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
-import { ERRORS } from '../../constants';
 import { config } from '../../data/config';
 import type { CoinInfo, FirmwareRange } from '../../types';
 import { fromHardened } from '../../utils/pathUtils';

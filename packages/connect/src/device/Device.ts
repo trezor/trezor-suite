@@ -1,4 +1,5 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     DeviceModelInternal,
     FirmwareRelease,
@@ -19,7 +20,7 @@ import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract'
 import { Deferred, TypedEmitter, createDeferred, isArrayMember, versionUtils } from '@trezor/utils';
 
 import { DeviceCommands } from './DeviceCommands';
-import { ERRORS, FIRMWARE, PROTO } from '../constants';
+import { FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
 import { abortThpWorkflow, getThpChannel } from './thp';
