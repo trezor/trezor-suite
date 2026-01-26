@@ -74,7 +74,7 @@
         "rimraf": "^6.0.1",
         "selfsigned": "^2.4.1",
         "terser-webpack-plugin": "^5.3.16",
-        "tsx": "^4.20.3",
+        "tsx": "^4.21.0",
         "webpack": "5.104.1",
         "webpack-cli": "^6.0.1",
         "webpack-merge": "^6.0.1",

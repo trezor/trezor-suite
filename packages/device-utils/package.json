@@ -31,6 +31,6 @@
     },
     "devDependencies": {
         "@trezor/protobuf": "workspace:*",
-        "tsx": "^4.20.3"
+        "tsx": "^4.21.0"
     }
 }

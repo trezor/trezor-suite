@@ -18,7 +18,7 @@
         "prepublishOnly": "yarn tsx ../../scripts/publish/prepublishNPM.js"
     },
     "devDependencies": {
-        "tsx": "^4.20.3"
+        "tsx": "^4.21.0"
     },
     "dependencies": {
         "@trezor/connect": "workspace:^",
