@@ -12,8 +12,8 @@ The repository uses Yarn workspaces with 60+ packages and NX for build optimizat
 
 ## Setup Requirements
 
-- **Node.js 24.11.1** (use NVM: `nvm install`)
-- **Yarn 4.10.3** (install with: `npm install -g yarn`)
+- **Node.js** (version specified in `.nvmrc`, use NVM: `nvm install`)
+- **Yarn** (version specified in `package.json` packageManager field)
 - **Git LFS** for binary assets
 - **Git submodules** support
 
@@ -80,8 +80,8 @@ yarn suite:build:web       # Production web build
 
 ### Important Files
 
-- `.nvmrc` - Required Node.js version (24.11.1)
-- `package.json` - Root package with yarn scripts
+- `.nvmrc` - Required Node.js version
+- `package.json` - Root package with yarn scripts and packageManager version
 - `nx.json` - NX build configuration
 - `eslint.config.mjs` - ESLint configuration
 - `jest.config.base.js` - Jest test configuration
