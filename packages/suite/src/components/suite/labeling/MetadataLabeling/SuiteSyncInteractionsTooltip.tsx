@@ -2,18 +2,37 @@ import { ReactNode } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { SuiteSyncInteraction } from '@suite-common/suite-sync';
+import {
+    selectDeviceByStaticSessionId,
+    selectDeviceLabelOrNameById,
+} from '@suite-common/wallet-core';
 import { Text, Tooltip } from '@trezor/components';
+import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
+
+import { useSelector } from '../../../../hooks/suite';
 
 type LabelingDisabledTooltipProps = {
     suiteSyncInteraction: SuiteSyncInteraction | null;
     children: ReactNode;
+    deviceStaticSessionId: StaticSessionId;
 };
 
 export const SuiteSyncInteractionsTooltip = ({
     suiteSyncInteraction,
     children,
+    deviceStaticSessionId,
 }: LabelingDisabledTooltipProps) => {
+    const device = useSelector(state =>
+        deviceStaticSessionId !== null
+            ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
+            : undefined,
+    );
+
+    const deviceLabel = useSelector(state =>
+        device !== undefined ? selectDeviceLabelOrNameById(state, device.id) : null,
+    );
+
     if (suiteSyncInteraction === null) {
         return children;
     }
@@ -36,8 +55,11 @@ export const SuiteSyncInteractionsTooltip = ({
             return (
                 <Tooltip
                     content={
-                        <Text variant="warning">
-                            <Translation id={translationMap[suiteSyncInteraction]} />
+                        <Text>
+                            <Translation
+                                id={translationMap[suiteSyncInteraction]}
+                                values={{ name: deviceLabel }}
+                            />
                         </Text>
                     }
                 >

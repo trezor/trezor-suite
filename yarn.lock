@@ -11073,6 +11073,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    jest-mock: "npm:^29.7.0"
     react-redux: "npm:9.2.0"
   languageName: unknown
   linkType: soft
@@ -15359,6 +15360,7 @@ __metadata:
     idb: "npm:^8.0.3"
     immer: "npm:11.0.0"
     jest-canvas-mock: "npm:^2.5.2"
+    jest-mock: "npm:^29.7.0"
     jest-watch-typeahead: "npm:3.0.1"
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.2.20"

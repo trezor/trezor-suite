@@ -34,7 +34,7 @@ import { Account } from 'src/types/wallet';
 
 import { SuiteRootState } from './suiteReducer';
 
-export const initialState: MetadataState = {
+export const initialMetadataState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
     initiating: false,
@@ -46,6 +46,7 @@ export const initialState: MetadataState = {
     error: {},
 };
 
+/** @deprecated Legacy labeling */
 export type MetadataRootState = {
     metadata: MetadataState;
 } & DesktopDeviceRootState &
@@ -53,7 +54,7 @@ export type MetadataRootState = {
     AccountsRootState &
     DesktopSuiteSyncRootState;
 
-const metadataReducer = (state = initialState, action: Action): MetadataState =>
+const metadataReducer = (state = initialMetadataState, action: Action): MetadataState =>
     produce(state, draft => {
         switch (action.type) {
             case STORAGE.LOAD:
@@ -292,7 +293,7 @@ export const selectIsLabelingAvailable = (state: MetadataRootState) => {
  *
  * It is possible to initiate metadata (labeling)
  */
-export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
+export const selectIsLabelingInitPossible = (state: MetadataRootState): boolean => {
     const device = selectSelectedDevice(state);
     const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
 
@@ -302,30 +303,31 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState) => {
         return false;
     }
 
-    return (
+    return Boolean(
         // device already has keys or it is at least connected and authorized
         (device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION] ||
             (device?.connected && device.state)) &&
         // storage provider is connected or we are at least able to connect to it
-        (selectSelectedProviderForLabels(state) || state.suite.online)
+        (selectSelectedProviderForLabels(state) || state.suite.online),
     );
 };
 
+/** @deprecated Legacy labeling  */
 export const selectIsLabelingAvailableForEntity = (
     state: MetadataRootState,
     entityKey: string,
-    deviceState?: StaticSessionId,
-) => {
-    const device = deviceState
-        ? selectDeviceByStaticSessionId(state, deviceState)
+    deviceStaticSessionId?: StaticSessionId,
+): boolean => {
+    const device = deviceStaticSessionId
+        ? selectDeviceByStaticSessionId(state, deviceStaticSessionId)
         : selectSelectedDevice(state);
     if (!device?.state?.staticSessionId) return false;
     const entity = selectLabelableEntityByKey(state, device.state.staticSessionId, entityKey);
 
-    return (
+    return Boolean(
         selectIsLabelingAvailable(state) &&
         entity &&
-        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName
+        entity?.[METADATA_LABELING.ENCRYPTION_VERSION]?.fileName,
     );
 };
 

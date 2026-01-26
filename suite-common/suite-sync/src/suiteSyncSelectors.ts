@@ -39,12 +39,14 @@ export const selectSuiteSyncInteraction = (
         return null;
     }
 
-    if (!selectIsSuiteSyncEnabled(state)) {
-        return 'suite-sync-off';
-    }
+    // IMPORTANT: Order is very important here!
 
     if (!isSuiteSyncSupportedByDevice(device)) {
         return 'unsupported';
+    }
+
+    if (!selectIsSuiteSyncEnabled(state)) {
+        return 'suite-sync-off';
     }
 
     if (isFwUpgradeNeededForSuiteSync(device)) {

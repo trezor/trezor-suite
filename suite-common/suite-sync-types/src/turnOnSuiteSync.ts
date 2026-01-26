@@ -1,9 +1,7 @@
-import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
-import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from './storage/ensureWalletSuiteSyncOn';
+import { EnsureWalletSuiteSyncOnErrors } from './storage/ensureWalletSuiteSyncOn';
 
 type TurnOnSuiteSyncParams = {
     /**
@@ -17,14 +15,6 @@ type TurnOnSuiteSyncParams = {
 
 export type TurnOnSuiteSync = (
     params: TurnOnSuiteSyncParams,
-) => Promise<
-    Result<
-        void,
-        | SuiteSyncUnavailableOnDeviceErrorType
-        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-        | DeviceErrorType
-        | DeviceCancelledErrType
-    >
->;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>>;
 
 export type TurnOnSuiteSyncDep = { turnOnSuiteSync: TurnOnSuiteSync };
