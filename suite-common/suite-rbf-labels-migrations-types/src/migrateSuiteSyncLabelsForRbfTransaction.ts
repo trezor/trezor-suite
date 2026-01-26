@@ -1,14 +1,9 @@
-import { SuiteSyncOutput, SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
-import {
-    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
-    SuiteSyncUnavailableOnDeviceErrorType,
-} from '@suite-common/suite-sync-types';
+import { SuiteSyncOutput } from '@suite-common/suite-sync-storage';
+import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountDescriptor,
     AccountKey,
-    DeviceCancelledErrType,
-    DeviceErrorType,
     WalletAccountTransaction,
     WalletDescriptor,
 } from '@suite-common/wallet-types';
@@ -38,29 +33,11 @@ export type DeleteLabelsForSuiteSyncParams = {
 
 export type SetLabelsForSuiteSync = (
     params: SetLabelsForSuiteSyncParams,
-) => Promise<
-    Result<
-        void,
-        | SuiteSyncUnavailableOnDeviceErrorType
-        | DeviceErrorType
-        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-        | DeviceCancelledErrType
-        | SuiteSyncUpdateError
-    >[]
->;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>[]>;
 
 export type DeleteLabelsForSuiteSync = (
     params: DeleteLabelsForSuiteSyncParams,
-) => Promise<
-    Result<
-        void,
-        | SuiteSyncUnavailableOnDeviceErrorType
-        | DeviceErrorType
-        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-        | DeviceCancelledErrType
-        | SuiteSyncUpdateError
-    >[]
->;
+) => Promise<Result<void, EnsureWalletSuiteSyncOnErrors>[]>;
 
 export type DeleteLabelsForSuiteSyncDep = {
     deleteLabelsForSuiteSync: DeleteLabelsForSuiteSync;
@@ -105,22 +82,8 @@ export type MigrateSuiteSyncLabelsForRbfTransactionDep = {
         params: MigrateSuiteSyncLabelsForRbfTransactionParams,
     ) => Promise<
         [
-            Result<
-                void,
-                | SuiteSyncUnavailableOnDeviceErrorType
-                | DeviceErrorType
-                | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-                | DeviceCancelledErrType
-                | SuiteSyncUpdateError
-            >[],
-            Result<
-                void,
-                | SuiteSyncUnavailableOnDeviceErrorType
-                | DeviceErrorType
-                | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-                | DeviceCancelledErrType
-                | SuiteSyncUpdateError
-            >[],
+            Result<void, EnsureWalletSuiteSyncOnErrors>[],
+            Result<void, EnsureWalletSuiteSyncOnErrors>[],
         ]
     >;
 };

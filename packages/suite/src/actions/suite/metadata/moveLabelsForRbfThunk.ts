@@ -3,6 +3,7 @@ import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-mig
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectTransactions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { Dispatch, GetState } from 'src/types/suite';
 
@@ -30,7 +31,7 @@ export const moveLabelsForRbfThunk =
             });
         }
 
-        for (const toBeMovedOrDeleted of Object.entries(toBeMovedOrDeletedList)) {
+        for (const toBeMovedOrDeleted of typedObjectEntries(toBeMovedOrDeletedList)) {
             const [accountKey, data] = toBeMovedOrDeleted;
 
             await dispatch(

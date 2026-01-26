@@ -11,17 +11,20 @@ export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
 
 export type EnsureWalletSuiteSyncOnParams = { deviceStaticSessionId: StaticSessionId };
 
+/**
+ * Those are all errors that may happen during ensuring that SuiteSync is in on.
+ * Typically most of them needs to be propagated all the way up into platform specific
+ * code (components), as we need user's interaction/notification.
+ */
+export type EnsureWalletSuiteSyncOnErrors =
+    | SuiteSyncUnavailableOnDeviceErrorType
+    | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
+    | DeviceErrorType
+    | DeviceCancelledErrType;
+
 export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,
-) => Promise<
-    Result<
-        SuiteSyncStorage,
-        | SuiteSyncUnavailableOnDeviceErrorType
-        | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
-        | DeviceErrorType
-        | DeviceCancelledErrType
-    >
->;
+) => Promise<Result<SuiteSyncStorage, EnsureWalletSuiteSyncOnErrors>>;
 
 export type EnsureWalletSuiteSyncOnDep = {
     ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn;
