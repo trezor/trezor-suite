@@ -13,7 +13,7 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import { ReportSecurityCheckProps, Route } from '@suite-common/suite-types';
+import { ReportSecurityCheckParams, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Analytics } from '@trezor/analytics';
 import { err, ok } from '@trezor/type-utils';
@@ -72,6 +72,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         platformEncryption: platformEncryptionMock,
         legacyAnalytics: legacyAnalyticsMock,
         analytics: analyticsMock,
+        reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>
+            console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
     selectors: {
         selectTokenDefinitionsEnabledNetworks: notImplementedSelector(
@@ -154,7 +156,5 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
                 appUrl: '@suite-native/app',
             },
         },
-        reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckProps) =>
-            console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),
     },
 };

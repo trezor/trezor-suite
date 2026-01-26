@@ -9,7 +9,7 @@ import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    ReportSecurityCheckProps,
+    ReportSecurityCheckDep,
     Route,
     TrezorDevice,
     UserContextPayload,
@@ -39,7 +39,7 @@ export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
         legacyAnalytics: Analytics<any>;
-    };
+    } & ReportSecurityCheckDep;
 
 export type ExtraDependenciesStatic = {
     thunks: {
@@ -114,7 +114,6 @@ export type ExtraDependenciesStatic = {
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
-        reportSecurityCheck: (props: ReportSecurityCheckProps) => void;
     };
 };
 

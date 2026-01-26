@@ -13,9 +13,15 @@ export type FirmwareCheckType =
     | 'Firmware revision'
     | 'Firmware version';
 
-export type ReportSecurityCheckProps = {
+export type ReportSecurityCheckParams = {
     level: 'error' | 'warning';
     checkType: FirmwareCheckType;
     contextData: Record<string, any>;
     payload?: unknown;
+};
+
+export type ReportSecurityCheck = (params: ReportSecurityCheckParams) => void;
+
+export type ReportSecurityCheckDep = {
+    reportSecurityCheck: ReportSecurityCheck;
 };

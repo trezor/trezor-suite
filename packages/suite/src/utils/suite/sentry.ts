@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/core';
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
 import { allowReportTag } from '@suite-common/sentry';
-import { ReportSecurityCheckProps } from '@suite-common/suite-types';
+import { ReportSecurityCheckParams } from '@suite-common/suite-types';
 import {
     selectDiscoveryForSelectedDevice,
     selectEnabledNetworks,
@@ -54,7 +54,7 @@ export const reportSecurityCheck = ({
     checkType,
     contextData,
     payload,
-}: ReportSecurityCheckProps) => {
+}: ReportSecurityCheckParams) => {
     const levelDescription = level === 'error' ? 'failed' : 'warning';
     const payloadLabel = `${checkType} check ${levelDescription}!`;
     console.warn(payloadLabel, contextData, payload);
