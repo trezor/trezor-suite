@@ -34,5 +34,5 @@ export type NullablePropsRecursive<T extends Record<string, any>> = {
         ? T[K] | null
         : T[K] extends Record<string, any>
           ? NullablePropsRecursive<T[K]> | null
-          : never;
+          : T[K];
 };
