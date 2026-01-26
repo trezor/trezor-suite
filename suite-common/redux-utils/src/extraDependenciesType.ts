@@ -39,6 +39,7 @@ export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
         legacyAnalytics: Analytics<any>;
+        saveAs: (data: Blob, fileName: string) => void;
     } & ReportSecurityCheckDep;
 
 export type ExtraDependenciesStatic = {
@@ -112,7 +113,6 @@ export type ExtraDependenciesStatic = {
         storageLoadBioAuth: StorageLoadReducer;
     };
     utils: {
-        saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
     };
 };

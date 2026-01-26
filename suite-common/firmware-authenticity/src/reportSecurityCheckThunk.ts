@@ -4,7 +4,7 @@ import { ReportSecurityCheckParams } from '@suite-common/suite-types';
 export const FIRMWARE_AUTHENTICITY_MODULE_PREFIX = '@common/firmware-authenticity';
 
 /**
- * Wrapper thunk around extra.utils.reportSecurityCheck
+ * Wrapper thunk around extra.services.reportSecurityCheck
  */
 export const reportSecurityCheckThunk = createThunk<void, ReportSecurityCheckParams, void>(
     `${FIRMWARE_AUTHENTICITY_MODULE_PREFIX}/reportSecurityCheckThunk`,
