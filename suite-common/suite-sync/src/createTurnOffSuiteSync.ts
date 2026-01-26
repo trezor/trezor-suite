@@ -8,7 +8,7 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 
 import { clearAll } from './data/suiteSyncDataReducer';
-import { suiteSyncActions } from './suiteSyncActions';
+import { updateSuiteSyncEnabled } from './suiteSyncReducer';
 
 export type CreateTurnOffSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
@@ -26,7 +26,7 @@ export const createTurnOffSuiteSync =
             return;
         }
 
-        deps.dispatch(suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }));
+        deps.dispatch(updateSuiteSyncEnabled({ isEnabled: false }));
 
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 
