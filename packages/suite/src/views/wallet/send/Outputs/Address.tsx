@@ -37,7 +37,7 @@ import { InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
@@ -72,7 +72,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         clearErrors,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -124,7 +124,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         const protocol = getProtocolInfo(uri);
 
         if (protocol) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SendQrScan,
                 payload: {
                     scheme: protocol.scheme,
@@ -181,15 +181,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         } else {
             dispatch(notificationsActions.addToast({ type: 'qr-incorrect-address' }));
         }
-    }, [
-        amountInputName,
-        composeTransaction,
-        dispatch,
-        inputName,
-        legacyAnalytics,
-        setValue,
-        symbol,
-    ]);
+    }, [amountInputName, analytics, composeTransaction, dispatch, inputName, setValue, symbol]);
 
     if (device?.state?.staticSessionId === undefined) {
         return;
