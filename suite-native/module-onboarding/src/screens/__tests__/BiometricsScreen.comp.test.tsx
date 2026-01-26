@@ -16,8 +16,8 @@ const mockRoute = {
     params: undefined,
 } as const;
 
-jest.mock('@react-navigation/core', () => ({
-    ...jest.requireActual('@react-navigation/core'),
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         navigate: mockNavigate,
         dispatch: mockNavigationDispatch,

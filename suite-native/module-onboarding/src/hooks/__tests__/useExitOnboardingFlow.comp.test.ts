@@ -11,8 +11,8 @@ import { useExitOnboardingFlow } from '../useExitOnboardingFlow';
 
 const mockNavigationDispatch = jest.fn();
 
-jest.mock('@react-navigation/core', () => ({
-    ...jest.requireActual('@react-navigation/core'),
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         dispatch: mockNavigationDispatch,
     }),

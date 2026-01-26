@@ -10,8 +10,8 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingResidenceCheckEnabled: () => true,
 }));
 
-jest.mock('@react-navigation/core', () => ({
-    ...jest.requireActual('@react-navigation/core'),
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         navigate: mockNavigate,
     }),

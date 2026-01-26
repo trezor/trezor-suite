@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { useAtomValue } from 'jotai';
 
 import { selectIsFeatureSuiteSyncAvailable } from '@suite-common/suite-sync';

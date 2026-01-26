@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 import { BackupType } from '@suite-common/suite-types';
 import {

@@ -1,6 +1,6 @@
 import { useDerivedValue } from 'react-native-reanimated';
 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
 import { BackupType } from '@suite-common/suite-types';

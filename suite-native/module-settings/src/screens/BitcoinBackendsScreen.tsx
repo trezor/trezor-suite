@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
 import { Button, Card, HStack, InlineAlertText, Select, Text, VStack } from '@suite-native/atoms';

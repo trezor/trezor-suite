@@ -5,7 +5,6 @@
 @react-native/babel-preset
 @react-native/metro-config
 @react-navigation/bottom-tabs
-@react-navigation/core
 @react-navigation/native
 @react-navigation/native-stack
 @react-navigation/routers

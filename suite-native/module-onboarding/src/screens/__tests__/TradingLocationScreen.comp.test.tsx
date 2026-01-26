@@ -1,4 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
@@ -19,8 +19,8 @@ jest.mock('@suite-native/services', () => {
     };
 });
 
-jest.mock('@react-navigation/core', () => ({
-    ...jest.requireActual('@react-navigation/core'),
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
 
     useRoute: () =>
         ({

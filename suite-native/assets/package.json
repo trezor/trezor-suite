@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "7.1.18",
+        "@react-navigation/native": "7.1.26",
         "@suite-common/assets": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
