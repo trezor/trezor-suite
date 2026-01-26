@@ -123,6 +123,7 @@ export const createSuiteSyncCompositionRoot = (
     });
 
     const getAllDeviceSessionIds = toGetter(deps.getState, selectAllDeviceStaticIds);
+    const getIsSuiteSyncEnabled = toGetter(deps.getState, selectIsSuiteSyncEnabled);
 
     return {
         changeRelayUrl: createChangeRelayUrl({
@@ -133,14 +134,14 @@ export const createSuiteSyncCompositionRoot = (
         ensureWalletSuiteSyncOn,
         turnOffSuiteSyncForWallet,
         turnOffSuiteSync: createTurnOffSuiteSync({
+            getIsSuiteSyncEnabled,
             getAllDeviceSessionIds,
             dispatch: deps.dispatch,
-            getState: deps.getState,
             turnOffSuiteSyncForWallet,
             reloadApp: deps.reloadApp,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
-            getIsSuiteSyncEnabled: toGetter(deps.getState, selectIsSuiteSyncEnabled),
+            getIsSuiteSyncEnabled,
             dispatch: deps.dispatch,
             ensureWalletSuiteSyncOn,
         }),
