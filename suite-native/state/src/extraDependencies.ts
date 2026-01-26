@@ -12,7 +12,11 @@ import {
     notImplementedSelector,
     notImplementedThunk,
 } from '@suite-common/redux-utils';
-import { createMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations';
+import {
+    createDeleteLabelsForSuiteSync,
+    createMigrateSuiteSyncLabelsForRbfTransaction,
+    createSetLabelsForSuiteSync,
+} from '@suite-common/suite-rbf-labels-migrations';
 import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncOutputLabelsByAccount,
@@ -104,7 +108,12 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                     params.accountDescriptor,
                     params.networkSymbol,
                 ),
-            updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+            deleteLabelsForSuiteSync: createDeleteLabelsForSuiteSync({
+                updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+            }),
+            setLabelsForSuiteSync: createSetLabelsForSuiteSync({
+                updateOutputLabel: suiteSync.labeling.updateOutputLabel,
+            }),
         }),
     };
 };
