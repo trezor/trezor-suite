@@ -15,6 +15,8 @@ const Devtools = lazy(async () => {
  */
 const MAX_RETRY_COUNT = isDevEnv ? 0 : 3;
 
+const DEV_TOOLS = isDevEnv && process.env.TANSTACK_REACT_QUERY_DEV_TOOLS === 'true';
+
 /**
  * React Query provider for web (desktop) (@trezor/suite)
  */
@@ -50,7 +52,7 @@ export const ReactQueryProvider = ({ children }: PropsWithChildren) => {
     return (
         <QueryClientProvider client={queryClient}>
             {children}
-            {isDevEnv && (
+            {DEV_TOOLS && (
                 <Suspense fallback={null}>
                     <Devtools />
                 </Suspense>

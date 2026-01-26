@@ -100,6 +100,8 @@ local.properties
 !**/suite-native/app/.env.production
 !**/suite-native/app/.env.staging
 
+.env.local
+
 # ios
 **/ios/*.xcarchive
 **/ios/builds/*

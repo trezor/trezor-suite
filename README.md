@@ -50,6 +50,11 @@ Run a dev build:
 - `yarn suite:dev:desktop` (electron app)
     - React dev tools are available with a known caveat: you need to reload the renderer process (Ctrl+R or Cmd+R) while having the dev tools open
 
+Local `.env` setup (optional):
+
+- Rename `env.local.example` to `.env.local` in the repo root.
+- Set `TANSTACK_REACT_QUERY_DEV_TOOLS=true` to enable TanStack React Query Devtools on localhost.
+
 ## **Trezor Suite Mobile** @suite-native/app
 
 > To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
