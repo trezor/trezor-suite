@@ -37,8 +37,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: null,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result).toEqual(ok(existingStorage));
         expect(deps.suiteSyncStorageRepository.get).toHaveBeenCalled();
@@ -61,8 +60,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: () => null,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result.success).toBe(false);
         expect(!result.success && result.error.type).toBe('SuiteSyncUnavailableOnDeviceError');
@@ -88,8 +86,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: () => device,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result).toBe(refreshError);
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
@@ -114,8 +111,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: () => device,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.getDeviceForStaticSessionId).toHaveBeenCalledWith(deviceStaticSessionId);
@@ -174,8 +170,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: () => device,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.createSuiteStorage).toHaveBeenCalledWith({
@@ -202,8 +197,7 @@ describe(createEnsureStorage.name, () => {
             getDeviceForStaticSessionId: () => device,
         });
 
-        const ensureStorage = createEnsureStorage(deps);
-        const result = await ensureStorage({ deviceStaticSessionId });
+        const result = await createEnsureStorage(deps)({ deviceStaticSessionId });
 
         expect(result).toEqual(ok(newStorage));
         expect(deps.createSuiteStorage).toHaveBeenCalledWith({

@@ -1,8 +1,10 @@
 import { Translation } from '@suite/intl';
-import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
+import {
+    selectDeviceByStaticSessionId,
+    selectDeviceLabelOrNameById,
+} from '@suite-common/wallet-core';
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
-import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { goto } from '../../../../actions/suite/routerActions';
 import { useDispatch, useSelector } from '../../../../hooks/suite';
@@ -24,11 +26,13 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
             : undefined,
     );
 
+    const deviceLabel = useSelector(state =>
+        device !== undefined ? selectDeviceLabelOrNameById(state, device.id) : null,
+    );
+
     if (device === undefined) {
         return null;
     }
-
-    const currentFwVersion = getFirmwareVersion(device);
 
     const onClick = () => {
         // Update will disconnect device in the process and our Firmware Update
@@ -58,7 +62,7 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
                 <Paragraph variant="tertiary">
                     <Translation
                         id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION"
-                        values={{ version: currentFwVersion }}
+                        values={{ name: deviceLabel }}
                     />
                 </Paragraph>
             </Card>

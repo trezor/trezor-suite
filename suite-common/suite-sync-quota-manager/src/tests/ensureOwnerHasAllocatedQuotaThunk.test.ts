@@ -1,3 +1,5 @@
+import { mocked } from 'jest-mock';
+
 import { asDelegatedIdentityKey, asSuiteSyncOwnerId } from '@suite-common/suite-types';
 import { WalletDescriptor, asWalletDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
@@ -35,15 +37,9 @@ const delegatedKey = asDelegatedIdentityKey(
 const ownerId = asSuiteSyncOwnerId('owner-id');
 const walletDescriptor: WalletDescriptor = asWalletDescriptor('descriptor');
 
-const prepareChallengeSessionMock = prepareChallengeSession as jest.MockedFunction<
-    typeof prepareChallengeSession
->;
-const checkStorageByOwnerIdMock = checkStorageByOwnerId as jest.MockedFunction<
-    typeof checkStorageByOwnerId
->;
-const transferStorageThunkMock = transferStorageThunk as jest.MockedFunction<
-    typeof transferStorageThunk
->;
+const prepareChallengeSessionMock = mocked(prepareChallengeSession);
+const checkStorageByOwnerIdMock = mocked(checkStorageByOwnerId);
+const transferStorageThunkMock = mocked(transferStorageThunk);
 
 describe(ensureOwnerHasAllocatedQuotaThunk.name, () => {
     beforeEach(() => {

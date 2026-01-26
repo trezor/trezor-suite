@@ -29,7 +29,6 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
 
         switch (labelType) {
             case 'walletLabel':
-                // Todo: handle errors
                 return await services.suiteSync.labeling.updateWalletLabel({
                     deviceStaticSessionId,
                     label: value ?? null,
