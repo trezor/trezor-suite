@@ -13,6 +13,7 @@ import {
     isAnalyzing,
     isCodesignBuild,
     isDev,
+    isTanstackReactQueryDevTools,
     project,
     sentryAuthToken,
 } from '../utils/env';
@@ -186,6 +187,9 @@ const config: webpack.Configuration = {
             'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
             'process.env.IS_CODESIGN_BUILD': `"${isCodesignBuild}"`, // to keep it as string "true"/"false" and not boolean
             'process.env.SENTRY_RELEASE': JSON.stringify(sentryRelease),
+            'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(
+                isTanstackReactQueryDevTools,
+            ),
             __SENTRY_DEBUG__: isDev,
             __SENTRY_TRACING__: false, // needs to be removed when we introduce performance monitoring in trezor-suite
         }),

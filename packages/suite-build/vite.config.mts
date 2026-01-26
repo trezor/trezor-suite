@@ -8,7 +8,7 @@ import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
 import { suiteVersion } from '../suite/package.json';
-import { assetPrefix, project } from './utils/env';
+import { assetPrefix, isTanstackReactQueryDevTools, project } from './utils/env';
 
 const require = createRequire(import.meta.url);
 
@@ -468,6 +468,7 @@ export default defineConfig({
         'process.env.SUITE_TYPE': JSON.stringify(project ?? 'web'),
         'process.env.NODE_ENV': JSON.stringify('development'),
         'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+        'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(isTanstackReactQueryDevTools),
         global: 'globalThis',
         __DEV__: true,
         ENABLE_REDUX_LOGGER: true,
