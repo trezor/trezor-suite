@@ -5,7 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Dropbox API errors', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_all' },
+        deviceSetup: { mnemonic: 'mnemonic_all' },
     });
 
     test.beforeEach(async ({ metadataMock }) => {

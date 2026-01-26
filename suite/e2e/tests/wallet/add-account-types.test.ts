@@ -8,7 +8,7 @@ import { ExtractByEventType } from '../../support/types';
 
 test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });

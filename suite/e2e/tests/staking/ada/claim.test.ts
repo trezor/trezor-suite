@@ -16,7 +16,7 @@ const finalBalance = startingBalance + bigRewardAmount - bigRewardFee;
 const finalBalanceFormatted = toADA(finalBalance);
 
 test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic' } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic' } });
 
     test.beforeEach(
         async ({ page, onboardingPage, dashboardPage, settingsPage, blockbookMock }) => {

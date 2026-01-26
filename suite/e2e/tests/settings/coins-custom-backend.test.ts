@@ -13,7 +13,7 @@ type Coin = {
 
 test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic:
                 'mammal walnut prosper gesture level ozone armed coffee tuna feature good december',
         },

@@ -4,7 +4,7 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

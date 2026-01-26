@@ -9,7 +9,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'town grace cat forest dress dust trick practice hair survey pupil regular',
         },
     });

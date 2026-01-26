@@ -25,7 +25,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
     );
 
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             needs_backup: true,
             mnemonic: 'mnemonic_all',
         },

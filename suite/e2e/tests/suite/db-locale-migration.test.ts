@@ -15,7 +15,7 @@ test.describe(
     { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] },
     () => {
         test.use({
-            emulatorSetupConf: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
+            deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
         });
 
         test(

@@ -5,7 +5,7 @@ import { ExtractByEventType } from '../../support/types';
 
 test.describe('Backup success', { tag: ['@T2T1'] }, () => {
     test.use({
-        emulatorSetupConf: { needs_backup: true, mnemonic: 'mnemonic_all' },
+        deviceSetup: { needs_backup: true, mnemonic: 'mnemonic_all' },
     });
 
     test.beforeEach(async ({ onboardingPage, analytics }) => {

@@ -26,7 +26,7 @@ const formattedAddress = formatAddressWithNewlines(sellWatchSolana.destinationAd
 
 test.describe('Trading - Sell Solana', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
+        deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
     });
     test.beforeEach(
         async ({

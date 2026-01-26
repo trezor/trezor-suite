@@ -15,7 +15,7 @@ const SOL_DECIMALS = getNetwork('sol').decimals;
 
 test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'mnemonic_academic',
             passphrase_protection: true,
         },

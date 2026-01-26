@@ -19,7 +19,7 @@ test.describe(
     'Use regtest to test pending transactions',
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
-        test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+        test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
         test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnvLink }) => {
             await test.step('Mine on regtest network', async () => {
                 const payments = [

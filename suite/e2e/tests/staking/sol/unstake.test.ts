@@ -15,7 +15,7 @@ const unstakingAmountFormatted = `${unstakingAmount} SOL`;
 
 test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });

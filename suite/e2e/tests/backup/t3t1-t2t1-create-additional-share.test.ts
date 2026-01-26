@@ -10,7 +10,7 @@ test.describe('Create additional share', { tag: ['@T2T1', '@T3T1'] }, () => {
     });
 
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_academic' },
+        deviceSetup: { mnemonic: 'mnemonic_academic' },
     });
 
     test(

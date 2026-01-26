@@ -8,7 +8,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'access juice claim special truth ugly swarm rabbit hair man error bar',
         },
     });

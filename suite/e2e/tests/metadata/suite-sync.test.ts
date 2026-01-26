@@ -12,7 +12,7 @@ test.describe(
     () => {
         test.use({
             firmwareVersion: '2-main',
-            emulatorSetupConf: {
+            deviceSetup: {
                 mnemonic: generateMnemonic(wordlist),
                 passphrase_protection: true,
             },
@@ -78,7 +78,7 @@ const ADDRESS_LABEL = 'Evolu synced BTC address';
 test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@T3T1'] }, () => {
     test.use({
         firmwareVersion: '2-main',
-        emulatorSetupConf: { mnemonic: MNEMONIC, passphrase_protection: true },
+        deviceSetup: { mnemonic: MNEMONIC, passphrase_protection: true },
     });
 
     test('Sync labels from server', async ({

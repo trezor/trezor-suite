@@ -4,7 +4,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
     const ADDRESS_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
 
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             needs_backup: true,
             mnemonic: 'mnemonic_all',
         },

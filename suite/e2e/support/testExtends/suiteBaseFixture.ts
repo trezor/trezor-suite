@@ -35,7 +35,7 @@ type SuiteBaseFixture = {
     setupEmulator: boolean;
     /** @deprecated */
     emulatorStartConf: StartEmuModelRequired;
-    emulatorSetupConf: SetupEmu;
+    deviceSetup: SetupEmu;
     device: DeviceFixture;
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
@@ -167,10 +167,10 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             wipe: true,
         });
     },
-    emulatorSetupConf: {},
+    deviceSetup: {},
     device: [
         async (
-            { startEmulator, setupEmulator, model, firmwareVersion, emulatorSetupConf },
+            { startEmulator, setupEmulator, model, firmwareVersion, deviceSetup },
             use,
             testInfo,
         ) => {
@@ -209,7 +209,7 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             }
 
             if (startEmulator && setupEmulator) {
-                await device.setup(emulatorSetupConf);
+                await device.setup(deviceSetup);
             }
 
             await use(device);

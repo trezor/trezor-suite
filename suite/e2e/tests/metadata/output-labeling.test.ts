@@ -8,7 +8,7 @@ import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all' } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
     test.beforeEach(async ({ metadataMock }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
     });

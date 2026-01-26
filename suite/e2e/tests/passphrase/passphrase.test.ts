@@ -10,7 +10,7 @@ const abcAddr = 'bc1qpyfvfvm52zx7gek86ajj5pkkne3h385ada8r2y';
 const defAddr = 'bc1qek0hazgrelpuce8anp72ur4kpgel74ype3pw52';
 
 test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_all', passphrase_protection: true } });
     test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.completeOnboarding();
     });

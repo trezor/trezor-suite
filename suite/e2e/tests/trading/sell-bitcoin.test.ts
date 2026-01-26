@@ -23,7 +23,7 @@ const { paymentMethodName } = sellTradeBTC.trade;
 const formattedAddress = formatAddressWithNewlines(sellWatchBTC.destinationAddress);
 
 test.describe('Trading - Sell BTC', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
     test.beforeEach(async ({ page, tradingMock, onboardingPage, dashboardPage }) => {
         await test.step('Mocking responses', async () => {
             await page.route(invityEndpoint.sellQuotes, async route => {

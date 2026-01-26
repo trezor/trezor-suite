@@ -20,7 +20,7 @@ const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalP
 );
 
 test.describe('Send Eth', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
-    test.use({ emulatorSetupConf: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
     test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();

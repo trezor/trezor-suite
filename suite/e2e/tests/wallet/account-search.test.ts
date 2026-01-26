@@ -5,7 +5,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
-        emulatorSetupConf: {
+        deviceSetup: {
             mnemonic: 'cancel solid bulb sample fury scrap whale ranch raven razor sight skin',
         },
     });

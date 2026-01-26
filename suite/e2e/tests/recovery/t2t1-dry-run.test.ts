@@ -9,7 +9,7 @@ const pin = '1';
 
 test.describe('Recovery T2T1 - dry run', { tag: ['@T2T1'] }, () => {
     test.use({
-        emulatorSetupConf: { mnemonic: 'mnemonic_all', pin },
+        deviceSetup: { mnemonic: 'mnemonic_all', pin },
     });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
