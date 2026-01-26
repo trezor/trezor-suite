@@ -11,7 +11,6 @@
 @types/chrome
 @types/flexsearch
 @types/git-url-parse
-@types/json-stable-stringify
 @types/jws
 @types/karma
 @types/lodash
@@ -47,7 +46,6 @@ git-url-parse
 groestl-hash-js
 html-inline-script-webpack-plugin
 intersection-observer
-json-stable-stringify
 json5
 jssha
 karma
