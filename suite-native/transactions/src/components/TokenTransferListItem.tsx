@@ -59,6 +59,8 @@ export const TokenTransferListItemValues = ({
 
     const isFailedTx = transaction.type === 'failed';
 
+    if (!tokenTransfer?.amount) return;
+
     return (
         <>
             <TokenToFiatAmountFormatter

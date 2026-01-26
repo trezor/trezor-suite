@@ -26,7 +26,9 @@ export const TokenAmountFormatter = ({
 }: TokenAmountFormatterProps) => {
     // Phishing transactions values may be equal to empty string, so we replace it with 0.
     // These values are hidden by discreet mode , so the exact value does not matter anyway.
-    const decimalValue = isPhishingTransaction ? 0 : convertTokenValueToDecimal(value, decimals);
+
+    const decimalValue =
+        isPhishingTransaction || !value ? 0 : convertTokenValueToDecimal(value, decimals);
 
     const { CryptoAmountFormatter: formatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue.toString(), {
