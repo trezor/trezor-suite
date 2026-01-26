@@ -1,7 +1,14 @@
 import { addons } from 'storybook/manager-api';
 
-import theme from './theme';
+import './theme-toggle';
+import { darkTheme, lightTheme } from './theme';
 
-addons.setConfig({
-    theme,
-});
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+
+function apply() {
+    addons.setConfig({ theme: mq.matches ? darkTheme : lightTheme });
+}
+
+apply();
+
+mq.addEventListener('change', apply);
