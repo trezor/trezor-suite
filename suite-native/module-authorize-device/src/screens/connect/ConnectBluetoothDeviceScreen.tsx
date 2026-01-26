@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { EventType } from '@suite-common/analytics-types';
+import { analytics } from '@suite-native/analytics';
 import {
     BluetoothDevice,
     BluetoothDeviceList,
@@ -17,7 +18,6 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics } from '@suite-native/services';
 
 import { BluetoothDeviceScreenHeader } from '../../components/connect/BluetoothDeviceScreenHeader';
 
@@ -29,7 +29,6 @@ type NavigationProps = StackNavigationProps<
 export const ConnectBluetoothDeviceScreen = () => {
     const { connectBluetoothDevice } = useBluetoothDevice();
     const navigation = useNavigation<NavigationProps>();
-    const analytics = useAnalytics();
 
     const nearbyBluetoothDevices = useSelector(selectNearbyBluetoothDevices);
     const nearbyPairableBluetoothDevices = useSelector(selectNearbyPairableBluetoothDevices);
@@ -44,7 +43,7 @@ export const ConnectBluetoothDeviceScreen = () => {
             });
             connectBluetoothDevice(device);
         },
-        [analytics, connectBluetoothDevice],
+        [connectBluetoothDevice],
     );
 
     useEffect(() => {

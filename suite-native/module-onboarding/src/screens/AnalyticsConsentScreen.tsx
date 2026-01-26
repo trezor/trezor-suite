@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
 import {
-    AnalyticsSharedEvents,
     SuiteSharedLegacyAnalyticsEvents,
 } from '@suite-common/analytics-types';
 import {
-    AnalyticsNativeEvents,
     EventType,
     SuiteNativeLegacyAnalyticsEvents,
+    analytics,
 } from '@suite-native/analytics';
 import {
     Box,
@@ -27,7 +26,7 @@ import {
     Screen,
     StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { Analytics } from '@trezor/analytics';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
@@ -44,7 +43,6 @@ const reportAnalyticsOnboardingCompleted = (
     isTrackingAllowed: boolean,
     legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents> &
         Analytics<SuiteNativeLegacyAnalyticsEvents>,
-    analytics: Analytics<AnalyticsSharedEvents> & Analytics<AnalyticsNativeEvents>,
 ) => {
     // For users who have not allowed tracking, enable analytics just for reporting
     // the OnboardingCompleted event and then disable it again.
@@ -65,7 +63,6 @@ const reportAnalyticsOnboardingCompleted = (
 export const AnalyticsConsentScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>) => {
-    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const [isEnabled, setIsEnabled] = useState(true);
 
@@ -74,7 +71,7 @@ export const AnalyticsConsentScreen = ({
     const handleOpenLink = useOpenLink();
 
     const handleRedirect = () => {
-        reportAnalyticsOnboardingCompleted(isEnabled, legacyAnalytics, analytics);
+        reportAnalyticsOnboardingCompleted(isEnabled, legacyAnalytics);
 
         navigation.navigate(OnboardingStackRoutes.Biometrics);
     };

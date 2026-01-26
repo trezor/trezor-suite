@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
-import { EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
@@ -14,7 +14,7 @@ import {
 import { useBiometricsSettings, useIsBiometricsEnabled } from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useLegacyAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
 
 const DiscreetTextExample = () => {
@@ -64,7 +64,6 @@ const DiscreetModeSwitchRow = () => {
 
 const AnalyticsSwitchRow = () => {
     const legacyAnalytics = useLegacyAnalytics();
-    const analytics = useAnalytics();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
 
     const handleAnalyticsChange = (isEnabled: boolean) => {

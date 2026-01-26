@@ -21,10 +21,10 @@ export type {
     CountryChangeAction,
     SuiteNativeLegacyAnalyticsEvents,
 } from './types';
-export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
 export { createLegacyAnalytics, type NativeLegacyAnalyticsDep } from './createLegacyAnalytics';
 export { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
 export { getTypedNativeAnalytics } from './getTypedNativeAnalytics';
 export type { AnalyticsNativeEvents } from './analyticsEvents';
+export { analytics } from './analytics';
 
 export * as events from './events';

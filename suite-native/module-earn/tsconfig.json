@@ -27,7 +27,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../services" },
         { "path": "../staking" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },

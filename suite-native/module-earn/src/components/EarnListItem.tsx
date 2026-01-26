@@ -1,6 +1,5 @@
-import { EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { useAnalytics } from '@suite-native/services';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -24,7 +23,6 @@ export const EarnListItem = (earnItem: EarnListItemProps) => {
     const { accountKey } = earnItem;
     const { applyStyle } = useNativeStyles();
     const { bottomSheetRef, openModal } = useBottomSheetModal();
-    const analytics = useAnalytics();
 
     const stakedBalance = useSelector(state => selectStakedBalanceByAccountKey(state, accountKey));
 

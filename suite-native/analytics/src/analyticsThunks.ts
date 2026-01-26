@@ -11,6 +11,7 @@ import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash } from '@trezor/env-utils';
 
+import { analytics } from './analytics';
 import { EventType } from './constants';
 import { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
 
@@ -65,7 +66,7 @@ export const initAnalyticsThunk = createThunk(
             hasUserAllowedTracking,
             options,
         );
-        extra.services.analytics.init(hasUserAllowedTracking, options);
+        analytics.init(hasUserAllowedTracking, options);
 
         allowSentryReport(isAnalyticsEnabled);
         setSentryUser(instanceId);

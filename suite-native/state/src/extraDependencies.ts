@@ -16,7 +16,7 @@ import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { createAnalytics, createLegacyAnalytics } from '@suite-native/analytics';
+import { createLegacyAnalytics } from '@suite-native/analytics';
 import { forgetBluetoothDeviceThunk } from '@suite-native/bluetooth';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { reportSecurityCheck } from '@suite-native/sentry';
@@ -72,7 +72,6 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         platformEncryption,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         legacyAnalytics: createLegacyAnalytics(),
-        analytics: createAnalytics(),
     };
 };
 

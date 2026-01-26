@@ -12,11 +12,10 @@ import {
     reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { EventType, analytics } from '@suite-native/analytics';
 import { SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useAnalytics } from '@suite-native/services';
 import TrezorConnect, { BLOCKCHAIN, BlockchainError } from '@trezor/connect';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -32,7 +31,6 @@ type FormValues = {
 export const useBackendServersForm = () => {
     const dispatch = useDispatch();
     const { translate } = useTranslate();
-    const analytics = useAnalytics();
 
     const {
         connected,

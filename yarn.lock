@@ -10579,7 +10579,10 @@ __metadata:
   resolution: "@suite-common/analytics@workspace:suite-common/analytics"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@trezor/analytics": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
@@ -10629,6 +10632,7 @@ __metadata:
   resolution: "@suite-common/connect-popup@workspace:suite-common/connect-popup"
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -11370,6 +11374,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@reown/walletkit": "npm:^1.2.8"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/mev": "workspace:*"
@@ -12789,7 +12794,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/services": "workspace:*"
     "@suite-native/staking": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
