@@ -24,29 +24,31 @@ export const CollapsibleFeesHeaderContent = ({
     txMaxFee,
 }: CollapsibleFeesHeaderContentProps) => {
     const content = (
-        <Collapsible.Toggle data-testid="@wallet/fees/collapsible-fees-toggle">
-            <ContentFlex justifyContent="space-between" gap={12}>
-                <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
-                <Row gap={8}>
-                    <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
-                    {supportsAdjustableFees && (
-                        <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
-                    )}
-                </Row>
-            </ContentFlex>
-        </Collapsible.Toggle>
+        <ContentFlex justifyContent="space-between" gap={12}>
+            <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
+            <Row gap={8}>
+                <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
+                {supportsAdjustableFees && (
+                    <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
+                )}
+            </Row>
+        </ContentFlex>
     );
 
-    return isHeaderRowLayout ? (
-        <Box
-            backgroundColorOnInteraction={
-                supportsAdjustableFees ? 'backgroundSurfaceElevation2' : undefined
-            }
-            padding={{ vertical: 12, horizontal: 16 }}
-        >
-            {content}
-        </Box>
-    ) : (
-        content
+    return (
+        <Collapsible.Toggle data-testid="@wallet/fees/collapsible-fees-toggle">
+            {isHeaderRowLayout ? (
+                <Box
+                    backgroundColorOnInteraction={
+                        supportsAdjustableFees ? 'backgroundSurfaceElevation2' : undefined
+                    }
+                    padding={{ vertical: 12, horizontal: 16 }}
+                >
+                    {content}
+                </Box>
+            ) : (
+                content
+            )}
+        </Collapsible.Toggle>
     );
 };
