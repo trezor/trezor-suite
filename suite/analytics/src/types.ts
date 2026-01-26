@@ -198,14 +198,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SendQrScan;
-          payload: {
-              scheme: string;
-              isAmountPresent: boolean;
-              networkSymbol: string;
-          };
-      }
-    | {
           type: EventType.AccountsStatus;
           payload: Record<string, number>;
       }
