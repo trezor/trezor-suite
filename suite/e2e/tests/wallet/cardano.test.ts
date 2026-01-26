@@ -26,15 +26,7 @@ test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 stream: TestStream.Trends,
             }),
         },
-        async ({
-            page,
-            device,
-            dashboardPage,
-            devicePrompt,
-            settingsPage,
-            walletPage,
-            trezorUserEnvLink,
-        }) => {
+        async ({ page, device, dashboardPage, devicePrompt, settingsPage, walletPage }) => {
             await test.step('Verify Cardano account details', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openAccount({ symbol: 'ada' });
@@ -70,7 +62,7 @@ test.describe('Cardano', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await expect(device).toShowReceiveAddress(receiveAddress, {
                     lineFormat: 'fullLine',
                 });
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await expect(walletPage.copyAddressButton).toBeEnabled();
                 await expect(devicePrompt.outputValue).toHaveText(formatAddress(receiveAddress));
                 await devicePrompt.confirmOnDevicePromptIsShown();

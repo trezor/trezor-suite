@@ -49,11 +49,11 @@ type Fixtures = {
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
-    dashboardPage: async ({ page, devicePrompt }, use) => {
-        await use(new DashboardPage(page, devicePrompt));
+    dashboardPage: async ({ page, device, devicePrompt }, use) => {
+        await use(new DashboardPage(page, device, devicePrompt));
     },
-    settingsPage: async ({ page }, use) => {
-        await use(new SettingsPage(page));
+    settingsPage: async ({ page, device }, use) => {
+        await use(new SettingsPage(page, device));
     },
     guidePanel: async ({ page }, use) => {
         await use(new GuidePanel(page));
@@ -82,11 +82,11 @@ const test = suiteBaseTest.extend<Fixtures>({
     assetsSection: async ({ page }, use) => {
         await use(new AssetsSection(page));
     },
-    metadataPage: async ({ page, settingsPage, devicePrompt }, use) => {
-        await use(new MetadataPage(page, settingsPage, devicePrompt));
+    metadataPage: async ({ page, device, settingsPage, devicePrompt }, use) => {
+        await use(new MetadataPage(page, device, settingsPage, devicePrompt));
     },
-    trezorInput: async ({ page }, use) => {
-        await use(new TrezorInput(page));
+    trezorInput: async ({ page, device }, use) => {
+        await use(new TrezorInput(page, device));
     },
     analytics: async ({ page }, use) => {
         await use(new AnalyticsFixture(page));

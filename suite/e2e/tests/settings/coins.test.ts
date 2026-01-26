@@ -45,11 +45,11 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
 
-                await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
+                await expect(settingsPage.coinsTab.networkButton('btc')).toBeEnabledCoin();
                 for (const network of defaultUnchecked) {
-                    await expect(settingsPage.coins.networkButton(network)).toBeDisabledCoin();
+                    await expect(settingsPage.coinsTab.networkButton(network)).toBeDisabledCoin();
                 }
-                await settingsPage.coins.disableNetwork('btc');
+                await settingsPage.coinsTab.disableNetwork('btc');
                 // check dashboard with all coins disabled
                 await dashboardPage.navigateTo();
                 await expect(dashboardPage.discoveryEmptyHeader).toHaveTranslation(
@@ -67,7 +67,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 await dashboardPage.discoveryEmptyPrimaryButton.click();
                 await settingsPage.navigateTo('coins');
                 for (const network of ['btc', ...defaultUnchecked] as NetworkSymbol[]) {
-                    await settingsPage.coins.enableNetwork(network);
+                    await settingsPage.coinsTab.enableNetwork(network);
                 }
             });
 
@@ -75,10 +75,10 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
                 const backendType = 'blockbook';
                 const customServer = 'https://eth.marek.pl/';
 
-                await expect(settingsPage.coins.networkButton('eth')).toBeEnabledCoin();
-                await settingsPage.coins.openNetworkAdvanceSettings('eth');
-                await settingsPage.coins.changeBackend(backendType, customServer);
-                await expect(settingsPage.coins.networkButton('eth')).toContainTranslation(
+                await expect(settingsPage.coinsTab.networkButton('eth')).toBeEnabledCoin();
+                await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
+                await settingsPage.coinsTab.changeBackend(backendType, customServer);
+                await expect(settingsPage.coinsTab.networkButton('eth')).toContainTranslation(
                     'TR_CUSTOM_BACKEND',
                 );
             });

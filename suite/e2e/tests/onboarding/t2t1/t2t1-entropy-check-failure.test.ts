@@ -23,7 +23,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 priority: TestPriority.High,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+        async ({ page, device, onboardingPage, devicePrompt }) => {
             await page.ensureStoreOnDesktop();
 
             await page.evaluate(
@@ -39,7 +39,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 await onboardingPage.createWalletButton.click();
                 await onboardingPage.selectSeedType('12-words');
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
             });
 
             await test.step('Land on entropy check failure', async () => {
@@ -58,7 +58,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 priority: TestPriority.High,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+        async ({ page, device, onboardingPage, devicePrompt }) => {
             // note that this specific string is one of the ignored errors, see getIsIgnoredEntropyCheckError
             const mockedError = 'device disconnected during action';
             await page.ensureStoreOnDesktop();
@@ -75,7 +75,7 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
                 await onboardingPage.createWalletButton.click();
                 await onboardingPage.selectSeedType('12-words');
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
             });
 
             await test.step('Display error toast, but stay on the same screen (no device compromised)', async () => {

@@ -22,10 +22,10 @@ test.describe(
 
         test('persists wallet labels', async ({
             page,
+            device,
             dashboardPage,
             metadataPage,
             devicePrompt,
-            trezorUserEnvLink,
             metadataMock,
         }) => {
             await test.step('Setup standard wallet and enable labels', async () => {
@@ -52,7 +52,7 @@ test.describe(
                 await dashboardPage.addUnusedHiddenWallet('abc');
 
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
 
                 await dashboardPage.openDeviceSwitcher();
                 await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
@@ -88,10 +88,10 @@ test.describe(
         });
 
         test('labels can be enabled and edited when different wallet is open', async ({
+            device,
             dashboardPage,
             metadataPage,
             devicePrompt,
-            trezorUserEnvLink,
         }) => {
             await test.step('Setup standard wallet with label and edit it', async () => {
                 await dashboardPage.openDeviceSwitcher();
@@ -105,7 +105,7 @@ test.describe(
             await test.step('Add passphrase wallet C and switch back to first wallet', async () => {
                 await dashboardPage.addUnusedHiddenWallet('C');
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressNo();
+                await device.pressNo();
                 await dashboardPage.openDeviceSwitcher();
                 await dashboardPage.walletAtIndex(standardWalletIndex).click();
             });
@@ -114,7 +114,7 @@ test.describe(
                 await dashboardPage.openDeviceSwitcher();
                 await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await metadataPage.wallet.clickEditLabel(hiddenWalletIndex);
                 await metadataPage.wallet.fillLabelInput(
                     'still works, metadata enabled for currently not selected device',

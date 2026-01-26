@@ -1,12 +1,13 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLinkProxy, step } from '../../common';
+import { step } from '../../common';
 import { MetadataProvider } from '../../mocks/metadataMock';
 import { DevicePrompt } from '../devicePrompt';
 import { AccountMetadata } from './accountMetadata';
 import { AddressMetadata } from './addressMetadata';
 import { OutputMetadata } from './outputMetadata';
 import { WalletMetadata } from './walletMetadata';
+import { DeviceFixture } from '../../device';
 import { SettingsPage } from '../settings/settingsPage';
 
 export class MetadataPage {
@@ -22,6 +23,7 @@ export class MetadataPage {
 
     constructor(
         private readonly page: Page,
+        private readonly device: DeviceFixture,
         private readonly settingsPage: SettingsPage,
         private readonly devicePrompt: DevicePrompt,
     ) {
@@ -40,7 +42,7 @@ export class MetadataPage {
         options?: { skipVerification?: boolean },
     ) {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
         await this.metadataProviderButton(provider).click();
 
         if (options?.skipVerification) {
@@ -71,7 +73,7 @@ export class MetadataPage {
     @step()
     async confirmSuiteSyncSetup() {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
         await this.page.waitForTimeout(2000); // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
     }
 

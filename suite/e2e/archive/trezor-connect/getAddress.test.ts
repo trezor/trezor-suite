@@ -19,11 +19,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
         });
     });
 
-    test('TrezorConnect.getAddress', async ({
-        page,
-        connectPermissionsModal,
-        trezorUserEnvLink,
-    }) => {
+    test('TrezorConnect.getAddress', async ({ page, device, connectPermissionsModal }) => {
         await test.step('export single address - and manually request on device confirmation', async () => {
             const res = TrezorConnect.getAddress({
                 path: "m/44'/0'/0'/0/0",
@@ -46,7 +42,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             // we can't use buttonRequests at the moment because of switching between DeviceContextModal and UserContextModal which causes animation flickering
             await page.waitForTimeout(1000);
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             await expect(
                 page.getByTestId('@connect-address-confirmation/verified-badge/0'),
@@ -89,7 +85,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
 
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             await page.waitForTimeout(1000);
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             expect(await resMultiple).toMatchObject({ success: true });
         });
 
@@ -112,7 +108,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
 
             // TODO: 'verifying' is not enough to ensure device call is already in progress, it is only set right after clicking the button.
             await page.waitForTimeout(1000);
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             await expect(
                 page.getByTestId('@connect-address-confirmation/verified-badge/0'),
@@ -121,7 +117,7 @@ test.describe('TrezorConnect.getAddress', { tag: ['@group=connect', '@desktopOnl
             // try to verify address and disconnect device during action
             await page.getByTestId('@connect-address-confirmation/verify-button/0').click();
             await page.waitForTimeout(1000);
-            await trezorUserEnvLink.pressNo();
+            await device.pressNo();
             await page
                 .getByTestId('@connect-address-confirmation/error-badge/0')
                 .waitFor({ state: 'visible' });

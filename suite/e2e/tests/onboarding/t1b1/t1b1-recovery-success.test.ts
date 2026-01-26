@@ -27,12 +27,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
         },
         async ({
             page,
+            device,
             onboardingPage,
             analyticsSection,
             devicePrompt,
             recoveryModal,
             trezorInput,
-            trezorUserEnvLink,
         }) => {
             await analyticsSection.passThroughAnalytics();
 
@@ -43,7 +43,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
             await recoveryModal.selectRecoveryButton('standard').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
             await page.waitForTimeout(1000);
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             // Input mnemonic
             await trezorInput.inputMnemonicT1B1(mnemonic);

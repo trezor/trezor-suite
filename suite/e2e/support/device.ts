@@ -77,6 +77,29 @@ export class DeviceFixture {
     }
 
     @step()
+    async readAndConfirmShamirMnemonic(options: { shares: number; threshold: number }) {
+        await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu(options);
+    }
+
+    @step()
+    async getTHPPairingCode(): Promise<string[]> {
+        const screenContent = await TrezorUserEnvLink.getScreenContent();
+        const screenContentBody = screenContent.body as string;
+
+        return (
+            screenContentBody
+                .match(/(\d\s*){6}$/)?.[0]
+                .replace(/\s+/g, '')
+                .split('') ?? []
+        );
+    }
+
+    @step()
+    async getDebugState() {
+        return await TrezorUserEnvLink.getDebugState();
+    }
+
+    @step()
     async getAnalyzedDisplayContent() {
         const debugState = await this.getDisplayContent();
 

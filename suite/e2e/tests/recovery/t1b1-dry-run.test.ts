@@ -27,13 +27,13 @@ test.describe('Recovery T1B1 - dry run', { tag: ['@T1B1'] }, () => {
                 priority: TestPriority.High,
             }),
         },
-        async ({ settingsPage, recoveryModal, trezorInput, trezorUserEnvLink, devicePrompt }) => {
+        async ({ settingsPage, recoveryModal, trezorInput, device, devicePrompt }) => {
             await settingsPage.checkSeedButton.click();
             await recoveryModal.initDryCheck('standard', 24);
             await trezorInput.enterPinOnBlindMatrix(pin);
             await trezorInput.inputMnemonicT1B1(mnemonic);
             await expect(devicePrompt.modal).toContainTranslation('TR_CONFIRM_ACTION_ON_YOUR');
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await expect(recoveryModal.successTitle).toHaveText(
                 'Wallet backup checked successfully',
             );

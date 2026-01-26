@@ -52,22 +52,22 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             },
             async ({ page, settingsPage, walletPage }) => {
                 if (coin === 'btc') {
-                    await settingsPage.coins.disableNetwork(coin);
+                    await settingsPage.coinsTab.disableNetwork(coin);
                 }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coins.networkButton(coin)).toBeDisabledCoin();
-                    await settingsPage.coins.enableNetwork(coin);
-                    await expect(settingsPage.coins.networkButton(coin)).toBeEnabledCoin();
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.enableNetwork(coin);
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
                 });
                 await test.step(`Enable custom ${backendType} server`, async () => {
-                    await settingsPage.coins.openNetworkAdvanceSettings(coin);
-                    await settingsPage.coins.changeBackend(backendType, customBackendUrlRight);
-                    await expect(settingsPage.coins.networkButton(coin)).toContainTranslation(
+                    await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
+                    await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlRight);
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
                         'TR_CUSTOM_BACKEND',
                     );
                 });
                 await test.step('Refresh coins', async () => {
-                    await settingsPage.coins.activateCoinsButton.click();
+                    await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
                         settingsPage.verifyDiscoveryLoaderFinishes(),
                         page.discoveryShouldFinish(),
@@ -94,22 +94,22 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             },
             async ({ page, settingsPage, walletPage }) => {
                 if (coin === 'btc') {
-                    await settingsPage.coins.disableNetwork(coin);
+                    await settingsPage.coinsTab.disableNetwork(coin);
                 }
                 await test.step(`Enable ${coin.toUpperCase()} asset`, async () => {
-                    await expect(settingsPage.coins.networkButton(coin)).toBeDisabledCoin();
-                    await settingsPage.coins.enableNetwork(coin);
-                    await expect(settingsPage.coins.networkButton(coin)).toBeEnabledCoin();
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeDisabledCoin();
+                    await settingsPage.coinsTab.enableNetwork(coin);
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toBeEnabledCoin();
                 });
                 await test.step(`Enable custom ${backendType} server`, async () => {
-                    await settingsPage.coins.openNetworkAdvanceSettings(coin);
-                    await settingsPage.coins.changeBackend(backendType, customBackendUrlWrong);
-                    await expect(settingsPage.coins.networkButton(coin)).toContainTranslation(
+                    await settingsPage.coinsTab.openNetworkAdvanceSettings(coin);
+                    await settingsPage.coinsTab.changeBackend(backendType, customBackendUrlWrong);
+                    await expect(settingsPage.coinsTab.networkButton(coin)).toContainTranslation(
                         'TR_CUSTOM_BACKEND',
                     );
                 });
                 await test.step('Refresh coins', async () => {
-                    await settingsPage.coins.activateCoinsButton.click();
+                    await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
                         settingsPage.verifyDiscoveryLoaderFinishes(),
                         page.discoveryShouldFinish(),

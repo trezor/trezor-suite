@@ -19,10 +19,10 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ page, devicePrompt, trezorUserEnvLink, trezorInput }) => {
+        async ({ page, device, devicePrompt, trezorInput }) => {
             await page.getByTestId('@settings/device/pin-switch').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             const pinEntryNumber = '1';
             await trezorInput.enterPinOnBlindMatrix(pinEntryNumber);
@@ -32,10 +32,10 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
         },
     );
 
-    test('pin mismatch', async ({ page, devicePrompt, trezorUserEnvLink }) => {
+    test('pin mismatch', async ({ page, device, devicePrompt }) => {
         await page.getByTestId('@settings/device/pin-switch').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
 
         await test.step('First input with one number', async () => {
             await page.getByTestId('@pin/input/1').click();
@@ -49,7 +49,7 @@ test.describe('T1B1 - Device settings', { tag: ['@T1B1'] }, () => {
         await expect(page.getByTestId('@pin-mismatch')).toBeVisible();
         await page.getByTestId('@pin-mismatch/try-again-button').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
     });
 
     test(

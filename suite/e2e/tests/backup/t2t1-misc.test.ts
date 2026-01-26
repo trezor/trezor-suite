@@ -34,9 +34,9 @@ test.describe('Backup misc', { tag: ['@T2T1'] }, () => {
 
     test('User disconnected device that is remembered. Should not be allowed to initiate backup', async ({
         page,
+        device,
         dashboardPage,
         onboardingPage,
-        trezorUserEnvLink,
     }) => {
         await expect(dashboardPage.graph).toBeVisible();
         await dashboardPage.openDeviceSwitcher();
@@ -46,7 +46,7 @@ test.describe('Backup misc', { tag: ['@T2T1'] }, () => {
         await onboardingPage.backup.hasEnoughTimeCheckbox.click();
         await onboardingPage.backup.isInPrivateCheckbox.click();
 
-        await trezorUserEnvLink.stopEmu();
+        await device.powerOff();
         await expect(page.getByTestId('@backup/no-device')).toBeVisible();
     });
 });

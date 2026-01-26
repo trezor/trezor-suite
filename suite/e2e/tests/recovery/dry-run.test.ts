@@ -27,7 +27,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
                 priority: TestPriority.High,
             }),
         },
-        async ({ settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+        async ({ device, settingsPage, recoveryModal, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
                 await settingsPage.checkSeedButton.click();
                 await recoveryModal.userUnderstandsCheckbox.click();
@@ -36,15 +36,15 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             });
 
             await test.step('Do the recover dry run on emulator', async () => {
-                await trezorUserEnvLink.pressYes();
-                await trezorUserEnvLink.inputEmu('1');
-                await trezorUserEnvLink.selectNumOfWordsEmu(12);
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
+                await device.type('1');
+                await device.selectNumberOfWords(12);
+                await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
             });
 
             await test.step('Verify success in suite', async () => {
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',
                 );
@@ -62,7 +62,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+        async ({ page, device, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
                 await settingsPage.checkSeedButton.click();
                 await recoveryModal.userUnderstandsCheckbox.click();
@@ -71,11 +71,11 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             });
 
             await test.step('Partially complete the dry run on emulator', async () => {
-                await trezorUserEnvLink.pressYes();
-                await trezorUserEnvLink.inputEmu('1');
-                await trezorUserEnvLink.selectNumOfWordsEmu(12);
-                await trezorUserEnvLink.pressYes();
-                await trezorUserEnvLink.inputEmu('all');
+                await device.pressYes();
+                await device.type('1');
+                await device.selectNumberOfWords(12);
+                await device.pressYes();
+                await device.type('all');
             });
 
             await test.step('Simulate disconnect', async () => {
@@ -91,10 +91,10 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             });
 
             await test.step('Complete the dry run on emulator', async () => {
-                await trezorUserEnvLink.selectNumOfWordsEmu(12);
-                await trezorUserEnvLink.pressYes();
+                await device.selectNumberOfWords(12);
+                await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',
                 );
@@ -113,7 +113,7 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             }),
             tag: ['@desktopOnly', '@T3W1', '@T3T1'],
         },
-        async ({ page, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+        async ({ page, device, settingsPage, recoveryModal, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
                 await settingsPage.checkSeedButton.click();
                 await recoveryModal.userUnderstandsCheckbox.click();
@@ -122,11 +122,11 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             });
 
             await test.step('Partially complete the dry run on emulator', async () => {
-                await trezorUserEnvLink.pressYes();
-                await trezorUserEnvLink.inputEmu('1');
-                await trezorUserEnvLink.selectNumOfWordsEmu(12);
-                await trezorUserEnvLink.pressYes();
-                await trezorUserEnvLink.inputEmu('all');
+                await device.pressYes();
+                await device.type('1');
+                await device.selectNumberOfWords(12);
+                await device.pressYes();
+                await device.type('all');
             });
 
             await test.step('Reload suite and check recovery dry run is reinitialized', async () => {
@@ -135,10 +135,10 @@ test.describe('Recovery - dry run', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =>
             });
 
             await test.step('Complete the dry run on emulator', async () => {
-                await trezorUserEnvLink.selectNumOfWordsEmu(12);
-                await trezorUserEnvLink.pressYes();
+                await device.selectNumberOfWords(12);
+                await device.pressYes();
                 await trezorInput.inputMnemonicT2T1(MNEMONICS.mnemonic_all);
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await expect(recoveryModal.successTitle).toHaveTranslation(
                     'TR_SEED_CHECK_SUCCESS_TITLE',
                 );

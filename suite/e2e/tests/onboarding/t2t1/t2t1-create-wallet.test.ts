@@ -10,10 +10,10 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
     });
 
     test('Success (Shamir backup)', async ({
+        device,
         analyticsSection,
         onboardingPage,
         devicePrompt,
-        trezorUserEnvLink,
     }) => {
         await analyticsSection.passThroughAnalytics();
         await onboardingPage.firmware.continueThroughFirmware();
@@ -22,7 +22,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         await onboardingPage.createWalletButton.click();
         await onboardingPage.selectSeedType('shamir-advanced');
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
 
         await onboardingPage.createBackupButton.click();
 
@@ -32,11 +32,11 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
         await onboardingPage.pin.setPinButton.click();
         await devicePrompt.confirmOnDevicePromptIsShown();
 
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.inputEmu('12');
-        await trezorUserEnvLink.inputEmu('12');
+        await device.pressYes();
+        await device.type('12');
+        await device.type('12');
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
         await expect(onboardingPage.onboardingExitButton).toBeVisible();
     });
 });

@@ -39,10 +39,10 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 ],
             });
 
-            await settingsPage.coins.disableNetwork('btc');
-            await settingsPage.coins.enableNetwork('eth');
-            await settingsPage.coins.openNetworkAdvanceSettings('eth');
-            await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+            await settingsPage.coinsTab.disableNetwork('btc');
+            await settingsPage.coinsTab.enableNetwork('eth');
+            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
+            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
 
             await dashboardPage.dashboardMenuButton.click();
             await page.discoveryShouldFinish();

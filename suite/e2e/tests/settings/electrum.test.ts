@@ -31,8 +31,8 @@ test.describe(
 
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
-                await settingsPage.coins.openNetworkAdvanceSettings('regtest');
-                await settingsPage.coins.changeBackend('electrum', electrumUrl);
+                await settingsPage.coinsTab.openNetworkAdvanceSettings('regtest');
+                await settingsPage.coinsTab.changeBackend('electrum', electrumUrl);
 
                 await dashboardPage.navigateTo();
                 await page.discoveryShouldFinish();

@@ -42,8 +42,8 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('Device safety_check setting is changed after pressing the apply button', async ({
         page,
+        device,
         devicePrompt,
-        trezorUserEnvLink,
         settingsPage,
     }) => {
         // Open the safety checks modal.
@@ -66,7 +66,7 @@ test.describe('Safety Checks Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Apply the change and confirm on the device', async () => {
             await settingsPage.safetyChecksConfirmButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         });
         await test.step('Reopen the modal and verify the change', async () => {
             await settingsPage.safetyChecksButton.click();

@@ -106,7 +106,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () =
 
             await settingsPage.navigateTo('coins');
             for (const coin of coins) {
-                await settingsPage.coins.enableNetwork(coin.symbol as NetworkSymbol);
+                await settingsPage.coinsTab.enableNetwork(coin.symbol as NetworkSymbol);
             }
 
             await dashboardPage.dashboardMenuButton.click();

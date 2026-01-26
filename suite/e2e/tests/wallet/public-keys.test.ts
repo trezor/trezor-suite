@@ -33,7 +33,7 @@ test.describe('Public Keys', { tag: ['@T3W1', '@T3T1'] }, () => {
             if (symbol !== 'btc') {
                 await test.step(`Activate coin ${symbol}`, async () => {
                     await page.getByTestId('@account-menu/add-account').click();
-                    await settingsPage.coins.enableNetwork(symbol);
+                    await settingsPage.coinsTab.enableNetwork(symbol);
                     await page.getByRole('button', { name: 'Find my' }).click();
                 });
             }

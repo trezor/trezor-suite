@@ -8,7 +8,8 @@ import { capitalizeFirstLetter } from '@trezor/utils';
 import { CoinsTab } from './coinsTab';
 import { DebugTab } from './debugTab';
 import { DeviceTab } from './deviceTab';
-import { TrezorUserEnvLinkProxy, step } from '../../common';
+import { step } from '../../common';
+import { DeviceFixture } from '../../device';
 import { expect } from '../../testExtends/customMatchers';
 
 export enum Theme {
@@ -37,8 +38,8 @@ const backgroundImageButton = {
 
 export class SettingsPage {
     private readonly TIMES_CLICK_TO_SET_DEBUG_MODE = 5;
-    readonly coins: CoinsTab;
-    readonly device: DeviceTab;
+    readonly coinsTab: CoinsTab;
+    readonly deviceTab: DeviceTab;
     readonly debugTab: DebugTab;
 
     readonly settingsMenuButton: Locator;
@@ -92,9 +93,12 @@ export class SettingsPage {
     readonly suiteSyncCheckbox: Locator;
     readonly resetAppButton: Locator;
 
-    constructor(private readonly page: Page) {
-        this.coins = new CoinsTab(page);
-        this.device = new DeviceTab(page);
+    constructor(
+        private readonly page: Page,
+        private readonly device: DeviceFixture,
+    ) {
+        this.coinsTab = new CoinsTab(page);
+        this.deviceTab = new DeviceTab(page);
         this.debugTab = new DebugTab(page);
 
         this.settingsMenuButton = this.page.getByTestId('@suite/menu/settings');
@@ -209,7 +213,7 @@ export class SettingsPage {
         await this.deviceLabelInput.fill(newDeviceName);
         await this.deviceLabelSubmit.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
         await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
         await expect(this.notificationSuccessToast).toBeVisible();
     }
@@ -222,7 +226,7 @@ export class SettingsPage {
             await expect(imageButton).toHaveLoadedImage();
             await imageButton.click();
             await expect(this.confirmOnDevicePrompt).toBeVisible();
-            await TrezorUserEnvLinkProxy.pressYes();
+            await this.device.pressYes();
             await this.confirmOnDevicePrompt.waitFor({ state: 'detached' });
             await expect(this.notificationSuccessToast).toBeVisible();
         });
@@ -235,7 +239,7 @@ export class SettingsPage {
         await this.safetyChecksRadioButton(level).click();
         await this.safetyChecksConfirmButton.click();
         await expect(this.confirmOnDevicePrompt).toBeVisible();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
     }
 
     @step()
@@ -254,14 +258,14 @@ export class SettingsPage {
     }) {
         await this.navigateTo('coins');
         for (const network of options.enableNetworks) {
-            await this.coins.enableNetwork(network);
+            await this.coinsTab.enableNetwork(network);
         }
 
         for (const network of options.disableNetworks ?? []) {
-            await this.coins.disableNetwork(network);
+            await this.coinsTab.disableNetwork(network);
         }
 
-        await this.coins.activateCoinsButton.click();
+        await this.coinsTab.activateCoinsButton.click();
         await this.page.discoveryShouldFinish();
     }
 

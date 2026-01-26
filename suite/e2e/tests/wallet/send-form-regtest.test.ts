@@ -15,7 +15,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('regtest');
+            await settingsPage.coinsTab.enableNetwork('regtest');
 
             await trezorUserEnvLink.sendToAddressAndMineBlock({
                 address: ADDRESS_INDEX_1,
@@ -31,8 +31,8 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('add and remove output in send form, toggle form options, input data', async ({
         page,
+        device,
         tradingPage,
-        trezorUserEnvLink,
     }) => {
         // test adding and removing outputs
         await tradingPage.sendAmountInput.fill('0.3');
@@ -53,9 +53,9 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await page.getByTestId('locktime-blockheight-input').fill('1000');
 
         await tradingPage.sendButton.click();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
+        await device.pressYes();
+        await device.pressYes();
 
         await expect(page.getByTestId('@send/copy-raw-transaction')).toBeVisible();
     });
@@ -77,12 +77,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
     });
 
-    test('send tx with OP_RETURN output', async ({
-        page,
-        tradingPage,
-        devicePrompt,
-        trezorUserEnvLink,
-    }) => {
+    test('send tx with OP_RETURN output', async ({ page, device, tradingPage, devicePrompt }) => {
         await tradingPage.sendAmountInput.fill('0.1');
         await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);
 
@@ -92,11 +87,11 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         await page.getByTestId('outputs.1.dataAscii').fill('meow');
 
         await tradingPage.sendButton.click();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
+        await device.pressYes();
+        await device.pressYes();
+        await device.pressYes();
+        await device.pressYes();
 
         await devicePrompt.sendButton.click();
         await expect(

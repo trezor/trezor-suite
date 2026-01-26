@@ -6,10 +6,10 @@ test.describe('Passphrase', { tag: ['@T3W1', '@T3T1'] }, () => {
         await settingsPage.navigateTo('device');
     });
 
-    test('Enable Passphrase protection', async ({ page, devicePrompt, trezorUserEnvLink }) => {
+    test('Enable Passphrase protection', async ({ page, device, devicePrompt }) => {
         await page.getByTestId('@settings/device/passphrase-switch').click();
         await devicePrompt.confirmOnDevicePromptIsShown();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
         await devicePrompt.confirmOnDevicePromptIsHidden();
         await test.step('Verifies notification toast is displayed and then disappears', async () => {
             await expect(page.getByTestId('@toast/settings-applied')).toBeVisible();

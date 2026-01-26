@@ -46,14 +46,7 @@ test.describe(
                     ],
                 }),
             },
-            async ({
-                page,
-                onboardingPage,
-                dashboardPage,
-                walletPage,
-                devicePrompt,
-                trezorUserEnvLink,
-            }) => {
+            async ({ page, device, devicePrompt, onboardingPage, dashboardPage, walletPage }) => {
                 const discoveryBar = page.locator(
                     '[data-test="\\@wallet\\/discovery-progress-bar"] div',
                 );
@@ -88,8 +81,8 @@ test.describe(
                     await page.locator('[data-test="@passphrase/input"]').fill(walletPassphrase);
                     await page.locator('[data-test="@passphrase/hidden/submit-button"]').click();
                     await page.waitForTimeout(500);
-                    await trezorUserEnvLink.pressYes();
-                    await trezorUserEnvLink.pressYes();
+                    await device.pressYes();
+                    await device.pressYes();
                     await discoveryBar.waitFor({ state: 'visible', timeout: 45000 });
                     await discoveryBar.waitFor({ state: 'hidden', timeout: 45000 });
                     await page.locator('[data-test="@suite/menu/wallet-index"]').click();
@@ -125,7 +118,7 @@ test.describe(
                         .locator('[data-test*="toggle-remember-switch"]')
                         .click();
                     await expect(firstHiddenWallet.locator('input')).toBeChecked();
-                    await trezorUserEnvLink.stopEmu();
+                    await device.powerOff();
                 });
 
                 await test.step(`Navigate to new version ${migrateToVersion} and check wallet status`, async () => {
@@ -164,7 +157,7 @@ test.describe(
                 });
 
                 await test.step('Reconnect Emulator', async () => {
-                    await trezorUserEnvLink.startEmu();
+                    await device.powerOn();
                     await onboardingPage.disableNecessaryFirmwareChecks({
                         skipSuiteLoadedCheck: true,
                     });
