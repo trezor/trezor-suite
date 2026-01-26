@@ -1,28 +1,26 @@
 import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation, TranslationKey } from '@suite/intl';
+import { Translation } from '@suite/intl';
 import { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { FormState } from '@suite-common/wallet-types';
-import { Box, Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { Button, Collapsible, Column, Row, TextButton } from '@trezor/components';
 
-import { CollapsibleFeesHeader } from './CollapsibleFeesHeader';
+import {
+    CollapsibleFeesHeaderContent,
+    CollapsibleFeesHeaderContentProps,
+} from './CollapsibleFeesHeaderContent';
 import { CustomFee } from './CustomFee/CustomFee';
-import { MaximumFee } from './MaximumFee';
 import { StandardFee } from './StandardFee/StandardFee';
 import { FeesContext, FeesContextType } from '../context/FeesContext';
 import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
-import { ContentFlex } from '../../../../support/suite/ContentFlex';
 
 export type CollapsibleFeesProps = {
-    networkType: NetworkType;
     networkSymbol: NetworkSymbol;
-    label?: TranslationKey;
+    networkType: NetworkType;
     rbfForm?: boolean;
-    headerTypographyStyle?: TypographyStyle;
-    isHeaderRowLayout?: boolean;
-} & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'>;
+} & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'> &
+    Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee'>;
 
 export function CollapsibleFees({
     label,
@@ -59,20 +57,6 @@ export function CollapsibleFees({
         selectedFeeLevel,
     });
 
-    const headerContent = (
-        <Collapsible.Toggle data-testid="@wallet/fees/collapsible-fees-toggle">
-            <ContentFlex justifyContent="space-between" gap={12}>
-                <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
-                <Row gap={10}>
-                    <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
-                    {supportsAdjustableFees && (
-                        <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />
-                    )}
-                </Row>
-            </ContentFlex>
-        </Collapsible.Toggle>
-    );
-
     return (
         <FeesContext.Provider
             value={{
@@ -85,15 +69,13 @@ export function CollapsibleFees({
             }}
         >
             <Collapsible>
-                {isHeaderRowLayout && (
-                    <Box
-                        backgroundColorOnInteraction="backgroundSurfaceElevation2"
-                        padding={{ vertical: spacings.sm, horizontal: spacings.lg }}
-                    >
-                        {headerContent}
-                    </Box>
-                )}
-                {!isHeaderRowLayout && headerContent}
+                <CollapsibleFeesHeaderContent
+                    label={label}
+                    headerTypographyStyle={headerTypographyStyle}
+                    supportsAdjustableFees={supportsAdjustableFees}
+                    isHeaderRowLayout={isHeaderRowLayout}
+                    txMaxFee={txMaxFee}
+                />
 
                 {supportsAdjustableFees && (
                     <Collapsible.Content overflow="unset">
@@ -103,7 +85,7 @@ export function CollapsibleFees({
                                 {isCustomFee && <CustomFee showCurrentFee={!rbfForm} />}
                             </Column>
 
-                            <Row justifyContent="center" margin={{ bottom: spacings.xs }}>
+                            <Row justifyContent="center" margin={{ bottom: 8 }}>
                                 {isCustomFee && (
                                     <Button
                                         intent="neutral"
