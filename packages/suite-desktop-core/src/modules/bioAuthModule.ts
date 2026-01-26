@@ -134,21 +134,53 @@ class BioAuthLinux extends BioAuth {
 }
 
 class BioAuthWindows extends BioAuth {
-    private winHello?: Awaited<ReturnType<typeof createWinHelloManager>>;
+    private winHello: Awaited<ReturnType<typeof createWinHelloManager>> | null;
+    private initPromise: Promise<Awaited<ReturnType<typeof createWinHelloManager>> | null>;
+
+    constructor(params: ConstructorParams) {
+        super(params);
+        this.initPromise = Promise.resolve(null);
+        this.winHello = null;
+    }
 
     async init() {
+        // Call super.init() first to set initialized flag
         await super.init();
-        this.winHello = await createWinHelloManager({
-            resourcesPath: process.resourcesPath,
-            logger,
-        });
+
+        this.initPromise = Promise.race<Awaited<ReturnType<typeof createWinHelloManager>>>([
+            createWinHelloManager({
+                resourcesPath: process.resourcesPath,
+                logger,
+            }),
+            new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error('WinHello initialization timeout')), 40_000),
+            ),
+        ])
+            .then(winHello => {
+                this.winHello = winHello;
+                logger.info('bioAuth', 'WinHelloManager initialized successfully');
+
+                return winHello;
+            })
+            .catch(err => {
+                this.winHello = null;
+                logger.warn('bioAuth', `WinHelloManager initialization failed: ${err}`);
+
+                return null;
+            });
+
+        // Don't await initPromise - let it complete in background
+        // This ensures init() returns successfully even if WinHello setup fails
     }
 
     async isAvailable() {
-        if (!this.winHello) throw new Error('WinHelloManager is not initialized');
+        const winHello = await this.initPromise;
+        if (!winHello) {
+            return false;
+        }
 
         try {
-            return await this.winHello.isHelloAvailable();
+            return await winHello.isHelloAvailable();
         } catch (err) {
             logger.warn('bioAuth', `Error checking Windows Hello availability: ${err}`);
 
@@ -156,10 +188,13 @@ class BioAuthWindows extends BioAuth {
         }
     }
 
-    validate(message?: string) {
-        if (!this.winHello) throw new Error('WinHelloManager is not initialized');
+    async validate(message?: string) {
+        const winHello = await this.initPromise;
+        if (!winHello) {
+            throw new Error('WinHelloManager is not available');
+        }
 
-        return this.winHello
+        return winHello
             .requestHello(message ?? PROMPT_REASON)
             .then(() => {
                 this.onValidationSuccess();
@@ -197,6 +232,7 @@ export const initBioAuthModule = ({
             logger,
             enabled: store.getBioAuthSettings().enabled || false,
         };
+
         if (isMacOs()) {
             bioAuth = new BioAuthMac(constructorParams);
             logger.info('bioAuth', 'Loaded for Mac');
@@ -215,7 +251,14 @@ export const initBioAuthModule = ({
         ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
             validateIpcMessage({ ipcEvent });
 
-            if (!bioAuth?.initialized) throw new Error('BioAuth module is not initialized');
+            if (!bioAuth) {
+                logger.warn(
+                    'bioAuth',
+                    'is-bio-auth-available called before bioAuth is initialized',
+                );
+
+                return Promise.resolve(false);
+            }
 
             return bioAuth.isAvailable();
         });
