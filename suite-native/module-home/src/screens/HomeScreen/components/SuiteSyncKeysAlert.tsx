@@ -1,14 +1,22 @@
+import { useCallback } from 'react';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/wallet-core';
+import { useNavigation } from '@react-navigation/native';
+
+import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/wallet-core';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import {
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
-import { useToast } from '@suite-native/toasts';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { exhaustive } from '@trezor/type-utils';
 
 import { selectShouldDisplaySuiteSyncAlert } from '../homescreenSelectors';
 
@@ -28,35 +36,37 @@ const flex1Style = {
     flex: 1,
 };
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
+    RootStackParamList
+>;
+
 export const SuiteSyncKeysAlert = () => {
     const { applyStyle } = useNativeStyles();
     const { suiteSync } = useNativeServices();
-    const { showToast } = useToast();
-    const selectedDevice = useSelector(selectSelectedDevice);
+
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
 
-    if (!shouldDisplaySuiteSyncAlert) return null;
+    const navigation = useNavigation<NavigationProp>();
 
-    const turnOnSuiteSync = async () => {
-        const result = await suiteSync.turnOnSuiteSync({
-            deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
-        });
+    const allowSuiteSyncForWallet = useCallback(async () => {
+        if (!deviceStaticSessionId) return;
 
-        if (!result.success) {
-            const { type } = result.error;
-            switch (type) {
-                case 'SuiteSyncUnavailableOnDeviceError':
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                case 'DeviceCancelled':
-                case 'DeviceError':
-                    showToast({ variant: 'error', icon: 'warning', message: type });
-
-                    return;
-                default:
-                    return exhaustive(type);
-            }
+        if (!isDeviceConnected) {
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.DeviceConnectionGuard,
+            });
+        } else {
+            await suiteSync.ensureWalletSuiteSyncOn({
+                deviceStaticSessionId,
+            });
         }
-    };
+    }, [deviceStaticSessionId, isDeviceConnected, navigation, suiteSync]);
+
+    if (!shouldDisplaySuiteSyncAlert) return null;
 
     return (
         <Animated.View style={applyStyle(containerStyle)} entering={FadeIn} exiting={FadeOut}>
@@ -70,7 +80,7 @@ export const SuiteSyncKeysAlert = () => {
                         <Translation id="moduleHome.suiteSyncAlert.description" />
                     </Text>
                 </Box>
-                <Button size="small" colorScheme="blueBold" onPress={turnOnSuiteSync}>
+                <Button size="small" colorScheme="blueBold" onPress={allowSuiteSyncForWallet}>
                     <Translation id="moduleHome.suiteSyncAlert.button" />
                 </Button>
             </VStack>
