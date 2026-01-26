@@ -185,7 +185,7 @@ await TrezorConnect.init({
 
 ## Middlewares
 
-Avoid usage of `const state = getState()` because assigning result of `getState()` to variable will create snapshot of state at given moment and could lead to unintentionally accessing some old version of state. For example:
+Avoid usage of `const state = getState()` because assigning result of `getState()` to variable will create snapshot of state at a given moment and could lead to unintentionally accessing some old version of state. For example:
 
 ```tsx
 createMiddleware((action, { next }) => {
@@ -199,3 +199,5 @@ createMiddleware((action, { next }) => {
 ```
 
 This is something that could lead to hard-to-debug bugs, but sometimes you want to preserve previous version of state on purpose. In that case, avoid naming it just `state` but prefer something like `prevState` which will prevent anyone from thinking that it has an actual state.
+
+Middlewares should be read-only - they should not dispatch actions or modify state. Otherwise, they produce code that is hard to read and test that leads to nasty bugs.
