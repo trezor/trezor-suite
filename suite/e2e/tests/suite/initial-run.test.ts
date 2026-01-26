@@ -1,7 +1,6 @@
 import { Page } from '@playwright/test';
 
 import { expect, test } from '../../support/fixtures';
-import { isModelWithTHP } from '../../support/helpers/modelHelper';
 
 const optionallyDismissFwHashCheckError = (page: Page) => {
     // dismisses the error modal only if it appears (handle it async in parallel, not necessary to block the rest of the flow)
@@ -17,7 +16,7 @@ const optionallyDismissFwHashCheckError = (page: Page) => {
 test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
     test('Until user passed through initial run, it will be there after reload', async ({
         page,
-        emulatorStartConf,
+        device,
         analyticsSection,
         onboardingPage,
         devicePrompt,
@@ -34,7 +33,7 @@ test.describe('Suite initial run', { tag: ['@T3W1', '@T3T1'] }, () => {
         await expect(analyticsSection.toggleSwitch).toBeVisible();
         await analyticsSection.continueButton.click();
 
-        if (isModelWithTHP(emulatorStartConf.model)) {
+        if (device.hasTHP) {
             await devicePrompt.allowConnectToTrezor();
             await onboardingPage.enterTHPPairingCode();
         }

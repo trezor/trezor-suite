@@ -76,11 +76,10 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
 
         const onboardingPage = new OnboardingPage(
             suite.window,
+            device,
             devicePrompt,
             new AnalyticsSection(suite.window),
             new SettingsPage(suite.window),
-            device.model,
-            device.firmwareVersion,
         );
         await onboardingPage.completeOnboarding();
 

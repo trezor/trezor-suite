@@ -15,13 +15,12 @@ test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
 
     test('Device disconnected during action', async ({
         page,
+        device,
         onboardingPage,
         dashboardPage,
         devicePrompt,
-        trezorUserEnvLink,
         settingsPage,
         walletPage,
-        emulatorStartConf,
     }) => {
         await test.step('Start backup', async () => {
             await dashboardPage.notificationNoBackupButton.click();
@@ -33,12 +32,12 @@ test.describe('Backup errors', { tag: ['@T2T1'] }, () => {
         });
 
         await test.step('Simulate disconnect', async () => {
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
         });
 
         await test.step('Simulate reconnect and check errors', async () => {
-            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+            await device.powerOn();
             await expect(page.getByTestId('@toast/backup-failed')).toBeVisible({ timeout: 30_000 });
             await page.getByTestId('@backup/close-button').click();
         });

@@ -10,13 +10,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
     });
 
     test('Incomplete run of advanced recovery', async ({
+        device,
         onboardingPage,
         analyticsSection,
         devicePrompt,
         recoveryModal,
         page,
-        trezorUserEnvLink,
-        emulatorStartConf,
     }) => {
         await test.step('Navigate through onboarding steps', async () => {
             await analyticsSection.passThroughAnalytics();
@@ -41,12 +40,12 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
 
         await test.step('Simulate device disconnection due to lack of cancel button', async () => {
             await page.waitForTimeout(501);
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await devicePrompt.connectDevicePromptIsShown({ timeout: 15_000 });
         });
 
         await test.step('Restart emulator', async () => {
-            await trezorUserEnvLink.startEmu(emulatorStartConf);
+            await device.powerOn();
         });
 
         await test.step('Retry recovery with basic type', async () => {
@@ -59,7 +58,7 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T
 
         await test.step('Confirm on device', async () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         });
 
         await test.step('Ensure input field for basic recovery is visible', async () => {

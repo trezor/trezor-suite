@@ -1,7 +1,6 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { test } from '../../support/fixtures';
-import { pressContinue } from '../../support/helpers/deviceInput';
 
 test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@desktopOnly'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
@@ -20,12 +19,7 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         });
     });
 
-    test('TrezorConnect.signTransaction', async ({
-        page,
-        connectPermissionsModal,
-        trezorUserEnvLink,
-        emulatorStartConf,
-    }) => {
+    test('TrezorConnect.signTransaction', async ({ page, connectPermissionsModal, device }) => {
         TrezorConnect.signTransaction({
             coin: 'btc',
             inputs: [
@@ -50,19 +44,17 @@ test.describe('TrezorConnect.signTransaction', { tag: ['@group=connect', '@deskt
         await connectPermissionsModal.confirmButton.click();
 
         await page.getByTestId('@prompts/confirm-on-device').waitFor({ state: 'visible' });
-        await pressContinue(emulatorStartConf.model);
-
+        await device.pressContinue();
         await page
             .getByTestId('@prompts/confirm-on-device/step/1/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(emulatorStartConf.model);
-
+        await device.pressContinue();
         await page
             .getByTestId('@prompts/confirm-on-device/step/2/active')
             .waitFor({ state: 'visible' });
-        await pressContinue(emulatorStartConf.model);
+        await device.pressContinue();
 
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
 
         await page.getByText('Input does not match scriptPubKey').waitFor({ state: 'visible' });
     });

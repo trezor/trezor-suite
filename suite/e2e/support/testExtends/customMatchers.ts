@@ -9,7 +9,6 @@ import { type TranslationKey, messages } from '@suite/intl';
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
 import type { NormalizedDisplayContent } from '../helpers/displayContentNormalizedParser';
-import { isT3W1 } from '../helpers/modelHelper';
 
 type LineFormats = 'fourTetragrams' | 'evmTetragrams' | 'fullLine';
 
@@ -179,19 +178,20 @@ export const expect = baseExpect.extend({
         },
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
-        const expectedContent = isT3W1(device.model)
-            ? {
-                  header: { title: 'Receive' },
-                  body: [transformedExpectedAddress],
-                  actions: {
-                      right_button: 'Confirm',
-                  },
-              }
-            : {
-                  header: { title: 'Receive address' },
-                  body: [transformedExpectedAddress],
-                  footer: 'Tap to continue',
-              };
+        const expectedContent =
+            device.model === 'T3W1'
+                ? {
+                      header: { title: 'Receive' },
+                      body: [transformedExpectedAddress],
+                      actions: {
+                          right_button: 'Confirm',
+                      },
+                  }
+                : {
+                      header: { title: 'Receive address' },
+                      body: [transformedExpectedAddress],
+                      footer: 'Tap to continue',
+                  };
 
         return await compareDisplayContent(
             device,
@@ -208,7 +208,7 @@ export const expect = baseExpect.extend({
         let expectedContent = expected.T3W1;
 
         // expected.T3T1 is used as overrides for the default T3W1 model
-        if (!isT3W1(device.model)) {
+        if (device.model !== 'T3W1') {
             const DEFAULT_T3T1_FOOTER = { footer: 'Tap to continue' };
             expectedContent = {
                 ...expected.T3W1,

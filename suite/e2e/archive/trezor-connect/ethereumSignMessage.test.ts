@@ -1,7 +1,6 @@
 import TrezorConnect from '@trezor/connect-web';
 
 import { expect, test } from '../../support/fixtures';
-import { pressContinue } from '../../support/helpers/deviceInput';
 
 test.describe(
     'TrezorConnect.ethereumSignMessage',
@@ -25,9 +24,8 @@ test.describe(
 
         test('TrezorConnect.ethereumSignMessage', async ({
             connectPermissionsModal,
-            trezorUserEnvLink,
             page,
-            emulatorStartConf,
+            device,
         }) => {
             const res = TrezorConnect.ethereumSignMessage({
                 path: "m/44'/60'/0'",
@@ -39,10 +37,10 @@ test.describe(
             const text = page.getByTestId('@sign-message-modal/message');
             await expect(text).toHaveText('example message');
 
-            await pressContinue(emulatorStartConf.model);
-            await pressContinue(emulatorStartConf.model);
+            await device.pressContinue();
+            await device.pressContinue();
 
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             expect(await res).toMatchObject({ success: true });
         });
 

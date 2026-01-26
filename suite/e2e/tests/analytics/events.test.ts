@@ -4,7 +4,6 @@ import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@t
 import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { isModelWithTHP } from '../../support/helpers/modelHelper';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
 import { ExtractByEventType } from '../../support/types';
 
@@ -110,8 +109,8 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
 
     test('Analytics capture suite-ready after getting enabled', async ({
         analytics,
-        emulatorStartConf,
         page,
+        device,
         analyticsSection,
         settingsPage,
         onboardingPage,
@@ -127,13 +126,13 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             // the only message about the analytics being sent is the "settings/analytics" disabled.
             await analytics.interceptAnalytics();
 
-            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: true });
-            await trezorUserEnvLink.setupEmu({
+            await device.powerOn({ wipe: true });
+            await device.setup({
                 passphrase_protection: true,
             });
 
             await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
-            if (isModelWithTHP(emulatorStartConf.model)) {
+            if (device.hasTHP) {
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();
             }

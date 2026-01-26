@@ -5,13 +5,23 @@ import {
     NormalizedDisplayContent,
     parseDisplayContent,
 } from './helpers/displayContentNormalizedParser';
-import { isT3W1 } from './helpers/modelHelper';
+
+const EMULATOR_CENTER_COORDINATES: Record<string, { x: number; y: number }> = {
+    T3T1: { x: 125, y: 150 },
+    T3W1: { x: 200, y: 480 },
+};
 
 export class DeviceFixture {
+    public readonly hasTHP: boolean;
+    public readonly hasSecureElement: boolean;
+
     constructor(
         public readonly model: Model,
         public readonly firmwareVersion: string,
-    ) {}
+    ) {
+        this.hasTHP = this.model === 'T3W1';
+        this.hasSecureElement = ['T3B1', 'T3T1', 'T3W1'].includes(this.model);
+    }
 
     @step()
     async powerOn(options: { wipe?: boolean } = {}) {
@@ -38,12 +48,32 @@ export class DeviceFixture {
     }
 
     @step()
+    async pressNo() {
+        await TrezorUserEnvLink.pressNo();
+    }
+
+    @step()
+    async type(text: string) {
+        await TrezorUserEnvLink.inputEmu(text);
+    }
+
+    @step()
+    async selectNumberOfWords(numOfWords: 12 | 18 | 24 | 20) {
+        await TrezorUserEnvLink.selectNumOfWordsEmu(numOfWords);
+    }
+
+    @step()
     async tapCenter() {
-        const EMULATOR_CENTER_COORDINATES: Record<string, { x: number; y: number }> = {
-            T3T1: { x: 125, y: 150 },
-            T3W1: { x: 200, y: 480 },
-        };
         await TrezorUserEnvLink.clickEmu(EMULATOR_CENTER_COORDINATES[this.model]);
+    }
+
+    @step()
+    async pressContinue() {
+        if (this.model === 'T3W1') {
+            await TrezorUserEnvLink.clickEmu(EMULATOR_CENTER_COORDINATES['T3W1']);
+        } else {
+            await TrezorUserEnvLink.swipeEmu('up');
+        }
     }
 
     @step()
@@ -140,7 +170,7 @@ export class DeviceFixture {
         const T3T1_EXACT_LINE_LENGTH = 18;
         const T3W1_LINE_LENGTH_MINUS_DASH = 13;
 
-        if (isT3W1(this.model)) {
+        if (this.model === 'T3W1') {
             if (text.length === T3W1_EXACT_LINE_LENGTH) {
                 return [text];
             }

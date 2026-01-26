@@ -62,84 +62,82 @@ test.describe('Onboarding - T2T1 in recovery mode', { tag: ['@webOnly', '@T2T1']
 
     test('Initial run with device that is already in recovery mode', async ({
         page,
-        trezorUserEnvLink,
+        device,
         onboardingPage,
         analyticsSection,
         devicePrompt,
         indexedDb,
-        emulatorStartConf,
     }) => {
         await test.step('Start recovery with some device', async () => {
             await page.getByTestId('@onboarding/recovery/start-button').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.selectNumOfWordsEmu(20);
+            await device.selectNumberOfWords(20);
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await page.waitForTimeout(500); // Wait for device release
         });
 
         await test.step('Disconnect device, reload application', async () => {
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await devicePrompt.connectDevicePromptIsShown();
             await indexedDb.reset();
             await page.reload();
         });
 
         await test.step('Restart emulator and disable firmware hash check and analytics', async () => {
-            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+            await device.powerOn();
             await onboardingPage.disableNecessaryFirmwareChecks();
             await analyticsSection.passThroughAnalytics();
         });
 
         await test.step('Recovery device persisted after reload', async () => {
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressNo();
-            await trezorUserEnvLink.pressYes();
+            await device.pressNo();
+            await device.pressYes();
         });
     });
 
     test('Continue recovery after device is disconnected', async ({
         page,
-        trezorUserEnvLink,
+        device,
         devicePrompt,
-        emulatorStartConf,
     }) => {
         await test.step('Start recovery', async () => {
             await page.getByTestId('@onboarding/recovery/start-button').click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.selectNumOfWordsEmu(20);
+            await device.selectNumberOfWords(20);
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         });
 
         await test.step('Enter first Shamir share', async () => {
             for (const word of shareOneOfThree) {
-                await trezorUserEnvLink.inputEmu(word);
+                await device.type(word);
             }
             await devicePrompt.confirmOnDevicePromptIsShown();
         });
 
         await test.step('Disconnect and reconnect device', async () => {
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await devicePrompt.connectDevicePromptIsShown();
-            await trezorUserEnvLink.startEmu({ ...emulatorStartConf, wipe: false });
+            await device.powerOn();
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
 
             // This is needed, because there seem to be some weird refreshes on the emu
             // which means you confirm too early if you don't wait
             await page.waitForTimeout(3_000);
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         });
 
         await test.step('Enter second Shamir share', async () => {
             for (const word of shareTwoOfThree) {
-                await trezorUserEnvLink.inputEmu(word);
+                await device.type(word);
             }
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         });
 
         await test.step('Finish onboarding', async () => {
