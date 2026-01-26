@@ -491,5 +491,8 @@ export default defineConfig({
         port: 8000,
         open: false,
         host: true,
+        watch: {
+            ignored: ['**/node_modules/**', '**/dist/**', '**/.nx/**', '**/.git/**'],
+        },
     },
 });
