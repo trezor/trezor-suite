@@ -30,7 +30,7 @@ export const exportTransactionsThunk = createThunk(
         },
         { getState, extra },
     ) => {
-        const { utils } = extra;
+        const { services } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());
@@ -87,6 +87,6 @@ export const exportTransactionsThunk = createThunk(
         // Save file
         const fileName = getExportedFileName(accountName, type);
 
-        utils.saveAs(data, fileName);
+        services.saveAs(data, fileName);
     },
 );

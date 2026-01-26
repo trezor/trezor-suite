@@ -147,6 +147,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             history: deps.history,
         }),
         reportSecurityCheck,
+        saveAs: (data, fileName) => saveAs(data, fileName),
     };
 };
 
@@ -319,7 +320,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         },
     },
     utils: {
-        saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
     },
 };

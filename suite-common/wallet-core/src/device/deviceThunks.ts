@@ -534,7 +534,7 @@ const failEntropyCheckThunk = createThunk(
             version: getFirmwareVersion(device),
             vendor: device?.features?.fw_vendor,
         };
-        extra.utils.reportSecurityCheck({
+        extra.services.reportSecurityCheck({
             level: 'error',
             checkType: 'Entropy',
             contextData,

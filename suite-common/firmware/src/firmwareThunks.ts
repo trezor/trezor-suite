@@ -44,7 +44,7 @@ export const firmwareUpdate = createThunk<
 
         const {
             selectors: { selectLanguage },
-            utils: { reportSecurityCheck },
+            services: { reportSecurityCheck },
         } = extra;
 
         const device = selectSelectedDevice(getState());
