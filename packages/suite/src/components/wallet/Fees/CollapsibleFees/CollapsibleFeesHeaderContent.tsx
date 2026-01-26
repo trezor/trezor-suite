@@ -39,7 +39,9 @@ export const CollapsibleFeesHeaderContent = ({
 
     return isHeaderRowLayout ? (
         <Box
-            backgroundColorOnInteraction="backgroundSurfaceElevation2"
+            backgroundColorOnInteraction={
+                supportsAdjustableFees ? 'backgroundSurfaceElevation2' : undefined
+            }
             padding={{ vertical: 12, horizontal: 16 }}
         >
             {content}
