@@ -80,6 +80,9 @@
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
         {
+            "path": "../../suite-common/suite-rbf-labels-migrations-types"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {
