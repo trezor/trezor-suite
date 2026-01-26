@@ -12,7 +12,10 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
+        "@suite-common/analytics-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@trezor/analytics": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "react": "19.1.0"
     }
 }

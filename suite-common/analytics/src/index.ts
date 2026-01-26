@@ -9,3 +9,4 @@ export {
     selectIsAnalyticsEnabled,
 } from './redux/analyticsReducer';
 export { disableAnalytics, analyticsActions, ACTION_PREFIX } from './redux/analyticsActions';
+export { analytics } from './analytics';

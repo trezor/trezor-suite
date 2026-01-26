@@ -40,7 +40,7 @@ type ConnectInitSettings = {
 
 export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {
-        analytics: Analytics<AnalyticsSharedEvents>;
+        analytics?: Analytics<AnalyticsSharedEvents>;
         legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
     };
 

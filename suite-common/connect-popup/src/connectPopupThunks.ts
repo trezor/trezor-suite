@@ -1,5 +1,6 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
+import { analytics } from '@suite-common/analytics';
 import { EventType } from '@suite-common/analytics-types';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -157,7 +158,7 @@ export const connectPopupCallThunkInner = createThunk<
                 );
             }
 
-            extra.services.analytics.report({
+            analytics.report({
                 type: EventType.ConnectPopupCall,
                 payload: {
                     method,
@@ -194,7 +195,7 @@ export const connectPopupCallThunkInner = createThunk<
                     return;
             }
 
-            extra.services.analytics.report({
+            analytics.report({
                 type: EventType.ConnectPopupError,
                 payload: {
                     method,

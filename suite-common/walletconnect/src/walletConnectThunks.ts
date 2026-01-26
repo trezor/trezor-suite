@@ -8,6 +8,7 @@ import {
     populateAuthPayload,
 } from '@walletconnect/utils';
 
+import { analytics } from '@suite-common/analytics';
 import { EventType } from '@suite-common/analytics-types';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
@@ -113,7 +114,7 @@ export const sessionProposalThunk = createThunk<
     {
         event: WalletKitTypes.SessionProposal;
     }
->(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
+>(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState }) => {
     // Check supported networks
     const accounts = selectAllSuccessfulAccountsToList(getState());
     const networks: PendingConnectionProposalNetwork[] = [];
@@ -129,7 +130,7 @@ export const sessionProposalThunk = createThunk<
             ...event.verifyContext.verified,
         }),
     );
-    extra.services.analytics.report({
+    analytics.report({
         type: EventType.WalletConnectProposal,
         payload: {
             origin: event.verifyContext.verified.origin,
@@ -144,7 +145,7 @@ export const sessionRequestThunk = createThunk<
     {
         event: WalletKitTypes.SessionRequest;
     }
->(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch, extra }) => {
+>(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch }) => {
     try {
         const adapter = getAdapterByMethod(event.params.request.method);
         if (!adapter) {
@@ -164,7 +165,7 @@ export const sessionRequestThunk = createThunk<
                 result: result.payload,
             },
         });
-        extra.services.analytics.report({
+        analytics.report({
             type: EventType.WalletConnectSessionRequest,
             payload: {
                 origin: event.verifyContext.verified.origin,
@@ -255,7 +256,7 @@ export const sessionProposalApproveThunk = createThunk<
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
-    async ({ eventId, selectedDefaultAccount }, { dispatch, getState, extra }) => {
+    async ({ eventId, selectedDefaultAccount }, { dispatch, getState }) => {
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (
@@ -314,7 +315,7 @@ export const sessionProposalApproveThunk = createThunk<
                     }),
                 );
             }
-            extra.services.analytics.report({
+            analytics.report({
                 type: EventType.WalletConnectProposalApproved,
                 payload: {
                     origin: pendingProposal.origin,
@@ -336,14 +337,14 @@ export const sessionProposalRejectThunk = createThunk<
     }
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`,
-    async ({ eventId }, { getState, dispatch, extra }) => {
+    async ({ eventId }, { getState, dispatch }) => {
         await walletKit.rejectSession({
             id: eventId,
             reason: getSdkError('USER_REJECTED'),
         });
         const pendingProposal = selectPendingProposal(getState());
         dispatch(walletConnectActions.clearSessionProposal());
-        extra.services.analytics.report({
+        analytics.report({
             type: EventType.WalletConnectProposalRejected,
             payload: {
                 origin: pendingProposal?.origin,
@@ -354,7 +355,7 @@ export const sessionProposalRejectThunk = createThunk<
 
 export const walletConnectInitThunk = createThunk(
     `${WALLETCONNECT_MODULE}/walletConnectInitThunk`,
-    async (_, { dispatch, extra }) => {
+    async (_, { dispatch }) => {
         if (walletKit) return;
 
         const core = new Core({
@@ -401,7 +402,7 @@ export const walletConnectInitThunk = createThunk(
         for (const proposal of Object.values(proposals)) {
             dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
         }
-        extra.services.analytics.report({
+        analytics.report({
             type: EventType.WalletConnectInit,
         });
     },
@@ -409,7 +410,7 @@ export const walletConnectInitThunk = createThunk(
 
 export const walletConnectPairThunk = createThunk<void, { uri: string }>(
     `${WALLETCONNECT_MODULE}/walletConnectPairThunk`,
-    async ({ uri }, { dispatch, extra }) => {
+    async ({ uri }, { dispatch }) => {
         if (!walletKit) {
             // May happen when Suite cold-starts from deeplink
             await dispatch(walletConnectInitThunk());
@@ -417,7 +418,7 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
 
         try {
             await walletKit.pair({ uri });
-            extra.services.analytics.report({
+            analytics.report({
                 type: EventType.WalletConnectPaired,
             });
         } catch {
