@@ -242,10 +242,14 @@ const workerPlugin = (): Plugin => ({
     transform(_code, id) {
         if (/\/workers\/[^/]+\/index\.ts$/.test(id) || /pinger\/pingWorker.ts$/.test(id)) {
             // Return a virtual module that creates a web worker
+            console.log('[VITE] Transforming worker:', id);
 
             return {
                 code: `
-                    const worker = () => new Worker(new URL('${id}', import.meta.url), { type: 'module' });
+                    const worker = () => {
+                        console.log('[VITE] Creating worker from:', '${id}');
+                        return new Worker(new URL('${id}', import.meta.url), { type: 'module' });
+                    };
                     export default worker;
                 `,
                 // Use an empty source map to preserve the original file's mapping
@@ -478,6 +482,8 @@ export default defineConfig({
             // Exclude WebAssembly modules
             '@trezor/crypto-utils',
             '@trezor/utxo-lib',
+            // Exclude transport to prevent pre-bundling issues with bridge URL construction
+            '@trezor/transport',
         ],
     },
     server: {
