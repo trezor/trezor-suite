@@ -31,7 +31,7 @@ type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
 
-type ConnectInitSettings = {
+export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
 
@@ -40,6 +40,7 @@ export type CommonServices = SuiteSyncDep &
         analytics: Analytics<AnalyticsSharedEvents>;
         legacyAnalytics: Analytics<any>;
         saveAs: (data: Blob, fileName: string) => void;
+        connectInitSettings: ConnectInitSettings;
     } & ReportSecurityCheckDep;
 
 export type ExtraDependenciesStatic = {
@@ -111,9 +112,6 @@ export type ExtraDependenciesStatic = {
         storageLoadTokenManagement: StorageLoadReducer;
         storageLoadWalletSettings: StorageLoadReducer;
         storageLoadBioAuth: StorageLoadReducer;
-    };
-    utils: {
-        connectInitSettings: ConnectInitSettings;
     };
 };
 

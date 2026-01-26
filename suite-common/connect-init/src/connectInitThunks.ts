@@ -50,7 +50,7 @@ export const connectInitThunk = createThunk<void, ConnectInitHooks | void, void>
         const {
             selectors: { selectDebugSettings, selectThpSettings },
             actions: { lockDevice },
-            utils: { connectInitSettings },
+            services: { connectInitSettings },
         } = extra;
 
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
