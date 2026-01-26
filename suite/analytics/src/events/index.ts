@@ -1,3 +1,4 @@
+export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { dashboardBannerEvent } from './dashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
