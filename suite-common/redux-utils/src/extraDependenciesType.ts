@@ -44,6 +44,7 @@ export type CommonServices = SuiteSyncDep &
     } & ReportSecurityCheckDep;
 
 export type ExtraDependenciesStatic = {
+    /** @deprecated Do not add any thunks here, this is antipattern. */
     thunks: {
         cardanoValidatePendingTxOnBlock: SuiteCompatibleThunk<{
             block: BlockchainBlock;
