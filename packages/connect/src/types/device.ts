@@ -55,8 +55,8 @@ export type DeviceFirmwareStatus =
     | 'none';
 
 export type UnavailableCapability =
-    | 'no-capability'
-    | 'no-support'
+    | 'no-capability' // flag missing, could mean it's outdated or BTC only
+    | 'no-support' // not supported on this Trezor model at all
     | 'update-required'
     | 'trezor-connect-outdated';
 
