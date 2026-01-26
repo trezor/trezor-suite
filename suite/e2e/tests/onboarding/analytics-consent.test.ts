@@ -24,7 +24,7 @@ test.describe('Onboarding - analytics consent', { tag: ['@webOnly', '@T3W1', '@T
             await onboardingPage.enterTHPPairingCode();
         }
 
-        await onboardingPage.onboardingExitButton.click();
+        await onboardingPage.completeOnboardingButton.click();
 
         await expect(dashboardPage.suiteLayout).toBeVisible();
         await walletPage.openAccount();

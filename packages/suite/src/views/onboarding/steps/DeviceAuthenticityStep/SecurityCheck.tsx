@@ -264,7 +264,7 @@ const SecurityCheckContent = ({
                 </Button>
                 {initialized ? (
                     <Button
-                        data-testid="@onboarding/exit-app-button"
+                        data-testid="@onboarding/complete-onboarding"
                         onClick={handleContinueButtonClick}
                         size="large"
                         intent="brand"

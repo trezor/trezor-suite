@@ -1,6 +1,6 @@
 import { TestCategory, TestPriority } from '@trezor/e2e-utils';
 
-import { test } from '../../../support/fixtures';
+import { expect, test, } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
 test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => {
@@ -25,7 +25,11 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
         },
         async ({ page, onboardingPage, devicePrompt, analyticsSection, device, context }) => {
             await context.setOffline(true);
-            await analyticsSection.passThroughAnalytics();
+            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+
+            await analyticsSection.continueButton.click();
+            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+            await analyticsSection.continueButton.click();
 
             // Device onboarding steps
             await onboardingPage.firmware.continueThroughFirmware();
@@ -60,6 +64,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
 
             await devicePrompt.confirmOnDevicePromptIsShown();
             await device.pressYes();
+            await onboardingPage.completeOnboardingButton.click();
+            await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
+            await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
         },
     );
 });

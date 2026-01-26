@@ -6,5 +6,6 @@ export const NoConnectionBanner = () => (
         icon
         intent="critical"
         description={<Translation id="TR_YOU_WERE_DISCONNECTED_DOT" />}
+        data-testid="@suite/no-connection-banner"
     />
 );

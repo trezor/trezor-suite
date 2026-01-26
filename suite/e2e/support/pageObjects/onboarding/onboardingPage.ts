@@ -20,7 +20,7 @@ export class OnboardingPage {
     readonly tutorial: TutorialSection;
 
     readonly welcomeBody: Locator;
-    readonly onboardingExitButton: Locator;
+    readonly completeOnboardingButton: Locator;
     readonly connectDevicePrompt: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
@@ -53,7 +53,7 @@ export class OnboardingPage {
         this.pin = new PinSection(page);
 
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
-        this.onboardingExitButton = this.page.getByTestId('@onboarding/exit-app-button');
+        this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
         this.connectDevicePrompt = this.page.getByTestId('@connect-device-prompt');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
@@ -117,7 +117,7 @@ export class OnboardingPage {
             await this.enableAutoconnect();
         }
 
-        await this.onboardingExitButton.click();
+        await this.completeOnboardingButton.click();
         if (this.device.hasSecureElement && this.device.model !== 'T3W1') {
             await this.passThroughAuthenticityCheck();
         }
