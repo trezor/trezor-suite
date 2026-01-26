@@ -1,4 +1,8 @@
 import { SuiteSyncOutput, SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import {
+    SuiteSyncFirmwareUpgradeNeededDeviceErrorType,
+    SuiteSyncUnavailableOnDeviceErrorType,
+} from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountDescriptor,
@@ -10,9 +14,6 @@ import {
 } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
-
-import { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
-import { SuiteSyncFirmwareUpgradeNeededDeviceErrorType } from './storage/ensureWalletSuiteSyncOn';
 
 export type SuiteSyncTransactionToCopy = {
     data: RbfLabelsToBeUpdated[keyof RbfLabelsToBeUpdated];

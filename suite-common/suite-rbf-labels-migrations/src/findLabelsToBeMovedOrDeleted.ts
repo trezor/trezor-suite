@@ -1,13 +1,6 @@
+import { RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
 import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
-
-export type RbfLabelsToBeUpdated = Record<
-    AccountKey,
-    {
-        toBeMoved: WalletAccountTransaction;
-        toBeDeleted: WalletAccountTransaction[];
-    }
->;
 
 type FindLabelsToBeMovedOrDeletedThunkParams = {
     prevTxId: string;
