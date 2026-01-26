@@ -710,3 +710,12 @@ export const selectTradingDetailData = createMemoizedSelector(
         };
     },
 );
+
+export const selectTradingBuyLastErrorMessage = (state: TradingRootState) =>
+    selectTradingBuy(state).lastErrorMessage;
+
+export const selectTradingExchangeLastErrorMessage = (state: TradingRootState) =>
+    selectTradingExchange(state).lastErrorMessage;
+
+export const selectTradingSellLastErrorMessage = (state: TradingRootState) =>
+    selectTradingSell(state).lastErrorMessage;

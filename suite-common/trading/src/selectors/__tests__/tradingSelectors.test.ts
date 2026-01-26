@@ -30,6 +30,7 @@ import {
     selectTradingBuy,
     selectTradingBuyInfo,
     selectTradingBuyIsLoading,
+    selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
     selectTradingBuyProviders,
     selectTradingBuyQuoteByOrderId,
@@ -45,6 +46,7 @@ import {
     selectTradingExchangeFormStep,
     selectTradingExchangeInfo,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeLastErrorMessage,
     selectTradingExchangeLoadingTimestampAndStatus,
     selectTradingExchangeProviders,
     selectTradingExchangeQuotesRequest,
@@ -59,6 +61,7 @@ import {
     selectTradingSellAccountKey,
     selectTradingSellFormStep,
     selectTradingSellInfo,
+    selectTradingSellLastErrorMessage,
     selectTradingSellLoadingTimestampAndStatus,
     selectTradingSellProviders,
     selectTradingSellQuotes,
@@ -1439,6 +1442,27 @@ describe('tradingSelectors', () => {
             const second = selectTradingAccountKeyByTradeType(state, 'exchange');
 
             expect(first).toBe(second);
+        });
+    });
+
+    describe('selectTradingBuyLastErrorMessage', () => {
+        it('should return lastErrorMessage from buy state', () => {
+            state.wallet.trading.buy.lastErrorMessage = 'Buy error message';
+            expect(selectTradingBuyLastErrorMessage(state)).toBe('Buy error message');
+        });
+    });
+
+    describe('selectTradingSellLastErrorMessage', () => {
+        it('should return lastErrorMessage from sell state', () => {
+            state.wallet.trading.sell.lastErrorMessage = 'Sell error message';
+            expect(selectTradingSellLastErrorMessage(state)).toBe('Sell error message');
+        });
+    });
+
+    describe('selectTradingExchangeLastErrorMessage', () => {
+        it('should return lastErrorMessage from exchange state', () => {
+            state.wallet.trading.exchange.lastErrorMessage = 'Exchange error message';
+            expect(selectTradingExchangeLastErrorMessage(state)).toBe('Exchange error message');
         });
     });
 });
