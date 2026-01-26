@@ -4,6 +4,7 @@ import reduxMockStore, { MockStoreCreator } from 'redux-mock-store';
 import { withExtraArgument } from 'redux-thunk';
 
 import type { ExtraDependencies } from '@suite-common/redux-utils';
+import { mergeDeepObject } from '@trezor/utils';
 
 import { SuiteServices, extraDependencies } from '../extraDependencies';
 import { extraDependenciesDesktopMock } from './extraDependenciesDesktop.mock';
@@ -22,15 +23,13 @@ interface Middleware<_DispatchExt = {}, S = any, D extends Dispatch = Dispatch<a
  */
 export const configureStore = <S, DispatchExts = {}>(
     middlewares?: Middleware[],
-    additionalExtraDeps?: Partial<Omit<ExtraDependencies, 'services'>> &
-        Partial<{ services: Partial<SuiteServices> }>,
+    additionalExtraDeps: Partial<Omit<ExtraDependencies, 'services'>> &
+        Partial<{ services: Partial<SuiteServices> }> = {},
 ): MockStoreCreator<S, DispatchExts> =>
     reduxMockStore([
-        withExtraArgument({
-            ...extraDependenciesDesktopMock,
-            ...extraDependencies,
-            ...additionalExtraDeps,
-        }),
+        withExtraArgument(
+            mergeDeepObject(extraDependenciesDesktopMock, extraDependencies, additionalExtraDeps),
+        ),
         ...(middlewares || []),
     ]);
 
