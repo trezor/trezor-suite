@@ -79,7 +79,7 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
             device,
             devicePrompt,
             new AnalyticsSection(suite.window),
-            new SettingsPage(suite.window),
+            new SettingsPage(suite.window, device),
         );
         await onboardingPage.completeOnboarding();
 

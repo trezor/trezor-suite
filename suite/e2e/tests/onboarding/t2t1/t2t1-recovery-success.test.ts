@@ -22,28 +22,28 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ onboardingPage, devicePrompt, trezorUserEnvLink }) => {
+        async ({ onboardingPage, device, devicePrompt }) => {
             // Start wallet recovery process and confirm on device
             await onboardingPage.firmware.continueThroughFirmware();
             await onboardingPage.recoverWalletButton.click();
             await onboardingPage.startRecoveryButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.selectNumOfWordsEmu(12);
+            await device.selectNumberOfWords(12);
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             // Input mnemonic
             for (let i = 0; i < 12; i++) {
-                await trezorUserEnvLink.inputEmu('all');
+                await device.type('all');
             }
 
             // Confirm recovery success
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             // Finalize recovery, skip pin, and check success
             await onboardingPage.continueRecoveryButton.click();

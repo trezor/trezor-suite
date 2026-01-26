@@ -1,6 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import { TrezorUserEnvLinkProxy, step } from '../../common';
+import { step } from '../../common';
+import { DeviceFixture } from '../../device';
 import { DevicePrompt } from '../devicePrompt';
 
 export class BackupSection {
@@ -21,8 +22,9 @@ export class BackupSection {
     readonly skipBackupButton: Locator;
 
     constructor(
-        private page: Page,
-        private devicePrompt: DevicePrompt,
+        private readonly page: Page,
+        private readonly device: DeviceFixture,
+        private readonly devicePrompt: DevicePrompt,
     ) {
         this.startButton = page.getByTestId('@backup/start-button');
         this.understandWhatSeedIsCheckbox = page.getByTestId(
@@ -66,7 +68,7 @@ export class BackupSection {
 
         // Adding delay to mitigate race condition; avoids hitting the homescreen
         await this.page.waitForTimeout(1000);
-        await TrezorUserEnvLinkProxy.readAndConfirmShamirMnemonicEmu({ shares, threshold });
+        await this.device.readAndConfirmShamirMnemonic({ shares, threshold });
 
         await this.closeButton.click();
     }

@@ -48,6 +48,7 @@ test.describe(
 
         test('Send couple of pending txs and check that they are pending until mined', async ({
             page,
+            device,
             walletPage,
             devicePrompt,
             tradingPage,
@@ -72,9 +73,9 @@ test.describe(
                     await page.getByTestId('outputs.1.amount').fill('0.7');
                     await page.getByTestId('outputs.1.address').fill(transaction.address);
                     await tradingPage.sendButton.click();
-                    await devicePrompt.waitForPromptAndConfirm(); // 1st recipient
-                    await devicePrompt.waitForPromptAndConfirm(); // 2nd recipient
-                    await devicePrompt.waitForFinalPromptAndConfirm(); // Summary
+                    await device.pressYes(); // 1st recipient
+                    await device.pressYes(); // 2nd recipient
+                    await device.pressYes(); // Summary
                     await devicePrompt.sendButton.click();
 
                     const pendingTransactionsList = page.getByTestId(

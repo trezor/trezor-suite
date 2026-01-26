@@ -11,9 +11,9 @@ test.describe('Custom firmware', { tag: ['@T3W1', '@T3T1'] }, () => {
     });
 
     test('Custom firmware installation', async ({ settingsPage }) => {
-        await settingsPage.device.openCustomFirmwareModal();
-        await settingsPage.device.selectCustomFirmware(firmwarePath);
-        await settingsPage.device.completeCustomFirmwareInstallation();
-        await expect(settingsPage.device.firmwareReconnectDevice).toBeVisible();
+        await settingsPage.deviceTab.openCustomFirmwareModal();
+        await settingsPage.deviceTab.selectCustomFirmware(firmwarePath);
+        await settingsPage.deviceTab.completeCustomFirmwareInstallation();
+        await expect(settingsPage.deviceTab.firmwareReconnectDevice).toBeVisible();
     });
 });

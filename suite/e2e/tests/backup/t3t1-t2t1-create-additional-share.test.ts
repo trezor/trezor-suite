@@ -24,32 +24,32 @@ test.describe('Create additional share', { tag: ['@T2T1', '@T3T1'] }, () => {
                 stream: TestStream.Foundation,
             }),
         },
-        async ({ settingsPage, trezorUserEnvLink }) => {
+        async ({ settingsPage, device }) => {
             await settingsPage.navigateTo('device');
-            await settingsPage.device.createMultiShareBackupButton.click();
-            await settingsPage.device.proceedMultiShareBackupModal();
+            await settingsPage.deviceTab.createMultiShareBackupButton.click();
+            await settingsPage.deviceTab.proceedMultiShareBackupModal();
 
             // [device screen] check your backup?
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             // [device screen] select the number of words in your backup
-            await trezorUserEnvLink.inputEmu('20');
+            await device.type('20');
 
             // [device screen] backup instructions
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             for (const word of MNEMONICS.mnemonic_academic.split(' ')) {
                 // [device screen] enter next word
-                await trezorUserEnvLink.inputEmu(word);
+                await device.type(word);
             }
 
             // [device screen] create additional backup?
-            await trezorUserEnvLink.pressYes();
-            await trezorUserEnvLink.readAndConfirmShamirMnemonicEmu({
+            await device.pressYes();
+            await device.readAndConfirmShamirMnemonic({
                 shares: 3,
                 threshold: 2,
             });
 
-            await settingsPage.device.multiShareBackupGotItButton.click();
+            await settingsPage.deviceTab.multiShareBackupGotItButton.click();
         },
     );
 });

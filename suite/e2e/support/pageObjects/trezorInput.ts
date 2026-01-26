@@ -1,6 +1,7 @@
 import { Locator, Page, test } from '@playwright/test';
 
-import { TrezorUserEnvLinkProxy, step } from '../common';
+import { step } from '../common';
+import { DeviceFixture } from '../device';
 
 export class TrezorInput {
     readonly wordSelectInput: Locator;
@@ -9,7 +10,10 @@ export class TrezorInput {
     readonly pinSubmitButton: Locator;
     readonly pinInput = (index: number) => this.page.getByTestId(`@pin/input/${index}`);
 
-    constructor(private page: Page) {
+    constructor(
+        private readonly page: Page,
+        private readonly device: DeviceFixture,
+    ) {
         this.wordSelectInput = page.getByTestId('@word-input-select/input');
         this.pinSubmitButton = this.page.getByTestId('@pin/submit-button');
     }
@@ -26,7 +30,7 @@ export class TrezorInput {
         const arrayMnemonic = mnemonic.split(' ');
         for (let i = 0; i < 24; i++) {
             await this.page.waitForTimeout(500); // try to prevent race condition, that happens with t1b1 with node bridge
-            const state = await TrezorUserEnvLinkProxy.getDebugState();
+            const state = await this.device.getDebugState();
             const position = state.recovery_word_pos - 1;
             const isGivenFakeWord = position === -1;
             if (isGivenFakeWord) {
@@ -45,7 +49,7 @@ export class TrezorInput {
     @step()
     async inputMnemonicT2T1(mnemonic: string) {
         for (const word of mnemonic.split(' ')) {
-            await TrezorUserEnvLinkProxy.inputEmu(word.slice(0, 4));
+            await this.device.type(word.slice(0, 4));
         }
     }
 
@@ -55,7 +59,7 @@ export class TrezorInput {
             // try to prevent race condition, that happens with t1b1 with node bridge
             await this.page.waitForTimeout(500);
 
-            const state = await TrezorUserEnvLinkProxy.getDebugState();
+            const state = await this.device.getDebugState();
             for (const number of pinEntryNumber) {
                 const index = state.matrix.indexOf(number) + 1;
                 await this.pinInput(index).click();

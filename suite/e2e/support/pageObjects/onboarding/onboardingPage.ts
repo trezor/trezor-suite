@@ -3,7 +3,7 @@ import { Locator, Page, expect } from '@playwright/test';
 import { BackupType } from '@suite-common/suite-types';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
 
-import { TrezorUserEnvLinkProxy, step } from '../../common';
+import { step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
 import { DevicePrompt } from '../devicePrompt';
 import { BackupSection } from './backupSection';
@@ -47,7 +47,7 @@ export class OnboardingPage {
         private readonly analyticsSection: AnalyticsSection,
         private readonly settingsPage: SettingsPage,
     ) {
-        this.backup = new BackupSection(page, devicePrompt);
+        this.backup = new BackupSection(page, device, devicePrompt);
         this.firmware = new FirmwareSection(page);
         this.tutorial = new TutorialSection(page);
         this.pin = new PinSection(page);
@@ -97,16 +97,10 @@ export class OnboardingPage {
 
     @step()
     async enterTHPPairingCode() {
-        const screenContent = await TrezorUserEnvLinkProxy.getScreenContent();
-        const screenContentBody = screenContent.body as string;
-        const digits =
-            screenContentBody
-                .match(/(\d\s*){6}$/)?.[0]
-                .replace(/\s+/g, '')
-                .split('') ?? [];
+        const code = await this.device.getTHPPairingCode();
 
-        for (let i = 0; i < digits.length; i++) {
-            await this.pairingInputAtIndex(i).fill(digits[i]);
+        for (let i = 0; i < code.length; i++) {
+            await this.pairingInputAtIndex(i).fill(code[i]);
         }
     }
 
@@ -138,7 +132,7 @@ export class OnboardingPage {
     @step()
     async enableAutoconnect() {
         await this.settingsPage.navigateTo('device');
-        await this.settingsPage.device.autoconnectSwitch.click();
+        await this.settingsPage.deviceTab.autoconnectSwitch.click();
         await this.devicePrompt.allowConnectToTrezor();
         await this.settingsPage.closeSettings();
     }
@@ -239,7 +233,7 @@ export class OnboardingPage {
     async passThroughAuthenticityCheck() {
         await this.authenticityStartButton.click();
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
         await this.authenticityContinueButton.click();
     }
 

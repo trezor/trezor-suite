@@ -18,7 +18,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ page, settingsPage, devicePrompt, trezorUserEnvLink }) => {
+        async ({ page, device, settingsPage, devicePrompt }) => {
             await test.step('Verify firmware modal', async () => {
                 await page.getByTestId('@settings/device/update-button').click();
                 await devicePrompt.closeModal();
@@ -33,18 +33,18 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
             await test.step('Change display rotation', async () => {
                 await page.getByTestId('select-bar/East').click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 await devicePrompt.confirmOnDevicePromptIsHidden();
             });
         },
     );
 
-    test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
+    test('Device Wipe', async ({ page, device }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
         await page.getByTestId('@wipe/checkbox-1').click();
         await page.getByTestId('@wipe/checkbox-2').click();
         await page.getByTestId('@wipe/wipe-button').click();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
         //TODO: Any verification?
     });
 

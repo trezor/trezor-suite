@@ -41,12 +41,12 @@ test.describe('T3B1 - Device settings', { tag: ['@T3B1'] }, () => {
         },
     );
 
-    test('Device Wipe', async ({ page, trezorUserEnvLink }) => {
+    test('Device Wipe', async ({ page, device }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
         await page.getByTestId('@wipe/checkbox-1').click();
         await page.getByTestId('@wipe/checkbox-2').click();
         await page.getByTestId('@wipe/wipe-button').click();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
         //TODO: Verification?
     });
 });

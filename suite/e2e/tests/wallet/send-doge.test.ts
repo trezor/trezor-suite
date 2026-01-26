@@ -21,10 +21,10 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             await blockbookMock.start('doge');
             await onboardingPage.completeOnboarding();
             await settingsPage.navigateTo('coins');
-            await settingsPage.coins.disableNetwork('btc');
-            await settingsPage.coins.enableNetwork('doge');
-            await settingsPage.coins.openNetworkAdvanceSettings('doge');
-            await settingsPage.coins.changeBackend('blockbook', blockbookMock.url);
+            await settingsPage.coinsTab.disableNetwork('btc');
+            await settingsPage.coinsTab.enableNetwork('doge');
+            await settingsPage.coinsTab.openNetworkAdvanceSettings('doge');
+            await settingsPage.coinsTab.changeBackend('blockbook', blockbookMock.url);
             await dashboardPage.navigateTo();
             await page.discoveryShouldFinish();
         },
@@ -32,7 +32,7 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('Cannot send amount exceeding MAX_SAFE_INTEGER', async ({
         page,
-        trezorUserEnvLink,
+        device,
         walletPage,
         tradingPage,
         devicePrompt,
@@ -52,7 +52,7 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
         });
 
         await test.step('Verify info on modals and confirm', async () => {
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await expect(devicePrompt.outputValueOf('amount')).toContainText(
                 `${localizeNumber(sendAmount)} DOGE`,
             );
@@ -61,8 +61,8 @@ test.describe('Doge Send', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(devicePrompt.outputValueOf('address')).toHaveText(
                 formatAddressWithNewlines(recipientAddress),
             );
-            await trezorUserEnvLink.pressYes();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
+            await device.pressYes();
         });
 
         await expect(page.getByTestId('@toast/sign-tx-error')).toHaveText(

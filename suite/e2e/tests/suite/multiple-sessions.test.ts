@@ -97,7 +97,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1'] }, () => {
             await pageTwo.goto('./');
             const devicePromptTwo = new DevicePrompt(pageTwo, device);
 
-            const dashboardPageTwo = new DashboardPage(pageTwo, devicePromptTwo);
+            const dashboardPageTwo = new DashboardPage(pageTwo, device, devicePromptTwo);
             await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED', {
                 timeout: 30_000, // Longer timeout needed here to wait for page load and session restore
             });

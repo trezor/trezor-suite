@@ -15,10 +15,10 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
 
     test('Successful backup happy path', async ({
         analytics,
+        device,
         onboardingPage,
         dashboardPage,
         devicePrompt,
-        trezorUserEnvLink,
     }) => {
         // access from notification
         await dashboardPage.notificationNoBackupButton.click();
@@ -32,18 +32,18 @@ test.describe('Backup success', { tag: ['@T2T1'] }, () => {
 
         await devicePrompt.confirmOnDevicePromptIsShown();
 
-        //await trezorUserEnvLink.readAndConfirmMnemonicEmu(); should be used here, but it is flaky
+        //await device.readAndConfirmMnemonic(); should be used here, but it is flaky
         // TODO: https://github.com/trezor/trezor-suite/issues/17148
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.swipeEmu('up');
-        await trezorUserEnvLink.swipeEmu('up');
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.inputEmu('all');
-        await trezorUserEnvLink.inputEmu('all');
-        await trezorUserEnvLink.inputEmu('all');
-        await trezorUserEnvLink.pressYes();
-        await trezorUserEnvLink.pressYes();
+        await device.pressYes();
+        await device.pressYes();
+        await device.pressContinue();
+        await device.pressContinue();
+        await device.pressYes();
+        await device.type('all');
+        await device.type('all');
+        await device.type('all');
+        await device.pressYes();
+        await device.pressYes();
 
         // Click all after checkboxes and close backup modal
         await expect(onboardingPage.backup.closeButton).toBeDisabled();

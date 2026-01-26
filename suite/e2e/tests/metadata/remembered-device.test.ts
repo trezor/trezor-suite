@@ -20,12 +20,12 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
 
     test('google provider', async ({
         page,
+        device,
         onboardingPage,
         settingsPage,
         metadataPage,
         walletPage,
         devicePrompt,
-        trezorUserEnvLink,
     }) => {
         await test.step('Complete onboarding and open BTC account', async () => {
             await onboardingPage.completeOnboarding();
@@ -87,7 +87,7 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
             // disabling metadata removed also all keys, so metadata init flow takes all steps now expect for providers, these stay connected
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await page.waitForTimeout(1000);
         });
 
@@ -95,7 +95,7 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T2T1'] }, () => {
         await test.step('Switch device, stop emulator, and edit label on remembered device', async () => {
             await page.getByTestId('@menu/switch-device').click();
             await page.getByTestId('@switch-device/wallet-on-index/0').click();
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
 
             // Device is saved, when disconnected, user still can edit labels
             await metadataPage.account.changeLabel(

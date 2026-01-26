@@ -29,7 +29,7 @@ test.describe(
                     stream: TestStream.Foundation,
                 }),
             },
-            async ({ analytics, trezorUserEnvLink }) => {
+            async ({ device, analytics }) => {
                 await analytics.waitForAnalyticsRequests(3);
 
                 await test.step('Validate SuiteReady event', () => {
@@ -89,7 +89,7 @@ test.describe(
                 });
 
                 await test.step('Stop emulator and validate DeviceDisconnect event', async () => {
-                    await trezorUserEnvLink.stopEmu();
+                    await device.powerOff();
                     await analytics.waitForAnalyticsRequests(1); // Poll to prevent race condition
                     expect(
                         analytics.findLatestRequestByLegacyType(EventType.DeviceDisconnect),
@@ -147,11 +147,11 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
             await settingsPage.changeTheme(Theme.Dark);
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
-            await settingsPage.coins.enableNetwork('eth');
-            await settingsPage.coins.enableNetwork('thod');
-            await settingsPage.coins.disableNetwork('btc');
-            await settingsPage.coins.openNetworkAdvanceSettings('eth');
-            await settingsPage.coins.changeBackend('blockbook', 'https://eth.marek.pl/');
+            await settingsPage.coinsTab.enableNetwork('eth');
+            await settingsPage.coinsTab.enableNetwork('thod');
+            await settingsPage.coinsTab.disableNetwork('btc');
+            await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
+            await settingsPage.coinsTab.changeBackend('blockbook', 'https://eth.marek.pl/');
             await settingsPage.closeSettings();
         });
 

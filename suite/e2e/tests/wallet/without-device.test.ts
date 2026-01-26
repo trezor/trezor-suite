@@ -12,7 +12,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.navigateTo('coins');
-                await settingsPage.coins.enableNetwork('regtest');
+                await settingsPage.coinsTab.enableNetwork('regtest');
 
                 await trezorUserEnvLink.sendToAddressAndMineBlock({
                     address: ADDRESS_INDEX_1,
@@ -33,16 +33,16 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test('Send flow prompts for device reconnection when device disconnected', async ({
         page,
+        device,
         walletPage,
         settingsPage,
         tradingPage,
-        trezorUserEnvLink,
     }) => {
         await test.step('Go to send form and verify prompt to connect Trezor', async () => {
             await walletPage.openAccount({ symbol: 'regtest' });
             await walletPage.openSendFormButton.click();
 
-            await trezorUserEnvLink.stopEmu();
+            await device.powerOff();
             await expect(walletPage.deviceDisconnectedStatus).toBeVisible({ timeout: 30_000 });
 
             await tradingPage.sendAddressInput.fill(ADDRESS_INDEX_1);

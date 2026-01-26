@@ -22,7 +22,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, analyticsSection, trezorUserEnvLink }) => {
+        async ({ page, device, onboardingPage, devicePrompt, analyticsSection }) => {
             await analyticsSection.passThroughAnalytics();
 
             // Device onboarding steps
@@ -37,11 +37,11 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
 
             // Accept ToS
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             // Confirm wallet created
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
 
             onboardingPage.createBackupButton.click();
 
@@ -53,12 +53,12 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             // Set PIN
             await onboardingPage.pin.setPinButton.click();
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
-            await trezorUserEnvLink.inputEmu('12');
-            await trezorUserEnvLink.inputEmu('12');
+            await device.pressYes();
+            await device.type('12');
+            await device.type('12');
 
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
         },
     );
 });

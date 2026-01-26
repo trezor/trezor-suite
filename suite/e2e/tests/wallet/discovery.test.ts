@@ -31,7 +31,7 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
         await test.step('Activate coins', async () => {
             await settingsPage.navigateTo('coins');
             for (const symbol of coinsToActivate) {
-                await settingsPage.coins.enableNetwork(symbol);
+                await settingsPage.coinsTab.enableNetwork(symbol);
             }
         });
 

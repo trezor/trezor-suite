@@ -24,13 +24,13 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
         },
         async ({
             page,
+            device,
             analyticsSection,
             onboardingPage,
             settingsPage,
             dashboardPage,
             devicePrompt,
             trezorInput,
-            trezorUserEnvLink,
         }) => {
             await test.step('Pass through analytics and firmware steps', async () => {
                 await analyticsSection.passThroughAnalytics();
@@ -43,7 +43,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
 
             await test.step('Confirm on device', async () => {
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
             });
 
             await test.step('Start backup process', async () => {
@@ -62,7 +62,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
                 // Emulator needs to initialize the seed first
                 await page.waitForTimeout(1_000);
                 for (let i = 0; i < 48; i++) {
-                    await trezorUserEnvLink.pressYes();
+                    await device.pressYes();
                 }
 
                 await onboardingPage.backup.closeButton.click();
@@ -73,7 +73,7 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
 
                 await onboardingPage.pin.setPinButton.click();
                 await devicePrompt.confirmOnDevicePromptIsShown();
-                await trezorUserEnvLink.pressYes();
+                await device.pressYes();
                 // enter the PIN
                 await trezorInput.enterPinOnBlindMatrix(pin);
                 // re-enter the PIN
@@ -81,9 +81,9 @@ test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] 
             });
 
             await test.step('Activate assets', async () => {
-                await expect(settingsPage.coins.networkButton('btc')).toBeEnabledCoin();
-                await expect(settingsPage.coins.networkButton('eth')).toBeDisabledCoin();
-                await settingsPage.coins.enableNetwork('eth');
+                await expect(settingsPage.coinsTab.networkButton('btc')).toBeEnabledCoin();
+                await expect(settingsPage.coinsTab.networkButton('eth')).toBeDisabledCoin();
+                await settingsPage.coinsTab.enableNetwork('eth');
             });
 
             await test.step('Finish wallet creation', async () => {

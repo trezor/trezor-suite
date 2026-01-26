@@ -2,8 +2,9 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { TrezorUserEnvLinkProxy, step } from '../common';
+import { step } from '../common';
 import { DevicePrompt } from './devicePrompt';
+import { DeviceFixture } from '../device';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 export type PromoBannerType = 'tex' | 'ts7';
@@ -61,6 +62,7 @@ export class DashboardPage {
 
     constructor(
         private readonly page: Page,
+        private readonly device: DeviceFixture,
         private readonly devicePrompt: DevicePrompt,
     ) {
         this.suiteLayout = this.page.getByTestId('@suite-layout/body');
@@ -153,12 +155,12 @@ export class DashboardPage {
         await expect(this.passphraseInput).toBeHidden();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
 
         if (options?.skipDiscovery) {
-            await TrezorUserEnvLinkProxy.pressYes();
+            await this.device.pressYes();
 
             return;
         }
@@ -166,7 +168,7 @@ export class DashboardPage {
         // Sometimes the pressYes action takes 5,5s and suite in meantime can finish discovery
         // This would cause failure of the test even tho the flow continued correctly
         // Solution is to fire both Promises asynchronously and wait for both to finish
-        await Promise.all([TrezorUserEnvLinkProxy.pressYes(), this.page.discoveryShouldFinish()]);
+        await Promise.all([this.device.pressYes(), this.page.discoveryShouldFinish()]);
     }
 
     @step()
@@ -179,19 +181,19 @@ export class DashboardPage {
         await expect(this.passphraseInput).toBeHidden();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
 
         await this.passphraseInput.fill(passphrase);
         await this.passphraseSubmitButton.click();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
 
         await this.devicePrompt.confirmOnDevicePromptIsShown();
-        await TrezorUserEnvLinkProxy.pressYes();
+        await this.device.pressYes();
 
         await expect(
             this.devicePrompt.confirmOnDevicePrompt,

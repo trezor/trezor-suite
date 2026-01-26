@@ -16,12 +16,12 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
 
     test('Choice persistence and reset behavior', async ({
         page,
+        device,
         dashboardPage,
         settingsPage,
         metadataPage,
         walletPage,
         devicePrompt,
-        trezorUserEnvLink,
     }) => {
         await settingsPage.navigateTo('application');
         await expect(settingsPage.metadataSelectInput).toHaveTranslation('TR_LABELING_OFF');
@@ -30,7 +30,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await walletPage.openAccount();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressNo();
+            await device.pressNo();
             await devicePrompt.confirmOnDevicePromptIsHidden();
         });
 
@@ -41,7 +41,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await walletPage.openAccount();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown();
-            await trezorUserEnvLink.pressYes();
+            await device.pressYes();
             await devicePrompt.closeModal();
         });
 
@@ -59,7 +59,7 @@ test.describe('Metadata lifecycle', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () 
             await walletPage.openAccount();
             await metadataPage.account.clickEditLabelButton(AccountLabelId.BitcoinDefault1);
             await devicePrompt.confirmOnDevicePromptIsShown({ timeout: 15_000 });
-            await trezorUserEnvLink.pressNo();
+            await device.pressNo();
             await devicePrompt.confirmOnDevicePromptIsHidden();
         });
 
