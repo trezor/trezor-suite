@@ -1,4 +1,4 @@
-import { ReportSecurityCheckProps } from '@suite-common/suite-types';
+import { ReportSecurityCheckParams } from '@suite-common/suite-types';
 
 import { captureSentryException, withSentryScope } from './sentry';
 
@@ -7,7 +7,7 @@ export const reportSecurityCheck = ({
     checkType,
     contextData,
     payload,
-}: ReportSecurityCheckProps) => {
+}: ReportSecurityCheckParams) => {
     const levelDescription = level === 'error' ? 'failed' : 'warning';
     const exceptionName = level === 'error' ? 'reportCheckFail' : 'reportCheckWarning';
     const payloadLabel = `${checkType} check ${levelDescription}!`;

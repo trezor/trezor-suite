@@ -73,6 +73,7 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         legacyAnalytics: createLegacyAnalytics(),
         analytics: createAnalytics(),
+        reportSecurityCheck,
     };
 };
 
@@ -182,7 +183,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
                 appUrl: '@trezor/suite',
             },
         },
-        reportSecurityCheck,
 
         // Not implemented. We assume those are NEVER called on Native
         // need for this is architectural mistake. Please DO NOT add more and try
