@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 import { Account } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';

@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/core": "7.12.4",
+        "@react-navigation/native": "7.1.26",
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
