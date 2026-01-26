@@ -1,3 +1,6 @@
+import { mocked } from 'jest-mock';
+
+import { getSuiteDevice } from '@suite-common/test-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ok } from '@trezor/type-utils';
 
@@ -31,14 +34,13 @@ describe(registerStorageThunk.name, () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        (selectQuotaManagerBaseUrl as jest.Mock).mockReturnValue(mockedQuotaManagerUrl);
+        mocked(selectQuotaManagerBaseUrl).mockReturnValue(mockedQuotaManagerUrl);
     });
 
     it('dispatches quotaManagerDeviceFetched on success', async () => {
-        const device = { id: 'device-id' };
-        (selectSelectedDevice as jest.Mock).mockReturnValue(device);
+        mocked(selectSelectedDevice).mockReturnValue(getSuiteDevice({ id: 'device-id' }));
 
-        (quotaManagerFetch as jest.Mock).mockResolvedValue(
+        mocked(quotaManagerFetch).mockResolvedValue(
             ok({
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,
@@ -74,11 +76,11 @@ describe(registerStorageThunk.name, () => {
     });
 
     it('dispatches quotaManagerFetchError on failure', async () => {
-        (selectSelectedDevice as jest.Mock).mockReturnValue({ id: 'device-id' });
+        mocked(selectSelectedDevice).mockReturnValue(getSuiteDevice({ id: 'device-id' }));
 
-        (quotaManagerFetch as jest.Mock).mockResolvedValue({
-            ok: false,
-            error: { message: 'Network error' },
+        mocked(quotaManagerFetch).mockResolvedValue({
+            success: false,
+            error: { type: 'FetchError', message: 'Network error' },
         });
 
         const thunk = registerStorageThunk(params);
@@ -91,14 +93,14 @@ describe(registerStorageThunk.name, () => {
 
         // hack
         if (!result.success) {
-            expect(result.error).toEqual({ message: 'Network error' });
+            expect(result.error).toEqual({ type: 'FetchError', message: 'Network error' });
         }
     });
 
     it('does not dispatch quotaManagerDeviceFetched if device is missing', async () => {
-        (selectSelectedDevice as jest.Mock).mockReturnValue(undefined);
+        mocked(selectSelectedDevice).mockReturnValue(undefined);
 
-        (quotaManagerFetch as jest.Mock).mockResolvedValue(
+        mocked(quotaManagerFetch).mockResolvedValue(
             ok({
                 totalStorageSize: 1000,
                 unspentStorageSize: 800,

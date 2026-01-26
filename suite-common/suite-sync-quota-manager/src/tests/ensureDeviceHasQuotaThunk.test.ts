@@ -1,3 +1,5 @@
+import { mocked } from 'jest-mock';
+
 import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { getSuiteDevice } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
@@ -40,16 +42,10 @@ const device = getSuiteDevice(
     { internal_model: DeviceModelInternal.T2T1 },
 ) as TrezorDeviceWithState;
 
-const prepareChallengeSessionMock = prepareChallengeSession as jest.MockedFunction<
-    typeof prepareChallengeSession
->;
-const checkStorageByPublicKeyMock = checkStorageByPublicKey as jest.MockedFunction<
-    typeof checkStorageByPublicKey
->;
+const prepareChallengeSessionMock = mocked(prepareChallengeSession);
+const checkStorageByPublicKeyMock = mocked(checkStorageByPublicKey);
 
-const registerStorageThunkMock = registerStorageThunk as jest.MockedFunction<
-    typeof registerStorageThunk
->;
+const registerStorageThunkMock = mocked(registerStorageThunk);
 let evoluSignRegistrationRequestSpy: jest.SpyInstance;
 
 describe(ensureDeviceHasQuotaThunk.name, () => {

@@ -6051,7 +6051,15 @@ export const messages = defineMessages({
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
         defaultMessage:
-            'Suite Sync works with Trezor Safe 3, Trezor Safe 5, and Trezor Safe 7 devices.',
+            'Your device “{name}” is not compatible with Suite Sync. You can use Trezor Safe 3, Trezor Safe 5, and Trezor Safe 7 devices.',
+    },
+    FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT: {
+        id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT',
+        defaultMessage: 'Got it',
+    },
+    FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_BUY: {
+        id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_BUY',
+        defaultMessage: 'Buy on Trezor.io',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
         id: 'TR_DISABLED_SWITCH_TOOLTIP',
@@ -10363,12 +10371,7 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION',
-        defaultMessage:
-            'The current firmware version on your Trezor is {version}. Update the firmware to use Suite Sync.',
-    },
-    TR_TURN_ON_SECURE_SYNC_MODAL_TURN_ON_AND_UPGRADE: {
-        id: 'TR_TURN_ON_SECURE_SYNC_MODAL_TURN_ON_AND_UPGRADE',
-        defaultMessage: 'Turn on & update firmware',
+        defaultMessage: 'Update the firmware on your device “{name}” to use Suite Sync.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',

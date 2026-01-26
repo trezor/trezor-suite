@@ -3,12 +3,13 @@ import { exhaustive } from '@trezor/type-utils';
 import {
     selectDesktopSuiteSyncInteraction,
     selectShowEnableSuiteSyncModal,
-    updateShowEnableSuiteSyncModal,
 } from 'src/actions/suiteSync/suiteSyncSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { SuiteSyncFirmwareUpgradeNeededModal } from './SuiteSyncFirmwareUpgradeNeededModal';
-import { SuiteSyncTurnOnAndFwUpgradeModal } from './SuiteSyncTurnOnAndFwUpgradeModal';
+import { SuiteSyncTurnOnModal } from './SuiteSyncTurnOnModal';
+import { SuiteSyncTurnOnUnsupportedModal } from './SuiteSyncTurnOnUnsupportedModal';
+import { updateShowEnableSuiteSyncModal } from '../../../../actions/suiteSync/suiteSyncSlice';
 
 export const TurnOnSuiteSyncModalManager = () => {
     const dispatch = useDispatch();
@@ -27,13 +28,19 @@ export const TurnOnSuiteSyncModalManager = () => {
     };
 
     switch (suiteSyncInteraction) {
-        case 'unsupported': // This modal is not relevant to unsupported devices.
         case 'keys-needed':
             return null;
 
+        case 'unsupported':
+            return (
+                <SuiteSyncTurnOnUnsupportedModal
+                    onClose={onClose}
+                    deviceStaticSessionId={deviceStaticSessionId}
+                />
+            );
         case 'suite-sync-off':
             return (
-                <SuiteSyncTurnOnAndFwUpgradeModal
+                <SuiteSyncTurnOnModal
                     onClose={onClose}
                     deviceStaticSessionId={deviceStaticSessionId}
                 />

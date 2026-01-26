@@ -9,15 +9,12 @@ import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
 import { spacingsPx } from '@trezor/theme';
-import { TimerId, exhaustive } from '@trezor/type-utils';
+import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadata/metadataLabelingActions';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectIsLabelingAvailableForEntity,
-    selectIsLabelingInitPossible,
-} from 'src/reducers/suite/metadataReducer';
+import { selectIsLabelingAvailableForEntity } from 'src/reducers/suite/metadataReducer';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
@@ -30,6 +27,8 @@ import {
 } from '../../../../actions/suiteSync/suiteSyncSlice';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 import { NO_HIGHLIGHT_ATTRIBUTE } from '../../FindBar/consts';
+import { suiteSyncErrorHandler } from '../suiteSyncErrorHandler';
+import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
 
 const LabelValue = styled.div`
     overflow: hidden;
@@ -372,9 +371,14 @@ export const Labeling = ({
 }: LabelingProps) => {
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
     const legacyMetadataState = useSelector(state => state.metadata);
-    const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
+
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
+    const isLabelActionEnabled = useSelector(state =>
+        selectIsLabelActionEnabled(state, deviceStaticSessionId, payload.entityKey),
+    );
 
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
@@ -428,20 +432,13 @@ export const Labeling = ({
             );
 
             if (isFulfilled(result) && !result.payload.success) {
-                const { type } = result.payload.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceError':
-                    case 'DeviceCancelled':
-                    case 'SuiteSyncUpdateError':
-                        console.error(result.payload.error);
+                suiteSyncErrorHandler({
+                    error: result.payload.error,
+                    dispatch,
+                    deviceStaticSessionId,
+                });
 
-                        return false;
-
-                    default:
-                        return exhaustive(type);
-                }
+                return false;
             }
 
             return true;
@@ -450,21 +447,15 @@ export const Labeling = ({
         }
     };
 
-    const isSuiteSyncPossible =
-        suiteSyncInteraction !== 'unsupported' &&
-        suiteSyncInteraction !== 'firmware-upgrade-needed';
-
     return (
-        <SuiteSyncInteractionsTooltip suiteSyncInteraction={suiteSyncInteraction}>
+        <SuiteSyncInteractionsTooltip
+            suiteSyncInteraction={suiteSyncInteraction}
+            deviceStaticSessionId={deviceStaticSessionId}
+        >
             <EditableText
                 onSubmit={onSubmit ?? handleSubmit}
                 onEdit={handleEdit}
-                isDisabled={
-                    isDisabled ||
-                    (!isLegacyLabelingEnabled &&
-                        !isLegacyLabelingInitPossible &&
-                        !isSuiteSyncPossible)
-                }
+                isDisabled={isDisabled || !isLabelActionEnabled}
                 isLoading={legacyMetadataState.initiating || isDiscoveryRunning}
                 data-testid={`@metadata/${payload.type}/${payload.defaultValue}/hover-container`}
                 {...rest}
@@ -498,8 +489,12 @@ export const MetadataLabeling = ({
     const [showSuccess, setShowSuccess] = useState(false);
     const [pending, setPending] = useState(false);
 
-    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const legacyMetadataState = useSelector(state => state.metadata);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
+    const isLabelActionEnabled = useSelector(state =>
+        selectIsLabelActionEnabled(state, deviceStaticSessionId, payload.entityKey),
+    );
 
     const l10nLabelling = getLocalizedActions(payload.type);
     const dataTestBase = `@metadata/${payload.type}/${payload.defaultValue}`;
@@ -517,9 +512,9 @@ export const MetadataLabeling = ({
         };
     }, [payload.defaultValue, timeout]);
 
-    const isLegacyLabelingInitPossible = useSelector(selectIsLabelingInitPossible);
     const deviceState =
         payload.type === 'walletLabel' ? (payload.entityKey as StaticSessionId) : undefined;
+
     const isLegacyLabelingEnabled = useSelector(state =>
         selectIsLabelingAvailableForEntity(state, payload.entityKey, deviceState),
     );
@@ -586,21 +581,13 @@ export const MetadataLabeling = ({
                 processLegacyMetadataIntoSuiteSyncThunk({ payload, deviceStaticSessionId, value }),
             );
             if (isFulfilled(result) && !result.payload.success) {
-                const { type } = result.payload.error;
-                switch (type) {
-                    case 'SuiteSyncUnavailableOnDeviceError':
-                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
-                    case 'DeviceError':
-                    case 'DeviceCancelled':
-                    case 'SuiteSyncUpdateError':
-                        console.error(result.payload.error);
-                        setShowSuccess(false);
+                suiteSyncErrorHandler({
+                    error: result.payload.error,
+                    dispatch,
+                    deviceStaticSessionId,
+                });
 
-                        return false;
-
-                    default:
-                        return exhaustive(type);
-                }
+                return false;
             }
 
             setShowSuccess(true);
@@ -629,16 +616,8 @@ export const MetadataLabeling = ({
 
     const labelContainerDataTest = `${dataTestBase}/hover-container`;
 
-    const isSuiteSyncPossible =
-        suiteSyncInteraction !== 'unsupported' &&
-        suiteSyncInteraction !== 'firmware-upgrade-needed';
-
     // Should "add label"/"edit label" button be visible?
-    const showActionButton =
-        !isDisabled &&
-        (isLegacyLabelingEnabled || isLegacyLabelingInitPossible || isSuiteSyncPossible) &&
-        !showSuccess &&
-        !editActive;
+    const showActionButton = !isDisabled && isLabelActionEnabled && !showSuccess && !editActive;
 
     const isVisible = pending || visible;
 
@@ -656,7 +635,10 @@ export const MetadataLabeling = ({
     const showEdit = showEditOption(variant);
 
     return (
-        <SuiteSyncInteractionsTooltip suiteSyncInteraction={suiteSyncInteraction}>
+        <SuiteSyncInteractionsTooltip
+            suiteSyncInteraction={suiteSyncInteraction}
+            deviceStaticSessionId={deviceStaticSessionId}
+        >
             <LabelContainer
                 data-testid={labelContainerDataTest}
                 onClick={e => payload.value && !editActive && e.stopPropagation()}
