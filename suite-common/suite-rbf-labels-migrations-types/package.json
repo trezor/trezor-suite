@@ -1,5 +1,5 @@
 {
-    "name": "@suite-common/suite-rbf-labels-migrations",
+    "name": "@suite-common/suite-rbf-labels-migrations-types",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,11 +11,9 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/suite-rbf-labels-migrations-types": "workspace:*",
+        "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/connect": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/connect": "workspace:*"
     }
 }

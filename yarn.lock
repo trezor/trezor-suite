@@ -10926,6 +10926,7 @@ __metadata:
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11004,11 +11005,22 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/suite-rbf-labels-migrations-types@workspace:*, @suite-common/suite-rbf-labels-migrations-types@workspace:suite-common/suite-rbf-labels-migrations-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/suite-rbf-labels-migrations-types@workspace:suite-common/suite-rbf-labels-migrations-types"
+  dependencies:
+    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-sync-types": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/suite-rbf-labels-migrations@workspace:*, @suite-common/suite-rbf-labels-migrations@workspace:suite-common/suite-rbf-labels-migrations":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-rbf-labels-migrations@workspace:suite-common/suite-rbf-labels-migrations"
   dependencies:
-    "@suite-common/suite-sync-storage": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -15246,6 +15258,7 @@ __metadata:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
+    "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"

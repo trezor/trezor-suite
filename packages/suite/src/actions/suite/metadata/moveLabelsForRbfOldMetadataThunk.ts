@@ -1,6 +1,6 @@
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
-import { RbfLabelsToBeUpdated } from '@suite-common/suite-sync-types';
+import { RbfLabelsToBeUpdated } from '@suite-common/suite-rbf-labels-migrations-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';

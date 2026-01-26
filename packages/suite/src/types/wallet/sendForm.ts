@@ -4,7 +4,6 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { Network } from '@suite-common/wallet-config';
 import {
     Account,
-    AccountKey,
     ExcludedUtxos,
     FeeInfo,
     FormOptions,
@@ -14,7 +13,6 @@ import {
     PrecomposedLevelsCardano,
     Rate,
     UtxoSorting,
-    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
@@ -103,11 +101,3 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             showReserveBanner: boolean;
             setShowReserveBanner: (show: boolean) => void;
         };
-
-export type RbfLabelsToBeUpdated = Record<
-    AccountKey,
-    {
-        toBeMoved: WalletAccountTransaction;
-        toBeDeleted: WalletAccountTransaction[];
-    }
->;

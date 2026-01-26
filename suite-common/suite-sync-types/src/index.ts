@@ -62,13 +62,3 @@ export type {
 } from './data/updateWalletLabel';
 
 export type { SuiteSyncAppReloader, SuiteSyncAppReloaderDep } from './suiteSyncAppReloader';
-export type {
-    RbfLabelsToBeUpdated,
-    MigrateSuiteSyncLabelsForRbfTransactionParams,
-    MigrateSuiteSyncLabelsForRbfTransactionDeps,
-    MigrateSuiteSyncLabelsForRbfTransactionDep,
-    SetLabelsForSuiteSync,
-    SetLabelsForSuiteSyncParams,
-    DeleteLabelsForSuiteSync,
-    DeleteLabelsForSuiteSyncParams,
-} from './migrateSuiteSyncLabelsForRbfTransaction';

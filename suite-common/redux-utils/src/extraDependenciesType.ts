@@ -7,10 +7,8 @@ import {
 import type { AnalyticsSharedEvents } from '@suite-common/analytics-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
-import {
-    MigrateSuiteSyncLabelsForRbfTransactionDep,
-    SuiteSyncDep,
-} from '@suite-common/suite-sync-types';
+import { MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
+import { SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     ReportSecurityCheckDep,
     Route,

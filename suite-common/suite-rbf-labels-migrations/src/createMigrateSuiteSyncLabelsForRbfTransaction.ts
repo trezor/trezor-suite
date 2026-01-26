@@ -4,8 +4,8 @@ import {
     MigrateSuiteSyncLabelsForRbfTransactionParams,
     RbfLabelsToBeUpdated,
     SetLabelsForSuiteSync,
-    UpdateOutputLabelDep,
-} from '@suite-common/suite-sync-types';
+} from '@suite-common/suite-rbf-labels-migrations-types';
+import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 import { typedObjectEntries } from '@trezor/utils';

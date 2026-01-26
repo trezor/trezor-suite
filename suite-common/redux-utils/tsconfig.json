@@ -5,6 +5,9 @@
         { "path": "../analytics-types" },
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },
+        {
+            "path": "../suite-rbf-labels-migrations-types"
+        },
         { "path": "../suite-sync-types" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
