@@ -2,23 +2,23 @@ import { createAction } from '@reduxjs/toolkit';
 export const SUITE_SYNC_PREFIX = '@suite/suite-sync';
 
 export const updateSuiteSyncEnabled = createAction(
-    `${SUITE_SYNC_PREFIX}/update-locale-first-storage-enabled`,
+    `${SUITE_SYNC_PREFIX}/update-suite-sync-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
 export const updateSuiteSyncDebugEnabled = createAction(
-    `${SUITE_SYNC_PREFIX}/update-locale-first-storage-debug-enabled`,
+    `${SUITE_SYNC_PREFIX}/update-suite-sync-debug-enabled`,
     (payload: { isEnabled: boolean }) => ({ payload }),
 );
 
 export const updateIsFeatureSuiteSyncAvailable = createAction(
-    `${SUITE_SYNC_PREFIX}/update-show-locale-first-storage`,
+    `${SUITE_SYNC_PREFIX}/update-is-feature-suite-sync-available`,
     (payload: { isShownInSettings: boolean }) => ({ payload }),
 );
 
 /** @deprecated this shall be called only from `changeRelayUrlThunk`, use the thunk only */
 export const setSuiteSyncRelayUrl = createAction(
-    `${SUITE_SYNC_PREFIX}/set-local-first-storage-relay-url`,
+    `${SUITE_SYNC_PREFIX}/set-suite-sync-relay-url`,
     (payload: { url: string | null }) => ({ payload }),
 );
 
