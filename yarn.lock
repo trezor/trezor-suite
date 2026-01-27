@@ -11268,6 +11268,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@testing-library/react": "npm:^16.3.0"
     "@trezor/address-validator": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-plugin-ethereum": "workspace:*"

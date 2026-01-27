@@ -33,7 +33,6 @@ export * from './hooks/useAnimatedBorderStyle';
 export * from './hooks/useBottomSheetBackButtonSubscription';
 export * from './hooks/useBottomSheetControls';
 export * from './hooks/useSectionList';
-export * from './hooks/useListDataFilter';
 
 export * from './utils/general/cryptoIdUtils';
 export * from './utils/general/currencyUtils';
