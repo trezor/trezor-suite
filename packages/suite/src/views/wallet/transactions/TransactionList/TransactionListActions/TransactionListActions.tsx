@@ -22,6 +22,7 @@ interface TransactionListActionsProps {
     setSelectedPage: Dispatch<SetStateAction<number>>;
     accountMetadata: AccountLabels;
     isExportable?: boolean;
+    isTxFilteringEnabled?: boolean;
 }
 
 export const TransactionListActions = ({
@@ -31,6 +32,7 @@ export const TransactionListActions = ({
     setSelectedPage,
     accountMetadata,
     isExportable = true,
+    isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
@@ -96,7 +98,9 @@ export const TransactionListActions = ({
                 size="small"
                 leftContent={<Icon name="magnifyingGlass" variant="tertiary" size="medium" />}
             />
-            {hasNetworkPotentialFraudTransactions(account.symbol) && <FilterAction />}
+            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
+                <FilterAction />
+            )}
             {isExportable && (
                 <ExportAction
                     account={account}

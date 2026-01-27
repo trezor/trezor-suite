@@ -37,6 +37,7 @@ interface TransactionListProps {
     customTotalItems?: number;
     customNoTransactions?: ReactNode;
     isExportable?: boolean;
+    isTxFilteringEnabled?: boolean;
     customPageFetching?: boolean;
     onPageRequested?: (page: number) => void;
 }
@@ -52,6 +53,7 @@ export const TransactionList = ({
     customTotalItems,
     onPageRequested,
     isExportable = true,
+    isTxFilteringEnabled = true,
     customPageFetching,
 }: TransactionListProps) => {
     const anchor = useSelector(state => state.router.anchor);
@@ -157,6 +159,7 @@ export const TransactionList = ({
                     setSelectedPage={setSelectedPage}
                     accountMetadata={accountMetadata}
                     isExportable={isExportable}
+                    isTxFilteringEnabled={isTxFilteringEnabled}
                 />
             }
             data-testid="@wallet/accounts/transaction-list"
