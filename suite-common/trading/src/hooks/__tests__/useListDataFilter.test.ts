@@ -1,4 +1,4 @@
-import { act, renderHook } from '@suite-native/test-utils';
+import { act, renderHook } from '@testing-library/react';
 
 import { useListDataFilter } from '../useListDataFilter';
 

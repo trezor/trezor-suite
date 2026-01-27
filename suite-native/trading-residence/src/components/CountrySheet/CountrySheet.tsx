@@ -1,14 +1,13 @@
 import { memo, useCallback } from 'react';
 import { Dimensions, Keyboard } from 'react-native';
 
-import { TradingCountryOption } from '@suite-common/trading';
+import { TradingCountryOption, useCountryFilteredData } from '@suite-common/trading';
 import { BottomSheetFlashList } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { SearchableSheetHeader } from '@suite-native/trading-atoms';
 
 import { CountryListEmptyComponent } from './CountryListEmptyComponent';
 import { CountryListItem } from './CountryListItem';
-import { useCountryFilteredData } from '../../hooks/useCountryFilteredData';
 
 export type CountrySheetProps = {
     isVisible: boolean;

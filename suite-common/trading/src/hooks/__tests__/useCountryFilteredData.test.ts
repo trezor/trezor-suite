@@ -1,4 +1,4 @@
-import { act, renderHook } from '@suite-native/test-utils';
+import { act, renderHook } from '@testing-library/react';
 
 import { useCountryFilteredData } from '../useCountryFilteredData';
 
@@ -65,10 +65,22 @@ describe('useCountryFilteredData', () => {
         ]);
     });
 
+    it('should filter by label ignoring diacritics', () => {
+        const { result } = renderUseCountryFilteredData();
+
+        act(() => {
+            result.current.setFilterValue('aland');
+        });
+
+        expect(result.current.filteredData).toEqual(
+            expect.arrayContaining([expect.objectContaining({ name: 'Åland Islands' })]),
+        );
+    });
+
     describe('sorting', () => {
         it('should sort by name when no filter is applied', () => {
             const { result } = renderUseCountryFilteredData();
-            expect(result.current.filteredData[0].name).toBe('Åland Islands'); // Åland Islands
+            expect(result.current.filteredData[0].name).toBe('Åland Islands');
         });
 
         it('should place exact match on name before other results', () => {

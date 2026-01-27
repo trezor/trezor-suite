@@ -12,11 +12,10 @@ export const useListDataFilter = <T>(
     const [filterValue, setFilterValue] = useState('');
 
     const filteredData = useMemo(() => {
-        let data = [...rawData];
-
-        if (filterValue?.length > 0) {
-            data = rawData.filter(item => filterCallback(item, filterValue));
-        }
+        const data =
+            filterValue.length > 0
+                ? rawData.filter(item => filterCallback(item, filterValue))
+                : [...rawData];
 
         if (sortCallback) {
             data.sort((a, b) => sortCallback(a, b, filterValue));

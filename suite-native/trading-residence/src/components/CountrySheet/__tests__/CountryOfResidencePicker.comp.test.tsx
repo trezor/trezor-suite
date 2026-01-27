@@ -1,3 +1,4 @@
+import { useCountryFilteredData } from '@suite-common/trading';
 import { Form, useForm } from '@suite-native/forms';
 import { useLegacyAnalytics } from '@suite-native/services';
 import {
@@ -7,7 +8,6 @@ import {
     screen,
     userEvent,
 } from '@suite-native/test-utils';
-import { useListDataFilter } from '@suite-native/trading-atoms';
 
 import { useLocationForm } from '../../../hooks/useLocationForm';
 import { TradingLocationFormValues } from '../../../types/tradingLocationForm';
@@ -17,7 +17,7 @@ import {
     CountryOfResidencePickerProps,
 } from '../CountryOfResidencePicker';
 
-let mockUseListDataFilter: typeof useListDataFilter;
+let mockUseCountryFilteredData: jest.Mock;
 
 const reportMock = jest.fn();
 
@@ -30,17 +30,24 @@ jest.mock('@suite-native/services', () => {
     };
 });
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
-    useListDataFilter: (rawData: unknown[], filterCallback: (i: unknown, f: string) => boolean) =>
-        mockUseListDataFilter(rawData, filterCallback),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
+    useCountryFilteredData: jest.fn(),
 }));
 
 describe('CountryOfResidencePicker', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        mockUseListDataFilter = jest.requireActual('@suite-native/trading-atoms').useListDataFilter;
+        const { nonSanctionedRegional } = jest.requireActual('@suite-common/trading');
+
+        mockUseCountryFilteredData = jest.fn(() => ({
+            filteredData: nonSanctionedRegional.countriesOptions,
+            filterValue: '',
+            setFilterValue: jest.fn(),
+        }));
+
+        (useCountryFilteredData as jest.Mock).mockImplementation(mockUseCountryFilteredData);
 
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
@@ -79,11 +86,11 @@ describe('CountryOfResidencePicker', () => {
     });
 
     it('should display empty component when filtered data is empty', async () => {
-        mockUseListDataFilter = () => ({
+        (useCountryFilteredData as jest.Mock).mockImplementation(() => ({
             filteredData: [],
-            setFilterValue: jest.fn(),
             filterValue: 'test-key',
-        });
+            setFilterValue: jest.fn(),
+        }));
 
         const { getByText } = renderCountryOfResidencePicker();
         await userEvent.press(getByText('Country of residence'));
