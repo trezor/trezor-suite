@@ -165,10 +165,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: Record<string, number>;
       }
     | {
-          type: EventType.AccountsActiveStaking;
-          payload: Record<string, number>;
-      }
-    | {
           type: EventType.AccountsTokensStatus;
           payload: Record<string, number>;
       }
