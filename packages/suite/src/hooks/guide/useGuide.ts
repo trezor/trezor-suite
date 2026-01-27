@@ -3,13 +3,13 @@ import { EventType } from '@suite/analytics';
 import { close, open } from 'src/actions/suite/guideActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 
-import { useLegacyAnalytics } from '../../support/useAnalytics';
+import { useAnalytics } from '../../support/useAnalytics';
 import { usePreferredModal } from '../suite';
 
 export const GUIDE_ANIMATION_DURATION_MS = 300;
 
 export const useGuide = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isGuideOpen = useSelector(state => state.guide.open);
     const dispatch = useDispatch();
 
@@ -25,7 +25,7 @@ export const useGuide = () => {
         isGuideOnTop,
         isModalOpen,
         openGuide: () => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.MenuGuide,
             });
 

@@ -424,9 +424,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.MenuGuide;
-      }
-    | {
           type: EventType.GuideHeaderNavigation;
           payload: {
               type: 'back' | 'close' | 'category';
