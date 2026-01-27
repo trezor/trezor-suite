@@ -616,12 +616,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GetMobileApp;
-          payload: {
-              platform: 'ios' | 'android';
-          };
-      }
-    | {
           type: EventType.SettingsMultiShareBackup;
           payload: {
               action: 'start' | 'done' | 'learn-more' | 'close-modal';

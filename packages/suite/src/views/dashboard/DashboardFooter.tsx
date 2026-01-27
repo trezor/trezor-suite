@@ -22,7 +22,7 @@ import { QrCode } from 'src/components/suite';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
@@ -68,7 +68,7 @@ const StoreBadgeWithQr = ({
 }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
     const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     return (
         <Tooltip
@@ -109,7 +109,7 @@ const StoreBadgeWithQr = ({
                 <StoreBadge
                     url={url}
                     onClick={() =>
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.GetMobileApp,
                             payload: {
                                 platform: analyticsPayload,
