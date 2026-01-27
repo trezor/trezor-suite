@@ -255,12 +255,6 @@ export const routes = [
         app: 'wallet',
     },
     {
-        name: 'wallet-trading-dca',
-        pattern: '/accounts/coinmarket/dca',
-        app: 'wallet',
-        params: walletParams,
-    },
-    {
         name: 'wallet-trading-redirect',
         pattern: '/coinmarket-redirect',
         app: 'wallet',
