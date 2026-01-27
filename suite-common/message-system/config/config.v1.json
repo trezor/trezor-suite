@@ -349,7 +349,7 @@
             ],
             "message": {
                 "id": "29d10e69-703f-4363-9b51-c6afeecd532e",
-                "priority": 98,
+                "priority": 97,
                 "dismissible": false,
                 "variant": "critical",
                 "category": ["banner"],
