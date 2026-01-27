@@ -241,7 +241,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     payload: accountsWithTokens,
                 });
 
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopLegacyAnalytics(analytics).report({
                     type: EventType.AccountsActiveStaking,
                     payload: accountsWithStaking,
                 });
