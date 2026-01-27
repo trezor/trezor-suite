@@ -1,4 +1,4 @@
-# @trezor/analytics
+# @trezor/analytics-uploader
 
 This is a generic analytics package. To use analytics in a specific environment,
 please use one of the following packages or create a new one inspired by existing ones.

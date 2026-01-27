@@ -12,7 +12,7 @@ import {
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics-redux';
 import { ExtraDependencies } from '@suite-common/redux-utils';
-import { type InitOptions, getTrackingRandomId } from '@trezor/analytics';
+import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';
 
 import type { Dispatch, GetState } from 'src/types/suite';

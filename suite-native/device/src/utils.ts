@@ -11,7 +11,7 @@ import {
     getIsDevicePinProtected,
 } from '@suite-common/suite-utils';
 import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import {
     DeviceModelInternal,

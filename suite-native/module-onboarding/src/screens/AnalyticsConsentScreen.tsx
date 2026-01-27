@@ -25,7 +25,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DATA_PRIVACY_URL } from '@trezor/urls';
 

@@ -1,5 +1,5 @@
 import { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 
 import { AnalyticsNativeEvents } from './analyticsEvents';
 

@@ -16,7 +16,7 @@ import {
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckParams, Route } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
 
 import { testMocks } from './mocks';
