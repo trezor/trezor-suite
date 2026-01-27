@@ -11,7 +11,7 @@ import { isAscii } from '@trezor/utils';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const changeDeviceLabelSchema = (t: TranslationFunction) =>
     yup.object({
@@ -41,7 +41,7 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const dispatch = useDispatch();
@@ -60,7 +60,7 @@ export const useChangeDeviceLabel = (): {
 
     const onSubmit = form.handleSubmit(({ deviceLabel }) => {
         dispatch(applySettings({ label: deviceLabel }));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDeviceChangeLabel,
         });
     });
