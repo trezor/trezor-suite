@@ -4,11 +4,11 @@ This is the shared analytics package for Trezor Suite, containing all event type
 
 Depending on your platform, you can choose one of the following packages. Each with its own set of events:
 
-| Package                   | Platform           | Events Defined In                                                                    |
-| ------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
-| `@suite/analytics`        | `desktop`          | [`suite/analytics/src/events`](suite/analytics/src/events)                           |
-| `@suite-native/analytics` | `mobile`           | [`suite-native/analytics/src/events`](suite-native/analytics/src/events)             |
-| `@suite-common/analytics` | `mobile & desktop` | [`suite-common/analytics-types/src/events`](suite-common/analytics-types/src/events) |
+| Package                   | Platform           | Events Defined In                                                        |
+| ------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| `@suite/analytics`        | `desktop`          | [`suite/analytics/src/events`](suite/analytics/src/events)               |
+| `@suite-native/analytics` | `mobile`           | [`suite-native/analytics/src/events`](suite-native/analytics/src/events) |
+| `@suite-common/analytics` | `mobile & desktop` | [`suite-common/analytics/src/events`](suite-common/analytics/src/events) |
 
 Data in these packages is the only source of truth.
 More details can be found in the [company Notion](https://www.notion.so/satoshilabs/Data-analytics-938aeb2e289f4ca18f31b1c02ab782cb).

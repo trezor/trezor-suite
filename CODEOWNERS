@@ -115,7 +115,7 @@
 /suite-native/analytics/src/types.ts @kolomaznikt
 
 # Common analytics
-/suite-common/analytics-types @jvaclavik
-/suite-common/analytics-types/src/events @kolomaznikt
-/suite-common/analytics-types/src/constants.ts @kolomaznikt
-/suite-common/analytics-types/src/types.ts @kolomaznikt
+/suite-common/analytics @jvaclavik
+/suite-common/analytics/src/events @kolomaznikt
+/suite-common/analytics/src/constants.ts @kolomaznikt
+/suite-common/analytics/src/types.ts @kolomaznikt

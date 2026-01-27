@@ -10579,9 +10579,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/analytics@workspace:*, @suite-common/analytics@workspace:suite-common/analytics-types":
+"@suite-common/analytics@workspace:*, @suite-common/analytics@workspace:suite-common/analytics":
   version: 0.0.0-use.local
-  resolution: "@suite-common/analytics@workspace:suite-common/analytics-types"
+  resolution: "@suite-common/analytics@workspace:suite-common/analytics"
   dependencies:
     react: "npm:19.1.0"
   languageName: unknown
