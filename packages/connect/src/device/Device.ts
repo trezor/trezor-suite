@@ -130,7 +130,7 @@ type DeviceParams = {
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
     private thp: protocolThp.ThpState | undefined;
-    public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path'>;
+    public readonly descriptor: Pick<Descriptor, 'apiType' | 'id' | 'type' | 'path' | 'model'>;
     private sessionAcquired: Session | null;
 
     // protocol related
@@ -238,6 +238,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             apiType: descriptor.apiType,
             type: descriptor.type,
             path: descriptor.path,
+            model: descriptor.model,
             // session, sessionOwner are handled separately
             // debug, debugSession are not relevant here
         };

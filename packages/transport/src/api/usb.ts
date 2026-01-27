@@ -15,6 +15,7 @@ import {
 } from '../constants';
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';
+import { getUSBDescriptorModel } from '../utils/descriptor';
 
 interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: USB;
@@ -136,6 +137,7 @@ export class UsbApi extends AbstractApi {
             vendor: d.device.vendorId,
             id: d.device.serialNumber,
             apiType: this.type,
+            model: getUSBDescriptorModel(d.device),
         }));
     }
 
