@@ -330,60 +330,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingExchangeApproval;
-          payload: {
-              type: 'exchange-form';
-              action: 'approve' | 'revoke' | 'swap' | 'refresh';
-
-              sendCryptoLabel?: string;
-              sendCryptoNetworkSymbol?: string;
-              sendCryptoContractAddress?: string;
-
-              receiveCryptoLabel?: string;
-              receiveCryptoNetworkSymbol?: string;
-              receiveCryptoContractAddress?: string;
-
-              selectedFee?: string;
-              exchangeName?: string;
-          };
-      }
-    | {
-          type: EventType.TradingExchangeApproval;
-          payload: {
-              type: 'approve-modal';
-              action: 'continue' | 'cancel' | 'refresh' | 'limit-exact' | 'limit-unlimited';
-
-              sendCryptoLabel?: string;
-              sendCryptoNetworkSymbol?: string;
-              sendCryptoContractAddress?: string;
-
-              receiveCryptoLabel?: string;
-              receiveCryptoNetworkSymbol?: string;
-              receiveCryptoContractAddress?: string;
-
-              selectedFee?: string;
-              exchangeName?: string;
-          };
-      }
-    | {
-          type: EventType.TradingExchangeApproval;
-          payload: {
-              type: 'revoke-modal';
-              action: 'continue' | 'cancel' | 'refresh';
-
-              sendCryptoLabel?: string;
-              sendCryptoNetworkSymbol?: string;
-              sendCryptoContractAddress?: string;
-
-              receiveCryptoLabel?: string;
-              receiveCryptoNetworkSymbol?: string;
-              receiveCryptoContractAddress?: string;
-
-              selectedFee?: string;
-              exchangeName?: string;
-          };
-      }
-    | {
           type: EventType.TradingReceivedQuotes;
           payload: {
               type: 'buy' | 'sell' | 'exchange';

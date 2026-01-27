@@ -36,4 +36,5 @@ export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
 export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';
+export { tradeApprovalEvent } from './tradeApprovalEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';

@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { useTradingExchangeWatchApproval } from 'src/hooks/wallet/trading/form/useTradingExchangeWatchApproval';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 
 const TextButton = styled.div<{ $disabled: boolean }>`
@@ -76,7 +76,7 @@ export const TradingFormApproval = ({
 }: TradingFormApprovalProps) => {
     const context = useTradingFormContext<TradingExchangeType>();
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     const {
         selectQuote,
@@ -195,7 +195,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -218,7 +218,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -241,7 +241,7 @@ export const TradingFormApproval = ({
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
@@ -267,7 +267,7 @@ export const TradingFormApproval = ({
     };
 
     const onRefreshClick = async () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'exchange-form',
