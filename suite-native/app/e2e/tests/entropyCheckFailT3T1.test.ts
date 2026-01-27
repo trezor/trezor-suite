@@ -2,6 +2,7 @@ import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceReducerInitialState } from '@suite-common/wallet-core';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
@@ -21,7 +22,7 @@ conditionalDescribe(
     'Simulated entropy check failure on T3T1 [@specificModel]',
     () => {
         beforeEach(async () => {
-            await prepareTrezorEmulator({ model: 'T3T1', seed: '' });
+            await prepareTrezorEmulator({ model: Model.T3T1, seed: '' });
         });
 
         it(

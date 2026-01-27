@@ -36,7 +36,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
     const model =
         firmwareModel && typedObjectKeys(availableFirmwares).includes(firmwareModel)
             ? firmwareModel
-            : 'T2T1';
+            : Model.T2T1;
     const latest = getLatestFirmware(model);
 
     if (firmwareArg?.endsWith('-latest') && !latest) {

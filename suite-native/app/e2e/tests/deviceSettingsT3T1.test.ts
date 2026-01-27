@@ -1,5 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT3T1 } from '../fixtures/regtestDiscoveryFinishedStateT3T1';
@@ -21,7 +21,7 @@ conditionalDescribe(
     () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT3T1 } });
-            await prepareTrezorEmulator({ model: 'T3T1' });
+            await prepareTrezorEmulator({ model: Model.T3T1 });
             await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();

@@ -1,5 +1,7 @@
 import { PlaywrightTestOptions, PlaywrightWorkerOptions, defineConfig } from '@playwright/test';
 
+import { Model } from '@trezor/trezor-user-env-link';
+
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
 import { tagsCanary, tagsNightly } from './projectTags';
@@ -15,38 +17,38 @@ const target = PlaywrightTarget.Desktop;
 const config = defineConfig<SuiteTestOptions & PlaywrightTestOptions, PlaywrightWorkerOptions>({
     ...baseConfig,
     projects: [
-        new PlaywrightProjectBuilder(target, 'T3W1').setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, 'T3T1').setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, 'T3B1').setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, 'T2T1').setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, 'T1B1').setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, Model.T3W1).setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, Model.T3T1).setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, Model.T3B1).setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, Model.T2T1).setCurrentsTags(tagsNightly).build(),
+        new PlaywrightProjectBuilder(target, Model.T1B1).setCurrentsTags(tagsNightly).build(),
         new PlaywrightProjectBuilder(target, 'no_device')
             .setGrep(/(?=.*@noDevice)/)
             .setCurrentsTags(tagsNightly)
             .build(),
         // FW Canary projects
-        new PlaywrightProjectBuilder(target, 'T3W1', 'fw_canary')
+        new PlaywrightProjectBuilder(target, Model.T3W1, 'fw_canary')
             .setFirmwareVersion('2-main')
             .addGrepInvert(/@specificFirmware/)
             .setCurrentsTags(tagsCanary)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T3T1', 'fw_canary_smoke')
+        new PlaywrightProjectBuilder(target, Model.T3T1, 'fw_canary_smoke')
             .setFirmwareVersion('2-main')
             .setGrep(/(?=.*@T3T1)(?=.*@smoke)/)
             .addGrepInvert(/@specificFirmware/)
             .setCurrentsTags(tagsCanary)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T3B1', 'fw_canary')
+        new PlaywrightProjectBuilder(target, Model.T3B1, 'fw_canary')
             .setFirmwareVersion('2-main')
             .addGrepInvert(/@specificFirmware/)
             .setCurrentsTags(tagsCanary)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T2T1', 'fw_canary')
+        new PlaywrightProjectBuilder(target, Model.T2T1, 'fw_canary')
             .setFirmwareVersion('2-main')
             .addGrepInvert(/@specificFirmware/)
             .setCurrentsTags(tagsCanary)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T1B1', 'fw_canary')
+        new PlaywrightProjectBuilder(target, Model.T1B1, 'fw_canary')
             .setFirmwareVersion('1-main')
             .addGrepInvert(/@specificFirmware/)
             .setCurrentsTags(tagsCanary)

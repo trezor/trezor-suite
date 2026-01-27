@@ -5,6 +5,7 @@ import { diff } from 'jest-diff';
 import { isEqualWith } from 'lodash';
 
 import { type TranslationKey, messages } from '@suite/intl';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { formatAddress, isEqualWithOmit, normalizeWhitespace } from '../common';
 import { DeviceFixture } from '../device';
@@ -179,7 +180,7 @@ export const expect = baseExpect.extend({
     ) {
         const transformedExpectedAddress = transformAddress(expectedAddress, options.lineFormat);
         const expectedContent =
-            device.model === 'T3W1'
+            device.model === Model.T3W1
                 ? {
                       header: { title: 'Receive' },
                       body: [transformedExpectedAddress],
@@ -202,18 +203,21 @@ export const expect = baseExpect.extend({
 
     async toShowOnDisplay(
         device: DeviceFixture,
-        expected: { T3W1: NormalizedDisplayContent; T3T1?: Partial<NormalizedDisplayContent> },
+        expected: {
+            [Model.T3W1]: NormalizedDisplayContent;
+            [Model.T3T1]?: Partial<NormalizedDisplayContent>;
+        },
     ) {
         // default T3W1 model
-        let expectedContent = expected.T3W1;
+        let expectedContent = expected[Model.T3W1];
 
         // expected.T3T1 is used as overrides for the default T3W1 model
-        if (device.model !== 'T3W1') {
+        if (device.model !== Model.T3W1) {
             const DEFAULT_T3T1_FOOTER = { footer: 'Tap to continue' };
             expectedContent = {
-                ...expected.T3W1,
+                ...expected[Model.T3W1],
                 ...DEFAULT_T3T1_FOOTER,
-                ...expected.T3T1,
+                ...expected[Model.T3T1],
             };
 
             // Remove footer if T3T1 override explicitly says it is undefined

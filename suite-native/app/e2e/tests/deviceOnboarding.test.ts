@@ -1,5 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcCoinEnabled } from '../fixtures/btcCoinEnabled';
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
@@ -22,7 +22,7 @@ const finishOnboardingFlow = async () => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
     btcCoinEnabled,
 );
 

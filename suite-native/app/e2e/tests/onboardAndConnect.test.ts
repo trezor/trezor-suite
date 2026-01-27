@@ -1,4 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { onCoinEnabling } from '../pageObjects/coinEnablingActions';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
@@ -20,7 +21,7 @@ conditionalDescribe(
         it('Navigate to dashboard', async () => {
             await onOnboarding.finishOnboarding();
 
-            if (getModelFromEnv() === 'T3W1') {
+            if (getModelFromEnv() === Model.T3W1) {
                 await onDevicePrompt.allowConnectToTrezor();
                 await onDeviceOnboarding.enterTHPPairingCode();
             }

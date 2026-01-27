@@ -1,6 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
@@ -15,7 +16,7 @@ import { getModelFromEnv, waitForVisible } from '../support/utils';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'Coin enabling [@fixT3W1]', () => {

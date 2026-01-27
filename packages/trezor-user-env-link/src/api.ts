@@ -99,7 +99,7 @@ const EMU_RACE_CONDITION_WORKAROUND_DELAY = 200;
 export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> {
     private client: WebsocketClient;
     public firmwares?: Firmwares;
-    public defaultModel: Model = 'T2T1';
+    public defaultModel: Model = Model.T2T1;
 
     public currentEmulatorSetup?: Partial<SetupEmu> = {};
     public currentEmulatorSettings: Partial<ApplySettings> = {};
@@ -203,7 +203,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         const params = {
             type: 'emulator-start',
             model: this.defaultModel,
-            version: arg?.model === 'T1B1' ? defaultV1Firmware : defaultV2Firmware,
+            version: arg?.model === Model.T1B1 ? defaultV1Firmware : defaultV2Firmware,
             ...arg,
         };
 
