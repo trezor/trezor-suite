@@ -1,13 +1,15 @@
 import { ThpState } from './thpReducer';
 
-export type WithThpState = {
+export type ThpRootState = {
     thp: ThpState;
 };
 
-export const selectThp = (state: WithThpState) => state.thp;
+export const selectThp = (state: ThpRootState) => state.thp;
 
-export const selectIsThpInProgress = (state: WithThpState) => state.thp.step !== null;
+export const selectIsThpInProgress = (state: ThpRootState) => state.thp.step !== null;
 
-export const selectThpStep = (state: WithThpState) => state.thp.step;
+export const selectThpStep = (state: ThpRootState) => state.thp.step;
 
-export const selectThpCredentials = (state: WithThpState) => state.thp.credentials;
+export const selectThpLastResult = (state: ThpRootState) => state.thp.lastResult;
+
+export const selectThpCredentials = (state: ThpRootState) => state.thp.credentials;

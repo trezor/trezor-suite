@@ -2,6 +2,7 @@ import { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { extraDependenciesCommonMock, getSuiteDevice } from '@suite-common/test-utils';
+import { prepareThpReducer } from '@suite-common/thp';
 import {
     deviceActions,
     prepareDeviceReducer,
@@ -26,6 +27,7 @@ const INIT_ACTION = { type: 'foo' };
 const deviceReducer = prepareDeviceReducer(extraDependenciesCommonMock);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependenciesCommonMock);
 const walletSettingsReducer = prepareWalletSettingsReducer(extraDependenciesCommonMock);
+const thpReducer = prepareThpReducer(extraDependenciesCommonMock);
 
 type InitialStateConfig = {
     nativeFirmware?: Partial<NativeFirmwareState>;
@@ -34,6 +36,7 @@ type InitialStateConfig = {
     walletSettings?: Partial<ReturnType<typeof walletSettingsReducer>>;
     appSettings?: Partial<typeof appSettingsSlice.reducer>;
     featureFlags?: Partial<typeof featureFlagsSlice.reducer>;
+    thp?: Partial<ReturnType<typeof thpReducer>>;
 };
 
 type RootState = {
@@ -46,6 +49,7 @@ type RootState = {
     messageSystem: ReturnType<typeof messageSystemReducer>;
     appSettings: ReturnType<typeof appSettingsSlice.reducer>;
     featureFlags: ReturnType<typeof featureFlagsSlice.reducer>;
+    thp: ReturnType<typeof thpReducer>;
 };
 
 // All routes typed directly from RootStackParamList
@@ -103,6 +107,7 @@ const buildInitialState = ({
     deviceOnboarding,
     appSettings,
     featureFlags,
+    thp,
 }: InitialStateConfig = {}): RootState => ({
     nativeFirmware: {
         ...nativeFirmwareReducer(undefined, INIT_ACTION),
@@ -130,6 +135,10 @@ const buildInitialState = ({
     featureFlags: {
         ...featureFlagsSlice.reducer(undefined, INIT_ACTION),
         ...featureFlags,
+    },
+    thp: {
+        ...thpReducer(undefined, INIT_ACTION),
+        ...thp,
     },
 });
 
@@ -297,6 +306,16 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         description: 'blocks navigation when firmware installation is running',
         initialState: buildInitialState({
             nativeFirmware: { isFirmwareInstallationRunning: true },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: { device: getSuiteDevice() },
+        },
+    },
+    {
+        description: 'blocks navigation when auto-connect offered',
+        initialState: buildInitialState({
+            thp: { step: 'AutoconnectInfo' },
         }),
         action: {
             type: deviceActions.connectDevice.type,

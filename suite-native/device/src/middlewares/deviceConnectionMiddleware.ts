@@ -10,7 +10,7 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
 } from '@suite-common/suite-utils';
-import { isThpPairingUIRequestButtonAction } from '@suite-common/thp';
+import { isThpPairingUIRequestButtonAction, selectThpStep } from '@suite-common/thp';
 import {
     deviceActions,
     selectDevices,
@@ -156,6 +156,9 @@ deviceConnectionMiddleware.startListening({
 
             return;
         }
+
+        // In case auto-connect is offered, we don't want to interfere with the flow.
+        if (selectThpStep(getState()) === 'AutoconnectInfo') return;
 
         // If device is authorized already (usually in case of remembered device which has already been authorized)
         // We need to use the state before we add connected device to the array so we find out whether it was previously remembered

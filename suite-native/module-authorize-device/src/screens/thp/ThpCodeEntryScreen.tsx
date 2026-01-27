@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectThpStep } from '@suite-common/thp';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { ThpCodeEntryScreenContent } from '@suite-native/thp';
 
 import { ThpScreenHeader } from '../../components/thp/ThpScreenHeader';
 import { useInitiateThpConnection } from '../../hooks/useInitiateThpConnection';
+import { selectIsThpScreenDismissable } from '../../selectors';
 
 export const ThpCodeEntryScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { initiateThpConnection } = useInitiateThpConnection();
 
-    const thpStep = useSelector(selectThpStep);
+    const isThpScreenDismissable = useSelector(selectIsThpScreenDismissable);
 
-    useEffect(() => {
-        // This is an extreme edge case that occurs only if you disable auto-connect and later
-        // decide to enable it via device settings with your remembered device disconnected.
-        if (thpStep === 'Autoconnect') {
-            navigateToInitialScreen();
-        }
-    }, [thpStep, navigateToInitialScreen]);
+    useFocusEffect(
+        useCallback(() => {
+            if (isThpScreenDismissable) {
+                navigateToInitialScreen();
+            }
+        }, [isThpScreenDismissable, navigateToInitialScreen]),
+    );
 
     return (
         <Screen header={<ThpScreenHeader />}>

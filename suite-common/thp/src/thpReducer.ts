@@ -1,4 +1,4 @@
-import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
+import { AnyAction } from '@reduxjs/toolkit';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { ThpSuiteCredentials } from '@suite-common/suite-types';
@@ -38,12 +38,14 @@ export type ThpStep =
 export type ThpState = {
     step: ThpStep;
     lastThpCode?: string;
+    lastResult?: 'finished' | 'canceled';
     credentials: ThpSuiteCredentials[];
 };
 
 export const initialThpState: ThpState = {
     step: null,
     lastThpCode: undefined,
+    lastResult: undefined,
     credentials: [] as ThpSuiteCredentials[],
 };
 
@@ -93,8 +95,13 @@ export const prepareThpReducer = createReducerWithExtraDeps<ThpState>(
             .addCase(thpActions.removeAllCredentials, state => {
                 state.credentials = [];
             })
-            .addMatcher(isAnyOf(thpActions.finishThpFlow, thpActions.cancelThpFlow), state => {
+            .addCase(thpActions.finishThpFlow, state => {
                 state.step = null;
+                state.lastResult = 'finished';
+            })
+            .addCase(thpActions.cancelThpFlow, state => {
+                state.step = null;
+                state.lastResult = 'canceled';
             })
             .addMatcher(
                 action => action.type === UI.REQUEST_THP_PAIRING,
