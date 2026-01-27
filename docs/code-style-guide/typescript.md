@@ -10,7 +10,7 @@ To address this, TS3.9 ships with a new single-line comment directive: `// @ts-
 
 This directive operates in the same manner as `@ts-ignore`, but will error if the line it's meant to be suppressing doesn't actually contain an error, making it a lot safer.
 
-> 💡 Sometimes in very rare cases you may still need `@ts-ignore`. In that case you need to disable eslint for that line first; otherwise, eslint will automatically change it to `@ts-expect-error`.
+> 💡 Sometimes in very rare cases you may still need `@ts-ignore`. In that case you need to disable ESLint for that line first; otherwise, ESLint will automatically change it to `@ts-expect-error`.
 
 ## Prefer `unknown` to `any`
 
