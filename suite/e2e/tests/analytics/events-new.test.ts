@@ -5,7 +5,7 @@ import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
-test.describe('New Analytics Events', { tag: ['@T3T1'] }, () => {
+test.describe('New Analytics Events', { tag: ['@T3T1', '@smoke'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
