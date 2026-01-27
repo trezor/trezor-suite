@@ -1,5 +1,6 @@
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
+import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -18,7 +19,7 @@ type ProcessMetadataMessageThunkParams = {
  * @deprecated This shall be removed, once we phase out the old Metadata code.
  */
 export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
-    Result<void, EnsureWalletSuiteSyncOnErrors>,
+    Result<void, EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError>,
     ProcessMetadataMessageThunkParams,
     void
 >(
