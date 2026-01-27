@@ -48,11 +48,11 @@ const buildEthereumLabels = ({
         })(),
         children: (
             <Column>
-                <Translation id="TR_STAKE_ADDING_TO_POOL" />
+                <Translation id="TR_EARN_ADDING_TO_POOL" />
                 {isDaysToAddToPoolShown && (
                     <Paragraph typographyStyle="label" variant="tertiary">
                         <Translation
-                            id="TR_STAKE_APPROXIMATE_DAYS"
+                            id="TR_EARN_APPROXIMATE_DAYS"
                             values={{
                                 count: daysToAddToPool,
                             }}
@@ -103,7 +103,7 @@ const buildSolanaLabels = ({
         progressState: (() => (solStakingAccountStatus === 'activating' ? 'active' : 'done'))(),
         children: (
             <Column>
-                <Translation id="TR_STAKE_WARM_UP_PERIOD" />
+                <Translation id="TR_EARN_WARM_UP_PERIOD" />
 
                 <Paragraph typographyStyle="label" variant="tertiary">
                     <Translation
@@ -193,14 +193,14 @@ const buildCardanoLabels = ({
             children: (
                 <Column>
                     {isUnstake ? (
-                        <Translation id="TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT" />
+                        <Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT" />
                     ) : (
                         <Translation id="TR_STAKE_STAKED_AND_EARNING" />
                     )}
 
                     <Paragraph typographyStyle="label" variant="tertiary">
                         {isUnstake ? (
-                            <Translation id="TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
+                            <Translation id="TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY" />
                         ) : (
                             <Translation
                                 id="TR_UP_TO_DAYS"

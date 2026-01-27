@@ -225,7 +225,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
             <Table.Cell>
                 {state === 'staking-outdated-provider' ? (
-                    <Translation id="TR_STAKE_NOT_AVAILABLE" />
+                    <Translation id="TR_EARN_NOT_AVAILABLE" />
                 ) : (
                     <ApyValue apy={apy} />
                 )}
@@ -345,7 +345,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
 
                     <Table.Cell align="end">
                         <Button intent="brand" size="small" onClick={navigateToStaking}>
-                            <Translation id="TR_STAKING_UPDATE_PROVIDER" />
+                            <Translation id="TR_EARN_UPDATE_PROVIDER" />
                         </Button>
                     </Table.Cell>
                 </>

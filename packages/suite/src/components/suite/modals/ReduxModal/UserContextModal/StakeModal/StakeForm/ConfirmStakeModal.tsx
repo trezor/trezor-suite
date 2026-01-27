@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { getDaysToAddToPoolInitial } from '@suite-common/staking';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@suite-common/wallet-constants';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
@@ -15,7 +15,7 @@ import {
 } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
-import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -30,7 +30,7 @@ interface ConfirmStakeModalProps {
     isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
-    flow: StakingFlow;
+    flow: EarnFlow;
 }
 
 export const ConfirmStakeModal = ({
@@ -54,7 +54,7 @@ export const ConfirmStakeModal = ({
         dispatch(openModal({ type: 'stake', flow }));
 
         analytics.report({
-            type: stakingFlowToEventTypeMap[flow],
+            type: earnFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'entry-period-stake-modal',
@@ -67,7 +67,7 @@ export const ConfirmStakeModal = ({
         onConfirm();
 
         analytics.report({
-            type: stakingFlowToEventTypeMap[flow],
+            type: earnFlowToEventTypeMap[flow],
             payload: {
                 action: 'continue',
                 step: 'entry-period-stake-modal',

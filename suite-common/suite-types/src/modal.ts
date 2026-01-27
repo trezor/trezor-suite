@@ -5,7 +5,7 @@ import { UI } from '@trezor/connect';
 import { Deferred } from '@trezor/utils';
 
 import { TrezorDevice } from './device';
-import { StakingFlow } from './staking';
+import { EarnFlow, EarnProvider } from './staking';
 
 export type UserContextPayload =
     | {
@@ -130,12 +130,13 @@ export type UserContextPayload =
           type: 'uneco-coinjoin-warning';
       }
     | {
-          type: 'stake-in-a-nutshell';
-          flow: StakingFlow;
+          type: 'earn-in-a-nutshell';
+          flow: EarnFlow;
+          provider: EarnProvider;
       }
     | {
           type: 'stake';
-          flow: StakingFlow;
+          flow: EarnFlow;
       }
     | {
           type: 'unstake';
@@ -144,8 +145,9 @@ export type UserContextPayload =
           type: 'claim';
       }
     | {
-          type: 'everstake';
-          flow: StakingFlow;
+          type: 'earn-provider-consent';
+          flow: EarnFlow;
+          provider: EarnProvider;
       }
     | {
           type: 'change-delegate';

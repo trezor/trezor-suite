@@ -28,7 +28,7 @@ export const getTransactionReviewModalActionTranslation = ({
     switch (stakeType) {
         case 'stake':
             return {
-                id: source === 'heading' ? 'TR_STAKE_STAKE_TOKEN' : 'TR_STAKE_STAKE',
+                id: source === 'heading' ? 'TR_EARN_STAKE_TOKEN' : 'TR_STAKE_STAKE',
                 values: { symbol: getNetworkDisplaySymbol(symbol) },
             };
         case 'unstake':

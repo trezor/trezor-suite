@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { StakeFormContext, useStakeForm } from 'src/hooks/wallet/useStakeForm';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -18,7 +18,7 @@ import { StakeInfoCards } from './StakeInfoCards/StakeInfoCards';
 interface StakeModalModalProps {
     onCancel?: () => void;
     selectedAccount: SelectedAccountLoaded;
-    flow: StakingFlow;
+    flow: EarnFlow;
 }
 
 export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModalModalProps) => {
@@ -34,7 +34,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModal
         onCancel?.();
 
         analytics.report({
-            type: stakingFlowToEventTypeMap[flow],
+            type: earnFlowToEventTypeMap[flow],
             payload: {
                 action: 'cancel',
                 step: 'stake-form-modal',
@@ -54,9 +54,7 @@ export const StakeModalLoaded = ({ onCancel, selectedAccount, flow }: StakeModal
                 heading={
                     <Translation
                         id={
-                            isUpdateProviderFlow
-                                ? 'TR_STAKING_UPDATE_PROVIDER'
-                                : 'TR_STAKE_STAKE_TOKEN'
+                            isUpdateProviderFlow ? 'TR_EARN_UPDATE_PROVIDER' : 'TR_EARN_STAKE_TOKEN'
                         }
                         values={{ symbol: getNetworkDisplaySymbol(account.symbol) }}
                     />

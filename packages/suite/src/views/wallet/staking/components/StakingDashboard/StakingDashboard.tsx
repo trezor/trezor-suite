@@ -15,7 +15,7 @@ export const StakingDashboard = ({ selectedAccount, dashboard }: StakingDashboar
 
     return (
         <WalletLayout
-            title="TR_STAKE_STAKE_TOKEN"
+            title="TR_EARN_STAKE_TOKEN"
             titleValues={{ symbol: getNetworkDisplaySymbol(selectedAccount.account.symbol) }}
             account={selectedAccount}
         >

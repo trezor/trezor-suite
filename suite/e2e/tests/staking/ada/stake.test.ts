@@ -76,16 +76,16 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Initiate staking flow', async () => {
                 await stakingSection.startStakingButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKING_IN_A_NUTSHELL');
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
                 await expect(page.modal).toContainTranslation(
-                    'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+                    'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
                     {
                         values: { networkDisplaySymbol: 'ADA' },
                     },
                 );
 
                 await stakingSection.continueButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
                     values: { symbol: 'ADA' },
                 });
                 await stakingSection.everstakeAcknowledgeCheckbox.click();

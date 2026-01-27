@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -14,7 +14,7 @@ import { StakeInputs } from './StakeInputs';
 import { StakeRegistrationDepositCard } from './StakeRegistrationDepositCard';
 
 interface StakeFormProps {
-    flow: StakingFlow;
+    flow: EarnFlow;
 }
 
 export const StakeForm = ({ flow }: StakeFormProps) => {

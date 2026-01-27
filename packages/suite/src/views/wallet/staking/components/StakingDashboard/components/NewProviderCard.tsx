@@ -1,6 +1,6 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -34,8 +34,9 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
         if (!isStakingDisabled) {
             dispatch(
                 openModal({
-                    type: 'stake-in-a-nutshell',
-                    flow: StakingFlow.UpdateProvider,
+                    type: 'earn-in-a-nutshell',
+                    flow: EarnFlow.UpdateProvider,
+                    provider: EarnProvider.Everstake,
                 }),
             );
 
@@ -86,7 +87,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                             iconLeft={isStakingDisabled ? 'info' : undefined}
                             data-testid="@wallet/staking/empty-card/start-staking-button"
                         >
-                            <Translation id="TR_STAKING_UPDATE_PROVIDER" />
+                            <Translation id="TR_EARN_UPDATE_PROVIDER" />
                         </Button>
                     </Tooltip>
                 </Column>

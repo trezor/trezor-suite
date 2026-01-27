@@ -99,7 +99,7 @@ export class StakingSection {
         this.confirmButton = this.page.getByTestId('@modal/staking/confirm-button');
         this.acknowledgeCheckbox = this.page.getByTestId('@staking/acknowledge-checkbox');
         this.everstakeAcknowledgeCheckbox = this.page.getByTestId(
-            '@staking/everstake-acknowledge-checkbox',
+            '@staking/provider-acknowledge-checkbox',
         );
         this.confirmAndStakeButton = this.page.getByTestId(
             '@modal/staking/confirm-and-stake-button',
