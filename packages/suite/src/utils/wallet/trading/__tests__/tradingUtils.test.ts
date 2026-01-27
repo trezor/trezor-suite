@@ -111,7 +111,6 @@ describe('trading utils', () => {
         expect(getTradeTypeByRoute('wallet-trading-exchange-offers')).toEqual('exchange');
         expect(getTradeTypeByRoute('wallet-trading-exchange-confirm')).toEqual('exchange');
 
-        expect(getTradeTypeByRoute('wallet-trading-dca')).toEqual(undefined);
         expect(getTradeTypeByRoute('wallet-index')).toEqual(undefined);
     });
 });

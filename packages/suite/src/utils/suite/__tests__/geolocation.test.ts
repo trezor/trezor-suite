@@ -9,7 +9,6 @@ describe('shouldFetchCountryCode', () => {
         expect(shouldFetchCountryCode('wallet-trading')).toBe(true);
         expect(shouldFetchCountryCode('wallet-trading-buy')).toBe(true);
         expect(shouldFetchCountryCode('wallet-trading-sell')).toBe(true);
-        expect(shouldFetchCountryCode('wallet-trading-dca')).toBe(true);
     });
 
     it('returns true for staking route', () => {
