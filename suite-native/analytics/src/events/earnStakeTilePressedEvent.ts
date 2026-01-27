@@ -6,5 +6,4 @@ export const earnStakeTilePressedEvent: EventDef<undefined, EventType.EarnStakeT
     name: EventType.EarnStakeTilePressed,
     descriptionTrigger: 'On Earn Stake Tile pressed',
     changelog: [{ version: '26.1.2', notes: 'added' }],
-    attributes: undefined,
 };
