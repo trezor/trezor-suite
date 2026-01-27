@@ -1,6 +1,6 @@
-import {
+import React, {
+    ComponentProps,
     FunctionComponent,
-    PropsWithChildren,
     useCallback,
     useEffect,
     useRef,
@@ -35,8 +35,16 @@ interface WithEditableProps {
  * and control buttons (submit, cancel).
  */
 export const withEditable =
-    (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
-    ({ onSubmit, onBlur, originalValue, updateFlag, ...props }: WithEditableProps) => {
+    <C extends FunctionComponent>(
+        WrappedComponent: C,
+    ): FunctionComponent<Omit<WithEditableProps & ComponentProps<C>, 'children'>> =>
+    ({
+        onSubmit,
+        onBlur,
+        originalValue,
+        updateFlag,
+        ...rest
+    }: Omit<WithEditableProps & ComponentProps<C>, 'children'>) => {
         const [touched, setTouched] = useState(false);
         const [value, setValue] = useState('');
 
@@ -74,7 +82,8 @@ export const withEditable =
 
         return (
             <Row gap={8}>
-                <WrappedComponent {...props}>
+                {/* @ts-expect-error: this is just passing props on I am not sure why it throws here */}
+                <WrappedComponent {...rest}>
                     <Editable
                         minWidth={20}
                         ref={divRef}

@@ -71,6 +71,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
     const accountNameElement = useMemo(
         () => (
             <Labeling
+                key={`account-label-${key}`}
                 payload={{
                     type: 'accountLabel',
                     entityKey: key,
