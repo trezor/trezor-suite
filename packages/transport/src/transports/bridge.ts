@@ -111,7 +111,7 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L373
+    // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L373
     public listen() {
         if (this.listening) {
             return this.error({ error: ERRORS.ALREADY_LISTENING });
@@ -138,12 +138,12 @@ export class BridgeTransport extends AbstractTransport {
         }
     }
 
-    // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L235
+    // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L235
     public enumerate({ signal }: AbstractTransportMethodParams<'enumerate'> = {}) {
         return this.scheduleAction(signal => this.post('/enumerate', { signal }), { signal });
     }
 
-    // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L420
+    // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L420
     public acquire({ input, signal }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
             async signal => {
@@ -162,7 +162,7 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
+    // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L354
     public release({ path: _, session, signal }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(
             async signal => {
@@ -206,7 +206,7 @@ export class BridgeTransport extends AbstractTransport {
         );
     }
 
-    // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
+    // https://github.com/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
     public call({
         session,
         name,

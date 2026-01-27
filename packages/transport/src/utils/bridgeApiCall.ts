@@ -89,9 +89,9 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
     };
 
     const BRIDGE_ERROR_DEVICE_CLOSED = 'closed device' as const;
-    // https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/wire/protobuf.go#L14
+    // https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/wire/protobuf.go#L14
     const BRIDGE_MALFORMED_PROTOBUF = 'malformed protobuf' as const;
-    // https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/wire/v1.go#L72
+    // https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/wire/v1.go#L72
     const BRIDGE_MALFORMED_WIRE_FORMAT = 'malformed wire format' as const;
 
     // if status is not 200. response should be interpreted as error.

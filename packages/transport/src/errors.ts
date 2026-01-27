@@ -14,7 +14,7 @@ export const INTERFACE_DATA_TRANSFER = 'A transfer error has occurred.' as const
  *
  * transports: bridge, webusb
  *
- * bridge: https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/usb/bus.go#L56
+ * bridge: https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/usb/bus.go#L56
  *
  */
 export const DEVICE_NOT_FOUND = 'device not found' as const;
@@ -29,7 +29,7 @@ export const DEVICE_UNREADABLE = 'Device unreadable' as const;
  *
  * transports: bridge, webusb
  *
- * bridge: https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/core/core.go#L138
+ * bridge: https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/core/core.go#L138
  */
 export const SESSION_WRONG_PREVIOUS = 'wrong previous session' as const;
 /**
@@ -37,7 +37,7 @@ export const SESSION_WRONG_PREVIOUS = 'wrong previous session' as const;
  *
  * transports: bridge, webusb
  *
- * bridge: https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/core/core.go#L138
+ * bridge: https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/core/core.go#L138
  */
 export const SESSION_NOT_FOUND = 'session not found' as const;
 /**
@@ -70,7 +70,7 @@ export const WRONG_ENVIRONMENT = 'This transport can not be used in this environ
  *
  * transports: bridge, webusb
  *
- * bridge: https://github.dev/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/usb/bus.go#L56
+ * bridge: https://github.com/trezor/trezord-go/blob/8f35971d3c36ea8b91ff54810397526ef8e741c5/usb/bus.go#L56
  */
 export const DEVICE_DISCONNECTED_DURING_ACTION = 'device disconnected during action' as const;
 export const OTHER_CALL_IN_PROGRESS = 'other call in progress' as const;
