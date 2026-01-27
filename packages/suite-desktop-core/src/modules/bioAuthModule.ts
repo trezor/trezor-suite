@@ -251,14 +251,8 @@ export const initBioAuthModule = ({
         ipcMain.handle('bio-auth/is-bio-auth-available', ipcEvent => {
             validateIpcMessage({ ipcEvent });
 
-            if (!bioAuth) {
-                logger.warn(
-                    'bioAuth',
-                    'is-bio-auth-available called before bioAuth is initialized',
-                );
-
-                return Promise.resolve(false);
-            }
+            // Necessary check for race condition: UI might ask for availability before await bioAuth.init()
+            if (!bioAuth) return Promise.resolve(false);
 
             return bioAuth.isAvailable();
         });
@@ -288,14 +282,20 @@ export const initBioAuthModule = ({
         ipcMain.handle('bio-auth/validate-bio-auth', (ipcEvent, params) => {
             validateIpcMessage({ ipcEvent });
 
-            if (!bioAuth?.initialized) throw new Error('BioAuth module is not initialized');
+            if (!bioAuth?.initialized) {
+                throw new Error('BioAuth module is not initialized (calling validate-bio-auth)');
+            }
 
             return bioAuth.validate(params.message ?? PROMPT_REASON);
         });
 
         ipcMain.handle('bio-auth/get-validation-status', ipcEvent => {
             validateIpcMessage({ ipcEvent });
-            if (!bioAuth?.initialized) throw new Error('BioAuth module is not initialized');
+            if (!bioAuth?.initialized) {
+                throw new Error(
+                    'BioAuth module is not initialized (calling get-validation-status)',
+                );
+            }
 
             return bioAuth.isValidated();
         });
