@@ -13,14 +13,14 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { CheckItem } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouterApp } from 'src/reducers/suite/routerReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
 };
 
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [checkbox1, setCheckbox1] = useState(false);
     const [checkbox2, setCheckbox2] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
         const response = await dispatch(wipeDeviceThunk());
 
         if (isFulfilled(response)) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SettingsDeviceWipe,
             });
             if (appRoute === 'settings') {

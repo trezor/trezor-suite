@@ -4,6 +4,7 @@ export { connectPopupInitEvent } from './connectPopupInitEvent';
 export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
+export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';
 export { walletConnectProposalEvent } from './walletConnectProposalEvent';
