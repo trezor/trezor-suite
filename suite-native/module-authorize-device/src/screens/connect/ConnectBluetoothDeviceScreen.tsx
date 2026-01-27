@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import {
     BluetoothDevice,
     BluetoothDeviceList,

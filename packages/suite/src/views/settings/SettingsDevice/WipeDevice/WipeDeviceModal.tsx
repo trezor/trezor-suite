@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { Translation } from '@suite/intl';
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
 import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';

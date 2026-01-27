@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import {
     connectPopupCallThunk,
     connectPopupCancelThunk,

@@ -1,4 +1,4 @@
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 
