@@ -123,17 +123,24 @@ const ButtonLikeLabel = ({
     'data-testid': dataTest,
 }: PrimitiveProps) => {
     const EditableButton = useMemo(() => withEditable(RelativeButton), []);
+    const handleSubmit = useCallback(
+        (value: string | undefined) => {
+            const normalizedValue = value ?? '';
+
+            onSubmit(normalizedValue);
+        },
+        [onSubmit],
+    );
 
     if (editActive) {
         return (
             <EditableButton
-                // @ts-expect-error todo: hm this needs some clever generic
                 intent="neutral"
                 priority="secondary"
                 iconLeft="tag"
                 data-testid={dataTest}
                 originalValue={payload.value ?? defaultEditableValue}
-                onSubmit={onSubmit}
+                onSubmit={handleSubmit}
                 onBlur={onBlur}
                 size="small"
             />
@@ -178,6 +185,15 @@ const TextLikeLabel = ({
     updateFlag,
 }: PrimitiveProps) => {
     const EditableLabel = useMemo(() => withEditable(RelativeLabel), []);
+    const handleSubmit = useCallback(
+        (value: string | React.FormEvent<HTMLDivElement> | undefined) => {
+            const normalizedValue = value ?? '';
+            if (typeof normalizedValue === 'string') {
+                onSubmit(normalizedValue);
+            }
+        },
+        [onSubmit],
+    );
 
     const isAccountLabel = payload.type === 'accountLabel';
 
@@ -187,9 +203,9 @@ const TextLikeLabel = ({
                 <EditableLabel
                     data-testid={dataTest}
                     originalValue={payload.value ?? defaultEditableValue}
-                    onSubmit={onSubmit}
-                    onBlur={onBlur}
                     updateFlag={updateFlag}
+                    onBlur={onBlur}
+                    onSubmit={handleSubmit}
                 />
                 {isAccountLabel && (
                     <AccountTypeBadge
