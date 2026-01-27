@@ -1,0 +1,1 @@
+export { toGetter } from './toGetter';

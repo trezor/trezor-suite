@@ -1,8 +1,8 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import { toGetter } from '@suite-common/dependency-injection';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { toGetter } from '@suite-common/redux-utils';
 import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
 import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';

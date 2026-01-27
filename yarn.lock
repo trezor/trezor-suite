@@ -10678,6 +10678,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/dependency-injection@workspace:*, @suite-common/dependency-injection@workspace:suite-common/dependency-injection":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/dependency-injection@workspace:suite-common/dependency-injection"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/device-authenticity@workspace:*, @suite-common/device-authenticity@workspace:suite-common/device-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/device-authenticity@workspace:suite-common/device-authenticity"
@@ -11071,6 +11077,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
