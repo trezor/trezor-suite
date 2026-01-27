@@ -41,15 +41,15 @@ export const PageName = () => {
     }
 
     if (selectedAccount && isAccountTabPage) {
-        return <AccountName selectedAccount={selectedAccount} />;
+        return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
 
     if (selectedAccount) {
-        return <AccountSubpageName selectedAccount={selectedAccount} />;
+        return <AccountSubpageName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
 
     if (fallbackAccount) {
-        return <AccountName selectedAccount={fallbackAccount} />;
+        return <AccountName key={fallbackAccount.key} selectedAccount={fallbackAccount} />;
     }
 
     return (

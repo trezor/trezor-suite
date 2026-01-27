@@ -37,5 +37,11 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [balanceSectionRef?.current]);
 
-    return <AccountDetails selectedAccount={selectedAccount} isBalanceShown={isScrolled} />;
+    return (
+        <AccountDetails
+            key={selectedAccount.key}
+            selectedAccount={selectedAccount}
+            isBalanceShown={isScrolled}
+        />
+    );
 };
