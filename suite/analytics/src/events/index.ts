@@ -18,6 +18,7 @@ export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePi
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
+export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
 export { stakingConfirmEvent } from './stakingConfirmEvent';
