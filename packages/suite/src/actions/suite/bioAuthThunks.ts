@@ -24,7 +24,7 @@ const handleError = (error: string, dispatch: Dispatch, message: string) => {
 };
 
 export const init = createThunk(`${BIO_AUTH_PREFIX}/init`, (_args, { dispatch }) => {
-    // settings
+    // only fetches settings from electron-store, not dependent on BioAuthModule, see bio-auth/get-bio-auth-settings
     desktopApi.getBioAuthSettings().then(settings => {
         dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
     });
@@ -32,20 +32,23 @@ export const init = createThunk(`${BIO_AUTH_PREFIX}/init`, (_args, { dispatch })
         dispatch(bioAuthActions.setBioAuthEnabled(settings.enabled));
     });
 
-    // api availability
-    desktopApi.isBioAuthAvailable().then(available => {
+    const onBioAuthAvailable = (available: boolean) => {
         dispatch(bioAuthActions.setIsBioAuthAvailable(available));
-    });
+        if (!available) return;
+        // ensure this api is called only when & if BioAuthModule is available = initialized
+        desktopApi.getBioAuthStatus().then(validated => {
+            dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
+        });
+    };
 
-    // validation status
-    desktopApi.getBioAuthStatus().then(validated => {
-        dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
-    });
+    // We don't know what will be faster, BioAuthModule may initialize before or after this thunk.
+    // Fetch api availability if BioAuthModule is initialized (though it may never become available, depending on the system)
+    desktopApi.isBioAuthAvailable().then(onBioAuthAvailable);
+
+    // If BioAuthModule initializes later, it will emit an event, which will be caught here
+    desktopApi.on('bio-auth/bio-auth-availability-changed', onBioAuthAvailable);
     desktopApi.on('bio-auth/validation-status-changed', validated => {
         dispatch(bioAuthActions.setIsBioAuthValidationRequired(!validated));
-    });
-    desktopApi.on('bio-auth/bio-auth-availability-changed', available => {
-        dispatch(bioAuthActions.setIsBioAuthAvailable(available));
     });
 });
 
