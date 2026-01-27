@@ -68,6 +68,7 @@ export const FeaturesSettings = () => {
                 title={<Translation id="moduleSettings.items.features.advanced.title" />}
                 subtitle={<Translation id="moduleSettings.items.features.advanced.subtitle" />}
                 onPress={() => navigateTo(SettingsStackRoutes.SettingsAdvanced)}
+                testID="@settings/advanced"
             />
         </TitledSection>
     );

@@ -10,7 +10,7 @@ const DEV_EVOLU_URL = 'https://suite-sync.suite.sldev.cz/evolu/';
 
 type SettingsOptions =
     | 'preferences'
-    | 'labeling'
+    | 'suite-sync'
     | 'dev-utils'
     | 'privacy'
     | 'coin-enabling'
@@ -18,7 +18,8 @@ type SettingsOptions =
     | 'support'
     | 'trading'
     | 'wallet-connect'
-    | 'connect-permissions';
+    | 'connect-permissions'
+    | 'advanced';
 
 class SettingsActions {
     async openSection(option: SettingsOptions) {
@@ -97,13 +98,27 @@ class SettingsActions {
         await this.openSection('dev-utils');
         const saveSuiteSyncUrl = element(by.id('@suiteSync/custom-relay-url-save-button'));
         await scrollUntilVisible(saveSuiteSyncUrl);
-        await element(by.id('@suiteSync/enable-toggle')).tap();
         await element(by.id('@suiteSync/custom-relay-url-input')).typeText(url);
         // Workaround close keyboard by clicking on section header
         await element(by.id('@suiteSync/header')).tap();
         await element(by.id('@suiteSync/custom-relay-url-save-button')).tap();
         await onTabBar.tapBackButton();
-        await this.openSection('labeling');
+
+        await this.openSection('advanced');
+        const experimentalFeaturesToggleElement = element(
+            by.id('@settings/experimental-features/toggle-switch'),
+        );
+        await scrollUntilVisible(experimentalFeaturesToggleElement);
+        await experimentalFeaturesToggleElement.tap();
+
+        const suiteSyncCheckboxElement = element(
+            by.id('@settings/experimental-features/suite-sync/checkbox'),
+        );
+        await scrollUntilVisible(suiteSyncCheckboxElement);
+        await suiteSyncCheckboxElement.tap();
+        await onTabBar.tapBackButton();
+
+        await this.openSection('suite-sync');
         await element(by.id('settings/secure-sync-touchable-row')).tap();
         await TrezorUserEnvLink.pressYes();
     }
