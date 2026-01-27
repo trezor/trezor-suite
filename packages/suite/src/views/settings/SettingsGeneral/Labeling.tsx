@@ -114,7 +114,7 @@ export const Labeling = () => {
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value: value === 'secure-sync' ? 'evolu' : value,
+                value: value === 'secure-sync' ? 'suite-sync' : value,
             },
         });
     };

@@ -3,7 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics-types';
 import { EventType } from '../constants';
 
 type Attributes = {
-    value: AttributeDef<'off' | 'legacy' | 'evolu'>;
+    value: AttributeDef<'off' | 'legacy' | 'suite-sync'>;
 };
 
 export const settingsGeneralLabelingEvent: EventDef<Attributes, EventType.SettingsGeneralLabeling> =
@@ -20,7 +20,7 @@ export const settingsGeneralLabelingEvent: EventDef<Attributes, EventType.Settin
                 changelog: [{ version: '1.21.0', notes: 'added' }],
                 description: `- \`off\` - when user turned labeling off
 - \`legacy\` - when user turned legacy labeling
-- \`evolu\` - when user turned on secure sync / locale first storage / Evolu`,
+- \`suite-sync\` - when user turned on the Suite Sync`,
             },
         },
     };
