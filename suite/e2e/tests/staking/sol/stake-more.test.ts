@@ -67,7 +67,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
 
             await test.step('Open and fill staking form', async () => {
                 await stakingSection.stakeMoreButton.click();
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await expect(stakingSection.availableBalanceWithSymbol).toHaveText('1,000 SOL');
@@ -75,7 +75,7 @@ test.describe('sol staking', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Initiate staking and confirm on device', async () => {
-                await expect(page.modalHeader).toHaveTranslation('TR_STAKE_STAKE_TOKEN', {
+                await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKE_TOKEN', {
                     values: { symbol: 'SOL' },
                 });
                 await stakingSection.continueButton.click();

@@ -1,19 +1,15 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
-import { VotingDelegationOption, selectVotingDelegationOption } from '@suite-common/wallet-core';
+import { selectVotingDelegationOption } from '@suite-common/wallet-core';
 import { Card, CollapsibleBox, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
-import { VotingDelegationOptions } from './VotingDelegationOptions';
+import { VotingDelegationsOptions } from './VotingDelegationsOptions';
 
-export interface VotingDelegationProps {
-    initialValue?: VotingDelegationOption;
-}
-
-export const VotingDelegation = ({ initialValue }: VotingDelegationProps) => {
+export const VotingDelegations = () => {
     const account = useSelector(selectSelectedAccount);
     const selectedVotingDelegation = useSelector(selectVotingDelegationOption);
 
@@ -45,7 +41,7 @@ export const VotingDelegation = ({ initialValue }: VotingDelegationProps) => {
                 paddingType="none"
                 hasDivider={false}
             >
-                <VotingDelegationOptions initialValue={initialValue} />
+                <VotingDelegationsOptions />
             </CollapsibleBox>
         </Card>
     );

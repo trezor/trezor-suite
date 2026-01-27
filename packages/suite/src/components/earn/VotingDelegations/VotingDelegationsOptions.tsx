@@ -21,15 +21,15 @@ const VOTING_OPTIONS: {
     { key: 'another_drep', translationId: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP' },
 ];
 
-export interface VotingDelegationsProps {
+export interface VotingDelegationsOptionsProps {
     initialValue?: VotingDelegationOption;
     hasTitle?: boolean;
 }
 
-export const VotingDelegationOptions = ({
+export const VotingDelegationsOptions = ({
     initialValue = DEFAULT_VOTING_OPTION,
     hasTitle = false,
-}: VotingDelegationsProps) => {
+}: VotingDelegationsOptionsProps) => {
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
     const account = useSelector(selectSelectedAccount);

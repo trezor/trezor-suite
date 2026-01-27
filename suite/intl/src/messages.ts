@@ -7708,42 +7708,42 @@ export const messages = defineMessages({
         id: 'TR_INSTANT_STAKING',
         defaultMessage: 'Staked instantly',
     },
-    TR_STAKING_AMOUNT_STAKED_INSTANTLY: {
-        id: 'TR_STAKING_AMOUNT_STAKED_INSTANTLY',
+    TR_EARN_AMOUNT_STAKED_INSTANTLY: {
+        id: 'TR_EARN_AMOUNT_STAKED_INSTANTLY',
         defaultMessage: '{amount} {symbol} staked instantly!',
     },
-    TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY: {
-        id: 'TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY',
+    TR_EARN_AMOUNT_UNSTAKED_INSTANTLY: {
+        id: 'TR_EARN_AMOUNT_UNSTAKED_INSTANTLY',
         defaultMessage: '{amount} {symbol} unstaked instantly!',
     },
     TR_INSTANT_UNSTAKING: {
         id: 'TR_INSTANT_UNSTAKING',
         defaultMessage: 'Unstaked instantly',
     },
-    TR_STAKING_INSTANTLY_STAKED: {
-        id: 'TR_STAKING_INSTANTLY_STAKED',
+    TR_EARN_INSTANTLY_STAKED: {
+        id: 'TR_EARN_INSTANTLY_STAKED',
         defaultMessage:
             "You've instantly staked {amount} {symbol}. {days, plural, =0 {} one {The remaining {symbol} will be staked within # day.} other { The remaining {symbol} will be staked within # days}}",
     },
-    TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS: {
-        id: 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS',
+    TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS: {
+        id: 'TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS',
         defaultMessage:
             "You've received {amount} {symbol} instantly. {days, plural, =0 {} one {The remaining is paid out within # day.} other {The remaining is paid out within # days}}",
     },
-    TR_STAKING_GETTING_READY: {
-        id: 'TR_STAKING_GETTING_READY',
+    TR_EARN_STAKING_GETTING_READY: {
+        id: 'TR_EARN_STAKING_GETTING_READY',
         defaultMessage: 'Time it takes to stake your {networkDisplaySymbol}',
     },
-    TR_STAKING_REWARDS_ARE_RESTAKED: {
-        id: 'TR_STAKING_REWARDS_ARE_RESTAKED',
+    TR_EARN_REWARDS_ARE_RESTAKED: {
+        id: 'TR_EARN_REWARDS_ARE_RESTAKED',
         defaultMessage: 'Rewards are automatically restaked',
     },
-    TR_STAKING_CONSOLIDATING_FUNDS: {
-        id: 'TR_STAKING_CONSOLIDATING_FUNDS',
+    TR_EARN_STAKING_CONSOLIDATING_FUNDS: {
+        id: 'TR_EARN_STAKING_CONSOLIDATING_FUNDS',
         defaultMessage: 'Time it takes to unstake your {networkDisplaySymbol}',
     },
-    TR_STAKING_YOUR_UNSTAKED_FUNDS: {
-        id: 'TR_STAKING_YOUR_UNSTAKED_FUNDS',
+    TR_EARN_YOUR_UNSTAKED_FUNDS: {
+        id: 'TR_EARN_YOUR_UNSTAKED_FUNDS',
         defaultMessage: 'Your unstaked {networkDisplaySymbol} is ready',
     },
     TR_RECEIVING_SYMBOL: {
@@ -8962,8 +8962,8 @@ export const messages = defineMessages({
         defaultMessage:
             'Stake your balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY.',
     },
-    TR_STAKING_EARN_APY_WITH_EVERSTAKE: {
-        id: 'TR_STAKING_EARN_APY_WITH_EVERSTAKE',
+    TR_EARN_APY_WITH_EVERSTAKE: {
+        id: 'TR_EARN_APY_WITH_EVERSTAKE',
         defaultMessage:
             'Earn ~{apy}% APY with our trusted new staking partner, Everstake. Your initial 2 {networkDisplaySymbol} deposit moves with you—you won’t pay it again.',
     },
@@ -8997,8 +8997,8 @@ export const messages = defineMessages({
         defaultMessage:
             'Your current provider is reducing its rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your {displaySymbol} and past rewards stay safe.',
     },
-    TR_STAKING_UPDATE_PROVIDER: {
-        id: 'TR_STAKING_UPDATE_PROVIDER',
+    TR_EARN_UPDATE_PROVIDER: {
+        id: 'TR_EARN_UPDATE_PROVIDER',
         defaultMessage: 'Update provider',
     },
     TR_STAKING_REWARDS_REMAIN_INTACT: {
@@ -9118,62 +9118,62 @@ export const messages = defineMessages({
         id: 'TR_STAKE_SEND_SWAP_SPEND_ANYTIME',
         defaultMessage: 'Send, swap, or spend your {symbol} whenever you want—even while staking.',
     },
-    TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE: {
-        id: 'TR_STAKE_YOUR_FUNDS_STAY_ACCESSIBLE',
+    TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE: {
+        id: 'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
         defaultMessage: 'Your {networkDisplaySymbol} stays accessible to you at all times.',
     },
-    TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
-        id: 'TR_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
+    TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED: {
+        id: 'TR_EARN_STAKE_ALL_YOUR_FUNDS_IS_STAKED',
         defaultMessage:
             'All your available {networkDisplaySymbol} is currently staked. Any new {networkDisplaySymbol} you receive will become active after two epochs.',
     },
-    TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED: {
-        id: 'TR_STAKE_RETURNABLE_DEPOSIT_IS_REQUIRED',
+    TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED: {
+        id: 'TR_EARN_RETURNABLE_DEPOSIT_IS_REQUIRED',
         defaultMessage:
             'A returnable deposit of 2 {networkDisplaySymbol} is required to register your staking key.',
     },
-    TR_STAKE_ENTER_ACTIVATION_PERIOD: {
-        id: 'TR_STAKE_ENTER_ACTIVATION_PERIOD',
+    TR_EARN_ENTER_ACTIVATION_PERIOD: {
+        id: 'TR_EARN_ENTER_ACTIVATION_PERIOD',
         defaultMessage: 'Enter activation period',
     },
-    TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
-        id: 'TR_STAKE_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
+    TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER: {
+        id: 'TR_EARN_KEEP_EARNING_REWARDS_WITH_CURRENT_PROVIDER',
         defaultMessage: 'Keep earning rewards with your current provider.',
     },
     TR_STAKE_ACTIVATION_PERIOD: {
         id: 'TR_STAKE_ACTIVATION_PERIOD',
         defaultMessage: 'Activation period',
     },
-    TR_STAKE_INSTANTLY: {
-        id: 'TR_STAKE_INSTANTLY',
+    TR_EARN_INSTANTLY: {
+        id: 'TR_EARN_INSTANTLY',
         defaultMessage: 'Instantly',
     },
-    TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT: {
-        id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT',
+    TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT: {
+        id: 'TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT',
         defaultMessage: 'Receive deposit in account',
     },
-    TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY: {
-        id: 'TR_STAKE_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY',
+    TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY: {
+        id: 'TR_EARN_RECEIVE_DEPOSIT_IN_ACCOUNT_INSTANTLY',
         defaultMessage: 'Instantly',
     },
-    TR_STAKE_YOUR_DEPOSIT_IS_RETURNED: {
-        id: 'TR_STAKE_YOUR_DEPOSIT_IS_RETURNED',
+    TR_EARN_YOUR_DEPOSIT_IS_RETURNED: {
+        id: 'TR_EARN_YOUR_DEPOSIT_IS_RETURNED',
         defaultMessage: 'Your deposit of 2 {networkDisplaySymbol} is returned',
     },
-    TR_STAKE_TIME_TO_START_EARNING: {
-        id: 'TR_STAKE_TIME_TO_START_EARNING',
+    TR_EARN_TIME_TO_START_EARNING: {
+        id: 'TR_EARN_TIME_TO_START_EARNING',
         defaultMessage: 'Time it takes before you start earning rewards',
     },
-    TR_STAKE_START_EARNING_FROM_NEW_PROVIDER: {
-        id: 'TR_STAKE_START_EARNING_FROM_NEW_PROVIDER',
+    TR_EARN_START_EARNING_FROM_NEW_PROVIDER: {
+        id: 'TR_EARN_START_EARNING_FROM_NEW_PROVIDER',
         defaultMessage: 'Start earning rewards from your new provider',
     },
-    TR_STAKE_APY_APPROX: {
-        id: 'TR_STAKE_APY_APPROX',
+    TR_EARN_APY_APPROX: {
+        id: 'TR_EARN_APY_APPROX',
         defaultMessage: '~{apyPercent}% APY',
     },
-    TR_STAKE_NOT_AVAILABLE: {
-        id: 'TR_STAKE_NOT_AVAILABLE',
+    TR_EARN_NOT_AVAILABLE: {
+        id: 'TR_EARN_NOT_AVAILABLE',
         defaultMessage: 'Not available',
     },
     TR_STAKE_N_A: {
@@ -9188,88 +9188,122 @@ export const messages = defineMessages({
         id: 'TR_STAKE_APY_DESC',
         defaultMessage: '*Annual Percentage Yield',
     },
-    TR_STAKE_STAKING_IN_A_NUTSHELL: {
-        id: 'TR_STAKE_STAKING_IN_A_NUTSHELL',
+    TR_EARN_STAKING_IN_A_NUTSHELL: {
+        id: 'TR_EARN_STAKING_IN_A_NUTSHELL',
         defaultMessage: 'Staking in a nutshell',
     },
-    TR_STAKE_STAKING_PROCESS: {
-        id: 'TR_STAKE_STAKING_PROCESS',
+    TR_EARN_SUPPLYING_IN_A_NUTSHELL: {
+        id: 'TR_EARN_SUPPLYING_IN_A_NUTSHELL',
+        defaultMessage: 'Supplying in a nutshell',
+    },
+    TR_EARN_STAKING_PROCESS: {
+        id: 'TR_EARN_STAKING_PROCESS',
         defaultMessage: 'Staking process',
     },
-    TR_STAKE_PROVIDER_UPDATE: {
-        id: 'TR_STAKE_PROVIDER_UPDATE',
+    TR_EARN_SUPPLYING_PROCESS: {
+        id: 'TR_EARN_SUPPLYING_PROCESS',
+        defaultMessage: 'Supplying process',
+    },
+    TR_EARN_SUPPLY_TOKEN: {
+        id: 'TR_EARN_SUPPLY_TOKEN',
+        defaultMessage: 'Supply {symbol}',
+    },
+    TR_EARN_SUPPLY_PROVIDER_MANAGES: {
+        id: 'TR_EARN_SUPPLY_PROVIDER_MANAGES',
+        defaultMessage:
+            '{providerName} maintains and protects your supplied {networkDisplaySymbol} with their smart contracts, infrastructure, and technology.',
+    },
+    TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY: {
+        id: 'TR_EARN_SUPPLY_PROVIDER_NO_LIABILITY',
+        defaultMessage:
+            "When supplying, the responsibility for your funds' security transitions from your Trezor to {providerName}.",
+    },
+    TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER: {
+        id: 'TR_EARN_CONSENT_TO_SUPPLY_WITH_PROVIDER',
+        defaultMessage: 'I acknowledge and consent to supply with {providerName}.',
+    },
+    TR_EARN_PROVIDER_UPDATE: {
+        id: 'TR_EARN_PROVIDER_UPDATE',
         defaultMessage: 'Provider update',
     },
-    TR_STAKE_UNSTAKING_PROCESS: {
-        id: 'TR_STAKE_UNSTAKING_PROCESS',
+    TR_EARN_UNSTAKING_PROCESS: {
+        id: 'TR_EARN_UNSTAKING_PROCESS',
         defaultMessage: 'Unstaking process',
     },
-    TR_STAKE_SIGN_TRANSACTION: {
-        id: 'TR_STAKE_SIGN_TRANSACTION',
+    TR_EARN_WITHDRAWING_PROCESS: {
+        id: 'TR_EARN_WITHDRAWING_PROCESS',
+        defaultMessage: 'Withdrawing process',
+    },
+    TR_EARN_SIGN_STAKING_TRANSACTION: {
+        id: 'TR_EARN_SIGN_STAKING_TRANSACTION',
         defaultMessage: 'Sign staking transaction',
     },
-    TR_STAKE_ENTER_THE_STAKING_POOL: {
-        id: 'TR_STAKE_ENTER_THE_STAKING_POOL',
+    TR_EARN_ENTER_THE_STAKING_POOL: {
+        id: 'TR_EARN_ENTER_THE_STAKING_POOL',
         defaultMessage: 'Enter staking pool',
     },
-    TR_STAKE_WAIT_FOR_ACTIVATION: {
-        id: 'TR_STAKE_WAIT_FOR_ACTIVATION',
+    TR_EARN_STAKE_WAIT_FOR_ACTIVATION: {
+        id: 'TR_EARN_STAKE_WAIT_FOR_ACTIVATION',
         defaultMessage: 'Time it takes to stake your {networkDisplaySymbol}',
     },
-    TR_STAKE_WARM_UP_PERIOD: {
-        id: 'TR_STAKE_WARM_UP_PERIOD',
+    TR_EARN_WARM_UP_PERIOD: {
+        id: 'TR_EARN_WARM_UP_PERIOD',
         defaultMessage: 'Enter warm-up period',
     },
-    TR_STAKE_EARN_REWARDS_EVERY: {
-        id: 'TR_STAKE_EARN_REWARDS_EVERY',
+    TR_EARN_REWARDS_EVERY: {
+        id: 'TR_EARN_REWARDS_EVERY',
         defaultMessage: 'Receive rewards every ~{days} days',
     },
-    TR_STAKE_COOL_DOWN_PERIOD: {
-        id: 'TR_STAKE_COOL_DOWN_PERIOD',
+    TR_EARN_COOL_DOWN_PERIOD: {
+        id: 'TR_EARN_COOL_DOWN_PERIOD',
         defaultMessage: 'Enter cool-down period',
     },
-    TR_STAKE_WAIT_FOR_DEACTIVATION: {
-        id: 'TR_STAKE_WAIT_FOR_DEACTIVATION',
+    TR_EARN_STAKING_WAIT_FOR_DEACTIVATION: {
+        id: 'TR_EARN_STAKING_WAIT_FOR_DEACTIVATION',
         defaultMessage: 'Time it takes to unstake your {networkDisplaySymbol}',
     },
-    TR_STAKE_EARN_REWARDS_WEEKLY: {
-        id: 'TR_STAKE_EARN_REWARDS_WEEKLY',
+    TR_EARN_REWARDS_WEEKLY: {
+        id: 'TR_EARN_REWARDS_WEEKLY',
         defaultMessage: 'Receive rewards weekly',
     },
-    TR_STAKE_SIGN_UNSTAKING_TRANSACTION: {
-        id: 'TR_STAKE_SIGN_UNSTAKING_TRANSACTION',
+    TR_EARN_SIGN_UNSTAKING_TRANSACTION: {
+        id: 'TR_EARN_SIGN_UNSTAKING_TRANSACTION',
         defaultMessage: 'Sign unstaking transaction',
     },
-    TR_STAKE_LEAVE_STAKING_POOL: {
-        id: 'TR_STAKE_LEAVE_STAKING_POOL',
+    TR_EARN_SIGN_WITHDRAWAL_TRANSACTION: {
+        id: 'TR_EARN_SIGN_WITHDRAWAL_TRANSACTION',
+        defaultMessage: 'Sign withdrawal transaction',
+    },
+    TR_EARN_LEAVE_STAKING_POOL: {
+        id: 'TR_EARN_LEAVE_STAKING_POOL',
         defaultMessage: 'Leave staking pool',
     },
-    TR_STAKE_CLAIM_UNSTAKED: {
-        id: 'TR_STAKE_CLAIM_UNSTAKED',
+    TR_EARN_CLAIM_UNSTAKED: {
+        id: 'TR_EARN_CLAIM_UNSTAKED',
         defaultMessage: 'Claim unstaked {networkDisplaySymbol}',
     },
-    TR_STAKE_IN_ACCOUNT: {
-        id: 'TR_STAKE_IN_ACCOUNT',
+    TR_EARN_RECEIVE_IN_ACCOUNT: {
+        id: 'TR_EARN_RECEIVE_IN_ACCOUNT',
         defaultMessage: 'Receive {networkDisplaySymbol} in account',
     },
-    TR_STAKE_STAKED_AMOUNT_LOCKED: {
-        id: 'TR_STAKE_STAKED_AMOUNT_LOCKED',
+    TR_EARN_STAKED_AMOUNT_LOCKED: {
+        id: 'TR_EARN_STAKED_AMOUNT_LOCKED',
         defaultMessage:
             'The staked amount of {networkDisplaySymbol} is locked and can’t be swapped or sent.',
     },
-    TR_STAKE_ETH_UNSTAKING_TAKES: {
-        id: 'TR_STAKE_ETH_UNSTAKING_TAKES',
+    TR_EARN_ETH_UNSTAKING_TAKES: {
+        id: 'TR_EARN_ETH_UNSTAKING_TAKES',
         defaultMessage:
             'Unstaking currently takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
     },
-    TR_STAKE_SOL_UNSTAKING_TAKES: {
-        id: 'TR_STAKE_SOL_UNSTAKING_TAKES',
+    TR_EARN_SOL_UNSTAKING_TAKES: {
+        id: 'TR_EARN_SOL_UNSTAKING_TAKES',
         defaultMessage:
             'Unstaking takes approximately {count, plural, one {# day} other {# days}}. Once completed, you can swap or send your funds.',
         description: 'In comparison with ETH, it always takes 1 epoch',
     },
-    TR_STAKE_REWARDS_EARN: {
-        id: 'TR_STAKE_REWARDS_EARN',
+    TR_EARN_STAKE_REWARDS: {
+        id: 'TR_EARN_STAKE_REWARDS',
         defaultMessage:
             'Keep your rewards staked and watch your {networkDisplaySymbol} grow even faster.',
     },
@@ -9380,8 +9414,8 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CLAIM',
         defaultMessage: 'Claim',
     },
-    TR_STAKE_STAKE_TOKEN: {
-        id: 'TR_STAKE_STAKE_TOKEN',
+    TR_EARN_STAKE_TOKEN: {
+        id: 'TR_EARN_STAKE_TOKEN',
         defaultMessage: 'Stake {symbol}',
     },
     TR_STAKE_UNSTAKE_TOKEN: {
@@ -9420,8 +9454,8 @@ export const messages = defineMessages({
         id: 'TR_STAKE_DAYS',
         defaultMessage: '{count, plural, one {# day} other {# days}}',
     },
-    TR_STAKE_APPROXIMATE_DAYS: {
-        id: 'TR_STAKE_APPROXIMATE_DAYS',
+    TR_EARN_APPROXIMATE_DAYS: {
+        id: 'TR_EARN_APPROXIMATE_DAYS',
         defaultMessage: '~{count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
@@ -9493,8 +9527,8 @@ export const messages = defineMessages({
         id: 'EMPTY_NFT_COLLECTIONS',
         defaultMessage: 'Empty collections',
     },
-    TR_STAKE_ADDING_TO_POOL: {
-        id: 'TR_STAKE_ADDING_TO_POOL',
+    TR_EARN_ADDING_TO_POOL: {
+        id: 'TR_EARN_ADDING_TO_POOL',
         defaultMessage: 'Adding to staking pool',
     },
     TR_STAKE_STAKED_AND_EARNING: {
@@ -9605,33 +9639,37 @@ export const messages = defineMessages({
         id: 'TR_STAKE_PROVIDED_BY',
         defaultMessage: 'Powered by',
     },
-    TR_STAKE_YOUR_FUNDS_MAINTAINED: {
-        id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
-        defaultMessage: 'Your staked funds are maintained by Everstake.',
+    TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED: {
+        id: 'TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED',
+        defaultMessage: 'Your staked funds are maintained by {providerName}.',
     },
-    TR_STAKE_EVERSTAKE_MANAGES: {
-        id: 'TR_STAKE_EVERSTAKE_MANAGES',
+    TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED: {
+        id: 'TR_EARN_YOUR_SUPPLIED_FUNDS_MAINTAINED',
+        defaultMessage: 'Your supplied funds are maintained by {providerName}.',
+    },
+    TR_EARN_STAKE_EVERSTAKE_MANAGES: {
+        id: 'TR_EARN_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
             'Everstake maintains and protects your staked {networkDisplaySymbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
-    TR_STAKE_TREZOR_NO_LIABILITY: {
-        id: 'TR_STAKE_TREZOR_NO_LIABILITY',
+    TR_EARN_STAKE_TREZOR_NO_LIABILITY: {
+        id: 'TR_EARN_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
             "When staking, the responsibility for your funds' security transitions from your Trezor to Everstake.",
     },
-    TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS: {
-        id: 'TR_STAKE_BY_STAKING_YOU_CAN_EARN_REWARDS',
+    TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS: {
+        id: 'TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS',
         defaultMessage:
             "Stake your {networkDisplaySymbol} to receive rewards and help enhance the network's security and stability.",
     },
-    TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE: {
-        id: 'TR_STAKE_SECURELY_DELEGATE_TO_EVERSTAKE',
+    TR_EARN_SECURELY_DELEGATE_TO_EVERSTAKE: {
+        id: 'TR_EARN_SECURELY_DELEGATE_TO_EVERSTAKE',
         defaultMessage:
             'With Trezor Suite, easily and securely delegate your {symbol} voting rights to the Everstake validator node. Enjoy competitive rewards, rely on a trusted validator, and retain full ownership of your coins.',
     },
-    TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
-        id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
-        defaultMessage: 'I acknowledge and consent to stake with Everstake.',
+    TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER: {
+        id: 'TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER',
+        defaultMessage: 'I acknowledge and consent to stake with {providerName}.',
     },
     TR_TX_SEND_FAILED_TITLE: {
         id: 'TR_TX_SEND_FAILED_TITLE',

@@ -1,7 +1,7 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getStakingTotalRewards } from '@suite-common/staking';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccountIsStakingActive,
@@ -167,7 +167,7 @@ export const StakingCard = ({
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake', flow: StakingFlow.Stake }));
+            dispatch(openModal({ type: 'stake', flow: EarnFlow.Stake }));
 
             analytics.report({
                 type: events.stakingStakeEvent.name,
@@ -344,7 +344,7 @@ export const StakingCard = ({
                                             <Translation
                                                 id={
                                                     account.networkType === 'ethereum'
-                                                        ? 'TR_STAKE_APPROXIMATE_DAYS'
+                                                        ? 'TR_EARN_APPROXIMATE_DAYS'
                                                         : 'TR_UP_TO_DAYS'
                                                 }
                                                 values={{ count: daysToUnstake }}

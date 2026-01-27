@@ -13,15 +13,15 @@ import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const getSubheadingTranslationId = (stakeType: StakeType) => {
-    if (stakeType === 'stake') return 'TR_STAKING_INSTANTLY_STAKED';
+    if (stakeType === 'stake') return 'TR_EARN_INSTANTLY_STAKED';
 
-    return 'TR_STAKE_INSTANTLY_UNSTAKED_WITH_DAYS';
+    return 'TR_EARN_INSTANTLY_UNSTAKED_WITH_DAYS';
 };
 
 const getHeadingTranslationId = (stakeType: StakeType) => {
-    if (stakeType === 'stake') return 'TR_STAKING_AMOUNT_STAKED_INSTANTLY';
+    if (stakeType === 'stake') return 'TR_EARN_AMOUNT_STAKED_INSTANTLY';
 
-    return 'TR_STAKING_AMOUNT_UNSTAKED_INSTANTLY';
+    return 'TR_EARN_AMOUNT_UNSTAKED_INSTANTLY';
 };
 
 interface InstantStakeBannerProps {

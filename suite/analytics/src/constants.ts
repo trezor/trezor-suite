@@ -94,6 +94,7 @@ export enum EventType {
     StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
     StakingChangeDelegate = 'staking/change-delegate',
+    StakingYield = 'staking/yield',
     SuiteReady = 'suite-ready',
     SwitchDeviceEject = 'switch-device/eject',
     SwitchDeviceForget = 'switch-device/forget',

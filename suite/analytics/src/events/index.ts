@@ -84,6 +84,7 @@ export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
+export { stakingYieldEvent } from './stakingYieldEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
 export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';

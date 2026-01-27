@@ -13,6 +13,7 @@ import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Card, Column, Modal } from '@trezor/components';
 
+import { VotingDelegationsOptions } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
@@ -21,7 +22,6 @@ import {
 } from 'src/hooks/wallet/useChangeDelegateForm';
 
 import { CurrentDelegate } from './CurrentDelegate';
-import { VotingDelegationOptions } from '../EverstakeModal/VotingDelegationOptions';
 
 interface StakeChangeDelegateModalProps {
     onCancel?: () => void;
@@ -96,7 +96,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     <Card>
                         <Column gap={20} hasDivider>
                             <CurrentDelegate account={account} />
-                            <VotingDelegationOptions initialValue={drepIdOptionValue} hasTitle />
+                            <VotingDelegationsOptions initialValue={drepIdOptionValue} hasTitle />
 
                             <Fees
                                 feeInfo={feeInfo}

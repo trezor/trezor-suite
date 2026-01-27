@@ -1,5 +1,5 @@
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     ComposeActionContext,
@@ -74,7 +74,7 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
     if (stakeType && !isSuccessTx) {
         switch (stakeType) {
             case 'stake':
-                dispatch(openModal({ type: stakeType, flow: StakingFlow.Stake }));
+                dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
                 break;
 
             default:
@@ -271,7 +271,7 @@ export const signTransaction =
             if (stakeType) {
                 switch (stakeType) {
                     case 'stake':
-                        dispatch(openModal({ type: stakeType, flow: StakingFlow.Stake }));
+                        dispatch(openModal({ type: stakeType, flow: EarnFlow.Stake }));
                         break;
 
                     default:

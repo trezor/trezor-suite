@@ -1,11 +1,12 @@
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, Grid, H3, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
+import { EarnWithdrawingInfo } from 'src/components/earn';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -64,13 +65,13 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
                         <CollapsibleBox
                             heading={
                                 <H3 typographyStyle="highlight">
-                                    <Translation id="TR_STAKE_UNSTAKING_PROCESS" />
+                                    <Translation id="TR_EARN_UNSTAKING_PROCESS" />
                                 </H3>
                             }
                             hasDivider={false}
                             defaultIsOpen
                         >
-                            <UnstakingInfo isExpanded />
+                            <EarnWithdrawingInfo flow={EarnFlow.Stake} isExpanded />
                         </CollapsibleBox>
                     </Column>
                 </Grid>

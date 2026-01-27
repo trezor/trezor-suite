@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery, selectPoolStatsApyData } from '@suite-common/wallet-core';
 import {
@@ -137,9 +137,15 @@ export const EmptyStakingCard = () => {
         [isCardano, displaySymbol],
     );
 
-    const openStakeInANutshellModal = () => {
+    const openEarnInANutshellModal = () => {
         if (!isStakingDisabled) {
-            dispatch(openModal({ type: 'stake-in-a-nutshell', flow: StakingFlow.Stake }));
+            dispatch(
+                openModal({
+                    type: 'earn-in-a-nutshell',
+                    flow: EarnFlow.Stake,
+                    provider: EarnProvider.Everstake,
+                }),
+            );
 
             analytics.report({
                 type: events.stakingStakeEvent.name,
@@ -209,7 +215,7 @@ export const EmptyStakingCard = () => {
 
                         <Tooltip content={stakingMessageContent}>
                             <Button
-                                onClick={openStakeInANutshellModal}
+                                onClick={openEarnInANutshellModal}
                                 isDisabled={isStakingDisabled}
                                 iconLeft={isStakingDisabled ? 'info' : undefined}
                                 data-testid="@wallet/staking/empty-card/start-staking-button"

@@ -217,13 +217,13 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify banner about instant staking', async () => {
                 await expect(stakingSection.instantBannerHeader).toHaveTranslation(
-                    'TR_STAKING_AMOUNT_STAKED_INSTANTLY',
+                    'TR_EARN_AMOUNT_STAKED_INSTANTLY',
                     {
                         values: { amount: '0.100204158497493752', symbol: 'ETH' },
                     },
                 );
                 await expect(stakingSection.instantBannerParagraph).toHaveTranslation(
-                    'TR_STAKING_INSTANTLY_STAKED',
+                    'TR_EARN_INSTANTLY_STAKED',
                     {
                         values: { amount: '0.100204158497493752', symbol: 'ETH', days: '1' },
                     },

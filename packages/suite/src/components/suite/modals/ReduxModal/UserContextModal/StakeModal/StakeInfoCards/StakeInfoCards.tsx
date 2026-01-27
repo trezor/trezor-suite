@@ -1,18 +1,18 @@
 import { Translation } from '@suite/intl';
-import { StakingFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import { StakingInfo } from 'src/components/suite/StakingProcess/StakingInfo';
+import { EarnSupplyingInfo } from 'src/components/earn';
 import { useSelector } from 'src/hooks/suite';
 
 import { EstimatedGains } from './EstimatedGains';
 
 interface StakeInfoCardsProps {
     account: Account;
-    flow: StakingFlow;
+    flow: EarnFlow;
 }
 
 export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
@@ -21,7 +21,7 @@ export const StakeInfoCards = ({ account, flow }: StakeInfoCardsProps) => {
     const cards = [
         {
             heading: <Translation id="TR_STAKING_ONCE_YOU_CONFIRM" />,
-            content: <StakingInfo isExpanded flow={flow} />,
+            content: <EarnSupplyingInfo isExpanded flow={flow} />,
             defaultIsOpen: true,
             isVisible: true,
         },
