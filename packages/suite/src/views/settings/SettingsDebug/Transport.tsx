@@ -24,7 +24,7 @@ const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
 const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
 const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
     BridgeTransport:
-        'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21328/ or https://localhost:21325/.\
+        'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21328/ or http://127.0.0.1:21325/.\
         This is the most general transport that may be used for both desktop and web version of Trezor Suite.',
     WebUsbTransport: 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.',
     NodeUsbTransport: 'Direct access to usb using node.js implementation.',
