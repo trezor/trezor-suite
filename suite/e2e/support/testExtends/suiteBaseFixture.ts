@@ -1,18 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import { BrowserContext, Page, TestInfo } from '@playwright/test';
+import { BrowserContext, Page, TestInfo, test as base } from '@playwright/test';
 import { execSync } from 'child_process';
 
 import { TestAnnotationType } from '@trezor/e2e-utils';
 import { SetupEmu, TrezorUserEnvLink, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
-import {
-    TrezorUserEnvLinkProxy,
-    getUrl,
-    getVideoPath,
-    isDesktopProject,
-    mockRemoteMessageSystem,
-} from '../common';
+import { getUrl, getVideoPath, isDesktopProject, mockRemoteMessageSystem } from '../common';
 import { LaunchSuiteParams, Suite, launchSuite } from '../electron';
 import { currentsTest } from './currentsFixture';
 import { enhancePage } from './enhancePage';
@@ -21,6 +15,17 @@ import { PlaywrightTarget, SuiteTestOptions } from './suiteTestOptions';
 import { DeviceFixture } from '../device';
 
 type ElectronConf = Pick<LaunchSuiteParams, 'keepUserData' | 'bridgeDaemon' | 'exposeConnectWs'>;
+type TrezorUserEnv = Pick<
+    TrezorUserEnvLinkClass,
+    | 'logTestDetails'
+    | 'startBridge'
+    | 'stopBridge'
+    | 'connect'
+    | 'disconnect'
+    | 'generateBlock'
+    | 'mineBlocks'
+    | 'sendToAddressAndMineBlock'
+>;
 
 type SuiteBaseFixture = {
     startEmulator: boolean;
@@ -30,8 +35,7 @@ type SuiteBaseFixture = {
     electronConf: ElectronConf;
     ignoreJSExceptions: Array<string>;
     url: string;
-    /** @deprecated */
-    trezorUserEnvLink: TrezorUserEnvLinkClass;
+    trezorUserEnv: TrezorUserEnv;
     page: Page;
     exceptionLogger: void;
 };
@@ -143,6 +147,27 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
     startEmulator: true,
     setupEmulator: true,
     deviceSetup: {},
+    trezorUserEnv: async ({}, use) => {
+        // This proxy limits the exposed methods from TrezorUserEnvLink and wraps the calls with test.step
+        const TrezorUserEnvLinkProxy = new Proxy<TrezorUserEnv>(
+            TrezorUserEnvLink as TrezorUserEnv,
+            {
+                get(target: any, propKey) {
+                    const origMethod = target[propKey];
+
+                    return function (...args: any[]) {
+                        const params = JSON.stringify(args).slice(1, -1);
+                        const methodName = String(propKey);
+
+                        return base.step(`TrezorLink.${methodName}(${params})`, () =>
+                            origMethod.apply(target, args),
+                        );
+                    };
+                },
+            },
+        );
+        await use(TrezorUserEnvLinkProxy);
+    },
     device: [
         async (
             { startEmulator, setupEmulator, model, firmwareVersion, deviceSetup },
@@ -179,13 +204,17 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
 
             const device = new DeviceFixture(model, firmwareVersion);
 
-            if (startEmulator) {
-                await device.powerOn({ wipe: true });
-            }
+            const startDevicePromise = (async () => {
+                if (startEmulator) {
+                    await device.powerOn({ wipe: true });
+                }
 
-            if (startEmulator && setupEmulator) {
-                await device.setup(deviceSetup);
-            }
+                if (startEmulator && setupEmulator) {
+                    await device.setup(deviceSetup);
+                }
+            })();
+
+            await trezorUserEnvStuckProtection(startDevicePromise);
 
             await use(device);
 
@@ -202,9 +231,6 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
         await use(getUrl(testInfo, target));
     },
 
-    trezorUserEnvLink: async ({}, use) => {
-        await use(TrezorUserEnvLinkProxy);
-    },
     page: async ({ target, locale, colorScheme, context, electronConf }, use, testInfo) => {
         if (isDesktopProject(target)) {
             const suite = await electronSetup(testInfo, locale, colorScheme, electronConf);

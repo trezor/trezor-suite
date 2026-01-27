@@ -7,7 +7,6 @@ import { validJws } from '@suite-common/message-system/src/__fixtures__/messageS
 import { Model } from '@suite-common/suite-types';
 import { TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
@@ -41,23 +40,6 @@ export function step(stepName?: string) {
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
 }
-
-// Wraps any TrezorUserEnvLink call with test.step
-const TrezorUserEnvLinkProxy = new Proxy(TrezorUserEnvLink, {
-    get(target: any, propKey) {
-        const origMethod = target[propKey];
-
-        return function (...args: any[]) {
-            const params = JSON.stringify(args).slice(1, -1);
-            const methodName = String(propKey);
-
-            return test.step(`TrezorLink.${methodName}(${params})`, () =>
-                origMethod.apply(target, args));
-        };
-    },
-});
-
-export { TrezorUserEnvLinkProxy };
 
 export const isEqualWithOmit = (param: { object1: any; object2: any; mask: string[] }) =>
     isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));

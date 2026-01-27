@@ -20,7 +20,7 @@ test.describe(
     { tag: ['@desktopOnly', '@T3W1', '@T3T1'] },
     () => {
         test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
-        test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnvLink }) => {
+        test.beforeEach(async ({ page, onboardingPage, settingsPage, trezorUserEnv }) => {
             await test.step('Mine on regtest network', async () => {
                 const payments = [
                     { address: accounts.account1.address, amount: 10 },
@@ -28,13 +28,13 @@ test.describe(
                 ];
 
                 for (const payment of payments) {
-                    await trezorUserEnvLink.sendToAddressAndMineBlock({
+                    await trezorUserEnv.sendToAddressAndMineBlock({
                         address: payment.address,
                         btc_amount: payment.amount,
                     });
                 }
                 // Mining needs to happen in time before discovery
-                await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
+                await trezorUserEnv.mineBlocks({ block_amount: 1 });
                 await page.waitForTimeout(5_000);
             });
 
@@ -52,7 +52,7 @@ test.describe(
             walletPage,
             devicePrompt,
             tradingPage,
-            trezorUserEnvLink,
+            trezorUserEnv,
         }) => {
             await walletPage
                 .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 })
@@ -134,7 +134,7 @@ test.describe(
             });
 
             await test.step('Generate empty Block and verify account #1 transaction has NOT changed', async () => {
-                await trezorUserEnvLink.generateBlock({
+                await trezorUserEnv.generateBlock({
                     address: accounts.miner_account.address,
                     txids: [],
                 });
@@ -158,7 +158,7 @@ test.describe(
             });
 
             await test.step('Mine the "not-self" transaction', async () => {
-                await trezorUserEnvLink.generateBlock({
+                await trezorUserEnv.generateBlock({
                     address: accounts.miner_account.address,
                     txids: [accounts.account2.txid],
                 });

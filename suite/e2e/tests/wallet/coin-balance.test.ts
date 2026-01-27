@@ -16,12 +16,12 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
                 testCase: 'Verifies that the account balance is increased after receiving BTC.',
             }),
         },
-        async ({ trezorUserEnvLink, dashboardPage, settingsPage, walletPage }) => {
+        async ({ trezorUserEnv, dashboardPage, settingsPage, walletPage }) => {
             const firstAccountBalanceLocator = walletPage.balanceOfAccount({
                 symbol: 'regtest',
                 atIndex: 0,
             });
-            await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
+            await trezorUserEnv.sendToAddressAndMineBlock({ address, btc_amount: 1 });
             await test.step('Regtest discovered with non zero value', async () => {
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.changeNetworks({
@@ -53,7 +53,7 @@ test.describe('Coin balance', { tag: ['@T3W1', '@T3T1'] }, () => {
                     expectedIncreasedBalance = rawIncreasedBalance;
                 }
 
-                await trezorUserEnvLink.sendToAddressAndMineBlock({ address, btc_amount: 1 });
+                await trezorUserEnv.sendToAddressAndMineBlock({ address, btc_amount: 1 });
                 await expect(firstAccountBalanceLocator).toHaveText(expectedIncreasedBalance);
             });
         },

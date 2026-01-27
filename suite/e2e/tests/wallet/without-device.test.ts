@@ -4,7 +4,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
     const ADDRESS_INDEX_1 = 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v';
 
     test.beforeEach(
-        async ({ page, onboardingPage, settingsPage, trezorUserEnvLink, dashboardPage }) => {
+        async ({ page, onboardingPage, settingsPage, trezorUserEnv, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
             await test.step('Enable regtest network with balance', async () => {
                 await settingsPage.navigateTo('application');
@@ -14,7 +14,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await settingsPage.navigateTo('coins');
                 await settingsPage.coinsTab.enableNetwork('regtest');
 
-                await trezorUserEnvLink.sendToAddressAndMineBlock({
+                await trezorUserEnv.sendToAddressAndMineBlock({
                     address: ADDRESS_INDEX_1,
                     btc_amount: 1,
                 });

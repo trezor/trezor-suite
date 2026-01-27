@@ -5,7 +5,7 @@ import {
     expectBridgeToBeStopped,
     waitForAppToBeInitialized,
 } from '../../support/bridge';
-import { TrezorUserEnvLinkProxy, skipFixture } from '../../support/common';
+import { skipFixture } from '../../support/common';
 import { launchSuite } from '../../support/electron';
 import { expect, test } from '../../support/fixtures';
 import { AnalyticsSection } from '../../support/pageObjects/analyticsSection';
@@ -20,10 +20,10 @@ test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.describe.configure({ mode: 'serial' });
 
-    test.beforeEach(async () => {
+    test.beforeEach(async ({ trezorUserEnv }) => {
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
-        await TrezorUserEnvLinkProxy.connect();
-        await TrezorUserEnvLinkProxy.stopBridge();
+        await trezorUserEnv.connect();
+        await trezorUserEnv.stopBridge();
     });
 
     test('App spawns bundled bridge and stops it after app quit', async ({ request }, testInfo) => {
@@ -60,10 +60,11 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ startEmulator: false, setupEmulator: false });
     test('App acquired device, EXTERNAL bridge is restarted, app reconnects', async ({
         device,
+        trezorUserEnv,
     }, testInfo) => {
         await device.powerOn({ wipe: true });
         await device.setup({});
-        await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
+        await trezorUserEnv.startBridge(BRIDGE_VERSION);
 
         const suite = await launchSuite({
             artefactFolder: testInfo.outputDir,
@@ -83,10 +84,10 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
         );
         await onboardingPage.completeOnboarding();
 
-        await TrezorUserEnvLinkProxy.stopBridge();
+        await trezorUserEnv.stopBridge();
         await devicePrompt.connectDevicePromptIsShown();
 
-        await TrezorUserEnvLinkProxy.startBridge(BRIDGE_VERSION);
+        await trezorUserEnv.startBridge(BRIDGE_VERSION);
         await expect(suite.window.getByTestId('@dashboard/index')).toBeVisible();
     });
 });
