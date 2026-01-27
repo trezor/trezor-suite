@@ -3066,20 +3066,4 @@ export const messages = {
     moduleClipboard: {
         copiedToClipboard: 'Copied to clipboard',
     },
-    labeling: {
-        label: 'Label',
-        addLabel: 'Add label',
-        disableAlert: {
-            title: 'Are you sure you want to turn off Suite Sync?',
-            description:
-                'Turning off Suite Sync disables labeling. Your labels will stay safely encrypted, but they won’t be visible until you turn Suite Sync back on.',
-            cta: 'Turn off',
-        },
-        enableAlert: {
-            title: 'Turn on Suite Sync to use labels',
-            description:
-                'Suite Sync keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
-            cta: 'Turn on',
-        },
-    },
 };
