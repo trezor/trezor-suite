@@ -13,7 +13,8 @@ inputs:
     required: false
   containers:
     description: "Docker containers to pull"
-    required: true
+    default: "trezor-user-env-unix bitcoin-regtest electrum-regtest quota-db suite-sync"
+    required: false
   workspace-dependencies:
     description: "Additional workspaces to install"
     required: false

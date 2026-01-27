@@ -58,9 +58,7 @@ export class MetadataPage {
     async initiateSuiteSyncSetup() {
         await this.settingsPage.navigateTo('debug');
         await this.settingsPage.debugTab.suiteSyncCheckbox.click();
-        await this.settingsPage.debugTab.suiteSyncUrlInput.fill(
-            'https://suite-sync.suite.sldev.cz/evolu/',
-        );
+        await this.settingsPage.debugTab.suiteSyncUrlInput.fill('http://127.0.0.1:4000');
         await this.settingsPage.debugTab.suiteSyncUrlSaveButton.click();
 
         await this.settingsPage.navigateTo('application');
@@ -74,12 +72,21 @@ export class MetadataPage {
     async confirmSuiteSyncSetup() {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
-        await this.page.waitForTimeout(2000); // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+        // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
+        await this.page.waitForTimeout(2000);
     }
 
     @step()
     async enableSuiteSync() {
         await this.initiateSuiteSyncSetup();
         await this.confirmSuiteSyncSetup();
+    }
+
+    @step()
+    async setupQuotaManager() {
+        await this.settingsPage.navigateTo('debug');
+        await this.settingsPage.debugTab.quotaManagerCheckbox.click();
+        await this.settingsPage.debugTab.quotaManagerUrlInput.fill('http://127.0.0.1:4001');
+        await this.settingsPage.debugTab.quotaManagerUrlSaveButton.click();
     }
 }

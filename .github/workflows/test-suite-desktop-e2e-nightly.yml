@@ -62,7 +62,6 @@ jobs:
         with:
           target: "desktop"
           pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           workspace-dependencies: "@trezor/suite-desktop"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false

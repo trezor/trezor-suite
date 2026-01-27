@@ -7,12 +7,45 @@ services:
     network_mode: host
     volumes:
       - ./trezor-user-env-logs:/trezor-user-env/logs
+
   bitcoin-regtest:
     image: ghcr.io/trezor/trezor-user-env-regtest # this is a special image that runs regtest and blockbook
     depends_on:
       - trezor-user-env-unix
     network_mode: service:trezor-user-env-unix
+
   electrum-regtest:
     image: ghcr.io/trezor/electrs:latest
     ports:
       - "50001:50001"
+
+  quota-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: suite-sync
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: suite-sync-gate
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U suite-sync -d suite-sync-gate"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  suite-sync:
+    image: ghcr.io/trezor/suite-sync:main
+    environment:
+      POSTGRES_GATE_USER: suite-sync
+      POSTGRES_GATE_PASSWORD: password
+      POSTGRES_GATE_HOST: quota-db
+      POSTGRES_GATE_PORT: 5432
+      POSTGRES_GATE_DB: suite-sync-gate
+      SERVER_ENV: dev
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+      - "4002:4002"
+    depends_on:
+      quota-db:
+        condition: service_healthy

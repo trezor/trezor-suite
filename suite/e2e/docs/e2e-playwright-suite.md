@@ -66,7 +66,7 @@ _(in case of Linux with X11 support, skip to step 6.)_
 
 1. **To check for flakiness** you can specify test/suite and how many time it should run: `--repeat-each=10`
 
-1. **To check for flakiness on CI** you can edit in `packages/suite/package.json` script `"test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./playwright-desktop.config.ts --project=desktop --repeat-each=30 <test-file-name>",`, commit, push and run this CI against your branch. This will run this one test 30 times. Please, always specify limited number of tests, never run full suite 30 times.
+1. **To check for flakiness on CI** you can edit in `packages/suite/package.json` script `"test:orchestrated:e2e:desktop": "NODE_OPTIONS='--no-warnings=DEP0040' yarn xvfb-maybe -- pwc-p --config=./playwright-config/playwright-desktop-nightly.config.ts --repeat-each=30 --grep=<test-file-name>",`, commit, push and run this CI against your branch. This will run this one test 30 times. Please, always specify limited number of tests, never run full suite 30 times.
 
 1. **To debug test** add `await page.pause();` to place where you want test to stop. Debugger window will open. This works only in `--headed` run.
 
