@@ -4,7 +4,7 @@ import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { selectHasDeviceAllowance } from '@suite-common/suite-sync-quota-manager';
 import { CreateSuiteStorageDep, CreateSuiteSyncOwnerDep } from '@suite-common/suite-sync-storage';
-import { SuiteSync, SuiteSyncStorageFlusherDep } from '@suite-common/suite-sync-types';
+import { SuiteSync, SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     selectAllDeviceStaticIds,
     selectDeviceByStaticSessionId,
@@ -46,7 +46,7 @@ type CreateSuiteSyncCompositionRootDeps = {
     CreateSuiteStorageDep &
     CreateSuiteSyncOwnerDep &
     PlatformEncryptionDep &
-    SuiteSyncStorageFlusherDep;
+    SuiteSyncAppReloaderDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -136,7 +136,7 @@ export const createSuiteSyncCompositionRoot = (
             dispatch: deps.dispatch,
             getState: deps.getState,
             turnOffSuiteSyncForWallet,
-            flushSuiteSyncStorage: deps.flushSuiteSyncStorage,
+            reloadApp: deps.reloadApp,
         }),
         turnOnSuiteSync: createTurnOnSuiteSync({
             getState: deps.getState,

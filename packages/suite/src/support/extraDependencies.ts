@@ -16,7 +16,7 @@ import {
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { CommonServices, ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import { SuiteSyncStorageFlusherDep } from '@suite-common/suite-sync-types';
+import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
@@ -100,7 +100,7 @@ export type StoreAPIDep = {
     dispatch: (_: any) => any;
 };
 
-export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncStorageFlusherDep;
+export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
@@ -132,7 +132,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         suiteSync: createSuiteSyncDesktopCompositionRoot({
             dispatch: deps.dispatch,
             getState: deps.getState,
-            flushSuiteSyncStorage: deps.flushSuiteSyncStorage,
+            reloadApp: deps.reloadApp,
             platformEncryption,
             trezorConnect: TrezorConnect,
             ensureDelegatedIdentityKey,

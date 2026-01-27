@@ -30,6 +30,6 @@ export const createSuiteSyncNativeCompositionRoot = (
         ...deps,
         createSuiteStorage: createEvoluStorage,
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
-        flushSuiteSyncStorage: reloadAppAsync,
+        reloadApp: reloadAppAsync,
     });
 };
