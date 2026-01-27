@@ -58,7 +58,9 @@ export const SuiteSyncRelaySettings = () => {
     return (
         <Card>
             <VStack spacing="sp12">
-                <Text variant="titleSmall">Suite Sync Relay Settings</Text>
+                <Text variant="titleSmall" testID="@suiteSync/header">
+                    Suite Sync Relay Settings
+                </Text>
                 <VStack>
                     <HStack justifyContent="space-between">
                         <Text>Enable Suite Sync Debug</Text>
