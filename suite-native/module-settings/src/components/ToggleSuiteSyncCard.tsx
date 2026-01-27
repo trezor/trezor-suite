@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
@@ -6,11 +7,13 @@ import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useLegacyAnalytics, useNativeServices } from '@suite-native/services';
+import { StorageContext } from '@suite-native/storage';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 export const ToggleSuiteSyncCard = () => {
     const analytics = useLegacyAnalytics();
+    const persistor = useContext(StorageContext);
     const { showAlert } = useAlert();
     const { showToast } = useToast();
     const { suiteSync } = useNativeServices();
@@ -23,7 +26,9 @@ export const ToggleSuiteSyncCard = () => {
             description: <Translation id="suiteSync.disableAlert.description" />,
             primaryButtonTitle: <Translation id="suiteSync.disableAlert.cta" />,
             onPressPrimaryButton: () => {
-                suiteSync.turnOffSuiteSync();
+                suiteSync.turnOffSuiteSync({
+                    ensureSettingsPersisted: () => persistor?.flush(),
+                });
                 analytics.report({
                     type: 'settings/general/labeling',
                     payload: {

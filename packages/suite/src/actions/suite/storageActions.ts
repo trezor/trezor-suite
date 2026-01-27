@@ -369,9 +369,10 @@ export const saveBackend =
     };
 
 export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return;
+    if (!db.isAccessible()) return Promise.resolve();
     const { suite } = getState();
-    db.addItem(
+
+    return db.addItem(
         'suiteSettings',
         {
             settings: {

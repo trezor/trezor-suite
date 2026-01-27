@@ -19,7 +19,7 @@ export type CreateTurnOffSuiteSyncDeps = {
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
-    async () => {
+    async (params: { ensureSettingsPersisted?: () => Promise<void> } = {}) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
 
         if (!isSuiteSyncEnabled) {
@@ -36,6 +36,7 @@ export const createTurnOffSuiteSync =
 
         // NOTE: enforce clearing all data from the suite sync
         deps.dispatch(clearAll());
+        await (params.ensureSettingsPersisted?.() ?? Promise.resolve());
         // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
         // setTimeout as a hacky way to wait for redux state to be updated before the actual app reload. Will be removed once #23641 is implemented.
         setTimeout(deps.reloadApp, 0);
