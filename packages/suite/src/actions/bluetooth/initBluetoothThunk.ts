@@ -77,23 +77,26 @@ export const initBluetoothThunk = createThunk<void, void, void>(
                 return;
             }
 
-            // wait to acquire existing devices before connecting to the new one
-            const hasUnacquiredDevice = suiteDevices.some(d => d.type === 'unacquired');
-            // prioritize USB if already connected
-            const hasSameUsbDevice = suiteDevices.find(
-                d =>
-                    knownDevice?.deviceId &&
-                    d.id === knownDevice.deviceId &&
-                    !d.bluetoothProps &&
-                    d.connected,
-            );
-            // if FW update is in progress, only connect if it's the same device
-            const fwUpdatingDifferentDevice =
-                firmwareStatus.status === 'started' &&
-                firmwareStatus.cachedDevice?.bluetoothProps?.id !== device.id;
+            const isFwUpdateProcess = firmwareStatus.status !== 'initial';
+            if (isFwUpdateProcess) {
+                // if FW update is in progress, only connect if it's the same device
+                if (firmwareStatus.cachedDevice?.descriptor.id !== device.id) {
+                    return;
+                }
+            } else {
+                // wait to acquire existing devices before connecting to the new one
+                const hasUnacquiredDevice = suiteDevices.some(d => d.type === 'unacquired');
+                // prioritize USB if already connected
+                const hasSameUsbDevice = suiteDevices.some(
+                    d =>
+                        d.id === knownDevice.deviceId &&
+                        d.descriptor.apiType === 'usb' &&
+                        d.connected,
+                );
 
-            if (hasUnacquiredDevice || hasSameUsbDevice || fwUpdatingDifferentDevice) {
-                return;
+                if (hasUnacquiredDevice || hasSameUsbDevice) {
+                    return;
+                }
             }
 
             // do not hijack BT connection
