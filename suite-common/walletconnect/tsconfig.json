@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../analytics-types" },
+        { "path": "../analytics" },
         { "path": "../connect-popup" },
         { "path": "../mev" },
         { "path": "../redux-utils" },

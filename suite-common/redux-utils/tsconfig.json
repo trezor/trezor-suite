@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../analytics-types" },
+        { "path": "../analytics" },
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },
         {

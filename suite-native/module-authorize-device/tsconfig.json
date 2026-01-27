@@ -3,7 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/analytics-types"
+            "path": "../../suite-common/analytics"
         },
         {
             "path": "../../suite-common/bluetooth"
