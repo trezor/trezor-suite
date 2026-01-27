@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/signtxVerify.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     address as BitcoinJsAddress,
     payments as BitcoinJsPayments,
@@ -7,7 +8,7 @@ import {
     bip32,
 } from '@trezor/utxo-lib';
 
-import { ERRORS, PROTO } from '../../constants';
+import { PROTO } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { Network } from '../../types';
 

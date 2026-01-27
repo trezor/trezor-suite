@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/Discovery.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TypedEmitter } from '@trezor/utils';
 
 import { Blockchain } from '../../backend/BlockchainLink';
-import { ERRORS } from '../../constants';
 import type { DeviceCommands } from '../../device/DeviceCommands';
 import type { CoinInfo, DiscoveryAccount, DiscoveryAccountType } from '../../types';
 import type { GetAccountInfo } from '../../types/api/getAccountInfo';

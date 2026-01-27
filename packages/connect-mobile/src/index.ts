@@ -1,12 +1,12 @@
 import EventEmitter from 'events';
 
-import * as ERRORS from '@trezor/connect/src/constants/errors';
 import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import { DEEPLINK_VERSION, DEFAULT_DOMAIN_MAJOR_VER } from '@trezor/connect/src/data/version';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import type { ConnectSettings, ConnectSettingsMobile, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { Deferred, createDeferred, removeTrailingSlashes } from '@trezor/utils';
 
 export class TrezorConnectDeeplink implements ConnectFactoryDependencies<ConnectSettingsMobile> {

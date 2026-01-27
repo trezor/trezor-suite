@@ -1,8 +1,9 @@
 import * as cbor from 'cbor';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { CARDANO, ERRORS, PROTO } from '../../../constants';
+import { CARDANO, PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {

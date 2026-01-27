@@ -1,8 +1,8 @@
 import EventEmitter from 'events';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { createDeferredManager } from '@trezor/utils';
 
-import { ERRORS } from './constants';
 import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
 import {

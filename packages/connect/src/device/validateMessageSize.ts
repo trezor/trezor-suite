@@ -1,5 +1,6 @@
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
+
 import { Device } from './Device';
-import { TypedError } from '../constants/errors';
 
 /**
  * for T1B1 maximum message size is 1024 bytes

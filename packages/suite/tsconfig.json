@@ -149,6 +149,7 @@
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },
+        { "path": "../connect-common" },
         { "path": "../connect-web" },
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },

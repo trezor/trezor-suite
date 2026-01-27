@@ -4,9 +4,10 @@
 
 import { trezorUtils } from '@fivebinaries/coin-selection';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import {

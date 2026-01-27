@@ -28,6 +28,7 @@
         "@suite-native/services": "workspace:*",
         "@suite-native/swipeable-walkthrough": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:^",
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/urls": "workspace:*",

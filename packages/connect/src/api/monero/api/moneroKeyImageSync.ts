@@ -1,7 +1,9 @@
 import { keccak_256 } from '@noble/hashes/sha3';
 import { hexToBytes } from '@noble/hashes/utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
+import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import type { MoneroExportedKeyImage, MoneroKeyImageSyncResult } from '../../../types/api/monero';

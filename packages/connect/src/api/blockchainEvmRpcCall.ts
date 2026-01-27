@@ -1,5 +1,6 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { ERRORS } from '../constants';
 import { AbstractMethod, Payload } from '../core/AbstractMethod';
 import { CoinInfo } from '../types';
 import { validateParams } from './common/paramsValidator';

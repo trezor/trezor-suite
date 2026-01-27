@@ -1,4 +1,5 @@
-import { ERRORS } from '../constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { UI } from '../events';

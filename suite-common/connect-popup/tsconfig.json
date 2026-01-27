@@ -9,6 +9,9 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/utils" }
     ]
 }

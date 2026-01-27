@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     CallMethodAnyResponse,
     CallMethodPayload,
@@ -16,6 +15,7 @@ import type {
     ConnectSettingsWeb,
     Manifest,
 } from '@trezor/connect/src/types';
+import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { WebsocketClient } from '@trezor/websocket-client';
 import { WebsocketError } from '@trezor/websocket-client/src/client';
 

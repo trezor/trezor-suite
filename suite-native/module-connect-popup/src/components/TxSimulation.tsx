@@ -20,7 +20,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { ERRORS } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 import { ContractInfoBottomSheet } from './TxSimulation/ContractInfoBottomSheet';

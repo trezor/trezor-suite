@@ -4,7 +4,7 @@ import { numberToHex, toWei } from 'web3-utils';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { FeeInfo } from '@suite-common/wallet-types';
-import { ERRORS } from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { useDispatch } from 'src/hooks/suite';
 import { FeesFormValues } from 'src/hooks/wallet/form/useFees';

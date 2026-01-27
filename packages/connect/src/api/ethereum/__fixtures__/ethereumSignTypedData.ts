@@ -1,7 +1,7 @@
+import { TrezorError } from '@trezor/connect-common/src/constants/errors';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { PROTO } from '../../../constants';
-import { TrezorError } from '../../../constants/errors';
 
 export const parseArrayType = [
     {

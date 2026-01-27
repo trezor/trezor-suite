@@ -10638,6 +10638,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:*"
   peerDependencies:
     "@trezor/suite-desktop-api": "workspace:*"
@@ -11303,6 +11304,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
@@ -12561,6 +12563,7 @@ __metadata:
     "@suite-native/services": "workspace:*"
     "@suite-native/swipeable-walkthrough": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/urls": "workspace:*"
@@ -12597,6 +12600,7 @@ __metadata:
     "@suite-native/qr-code": "workspace:^"
     "@suite-native/toasts": "workspace:^"
     "@trezor/connect": "workspace:^"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/connect-mobile": "workspace:*"
     "@trezor/styles": "workspace:^"
     "@trezor/urls": "workspace:*"
@@ -12712,6 +12716,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/analytics": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -14334,11 +14339,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:packages/connect-common":
+"@trezor/connect-common@workspace:*, @trezor/connect-common@workspace:^, @trezor/connect-common@workspace:packages/connect-common":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/protobuf": "workspace:^"
+    "@trezor/protocol": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.299"
     "@types/jest": "npm:29.5.12"
@@ -14461,6 +14468,7 @@ __metadata:
   resolution: "@trezor/connect-mobile@workspace:packages/connect-mobile"
   dependencies:
     "@trezor/connect": "workspace:^"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/utils": "workspace:^"
     tsx: "npm:^4.20.3"
   peerDependencies:
@@ -14786,7 +14794,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/protocol@workspace:*, @trezor/protocol@workspace:packages/protocol":
+"@trezor/protocol@workspace:*, @trezor/protocol@workspace:^, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
   dependencies:
@@ -15216,6 +15224,7 @@ __metadata:
     "@trezor/coinjoin": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/connect-web": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
