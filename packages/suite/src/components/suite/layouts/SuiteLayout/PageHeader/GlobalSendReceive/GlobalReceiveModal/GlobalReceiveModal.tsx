@@ -16,7 +16,7 @@ import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal';
 import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { globalSendReceiveFilters } from 'src/slices/wallet/globalSendReceiveFilters';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account, AccountItemType } from 'src/types/wallet';
 
 import { useAccountsOptions } from './hooks/useAccountsOptions';
@@ -31,7 +31,7 @@ type GlobalReceiveModalProps = {
 const LIST_HEIGHT = 385;
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device || !device.connected;
@@ -84,7 +84,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                                 }),
                             );
 
-                            legacyAnalytics.report({
+                            analytics.report({
                                 type: EventType.DashboardReceiveModalOptions,
                                 payload: {
                                     option: 'addAccount',

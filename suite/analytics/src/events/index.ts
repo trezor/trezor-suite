@@ -1,6 +1,8 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
+export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOptionsEvent';
 export { dashboardSendModalEvent } from './dashboardSendModalEvent';
+export { dashboardSendModalOptionsEvent } from './dashboardSendModalOptionsEvent';
 export { menuGuideEvent } from './menuGuideEvent';
 export { autostartModalEvent } from './autostartModalEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';

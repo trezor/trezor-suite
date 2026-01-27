@@ -1,39 +1,33 @@
 import { useCallback } from 'react';
 
-import { EventType, SuiteDesktopLegacyAnalyticsEvents } from '@suite/analytics';
+import {
+    type DashboardReceiveModalOptionsEventOption,
+    type DashboardSendModalOptionsEventOption,
+    EventType,
+} from '@suite/analytics';
 
-import { useLegacyAnalytics } from '../../../../../../../support/useAnalytics';
-
-type SendModalEventOptions = Extract<
-    SuiteDesktopLegacyAnalyticsEvents,
-    { type: EventType.DashboardSendModalOptions }
->['payload']['option'];
-
-type ReceiveModalEventOptions = Extract<
-    SuiteDesktopLegacyAnalyticsEvents,
-    { type: EventType.DashboardReceiveModalOptions }
->['payload']['option'];
+import { useAnalytics } from '../../../../../../../support/useAnalytics';
 
 export const useGlobalSendReceiveAnalytics = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const reportSend = useCallback(
-        (option: SendModalEventOptions, filledSearch: boolean) => {
-            legacyAnalytics.report({
+        (option: DashboardSendModalOptionsEventOption, filledSearch: boolean) => {
+            analytics.report({
                 type: EventType.DashboardSendModalOptions,
                 payload: { option, filledSearch },
             });
         },
-        [legacyAnalytics],
+        [analytics],
     );
 
     const reportReceive = useCallback(
-        (option: ReceiveModalEventOptions, filledSearch: boolean) => {
-            legacyAnalytics.report({
+        (option: DashboardReceiveModalOptionsEventOption, filledSearch: boolean) => {
+            analytics.report({
                 type: EventType.DashboardReceiveModalOptions,
                 payload: { option, filledSearch },
             });
         },
-        [legacyAnalytics],
+        [analytics],
     );
 
     const sendAnalytics = {
