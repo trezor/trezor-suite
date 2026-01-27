@@ -1,10 +1,10 @@
+import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { AccountTable } from '@suite-common/suite-sync-storage';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../../tests/createSuiteSyncStorageMock.mock';
-import { createMockDeps, mock } from '../../../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../../../createRefreshSuiteSyncKeys';
 import { UpdateAccountLabelDeps, createUpdateAccountLabel } from '../createUpdateAccountLabel';
 
