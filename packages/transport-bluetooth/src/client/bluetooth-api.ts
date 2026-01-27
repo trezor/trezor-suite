@@ -6,6 +6,7 @@ import {
 import { DEVICE_TYPE } from '@trezor/transport/src/constants';
 import * as ERRORS from '@trezor/transport/src/errors';
 import { PathInternal } from '@trezor/transport/src/types';
+import { getBLEDescriptorModel } from '@trezor/transport/src/utils/descriptor';
 import { readMessageBuffer } from '@trezor/transport/src/utils/readMessageBuffer';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
@@ -36,6 +37,7 @@ export class BluetoothApi extends AbstractApi {
                 type: DEVICE_TYPE.TypeBluetooth,
                 id: device.id,
                 apiType: this.type,
+                model: getBLEDescriptorModel(device.data[2]),
             }));
     }
 

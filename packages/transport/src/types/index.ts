@@ -1,6 +1,7 @@
 import { Branded } from '@trezor/type-utils';
 
 import { DEVICE_TYPE } from '../constants';
+import type { DescriptorModel } from '../utils/descriptor';
 
 export * from './apiCall';
 
@@ -24,6 +25,8 @@ export type DescriptorApiLevel = {
     apiType: ApiType;
     /** api level device id.  */
     id?: string;
+    /** api level device model */
+    model?: DescriptorModel;
 };
 
 export type Descriptor = Omit<DescriptorApiLevel, 'path'> & {
