@@ -553,21 +553,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralLabelingProvider;
-          payload: {
-              provider:
-                  | 'dropbox'
-                  | 'google'
-                  | 'fileSystem'
-                  | 'missing-provider'
-                  | 'inMemoryTest'
-                  | 'closed'
-                  | 'evolu'
-                  | 'legacy'
-                  | ''; // Todo: 'sdCard' not implemented yet
-          };
-      }
-    | {
           type: EventType.SettingsGeneralMevProtection;
           payload: {
               value: boolean;

@@ -1,4 +1,4 @@
-import { DesktopLegacyAnalyticsDep, EventType } from '@suite/analytics';
+import { DesktopAnalyticsDep, EventType } from '@suite/analytics';
 import { TurnOnSuiteSync, TurnOnSuiteSyncDep } from '@suite-common/suite-sync-types';
 
 /**
@@ -14,7 +14,7 @@ export type DisableLegacyMetadataIfNeededDep = {
 };
 
 type CreateTurnOnDesktopSuiteSyncDeps = TurnOnSuiteSyncDep &
-    DesktopLegacyAnalyticsDep &
+    DesktopAnalyticsDep &
     DisableLegacyMetadataIfNeededDep;
 
 /**
@@ -27,7 +27,7 @@ export const createTurnOnDesktopSuiteSync =
         // Enabling Evolu implicitly disables Legacy Labeling
         deps.disableLegacyMetadataIfNeeded();
 
-        deps.legacyAnalytics.report({
+        deps.analytics.report({
             type: EventType.SettingsGeneralLabelingProvider,
             payload: {
                 provider: 'evolu',
