@@ -25,7 +25,7 @@ import {
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
 import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
@@ -34,7 +34,7 @@ export const Labeling = () => {
     const { translationString } = useTranslation();
     const { suiteSync, disableLegacyMetadataIfNeeded } = useSuiteServices();
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);
     const { device } = useDevice();
     const deviceStaticSessionId = device?.state?.staticSessionId;
@@ -111,7 +111,7 @@ export const Labeling = () => {
                 exhaustive(value);
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
                 value: value === 'secure-sync' ? 'evolu' : value,

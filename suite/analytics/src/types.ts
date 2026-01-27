@@ -544,12 +544,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralLabeling;
-          payload: {
-              value: string;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralAutoEject;
           payload: {
               value: boolean;
