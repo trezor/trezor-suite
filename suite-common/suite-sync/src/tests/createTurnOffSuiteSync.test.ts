@@ -73,4 +73,29 @@ describe(createTurnOffSuiteSync.name, () => {
         expect(deps.dispatch).toHaveBeenCalledWith(clearAll());
         expect(deps.reloadApp).toHaveBeenCalled();
     });
+
+    it('awaits ensure flushing of the storage', async () => {
+        const deps = createMockDeps<CreateTurnOffSuiteSyncDeps>({
+            getIsSuiteSyncEnabled: () => true,
+            dispatch: mock<Dispatch>(() => {}),
+            getAllDeviceSessionIds: () => [],
+            turnOffSuiteSyncForWallet: () => Promise.resolve(),
+            reloadApp: () => {},
+        });
+
+        const turnOffSuiteSync = createTurnOffSuiteSync(deps);
+        let resolveFlushPromise = null as (() => void) | null;
+        const flushPromise = new Promise<void>(resolve => {
+            resolveFlushPromise = resolve;
+        });
+        const ensureFlushMock = jest.fn().mockImplementation(() => flushPromise);
+        const turnOffPromise = turnOffSuiteSync({ ensureSettingsPersisted: ensureFlushMock });
+
+        expect(ensureFlushMock).toHaveBeenCalled();
+        expect(deps.reloadApp).not.toHaveBeenCalled();
+        resolveFlushPromise?.();
+        await flushPromise;
+        expect(deps.reloadApp).toHaveBeenCalled();
+        await turnOffPromise;
+    });
 });
