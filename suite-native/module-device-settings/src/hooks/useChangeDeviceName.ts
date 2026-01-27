@@ -11,7 +11,7 @@ import {
     DeviceNameStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 import { deviceNameFormValidationSchema } from '../deviceNameFormSchema';
@@ -27,7 +27,7 @@ export const useChangeDeviceName = () => {
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
     const device = useSelector(selectSelectedDevice);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const form = useForm({
         validation: deviceNameFormValidationSchema(translate),
         defaultValues: {
@@ -73,7 +73,7 @@ export const useChangeDeviceName = () => {
 
         navigation.navigate(DeviceNameStackRoutes.DeviceNameLoadingScreen);
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDeviceChangeLabel,
         });
     });
