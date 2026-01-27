@@ -1,11 +1,12 @@
-import type { Options, Event as SentryEvent } from '@sentry/core';
+import type { ErrorEvent, Options } from '@sentry/core';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { allowReportTag, coinjoinNetworkTag, coinjoinReportTag } from './constants';
+import { coinjoinNetworkTag, coinjoinReportTag } from './constants';
 import { ignoreErrors } from './ignoreErrors';
+import { redactSentryEvent } from './redactSentryEvent';
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -15,9 +16,10 @@ import { ignoreErrors } from './ignoreErrors';
  *
  * In case of any issue during parsing, original error is reported just with extra redactUserPathFailed tag
  * to be able to see in Sentry if there are any issues in this approach.
+ *
+ * This is relevant only on Desktop.
  */
-
-const redactUserPath = (event: SentryEvent) => {
+const redactUserPath = (event: ErrorEvent): ErrorEvent => {
     try {
         const eventAsString = JSON.stringify(event);
         const redactedString = redactUserPathFromString(eventAsString);
@@ -34,20 +36,11 @@ const redactUserPath = (event: SentryEvent) => {
     }
 };
 
-const beforeSend = (event: SentryEvent) => {
-    // sentry events are skipped until user confirm analytics reporting
-    const allowReport = event.tags?.[allowReportTag];
-    if (allowReport === false) {
-        return null;
-    }
-    // allow report error without breadcrumbs before confirm status is loaded (@storage/loaded)
-    if (typeof allowReport === 'undefined') {
-        delete event.breadcrumbs;
-    }
-
-    // send only what is really necessary from coinjoin
+// Leaves only what is really necessary on a coinjoin error event
+const redactCoinjoinData = (event: ErrorEvent): ErrorEvent => {
     if (event.tags?.[coinjoinReportTag]) {
         return {
+            type: event.type,
             message: event.message,
             release: event.release,
             level: event.level,
@@ -58,8 +51,11 @@ const beforeSend = (event: SentryEvent) => {
         };
     }
 
-    return redactUserPath(event);
+    return event;
 };
+
+const beforeSend = (event: ErrorEvent) =>
+    redactSentryEvent(redactUserPath(redactCoinjoinData(event)));
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches
