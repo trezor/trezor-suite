@@ -1,7 +1,6 @@
 import { AssetDiff, AssetExposure } from '@suite-common/tx-simulation';
 import { Network } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { TxSimulationAssetLogo } from './TxSimulationAssetLogo';
 import { TxSimulationAssetRow } from './TxSimulationAssetRow';
@@ -21,7 +20,7 @@ export const TxSimulationAsset = ({
     const assetType = (assetDiff || assetExposure)?.asset_type;
 
     return (
-        <Row columnGap={spacings.xs} padding={{ horizontal: spacings.md, vertical: spacings.sm }}>
+        <Row columnGap={8} padding={{ horizontal: 16, vertical: 12 }}>
             <TxSimulationAssetLogo asset={asset} assetType={assetType} network={network} />
 
             {assetDiff?.in.map((inAmount, inIndex) => (

@@ -2,7 +2,6 @@ import { Translation } from '@suite/intl';
 import { AccountSummary } from '@suite-common/tx-simulation';
 import { Network } from '@suite-common/wallet-config';
 import { Card, Column, H4, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { TxSimulationAsset } from './TxSimulationAsset/TxSimulationAsset';
 
@@ -18,7 +17,7 @@ export function TxSimulationResult({
     return (
         <Card
             header={
-                <H4 margin={{ left: spacings.xxs }} typographyStyle="callout">
+                <H4 margin={{ left: 4 }} typographyStyle="callout">
                     <Translation id="TR_SIMULATION" />
                 </H4>
             }
@@ -26,10 +25,10 @@ export function TxSimulationResult({
         >
             <Column
                 margin={{
-                    // @ts-expect-error - negative margins to align with card
-                    horizontal: -spacings.md,
-                    // @ts-expect-error - negative margins to align with card
-                    vertical: -spacings.sm,
+                    // Negative margins to align with card
+                    horizontal: -16,
+                    // Negative margins to align with card
+                    vertical: -12,
                 }}
                 hasDivider
             >
@@ -46,8 +45,8 @@ export function TxSimulationResult({
                 {assets_diffs.length === 0 && exposures.length === 0 && (
                     <Row
                         padding={{
-                            horizontal: spacings.md,
-                            vertical: spacings.sm,
+                            horizontal: 16,
+                            vertical: 12,
                         }}
                         justifyContent="center"
                     >

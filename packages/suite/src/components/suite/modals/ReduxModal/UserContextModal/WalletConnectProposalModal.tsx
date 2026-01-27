@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { TxSimulationBanner } from '@suite/tx-simulation';
 import { useDappScan } from '@suite-common/tx-simulation';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
@@ -34,8 +35,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
-
-import { TxSimulationBanner } from './TxSimulationModal';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
