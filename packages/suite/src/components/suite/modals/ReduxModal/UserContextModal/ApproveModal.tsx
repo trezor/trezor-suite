@@ -32,7 +32,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeCryptoAndProviderInfo } from 'src/hooks/wallet/trading/form/useTradingExchangeCryptoAndProviderInfo';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingExchangeApprovalType } from 'src/types/trading/tradingForm';
 import { getProvidersInfoProps } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
@@ -59,7 +59,7 @@ export const ApproveModal = ({
     onCancel,
 }: ApproveModalProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const context = useTradingFormContext<TradingExchangeType>();
     const {
         form: {
@@ -114,7 +114,7 @@ export const ApproveModal = ({
         }
 
         if (['MINIMAL', 'INFINITE'].includes(type)) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingExchangeApproval,
                 payload: {
                     type: 'approve-modal',
@@ -157,7 +157,7 @@ export const ApproveModal = ({
     };
 
     const confirmAndSend = async () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'approve-modal',
@@ -181,7 +181,7 @@ export const ApproveModal = ({
         const { receiveAddress } = tradingReceiveAddress;
         if (!receiveAddress) return;
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'approve-modal',
@@ -197,7 +197,7 @@ export const ApproveModal = ({
     };
 
     const onClose = (isSubmitting?: boolean) => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchangeApproval,
             payload: {
                 type: 'approve-modal',
