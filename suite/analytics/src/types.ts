@@ -79,9 +79,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DashboardSendModal;
-      }
-    | {
           type: EventType.DashboardSendModalOptions;
           payload: {
               option: 'account' | 'close';
