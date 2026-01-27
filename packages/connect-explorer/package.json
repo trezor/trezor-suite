@@ -16,6 +16,7 @@
         "@hbsnow/rehype-sectionize": "^1.0.7",
         "@sinclair/typebox": "^0.33.12",
         "@trezor/components": "workspace:^",
+        "@trezor/connect-common": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/connect-web": "workspace:^",

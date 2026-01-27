@@ -16,6 +16,7 @@
     ],
     "references": [
         { "path": "../components" },
+        { "path": "../connect-common" },
         { "path": "../connect-explorer-theme" },
         { "path": "../connect-mobile" },
         { "path": "../connect-web" },

@@ -1,5 +1,6 @@
+import { WEBEXTENSION } from '@trezor/connect-common/src/constants/webextension';
 import TrezorConnectMobile from '@trezor/connect-mobile';
-import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT, WEBEXTENSION } from '@trezor/connect-web';
+import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT } from '@trezor/connect-web';
 
 import type { Dispatch, Field, GetState } from '../types';
 import {

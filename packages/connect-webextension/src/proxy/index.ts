@@ -7,11 +7,10 @@ import {
     IFRAME,
     Manifest,
     POPUP,
-    WEBEXTENSION,
     createErrorMessage,
 } from '@trezor/connect/src/exports';
 import { factory } from '@trezor/connect/src/factory';
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { ERRORS, WEBEXTENSION } from '@trezor/connect-common/src/constants';
 import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageChannel/window-serviceworker';
 
 const eventEmitter = new EventEmitter();
