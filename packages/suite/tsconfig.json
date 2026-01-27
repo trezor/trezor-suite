@@ -149,7 +149,7 @@
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/tx-simulation" },
         { "path": "../address-validator" },
-        { "path": "../analytics" },
+        { "path": "../analytics-uploader" },
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },

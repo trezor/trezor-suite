@@ -58,7 +58,9 @@
         { "path": "../staking" },
         { "path": "../theme" },
         { "path": "../toasts" },
-        { "path": "../../packages/analytics" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         {
             "path": "../../packages/blockchain-link-types"
         },

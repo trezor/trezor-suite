@@ -17,7 +17,7 @@ import {
 } from '@suite-common/suite-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account, AddressDisplayOptions, SelectedAccountStatus } from '@suite-common/wallet-types';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 import {
     BlockchainBlock,
     BluetoothDeviceId,

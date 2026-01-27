@@ -72,7 +72,9 @@
         { "path": "../trading-residence" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
-        { "path": "../../packages/analytics" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         {
             "path": "../../packages/blockchain-link-types"
         },

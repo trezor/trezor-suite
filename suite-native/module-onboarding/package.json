@@ -27,7 +27,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
-        "@trezor/analytics": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",

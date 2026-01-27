@@ -10940,7 +10940,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
     lodash: "npm:^4.17.21"
     react: "npm:19.1.0"
@@ -11183,7 +11183,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -11507,7 +11507,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/sentry": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12051,7 +12051,7 @@ __metadata:
     "@suite-native/staking": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12778,7 +12778,7 @@ __metadata:
     "@suite-native/swipeable-walkthrough": "workspace:*"
     "@suite-native/thp": "workspace:*"
     "@suite-native/toasts": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/device-utils": "workspace:*"
@@ -12935,7 +12935,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/trading-residence": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -13147,7 +13147,7 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/trading-types": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -13782,7 +13782,7 @@ __metadata:
     "@suite-native/trading-atoms": "workspace:*"
     "@suite-native/trading-consts": "workspace:*"
     "@suite-native/trading-state": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-localization: "npm:~17.0.8"
     react: "npm:19.1.0"
@@ -13938,7 +13938,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/device-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -14233,9 +14233,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/analytics@workspace:*, @trezor/analytics@workspace:packages/analytics":
+"@trezor/analytics-uploader@workspace:*, @trezor/analytics-uploader@workspace:packages/analytics-uploader":
   version: 0.0.0-use.local
-  resolution: "@trezor/analytics@workspace:packages/analytics"
+  resolution: "@trezor/analytics-uploader@workspace:packages/analytics-uploader"
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -15305,7 +15305,7 @@ __metadata:
     "@testing-library/react": "npm:^16.3.0"
     "@testing-library/user-event": "npm:^14.6.1"
     "@trezor/address-validator": "workspace:*"
-    "@trezor/analytics": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"

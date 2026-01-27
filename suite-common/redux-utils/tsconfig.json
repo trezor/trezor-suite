@@ -12,7 +12,9 @@
         { "path": "../suite-types" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
-        { "path": "../../packages/analytics" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         { "path": "../../packages/connect" }
     ]
 }

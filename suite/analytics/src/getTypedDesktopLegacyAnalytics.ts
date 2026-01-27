@@ -1,4 +1,4 @@
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 
 import { SuiteDesktopLegacyAnalyticsEvents } from './types';
 
