@@ -9,7 +9,7 @@ import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConn
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { setConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type UseBluetoothConnectionProps = {
     devices: DesktopBluetoothDevice[];
@@ -29,7 +29,7 @@ export const useBluetoothConnection = ({
     devices,
     onReScanClick,
 }: UseBluetoothConnectionProps): UseBluetoothConnectionReturn => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
 
@@ -70,7 +70,7 @@ export const useBluetoothConnection = ({
             const result = await dispatch(bluetoothConnectDeviceThunk({ deviceId })).unwrap();
 
             if (result.success) {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.DeviceConnectionDevicePaired,
                 });
                 dispatch(setConnectionModal(false));

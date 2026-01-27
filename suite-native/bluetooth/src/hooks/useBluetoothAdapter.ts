@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { EventType } from '@suite-common/analytics-types';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
 import { useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import {
@@ -31,7 +31,7 @@ const toBluetoothDevice = (device: TransportBluetoothDevice) => ({
 });
 
 export const useBluetoothAdapter = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const { translate } = useTranslate();
@@ -85,7 +85,7 @@ export const useBluetoothAdapter = () => {
                         }),
                     );
                     if (['paired', 'connected'].includes(event.connectionStatus.type)) {
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.DeviceConnectionDevicePaired,
                         });
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
@@ -106,7 +106,7 @@ export const useBluetoothAdapter = () => {
     }, [
         bluetoothPermissionStatus,
         dispatch,
-        legacyAnalytics,
+        analytics,
         showPairingFailedAlert,
         showToast,
         translate,
