@@ -180,7 +180,7 @@ const ReferralButton = () => {
 };
 
 export const DashboardFooter = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isBelowTablet } = useLayoutSize();
     const { contentWidth } = useResponsiveContext();
 
@@ -214,7 +214,7 @@ export const DashboardFooter = () => {
                             priority="secondary"
                             size="small"
                             onClick={() =>
-                                legacyAnalytics.report({
+                                analytics.report({
                                     type: EventType.GetDesktopApp,
                                 })
                             }

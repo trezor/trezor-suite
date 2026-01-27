@@ -615,7 +615,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               type: 'hidden' | 'standard';
           };
       }
-    | { type: EventType.GetDesktopApp }
     | {
           type: EventType.GetMobileApp;
           payload: {
