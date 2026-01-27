@@ -1,3 +1,4 @@
+import { useListDataFilter } from '@suite-common/trading';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -6,7 +7,6 @@ import {
     renderWithStoreProviderAsync,
     screen,
 } from '@suite-native/test-utils';
-import { useListDataFilter } from '@suite-native/trading-atoms';
 import { getInitializedTradingState } from '@suite-native/trading-fixtures';
 
 import { useBuyForm } from '../../../hooks/buy/useBuyForm';
@@ -14,15 +14,15 @@ import { BuyFiatCurrencyPicker } from '../BuyFiatCurrencyPicker';
 
 let mockUseListDataFilter: typeof useListDataFilter;
 
-jest.mock('@suite-native/trading-atoms', () => ({
-    ...jest.requireActual('@suite-native/trading-atoms'),
+jest.mock('@suite-common/trading', () => ({
+    ...jest.requireActual('@suite-common/trading'),
     useListDataFilter: (rawData: unknown[], filterCallback: (i: unknown, f: string) => boolean) =>
         mockUseListDataFilter(rawData, filterCallback),
 }));
 
 describe('BuyFiatCurrencyPicker', () => {
     beforeEach(() => {
-        mockUseListDataFilter = jest.requireActual('@suite-native/trading-atoms').useListDataFilter;
+        mockUseListDataFilter = jest.requireActual('@suite-common/trading').useListDataFilter;
     });
 
     const renderFiatCurrencyPicker = async () => {
