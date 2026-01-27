@@ -4,7 +4,7 @@ import { thpActions } from '@suite-common/thp';
 
 export const thpMiddleware = createMiddlewareWithExtraDeps((action, { next, extra }) => {
     if (thpActions.finishThpFlow.match(action)) {
-        extra.services.legacyAnalytics.report({
+        extra.services.analytics.report({
             type: EventType.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'confirmed',
@@ -12,7 +12,7 @@ export const thpMiddleware = createMiddlewareWithExtraDeps((action, { next, extr
         });
     }
     if (thpActions.cancelThpFlow.match(action)) {
-        extra.services.legacyAnalytics.report({
+        extra.services.analytics.report({
             type: EventType.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'close',
