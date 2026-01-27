@@ -10,9 +10,11 @@ export const createSuiteDesktopCompositionRoot = (
     statePatch?: Record<string, any>,
 ) => {
     const history = createMemoryHistory();
-    const flushSuiteSyncStorage = () => {
+    const reloadApp = () => {
         desktopApi.reloadBrowserWindow();
     };
 
-    return initStore({ history, flushSuiteSyncStorage }, preloadStoreAction, { statePatch });
+    return initStore({ history, reloadApp }, preloadStoreAction, {
+        statePatch,
+    });
 };

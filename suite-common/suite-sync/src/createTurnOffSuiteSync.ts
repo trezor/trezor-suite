@@ -1,7 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import {
-    SuiteSyncStorageFlusherDep,
+    SuiteSyncAppReloaderDep,
     TurnOffSuiteSync,
     TurnOffSuiteSyncForWalletDep,
 } from '@suite-common/suite-sync-types';
@@ -16,7 +16,7 @@ export type CreateTurnOffSuiteSyncDeps = {
     getState: () => any;
     getAllDeviceSessionIds: () => StaticSessionId[];
 } & TurnOffSuiteSyncForWalletDep &
-    SuiteSyncStorageFlusherDep;
+    SuiteSyncAppReloaderDep;
 
 export const createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
@@ -38,5 +38,5 @@ export const createTurnOffSuiteSync =
         // NOTE: enforce clearing all data from the suite sync
         deps.dispatch(clearAll());
         // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
-        deps.flushSuiteSyncStorage();
+        deps.reloadApp();
     };

@@ -5,9 +5,9 @@ import { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 export const createSuiteWebCompositionRoot = (preloadStoreAction?: PreloadStoreAction) => {
     const history = createBrowserHistory();
-    const flushSuiteSyncStorage = () => {
+    const reloadApp = () => {
         window.location.reload();
     };
 
-    return initStore({ history, flushSuiteSyncStorage }, preloadStoreAction);
+    return initStore({ history, reloadApp }, preloadStoreAction);
 };
