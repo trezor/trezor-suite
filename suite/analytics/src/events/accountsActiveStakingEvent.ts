@@ -9,6 +9,4 @@ export const accountsActiveStakingEvent: EventDef<Attributes, EventType.Accounts
     descriptionTrigger:
         'Fired when discovery of all accounts is completed (app start, coin added, account added), shows number of specific accounts with staking.',
     changelog: [{ version: '25.10.0', notes: 'added' }],
-
-    attributes: {},
 };
