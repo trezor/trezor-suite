@@ -23,11 +23,11 @@ export const SettingsAdvancedScreen = () => {
             }
         >
             <VStack spacing="sp16">
-                <TurnOffFirmwareAuthenticityCheckCard />
-                <TurnOffDeviceAuthenticityCheckCard />
-                {isMevProtectionSettingsVisible && <TurnOffMevProtectionCard />}
                 {isBitcoinBackendsConfigVisible && <BitcoinBackendsCard />}
                 <ExperimentalFeaturesSettingsCard />
+                {isMevProtectionSettingsVisible && <TurnOffMevProtectionCard />}
+                <TurnOffFirmwareAuthenticityCheckCard />
+                <TurnOffDeviceAuthenticityCheckCard />
             </VStack>
         </Screen>
     );
