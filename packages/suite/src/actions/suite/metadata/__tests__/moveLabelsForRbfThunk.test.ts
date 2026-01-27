@@ -73,6 +73,7 @@ describe(moveLabelsForRbfThunk.name, () => {
                 newTxId: transactionSendingCoinsReplacement.txid,
                 prevTxId: originalTransactionSpendAccount.txid,
                 deviceStaticSessionId: 'abcd@cdef:1234',
+                stateBeforePush: store.getState(),
             }),
         );
 

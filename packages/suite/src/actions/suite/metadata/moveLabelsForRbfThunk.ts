@@ -3,24 +3,33 @@ import { findLabelsToBeMovedOrDeleted } from '@suite-common/suite-rbf-labels-mig
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectTransactions } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
+import { Branded } from '@trezor/type-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
 import { Dispatch, GetState } from 'src/types/suite';
 
 import { moveLabelsForRbfOldMetadataThunk } from './moveLabelsForRbfOldMetadataThunk';
 
+export type StateBeforePush = ReturnType<GetState> & Branded<'StateBeforePush'>;
+
+export const asStateBeforePush = (state: ReturnType<GetState>): StateBeforePush =>
+    state as StateBeforePush;
+
 type MoveLabelsForRbfThunkParams = {
     newTxId: string;
     prevTxId: string;
     deviceStaticSessionId: StaticSessionId;
+    stateBeforePush: StateBeforePush;
 };
 
 export const moveLabelsForRbfThunk =
-    ({ newTxId, prevTxId, deviceStaticSessionId }: MoveLabelsForRbfThunkParams) =>
+    ({ newTxId, prevTxId, deviceStaticSessionId, stateBeforePush }: MoveLabelsForRbfThunkParams) =>
     async (dispatch: Dispatch, getState: GetState, extra: ExtraDependencies) => {
         const toBeMovedOrDeletedList = findLabelsToBeMovedOrDeleted({
             prevTxId,
-            walletTransactions: selectTransactions(getState()),
+            // NOTE: beware of stateBeforePush, this has to be passed here which is a state
+            // before a new TX is pushed to the chain
+            walletTransactions: selectTransactions(stateBeforePush),
         });
         const suiteSyncEnabled = selectIsSuiteSyncEnabled(getState());
         if (suiteSyncEnabled) {
