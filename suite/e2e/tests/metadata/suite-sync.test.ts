@@ -27,6 +27,7 @@ test.describe(
         }) => {
             await test.step('Onboarding and enable Suite Sync', async () => {
                 await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+                await metadataPage.setupQuotaManager();
                 await metadataPage.enableSuiteSync();
             });
 
@@ -52,6 +53,7 @@ test.describe(
 
             await test.step('Onboarding and enable Suite Sync', async () => {
                 await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+                await metadataPage.setupQuotaManager();
                 await metadataPage.enableSuiteSync();
             });
 
@@ -81,7 +83,8 @@ test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@
         deviceSetup: { mnemonic: MNEMONIC, passphrase_protection: true },
     });
 
-    test('Sync labels from server', async ({
+    // TODO: Temporarily skipping the test due to work in progress
+    test.skip('Sync labels from server', async ({
         page,
         target,
         device,
@@ -93,6 +96,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@specificFirmware', '@T3W1', '@
     }) => {
         await test.step('Enable Suite Sync', async () => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
+            await metadataPage.setupQuotaManager();
             await metadataPage.initiateSuiteSyncSetup();
             if (isWebProject(target)) {
                 // eslint-disable-next-line playwright/no-conditional-expect

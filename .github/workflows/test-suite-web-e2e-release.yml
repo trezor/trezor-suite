@@ -81,7 +81,6 @@ jobs:
         with:
           target: "web"
           pw-config: "./playwright-config/playwright-web.config.ts"
-          containers: "trezor-user-env-unix bitcoin-regtest electrum-regtest"
           test-group: ${{ matrix.TEST_GROUP }}
           fail-fast: false
           currents-project-id: "Og0NOQ"

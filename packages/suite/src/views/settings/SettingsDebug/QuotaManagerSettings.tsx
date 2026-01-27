@@ -55,6 +55,7 @@ export const QuotaManagerSettings = () => {
                 />
                 <ActionColumn>
                     <Checkbox
+                        data-testid="@settings/debug/enable-quota-manager-checkbox"
                         isChecked={isQuotaManagerEnabled}
                         onClick={toggleIsQuotaManagerEnabled}
                     />
@@ -65,11 +66,13 @@ export const QuotaManagerSettings = () => {
                 <ActionColumn>
                     <Column gap={spacings.xxs}>
                         <Input
+                            data-testid="@settings/debug/quota-manager-url-input"
                             disabled={isUpdateUrlLoading}
                             value={quotaManagerUrl}
                             onChange={e => setQuotaManagerUrl(e.target.value)}
                             rightContent={
                                 <Button
+                                    data-testid="@settings/debug/quota-manager-url-save-button"
                                     onClick={onQuotaManagerBaseUrlSave}
                                     size="small"
                                     isLoading={isUpdateUrlLoading}
