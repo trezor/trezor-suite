@@ -11009,6 +11009,7 @@ __metadata:
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
     "@evolu/common": "npm:^7.3.0"
+    "@noble/hashes": "npm:^1.6.1"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

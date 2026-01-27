@@ -1,4 +1,6 @@
 import { Evolu, EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
+import { sha256 } from '@noble/hashes/sha2';
+import { bytesToHex } from '@noble/hashes/utils';
 
 import { SuiteSyncOwner } from '@suite-common/suite-types';
 
@@ -31,8 +33,11 @@ export const createEvoluInstanceFactory =
             throw owner.error;
         }
 
-        const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
-        const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${sanitizedOwnerId}`);
+        // The instance name is used as the SQLite database filename for persistent
+        // storage, ensuring that database files are separated and invisible to each
+        // other. Hash the ownerId to avoid leaking it into the filename.
+        const hashedOwnerId = bytesToHex(sha256(owner.value.id)).slice(0, 16);
+        const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${hashedOwnerId}`);
 
         if (!databaseName.ok) {
             console.error(databaseName.error);
