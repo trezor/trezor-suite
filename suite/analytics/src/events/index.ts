@@ -1,4 +1,5 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
+export { menuGuideEvent } from './menuGuideEvent';
 export { autostartModalEvent } from './autostartModalEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
