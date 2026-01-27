@@ -7,8 +7,8 @@ type Attributes = {
     bannerType?: AttributeDef<string | null>;
 };
 
-export const dashboardBannerEvent: EventDef<Attributes, EventType.DashboardBanner> = {
-    name: EventType.DashboardBanner,
+export const promoDashboardBannerEvent: EventDef<Attributes, EventType.PromoDashboardBanner> = {
+    name: EventType.PromoDashboardBanner,
     descriptionTrigger: 'A user clicks the dashboard promo banner',
     changelog: [{ version: '25.8.0', notes: 'added' }],
 
