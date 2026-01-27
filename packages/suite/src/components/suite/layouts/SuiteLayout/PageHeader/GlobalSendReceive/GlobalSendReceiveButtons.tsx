@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { ButtonGroup, ButtonProps } from '@trezor/components';
 
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { HeaderActionButton } from '../HeaderActionButton';
 
@@ -17,7 +17,7 @@ export const GlobalSendReceiveButtons = ({
     intent,
     priority,
 }: GlobalSendReceiveButtonsProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     return (
         <ButtonGroup intent={intent} priority={priority}>
@@ -27,7 +27,7 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('send');
 
-                    legacyAnalytics.report({ type: EventType.DashboardSendModal });
+                    analytics.report({ type: EventType.DashboardSendModal });
                 }}
                 data-testid="@wallet/menu/wallet-global-send"
             >
@@ -40,7 +40,7 @@ export const GlobalSendReceiveButtons = ({
                 onClick={() => {
                     setActiveModal('receive');
 
-                    legacyAnalytics.report({ type: EventType.DashboardReceiveModal });
+                    analytics.report({ type: EventType.DashboardReceiveModal });
                 }}
                 data-testid="@wallet/menu/wallet-global-receive"
             >
