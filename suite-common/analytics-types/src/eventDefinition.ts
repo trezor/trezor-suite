@@ -1,4 +1,4 @@
-export type AppVersion = `${number}.${number}.${number}`;
+export type AppVersion = `${number}.${number}.${number}` | '?';
 
 export type BaseData = {
     changelog: Array<{ version: AppVersion; notes: string }>;

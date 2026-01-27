@@ -3,7 +3,7 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { ConfirmActionModal } from '../../suite/modals/ReduxModal/DeviceContextModal/ConfirmActionModal';
 
@@ -13,9 +13,9 @@ type ThpConnectionModalProps = {
 
 export const ThpConnectionModal = ({ device }: ThpConnectionModalProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const onCancel = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceConnectionDeviceConfirmation,
             payload: {
                 option: 'close',
