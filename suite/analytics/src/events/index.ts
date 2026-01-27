@@ -1,6 +1,6 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
-export { dashboardBannerEvent } from './dashboardBannerEvent';
+export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';

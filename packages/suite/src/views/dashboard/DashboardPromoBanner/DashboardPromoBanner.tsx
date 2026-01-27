@@ -48,7 +48,7 @@ export const DashboardPromoBanner = () => {
 
     const onCloseBanner = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
-            type: EventType.DashboardBanner,
+            type: EventType.PromoDashboardBanner,
             payload: {
                 action: 'close',
                 bannerType: currentBanner,
@@ -60,7 +60,7 @@ export const DashboardPromoBanner = () => {
 
     const onCTAClick = (currentBanner: DashboardBannerTypeWithNull) => {
         analytics.report({
-            type: EventType.DashboardBanner,
+            type: EventType.PromoDashboardBanner,
             payload: {
                 action: 'cta',
                 bannerType: currentBanner,

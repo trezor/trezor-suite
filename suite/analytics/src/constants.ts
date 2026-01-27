@@ -135,7 +135,7 @@ export enum EventType {
     GetMobileApp = 'promo/mobile',
 
     ReferralButton = 'promo/referral-button',
-    DashboardBanner = 'promo/dashboard-banner',
+    PromoDashboardBanner = 'promo/dashboard-banner',
 
     AutostartModal = 'autostart-modal',
 }
