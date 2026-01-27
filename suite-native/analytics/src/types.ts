@@ -1,4 +1,3 @@
-import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
@@ -30,7 +29,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
-    | SuiteSharedLegacyAnalyticsEvents
     | {
           type: EventType.AppReady;
           payload: {

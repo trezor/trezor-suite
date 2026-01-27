@@ -4,10 +4,7 @@ import {
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
-import type {
-    AnalyticsSharedEvents,
-    SuiteSharedLegacyAnalyticsEvents,
-} from '@suite-common/analytics-types';
+import type { AnalyticsSharedEvents } from '@suite-common/analytics-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { SuiteSyncDep } from '@suite-common/suite-sync-types';
@@ -41,7 +38,7 @@ type ConnectInitSettings = {
 export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
-        legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents>;
+        legacyAnalytics: Analytics<any>;
     };
 
 export type ExtraDependenciesStatic = {

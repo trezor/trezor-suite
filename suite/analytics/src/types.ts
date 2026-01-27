@@ -1,4 +1,3 @@
-import { SuiteSharedLegacyAnalyticsEvents } from '@suite-common/analytics-types';
 import { MetadataProviderType } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -68,7 +67,6 @@ export type TransactionCreatedEvent = {
 
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
-    | SuiteSharedLegacyAnalyticsEvents
     | SuiteAnalyticsEventSuiteReady
     | { type: EventType.TransportType; payload: { type: string; version: string } }
     | {
