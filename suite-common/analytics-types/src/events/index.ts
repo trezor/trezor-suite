@@ -3,6 +3,7 @@ export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';
 export { connectPopupPermissionsEvent } from './connectPopupPermissionsEvent';
 export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundEvent';
+export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
