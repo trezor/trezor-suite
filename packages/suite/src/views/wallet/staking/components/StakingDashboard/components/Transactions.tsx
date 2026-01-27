@@ -36,6 +36,7 @@ export const Transactions = () => {
             isLoading={!areAllTransactionsLoaded}
             customTotalItems={stakeTxs.length}
             isExportable={false}
+            isTxFilteringEnabled={false}
         />
     );
 };
