@@ -20,7 +20,6 @@ import WalletSend from 'src/views/wallet/send';
 import WalletSignVerify from 'src/views/wallet/sign-verify';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import { Tokens } from 'src/views/wallet/tokens';
-import { TradingDCALanding } from 'src/views/wallet/trading/DCA/TradingDCALanding';
 import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
 import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail';
 import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
@@ -64,7 +63,6 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-trading-exchange-detail': TradingExchangeDetail,
     'wallet-trading-exchange-offers': TradingExchangeOffers,
     'wallet-trading-exchange-confirm': TradingExchangeConfirm,
-    'wallet-trading-dca': TradingDCALanding,
     'wallet-trading-redirect': TradingRedirect,
     'wallet-trading-transactions': TradingTransactions,
 

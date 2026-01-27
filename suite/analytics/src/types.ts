@@ -219,7 +219,7 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           type: EventType.TradingNavigate;
           payload: {
               action: 'navigate' | 'cancel';
-              type: 'exchange' | 'buy' | 'sell' | 'buy/sell' | 'dca';
+              type: 'exchange' | 'buy' | 'sell' | 'buy/sell';
               from:
                   | 'dashboard/header'
                   | 'dashboard/assets'
@@ -228,7 +228,7 @@ export type SuiteDesktopLegacyAnalyticsEvents =
                   | 'account/tokens'
                   | 'account/tradebox'
                   | 'account/empty'
-                  | 'buy/sell/dca-form';
+                  | 'buy/sell';
               networkSymbol?: string;
               contractAddress?: string;
           };
