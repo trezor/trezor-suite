@@ -1,4 +1,10 @@
-import { Model, SetupEmu, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { ApplySettings } from '@trezor/protobuf/src/messages-schema';
+import {
+    Model,
+    ReadAndConfirmShamirMnemonicEmu,
+    SetupEmu,
+    TrezorUserEnvLink,
+} from '@trezor/trezor-user-env-link';
 
 import { analyzeObject, step } from './common';
 import {
@@ -43,6 +49,11 @@ export class DeviceFixture {
     }
 
     @step()
+    async applySettings(settings: ApplySettings) {
+        await TrezorUserEnvLink.applySettings(settings);
+    }
+
+    @step()
     async pressYes() {
         await TrezorUserEnvLink.pressYes();
     }
@@ -77,7 +88,7 @@ export class DeviceFixture {
     }
 
     @step()
-    async readAndConfirmShamirMnemonic(options: { shares: number; threshold: number }) {
+    async readAndConfirmShamirMnemonic(options: ReadAndConfirmShamirMnemonicEmu) {
         await TrezorUserEnvLink.readAndConfirmShamirMnemonicEmu(options);
     }
 

@@ -54,25 +54,25 @@ interface ClickEmu {
     y: number;
 }
 
-interface SendToAddressAndMineBlock {
+export interface SendToAddressAndMineBlock {
     address: string;
     btc_amount: number;
 }
 
-interface MineBlocks {
+export interface MineBlocks {
     block_amount: number;
 }
 
-interface GenerateBlock {
+export interface GenerateBlock {
     address: string;
     txids: string[];
 }
 
-interface ApplySettings {
+export interface ApplySettings {
     passphrase_always_on_device?: boolean;
 }
 
-interface ReadAndConfirmShamirMnemonicEmu {
+export interface ReadAndConfirmShamirMnemonicEmu {
     shares: number;
     threshold: number;
 }

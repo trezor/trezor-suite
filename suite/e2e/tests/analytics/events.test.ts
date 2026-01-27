@@ -1,7 +1,6 @@
 import { EventType } from '@suite/analytics';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
-import { BRIDGE_VERSION } from '../../support/bridge';
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { Language, Theme } from '../../support/pageObjects/settings/settingsPage';
@@ -111,10 +110,10 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
         analytics,
         page,
         device,
+        trezorUserEnv,
         analyticsSection,
         settingsPage,
         onboardingPage,
-        trezorUserEnvLink,
         devicePrompt,
     }) => {
         await test.step('Start suite with disabled analytics', async () => {
@@ -131,7 +130,7 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@smoke'
                 passphrase_protection: true,
             });
 
-            await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
+            await trezorUserEnv.startBridge();
             if (device.hasTHP) {
                 await devicePrompt.allowConnectToTrezor();
                 await onboardingPage.enterTHPPairingCode();

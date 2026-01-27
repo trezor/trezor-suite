@@ -10,19 +10,18 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     });
     test.beforeEach(
-        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnvLink }) => {
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, trezorUserEnv }) => {
             await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
 
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.navigateTo('coins');
             await settingsPage.coinsTab.enableNetwork('regtest');
 
-            await trezorUserEnvLink.sendToAddressAndMineBlock({
+            await trezorUserEnv.sendToAddressAndMineBlock({
                 address: ADDRESS_INDEX_1,
                 btc_amount: 1,
             });
-            await trezorUserEnvLink.mineBlocks({ block_amount: 1 });
-
+            await trezorUserEnv.mineBlocks({ block_amount: 1 });
             await dashboardPage.dashboardMenuButton.click();
             await walletPage.openAccount({ symbol: 'regtest' });
             await walletPage.openSendFormButton.click();

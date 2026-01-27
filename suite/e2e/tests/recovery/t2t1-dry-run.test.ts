@@ -62,7 +62,7 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@T2T1'] }, () => {
                 priority: TestPriority.Medium,
             }),
         },
-        async ({ page, device, settingsPage, recoveryModal, trezorUserEnvLink, trezorInput }) => {
+        async ({ page, device, settingsPage, recoveryModal, trezorUserEnv, trezorInput }) => {
             await test.step('Initiate recovery dry run in settings', async () => {
                 await settingsPage.checkSeedButton.click();
                 await recoveryModal.userUnderstandsCheckbox.click();
@@ -79,14 +79,14 @@ test.describe('Recovery T2T1 - dry run', { tag: ['@T2T1'] }, () => {
             });
 
             await test.step('Simulate disconnect', async () => {
-                await trezorUserEnvLink.stopBridge();
+                await trezorUserEnv.stopBridge();
                 await expect(page.getByText('Wallet backup check failed')).toBeVisible({
                     timeout: 30_000,
                 });
             });
 
             await test.step('Simulate reconnect and check recovery dry run is reinitialized', async () => {
-                await trezorUserEnvLink.startBridge(BRIDGE_VERSION);
+                await trezorUserEnv.startBridge(BRIDGE_VERSION);
                 await recoveryModal.verifyDryCheckPrompt();
             });
 
