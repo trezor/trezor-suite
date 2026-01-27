@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import { Modal } from '@trezor/components';
 
 import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';

@@ -5,7 +5,7 @@ import {
     getTypedDesktopAnalytics,
     getTypedDesktopLegacyAnalytics,
 } from '@suite/analytics';
-import { EventType as EventTypeShared } from '@suite-common/analytics-types';
+import { EventType as EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';

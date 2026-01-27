@@ -1,4 +1,4 @@
-import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics-types';
+import type { AnalyticsSharedEvents, EventInstance } from '@suite-common/analytics';
 
 import * as nativeEventsData from './events';
 

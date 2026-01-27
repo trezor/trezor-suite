@@ -1,4 +1,4 @@
-import { EventType } from '@suite-common/analytics-types';
+import { EventType } from '@suite-common/analytics';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { thpActions } from '@suite-common/thp';
 

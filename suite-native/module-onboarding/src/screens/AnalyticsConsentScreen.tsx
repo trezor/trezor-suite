@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { AnalyticsSharedEvents } from '@suite-common/analytics-types';
+import { AnalyticsSharedEvents } from '@suite-common/analytics';
 import {
     AnalyticsNativeEvents,
     EventType,

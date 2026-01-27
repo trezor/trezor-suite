@@ -4,7 +4,7 @@ import {
     ActionCreatorWithoutPayload,
 } from '@reduxjs/toolkit';
 
-import type { AnalyticsSharedEvents } from '@suite-common/analytics-types';
+import type { AnalyticsSharedEvents } from '@suite-common/analytics';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';

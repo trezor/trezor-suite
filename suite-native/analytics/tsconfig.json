@@ -3,10 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/analytics-redux"
+            "path": "../../suite-common/analytics-types"
         },
         {
-            "path": "../../suite-common/analytics-types"
+            "path": "../../suite-common/analytics-redux"
         },
         {
             "path": "../../suite-common/redux-utils"
