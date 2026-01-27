@@ -132,7 +132,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (!features || !mode) return result;
 
                 if (!isDeviceInBootloaderMode(device)) {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    getTypedDesktopAnalytics(analytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
@@ -156,7 +156,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         },
                     });
                 } else {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    getTypedDesktopAnalytics(analytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode: 'bootloader',

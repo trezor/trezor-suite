@@ -72,28 +72,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DeviceConnect;
-          payload: {
-              mode: 'normal' | 'bootloader' | 'initialize' | 'seedless';
-              firmware: string;
-              firmwareSource: FirmwareSource;
-              bootloader?: string;
-              pin_protection?: boolean | null;
-              passphrase_protection?: boolean | null;
-              totalInstances?: number | null;
-              backup_type?: string;
-              isBitcoinOnly?: boolean;
-              isBitcoinOnlyDevice?: boolean;
-              totalDevices?: number;
-              language?: string | null;
-              model?: string;
-              firmwareRevision?: string;
-              bootloaderHash?: string;
-              optiga_sec?: number;
-              connectionType?: 'cable' | 'bluetooth';
-          };
-      }
-    | {
           type: EventType.DeviceDisconnect;
       }
     | {

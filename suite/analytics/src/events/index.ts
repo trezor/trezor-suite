@@ -16,6 +16,7 @@ export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
 export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOptionsEvent';
 export { dashboardSendModalEvent } from './dashboardSendModalEvent';
 export { dashboardSendModalOptionsEvent } from './dashboardSendModalOptionsEvent';
+export { deviceConnectEvent } from './deviceConnectEvent';
 export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectButtonEvent';
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
