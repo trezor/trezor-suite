@@ -10,6 +10,7 @@ export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { promoDesktopEvent } from './promoDesktopEvent';
+export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
