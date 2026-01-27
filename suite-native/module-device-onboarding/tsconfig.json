@@ -34,7 +34,9 @@
         { "path": "../swipeable-walkthrough" },
         { "path": "../thp" },
         { "path": "../toasts" },
-        { "path": "../../packages/analytics" },
+        {
+            "path": "../../packages/analytics-uploader"
+        },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

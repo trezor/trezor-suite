@@ -1,4 +1,4 @@
-import { Analytics, QueuedAnalytics } from '@trezor/analytics';
+import { Analytics, QueuedAnalytics } from '@trezor/analytics-uploader';
 
 import { AnalyticsDesktopEvents } from './analyticsEvents';
 

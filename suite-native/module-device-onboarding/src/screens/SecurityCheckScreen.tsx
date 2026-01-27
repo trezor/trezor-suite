@@ -9,7 +9,7 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { useLegacyAnalytics } from '@suite-native/services';
-import { Analytics } from '@trezor/analytics';
+import { Analytics } from '@trezor/analytics-uploader';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

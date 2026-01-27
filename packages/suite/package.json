@@ -83,7 +83,7 @@
         "@suite/tx-simulation": "workspace:^",
         "@testing-library/jest-dom": "6.9.1",
         "@trezor/address-validator": "workspace:*",
-        "@trezor/analytics": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",

@@ -8,7 +8,7 @@ import {
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
-import { type InitOptions, getTrackingRandomId } from '@trezor/analytics';
+import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash } from '@trezor/env-utils';
 
 import { EventType } from './constants';
