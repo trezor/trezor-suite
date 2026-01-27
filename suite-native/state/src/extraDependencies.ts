@@ -11,17 +11,9 @@ import {
     notImplementedReducer,
     notImplementedSelector,
     notImplementedThunk,
-    toGetter,
 } from '@suite-common/redux-utils';
-import {
-    createDeleteLabelsForSuiteSync,
-    createMigrateSuiteSyncLabelsForRbfTransaction,
-    createSetLabelsForSuiteSync,
-} from '@suite-common/suite-rbf-labels-migrations';
-import {
-    selectIsSuiteSyncEnabled,
-    selectSuiteSyncOutputLabelsByAccount,
-} from '@suite-common/suite-sync';
+import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Route } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
@@ -100,16 +92,12 @@ export const createNativeCompositionRoot = (deps: NativeAppDeps): NativeServices
                 appUrl: '@trezor/suite',
             },
         },
-        migrateSuiteSyncLabelsForRbfTransaction: createMigrateSuiteSyncLabelsForRbfTransaction({
-            dispatch: deps.dispatch,
-            getOutputs: toGetter(deps.getState, selectSuiteSyncOutputLabelsByAccount),
-            deleteLabelsForSuiteSync: createDeleteLabelsForSuiteSync({
+        migrateSuiteSyncLabelsForRbfTransaction:
+            createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
+                dispatch: deps.dispatch,
+                getState: deps.getState,
                 updateOutputLabel: suiteSync.labeling.updateOutputLabel,
             }),
-            setLabelsForSuiteSync: createSetLabelsForSuiteSync({
-                updateOutputLabel: suiteSync.labeling.updateOutputLabel,
-            }),
-        }),
     };
 };
 

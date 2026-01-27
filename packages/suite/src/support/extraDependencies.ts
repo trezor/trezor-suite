@@ -19,14 +19,8 @@ import {
     CommonServices,
     ConnectInitSettings,
     ExtraDependenciesStatic,
-    toGetter,
 } from '@suite-common/redux-utils';
-import {
-    createDeleteLabelsForSuiteSync,
-    createMigrateSuiteSyncLabelsForRbfTransaction,
-    createSetLabelsForSuiteSync,
-} from '@suite-common/suite-rbf-labels-migrations';
-import { selectSuiteSyncOutputLabelsByAccount } from '@suite-common/suite-sync';
+import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { SuiteSyncAppReloaderDep } from '@suite-common/suite-sync-types';
 import {
     TokenDefinitionsState,
@@ -162,16 +156,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         reportSecurityCheck,
         saveAs: (data, fileName) => saveAs(data, fileName),
         connectInitSettings,
-        migrateSuiteSyncLabelsForRbfTransaction: createMigrateSuiteSyncLabelsForRbfTransaction({
-            dispatch: deps.dispatch,
-            getOutputs: toGetter(deps.getState, selectSuiteSyncOutputLabelsByAccount),
-            deleteLabelsForSuiteSync: createDeleteLabelsForSuiteSync({
+        migrateSuiteSyncLabelsForRbfTransaction:
+            createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
+                dispatch: deps.dispatch,
+                getState: deps.getState,
                 updateOutputLabel: suiteSync.labeling.updateOutputLabel,
             }),
-            setLabelsForSuiteSync: createSetLabelsForSuiteSync({
-                updateOutputLabel: suiteSync.labeling.updateOutputLabel,
-            }),
-        }),
     };
 };
 
