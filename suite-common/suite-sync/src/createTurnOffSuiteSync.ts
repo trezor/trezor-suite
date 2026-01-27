@@ -1,5 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
+import { withActions } from '@suite-common/dependency-injection';
 import {
     SuiteSyncAppReloaderDep,
     TurnOffSuiteSync,
@@ -8,7 +9,6 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 
 import { clearAll } from './data/suiteSyncDataReducer';
-import { updateSuiteSyncEnabled } from './suiteSyncSlice';
 
 export type CreateTurnOffSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;
@@ -17,7 +17,7 @@ export type CreateTurnOffSuiteSyncDeps = {
 } & TurnOffSuiteSyncForWalletDep &
     SuiteSyncAppReloaderDep;
 
-export const createTurnOffSuiteSync =
+const _createTurnOffSuiteSync =
     (deps: CreateTurnOffSuiteSyncDeps): TurnOffSuiteSync =>
     async (params: { ensureSettingsPersisted?: () => Promise<void> } = {}) => {
         const isSuiteSyncEnabled = deps.getIsSuiteSyncEnabled();
@@ -26,7 +26,7 @@ export const createTurnOffSuiteSync =
             return;
         }
 
-        deps.dispatch(updateSuiteSyncEnabled({ isEnabled: false }));
+        // deps.dispatch(updateSuiteSyncEnabled({ isEnabled: false }));
 
         const deviceStaticSessionIds = deps.getAllDeviceSessionIds();
 
@@ -41,5 +41,7 @@ export const createTurnOffSuiteSync =
         }
 
         // NOTE: this is TEMPORARY solution until https://github.com/trezor/trezor-suite/issues/23641 is resolved
-        deps.reloadApp();
+        // deps.reloadApp();
     };
+
+export const createTurnOffSuiteSync = withActions(_createTurnOffSuiteSync);
