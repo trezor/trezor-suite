@@ -1,6 +1,6 @@
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { CSSProperties, RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
-import styled, { CSSObject, DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme } from 'styled-components';
 
 import { Color, Elevation, mapElevationToBackground } from '@trezor/theme';
 
@@ -104,7 +104,7 @@ export const useScrollShadow = (externalRef?: RefObject<HTMLDivElement | null>) 
 
     const onScroll = useCallback(setShadows, [setShadows]);
 
-    type ShadowProps = { backgroundColor?: Color; style?: CSSObject };
+    type ShadowProps = { backgroundColor?: Color; style?: CSSProperties };
 
     const ShadowTop = useCallback(
         ({ backgroundColor, style }: ShadowProps) => (
