@@ -12,8 +12,16 @@ import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { getUnusedAddressFromAccount } from '../../../utils';
+import type { LogErrorThunkProps } from '../../common/logErrorThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
+}));
 
 describe('confirmExchangeTradeThunk', () => {
     afterEach(() => {
@@ -247,10 +255,12 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('No response from the server');
+        expect(actionToast?.payload).toEqual({
+            errorMessage: 'No response from the server',
+            tradingType: 'exchange',
+        });
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
         expect(store.getActions().length).toEqual(4);
@@ -317,12 +327,15 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
             const actionToast = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
 
-            expect(actionToast?.payload?.type).toEqual('error');
-            expect(actionToast?.payload?.error).toEqual(
-                'error' in mockResponse ? mockResponse?.error : 'Error response from the server',
-            );
+            expect(actionToast?.payload).toEqual({
+                tradingType: 'exchange',
+                errorMessage:
+                    'error' in mockResponse
+                        ? mockResponse?.error
+                        : 'Error response from the server',
+            });
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
             expect(store.getActions().length).toEqual(5);

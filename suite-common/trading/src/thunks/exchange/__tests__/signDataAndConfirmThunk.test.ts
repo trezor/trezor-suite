@@ -13,6 +13,7 @@ import { invityAPI } from '../../../invityAPI';
 import { TradingExchangeState } from '../../../reducers/exchangeReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import type { LogErrorThunkProps } from '../../common/logErrorThunk';
 import { exchangeThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
@@ -20,6 +21,13 @@ const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 jest.mock('@trezor/connect-plugin-ethereum', () => ({
     ...jest.requireActual('@trezor/connect-plugin-ethereum'),
     transformTypedData: jest.fn().mockReturnValue({ domain_separator_hash: '', message_hash: '' }),
+}));
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
 }));
 
 describe('signDataAndConfirmThunk', () => {
@@ -107,11 +115,13 @@ describe('signDataAndConfirmThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
         expect(store.getActions().length).toEqual(3);
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('Cannot sign, missing data');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: 'Cannot sign, missing data',
+        });
     });
 
     it('should return error notification when signData type is not eip712-typed-data', async () => {
@@ -145,11 +155,13 @@ describe('signDataAndConfirmThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
         expect(store.getActions().length).toEqual(3);
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('Cannot sign data, unsupported network');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: 'Cannot sign data, unsupported network',
+        });
     });
 
     it('should return error notification when account networkType is not ethereum', async () => {
@@ -186,11 +198,13 @@ describe('signDataAndConfirmThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
         expect(store.getActions().length).toEqual(3);
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('Cannot sign data, unsupported network');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: 'Cannot sign data, unsupported network',
+        });
     });
 
     it('should return error notification when ethereum signing is not successful', async () => {
@@ -232,12 +246,15 @@ describe('signDataAndConfirmThunk', () => {
         const { trading } = store.getState().wallet;
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
         expect(store.getActions().length).toEqual(4);
         expect(trading.modalAccountKey).toEqual(account.key);
-        expect(actionToast?.payload?.type).toEqual('sign-message-error');
-        expect(actionToast?.payload?.error).toEqual('Data is not correct');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'exchange',
+            errorMessage: 'Data is not correct',
+            toastType: 'sign-message-error',
+        });
     });
 
     it('should not continue to confirmation and saving trade when there is not receive address in selected quote', async () => {

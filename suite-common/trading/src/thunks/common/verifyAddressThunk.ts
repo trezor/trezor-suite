@@ -1,8 +1,8 @@
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
+import { logErrorThunk } from './logErrorThunk';
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
@@ -74,9 +74,10 @@ export const verifyAddressThunk = createThunk(
             if (response.payload.code === 'Method_PermissionsNotGranted') return;
 
             dispatch(
-                notificationsActions.addToast({
-                    type: 'verify-address-error',
-                    error: response.payload.error,
+                logErrorThunk({
+                    errorMessage: response.payload.error,
+                    tradingType: activeSection,
+                    toastType: 'verify-address-error',
                 }),
             );
         }

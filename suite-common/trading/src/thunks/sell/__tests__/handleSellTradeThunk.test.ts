@@ -9,9 +9,17 @@ import { invityAPI } from '../../../invityAPI';
 import { TradingSellState } from '../../../reducers/sellReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import type { LogErrorThunkProps } from '../../common/logErrorThunk';
 import { handleSellTradeThunk } from '../handleSellTradeThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
+}));
 
 describe('handleSellTradeThunk', () => {
     const date = new Date('2025-04-09');
@@ -146,11 +154,13 @@ describe('handleSellTradeThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
         const tradingState = store.getState().wallet.trading;
 
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('No response from the server');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'sell',
+            errorMessage: 'No response from the server',
+        });
         expect(result).toBeUndefined();
         expect(tradingState.sell.transactionId).toBeUndefined();
         expect(tradingState.sell.selectedQuote).toBeUndefined();
@@ -179,11 +189,13 @@ describe('handleSellTradeThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
         const tradingState = store.getState().wallet.trading;
 
-        expect(actionToast?.payload?.type).toEqual('error');
-        expect(actionToast?.payload?.error).toEqual('Trade error');
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'sell',
+            errorMessage: 'Trade error',
+        });
         expect(result).toBeUndefined();
         expect(tradingState.sell.transactionId).toBeUndefined();
         expect(tradingState.sell.selectedQuote).toBeUndefined();

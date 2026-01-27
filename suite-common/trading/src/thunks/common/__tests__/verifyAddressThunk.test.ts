@@ -9,6 +9,7 @@ import { tradingThunks } from '../';
 import { accounts } from '../../../reducers/__fixtures__/account';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import type { LogErrorThunkProps } from '../logErrorThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
 const mockedSuiteReducer = createReducerWithExtraDeps(
@@ -24,6 +25,13 @@ jest.mock('@suite-common/wallet-core', () => ({
     confirmAddressOnDeviceThunk: jest.fn(),
     selectSelectedDevice: jest.fn(),
     selectAccounts: jest.fn(),
+}));
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
 }));
 
 describe('verifyAddressThunk', () => {
@@ -340,11 +348,13 @@ describe('verifyAddressThunk', () => {
 
         const actionToast = store
             .getActions()
-            .find(action => action.type === '@common/in-app-notifications/addToast');
+            .find(action => action.type === 'mockedLogErrorThunk');
 
-        expect(actionToast?.type).toEqual('@common/in-app-notifications/addToast');
-        expect(actionToast?.payload?.type).toEqual('verify-address-error');
-        expect(actionToast?.payload?.error).toEqual(error);
+        expect(actionToast?.payload).toEqual({
+            tradingType: 'buy',
+            toastType: 'verify-address-error',
+            errorMessage: error,
+        });
 
         expect(store.getState().wallet.trading.verifiedAddress).toEqual(undefined);
     });
