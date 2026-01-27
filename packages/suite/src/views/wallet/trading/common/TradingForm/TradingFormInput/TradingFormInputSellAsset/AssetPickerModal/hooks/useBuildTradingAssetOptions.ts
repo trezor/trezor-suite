@@ -1,5 +1,3 @@
-import { useMemo } from 'react';
-
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountKey } from '@suite-common/wallet-types';
 
@@ -23,19 +21,10 @@ export function useBuildTradingAssetOptions({
     expandedNonTradableTokensGroups,
 }: UseBuildTradingAssetOptionsProps) {
     const { includedCryptoIds, excludedCryptoIds } = useAssetsContext();
-    const supportedCryptoIds = useMemo(() => {
-        const supportedCryptoIds = new Set(includedCryptoIds);
-
-        excludedCryptoIds.forEach(cryptoId => {
-            supportedCryptoIds.delete(cryptoId);
-        });
-
-        return supportedCryptoIds;
-    }, [includedCryptoIds, excludedCryptoIds]);
-
     const { networks, accountsWithTokens } = useAccountWithTokensOptions({
         networkSymbolFilter: networkSymbol,
-        supportedCryptoIds,
+        includedCryptoIds,
+        excludedCryptoIds,
         expandedNonTradableTokensGroups,
     });
 
