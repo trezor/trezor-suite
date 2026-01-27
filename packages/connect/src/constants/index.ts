@@ -1,4 +1,3 @@
-export * as ERRORS from './errors';
 export * as NETWORK from './network';
 export * as CARDANO from './cardano';
 export * as FIRMWARE from './firmware';

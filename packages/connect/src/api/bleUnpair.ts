@@ -1,7 +1,8 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 
-import { ERRORS, PROTO } from '../constants';
+import { PROTO } from '../constants';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI } from '../events';
 

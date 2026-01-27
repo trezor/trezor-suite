@@ -1,5 +1,6 @@
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
+
 import type { IFRAME } from './iframe';
-import { serializeError } from '../constants/errors';
 import type { Device } from '../device/Device';
 import type { TrezorConnect } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';

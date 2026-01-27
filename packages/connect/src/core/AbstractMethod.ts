@@ -1,7 +1,8 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Capability } from '@trezor/protobuf/src/messages';
 import { typedObjectKeys, versionUtils } from '@trezor/utils';
 
-import { ERRORS, NETWORK } from '../constants';
+import { NETWORK } from '../constants';
 import type { Device } from '../device/Device';
 import {
     CallMethodPayload,

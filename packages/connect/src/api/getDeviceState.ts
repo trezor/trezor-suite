@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetDeviceState.js
 
-import { ERRORS } from '../constants';
+import { ERRORS } from '@trezor/connect-common/src/constants';
+
 import { AbstractMethod } from '../core/AbstractMethod';
 
 export default class GetDeviceState extends AbstractMethod<'getDeviceState'> {

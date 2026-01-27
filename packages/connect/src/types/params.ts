@@ -1,9 +1,9 @@
 // API params
 
+import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
 import { Static, TSchema, Type } from '@trezor/schema-utils';
 
 import { DeviceState, DeviceUniquePath } from './device';
-import { ErrorCode } from '../constants/errors';
 
 export interface DeviceIdentity {
     path?: DeviceUniquePath;

@@ -1,8 +1,8 @@
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { PROTOCOL_MALFORMED } from '@trezor/protocol/src/errors';
 import { TRANSPORT_ERROR } from '@trezor/transport';
 import { resolveAfter, versionUtils } from '@trezor/utils';
 
-import { TypedError } from '../../constants/errors';
 import { WorkflowContext } from '../../types/workflow';
 import { Log } from '../../utils/debug';
 

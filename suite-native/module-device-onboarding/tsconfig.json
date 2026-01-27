@@ -36,6 +36,9 @@
         { "path": "../toasts" },
         { "path": "../../packages/analytics" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },

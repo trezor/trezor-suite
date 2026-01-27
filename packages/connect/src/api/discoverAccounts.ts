@@ -1,9 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/GetAccountInfo.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { arrayPartition, getSynchronize, versionUtils } from '@trezor/utils';
 
 import { initBlockchain, isBackendSupported } from '../backend/BlockchainLink';
-import { ERRORS } from '../constants';
 import { AbstractMethod, DEFAULT_FIRMWARE_RANGE } from '../core/AbstractMethod';
 import { getCoinInfo } from '../data/coinInfo';
 import { UI, createUiMessage } from '../events';

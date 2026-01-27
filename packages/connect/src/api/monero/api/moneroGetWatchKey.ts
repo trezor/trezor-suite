@@ -1,6 +1,7 @@
 // Monero GetWatchKey implementation
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { PROTO } from '../../../constants';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import type { MoneroWatchKey } from '../../../types/api/monero';

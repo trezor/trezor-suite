@@ -12,6 +12,12 @@
         },
         {
             "path": "../utils"
+        },
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
         }
     ]
 }

@@ -1,8 +1,8 @@
 import EventEmitter from 'events';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
-import { ERRORS } from '../constants';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';

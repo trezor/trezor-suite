@@ -1,3 +1,4 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
 import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
@@ -9,7 +10,7 @@ import {
     stripFwHeaders,
     uploadFirmware,
 } from '../api/firmware';
-import { ERRORS, PROTO } from '../constants';
+import { PROTO } from '../constants';
 import { getFirmwareLocation, getReleaseByVersion } from '../data/firmwareInfo';
 import type { Device } from '../device/Device';
 import { DeviceList } from '../device/DeviceList';

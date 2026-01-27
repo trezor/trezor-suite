@@ -1,8 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/StellarGetAddress.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { UI, createUiMessage } from '../../../events';

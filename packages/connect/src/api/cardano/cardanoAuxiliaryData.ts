@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/cardanoAuxiliaryData.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
 import {
@@ -7,7 +8,7 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from './cardanoAddressParameters';
-import { ERRORS, PROTO } from '../../constants';
+import { PROTO } from '../../constants';
 import {
     CardanoAuxiliaryData,
     CardanoCVoteRegistrationDelegation,

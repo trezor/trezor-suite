@@ -1,6 +1,7 @@
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { Assert } from '@trezor/schema-utils';
 
-import { ERRORS, PROTO } from '../../../constants';
+import { PROTO } from '../../../constants';
 import { AbstractMethod, MethodReturnType } from '../../../core/AbstractMethod';
 import { UI, createUiMessage } from '../../../events';
 import { Bundle } from '../../../types';

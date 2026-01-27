@@ -1,6 +1,6 @@
 import { CallMethodKeys } from '@trezor/connect';
-import { ErrorCode } from '@trezor/connect/src/constants/errors';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
+import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
 
 export type ManifestPartial = {
     appName: string;

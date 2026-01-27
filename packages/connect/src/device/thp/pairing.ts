@@ -1,9 +1,9 @@
 import { createHash, randomBytes } from 'crypto';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { ThpPairingMethod, thp as protocolThp } from '@trezor/protocol';
 import { createDeferred } from '@trezor/utils';
 
-import { ERRORS } from '../../constants';
 import { DataManager } from '../../data/DataManager';
 import { DEVICE, UiResponseThpPairingTag } from '../../events';
 import type { Device } from '../Device';

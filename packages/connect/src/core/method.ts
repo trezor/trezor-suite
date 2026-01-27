@@ -1,5 +1,6 @@
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
+
 import * as Methods from '../api';
-import { TypedError } from '../constants/errors';
 import { MODULES } from '../constants/network';
 import type { IFrameCallMessage } from '../events';
 import type { AbstractMethod } from './AbstractMethod';

@@ -7,7 +7,8 @@ import {
     selectSelectedDevice,
     selectSimulatedEntropyCheckFail,
 } from '@suite-common/wallet-core';
-import TrezorConnect, { ERRORS } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import {

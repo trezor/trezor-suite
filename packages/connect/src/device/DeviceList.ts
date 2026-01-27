@@ -1,5 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TRANSPORT, Transport } from '@trezor/transport';
 import type { ApiType as TransportApiType } from '@trezor/transport/src/types';
 import { Descriptor } from '@trezor/transport/src/types';
@@ -13,7 +14,6 @@ import {
     typedObjectKeys,
 } from '@trezor/utils';
 
-import { ERRORS } from '../constants';
 import { DEVICE, DecodedTrezorPushNotification, TransportError, TransportInfo } from '../events';
 import { Device } from './Device';
 import { ConnectSettings, DeviceUniquePath, StaticSessionId, asDeviceUniquePath } from '../types';

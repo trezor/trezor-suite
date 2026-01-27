@@ -1,6 +1,6 @@
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { thp as protocolThp } from '@trezor/protocol';
 
-import { TypedError } from '../../constants/errors';
 import { DEVICE } from '../../events';
 import type { Device } from '../Device';
 

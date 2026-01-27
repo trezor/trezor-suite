@@ -9,6 +9,9 @@
             "path": "../connect"
         },
         {
+            "path": "../connect-common"
+        },
+        {
             "path": "../utils"
         }
     ]

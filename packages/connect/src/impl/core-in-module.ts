@@ -1,8 +1,8 @@
 import EventEmitter from 'events';
 
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/utils';
 
-import * as ERRORS from '../constants/errors';
 import { parseConnectSettings } from '../data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,

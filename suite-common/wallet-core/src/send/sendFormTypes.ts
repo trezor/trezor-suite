@@ -8,7 +8,8 @@ import {
     PrecomposedTransactionFinal,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { ERRORS as CONNECT_ERRORS, PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
+import { PROTO, TokenInfo, Unsuccessful } from '@trezor/connect';
+import { ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 

@@ -1,3 +1,5 @@
+import { ErrorCode, TrezorError } from '@trezor/connect-common/src/constants/errors';
+
 import type { BlockchainEventMessage } from './blockchain';
 import type { IFrameCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
@@ -11,7 +13,6 @@ import type {
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
-import { ErrorCode, TrezorError } from '../constants/errors';
 import type { Unsuccessful } from '../types/params';
 
 export const CORE_EVENT = 'CORE_EVENT';

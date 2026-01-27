@@ -1,5 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/refTx.js
 
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { Assert, Type } from '@trezor/schema-utils';
 import { bufferUtils } from '@trezor/utils';
 import {
@@ -14,7 +15,6 @@ import type {
 } from '@trezor/utxo-lib/src/transaction/base';
 
 import { PROTO } from '../../constants';
-import { TypedError } from '../../constants/errors';
 import type {
     AccountAddresses,
     AccountTransaction,
