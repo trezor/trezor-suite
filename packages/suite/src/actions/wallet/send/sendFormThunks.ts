@@ -29,7 +29,11 @@ import { PROTO, StaticSessionId, Unsuccessful } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
-import { moveLabelsForRbfThunk } from 'src/actions/suite/metadata/moveLabelsForRbfThunk';
+import {
+    StateBeforePush,
+    asStateBeforePush,
+    moveLabelsForRbfThunk,
+} from 'src/actions/suite/metadata/moveLabelsForRbfThunk';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import {
@@ -87,15 +91,20 @@ type UpdateRbfLabelsThunkParams = {
     txid: string;
     prevTxid: string;
     deviceStaticSessionId: StaticSessionId;
+    stateBeforePush: StateBeforePush;
 };
 
 const updateRbfLabelsThunk = createThunk<void, UpdateRbfLabelsThunkParams, void>(
     `${MODULE_PREFIX}/updateReplacedTransactionThunk`,
-    ({ deviceStaticSessionId, precomposedTransaction, txid, prevTxid }, { dispatch }) => {
+    (
+        { deviceStaticSessionId, precomposedTransaction, txid, stateBeforePush, prevTxid },
+        { dispatch },
+    ) => {
         dispatch(
             moveLabelsForRbfThunk({
                 deviceStaticSessionId,
                 newTxId: txid,
+                stateBeforePush,
                 prevTxId: prevTxid,
             }),
         );
@@ -278,6 +287,9 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             selectIsMevProtectionEnabled(getState()) &&
             selectIsMevProtectionFeatureEnabled(getState());
 
+        // NOTE: due to need of the gathering state of the transaction before push, we need to cache the state here and pass it on
+        const stateBeforePush = asStateBeforePush(getState());
+
         // push tx to the network
         const pushResponse = await dispatch(
             pushSendFormTransactionThunk({ selectedAccount, isMevProtectionEnabled }),
@@ -296,6 +308,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
                     deviceStaticSessionId: device.state.staticSessionId,
                     precomposedTransaction: enhancedPrecomposedTransaction,
                     txid,
+                    stateBeforePush,
                     prevTxid: enhancedPrecomposedTransaction.prevTxid,
                 }),
             );
