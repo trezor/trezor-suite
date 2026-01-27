@@ -44,6 +44,53 @@ type ReconnectContext = {
     uiPromises: { create: UiPromiseCreator; rejectAll: (e: Error) => void };
 };
 
+// create UI promise and wait for:
+// - pairing confirmation
+// - device disconnection
+// - abort signal
+const waitForThpPairingConfirmation = async ({
+    uiPromises,
+    postMessage,
+    device,
+    deviceList,
+    abortSignal,
+    thpPairingError,
+}: Pick<
+    ReconnectContext,
+    'uiPromises' | 'postMessage' | 'device' | 'deviceList' | 'abortSignal'
+> & {
+    thpPairingError: boolean;
+}) => {
+    const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+    postMessage(
+        createUiMessage(UI.REQUEST_CONFIRMATION, {
+            view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+        }),
+    );
+
+    const devicePath = device.getUniquePath();
+    const disconnectListener = (event: Device) => {
+        if (event.getUniquePath() === devicePath) {
+            uiPromise.reject(ERRORS.TypedError('Device_Disconnected'));
+        }
+    };
+    const abortListener = () => {
+        uiPromise.reject(ERRORS.TypedError('Method_Interrupted'));
+    };
+
+    try {
+        abortSignal.addEventListener('abort', abortListener);
+        deviceList.on('device-disconnect', disconnectListener);
+        const uiResp = await uiPromise.promise;
+        if (!uiResp.payload) {
+            throw ERRORS.TypedError('Method_PermissionsNotGranted');
+        }
+    } finally {
+        abortSignal.removeEventListener('abort', abortListener);
+        deviceList.off('device-disconnect', disconnectListener);
+    }
+};
+
 const waitForReconnectedDevice = async (
     { bootloader, method, intermediary }: ReconnectParams,
     {
@@ -119,15 +166,20 @@ const waitForReconnectedDevice = async (
             let runFn;
             if (reconnectedDevice.getThpState()?.properties) {
                 // stop and wait for UI decision
-                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, reconnectedDevice);
-                postMessage(
-                    createUiMessage(UI.REQUEST_CONFIRMATION, {
-                        view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
-                    }),
-                );
-                const uiResp = await uiPromise.promise;
-                if (!uiResp.payload) {
-                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                try {
+                    await waitForThpPairingConfirmation({
+                        uiPromises,
+                        postMessage,
+                        device: reconnectedDevice,
+                        deviceList,
+                        thpPairingError,
+                        abortSignal,
+                    });
+                } catch (e) {
+                    if (e.code === 'Device_Disconnected') {
+                        continue; // loop again, wait for FIRMWARE_RECONNECT
+                    }
+                    throw e;
                 }
 
                 runFn = () => Promise.resolve(); // enforce pairing UI interaction
