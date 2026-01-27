@@ -11,6 +11,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { ThpRootState } from '@suite-common/thp';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -62,6 +63,7 @@ import { BigNumber } from '@trezor/utils';
 import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
+    ThpRootState &
     AccountsRootState &
     DiscoveryRootState &
     SettingsSliceRootState &

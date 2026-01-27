@@ -12506,6 +12506,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"

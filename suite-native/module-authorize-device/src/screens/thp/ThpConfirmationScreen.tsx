@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { selectThpStep } from '@suite-common/thp';
@@ -17,6 +18,7 @@ import {
 import { useThpAutoconnectActions } from '@suite-native/thp';
 
 import { ThpScreenHeader } from '../../components/thp/ThpScreenHeader';
+import { selectIsThpScreenDismissable } from '../../selectors';
 
 export const ThpConfirmationScreen = ({
     navigation,
@@ -29,6 +31,7 @@ export const ThpConfirmationScreen = ({
     const { startThpAutoconnect, ignoreThpAutoconnect } = useThpAutoconnectActions();
 
     const thpStep = useSelector(selectThpStep);
+    const isThpScreenDismissable = useSelector(selectIsThpScreenDismissable);
 
     const { showAlert } = useAlert();
 
@@ -43,15 +46,23 @@ export const ThpConfirmationScreen = ({
         });
     }, [showAlert, startThpAutoconnect, ignoreThpAutoconnect]);
 
-    useEffect(() => {
-        if (thpStep === 'CodeEntry') {
-            navigation.navigate(AuthorizeDeviceStackRoutes.ThpCodeEntry);
-        } else if (thpStep === 'AutoconnectInfo') {
-            showThpAutoconnectEnableAlert();
-        } else if (thpStep === null) {
-            navigateToInitialScreen();
-        }
-    }, [thpStep, navigateToInitialScreen, navigation, showThpAutoconnectEnableAlert]);
+    useFocusEffect(
+        useCallback(() => {
+            if (thpStep === 'CodeEntry') {
+                navigation.replace(AuthorizeDeviceStackRoutes.ThpCodeEntry);
+            } else if (thpStep === 'AutoconnectInfo') {
+                showThpAutoconnectEnableAlert();
+            } else if (isThpScreenDismissable) {
+                navigateToInitialScreen();
+            }
+        }, [
+            thpStep,
+            isThpScreenDismissable,
+            navigateToInitialScreen,
+            navigation,
+            showThpAutoconnectEnableAlert,
+        ]),
+    );
 
     return (
         <Screen
