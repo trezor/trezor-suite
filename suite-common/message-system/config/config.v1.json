@@ -1101,6 +1101,20 @@
             }
         },
         {
+            "conditions": [
+                {
+                    "countryCodes": ["BR"],
+                    "duration": {
+                        "from": "2025-12-10T13:30:00.000Z",
+                        "to": "2025-12-24T23:59:00.000Z"
+                    },
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
             "message": {
                 "id": "eb223dc5-b64d-4d29-b51e-b7bab6048c38",
                 "priority": 91,
@@ -1124,21 +1138,7 @@
                 "context": {
                     "domain": ["trading.buy", "trading.sell"]
                 }
-            },
-            "conditions": [
-                {
-                    "countryCodes": ["BR"],
-                    "duration": {
-                        "from": "2025-12-10T13:30:00.000Z",
-                        "to": "2025-12-24T23:59:00.000Z"
-                    },
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ]
+            }
         },
         {
             "conditions": [
@@ -1453,6 +1453,15 @@
             }
         },
         {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    }
+                }
+            ],
             "message": {
                 "id": "716e77b4-fb77-4cb1-b1df-6446ee434a7b",
                 "priority": 1,
@@ -1473,16 +1482,7 @@
                         "flag": false
                     }
                 ]
-            },
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "*",
-                        "web": "*"
-                    }
-                }
-            ]
+            }
         }
     ],
     "experiments": [
