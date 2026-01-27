@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';

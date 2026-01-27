@@ -2,7 +2,7 @@ import { FieldValues } from 'react-hook-form';
 
 import type { DBSchema } from 'idb';
 
-import { AnalyticsState } from '@suite-common/analytics';
+import { AnalyticsState } from '@suite-common/analytics-redux';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
 import { SuiteSyncSettings } from '@suite-common/suite-sync';

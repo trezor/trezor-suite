@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 import { MiddlewareAPI } from 'redux';
 
-import { analyticsActions } from '@suite-common/analytics';
+import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';

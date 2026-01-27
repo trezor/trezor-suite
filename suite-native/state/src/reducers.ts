@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { getStoredState } from 'redux-persist';
 
-import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectAnalyticsInstanceId } from '@suite-common/analytics';
+import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { Button, Card, TitleHeader, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { getEnv, isDevelopOrDebugEnv } from '@suite-native/config';

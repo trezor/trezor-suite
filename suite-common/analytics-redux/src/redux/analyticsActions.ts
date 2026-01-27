@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const ACTION_PREFIX = '@suite-common/analytics';
+export const ACTION_PREFIX = '@suite-common/analytics-redux';
 
 const initAnalytics = createAction(
     `${ACTION_PREFIX}/initAnalytics`,

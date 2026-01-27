@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/core';
 
-import { selectAnalyticsInstanceId } from '@suite-common/analytics';
+import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
 import { allowReportTag } from '@suite-common/sentry';
 import { ReportSecurityCheckProps } from '@suite-common/suite-types';

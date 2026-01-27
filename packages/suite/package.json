@@ -27,7 +27,7 @@
         "@reduxjs/toolkit": "2.11.0",
         "@sentry/core": "10.32.1",
         "@solana/kit": "^2.3.0",
-        "@suite-common/analytics": "workspace:*",
+        "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/analytics-types": "workspace:*",
         "@suite-common/assets": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",

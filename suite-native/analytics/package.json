@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/analytics": "workspace:*",
+        "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/analytics-types": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
