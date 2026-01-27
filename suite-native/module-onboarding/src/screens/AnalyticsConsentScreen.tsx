@@ -1,9 +1,6 @@
 import { useState } from 'react';
 
-import {
-    AnalyticsSharedEvents,
-    SuiteSharedLegacyAnalyticsEvents,
-} from '@suite-common/analytics-types';
+import { AnalyticsSharedEvents } from '@suite-common/analytics-types';
 import {
     AnalyticsNativeEvents,
     EventType,
@@ -42,8 +39,7 @@ const consentWrapperStyle = prepareNativeStyle(utils => ({
 
 const reportAnalyticsOnboardingCompleted = (
     isTrackingAllowed: boolean,
-    legacyAnalytics: Analytics<SuiteSharedLegacyAnalyticsEvents> &
-        Analytics<SuiteNativeLegacyAnalyticsEvents>,
+    legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>,
     analytics: Analytics<AnalyticsSharedEvents> & Analytics<AnalyticsNativeEvents>,
 ) => {
     // For users who have not allowed tracking, enable analytics just for reporting
