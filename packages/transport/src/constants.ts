@@ -44,7 +44,7 @@ export const TRANSPORT = {
     SET_TRANSPORTS: 'transport-set_transports',
 } as const;
 
-// https://github.dev/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/core/core.go#L46-L47
+// https://github.com/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/core/core.go#L46-L47
 export enum DEVICE_TYPE {
     TypeT1Hid = 0,
     TypeT1Webusb = 1,
