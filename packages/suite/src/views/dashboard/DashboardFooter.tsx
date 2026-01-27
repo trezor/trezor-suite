@@ -22,7 +22,7 @@ import { QrCode } from 'src/components/suite';
 import { MAX_CONTENT_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { StoreBadge } from '../../components/suite/StoreBadge';
 import { ContentFlex, useIsContentBelowBreakpoint } from '../../support/suite/ContentFlex';
@@ -153,7 +153,7 @@ const MobileAppPromo = ({ hasRightMargin }: { hasRightMargin: boolean }) => {
 };
 
 const ReferralButton = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -168,7 +168,7 @@ const ReferralButton = () => {
             iconLeft="usersFilled"
             size="small"
             onClick={() => {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.ReferralButton,
                     payload: { hasAtLeastOneRememberedWallet },
                 });
