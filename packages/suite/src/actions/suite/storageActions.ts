@@ -368,27 +368,34 @@ export const saveBackend =
         );
     };
 
-export const saveSuiteSettings = () => (_dispatch: Dispatch, getState: GetState) => {
-    if (!db.isAccessible()) return Promise.resolve();
-    const { suite } = getState();
+export const saveSuiteSettings =
+    () =>
+    (_dispatch: Dispatch, getState: GetState): Promise<void> => {
+        if (!db.isAccessible()) return Promise.resolve();
+        const { suite } = getState();
 
-    return db.addItem(
-        'suiteSettings',
-        {
-            settings: {
-                ...suite.settings,
-                // Temporary measure to always start Suite with password manager off
-                experimental: suite.settings.experimental?.filter(e => e !== 'password-manager'),
+        const result = db.addItem(
+            'suiteSettings',
+            {
+                settings: {
+                    ...suite.settings,
+                    // Temporary measure to always start Suite with password manager off
+                    experimental: suite.settings.experimental?.filter(
+                        e => e !== 'password-manager',
+                    ),
+                },
+                flags: suite.flags,
+                evmSettings: suite.evmSettings,
+                seenDisconnectNotificationForDeviceIds:
+                    suite.seenDisconnectNotificationForDeviceIds,
+                stakingDashboardCollapsed: suite.stakingDashboardCollapsed,
             },
-            flags: suite.flags,
-            evmSettings: suite.evmSettings,
-            seenDisconnectNotificationForDeviceIds: suite.seenDisconnectNotificationForDeviceIds,
-            stakingDashboardCollapsed: suite.stakingDashboardCollapsed,
-        },
-        'suite',
-        true,
-    );
-};
+            'suite',
+            true,
+        );
+
+        return result.then(() => {});
+    };
 
 export const saveTokenManagement =
     (symbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>

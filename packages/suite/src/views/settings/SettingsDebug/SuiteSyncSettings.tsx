@@ -10,6 +10,7 @@ import {
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
+import * as storageActions from 'src/actions/suite/storageActions';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -33,7 +34,9 @@ export const SuiteSyncSettings = () => {
         );
 
         if (isFeatureSuiteSyncAvailable) {
-            suiteSync.turnOffSuiteSync();
+            suiteSync.turnOffSuiteSync({
+                ensureSettingsPersisted: () => dispatch(storageActions.saveSuiteSettings()),
+            });
         }
     };
 
