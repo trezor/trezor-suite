@@ -54,6 +54,15 @@ const electronSetup = async (
         ...electronConf,
     });
 
+    // Mocks shell.openExternal to prevent opening real browser windows.
+    await suite.electronApp.evaluate(({ shell }) => {
+        shell.openExternal = (url: string) => {
+            console.warn(`[mock] shell.openExternal called with: ${url}`);
+
+            return Promise.resolve(); // satisfies the 'async' requirement implicitly
+        };
+    });
+
     await suite.window
         .context()
         .tracing.start({ screenshots: true, snapshots: true, sources: true });
