@@ -12,7 +12,7 @@ import { SUITE_URL } from '@trezor/urls';
 
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useExternalLink } from '../../../hooks/suite';
 import { bannerAnimationConfig } from '../../dashboard/banner-animations';
@@ -55,7 +55,7 @@ const OSIcons = styled.div`
 `;
 
 export const DesktopSuiteBanner = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();
@@ -108,7 +108,7 @@ export const DesktopSuiteBanner = () => {
                                 intent="brand"
                                 href={href}
                                 onClick={() =>
-                                    legacyAnalytics.report({
+                                    analytics.report({
                                         type: EventType.GetDesktopApp,
                                     })
                                 }
