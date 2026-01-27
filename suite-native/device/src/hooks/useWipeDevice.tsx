@@ -13,7 +13,7 @@ import {
     StackNavigationProps,
     WipeDeviceStackRoutes,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,
@@ -22,7 +22,7 @@ type NavigationProps = StackNavigationProps<
 
 export const useWipeDevice = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);
@@ -41,7 +41,7 @@ export const useWipeDevice = () => {
         });
 
         if (response.success && isFulfilled(response.payload)) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SettingsDeviceWipe,
             });
             navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack, {
