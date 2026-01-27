@@ -15,7 +15,6 @@ on:
       - develop
     paths-ignore:
       - "suite-native/**"
-      - "packages/connect*/**"
       # - "packages/suite-desktop*/**"
       - "packages/react-native-usb/**"
       # ignore unrelated github workflows config files
