@@ -21,6 +21,13 @@ export const createUiPromiseManager = () => {
             _uiPromises.splice(existing, 1);
         }
 
+        // enhance Deferred reject fn
+        const { reject } = uiPromise;
+        uiPromise.reject = (error: Error) => {
+            reject(error);
+            _uiPromises = _uiPromises.filter(p => p.id !== promiseEvent);
+        };
+
         _uiPromises.push(uiPromise as unknown as AnyUiPromise);
 
         return uiPromise;
