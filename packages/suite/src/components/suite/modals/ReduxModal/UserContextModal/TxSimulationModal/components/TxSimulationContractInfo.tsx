@@ -3,7 +3,6 @@ import { TransactionSimulation } from '@suite-common/tx-simulation';
 import { Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { CollapsibleBox, Column, H4, Link, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Address } from 'src/components/suite/Address';
 import { useExternalLink, useSelector } from 'src/hooks/suite';
@@ -28,7 +27,7 @@ export function TxSimulationContractInfo({
     return (
         <CollapsibleBox
             heading={
-                <Row gap={spacings.xs} alignItems="center" justifyContent="space-between" flex="1">
+                <Row gap={8} alignItems="center" justifyContent="space-between" flex="1">
                     <H4 typographyStyle="callout" flex="1">
                         <Translation id="TR_CONTRACT_INFO" />
                     </H4>
@@ -38,10 +37,10 @@ export function TxSimulationContractInfo({
             <Column
                 hasDivider
                 margin={{
-                    // @ts-expect-error - negative margins to align with collapsible box
-                    horizontal: -spacings.md,
-                    // @ts-expect-error - negative margins to align with collapsible box
-                    vertical: -spacings.lg,
+                    // Negative margins to align with collapsible box
+                    horizontal: -16,
+                    // Negative margins to align with collapsible box
+                    vertical: -20,
                 }}
             >
                 {[
@@ -74,10 +73,10 @@ export function TxSimulationContractInfo({
                     item.value ? (
                         <Row
                             key={index}
-                            gap={spacings.xs}
+                            gap={8}
                             padding={{
-                                horizontal: spacings.md,
-                                vertical: spacings.sm,
+                                horizontal: 16,
+                                vertical: 12,
                             }}
                             alignItems="center"
                             justifyContent="flex-start"

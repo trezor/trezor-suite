@@ -1,21 +1,22 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
+import {
+    TxSimulationBanner,
+    TxSimulationProvider,
+    TxSimulationResult,
+    TxSimulationTitle,
+} from '@suite/tx-simulation';
 import { getSimulationErrorRiskLevel, useTxSimulation } from '@suite-common/tx-simulation';
 import { Account, TxSimulationAction } from '@suite-common/wallet-types';
 import { Column, Modal, Spinner } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 
-import { TxSimulationBanner } from './components/TxSimulationBanner';
 import { TxSimulationContractInfo } from './components/TxSimulationContractInfo';
 import { TxSimulationFooter } from './components/TxSimulationFooter';
 import { TxSimulationHeader } from './components/TxSimulationHeader';
-import { TxSimulationProvider } from './components/TxSimulationProvider';
-import { TxSimulationResult } from './components/TxSimulationResult';
-import { TxSimulationTitle } from './components/TxSimulationTitle';
 import { useTxFeesForm } from './hooks/useTxFeesForm';
 import { useTxSimulationActions } from './hooks/useTxSimulationActions';
 
@@ -81,7 +82,7 @@ export function TxSimulationModalInner({ action, account }: TxSimulationModalInn
                 shadowBottom={false}
             >
                 <FormProvider {...form}>
-                    <Column gap={spacings.xs}>
+                    <Column gap={8}>
                         {txSimulationQuery.isLoading && <Spinner size={50} />}
 
                         {txSimulationQuery.isSuccess && (
@@ -148,7 +149,7 @@ export function TxSimulationModalInner({ action, account }: TxSimulationModalInn
                             />
                         )}
 
-                        <Column margin={{ left: spacings.xs }} gap={spacings.md}>
+                        <Column margin={{ left: 8 }} gap={16}>
                             <TxSimulationProvider />
 
                             {action.method === 'ethereumSignTransaction' && (

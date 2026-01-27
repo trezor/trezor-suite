@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { Banner as BaseBanner, Card, Checkbox, Column, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 export interface TxSimulationBannerProps {
     title: TranslationKey;
@@ -23,13 +22,13 @@ export const TxSimulationBanner = ({
         intent={type === 'warning' ? 'warning' : 'critical'}
         data-testid="@tx-simulation-modal/error-banner"
         description={
-            <Column width="100%" padding={{ vertical: spacings.xxs }}>
+            <Column width="100%" padding={{ vertical: 4 }}>
                 <Text typographyStyle="callout">
                     <Translation id={title} />
                 </Text>
                 <Text>{description}</Text>
 
-                <Card margin={{ top: spacings.sm }} paddingType="small">
+                <Card margin={{ top: 12 }} paddingType="small">
                     <Checkbox
                         data-testid="@tx-simulation-modal/disclaimer-checkbox"
                         isChecked={disclaimerAccepted}
