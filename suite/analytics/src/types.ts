@@ -73,6 +73,12 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: AppUpdateEvent;
       }
     | {
+          type: EventType.DashboardActions;
+          payload: {
+              type: string;
+          };
+      }
+    | {
           type: EventType.DashboardSendModal;
       }
     | {
@@ -81,9 +87,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               option: 'account' | 'close';
               filledSearch: boolean;
           };
-      }
-    | {
-          type: EventType.DashboardReceiveModal;
       }
     | {
           type: EventType.DashboardReceiveModalOptions;
