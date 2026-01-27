@@ -61,6 +61,24 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & TransactionNotificationPayload;
 
+export type ErrorToastPayload = {
+    type:
+        | 'error'
+        | 'discovery-error'
+        | 'verify-address-error'
+        | 'verify-xpub-error'
+        | 'sign-message-error'
+        | 'verify-message-error'
+        | 'sign-tx-error'
+        | 'metadata-auth-error'
+        | 'metadata-not-found-error'
+        | 'metadata-unexpected-error'
+        | 'device-authenticity-error'
+        | 'cardano-delegate-error'
+        | 'cardano-withdrawal-error';
+    error: string;
+};
+
 export type ToastPayload = (
     | {
           type: 'acquire-error';
@@ -110,23 +128,7 @@ export type ToastPayload = (
           type: 'raw-tx-sent';
           txid: string;
       }
-    | {
-          type:
-              | 'error'
-              | 'discovery-error'
-              | 'verify-address-error'
-              | 'verify-xpub-error'
-              | 'sign-message-error'
-              | 'verify-message-error'
-              | 'sign-tx-error'
-              | 'metadata-auth-error'
-              | 'metadata-not-found-error'
-              | 'metadata-unexpected-error'
-              | 'device-authenticity-error'
-              | 'cardano-delegate-error'
-              | 'cardano-withdrawal-error';
-          error: string;
-      }
+    | ErrorToastPayload
     | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;

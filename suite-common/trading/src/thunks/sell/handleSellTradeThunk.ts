@@ -1,7 +1,6 @@
 import { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 
 import { TRADING_SELL_THUNK_PREFIX } from '../../constants';
@@ -10,6 +9,7 @@ import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import { selectTradingSellInfo } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
+import { logErrorThunk } from '../common/logErrorThunk';
 
 export type HandleSellTradeThunkProps = {
     account: Account;
@@ -45,9 +45,9 @@ export const handleSellTradeThunk = createThunk(
 
         if (!response.trade) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
+                logErrorThunk({
+                    errorMessage: 'No response from the server',
+                    tradingType: 'sell',
                 }),
             );
 
@@ -56,9 +56,9 @@ export const handleSellTradeThunk = createThunk(
 
         if (response.trade.error && response.trade.status !== 'LOGIN_REQUEST') {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.trade.error,
+                logErrorThunk({
+                    errorMessage: response.trade.error,
+                    tradingType: 'sell',
                 }),
             );
 

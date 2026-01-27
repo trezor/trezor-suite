@@ -18,7 +18,7 @@ import { BuyInfo, TradingBuyState } from '../../reducers/buyReducer';
 import { ExchangeInfo, exchangeInitialState } from '../../reducers/exchangeReducer';
 import { SellInfo, sellInitialState } from '../../reducers/sellReducer';
 import { type TradingRootState, initialState } from '../../reducers/tradingCommonReducer';
-import type { TradingPaymentMethodListProps } from '../../types';
+import type { TradingPaymentMethodListProps, TradingType } from '../../types';
 import {
     TradingRootStateWithDeviceAndAccounts,
     selectDeviceHasTradingTrades,
@@ -52,6 +52,7 @@ import {
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
+    selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethods,
@@ -1463,6 +1464,24 @@ describe('tradingSelectors', () => {
         it('should return lastErrorMessage from exchange state', () => {
             state.wallet.trading.exchange.lastErrorMessage = 'Exchange error message';
             expect(selectTradingExchangeLastErrorMessage(state)).toBe('Exchange error message');
+        });
+    });
+
+    describe('selectTradingLastErrorMessageByTradeType', () => {
+        beforeEach(() => {
+            state.wallet.trading.buy.lastErrorMessage = 'Buy error message';
+            state.wallet.trading.sell.lastErrorMessage = 'Sell error message';
+            state.wallet.trading.exchange.lastErrorMessage = 'Exchange error message';
+        });
+
+        it.each<[TradingType, string]>([
+            ['buy', 'Buy error message'],
+            ['sell', 'Sell error message'],
+            ['exchange', 'Exchange error message'],
+        ])('should return lastErrorMessage for %s', (tradeType, expectedMessage) => {
+            const result = selectTradingLastErrorMessageByTradeType(state, tradeType);
+
+            expect(result).toBe(expectedMessage);
         });
     });
 });

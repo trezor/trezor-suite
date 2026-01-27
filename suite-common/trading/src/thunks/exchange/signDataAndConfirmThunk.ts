@@ -1,6 +1,5 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 import TrezorConnect, {
     EthereumSignTypedDataMessage,
@@ -16,6 +15,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { logErrorThunk } from '../common/logErrorThunk';
 
 export type SignDataAndConfirmThunkProps = {
     account: Account;
@@ -46,9 +46,9 @@ export const signDataAndConfirmThunk = createThunk(
 
         if (!selectedQuote?.signData) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'Cannot sign, missing data',
+                logErrorThunk({
+                    errorMessage: 'Cannot sign, missing data',
+                    tradingType: 'exchange',
                 }),
             );
 
@@ -60,9 +60,9 @@ export const signDataAndConfirmThunk = createThunk(
             selectedQuote.signData.type !== 'eip712-typed-data'
         ) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'Cannot sign data, unsupported network',
+                logErrorThunk({
+                    errorMessage: 'Cannot sign data, unsupported network',
+                    tradingType: 'exchange',
                 }),
             );
 
@@ -77,9 +77,10 @@ export const signDataAndConfirmThunk = createThunk(
             hashes = transformTypedData(typedData as any, true);
         } catch (error) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-message-error',
-                    error: error.message,
+                logErrorThunk({
+                    errorMessage: error.message,
+                    tradingType: 'exchange',
+                    toastType: 'sign-message-error',
                 }),
             );
 
@@ -103,9 +104,10 @@ export const signDataAndConfirmThunk = createThunk(
 
         if (!result.success) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-message-error',
-                    error: result.payload.error,
+                logErrorThunk({
+                    errorMessage: result.payload.error,
+                    tradingType: 'exchange',
+                    toastType: 'sign-message-error',
                 }),
             );
 

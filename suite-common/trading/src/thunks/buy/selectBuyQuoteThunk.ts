@@ -1,7 +1,6 @@
 import { BuyTrade, FormResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Timer } from '@trezor/react-utils';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
@@ -11,6 +10,7 @@ import {
     selectTradingBuyInfo,
     selectTradingBuyQuotesRequest,
 } from '../../selectors/tradingSelectors';
+import { logErrorThunk } from '../common/logErrorThunk';
 
 export type SelectBuyQuoteThunkProps = {
     quote: BuyTrade;
@@ -40,9 +40,9 @@ export const selectBuyQuoteThunk = createThunk(
 
             if (!response) {
                 dispatch(
-                    notificationsActions.addToast({
-                        type: 'error',
-                        error: 'No response from the server',
+                    logErrorThunk({
+                        errorMessage: 'No response from the server',
+                        tradingType: 'buy',
                     }),
                 );
 

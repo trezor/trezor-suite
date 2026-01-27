@@ -9,9 +9,17 @@ import { invityAPI } from '../../../invityAPI';
 import { TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
+import type { LogErrorThunkProps } from '../../common/logErrorThunk';
 import { buyThunks } from '../index';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
+}));
 
 describe('confirmBuyTradeThunk', () => {
     afterEach(() => {
@@ -118,11 +126,13 @@ describe('confirmBuyTradeThunk', () => {
 
             const toastAction = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
 
             expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(toastAction?.payload.type).toEqual('error');
-            expect(toastAction?.payload.error).toEqual('No response from the server');
+            expect(toastAction?.payload).toEqual({
+                tradingType: 'buy',
+                errorMessage: 'No response from the server',
+            });
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
         });
@@ -150,11 +160,13 @@ describe('confirmBuyTradeThunk', () => {
 
             const toastAction = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
 
             expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(toastAction?.payload.type).toEqual('error');
-            expect(toastAction?.payload.error).toEqual('No response from the server');
+            expect(toastAction?.payload).toEqual({
+                tradingType: 'buy',
+                errorMessage: 'No response from the server',
+            });
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
         });
@@ -188,11 +200,13 @@ describe('confirmBuyTradeThunk', () => {
 
             const toastAction = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
 
             expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(toastAction?.payload.type).toEqual('error');
-            expect(toastAction?.payload.error).toEqual('No response from the server');
+            expect(toastAction?.payload).toEqual({
+                tradingType: 'buy',
+                errorMessage: 'No response from the server',
+            });
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
         });
@@ -227,10 +241,12 @@ describe('confirmBuyTradeThunk', () => {
 
             const toastAction = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
             expect(mocktriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(toastAction?.payload.type).toEqual('error');
-            expect(toastAction?.payload.error).toEqual(error);
+            expect(toastAction?.payload).toEqual({
+                tradingType: 'buy',
+                errorMessage: error,
+            });
             expect(mockProcessResponseData).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.isLoading).toBeFalsy();
         });

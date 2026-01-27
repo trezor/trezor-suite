@@ -1,7 +1,6 @@
 import { ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
@@ -14,6 +13,7 @@ import {
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
 import { getUnusedAddressFromAccount } from '../../utils';
+import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmExchangeTradeThunkProps = {
     returnUrl: string;
@@ -80,9 +80,9 @@ export const confirmExchangeTradeThunk = createThunk(
 
         if (!response) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
+                logErrorThunk({
+                    errorMessage: 'No response from the server',
+                    tradingType: 'exchange',
                 }),
             );
 
@@ -96,9 +96,9 @@ export const confirmExchangeTradeThunk = createThunk(
             response.status === 'ERROR'
         ) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.error || 'Error response from the server',
+                logErrorThunk({
+                    errorMessage: response.error || 'Error response from the server',
+                    tradingType: 'exchange',
                 }),
             );
             dispatch(tradingExchangeActions.saveSelectedQuote(response));

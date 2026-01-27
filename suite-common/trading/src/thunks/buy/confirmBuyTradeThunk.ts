@@ -1,7 +1,6 @@
 import { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from '@suite-common/wallet-types';
 
 import { TRADING_BUY_THUNK_PREFIX } from '../../constants';
@@ -12,6 +11,7 @@ import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuySelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { logErrorThunk } from '../common/logErrorThunk';
 
 export type ConfirmTradeThunkProps = {
     quote?: BuyTrade;
@@ -61,9 +61,9 @@ export const confirmBuyTradeThunk = createThunk(
 
         if (!response || !response.trade || !response.trade.paymentId) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: 'No response from the server',
+                logErrorThunk({
+                    errorMessage: 'No response from the server',
+                    tradingType: 'buy',
                 }),
             );
 
@@ -74,9 +74,9 @@ export const confirmBuyTradeThunk = createThunk(
 
         if (response.trade.error) {
             dispatch(
-                notificationsActions.addToast({
-                    type: 'error',
-                    error: response.trade.error,
+                logErrorThunk({
+                    errorMessage: response.trade.error,
+                    tradingType: 'buy',
                 }),
             );
 

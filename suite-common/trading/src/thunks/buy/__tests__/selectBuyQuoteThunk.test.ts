@@ -16,10 +16,18 @@ import { BuyInfo, TradingBuyState } from '../../../reducers/buyReducer';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import { TradingCountryCode } from '../../../types';
+import type { LogErrorThunkProps } from '../../common/logErrorThunk';
 import { buyThunks } from '../index';
 import { SelectBuyQuoteThunkProps } from '../selectBuyQuoteThunk';
 
 const tradingReducer = prepareTradingReducer(extraDependenciesCommonMock);
+
+jest.mock('../../common/logErrorThunk', () => ({
+    logErrorThunk: (props: LogErrorThunkProps) => ({
+        type: 'mockedLogErrorThunk',
+        payload: props,
+    }),
+}));
 
 describe('selectBuyQuoteThunk', () => {
     afterEach(() => {
@@ -379,12 +387,14 @@ describe('selectBuyQuoteThunk', () => {
 
             const actionToast = store
                 .getActions()
-                .find(action => action.type === '@common/in-app-notifications/addToast');
+                .find(action => action.type === 'mockedLogErrorThunk');
 
             expect(mockLoginRequest).toHaveBeenCalledTimes(0);
             expect(store.getState().wallet.trading.buy.selectedQuote).toEqual(undefined);
-            expect(actionToast?.payload?.type).toEqual('error');
-            expect(actionToast?.payload?.error).toEqual('No response from the server');
+            expect(actionToast?.payload).toEqual({
+                errorMessage: 'No response from the server',
+                tradingType: 'buy',
+            });
         });
     });
 });
