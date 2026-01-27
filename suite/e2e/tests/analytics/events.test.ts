@@ -1,5 +1,6 @@
 import { EventType } from '@suite/analytics';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { findLatestVersionForModel } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
@@ -10,7 +11,7 @@ test.describe(
     'Analytics Events',
     { tag: ['@webOnly', '@specificFirmware', '@T3T1', '@smoke'] },
     () => {
-        const firmwareVersion = findLatestVersionForModel('T3T1'); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
+        const firmwareVersion = findLatestVersionForModel(Model.T3T1); // Specific firmware is needed to have predictable firmware version in analytics and unfortunately I can't get the PW project defined device model here, so this test is limited to T3T1 only.
         test.use({ firmwareVersion });
         test.beforeEach(async ({ analytics, onboardingPage }) => {
             await analytics.interceptAnalytics();
@@ -74,7 +75,7 @@ test.describe(
                         isBitcoinOnlyDevice: 'false',
                         totalDevices: '1',
                         language: 'en-US',
-                        model: 'T3T1',
+                        model: Model.T3T1,
                         optiga_sec: '0',
                     });
                 });

@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import TrezorConnect from '@trezor/connect';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { conditionalTest, getController, initTrezorConnect, setup } from '../../common.setup';
 
@@ -160,7 +161,7 @@ describe('TrezorConnect.cancel', () => {
         await controller.startEmu({
             wipe: true,
             version: '1-latest',
-            model: 'T1B1',
+            model: Model.T1B1,
         });
         await controller.setupEmu({
             pin: '1234',
@@ -172,7 +173,7 @@ describe('TrezorConnect.cancel', () => {
 
         // T1 needs to be restarted for settings to be applied (pin)
         await controller.stopEmu();
-        await controller.startEmu({ version: '1-latest', model: 'T1B1' });
+        await controller.startEmu({ version: '1-latest', model: Model.T1B1 });
 
         await initTrezorConnect(controller);
 
@@ -205,7 +206,7 @@ describe('TrezorConnect.cancel', () => {
         await controller.startEmu({
             wipe: true,
             version: '1-latest',
-            model: 'T1B1',
+            model: Model.T1B1,
         });
         await controller.startBridge(
             // @ts-expect-error

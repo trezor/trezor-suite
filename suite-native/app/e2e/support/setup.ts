@@ -115,7 +115,7 @@ export const openApp = async ({
 };
 
 const getFwVersion = (model: Model, version: string | undefined) => {
-    if (model === 'T3W1') {
+    if (model === Model.T3W1) {
         return '2-main'; // At this time only this firmware works with T3W1
     } else {
         const modelSupportedFirmwares = TrezorUserEnvLink?.firmwares?.[model] || [];
@@ -157,7 +157,7 @@ export const prepareTrezorEmulator = async ({
     await device.terminateApp();
     await openApp({ newInstance: false, wipeData: false, args });
 
-    if (getModelFromEnv() === 'T3W1') {
+    if (getModelFromEnv() === Model.T3W1) {
         await onDevicePrompt.allowConnectToTrezor();
         await onDeviceOnboarding.enterTHPPairingCode();
     }

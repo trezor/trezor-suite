@@ -1,6 +1,7 @@
 import { getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 import { BigNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';
@@ -92,7 +93,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
                 // verify recipient address on device
                 await expect(device).toShowOnDisplay({
-                    T3W1: {
+                    [Model.T3W1]: {
                         header: { title: 'Recipient' },
                         body: [TRANSFORMED_ADDRESS],
                         actions: {
@@ -116,7 +117,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                     isAmount: true,
                 });
                 await expect(device).toShowOnDisplay({
-                    T3W1: {
+                    [Model.T3W1]: {
                         header: { title: 'Send' },
                         body: [
                             ['Amount:'],
@@ -126,7 +127,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },
-                    T3T1: {
+                    [Model.T3T1]: {
                         header: { title: 'Summary' },
                     },
                 });
@@ -137,7 +138,7 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1', '@smoke'] }
 
             await test.step('Approve and Verify Send readiness', async () => {
                 // hold & sign
-                if (device.model !== 'T3W1') {
+                if (device.model !== Model.T3W1) {
                     await devicePrompt.waitForPromptAndClick();
                 }
 

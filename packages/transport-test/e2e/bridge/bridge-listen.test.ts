@@ -1,11 +1,12 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport } from '@trezor/transport';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink } from './controller';
 import { descriptor as expectedDescriptor } from './expect';
 import { assertSuccess } from '../api/utils';
 
-const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
+const emulatorStartOpts = { model: Model.T2T1, version: '2-latest', wipe: true } as const;
 
 describe('bridge', () => {
     beforeAll(async () => {

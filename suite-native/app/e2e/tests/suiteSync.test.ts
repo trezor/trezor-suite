@@ -1,7 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
 import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
@@ -24,7 +24,9 @@ const ADDRESS_LABEL = 'Evolu synced BTC address';
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === 'T3W1' ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === Model.T3W1
+        ? btcDiscoveryFinishedStateT3W1
+        : btcDiscoveryFinishedStateT3T1,
     deviceChecksDisabledState,
 );
 
