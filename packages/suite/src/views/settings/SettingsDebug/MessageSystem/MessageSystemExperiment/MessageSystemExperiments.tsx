@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectAnalyticsInstanceId } from '@suite-common/analytics';
+import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import {
     ExperimentsItemType,
     getActiveExperimentGroup,

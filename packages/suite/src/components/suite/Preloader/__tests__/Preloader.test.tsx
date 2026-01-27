@@ -2,7 +2,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 
 import { fireEvent } from '@testing-library/react';
 
-import { AnalyticsState } from '@suite-common/analytics';
+import { AnalyticsState } from '@suite-common/analytics-redux';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';

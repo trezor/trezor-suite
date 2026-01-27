@@ -1,6 +1,6 @@
 import { createMemoryHistory } from 'history';
 
-import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
     fetchConfigThunk,

@@ -1,7 +1,7 @@
 import type { Store as ReduxStore } from 'redux';
 import type { ThunkAction as TAction, ThunkDispatch } from 'redux-thunk';
 
-import { analyticsActions } from '@suite-common/analytics';
+import { analyticsActions } from '@suite-common/analytics-redux';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';

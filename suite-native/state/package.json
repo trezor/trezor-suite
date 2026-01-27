@@ -11,7 +11,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.11.0",
-        "@suite-common/analytics": "workspace:*",
+        "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/firmware": "workspace:*",

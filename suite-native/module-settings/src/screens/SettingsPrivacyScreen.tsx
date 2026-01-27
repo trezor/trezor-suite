@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
+import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { EventType } from '@suite-native/analytics';
 import {
     Box,

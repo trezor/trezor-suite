@@ -1,4 +1,4 @@
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 
 import { init } from 'src/actions/suite/analyticsActions';
 import { extraDependencies } from 'src/support/extraDependencies';

@@ -1,4 +1,4 @@
-import { prepareAnalyticsReducer } from '@suite-common/analytics';
+import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { logsSlice } from '@suite-common/logger';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';

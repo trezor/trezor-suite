@@ -1,4 +1,4 @@
-import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
+import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
 

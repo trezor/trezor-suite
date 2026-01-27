@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren, useEffect } from 'react';
 
-import { selectIsAnalyticsConfirmed } from '@suite-common/analytics';
+import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useReportDeviceCompromised } from '@suite-common/firmware-authenticity';
 import { Card } from '@trezor/components';
 

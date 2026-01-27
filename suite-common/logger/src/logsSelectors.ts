@@ -5,7 +5,7 @@ import {
     selectAnalyticsInstanceId,
     selectAnalyticsSessionId,
     selectIsAnalyticsEnabled,
-} from '@suite-common/analytics';
+} from '@suite-common/analytics-redux';
 import {
     BlockchainRootState,
     DeviceRootState,

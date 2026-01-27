@@ -4,7 +4,7 @@ import {
     selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
-} from '@suite-common/analytics';
+} from '@suite-common/analytics-redux';
 import { createThunk } from '@suite-common/redux-utils';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';

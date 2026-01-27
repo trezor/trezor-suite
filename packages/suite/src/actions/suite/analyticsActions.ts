@@ -10,7 +10,7 @@ import {
     selectHasUserAllowedTracking,
     selectIsAnalyticsConfirmed,
     selectIsAnalyticsEnabled,
-} from '@suite-common/analytics';
+} from '@suite-common/analytics-redux';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics';
 import { getCommitHash, getEnvironment, isCodesignBuild } from '@trezor/env-utils';

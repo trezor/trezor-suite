@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
 
-import { analyticsActions } from '@suite-common/analytics';
+import { analyticsActions } from '@suite-common/analytics-redux';
 import { addLog } from '@suite-common/logger';
 import {
     WALLET_SETTINGS,

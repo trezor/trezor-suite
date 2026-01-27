@@ -80,7 +80,7 @@ import { useAnalytics } from '@suite/analytics';
 // Mobile analytics
 import { useAnalytics } from '@suite-native/analytics';
 // Shared (desktop & mobile) analytics
-import { useAnalytics } from '@suite-common/analytics';
+import { useAnalytics } from '@suite-common/analytics-redux';
 
 const analytics = useAnalytics();
 

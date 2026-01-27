@@ -10568,20 +10568,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@suite-common/analytics-types@workspace:*, @suite-common/analytics-types@workspace:suite-common/analytics-types":
+"@suite-common/analytics-redux@workspace:*, @suite-common/analytics-redux@workspace:suite-common/analytics-redux":
   version: 0.0.0-use.local
-  resolution: "@suite-common/analytics-types@workspace:suite-common/analytics-types"
+  resolution: "@suite-common/analytics-redux@workspace:suite-common/analytics-redux"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/redux-utils": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
 
-"@suite-common/analytics@workspace:*, @suite-common/analytics@workspace:suite-common/analytics":
+"@suite-common/analytics-types@workspace:*, @suite-common/analytics-types@workspace:suite-common/analytics-types":
   version: 0.0.0-use.local
-  resolution: "@suite-common/analytics@workspace:suite-common/analytics"
+  resolution: "@suite-common/analytics-types@workspace:suite-common/analytics-types"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/redux-utils": "workspace:*"
     react: "npm:19.1.0"
   languageName: unknown
   linkType: soft
@@ -10821,7 +10821,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -11455,7 +11455,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics@workspace:suite-native/analytics"
   dependencies:
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -12644,7 +12644,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -12976,7 +12976,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -13378,7 +13378,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@rozenite/redux-devtools-plugin": "npm:^1.1.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/firmware": "workspace:*"
@@ -15162,7 +15162,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@sentry/core": "npm:10.32.1"
     "@solana/kit": "npm:^2.3.0"
-    "@suite-common/analytics": "workspace:*"
+    "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/analytics-types": "workspace:*"
     "@suite-common/assets": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
