@@ -1,3 +1,4 @@
+import { createMockDeps } from '@suite-common/dependency-injection';
 import {
     EntityListener,
     SuiteSyncAccount,
@@ -14,7 +15,6 @@ import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { createMockDeps } from '../../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
 import { createStorageIdFromDeviceStaticSessionId } from '../../storage/createStorageIdFromDeviceStaticSessionId';
 import { createSubscriptionStorage } from '../../storage/createSubscriptionStorage';

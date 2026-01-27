@@ -1,10 +1,10 @@
 import type { Dispatch } from '@reduxjs/toolkit';
 
+import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../tests/createSuiteSyncStorageMock.mock';
-import { createMockDeps, mock } from '../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
 import { suiteSyncActions } from '../suiteSyncActions';

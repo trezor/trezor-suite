@@ -1,6 +1,7 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKey } from '@suite-common/delegated-identity-key-types';
+import { mockNotExpected } from '@suite-common/dependency-injection';
 import { EnsureSuiteSyncOwner } from '@suite-common/suite-sync-types';
 import {
     TrezorDevice,
@@ -10,7 +11,6 @@ import {
 } from '@suite-common/suite-types';
 import { ok } from '@trezor/type-utils';
 
-import { mockNotExpected } from '../../tests/utils';
 import { RefreshSuiteSyncKeysDeps, createRefreshSuiteSync } from '../createRefreshSuiteSyncKeys';
 import { GetDeviceForStaticSessionId } from '../getDeviceForStaticSessionId';
 import { LoadSuiteSyncOwnerFromState } from '../owner/createLoadSuiteSyncOwnerFromState';

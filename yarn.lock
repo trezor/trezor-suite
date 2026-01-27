@@ -10681,6 +10681,8 @@ __metadata:
 "@suite-common/dependency-injection@workspace:*, @suite-common/dependency-injection@workspace:suite-common/dependency-injection":
   version: 0.0.0-use.local
   resolution: "@suite-common/dependency-injection@workspace:suite-common/dependency-injection"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
