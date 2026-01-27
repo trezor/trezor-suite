@@ -2,6 +2,7 @@ import { Locator, Page, expect } from '@playwright/test';
 
 import { BackupType } from '@suite-common/suite-types';
 import { SUITE as SuiteActions } from '@trezor/suite/src/actions/suite/constants';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { step } from '../../common';
 import { AnalyticsSection } from '../analyticsSection';
@@ -224,7 +225,7 @@ export class OnboardingPage {
             await this.disableFirmwareRevisionCheck();
         }
 
-        if (this.device.model === 'T3W1') {
+        if (this.device.model === Model.T3W1) {
             await this.disableAuthenticityCheck();
         }
     }

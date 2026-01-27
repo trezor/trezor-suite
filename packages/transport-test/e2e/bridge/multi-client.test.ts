@@ -1,6 +1,7 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { errorCase1, descriptor as fixtureDescriptor } from './expect';
@@ -23,7 +24,7 @@ const getDescriptor = (descriptor: Partial<Descriptor>): Descriptor => {
     return d;
 };
 
-const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
+const emulatorStartOpts = { model: Model.T2T1, version: '2-latest', wipe: true } as const;
 
 describe('bridge', () => {
     let bridge1: BridgeTransport;

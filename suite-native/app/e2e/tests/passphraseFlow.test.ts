@@ -2,7 +2,7 @@ import { expect as jestExpect } from '@jest/globals';
 import { expect as detoxExpect } from 'detox';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { deviceChecksDisabledState } from '../fixtures/deviceChecksDisabledState';
 import { deviceChecksEnabledState } from '../fixtures/deviceChecksEnabledState';
@@ -53,10 +53,10 @@ const expectNonEmptyWallet = async () => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === 'T3T1'
+    getModelFromEnv() === Model.T3T1
         ? regtestDiscoveryFinishedStateT3T1
         : regtestDiscoveryFinishedStateT3W1,
-    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
 );
 
 conditionalDescribe(device.getPlatform() === 'android', 'passphrase flow [@fixT3W1]', () => {

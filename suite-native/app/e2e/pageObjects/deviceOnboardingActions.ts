@@ -1,5 +1,5 @@
 import { BackupType } from '@suite-common/suite-types';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import {
     getModelFromEnv,
@@ -157,7 +157,7 @@ class DeviceOnboardingActions {
 
         await TrezorUserEnvLink.pressYes();
 
-        if (getModelFromEnv() !== 'T3W1') {
+        if (getModelFromEnv() !== Model.T3W1) {
             // skip device authenticity check on T3W1 because we are using 2-main FW
             await this.waitForDeviceAuthenticitySuccess();
             await this.dismissDeviceAuthenticitySuccess();

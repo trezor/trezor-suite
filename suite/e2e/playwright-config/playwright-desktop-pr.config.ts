@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+import { Model } from '@trezor/trezor-user-env-link';
+
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
 import { tagsPr } from './projectTags';
@@ -16,24 +18,24 @@ const target = PlaywrightTarget.Desktop;
 const config = defineConfig({
     ...baseConfig,
     projects: [
-        new PlaywrightProjectBuilder(target, 'T3W1')
+        new PlaywrightProjectBuilder(target, Model.T3W1)
             .addGrepInvert(/@nightlyOnly/)
             .setCurrentsTags(tagsPr)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T3T1', 'smoke')
+        new PlaywrightProjectBuilder(target, Model.T3T1, 'smoke')
             .setGrep(/(?=.*@T3T1)(?=.*@smoke)/)
             .addGrepInvert(/@nightlyOnly/)
             .setCurrentsTags(tagsPr)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T3B1')
+        new PlaywrightProjectBuilder(target, Model.T3B1)
             .addGrepInvert(/@nightlyOnly/)
             .setCurrentsTags(tagsPr)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T2T1')
+        new PlaywrightProjectBuilder(target, Model.T2T1)
             .addGrepInvert(/@nightlyOnly/)
             .setCurrentsTags(tagsPr)
             .build(),
-        new PlaywrightProjectBuilder(target, 'T1B1')
+        new PlaywrightProjectBuilder(target, Model.T1B1)
             .addGrepInvert(/@nightlyOnly/)
             .setCurrentsTags(tagsPr)
             .build(),

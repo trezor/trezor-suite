@@ -1,6 +1,6 @@
 import { PlaywrightTestOptions, PlaywrightWorkerOptions, Project, devices } from '@playwright/test';
 
-import { MODELS, Model } from '@trezor/trezor-user-env-link';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { PlaywrightTarget, SuiteTestOptions } from '../support/testExtends/suiteTestOptions';
 
@@ -8,9 +8,7 @@ export class PlaywrightProjectBuilder {
     private project: Project<SuiteTestOptions & PlaywrightTestOptions, PlaywrightWorkerOptions>;
 
     constructor(target: PlaywrightTarget, nameOrModel: string | Model, nameSuffix?: string) {
-        const model: Model | undefined = MODELS.includes(nameOrModel as Model)
-            ? (nameOrModel as Model)
-            : undefined;
+        const model: Model | undefined = nameOrModel in Model ? (nameOrModel as Model) : undefined;
 
         const name = nameSuffix ? `${nameOrModel}_${nameSuffix}` : (nameOrModel as string);
 
@@ -43,7 +41,7 @@ export class PlaywrightProjectBuilder {
         }
 
         if (model) {
-            const defaultFirmwareMajorVersion = model === 'T1B1' ? 1 : 2;
+            const defaultFirmwareMajorVersion = model === Model.T1B1 ? 1 : 2;
             this.setFirmwareVersion(`${defaultFirmwareMajorVersion}-latest`);
             this.setModel(model);
             this.addGrep(new RegExp(`(?=.*@${model})`));

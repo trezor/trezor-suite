@@ -1,12 +1,13 @@
 import * as messages from '@trezor/protobuf/messages.json';
 import { BridgeTransport, Descriptor } from '@trezor/transport';
 import { Session } from '@trezor/transport/src/types';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { controller as TrezorUserEnvLink, env } from './controller';
 import { descriptor as expectedDescriptor, pathLength } from './expect';
 import { assertSuccess } from '../api/utils';
 
-const emulatorStartOpts = { model: 'T2T1', version: '2-latest', wipe: true } as const;
+const emulatorStartOpts = { model: Model.T2T1, version: '2-latest', wipe: true } as const;
 
 // todo: these test were focused on testing feature parity between old and new bridge implementations. since old bridge is now deprecated, we might get rid of them, or at least stop testing the old bridge behavior
 describe('bridge', () => {

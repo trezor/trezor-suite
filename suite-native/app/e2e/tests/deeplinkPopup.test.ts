@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 
 import { conditionalDescribe } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect-mobile';
-import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { btcDiscoveryFinishedStateT3T1 } from '../fixtures/btcDiscoveryFinishedStateT3T1';
 import { btcDiscoveryFinishedStateT3W1 } from '../fixtures/btcDiscoveryFinishedStateT3W1';
@@ -34,8 +34,10 @@ const openUriScheme = (url: string, platformToOpen: 'android') => {
 
 const preloadedState = preparePreloadedReduxState(
     onboardingCompletedState,
-    getModelFromEnv() === 'T3W1' ? btcDiscoveryFinishedStateT3W1 : btcDiscoveryFinishedStateT3T1,
-    getModelFromEnv() === 'T3W1' ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
+    getModelFromEnv() === Model.T3W1
+        ? btcDiscoveryFinishedStateT3W1
+        : btcDiscoveryFinishedStateT3T1,
+    getModelFromEnv() === Model.T3W1 ? deviceChecksDisabledState : deviceChecksEnabledState, // skip device checks on T3W1 because we are using 2-main FW
     deviceAutoEjectState,
 );
 

@@ -1,4 +1,5 @@
 import { conditionalDescribe } from '@suite-common/test-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
 import { regtestDiscoveryFinishedStateT1B1 } from '../fixtures/regtestDiscoveryFinishedStateT1B1';
@@ -18,7 +19,7 @@ conditionalDescribe(
     () => {
         beforeEach(async () => {
             await openApp({ args: { preloadedState: preloadedStateT1B1 } });
-            await prepareTrezorEmulator({ model: 'T1B1' });
+            await prepareTrezorEmulator({ model: Model.T1B1 });
             await onDeviceManager.tapDeviceSwitch();
             await onDeviceManager.tapDeviceSettingsButton();
         });

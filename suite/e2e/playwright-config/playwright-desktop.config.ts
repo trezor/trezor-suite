@@ -1,5 +1,7 @@
 import { defineConfig } from '@playwright/test';
 
+import { Model } from '@trezor/trezor-user-env-link';
+
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
 import { tagsRelease } from './projectTags';
@@ -15,11 +17,11 @@ const target = PlaywrightTarget.Desktop;
 const config = defineConfig({
     ...baseConfig,
     projects: [
-        new PlaywrightProjectBuilder(target, 'T3W1').setCurrentsTags(tagsRelease).build(),
-        new PlaywrightProjectBuilder(target, 'T3T1').setCurrentsTags(tagsRelease).build(),
-        new PlaywrightProjectBuilder(target, 'T3B1').setCurrentsTags(tagsRelease).build(),
-        new PlaywrightProjectBuilder(target, 'T2T1').setCurrentsTags(tagsRelease).build(),
-        new PlaywrightProjectBuilder(target, 'T1B1').setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, Model.T3W1).setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, Model.T3T1).setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, Model.T3B1).setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, Model.T2T1).setCurrentsTags(tagsRelease).build(),
+        new PlaywrightProjectBuilder(target, Model.T1B1).setCurrentsTags(tagsRelease).build(),
         new PlaywrightProjectBuilder(target, 'no_device')
             .addGrep(/(?=.*@noDevice)/)
             .setCurrentsTags(tagsRelease)
