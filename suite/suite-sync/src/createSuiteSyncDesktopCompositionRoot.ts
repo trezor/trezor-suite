@@ -1,7 +1,7 @@
 import { evoluWebDeps } from '@evolu/web';
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { DesktopLegacyAnalyticsDep } from '@suite/analytics';
+import { DesktopAnalyticsDep } from '@suite/analytics';
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
@@ -24,7 +24,7 @@ type SuiteSyncDesktopCompositionRootDeps = {
     trezorConnect: TrezorConnect;
 } & PlatformEncryptionDep &
     EnsureDelegatedIdentityKeyDep &
-    DesktopLegacyAnalyticsDep &
+    DesktopAnalyticsDep &
     DisableLegacyMetadataIfNeededDep &
     SuiteSyncAppReloaderDep;
 
@@ -45,7 +45,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
         ...suiteSync,
         turnOnSuiteSync: createTurnOnDesktopSuiteSync({
             turnOnSuiteSync: suiteSync.turnOnSuiteSync,
-            legacyAnalytics: deps.legacyAnalytics,
+            analytics: deps.analytics,
             disableLegacyMetadataIfNeeded: deps.disableLegacyMetadataIfNeeded,
         }),
     };

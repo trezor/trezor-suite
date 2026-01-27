@@ -132,6 +132,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const legacyAnalytics = createLegacyAnalytics();
+    const analytics = createAnalytics();
 
     const suiteSync = createSuiteSyncDesktopCompositionRoot({
         dispatch: deps.dispatch,
@@ -141,7 +142,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         trezorConnect: TrezorConnect,
         ensureDelegatedIdentityKey,
         disableLegacyMetadataIfNeeded,
-        legacyAnalytics,
+        analytics,
     });
 
     return {
