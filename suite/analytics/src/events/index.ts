@@ -4,6 +4,7 @@ export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
+export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
