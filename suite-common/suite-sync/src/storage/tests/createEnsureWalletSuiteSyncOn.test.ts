@@ -1,11 +1,12 @@
+import { createMockDeps } from '@suite-common/dependency-injection';
 import type { TrezorDevice } from '@suite-common/suite-types';
+import { getSuiteDevice } from '@suite-common/test-utils';
 import type { DeviceRootState } from '@suite-common/wallet-core';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
 import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
-import { createMockDeps } from '../../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
 import type { EnsureWalletSuiteSyncOnDeps } from '../createEnsureWalletSuiteSyncOn';
 import { createEnsureWalletSuiteSyncOn } from '../createEnsureWalletSuiteSyncOn';
@@ -19,16 +20,6 @@ const createMockState = (devices: TrezorDevice[] = []): DeviceRootState => ({
         devices,
     },
 });
-
-const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
-    ({
-        id: 'device-id',
-        state: {
-            staticSessionId: deviceStaticSessionId,
-        },
-        unavailableCapabilities: {},
-        ...overrides,
-    }) as unknown as TrezorDevice;
 
 describe(createEnsureWalletSuiteSyncOn.name, () => {
     it('returns error when device is not found in state', async () => {
@@ -55,7 +46,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([createDevice({ unavailableCapabilities })]),
+            getState: () => createMockState([getSuiteDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
@@ -76,7 +67,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([createDevice({ unavailableCapabilities })]),
+            getState: () => createMockState([getSuiteDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
@@ -96,7 +87,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([createDevice()]),
+            getState: () => createMockState([getSuiteDevice()]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
@@ -114,7 +105,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([createDevice()]),
+            getState: () => createMockState([getSuiteDevice()]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
