@@ -16,9 +16,6 @@ export const selectIsSuiteSyncEnabled = (state: WithSuiteSyncAndDeviceState): bo
 export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState): boolean =>
     state.suiteSync.settings.isSuiteSyncDebugEnabled;
 
-export const selectIsFeatureSuiteSyncAvailable = (state: WithSuiteSyncAndDeviceState): boolean =>
-    state.suiteSync.settings.isFeatureSuiteSyncAvailable;
-
 export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
     state.suiteSync.settings.suiteSyncRelayUrl;
 
@@ -39,10 +36,6 @@ export const selectIsTurnOnSuiteSyncInteractionNeeded = (
     const device = selectDeviceByStaticSessionId(state, deviceStaticSessionId);
 
     if (device === undefined) {
-        return null;
-    }
-
-    if (!selectIsFeatureSuiteSyncAvailable(state)) {
         return null;
     }
 

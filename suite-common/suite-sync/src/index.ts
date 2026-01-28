@@ -1,6 +1,5 @@
 export {
     selectIsSuiteSyncEnabled,
-    selectIsFeatureSuiteSyncAvailable,
     selectSuiteSyncRelayUrl,
     selectIsTurnOnSuiteSyncInteractionNeeded,
     selectIsSuiteSyncDebugEnabled,
@@ -14,7 +13,6 @@ export {
     initialSuiteSyncState,
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
-    updateIsFeatureSuiteSyncAvailable,
     setSuiteSyncRelayUrl,
 } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
