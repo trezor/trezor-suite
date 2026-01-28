@@ -1,0 +1,13 @@
+import type { EventDef } from '@suite-common/analytics-types';
+
+import { EventType } from '../constants';
+
+type Attributes = {};
+
+export const switchDeviceRememberEvent: EventDef<Attributes, EventType.SwitchDeviceRemember> = {
+    name: EventType.SwitchDeviceRemember,
+    descriptionTrigger: 'Switch device (upper-left corner) → Remember device',
+    changelog: [{ version: '1.0.0', notes: 'added' }],
+
+    attributes: {},
+};
