@@ -1408,8 +1408,9 @@ export const messages = {
             },
             experimentalFeatures: {
                 title: 'Experimental features',
-                warning:
-                    'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
+                subtitle:
+                    'These features are in testing, may be unstable, and might not have long-term support.',
+                warning: 'For experienced users only.\nUse at your own risk.',
                 suiteSync: {
                     title: 'Suite Sync',
                     description:
