@@ -8,6 +8,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import {
     setSuiteSyncRelayUrl,
+    updateIsFeatureSuiteSyncAvailable,
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
 } from '@suite-common/suite-sync';
@@ -48,8 +49,6 @@ import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-
-import { updateIsFeatureSuiteSyncAvailable } from '../../actions/suiteSync/suiteSyncSlice';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

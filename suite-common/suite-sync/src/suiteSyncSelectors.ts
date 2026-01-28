@@ -1,7 +1,7 @@
 import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { StaticSessionId } from '@trezor/connect';
 
-import { SuiteSyncState } from './suiteSyncSlice';
+import { SuiteSyncState } from './suiteSyncReducer';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
 export type WithSuiteSyncState = {

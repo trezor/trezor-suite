@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { EnsureWalletSuiteSyncOnDep, TurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { ok } from '@trezor/type-utils';
 
-import { updateSuiteSyncEnabled } from './suiteSyncSlice';
+import { updateSuiteSyncEnabled } from './suiteSyncReducer';
 
 export type CreateTurnOnSuiteSyncDeps = {
     getIsSuiteSyncEnabled: () => boolean;

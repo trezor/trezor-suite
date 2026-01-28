@@ -5,9 +5,9 @@ import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
 import { StaticSessionId } from '@trezor/connect';
 
+import { initialSuiteSyncState } from '../suiteSyncReducer';
 import { selectIsTurnOnSuiteSyncInteractionNeeded } from '../suiteSyncSelectors';
 import type { WithSuiteSyncAndDeviceState } from '../suiteSyncSelectors';
-import { initialSuiteSyncState } from '../suiteSyncSlice';
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 

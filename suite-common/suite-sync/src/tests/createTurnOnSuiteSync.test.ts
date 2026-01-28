@@ -7,7 +7,7 @@ import { err, ok } from '@trezor/type-utils';
 import { createSuiteSyncStorageMock } from '../../tests/createSuiteSyncStorageMock.mock';
 import { SuiteSyncUnavailableOnDeviceError } from '../createRefreshSuiteSyncKeys';
 import { CreateTurnOnSuiteSyncDeps, createTurnOnSuiteSync } from '../createTurnOnSuiteSync';
-import { updateSuiteSyncEnabled } from '../suiteSyncSlice';
+import { suiteSyncActions } from '../suiteSyncActions';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -39,7 +39,9 @@ describe(createTurnOnSuiteSync.name, () => {
         const turnOnSuiteSync = createTurnOnSuiteSync(deps);
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
-        expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: true }),
+        );
         expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
         expect(result).toEqual(ok());
     });
@@ -54,7 +56,9 @@ describe(createTurnOnSuiteSync.name, () => {
         const turnOnSuiteSync = createTurnOnSuiteSync(deps);
         const result = await turnOnSuiteSync({ deviceStaticSessionId: undefined });
 
-        expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: true }),
+        );
         expect(deps.ensureWalletSuiteSyncOn).not.toHaveBeenCalled();
         expect(result).toEqual(ok());
     });
@@ -71,7 +75,9 @@ describe(createTurnOnSuiteSync.name, () => {
         const turnOnSuiteSync = createTurnOnSuiteSync(deps);
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
-        expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: true }),
+        );
         expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
