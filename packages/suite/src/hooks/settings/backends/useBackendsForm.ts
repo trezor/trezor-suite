@@ -11,7 +11,7 @@ import TrezorConnect from '@trezor/connect';
 import { isUrlWithQuery } from '@trezor/utils';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { isOnionUrl } from 'src/utils/suite/tor';
 
 export type BackendOption = BackendType | 'default';
@@ -110,7 +110,7 @@ const getStoredState = (
 });
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const backends = useSelector(state => state.wallet.blockchain[symbol].backends);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
@@ -233,7 +233,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         dispatch(blockchainActions.setBackend({ symbol, type, urls }));
         const totalOnion = urls.filter(isOnionUrl).length;
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsCoinsBackend,
             payload: {
                 symbol,

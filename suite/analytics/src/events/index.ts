@@ -5,6 +5,7 @@ export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
+export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
