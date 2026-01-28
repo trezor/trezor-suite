@@ -176,12 +176,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SendDetailOpened;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.AccountsStatus;
           payload: Record<string, number>;
       }
