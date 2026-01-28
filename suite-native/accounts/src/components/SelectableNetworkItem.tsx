@@ -3,7 +3,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, RoundedIcon, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { isCoinWithTokens } from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 export type SelectableAssetItemProps = {
@@ -35,7 +35,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
 
     const networkName = getNetwork(symbol).name;
 
-    const hasTokens = isCoinWithTokens(symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
 
     return (
         <PressableOpacity
@@ -55,7 +55,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
                                     areAmountUnitsEnabled={false}
                                 />
                             </Text>
-                            {hasTokens && (
+                            {isNetworkSupportingTokens && (
                                 <Box style={applyStyle(tokensBadgeStyle)}>
                                     <Badge
                                         label={<Translation id="generic.tokens" />}

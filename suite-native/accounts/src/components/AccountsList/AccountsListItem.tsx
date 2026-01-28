@@ -16,7 +16,7 @@ import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labelin
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,
-    isCoinWithTokens,
+    isNetworkWithTokens,
     selectAccountHasAnyKnownToken,
     selectNumberOfAccountTokensWithFiatRates,
 } from '@suite-native/tokens';
@@ -104,8 +104,8 @@ export const AccountsListItem = ({
         ),
     );
 
-    const doesCoinSupportTokens = isCoinWithTokens(account.symbol);
-    const shouldShowAccountLabel = !doesCoinSupportTokens || !isNativeCoinOnly;
+    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
+    const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
     const shouldShowStakingBadge = accountHasStaking && !isNativeCoinOnly;
 
