@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { Pressable } from 'react-native';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -36,6 +39,7 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 }));
 
 export const DeviceSwitch = () => {
+    const navigation = useNavigation();
     const { applyStyle } = useNativeStyles();
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
@@ -43,6 +47,11 @@ export const DeviceSwitch = () => {
     const toggleDeviceManager = () => {
         setIsDeviceManagerVisible(!isDeviceManagerVisible);
     };
+
+    useEffect(
+        () => navigation.addListener('blur', () => setIsDeviceManagerVisible(false)),
+        [navigation, setIsDeviceManagerVisible],
+    );
 
     return (
         <Pressable
