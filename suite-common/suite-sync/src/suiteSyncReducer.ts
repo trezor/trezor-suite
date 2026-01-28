@@ -1,6 +1,4 @@
-import { createReducer } from '@reduxjs/toolkit';
-
-import { setSuiteSyncRelayUrl, suiteSyncActions } from './suiteSyncActions';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export type SuiteSyncSettings = {
     /**
@@ -47,18 +45,36 @@ export const initialSuiteSyncState: SuiteSyncState = {
     },
 };
 
-export const suiteSyncReducer = createReducer(initialSuiteSyncState, builder =>
-    builder
-        .addCase(suiteSyncActions.updateSuiteSyncEnabled, (state, { payload }) => {
+export const suiteSyncSlice = createSlice({
+    name: 'suiteSync',
+    initialState: initialSuiteSyncState,
+    reducers: {
+        updateSuiteSyncEnabled: (state, { payload }: PayloadAction<{ isEnabled: boolean }>) => {
             state.settings.isSuiteSyncEnabled = payload.isEnabled;
-        })
-        .addCase(suiteSyncActions.updateSuiteSyncDebugEnabled, (state, { payload }) => {
+        },
+        updateSuiteSyncDebugEnabled: (
+            state,
+            { payload }: PayloadAction<{ isEnabled: boolean }>,
+        ) => {
             state.settings.isSuiteSyncDebugEnabled = payload.isEnabled;
-        })
-        .addCase(suiteSyncActions.updateIsFeatureSuiteSyncAvailable, (state, { payload }) => {
+        },
+        updateIsFeatureSuiteSyncAvailable: (
+            state,
+            { payload }: PayloadAction<{ isShownInSettings: boolean }>,
+        ) => {
             state.settings.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
-        })
-        .addCase(setSuiteSyncRelayUrl, (state, { payload }) => {
+        },
+        setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
-        }),
-);
+        },
+    },
+});
+
+export const {
+    updateSuiteSyncEnabled,
+    updateSuiteSyncDebugEnabled,
+    updateIsFeatureSuiteSyncAvailable,
+    setSuiteSyncRelayUrl,
+} = suiteSyncSlice.actions;
+
+export const suiteSyncReducer = suiteSyncSlice.reducer;
