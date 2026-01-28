@@ -1,6 +1,4 @@
-import { Dispatch } from '@reduxjs/toolkit';
-
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@suite-common/dependency-injection';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { getSuiteDevice } from '@suite-common/test-utils';
 import type { DeviceRootState } from '@suite-common/wallet-core';
@@ -101,7 +99,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const ensureResult = ok({ data: {} } as any);
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: null,
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
@@ -122,7 +120,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
         const ensureResult = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
-            dispatch: mock<Dispatch>(() => {}),
+            dispatch: null,
             getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),

@@ -61,7 +61,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
         });
     };
 
-    const getHomescreenAlert = () => {
+    const getAlert = () => {
         if (shouldDisplaySuiteSyncAlert) {
             return <SuiteSyncKeysAlert />;
         } else if (shouldDisplayFirmwareUpdateAlert) {
@@ -73,7 +73,7 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
 
     return (
         <VStack spacing="sp32" marginTop="sp8">
-            {getHomescreenAlert()}
+            {getAlert()}
             <AnimatedVStack spacing="sp32" layout={LinearTransition}>
                 <PortfolioGraph ref={ref} />
                 <VStack spacing="sp64" marginHorizontal="sp16">

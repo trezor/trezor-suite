@@ -7,12 +7,6 @@
             "path": "../../suite-common/message-system"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
-            "path": "../../suite-common/suite-sync"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
