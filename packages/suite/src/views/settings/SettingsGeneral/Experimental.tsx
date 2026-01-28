@@ -91,8 +91,25 @@ const motionDivProps = {
     exit: 'initial',
 } as const;
 
+const bannerMotionDivProps = {
+    variants: {
+        initial: { overflow: 'hidden', height: 0, marginBottom: 0, opacity: 0 },
+        visible: {
+            height: 'auto',
+            marginBottom: '12px',
+            opacity: 1,
+            transitionEnd: { overflow: 'unset' },
+        },
+    },
+    transition: { duration: 0.24, ease: 'easeInOut' },
+    initial: 'initial',
+    animate: 'visible',
+    exit: 'initial',
+} as const;
+
 export const Experimental = () => {
     const enabledFeatures = useSelector(state => state.suite.settings.experimental);
+    const isExperimentalEnabled = enabledFeatures !== undefined;
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
@@ -128,17 +145,28 @@ export const Experimental = () => {
                 <TextColumn
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES_ALLOW" />}
                     description={
-                        <Banner
-                            icon="warning"
-                            intent="warning"
-                            description={<Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />}
-                        />
+                        <>
+                            <Translation id="TR_EXPERIMENTAL_FEATURES_DESCRIPTION" />
+                            <AnimatePresence>
+                                {isExperimentalEnabled && (
+                                    <motion.div {...bannerMotionDivProps}>
+                                        <Banner
+                                            icon="warning"
+                                            intent="warning"
+                                            description={
+                                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
+                                            }
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </>
                     }
                     buttonLink={EXPERIMENTAL_FEATURES_KB_URL}
                 />
                 <ActionColumn>
                     <Switch
-                        isChecked={enabledFeatures !== undefined}
+                        isChecked={isExperimentalEnabled}
                         onChange={onSwitchExperimental}
                         data-testid="@settings/experimental-features/toggle-switch"
                     />

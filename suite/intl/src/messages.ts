@@ -5060,10 +5060,14 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
         defaultMessage: 'Experimental features',
     },
+    TR_EXPERIMENTAL_FEATURES_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_FEATURES_DESCRIPTION',
+        defaultMessage:
+            'These features are in testing, may be unstable, and might not have long-term support.',
+    },
     TR_EXPERIMENTAL_FEATURES_WARNING: {
         id: 'TR_EXPERIMENTAL_FEATURES_WARNING',
-        defaultMessage:
-            'For experienced users only. Use at your own risk. These features are in testing, may be unstable, and might not have long-term support.',
+        defaultMessage: 'For experienced users only. Use at your own risk.',
     },
     TR_GO_TO_EXP_FEATURE: {
         id: 'TR_GO_TO_EXP_FEATURE',
