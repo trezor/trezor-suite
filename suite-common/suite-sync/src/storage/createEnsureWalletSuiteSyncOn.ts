@@ -10,7 +10,7 @@ import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err, exhaustive } from '@trezor/type-utils';
 
-import { setSuiteSyncError } from '../suiteSyncReducer';
+import { setSuiteSyncError } from '../suiteSyncSlice';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 export type EnsureWalletSuiteSyncOnDeps = {
