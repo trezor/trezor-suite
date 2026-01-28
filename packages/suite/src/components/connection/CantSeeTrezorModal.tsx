@@ -18,7 +18,7 @@ import {
 } from 'src/components/suite/troubleshooting/tips';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
@@ -34,7 +34,7 @@ const commonCableTips = [
 ];
 
 export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const {
         isBluetoothMode,
         toggleShouldPairAgain,
@@ -78,7 +78,7 @@ export const CantSeeTrezorModal = ({ onClose }: DontSeeYourTrezorModalProps) => 
                             intent="neutral"
                             priority="secondary"
                             onClick={() => {
-                                legacyAnalytics.report({
+                                analytics.report({
                                     type: EventType.DeviceConnectionHintModal,
                                     payload: {
                                         option: 'notWorking',

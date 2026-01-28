@@ -737,12 +737,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {};
       }
     | {
-          type: EventType.DeviceConnectionHintModal;
-          payload: {
-              option: 'notWorking' | 'close';
-          };
-      }
-    | {
           type: EventType.DeviceSetupStarted;
           payload: {
               deviceModel: DeviceModelInternal;
