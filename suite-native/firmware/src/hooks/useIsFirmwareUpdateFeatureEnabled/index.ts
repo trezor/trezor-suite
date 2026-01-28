@@ -1,1 +1,1 @@
-export * from './selectIsFirmwareUpdateFeatureEnabled';
+export * from './useIsFirmwareUpdateFeatureEnabled';

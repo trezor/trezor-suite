@@ -12,7 +12,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { InlineAlertBoxProps } from '@suite-native/atoms';
-import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
+import { useIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
 import { Translation } from '@suite-native/intl';
 import {
     DeviceSettingsStackParamList,
@@ -39,7 +39,7 @@ export const DeviceFirmwareCard = () => {
     const { showToast } = useToast();
 
     const navigation = useNavigation<NavigationProps>();
-    const isFirmwareUpdateEnabled = useSelector(selectIsFirmwareUpdateFeatureEnabled);
+    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
 
     if (!device || !deviceModel) {
         return null;

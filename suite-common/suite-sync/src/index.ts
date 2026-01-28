@@ -5,8 +5,8 @@ export {
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncError,
 } from './suiteSyncSelectors';
-export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncSelectors';
+export type { WithSuiteSyncAndDeviceState } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export {
     suiteSyncSlice,
