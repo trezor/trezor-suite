@@ -158,7 +158,7 @@ export default [
         blockchain: {
             name: 'Tron',
             worker: 'js/blockbook-worker.js',
-            server: ['https://backend14.sldev.cz:9312/'],
+            server: ['https://tron.trezor.io'],
             debug: true,
         },
         data: {

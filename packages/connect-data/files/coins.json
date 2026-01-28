@@ -2804,7 +2804,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://backend14.sldev.cz:9312"]
+                "url": ["https://tron.trezor.io"]
             },
             "curve": "secp256k1",
             "decimals": 6,
