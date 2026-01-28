@@ -522,7 +522,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
       }
     | { type: EventType.SwitchDeviceForget }
     | { type: EventType.SwitchDeviceRemember }
-    | { type: EventType.SwitchDeviceEject }
     | {
           type: EventType.SettingsDeviceChangePinProtection;
           payload: {
