@@ -158,12 +158,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.CreateReceiveAddressConfirmOnTrezor;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.SendInitialised;
           payload: {
               assetSymbol: NetworkSymbol;

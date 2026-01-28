@@ -1,4 +1,8 @@
-import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import {
+    EventType,
+    getTypedDesktopAnalytics,
+    getTypedDesktopLegacyAnalytics,
+} from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { UserContextPayload } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -97,7 +101,7 @@ export const showAddress =
             // show second part of the "confirm address" modal
             dispatch(openAddressModal({ ...modalPayload, isConfirmed: true }));
 
-            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+            getTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.CreateReceiveAddressConfirmOnTrezor,
                 payload: { assetSymbol: account.symbol },
             });

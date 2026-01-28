@@ -1,5 +1,6 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
+export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { dashboardActionsEvent } from './dashboardActionsEvent';
 export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectButtonEvent';
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
