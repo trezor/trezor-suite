@@ -11,6 +11,7 @@ import { ExchangeFromAccountTradePreviewCard } from './ExchangeFromAccountTradeP
 import { ExchangeFusionPlusInfo } from './ExchangeFusionPlusInfo';
 import { ExchangeToAccountTradePreviewCard } from './ExchangeToAccountTradePreviewCard';
 import { useChangeStringsExtractor } from '../../../hooks/history/useChangeStringsExtractor';
+import { LastErrorMessage } from '../../general/Error/LastErrorMessage';
 
 export type ExchangePreviewViewProps = {
     quote: ExchangeTrade | undefined;
@@ -26,6 +27,7 @@ export const ExchangePreviewView = memo(
 
         return (
             <VStack spacing="sp20" paddingVertical="sp20">
+                <LastErrorMessage tradingType="exchange" />
                 {!!isApproved && (
                     <InlineAlertBox
                         variant="success"

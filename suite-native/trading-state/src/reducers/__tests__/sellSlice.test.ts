@@ -24,6 +24,7 @@ describe('sellSlice', () => {
                     currency: 'CZK',
                     minFiat: '100',
                 },
+                lastErrorMessage: 'Some error',
             };
 
             const state = sellReducer(prevState, sellActions.clearState());

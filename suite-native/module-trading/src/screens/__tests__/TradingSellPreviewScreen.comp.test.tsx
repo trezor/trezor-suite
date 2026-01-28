@@ -229,4 +229,15 @@ describe('TradingSellPreviewScreen', () => {
         // Should be called exactly once for this orderId
         expect(mockFetchFeesAndCompose).toHaveBeenCalledTimes(1);
     });
+
+    it('should render last error message', async () => {
+        const preloadedState: PreloadedState = {
+            wallet: getWalletState({ tradeType: 'sell' }),
+        };
+        preloadedState.wallet!.trading!.sell!.lastErrorMessage = 'last error message';
+
+        const { getByText } = await renderTradingSellPreviewScreen(preloadedState);
+
+        expect(getByText('last error message')).toBeOnTheScreen();
+    });
 });
