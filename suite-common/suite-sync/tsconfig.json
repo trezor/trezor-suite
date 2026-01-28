@@ -9,6 +9,7 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../dependency-injection" },
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },
         { "path": "../redux-utils" },

@@ -12,7 +12,9 @@ import type { EnsureWalletSuiteSyncOnDeps } from '../createEnsureWalletSuiteSync
 import { createEnsureWalletSuiteSyncOn } from '../createEnsureWalletSuiteSyncOn';
 import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock';
 
-const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
+
+const DEVICE_123 = getSuiteDevice({ state: DEVICE_STATIC_SESSION_ID_123 });
 
 const createMockState = (devices: TrezorDevice[] = []): DeviceRootState => ({
     device: {
@@ -31,8 +33,9 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             dispatch: null,
         });
 
-        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
-        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+        const result = await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -52,8 +55,9 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
-        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
-        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+        const result = await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
 
         expect(result.success).toBe(false);
         if (!result.success) {
@@ -64,17 +68,26 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
     it('returns error when device needs firmware upgrade', async () => {
         const unavailableCapabilities: UnavailableCapabilities = { evolu: 'update-required' };
+        const device = getSuiteDevice({
+            unavailableCapabilities,
+            state: DEVICE_STATIC_SESSION_ID_123,
+        });
+
+        if (device.state?.staticSessionId === undefined) {
+            throw new Error('staticSessionId is undefined');
+        }
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([getSuiteDevice({ unavailableCapabilities })]),
+            getState: () => createMockState([device]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
-        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
-        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+        const result = await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
 
         expect(!result.success && result.error.type).toBe(
             'SuiteSyncFirmwareUpgradeNeededDeviceErrorType',
@@ -87,16 +100,19 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([getSuiteDevice()]),
+            getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
-        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
-        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+        const result = await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
 
-        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
         expect(result).toBe(ensureResult);
     });
 
@@ -105,16 +121,19 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([getSuiteDevice()]),
+            getState: () => createMockState([DEVICE_123]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: () => Promise.resolve(ensureResult),
             subscriptionStorage: createSubscriptionStorageMock(),
         });
 
-        const ensureWalletSuiteSyncOn = createEnsureWalletSuiteSyncOn(deps);
-        const result = await ensureWalletSuiteSyncOn({ deviceStaticSessionId });
+        const result = await createEnsureWalletSuiteSyncOn(deps)({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
 
-        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
+            deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+        });
         expect(result).toBe(ensureResult);
     });
 });
