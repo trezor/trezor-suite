@@ -700,10 +700,4 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               wasAccepted: boolean;
           };
-      }
-    | {
-          type: EventType.DeviceConnectionConnectButton;
-          payload: {
-              option: 'dashboard' | 'dropdown';
-          };
       };
