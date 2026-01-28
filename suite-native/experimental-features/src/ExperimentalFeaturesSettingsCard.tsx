@@ -56,6 +56,16 @@ export const ExperimentalFeaturesSettingsCard = () => {
         overflow: 'hidden',
     }));
 
+    const animatedAlertStyle = useAnimatedStyle(() => ({
+        opacity: withTiming(areExperimentalFeaturesAllowed ? 1 : 0, {
+            duration: ANIMATION_DURATION,
+        }),
+        maxHeight: withTiming(areExperimentalFeaturesAllowed ? 200 : 0, {
+            duration: ANIMATION_DURATION,
+        }),
+        overflow: 'hidden',
+    }));
+
     const handleContentLayout = ({ nativeEvent }: LayoutChangeEvent) => {
         contentHeight.value = nativeEvent.layout.height;
     };
@@ -100,13 +110,20 @@ export const ExperimentalFeaturesSettingsCard = () => {
                                     testID="@settings/experimental-features/toggle-switch"
                                 />
                             </HStack>
-                            <InlineAlertBox
-                                variant="warning"
-                                title={
-                                    <Translation id="moduleSettings.advanced.experimentalFeatures.warning" />
-                                }
-                            />
-                            <VStack marginTop="sp8">
+                            <Text variant="hint" color="textSubdued">
+                                <Translation id="moduleSettings.advanced.experimentalFeatures.subtitle" />
+                            </Text>
+                            <AnimatedBox style={animatedAlertStyle}>
+                                <Box marginBottom="sp8">
+                                    <InlineAlertBox
+                                        variant="warning"
+                                        title={
+                                            <Translation id="moduleSettings.advanced.experimentalFeatures.warning" />
+                                        }
+                                    />
+                                </Box>
+                            </AnimatedBox>
+                            <VStack>
                                 <Button
                                     size="small"
                                     viewLeft="arrowSquareOut"
