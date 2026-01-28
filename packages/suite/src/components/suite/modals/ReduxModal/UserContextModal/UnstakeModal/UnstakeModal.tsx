@@ -8,7 +8,7 @@ import { spacings } from '@trezor/theme';
 import { UnstakingInfo } from 'src/components/suite/StakingProcess/UnstakingInfo';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { UnstakeFormContext, useUnstakeForm } from 'src/hooks/wallet/useUnstakeForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { UnstakeButton } from './UnstakeForm/UnstakeButton';
 import { UnstakeForm } from './UnstakeForm/UnstakeForm';
@@ -19,7 +19,7 @@ interface UnstakeModalModalProps {
 }
 
 export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { account } = selectedAccount;
 
     const unstakeContextValues = useUnstakeForm({ selectedAccount });
@@ -28,7 +28,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
     const onCancelClick = () => {
         onCancel?.();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.StakingUnstake,
             payload: {
                 action: 'cancel',

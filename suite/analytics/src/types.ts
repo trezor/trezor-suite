@@ -416,15 +416,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.StakingUnstake;
-          payload: {
-              action: 'continue' | 'cancel';
-              step: 'staking-dashboard' | 'unstake-form-modal';
-              networkSymbol?: string;
-              currency?: 'crypto' | 'fiat';
-          };
-      }
-    | {
           type: EventType.StakingClaim;
           payload: {
               action: 'continue' | 'cancel';

@@ -196,7 +196,7 @@ export const StakingCard = ({
         if (!isUnstakingDisabled) {
             dispatch(openModal({ type: 'unstake' }));
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.StakingUnstake,
                 payload: {
                     action: 'continue',
