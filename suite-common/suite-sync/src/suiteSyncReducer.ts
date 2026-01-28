@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
+import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-types';
+
 export type SuiteSyncSettings = {
     /**
      * This is flag to show some extra Debug UI.
@@ -25,7 +27,7 @@ export type SuiteSyncSettings = {
 
 export type SuiteSyncState = {
     settings: SuiteSyncSettings;
-    suiteSyncError: string | null;
+    suiteSyncError: DeviceErrorType | DeviceCancelledErrType | null;
 };
 
 export const initialSuiteSyncState: SuiteSyncState = {
@@ -53,7 +55,10 @@ export const suiteSyncSlice = createSlice({
         setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
         },
-        setSuiteSyncError: (state, { payload }: PayloadAction<{ error: string | null }>) => {
+        setSuiteSyncError: (
+            state,
+            { payload }: PayloadAction<{ error: DeviceErrorType | DeviceCancelledErrType | null }>,
+        ) => {
             state.suiteSyncError = payload.error;
         },
     },
