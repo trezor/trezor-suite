@@ -5,7 +5,7 @@
 import { captureMessage, withScope } from '@sentry/electron/main';
 import { ipcMain } from 'electron';
 
-import { coinjoinNetworkTag, coinjoinReportTag } from '@suite-common/sentry';
+import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from '@suite-common/sentry';
 import { CoinjoinBackend, CoinjoinBackendSettings, CoinjoinClient } from '@trezor/coinjoin';
 import { IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
@@ -51,8 +51,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
     const sentryError = (network: string, payload: string) => {
         withScope(scope => {
             scope.clear(); // scope is also cleared in beforeSend sentry handler, this is just to be safe.
-            scope.setTag(coinjoinReportTag, true);
-            scope.setTag(coinjoinNetworkTag, network);
+            scope.setTag(COINJOIN_REPORT_TAG, true);
+            scope.setTag(COINJOIN_NETWORK_TAG, network);
             captureMessage(payload, scope);
         });
     };

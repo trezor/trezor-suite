@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/core';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
 import { redactDevice, selectRedactedActionsLog } from '@suite-common/logger';
-import { allowReportTag } from '@suite-common/sentry';
+import { ALLOW_REPORT_TAG } from '@suite-common/sentry';
 import { ReportSecurityCheckParams } from '@suite-common/suite-types';
 import {
     selectDiscoveryForSelectedDevice,
@@ -23,7 +23,7 @@ export const withSentryScope = Sentry.withScope;
 export const captureSentryMessage = Sentry.captureMessage;
 
 export const allowSentryReport = (value: boolean) => {
-    Sentry.setTag(allowReportTag, value);
+    Sentry.setTag(ALLOW_REPORT_TAG, value);
 };
 
 export const setSentryUser = (instanceId: string) => {

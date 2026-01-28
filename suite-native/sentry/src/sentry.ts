@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react-native';
 
-import { allowReportTag, redactSentryEvent } from '@suite-common/sentry';
+import { ALLOW_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
 import { getEnv, isDebugEnv, isDetoxTestBuild } from '@suite-native/config';
 
 export const setSentryContext = Sentry.setContext;
@@ -16,7 +16,7 @@ export const captureSentryException = Sentry.captureException;
 export const captureSentryMessage = Sentry.captureMessage;
 
 export const allowSentryReport = (value: boolean) => {
-    Sentry.setTag(allowReportTag, value);
+    Sentry.setTag(ALLOW_REPORT_TAG, value);
 };
 
 export const setSentryUser = (instanceId: string) => {
