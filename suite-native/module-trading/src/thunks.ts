@@ -11,6 +11,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
+    tradingBuyActions,
     tradingActions as tradingCommonActions,
     tradingExchangeActions,
     tradingSellActions,
@@ -67,6 +68,11 @@ export const clearTradingStateThunk = createThunk(
         // Clear form draft with selected fees
         dispatch(formDraftActions.removeDraft({ key: getFormDraftKeyByTradeType('sell') }));
         dispatch(formDraftActions.removeDraft({ key: getFormDraftKeyByTradeType('exchange') }));
+
+        // Clear last error messages
+        dispatch(tradingSellActions.setLastErrorMessage(undefined));
+        dispatch(tradingExchangeActions.setLastErrorMessage(undefined));
+        dispatch(tradingBuyActions.setLastErrorMessage(undefined));
     },
 );
 

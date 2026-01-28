@@ -14,6 +14,7 @@ const sellSlice = createSlice({
             state.quotes = [];
             state.selectedQuote = undefined;
             state.amountLimits = undefined;
+            state.lastErrorMessage = undefined;
         },
         clearQuotesAndQuotesRequest: state => {
             state.quotesRequest = undefined;

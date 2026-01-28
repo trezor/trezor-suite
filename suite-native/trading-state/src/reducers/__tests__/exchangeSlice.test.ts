@@ -36,6 +36,7 @@ describe('exchangeSlice', () => {
                     minCrypto: '0.001',
                     maxCrypto: '10',
                 },
+                lastErrorMessage: 'Some error',
             };
 
             const state = exchangeReducer(prevState, exchangeActions.clearState());

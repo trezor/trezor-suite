@@ -9,6 +9,7 @@ import {
 } from '@suite-common/trading';
 import { Screen } from '@suite-native/navigation';
 
+import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
 import { Footer } from '../components/general/Footer';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { ProviderConfirmationStatusInfo } from '../components/sell/ProviderConfirmation/ProviderConfirmationStatusInfo';
@@ -81,6 +82,7 @@ const TradingSellPreviewScreenContent = () => {
     return (
         <Screen header={<SellPreviewScreenHeader />}>
             <ProviderStatusDevButtons />
+            <LastErrorMessage tradingType="sell" />
             <ProviderConfirmationStatusInfo />
             <SellPreviewView quote={currentQuote} txnErrorString={errorString} />
             {!isFinalized && (
