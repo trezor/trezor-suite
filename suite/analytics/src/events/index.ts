@@ -7,6 +7,7 @@ export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
+export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
