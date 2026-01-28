@@ -4,7 +4,6 @@ export {
     selectSuiteSyncRelayUrl,
     selectIsTurnOnSuiteSyncInteractionNeeded,
     selectIsSuiteSyncDebugEnabled,
-    selectSuiteSyncError,
 } from './suiteSyncSelectors';
 export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncSelectors';

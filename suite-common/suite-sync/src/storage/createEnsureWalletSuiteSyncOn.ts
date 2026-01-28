@@ -10,7 +10,6 @@ import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
 import { err } from '@trezor/type-utils';
 
-import { setSuiteSyncError } from '../suiteSyncReducer';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
 
 export type EnsureWalletSuiteSyncOnDeps = {
@@ -36,16 +35,5 @@ export const createEnsureWalletSuiteSyncOn =
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        const result = await deps.ensureSuiteSyncData({ deviceStaticSessionId });
-
-        if (
-            !result.success &&
-            (result.error.type === 'DeviceCancelled' || result.error.type === 'DeviceError')
-        ) {
-            deps.dispatch(setSuiteSyncError({ error: result.error.type }));
-        } else {
-            deps.dispatch(setSuiteSyncError({ error: null }));
-        }
-
-        return result;
+        return await deps.ensureSuiteSyncData({ deviceStaticSessionId });
     };
