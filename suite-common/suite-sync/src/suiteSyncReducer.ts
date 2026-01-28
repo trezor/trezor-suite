@@ -34,6 +34,7 @@ export type SuiteSyncSettings = {
 
 export type SuiteSyncState = {
     settings: SuiteSyncSettings;
+    suiteSyncError: string | null;
 };
 
 export const initialSuiteSyncState: SuiteSyncState = {
@@ -43,6 +44,7 @@ export const initialSuiteSyncState: SuiteSyncState = {
         isSuiteSyncDebugEnabled: false,
         suiteSyncRelayUrl: null,
     },
+    suiteSyncError: null,
 };
 
 export const suiteSyncSlice = createSlice({
@@ -67,6 +69,9 @@ export const suiteSyncSlice = createSlice({
         setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
         },
+        setSuiteSyncError: (state, { payload }: PayloadAction<{ error: string | null }>) => {
+            state.suiteSyncError = payload.error;
+        },
     },
 });
 
@@ -75,6 +80,7 @@ export const {
     updateSuiteSyncDebugEnabled,
     updateIsFeatureSuiteSyncAvailable,
     setSuiteSyncRelayUrl,
+    setSuiteSyncError,
 } = suiteSyncSlice.actions;
 
 export const suiteSyncReducer = suiteSyncSlice.reducer;
