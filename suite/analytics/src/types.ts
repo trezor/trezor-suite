@@ -652,24 +652,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsCoinsBackend;
-          payload: {
-              symbol: string;
-              type:
-                  | 'blockbook'
-                  | 'electrum'
-                  | 'ripple'
-                  | 'blockfrost'
-                  | 'coinjoin'
-                  | 'default'
-                  | 'solana'
-                  | 'stellar'
-                  | 'evm-rpc';
-              totalRegular: number;
-              totalOnion: number;
-          };
-      }
-    | {
           type: EventType.SettingsTor;
           payload: {
               value: boolean;
