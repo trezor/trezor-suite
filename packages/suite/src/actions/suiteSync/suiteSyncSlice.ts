@@ -14,20 +14,25 @@ import { STORAGE } from '../suite/constants';
 
 export type DesktopSuiteSyncState = SuiteSyncState & {
     showEnableSuiteSyncModal: StaticSessionId | null;
-    /**
-     * This is flag, that enables the Suite Sync Feature.
-     * On mobile, it is managed by Experimental Features.
-     * On desktop, it is managed by Debug Settings.
-     *
-     * It shall be removed once we release the Suite Sync feature.
-     */
-    isFeatureSuiteSyncAvailable: boolean;
+    settings: {
+        /**
+         * This is flag, that enables the Suite Sync Feature.
+         * On mobile, it is managed by Experimental Features.
+         * On desktop, it is managed by Debug Settings.
+         *
+         * It shall be removed once we release the Suite Sync feature.
+         */
+        isFeatureSuiteSyncAvailable: boolean;
+    };
 };
 
 export const initialSuiteSyncState: DesktopSuiteSyncState = {
     ...commonInitialState,
-    isFeatureSuiteSyncAvailable: false,
     showEnableSuiteSyncModal: null,
+    settings: {
+        ...commonInitialState.settings,
+        isFeatureSuiteSyncAvailable: false,
+    },
 };
 
 export type DesktopSuiteSyncRootState = {
@@ -45,7 +50,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
             state,
             { payload }: PayloadAction<{ isShownInSettings: boolean }>,
         ) => {
-            state.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
+            state.settings.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
         },
     },
     extraReducers: builder => {
@@ -73,7 +78,7 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
 });
 
 export const selectIsFeatureSuiteSyncAvailable = (state: DesktopSuiteSyncRootState): boolean =>
-    state.suiteSync.isFeatureSuiteSyncAvailable;
+    state.suiteSync.settings.isFeatureSuiteSyncAvailable;
 
 export const { updateShowEnableSuiteSyncModal, updateIsFeatureSuiteSyncAvailable } =
     suiteSyncSlice.actions;
