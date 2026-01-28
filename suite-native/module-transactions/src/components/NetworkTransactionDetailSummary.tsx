@@ -71,9 +71,12 @@ export const NetworkTransactionDetailSummary = ({
             selectTransactionAddresses(state, accountKey, transaction.txid, 'outputs'),
     );
 
+    const isNonEmptyInput = A.isNotEmpty(transactionInputAddresses);
+    const isNonEmptyOutput = A.isNotEmpty(transactionOutputAddresses);
+
     return (
         <VStack spacing="sp24">
-            {A.isNotEmpty(transactionInputAddresses) && (
+            {isNonEmptyInput && (
                 <TransactionDetailAddressesSection
                     addressesType="inputs"
                     addresses={transactionInputAddresses}
@@ -81,7 +84,7 @@ export const NetworkTransactionDetailSummary = ({
                     transaction={transaction}
                 />
             )}
-            {A.isNotEmpty(transactionOutputAddresses) && (
+            {isNonEmptyOutput && (
                 <TransactionDetailAddressesSection
                     addressesType="outputs"
                     addresses={transactionOutputAddresses}
@@ -89,7 +92,9 @@ export const NetworkTransactionDetailSummary = ({
                     transaction={transaction}
                 />
             )}
-            <VerticalSeparator inputsCount={transactionInputAddresses.length} />
+            {isNonEmptyInput && isNonEmptyOutput && (
+                <VerticalSeparator inputsCount={transactionInputAddresses.length} />
+            )}
         </VStack>
     );
 };
