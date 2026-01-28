@@ -31,7 +31,7 @@ export const EarnScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            analytics.report({ type: EventType.EearnNavigate });
+            analytics.report({ type: EventType.EarnNavigate });
         }, [analytics]),
     );
 
