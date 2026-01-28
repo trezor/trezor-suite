@@ -9,7 +9,7 @@ import { initialSuiteSyncState } from '../suiteSyncReducer';
 import { selectIsTurnOnSuiteSyncInteractionNeeded } from '../suiteSyncSelectors';
 import type { WithSuiteSyncAndDeviceState } from '../suiteSyncSelectors';
 
-const deviceStaticSessionId: StaticSessionId = '1@2:3';
+const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 const createMockState = (
     deviceOverrides: Parameters<typeof getSuiteDevice>[0] = {},
@@ -17,7 +17,7 @@ const createMockState = (
 ): WithSuiteSyncAndDeviceState => ({
     device: {
         ...deviceReducerInitialState,
-        devices: [getSuiteDevice(deviceOverrides)],
+        devices: [getSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
     },
     suiteSync: {
         ...initialSuiteSyncState,
@@ -30,7 +30,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
         const state = createMockState();
         state.device.devices = [];
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBeNull();
     });
@@ -46,7 +49,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBeNull();
     });
@@ -63,7 +69,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBe('suite-sync-off');
     });
@@ -81,7 +90,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBe('unsupported');
     });
@@ -99,7 +111,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBe('firmware-upgrade-needed');
     });
@@ -116,7 +131,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBe('keys-needed');
     });
@@ -133,7 +151,10 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             },
         );
 
-        const result = selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId);
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
 
         expect(result).toBeNull();
     });

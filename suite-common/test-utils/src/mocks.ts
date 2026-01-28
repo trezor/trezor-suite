@@ -221,7 +221,7 @@ const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Feat
 
 /**
  * Create a mocked extended device, as processed by wallet-core deviceReducer.
- * Note that type inferrence for AcquiredDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
+ * Note that type inference for AcquiredDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
  * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not acquired).
  */
 export const getSuiteDevice = (
