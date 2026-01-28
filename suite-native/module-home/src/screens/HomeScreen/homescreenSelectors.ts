@@ -2,18 +2,17 @@ import { MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     WithSuiteSyncState,
-    selectIsSuiteSyncEnabled,
-    selectSuiteSyncError,
+    selectIsTurnOnSuiteSyncInteractionNeeded,
 } from '@suite-common/suite-sync';
 import {
     DeviceRootState,
     DiscoveryRootState,
+    selectDeviceStaticSessionId,
     selectHasRunningDiscovery,
     selectIsDeviceBackedUp,
     selectIsDeviceConnected,
     selectIsFirmwareUpgradable,
     selectIsPortfolioTrackerDevice,
-    selectSelectedDevicesOwnerId,
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/wallet-core';
 import { selectIsFirmwareUpdateFeatureEnabled } from '@suite-native/firmware';
@@ -50,13 +49,8 @@ export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(
         isFirmwareUpdateFeatureEnabled,
 );
 
-export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
-    [
-        selectSelectedDevicesOwnerId,
-        selectIsSuiteSyncEnabled,
-        selectSuiteSyncError,
-        selectIsDeviceConnected,
-    ],
-    (deviceOwnerId, isSuiteSyncEnabled, suiteSyncError, isDeviceConnected) =>
-        !deviceOwnerId && isSuiteSyncEnabled && (!!suiteSyncError || !isDeviceConnected),
-);
+export const selectShouldDisplaySuiteSyncAlert = (state: WithSuiteSyncState & DeviceRootState) => {
+    const deviceStaticSessionId = selectDeviceStaticSessionId(state);
+
+    return selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId) === 'keys-needed';
+};
