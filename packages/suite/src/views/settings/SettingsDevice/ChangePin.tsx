@@ -6,7 +6,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface ChangePinProps {
     isDeviceLocked: boolean;
@@ -14,10 +14,10 @@ interface ChangePinProps {
 
 export const ChangePin = ({ isDeviceLocked }: ChangePinProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleClick = () => {
         dispatch(changePin({ remove: false }));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDeviceChangePin,
         });
     };

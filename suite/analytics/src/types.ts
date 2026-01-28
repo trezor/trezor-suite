@@ -537,9 +537,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           status: 'finished' | 'error';
           error?: string;
       }
-    | {
-          type: EventType.SettingsDeviceChangePin;
-      }
     | { type: EventType.SettingsDeviceSetupWipeCode }
     | { type: EventType.SettingsDeviceChangeWipeCode }
     | { type: EventType.SettingsDeviceDisableWipeCode }
