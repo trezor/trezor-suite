@@ -5,11 +5,12 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useNativeServices } from '@suite-native/services';
+import { useLegacyAnalytics, useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 export const ToggleSuiteSyncCard = () => {
+    const analytics = useLegacyAnalytics();
     const { showAlert } = useAlert();
     const { showToast } = useToast();
     const { suiteSync } = useNativeServices();
@@ -21,7 +22,15 @@ export const ToggleSuiteSyncCard = () => {
             title: <Translation id="suiteSync.disableAlert.title" />,
             description: <Translation id="suiteSync.disableAlert.description" />,
             primaryButtonTitle: <Translation id="suiteSync.disableAlert.cta" />,
-            onPressPrimaryButton: suiteSync.turnOffSuiteSync,
+            onPressPrimaryButton: () => {
+                suiteSync.turnOffSuiteSync();
+                analytics.report({
+                    type: 'settings/general/labeling',
+                    payload: {
+                        value: 'off',
+                    },
+                });
+            },
             secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
         });
     };
@@ -32,6 +41,13 @@ export const ToggleSuiteSyncCard = () => {
         } else {
             const result = await suiteSync.turnOnSuiteSync({
                 deviceStaticSessionId: selectedDevice?.state?.staticSessionId,
+            });
+
+            analytics.report({
+                type: 'settings/general/labeling',
+                payload: {
+                    value: 'suite-sync',
+                },
             });
 
             if (!result.success) {
@@ -62,7 +78,7 @@ export const ToggleSuiteSyncCard = () => {
                     <Translation id="moduleSettings.items.features.suiteSync.toggleDescription" />
                 }
                 accessibilityLabel="Secure sync toggle"
-                testID="settings/secure-sync-touchable-row"
+                testID="settings/suite-sync-touchable-row"
             />
         </>
     );

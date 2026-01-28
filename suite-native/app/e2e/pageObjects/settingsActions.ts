@@ -119,7 +119,7 @@ class SettingsActions {
         await onTabBar.tapBackButton();
 
         await this.openSection('suite-sync');
-        await element(by.id('settings/secure-sync-touchable-row')).tap();
+        await element(by.id('settings/suite-sync-touchable-row')).tap();
         await TrezorUserEnvLink.pressYes();
     }
 }
