@@ -331,7 +331,7 @@ export const networks = {
         bip43Path: "m/44'/195'/0'/0/i",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'coin-definitions', 'graph'],
+        features: ['tokens', 'coin-definitions', 'graph', 'nfts'],
         explorer: getExplorerUrls('https://tronscan.org/#', 'tron'),
         support: {
             [DeviceModelInternal.T2T1]: '2.10.1',
