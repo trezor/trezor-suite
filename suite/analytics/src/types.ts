@@ -74,12 +74,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: AppUpdateEvent;
       }
     | {
-          type: EventType.DashboardActions;
-          payload: {
-              type: string;
-          };
-      }
-    | {
           type: EventType.DashboardSendModal;
       }
     | {
