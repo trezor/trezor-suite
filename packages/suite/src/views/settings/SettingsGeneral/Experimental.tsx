@@ -154,7 +154,7 @@ export const Experimental = () => {
                                             icon="warning"
                                             intent="warning"
                                             description={
-                                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING" />
+                                                <Translation id="TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED" />
                                             }
                                         />
                                     </motion.div>
