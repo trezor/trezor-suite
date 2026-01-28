@@ -28,7 +28,7 @@ import { shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
 
 import { TypedTokenTransfer, WalletAccountTransaction } from './types';
-import { isCoinWithTokens } from './utils';
+import { isNetworkWithTokens } from './utils';
 
 export type TokensRootState = AccountsRootState &
     DeviceRootState &
@@ -152,7 +152,7 @@ export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelecto
 export const selectAccountsKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],
     (account, tokenDefinitions): TokenInfoBranded[] => {
-        if (!account || !isCoinWithTokens(account.symbol)) {
+        if (!account || !isNetworkWithTokens(account.symbol)) {
             return returnStableArrayIfEmpty<TokenInfoBranded>([]);
         }
 
@@ -177,7 +177,7 @@ export const selectNumberOfAccountTokensWithFiatRates = (
 ): number => {
     const account = selectAccountByKey(state, accountKey);
 
-    if (!account || !isCoinWithTokens(account.symbol)) {
+    if (!account || !isNetworkWithTokens(account.symbol)) {
         return 0;
     }
 
@@ -190,7 +190,7 @@ export const selectHasDeviceAnyTokensForNetwork = (
     state: TokensRootState,
     symbol: NetworkSymbol,
 ) => {
-    if (!isCoinWithTokens(symbol)) {
+    if (!isNetworkWithTokens(symbol)) {
         return false;
     }
 
@@ -206,7 +206,7 @@ export const selectHasDeviceAnyTokensForNetwork = (
 export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey: string) => {
     const account = selectAccountByKey(state, accountKey);
 
-    if (!account || !isCoinWithTokens(account.symbol)) {
+    if (!account || !isNetworkWithTokens(account.symbol)) {
         return false;
     }
 
@@ -219,7 +219,7 @@ export const selectNetworkSymbolsOfAccountsWithTokensAllowed = createMemoizedSel
     [selectAccounts],
     accounts =>
         accounts
-            .filter(a => isCoinWithTokens(a.symbol))
+            .filter(a => isNetworkWithTokens(a.symbol))
             .reduce((acc, account) => {
                 if (!acc.includes(account.symbol)) {
                     acc.push(account.symbol);

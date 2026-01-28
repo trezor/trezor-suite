@@ -15,7 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
-import { isCoinWithTokens } from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { convertTaprootXpub } from '@trezor/utils';
@@ -120,7 +120,7 @@ export const getAccountInfoThunk = createThunk<
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
 
                 // fetch token definitions for this network in case they are needed
-                if (!tokenDefinitions && isCoinWithTokens(symbol)) {
+                if (!tokenDefinitions && isNetworkWithTokens(symbol)) {
                     const definitionTypes = getSupportedDefinitionTypes(symbol);
 
                     const promises = definitionTypes.map(async type => {

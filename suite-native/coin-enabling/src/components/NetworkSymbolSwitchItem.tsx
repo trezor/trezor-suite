@@ -4,7 +4,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { isCoinWithTokens } from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type NetworkSymbolSwitchItemProps = {
@@ -66,7 +66,7 @@ export const NetworkSymbolSwitchItem = ({
                     >
                         <VStack spacing={0}>
                             <Text variant="callout">{name}</Text>
-                            {isCoinWithTokens(symbol) && (
+                            {isNetworkWithTokens(symbol) && (
                                 <Text variant="hint" color="textSubdued">
                                     <Translation id="generic.tokens" />
                                 </Text>

@@ -23,7 +23,7 @@ import {
 } from '@suite-native/feature-flags';
 import { SettingsSliceRootState, selectAreTestnetsEnabled } from '@suite-native/settings';
 import {
-    isCoinWithTokens,
+    isNetworkWithTokens,
     selectNetworkSymbolsOfAccountsWithTokensAllowed,
 } from '@suite-native/tokens';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -121,7 +121,7 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
         returnStableArrayIfEmpty(
             pipe(
                 [...enabledNetworkSymbols, ...accountNetworkSymbols],
-                A.filter(s => isCoinWithTokens(s)),
+                A.filter(s => isNetworkWithTokens(s)),
                 A.uniq,
             ),
         ),
