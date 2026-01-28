@@ -152,12 +152,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.CreateReceiveAddressCopyAddress;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.SendInitialised;
           payload: {
               assetSymbol: NetworkSymbol;
