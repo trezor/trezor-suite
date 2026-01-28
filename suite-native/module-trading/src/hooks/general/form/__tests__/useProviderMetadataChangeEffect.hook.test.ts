@@ -7,6 +7,17 @@ import {
     useProviderMetadataChangeEffect,
 } from '../useProviderMetadataChangeEffect';
 
+let mockIsFocused = true;
+
+jest.mock('@react-navigation/native', () => {
+    const actualNav = jest.requireActual('@react-navigation/native');
+
+    return {
+        ...actualNav,
+        useIsFocused: () => mockIsFocused,
+    };
+});
+
 describe('useProviderMetadataChangeEffect', () => {
     let store: TestStore;
 
@@ -17,6 +28,7 @@ describe('useProviderMetadataChangeEffect', () => {
 
     beforeEach(() => {
         ({ store } = initStore({ wallet: getWalletState({ tradeType: 'buy' }) }));
+        mockIsFocused = true;
     });
 
     it('should set currentProviderMetadata when quote is set', () => {
@@ -30,6 +42,13 @@ describe('useProviderMetadataChangeEffect', () => {
         const { unmount } = renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
 
         unmount();
+
+        expect(selectTradingProviderMetadata(store.getState())).toBeUndefined();
+    });
+
+    it('should not change provider metadata when screen is not focused', () => {
+        mockIsFocused = false;
+        renderUseProviderMetadataChangeEffect(_ => 'mercuryo');
 
         expect(selectTradingProviderMetadata(store.getState())).toBeUndefined();
     });

@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useIsFocused } from '@react-navigation/native';
+
 import {
     type TradingRootState,
     TradingType,
@@ -16,6 +18,7 @@ export const useProviderMetadataChangeEffect = (
 ) => {
     const dispatch = useDispatch();
     const exchange = watch('quote.exchange');
+    const isFocused = useIsFocused();
 
     const providerMetadata = useSelector((state: TradingRootState) =>
         selectTradingProviderByNameAndTradeType(state, exchange, tradingType),
@@ -23,10 +26,19 @@ export const useProviderMetadataChangeEffect = (
     const currentProviderMetadata = useSelector(selectTradingProviderMetadata);
 
     useEffect(() => {
-        if (providerMetadata !== currentProviderMetadata) {
-            dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
+        // On navigation to preview screen the form is cleared, but we want to keep this value, therefore
+        // we skip updates to currentProviderMetadata.
+        // The effect will clear the provider metadata as soon as user goes back to form screen.
+        if (!isFocused) {
+            return;
         }
-    }, [providerMetadata, currentProviderMetadata, dispatch]);
+
+        if (providerMetadata === currentProviderMetadata) {
+            return;
+        }
+
+        dispatch(tradingActions.setCurrentProviderMetadata(providerMetadata));
+    }, [providerMetadata, currentProviderMetadata, dispatch, isFocused]);
 
     useEffect(
         () => () => {
