@@ -1,6 +1,10 @@
 import { MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { WithSuiteSyncState, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    WithSuiteSyncState,
+    selectIsSuiteSyncEnabled,
+    selectSuiteSyncError,
+} from '@suite-common/suite-sync';
 import {
     DeviceRootState,
     DiscoveryRootState,
@@ -47,6 +51,12 @@ export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(
 );
 
 export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
-    [selectSelectedDevicesOwnerId, selectIsSuiteSyncEnabled],
-    (deviceOwnerId, isSuiteSyncEnabled) => !deviceOwnerId && isSuiteSyncEnabled,
+    [
+        selectSelectedDevicesOwnerId,
+        selectIsSuiteSyncEnabled,
+        selectSuiteSyncError,
+        selectIsDeviceConnected,
+    ],
+    (deviceOwnerId, isSuiteSyncEnabled, suiteSyncError, isDeviceConnected) =>
+        !deviceOwnerId && isSuiteSyncEnabled && (!!suiteSyncError || !isDeviceConnected),
 );
