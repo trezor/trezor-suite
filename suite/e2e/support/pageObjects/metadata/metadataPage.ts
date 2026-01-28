@@ -64,7 +64,7 @@ export class MetadataPage {
         await this.settingsPage.navigateTo('application');
         await this.page.selectDropdownOptionWithRetry(
             this.settingsPage.metadataSelectInput,
-            this.settingsPage.metadataSelectInputOption('secure-sync'),
+            this.settingsPage.metadataSelectInputOption('suite-sync'),
         );
     }
 

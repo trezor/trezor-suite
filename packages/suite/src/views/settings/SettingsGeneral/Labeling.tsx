@@ -79,7 +79,7 @@ export const Labeling = () => {
                 suiteSync.turnOffSuiteSync();
                 break;
 
-            case 'secure-sync': {
+            case 'suite-sync': {
                 const result = await suiteSync.turnOnSuiteSync({ deviceStaticSessionId });
                 if (!result.success) {
                     const { type } = result.error;
@@ -114,7 +114,7 @@ export const Labeling = () => {
         analytics.report({
             type: EventType.SettingsGeneralLabeling,
             payload: {
-                value: value === 'secure-sync' ? 'suite-sync' : value,
+                value,
             },
         });
     };
@@ -130,7 +130,7 @@ export const Labeling = () => {
         );
 
         if (showSuiteSync) {
-            if (isSuiteSyncEnabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['secure-sync'];
+            if (isSuiteSyncEnabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP['suite-sync'];
             if (legacyMetadataState.enabled) return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.legacy;
 
             return LABELING_SELECT_TRANSLATED_OPTIONS_MAP.off;
