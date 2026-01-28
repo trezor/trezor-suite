@@ -7,7 +7,10 @@ import { firmwareActions } from '@suite-common/firmware';
 import { geolocationActions } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
 import { messageSystemActions } from '@suite-common/message-system';
-import { suiteSyncActions, suiteSyncDataSlice } from '@suite-common/suite-sync';
+import {
+    suiteSyncSlice as suiteSyncCommonSlice,
+    suiteSyncDataSlice,
+} from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import type { Route } from '@suite-common/suite-types';
 import { thpActions } from '@suite-common/thp';
@@ -82,7 +85,12 @@ type BluetoothAction = ReturnType<(typeof bluetoothActions)[keyof typeof bluetoo
 type BluetoothActionDesktop = ReturnType<
     (typeof bluetoothSlice.actions)[keyof typeof bluetoothSlice.actions]
 >;
-type SuiteSyncAction = ReturnType<(typeof suiteSyncActions)[keyof typeof suiteSyncActions]>;
+type SuiteSyncAction = ReturnType<
+    (typeof suiteSyncSlice.actions)[keyof typeof suiteSyncSlice.actions]
+>;
+type SuiteSyncActionCommon = ReturnType<
+    (typeof suiteSyncCommonSlice.actions)[keyof typeof suiteSyncCommonSlice.actions]
+>;
 type SuiteSyncDataAction = ReturnType<
     (typeof suiteSyncDataSlice.actions)[keyof typeof suiteSyncDataSlice.actions]
 >;
@@ -126,6 +134,7 @@ export type Action =
     | StorageAction
     | SuiteAction
     | SuiteSyncAction
+    | SuiteSyncActionCommon
     | SuiteSyncDataAction
     | SuiteSyncActionDesktop
     | SuiteSyncQuotaManagerAction
