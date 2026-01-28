@@ -9,6 +9,7 @@ export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyn
 export type { SuiteSyncInteraction } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
 export {
+    suiteSyncSlice,
     suiteSyncReducer,
     initialSuiteSyncState,
     updateSuiteSyncDebugEnabled,
