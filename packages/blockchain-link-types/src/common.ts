@@ -70,12 +70,14 @@ export interface ServerInfo {
 
 export type TokenStandard =
     | 'TRC10'
-    | 'TRC20'
     | 'ERC20'
+    | 'TRC20'
     | 'BEP20'
-    | 'BEP721'
     | 'ERC721'
+    | 'TRC721'
+    | 'BEP721'
     | 'ERC1155'
+    | 'TRC1155'
     | 'BEP1155'
     | 'SPL'
     | 'SPL-2022'

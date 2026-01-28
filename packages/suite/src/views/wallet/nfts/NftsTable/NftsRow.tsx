@@ -10,7 +10,12 @@ import {
 import { Explorer, Network } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { SelectedAccountStatus } from '@suite-common/wallet-types';
-import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
+import {
+    NFT_MULTITOKEN_STANDARDS,
+    NFT_SINGLETOKEN_STANDARDS,
+    getNftContractExplorerUrl,
+    getNftExplorerUrl,
+} from '@suite-common/wallet-utils';
 import {
     Badge,
     Button,
@@ -194,7 +199,7 @@ const NftsRow = ({
                     </Row>
                 </Table.Cell>
             </Table.Row>
-            {['ERC721', 'BEP721'].includes(nft.standard) &&
+            {NFT_SINGLETOKEN_STANDARDS.has(nft.standard) &&
                 nft.ids?.map((id, index) => (
                     <Table.Row
                         key={`${id}-${index}`}
@@ -226,7 +231,7 @@ const NftsRow = ({
                         </Table.Cell>
                     </Table.Row>
                 ))}
-            {['ERC1155', 'BEP1155'].includes(nft.standard) &&
+            {NFT_MULTITOKEN_STANDARDS.has(nft.standard) &&
                 nft.multiTokenValues?.map((value, index) => (
                     <Table.Row
                         key={`${nft.contract}-${index}`}

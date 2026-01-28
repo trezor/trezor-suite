@@ -514,11 +514,21 @@ export const getTxOperation = (
     return null;
 };
 
-const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
-    'ERC1155',
+export const NFT_SINGLETOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     'ERC721',
-    'BEP1155',
+    'TRC721',
     'BEP721',
+]);
+
+export const NFT_MULTITOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
+    'ERC1155',
+    'TRC1155',
+    'BEP1155',
+]);
+
+const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
+    ...NFT_SINGLETOKEN_STANDARDS,
+    ...NFT_MULTITOKEN_STANDARDS,
 ]);
 
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
@@ -533,7 +543,7 @@ export const isNftMultitokenTransfer = (transfer: TokenTransfer) =>
 export const getNftTokenId = (transfer: TokenTransfer) =>
     // use 0 index, haven't found an example where multiTokenValues.length > 1
     transfer.standard &&
-    ['ERC1155', 'BEP1155'].includes(transfer.standard) &&
+    NFT_MULTITOKEN_STANDARDS.has(transfer.standard) &&
     transfer.multiTokenValues?.length
         ? transfer.multiTokenValues[0].id
         : transfer.amount;
