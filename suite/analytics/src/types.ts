@@ -145,13 +145,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.CreateReceiveAddressShowAddress;
-          payload: {
-              assetSymbol: NetworkSymbol;
-              type: 'verified' | 'unverified';
-          };
-      }
-    | {
           type: EventType.SendInitialised;
           payload: {
               assetSymbol: NetworkSymbol;
