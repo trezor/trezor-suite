@@ -44,7 +44,7 @@ export function MaximumFee({ typographyStyle, txMaxFee }: MaximumFeeProps) {
             slideContent={false}
             isLoadingPositionReversed={isContentBelowBreakpoint}
         >
-            <Column>
+            <Column alignItems="flex-end">
                 <Text variant="default" typographyStyle={typographyStyle}>
                     <FormattedCryptoAmount
                         data-testid="@trading/quote/maximum-fee-amount"

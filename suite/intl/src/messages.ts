@@ -1413,6 +1413,10 @@ export const messages = defineMessages({
         description: 'Back button',
         id: 'TR_BACK',
     },
+    TR_GO_BACK: {
+        id: 'TR_GO_BACK',
+        defaultMessage: 'Go back',
+    },
     TR_CONNECT: {
         defaultMessage: 'Connect',
         id: 'TR_CONNECT',
@@ -4086,29 +4090,39 @@ export const messages = defineMessages({
         defaultMessage:
             'Resetting your device will erase all its data. Make sure you have your wallet backup before resetting, so you can restore access to your funds.',
     },
-    TR_WIPE_DEVICE_MODAL_DESCRIPTION: {
-        id: 'TR_WIPE_DEVICE_MODAL_DESCRIPTION',
-        defaultMessage:
-            'Wiping your device will erase all its data. Make sure you have your wallet backup before wiping, so you can restore access to your funds.',
+    TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION: {
+        id: 'TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION',
+        defaultMessage: "This will erase all of your Trezor's data. Proceed with caution.",
     },
-    TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
-        id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
-        defaultMessage: 'I understand this action deletes all data on the device.',
+    TR_WIPE_DEVICE_ERASE_ALL_DATA: {
+        id: 'TR_WIPE_DEVICE_ERASE_ALL_DATA',
+        defaultMessage: 'Erase all data',
     },
-    TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
-        id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
-        defaultMessage:
-            "All data associated with existing accounts will be deleted. You'll need a wallet backup to recover your wallet.",
+    TR_WIPE_DEVICE_ERASE_ALL_DATA_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_ERASE_ALL_DATA_DESCRIPTION',
+        defaultMessage: "This will erase all device data. This action can't be undone.",
     },
-    TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
-        id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
-        defaultMessage:
-            'I understand I must have my wallet backup in order to regain access to my funds.',
+    TR_WIPE_DEVICE_WALLET_BACKUP: {
+        id: 'TR_WIPE_DEVICE_WALLET_BACKUP',
+        defaultMessage: 'Wallet backup',
     },
-    TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
-        id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
+    TR_WIPE_DEVICE_WALLET_BACKUP_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_WALLET_BACKUP_DESCRIPTION',
         defaultMessage:
-            'Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, no one—not even Trezor Support—can help you regain access. Write your wallet backup down and store it somewhere safe and secure. Just be sure to remember where it is.',
+            "Make sure you have your wallet backup. You won't be able to recover access to your assets without it.",
+    },
+    TR_WIPE_DEVICE_SUCCESS_HEADING: {
+        id: 'TR_WIPE_DEVICE_SUCCESS_HEADING',
+        defaultMessage: 'Device wiped successfully',
+    },
+    TR_WIPE_DEVICE_SUCCESS_DESCRIPTION: {
+        id: 'TR_WIPE_DEVICE_SUCCESS_DESCRIPTION',
+        defaultMessage:
+            'Your device has been wiped. You can now set it up as a new device or restore from a backup.',
+    },
+    TR_BACK_TO_DASHBOARD: {
+        id: 'TR_BACK_TO_DASHBOARD',
+        defaultMessage: 'Back to dashboard',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',

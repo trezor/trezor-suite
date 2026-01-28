@@ -51,6 +51,7 @@ import { UnecoCoinjoinModal } from './UnecoCoinjoinModal';
 import { UnstakeModal } from './UnstakeModal/UnstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
 import { WalletConnectSwitchAccountModal } from './WalletConnectSwitchAccountModal';
+import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTEXT_USER>) => {
@@ -170,6 +171,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <AutoStartBeforeQuitModal />;
         case 'tx-simulation':
             return <TxSimulationModal />;
+        case 'wipe-device-success':
+            return <WipeDeviceSuccessModal />;
         default:
             return exhaustive(payload);
     }
