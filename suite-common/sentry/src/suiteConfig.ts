@@ -5,7 +5,7 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
 import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from './constants';
-import { ignoreErrors } from './ignoreErrors';
+import { ignoreErrorsSuite } from './ignoreErrors';
 import { redactSentryEvent } from './redactSentryEvent';
 
 /**
@@ -84,7 +84,7 @@ export const SENTRY_CONFIG = {
     normalizeDepth: 4,
     maxBreadcrumbs: 40,
     beforeBreadcrumb,
-    ignoreErrors,
+    ignoreErrors: ignoreErrorsSuite,
     initialScope: {
         tags: {
             version: process.env.VERSION || 'undefined',
