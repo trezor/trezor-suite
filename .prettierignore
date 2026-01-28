@@ -145,3 +145,5 @@ packages/suite-data/files/videos/lottie/*.json
 /.nx/cache
 
 /.nx/workspace-data
+
+favicon.js
