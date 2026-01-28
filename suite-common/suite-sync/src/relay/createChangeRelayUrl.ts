@@ -3,7 +3,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 import { ChangeRelayUrl, SuiteSyncStorageRepositoryDep } from '@suite-common/suite-sync-types';
 import { StaticSessionId } from '@trezor/connect';
 
-import { setSuiteSyncRelayUrl } from '../suiteSyncActions';
+import { setSuiteSyncRelayUrl } from '../suiteSyncReducer';
 import { DEFAULT_SUITE_SYNC_RELAY_URL } from './relayUrl';
 import { createStorageIdFromDeviceStaticSessionId } from '../storage/createStorageIdFromDeviceStaticSessionId';
 
