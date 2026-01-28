@@ -7,6 +7,6 @@ type TransactionIdFormatterProps = FormatterProps<WalletAccountTransaction['txid
 
 export const TransactionIdFormatter = ({ value, ...rest }: TransactionIdFormatterProps) => (
     <Text variant="hint" numberOfLines={1} ellipsizeMode="tail" {...rest}>
-        #{value}
+        {value}
     </Text>
 );
