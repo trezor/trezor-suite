@@ -307,7 +307,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case deviceActions.setRememberDevice.type:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: action.payload.remember
                         ? EventType.SwitchDeviceRemember
                         : EventType.SwitchDeviceForget,
