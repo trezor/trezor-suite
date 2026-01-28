@@ -709,10 +709,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DeviceConnectionConnectModal;
-          payload: {};
-      }
-    | {
           type: EventType.DeviceSetupStarted;
           payload: {
               deviceModel: DeviceModelInternal;
