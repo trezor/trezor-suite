@@ -38,7 +38,7 @@ import { Labeling } from 'src/components/suite/labeling';
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
@@ -74,7 +74,7 @@ export const ConfirmValueModal = ({
     const dispatch = useDispatch();
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
     const legacyMetadataState = useSelector(state => state.metadata);
 
@@ -94,7 +94,7 @@ export const ConfirmValueModal = ({
         const result = copyToClipboard(value);
 
         if (account) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.CreateReceiveAddressCopyAddress,
                 payload: { assetSymbol: account.symbol },
             });
