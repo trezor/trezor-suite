@@ -5,7 +5,7 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { useIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
+import { selectIsFirmwareUpdateFeatureEnabled } from '../hooks/useIsFirmwareUpdateFeatureEnabled';
 
 type ConfirmFirmwareUpdateScreenProps = {
     onUpdateConfirmation: () => void;
@@ -20,7 +20,7 @@ export const ConfirmFirmwareUpdateScreenFooter = ({
     onSkipUpdate,
 }: ConfirmFirmwareUpdateScreenFooterProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const isFirmwareUpdateEnabled = useIsFirmwareUpdateFeatureEnabled();
+    const isFirmwareUpdateEnabled = useSelector(selectIsFirmwareUpdateFeatureEnabled);
 
     return (
         <VStack spacing="sp12" marginHorizontal="sp16" marginBottom="sp16">

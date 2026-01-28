@@ -155,6 +155,11 @@ export const messages = {
                 update: 'Update',
             },
         },
+        suiteSyncAlert: {
+            title: 'Allow Suite Sync',
+            description: 'Allow Suite Sync to view and edit labels, wallet and account names.',
+            button: 'Allow',
+        },
     },
     accounts: {
         accountLabelFieldHint: {
