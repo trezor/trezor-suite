@@ -13,7 +13,7 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
@@ -21,6 +21,7 @@ interface TradeActionsProps {
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
     const device = useSelector(selectSelectedDevice);
@@ -29,7 +30,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (currentRouteName === 'suite-index') {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.DashboardActions,
                 payload: { type: routeName },
             });
