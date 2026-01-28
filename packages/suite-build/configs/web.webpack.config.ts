@@ -15,10 +15,6 @@ const config: webpack.Configuration = {
     target: 'browserslist',
     entry: {
         main: path.join(baseDir, 'src', 'index.ts'),
-        favicon: {
-            filename: 'static/favicon.js',
-            import: path.join(baseDir, 'src', 'favicon.ts'),
-        },
         ['sessions-background-sharedworker']: {
             filename: 'workers/[name].js',
             import: path.resolve(
@@ -37,7 +33,15 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new CopyWebpackPlugin({
-            patterns: ['browser-detection', 'fonts', 'images', 'oauth', 'videos', 'guide/assets']
+            patterns: [
+                'browser-detection',
+                'fonts',
+                'images',
+                'oauth',
+                'videos',
+                'guide/assets',
+                'favicon.js',
+            ]
                 .map(dir => ({
                     from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
                     to: path.join(baseDir, 'build', 'static', dir),
