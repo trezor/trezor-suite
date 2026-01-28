@@ -21,7 +21,6 @@ export const DeviceConfirmImage = ({
     return (
         <DeviceWithScene
             deviceModel={deviceModelInternal}
-            scene="confirm"
             width={width}
             unitColor={device?.features?.unit_color}
             height={height}

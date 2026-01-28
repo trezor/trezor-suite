@@ -181,4 +181,7 @@ export type UserContextPayload =
       }
     | {
           type: 'tx-simulation';
+      }
+    | {
+          type: 'wipe-device-success';
       };

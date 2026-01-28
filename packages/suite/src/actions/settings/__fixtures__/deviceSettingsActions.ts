@@ -84,9 +84,9 @@ const fixture: Fixture[] = [
                     payload: { deviceId: 'device-id' },
                 },
                 {
-                    type: notificationsActions.addToast.type,
-                    payload: { type: 'device-wiped', context: 'toast', id: expect.any(Number) },
-                } satisfies ReturnType<typeof notificationsActions.addToast>,
+                    type: '@modal/open-user-context',
+                    payload: { type: 'wipe-device-success' },
+                },
                 {
                     type: deviceActions.requestDeviceReconnect.type,
                     payload: undefined,
@@ -220,9 +220,9 @@ const fixture: Fixture[] = [
                     payload: { deviceId: 'device-id' },
                 },
                 {
-                    type: notificationsActions.addToast.type,
-                    payload: { type: 'device-wiped', context: 'toast', id: expect.any(Number) },
-                } satisfies ReturnType<typeof notificationsActions.addToast>,
+                    type: '@modal/open-user-context',
+                    payload: { type: 'wipe-device-success' },
+                },
                 {
                     type: deviceActions.requestDeviceReconnect.type,
                     payload: undefined,
