@@ -8,39 +8,48 @@ type TradingFooterProps = {
     provider?: BuyProviderInfo | SellProviderInfo | ExchangeProviderInfo;
 };
 
-export const TradingFooter = ({ provider }: TradingFooterProps) => (
-    <Column alignItems="center" margin={{ top: 48 }} gap={12}>
-        <Text typographyStyle="hint" variant="tertiary">
-            <Translation id="TR_TRADING_TERMS_1" />
-            {provider ? (
-                <Link href={provider.termsUrl}>
-                    <Translation
-                        id="TR_TRADING_TERMS_PROVIDER"
-                        values={{ companyName: provider.companyName }}
-                    />
-                </Link>
-            ) : (
-                <Translation id="TR_TRADING_TERMS_2" />
-            )}
-        </Text>
+export const TradingFooter = ({ provider }: TradingFooterProps) => {
+    const providerName = provider?.companyName ? (
+        provider.companyName
+    ) : (
+        <Translation id="TR_TERMS_PROVIDER_PLACEHOLDER" />
+    );
 
-        <InfoSegments typographyStyle="hint" variant="tertiary">
-            <Link href={TREZOR_SUITE_TOS_URL}>
-                <Translation id="TR_TERMS_OF_USE_TREZOR" />
-            </Link>
-            <Tooltip
-                content={
-                    <Column gap={12}>
-                        <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                        <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                    </Column>
-                }
-                cursor="default"
-            >
-                <Link href={TREZOR_TRADING_LEARN_MORE_URL}>
-                    <Translation id="TR_BUY_LEARN_MORE" />
+    return (
+        <Column alignItems="center" margin={{ top: 48 }} gap={12}>
+            <Text typographyStyle="hint" variant="tertiary">
+                <Translation
+                    id="TR_TRADING_TERMS"
+                    values={{
+                        provider: providerName,
+                        comp: chunks =>
+                            provider?.termsUrl ? (
+                                <Link href={provider.termsUrl}>{providerName}</Link>
+                            ) : (
+                                chunks
+                            ),
+                    }}
+                />
+            </Text>
+
+            <InfoSegments typographyStyle="hint" variant="tertiary">
+                <Link href={TREZOR_SUITE_TOS_URL}>
+                    <Translation id="TR_TERMS_OF_USE_TREZOR" />
                 </Link>
-            </Tooltip>
-        </InfoSegments>
-    </Column>
-);
+                <Tooltip
+                    content={
+                        <Column gap={12}>
+                            <Translation id="TR_BUY_FOOTER_TEXT_1" />
+                            <Translation id="TR_BUY_FOOTER_TEXT_2" />
+                        </Column>
+                    }
+                    cursor="default"
+                >
+                    <Link href={TREZOR_TRADING_LEARN_MORE_URL}>
+                        <Translation id="TR_BUY_LEARN_MORE" />
+                    </Link>
+                </Tooltip>
+            </InfoSegments>
+        </Column>
+    );
+};
