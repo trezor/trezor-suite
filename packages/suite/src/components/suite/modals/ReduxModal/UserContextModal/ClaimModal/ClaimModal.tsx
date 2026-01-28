@@ -19,7 +19,7 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/wallet/useClaimForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 
 import { SolanaStakingLimitBanner } from '../SolanaStakingLimitBanner';
@@ -32,7 +32,7 @@ interface ClaimModalModalProps {
 const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) => {
     const dispatch = useDispatch();
     const { device, isLocked } = useDevice();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount.network.symbol,
     );
@@ -107,7 +107,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
 
         handleSubmit(signTx)();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'continue',
@@ -120,7 +120,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
     const onCancelClick = () => {
         onCancel?.();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.StakingClaim,
             payload: {
                 action: 'cancel',
