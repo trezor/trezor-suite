@@ -45,14 +45,16 @@ export const IOItem = ({
             <Column alignItems="flex-start" overflow="hidden">
                 {!isOpReturn ? (
                     <>
-                        <Link href={explorerLink}>
-                            <Address
-                                value={value ?? ''}
-                                isTruncated
-                                data-testid="@tx-detail/txid-value"
-                                isCopyAllowed={!isPhishingTransaction}
-                            />
-                        </Link>
+                        {value && (
+                            <Link href={explorerLink}>
+                                <Address
+                                    value={value}
+                                    isTruncated
+                                    data-testid="@tx-detail/txid-value"
+                                    isCopyAllowed={!isPhishingTransaction}
+                                />
+                            </Link>
+                        )}
                         <Row gap={8}>
                             {anonymity && <UtxoAnonymity anonymity={anonymity} />}
                             {amount &&
