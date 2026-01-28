@@ -6,12 +6,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
-import {
-    setSuiteSyncRelayUrl,
-    updateIsFeatureSuiteSyncAvailable,
-    updateSuiteSyncDebugEnabled,
-    updateSuiteSyncEnabled,
-} from '@suite-common/suite-sync';
+import { suiteSyncActions } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerActions } from '@suite-common/suite-sync-quota-manager';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
@@ -184,10 +179,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
 
             if (
                 isAnyOf(
-                    updateSuiteSyncDebugEnabled,
-                    updateSuiteSyncEnabled,
-                    updateIsFeatureSuiteSyncAvailable,
-                    setSuiteSyncRelayUrl,
+                    suiteSyncActions.updateSuiteSyncDebugEnabled,
+                    suiteSyncActions.updateSuiteSyncEnabled,
+                    suiteSyncActions.updateIsFeatureSuiteSyncAvailable,
+                    suiteSyncActions.setSuiteSyncRelayUrl,
                 )(action)
             ) {
                 api.dispatch(storageActions.saveSuiteSyncSettings());
