@@ -33,7 +33,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { doesCoinSupportStaking } from '@suite-native/staking';
-import { isCoinWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
+import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 
 import { AccountSelectBottomSheetSection, GroupedByTypeAccounts } from './types';
 import {
@@ -128,17 +128,17 @@ export const getAccountListSections = (
     tokenDefinitions: SimpleTokenStructure | undefined,
 ) => {
     const sections: AccountSelectBottomSheetSection[] = [];
-    const canHasTokens = isCoinWithTokens(account.symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
     const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
-    const hasAnyKnownTokens = canHasTokens && !!tokens.length;
+    const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokens.length;
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
 
     const hasStakingBalance = stakingBalance !== '0' || isCardanoStakingActive(account);
     const hasStaking = doesCoinSupportStaking(account.symbol) && hasStakingBalance;
 
-    if (canHasTokens) {
+    if (isNetworkSupportingTokens) {
         sections.push({
             type: 'sectionTitle',
             account,

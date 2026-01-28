@@ -9,21 +9,7 @@ export const getTokenName = (tokenName?: string) => {
     return tokenName;
 };
 
-export const NETWORK_SYMBOLS_WITH_TOKENS = [
-    'eth',
-    'pol',
-    'bsc',
-    'sol',
-    'op',
-    'base',
-    'arb',
-    'avax',
-    'xlm',
-    'ada',
-] satisfies Array<NetworkSymbol>;
-export type NetworkSymbolWithTokens = (typeof NETWORK_SYMBOLS_WITH_TOKENS)[number];
-
-export const isCoinWithTokens = (symbol: NetworkSymbol): symbol is NetworkSymbolWithTokens => {
+export const isNetworkWithTokens = (symbol: NetworkSymbol) => {
     if (symbol === 'xlm' && !isDevelopOrDebugEnv()) {
         return false;
     }

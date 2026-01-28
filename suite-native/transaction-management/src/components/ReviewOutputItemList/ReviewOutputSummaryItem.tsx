@@ -4,7 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { isCoinWithTokens } from '@suite-native/tokens';
+import { isNetworkWithTokens } from '@suite-native/tokens';
 import { BigNumber } from '@trezor/utils';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
@@ -82,7 +82,7 @@ export const ReviewOutputSummaryItem = ({
 
     const { state, totalSpent, fee } = summaryOutput;
 
-    const canHaveTokens = isCoinWithTokens(symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
 
     return (
         <View onLayout={onLayout}>
@@ -91,7 +91,7 @@ export const ReviewOutputSummaryItem = ({
                 outputState={state}
             >
                 <VStack spacing="sp16">
-                    {canHaveTokens ? (
+                    {isNetworkSupportingTokens ? (
                         <TokenEnabledValues
                             accountKey={accountKey}
                             totalSpent={totalSpent}
