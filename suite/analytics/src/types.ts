@@ -525,7 +525,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           status: 'finished' | 'error';
           error?: string;
       }
-    | { type: EventType.SettingsDeviceChangeWipeCode }
     | { type: EventType.SettingsDeviceDisableWipeCode }
     | {
           type: EventType.SettingsDeviceUpdateAutoLock;
