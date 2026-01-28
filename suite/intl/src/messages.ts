@@ -781,17 +781,14 @@ export const messages = defineMessages({
             "Trezor doesn't see any of your payment or KYC information. You share this only with the exchange provider if you choose to complete the transaction.",
         id: 'TR_BUY_FOOTER_TEXT_2',
     },
-    TR_TRADING_TERMS_1: {
-        id: 'TR_TRADING_TERMS_1',
-        defaultMessage: "Trezor doesn't provide this service. It's governed by ",
+    TR_TERMS_PROVIDER_PLACEHOLDER: {
+        defaultMessage: 'provider',
+        id: 'TR_TERMS_PROVIDER_PLACEHOLDER',
     },
-    TR_TRADING_TERMS_2: {
-        id: 'TR_TRADING_TERMS_2',
-        defaultMessage: "provider's Terms & Conditions.",
-    },
-    TR_TRADING_TERMS_PROVIDER: {
-        id: 'TR_TRADING_TERMS_PROVIDER',
-        defaultMessage: "{companyName}'s Terms & Conditions.",
+    TR_TRADING_TERMS: {
+        id: 'TR_TRADING_TERMS',
+        defaultMessage:
+            "Trezor doesn't provide this service. It's governed by <comp>{provider}</comp>'s Terms & Conditions.",
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
