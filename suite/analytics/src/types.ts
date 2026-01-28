@@ -520,7 +520,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               id: string;
           };
       }
-    | { type: EventType.SwitchDeviceForget }
     | { type: EventType.SwitchDeviceRemember }
     | {
           type: EventType.SettingsDeviceChangePinProtection;

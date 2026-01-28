@@ -13,13 +13,13 @@ import { Card, Icon, List, Modal, ModalProps, Paragraph } from '@trezor/componen
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const dispatch = useDispatch();
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     if (!selectedDevice) {
         return null;
     }
@@ -38,7 +38,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
         });
 
-        legacyAnalytics.report({ type: EventType.SwitchDeviceForget });
+        analytics.report({ type: EventType.SwitchDeviceForget });
         onCancel?.();
     };
 

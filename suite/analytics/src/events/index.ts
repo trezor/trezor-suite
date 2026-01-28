@@ -6,3 +6,4 @@ export { sendQrScanEvent } from './sendQrScanEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
+export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
