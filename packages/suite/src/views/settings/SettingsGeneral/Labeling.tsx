@@ -2,20 +2,18 @@ import { useState } from 'react';
 
 import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    selectIsFeatureSuiteSyncAvailable,
+    selectIsSuiteSyncEnabled,
+} from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { LoadingContent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
-import {
-    selectIsFeatureSuiteSyncAvailable,
-    updateShowEnableSuiteSyncModal,
-} from 'src/actions/suiteSync/suiteSyncSlice';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
-import { LabelingSwitchToLegacyModal } from 'src/components/suite/labeling/LabelingSwitchToLegacyModal';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     LABELING_LEGACY_OPTION_LABEL,
@@ -28,6 +26,9 @@ import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
+
+import { updateShowEnableSuiteSyncModal } from '../../../actions/suiteSync/suiteSyncSlice';
+import { LabelingSwitchToLegacyModal } from '../../../components/suite/labeling/LabelingSwitchToLegacyModal';
 
 export const Labeling = () => {
     const { translationString } = useTranslation();

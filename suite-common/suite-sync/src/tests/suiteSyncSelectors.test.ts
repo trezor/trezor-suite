@@ -38,12 +38,32 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
         expect(result).toBeNull();
     });
 
+    it('no interaction, if suite-sync it not enabled in debug/experimental features', () => {
+        const state = createMockState(
+            {},
+            {
+                settings: {
+                    ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: false,
+                },
+            },
+        );
+
+        const result = selectIsTurnOnSuiteSyncInteractionNeeded(
+            state,
+            DEVICE_STATIC_SESSION_ID_123,
+        );
+
+        expect(result).toBeNull();
+    });
+
     it('interaction is "suite-sync-off" when Suite Sync is disabled', () => {
         const state = createMockState(
             {},
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: true,
                     isSuiteSyncEnabled: false,
                 },
             },
@@ -64,6 +84,7 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: true,
                     isSuiteSyncEnabled: true,
                 },
             },
@@ -84,6 +105,7 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: true,
                     isSuiteSyncEnabled: true,
                 },
             },
@@ -103,6 +125,7 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: true,
                     isSuiteSyncEnabled: true,
                 },
             },
@@ -122,6 +145,7 @@ describe(selectIsTurnOnSuiteSyncInteractionNeeded.name, () => {
             {
                 settings: {
                     ...initialSuiteSyncState.settings,
+                    isFeatureSuiteSyncAvailable: true,
                     isSuiteSyncEnabled: true,
                 },
             },

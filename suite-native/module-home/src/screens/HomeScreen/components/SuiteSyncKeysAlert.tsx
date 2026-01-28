@@ -46,9 +46,9 @@ export const SuiteSyncKeysAlert = () => {
     const { applyStyle } = useNativeStyles();
     const { suiteSync } = useNativeServices();
 
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);
-    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const navigation = useNavigation<NavigationProp>();
 
