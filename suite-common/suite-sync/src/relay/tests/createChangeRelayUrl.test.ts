@@ -4,6 +4,7 @@ import { mockNotExpected } from '@suite-common/dependency-injection';
 import { SuiteSyncStorage } from '@suite-common/suite-sync-storage';
 import { StaticSessionId } from '@trezor/connect';
 
+import { setSuiteSyncRelayUrl } from '../../suiteSyncSlice';
 import { ChangeRelayUrlDeps, createChangeRelayUrl } from '../createChangeRelayUrl';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
@@ -39,7 +40,7 @@ describe(createChangeRelayUrl.name, () => {
         expect(actions).toStrictEqual([
             {
                 payload: { url: 'http://localhost:4000' },
-                type: '@suite/suite-sync/set-suite-sync-relay-url',
+                type: setSuiteSyncRelayUrl.type,
             },
         ]);
 
