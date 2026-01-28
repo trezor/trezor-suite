@@ -14,7 +14,7 @@ import { Deferred } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 import { selectRouterUrl } from 'src/reducers/suite/routerReducer';
 import { selectAccountIncludingChosenInTrading } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
@@ -38,7 +38,7 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const [isSending, setIsSending] = useState(false);
@@ -98,12 +98,12 @@ export const TransactionReviewModalBody = ({
 
             tryAgainSignTx();
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TransactionRetry,
                 payload: { url: redactRouterUrl(url) },
             });
         },
-        [tryAgainSignTx, url, legacyAnalytics],
+        [tryAgainSignTx, url, analytics],
     );
 
     if (!device) return null;

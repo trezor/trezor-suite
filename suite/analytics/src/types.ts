@@ -416,12 +416,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TransactionRetry;
-          payload: {
-              url: string;
-          };
-      }
-    | {
           type: EventType.TransactionCancel;
           payload: {
               txType?: 'trade' | 'stake';
