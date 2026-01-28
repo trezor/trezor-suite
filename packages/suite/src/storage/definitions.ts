@@ -5,7 +5,6 @@ import type { DBSchema } from 'idb';
 import { AnalyticsState } from '@suite-common/analytics-redux';
 import { AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import type { MessageState } from '@suite-common/message-system';
-import { SuiteSyncSettings } from '@suite-common/suite-sync';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import type {
     DeviceWithEmptyPath,
@@ -31,6 +30,7 @@ import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 
 import { DesktopBluetoothDevice } from '../actions/bluetooth/DesktopBluetoothDevice';
+import { DesktopSuiteSyncState } from '../actions/suiteSync/suiteSyncSlice';
 import { GraphData } from '../types/wallet/graph';
 
 export interface DBWalletAccountTransaction {
@@ -141,7 +141,7 @@ export interface SuiteDBSchema extends DBSchema {
     };
     suiteSyncSettings: {
         key: 'suiteSyncSettings';
-        value: SuiteSyncSettings;
+        value: DesktopSuiteSyncState['settings'];
     };
     suiteSyncQuotaManager: {
         key: 'suiteSyncQuotaManager';
