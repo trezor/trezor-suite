@@ -8,7 +8,7 @@ import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
@@ -17,13 +17,13 @@ type EjectConfirmationProps = {
 };
 
 export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const handleEject = () => {
         dispatch(deviceActions.forgetDevice({ device: instance }));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SwitchDeviceEject,
         });
     };
