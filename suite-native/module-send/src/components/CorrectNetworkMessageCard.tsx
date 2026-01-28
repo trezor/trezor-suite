@@ -3,7 +3,6 @@ import { Card, HStack, Text } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { isCoinWithTokens } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
 
@@ -23,9 +22,9 @@ type CorrectNetworkMessageCardProps = {
 export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    if (!isCoinWithTokens(symbol)) return null;
+    const network = getNetwork(symbol);
 
-    const networkName = getNetwork(symbol).name;
+    if (network.networkType !== 'ethereum') return null;
 
     return (
         <Card style={applyStyle(cardStyle)}>
@@ -35,7 +34,7 @@ export const CorrectNetworkMessageCard = ({ symbol }: CorrectNetworkMessageCardP
                     <Translation
                         id="moduleSend.outputs.correctNetworkMessage"
                         values={{
-                            networkName,
+                            networkName: network.name,
                             link: linkChunk => {
                                 const label = (linkChunk[0] as string) ?? '';
 
