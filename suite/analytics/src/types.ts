@@ -521,12 +521,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsDeviceChangePinProtection;
-          payload: {
-              remove: boolean | null;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeThpAutoconnect;
           payload: {
               action: 'disable-autoconnect' | 'enable-autoconnect';
