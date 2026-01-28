@@ -1,14 +1,14 @@
+import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import {
     SuiteSyncOwner,
-    TrezorDevice,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
 } from '@suite-common/suite-types';
+import { getSuiteDevice } from '@suite-common/test-utils';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
 import { createSuiteSyncStorageMock } from '../../../tests/createSuiteSyncStorageMock.mock';
-import { createMockDeps, mock } from '../../../tests/utils';
 import { SuiteSyncUnavailableOnDeviceError } from '../../createRefreshSuiteSyncKeys';
 import type { EnsureStorageDeps } from '../createEnsureStorage';
 import { createEnsureStorage } from '../createEnsureStorage';
@@ -19,16 +19,6 @@ const OWNER_ABCD: SuiteSyncOwner = {
 };
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
-
-const createDevice = (overrides: Partial<TrezorDevice> = {}): TrezorDevice =>
-    ({
-        id: 'device-id',
-        state: {
-            staticSessionId: deviceStaticSessionId,
-        },
-        unavailableCapabilities: {},
-        ...overrides,
-    }) as unknown as TrezorDevice;
 
 describe(createEnsureStorage.name, () => {
     it('returns existing storage when it is already in repository', async () => {
@@ -82,7 +72,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('returns error when refreshSuiteSyncKeys fails', async () => {
-        const device = createDevice();
+        const device = getSuiteDevice();
         const refreshError = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureStorageDeps>({
@@ -108,7 +98,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('creates and stores new storage when all dependencies succeed', async () => {
-        const device = createDevice();
+        const device = getSuiteDevice();
         const newStorage = createSuiteSyncStorageMock();
 
         const deps = createMockDeps<EnsureStorageDeps>({
@@ -138,7 +128,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses custom relay URL when provided and not empty', async () => {
-        const device = createDevice();
+        const device = getSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
         const customRelayUrl = 'wss://custom-relay.example.com';
@@ -167,7 +157,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses default relay URL when custom relay URL is empty string', async () => {
-        const device = createDevice();
+        const device = getSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
 
@@ -195,7 +185,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses default relay URL when custom relay URL is whitespace only', async () => {
-        const device = createDevice();
+        const device = getSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
 
