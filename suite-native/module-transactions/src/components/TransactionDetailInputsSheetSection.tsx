@@ -85,9 +85,9 @@ export const TransactionDetailInputsSheetSection = ({
                     {transfers.map(({ inputs, outputs, symbol, decimals }) => (
                         <Fragment key={symbol}>
                             <Box style={applyStyle(addressAmountColumnStyle)}>
-                                {inputs.map(({ address, amount }) => (
+                                {inputs.map(({ address, amount }, index) => (
                                     <TransactionAddressAmount
-                                        key={address}
+                                        key={`${address}:${index}`}
                                         address={address}
                                         amount={amount}
                                         symbol={symbol}
@@ -97,9 +97,9 @@ export const TransactionDetailInputsSheetSection = ({
                             </Box>
                             <Icon name="caretCircleRight" color="iconDisabled" size="medium" />
                             <Box style={applyStyle(addressAmountColumnStyle)}>
-                                {outputs.map(({ address, amount }) => (
+                                {outputs.map(({ address, amount }, index) => (
                                     <TransactionAddressAmount
-                                        key={address}
+                                        key={`${address}:${index}`}
                                         address={address}
                                         amount={amount}
                                         symbol={symbol}
