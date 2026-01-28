@@ -5,7 +5,7 @@ import type { StaticSessionId } from '@trezor/connect';
 
 import { CreateTurnOffSuiteSyncDeps, createTurnOffSuiteSync } from '../createTurnOffSuiteSync';
 import { clearAll } from '../data/suiteSyncDataReducer';
-import { updateSuiteSyncEnabled } from '../suiteSyncSlice';
+import { suiteSyncActions } from '../suiteSyncActions';
 
 const deviceStaticSessionId1: StaticSessionId = '1@2:3';
 const deviceStaticSessionId2: StaticSessionId = '4@5:6';
@@ -41,7 +41,9 @@ describe(createTurnOffSuiteSync.name, () => {
         const turnOffSuiteSync = createTurnOffSuiteSync(deps);
         await turnOffSuiteSync();
 
-        expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: false }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }),
+        );
         expect(deps.turnOffSuiteSyncForWallet).toHaveBeenCalledWith({
             deviceStaticSessionId: deviceStaticSessionId1,
         });
@@ -64,7 +66,9 @@ describe(createTurnOffSuiteSync.name, () => {
         const turnOffSuiteSync = createTurnOffSuiteSync(deps);
         await turnOffSuiteSync();
 
-        expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: false }));
+        expect(deps.dispatch).toHaveBeenCalledWith(
+            suiteSyncActions.updateSuiteSyncEnabled({ isEnabled: false }),
+        );
         expect(deps.turnOffSuiteSyncForWallet).not.toHaveBeenCalled();
         expect(deps.dispatch).toHaveBeenCalledWith(clearAll());
         expect(deps.reloadApp).toHaveBeenCalled();

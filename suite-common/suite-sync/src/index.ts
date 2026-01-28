@@ -14,8 +14,8 @@ export {
     updateSuiteSyncDebugEnabled,
     updateSuiteSyncEnabled,
     setSuiteSyncRelayUrl,
-} from './suiteSyncSlice';
-export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncSlice';
+} from './suiteSyncReducer';
+export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
