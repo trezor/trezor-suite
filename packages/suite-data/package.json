@@ -11,8 +11,9 @@
     "description": "Trezor data",
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "build:lib": "yarn browser-detection && yarn guide-pull-content",
+        "build:lib": "yarn browser-detection & yarn favicon && yarn guide-pull-content",
         "browser-detection": "webpack --config ./browser-detection.webpack.ts",
+        "favicon": "webpack --config ./favicon.webpack.ts",
         "guide-pull-content": "yarn tsx ./src/guide/index.ts",
         "update-coinjoin-middleware": "./files/bin/coinjoin/update.sh",
         "type-check": "yarn g:tsc --build tsconfig.json"

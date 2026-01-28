@@ -236,6 +236,99 @@ const sessionsSharedWorkerPlugin = () => {
     };
 };
 
+// Plugin to build favicon.js from suite-data for /static/favicon.js usage
+const faviconPlugin = (): Plugin => {
+    const faviconOutDir = resolve(__dirname, '../suite-data/files');
+    const faviconEntryPath = resolve(__dirname, '../suite-data/src/favicon.ts');
+    const faviconFileName = 'favicon.js';
+    const faviconOutputPath = resolve(faviconOutDir, faviconFileName);
+
+    let buildInFlight: Promise<string | null> | null = null;
+    let hasBuilt = false;
+
+    const buildFavicon = () => {
+        if (buildInFlight) {
+            return buildInFlight;
+        }
+
+        buildInFlight = (async () => {
+            if (!fs.existsSync(faviconOutDir)) {
+                fs.mkdirSync(faviconOutDir, { recursive: true });
+            }
+
+            console.log(`Building favicon from ${faviconEntryPath}...`);
+
+            try {
+                await build({
+                    configFile: false,
+                    resolve: {
+                        alias,
+                    },
+                    build: {
+                        outDir: faviconOutDir,
+                        emptyOutDir: false,
+                        lib: {
+                            entry: faviconEntryPath,
+                            formats: ['iife'],
+                            fileName: () => faviconFileName,
+                            name: 'TrezorSuiteFavicon',
+                        },
+                        rollupOptions: {
+                            output: {
+                                inlineDynamicImports: true,
+                            },
+                        },
+                        minify: false,
+                        target: 'es2020',
+                        write: true,
+                    },
+                    define: {
+                        'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
+                        'process.env.NODE_ENV': JSON.stringify(
+                            process.env.NODE_ENV ?? 'development',
+                        ),
+                    },
+                });
+
+                console.log(`Favicon built successfully at ${faviconOutputPath}`);
+                hasBuilt = true;
+
+                return faviconOutputPath;
+            } catch (error) {
+                console.error('Failed to build favicon:', error);
+
+                return null;
+            } finally {
+                buildInFlight = null;
+            }
+        })();
+
+        return buildInFlight;
+    };
+
+    return {
+        name: 'favicon-build',
+        async configureServer(server: ViteDevServer) {
+            if (!hasBuilt) {
+                await buildFavicon();
+            }
+
+            server.watcher.add(faviconEntryPath);
+            server.watcher.on('change', async (changedPath: string) => {
+                if (changedPath === faviconEntryPath) {
+                    console.log('Favicon source changed, rebuilding...');
+                    await buildFavicon();
+                }
+            });
+        },
+        async buildStart() {
+            if (!hasBuilt) {
+                await buildFavicon();
+            }
+        },
+    };
+};
+
 // Plugin to handle workers similar to webpack's worker-loader
 const workerPlugin = (): Plugin => ({
     name: 'worker-loader',
@@ -443,6 +536,7 @@ export default defineConfig({
         trezorLogosRequirePlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),
+        faviconPlugin(),
         viteCommonjs(),
         workerPlugin(),
         wasm(),
