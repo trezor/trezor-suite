@@ -37,7 +37,7 @@ import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceComprom
 import { useDispatch, useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { selectSuiteFlags } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityChecklistItem } from './types';
@@ -129,7 +129,7 @@ const SecurityCheckContent = ({
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
 }: SecurityCheckContentProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isBelowTablet } = useLayoutSize();
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectSelectedDevice);
@@ -169,7 +169,7 @@ const SecurityCheckContent = ({
     };
 
     const handleSetupButtonClick = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupStarted,
             payload: {
                 deviceModel,

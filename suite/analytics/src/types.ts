@@ -1,6 +1,5 @@
 import { MetadataProviderType } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
@@ -706,11 +705,5 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           type: EventType.DeviceConnectionConnectButton;
           payload: {
               option: 'dashboard' | 'dropdown';
-          };
-      }
-    | {
-          type: EventType.DeviceSetupStarted;
-          payload: {
-              deviceModel: DeviceModelInternal;
           };
       };
