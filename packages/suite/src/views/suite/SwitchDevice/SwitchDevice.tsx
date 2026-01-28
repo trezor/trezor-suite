@@ -7,14 +7,14 @@ import { Box, Button, Column } from '@trezor/components';
 
 import { setConnectionMode, toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { ForegroundAppProps } from 'src/types/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceModal } from './SwitchDeviceModal';
 
 export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const bluetoothAdapterStatus = useSelector(selectAdapterStatus);
     const devices = useSelector(selectDevices);
@@ -33,7 +33,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
             dispatch(setConnectionMode('bluetooth'));
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceConnectionConnectButton,
             payload: {
                 option: 'dropdown',

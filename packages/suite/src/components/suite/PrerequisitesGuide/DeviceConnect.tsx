@@ -4,15 +4,15 @@ import { Button, Column } from '@trezor/components';
 
 import { toggleConnectionModal } from 'src/actions/device/deviceSlice';
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const DeviceConnect = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     const handleConnect = () => {
         dispatch(toggleConnectionModal());
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceConnectionConnectButton,
             payload: {
                 option: 'dashboard',
