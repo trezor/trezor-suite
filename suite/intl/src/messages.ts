@@ -5065,8 +5065,8 @@ export const messages = defineMessages({
         defaultMessage:
             'These features are in testing, may be unstable, and might not have long-term support.',
     },
-    TR_EXPERIMENTAL_FEATURES_WARNING: {
-        id: 'TR_EXPERIMENTAL_FEATURES_WARNING',
+    TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED: {
+        id: 'TR_EXPERIMENTAL_FEATURES_WARNING_IF_ENABLED',
         defaultMessage: 'For experienced users only. Use at your own risk.',
     },
     TR_GO_TO_EXP_FEATURE: {
