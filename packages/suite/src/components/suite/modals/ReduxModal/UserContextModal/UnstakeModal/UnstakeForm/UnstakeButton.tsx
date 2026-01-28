@@ -8,7 +8,7 @@ import { setConnectionModal, setConnectionMode } from 'src/actions/device/device
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { useUnstakeFormContext } from 'src/hooks/wallet/useUnstakeForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 
 export const UnstakeButton = () => {
@@ -29,7 +29,7 @@ export const UnstakeButton = () => {
         signTx,
         currency,
     } = useUnstakeFormContext();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
@@ -55,7 +55,7 @@ export const UnstakeButton = () => {
 
         handleSubmit(signTx)();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.StakingUnstake,
             payload: {
                 action: 'continue',
