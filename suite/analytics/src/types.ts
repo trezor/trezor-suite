@@ -703,12 +703,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AutostartModal;
-          payload: {
-              action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now';
-          };
-      }
-    | {
           type: EventType.DeviceConnectionConnectButton;
           payload: {
               option: 'dashboard' | 'dropdown';

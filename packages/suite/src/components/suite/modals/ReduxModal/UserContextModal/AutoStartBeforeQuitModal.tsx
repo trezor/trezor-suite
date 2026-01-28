@@ -8,11 +8,11 @@ import { spacings } from '@trezor/theme';
 
 import * as modalActions from 'src/actions/suite/modalActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const AutoStartBeforeQuitModal = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
@@ -25,7 +25,7 @@ export const AutoStartBeforeQuitModal = () => {
     ) => {
         desktopApi.appAutoStartPopupResponse(action);
         dispatch(modalActions.onCancel());
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.AutostartModal,
             payload: {
                 action,
