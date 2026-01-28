@@ -7,6 +7,7 @@ export { sendQrScanEvent } from './sendQrScanEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
+export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
