@@ -1,4 +1,5 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
+export { autostartModalEvent } from './autostartModalEvent';
 export { dashboardActionsEvent } from './dashboardActionsEvent';
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
