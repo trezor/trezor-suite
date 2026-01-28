@@ -416,21 +416,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.StakingClaim;
-          payload: {
-              action: 'continue' | 'cancel';
-              step: 'staking-dashboard' | 'claim-form-modal';
-              networkSymbol?: string;
-          };
-      }
-    | {
-          type: EventType.StakingConfirm;
-          payload: {
-              action: 'stake' | 'unstake' | 'claim';
-              networkSymbol?: string;
-          };
-      }
-    | {
           type: EventType.TransactionRetry;
           payload: {
               url: string;

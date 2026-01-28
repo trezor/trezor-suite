@@ -12,7 +12,7 @@ import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { Deferred } from '@trezor/utils';
 
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 import { getTxType } from '../utils';
 
@@ -55,6 +55,7 @@ export const TransactionReviewModalBottomContent = ({
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
     const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
@@ -107,7 +108,7 @@ export const TransactionReviewModalBottomContent = ({
             );
 
             if (stakeType) {
-                return legacyAnalytics.report({
+                return analytics.report({
                     type: EventType.StakingConfirm,
                     payload: { action: stakeType, networkSymbol: symbol },
                 });

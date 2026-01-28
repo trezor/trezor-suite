@@ -15,6 +15,8 @@ export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeE
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
+export { stakingClaimEvent } from './stakingClaimEvent';
+export { stakingConfirmEvent } from './stakingConfirmEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';

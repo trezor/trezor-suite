@@ -13,10 +13,10 @@ import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const ClaimCard = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || ''),
@@ -57,7 +57,7 @@ export const ClaimCard = () => {
         if (!isClaimingDisabled) {
             dispatch(openModal({ type: 'claim' }));
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.StakingClaim,
                 payload: {
                     action: 'continue',
