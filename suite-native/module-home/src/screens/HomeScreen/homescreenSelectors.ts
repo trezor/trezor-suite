@@ -3,7 +3,6 @@ import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     WithSuiteSyncState,
     selectIsTurnOnSuiteSyncInteractionNeeded,
-    selectSuiteSyncError,
 } from '@suite-common/suite-sync';
 import {
     DeviceRootState,
@@ -50,13 +49,8 @@ export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(
         isFirmwareUpdateFeatureEnabled,
 );
 
-export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
-    [
-        selectSuiteSyncError,
-        selectIsDeviceConnected,
-        (state: WithSuiteSyncState & DeviceRootState) =>
-            selectIsTurnOnSuiteSyncInteractionNeeded(state, selectDeviceStaticSessionId(state)),
-    ],
-    (suiteSyncError, isDeviceConnected, interactionNeeded) =>
-        interactionNeeded === 'keys-needed' && (!!suiteSyncError || !isDeviceConnected),
-);
+export const selectShouldDisplaySuiteSyncAlert = (state: WithSuiteSyncState & DeviceRootState) => {
+    const deviceStaticSessionId = selectDeviceStaticSessionId(state);
+
+    return selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId) === 'keys-needed';
+};

@@ -59,4 +59,4 @@ export const selectIsTurnOnSuiteSyncInteractionNeeded = (
 };
 
 export const selectSuiteSyncError = (state: WithSuiteSyncAndDeviceState) =>
-    !!state.suiteSync.suiteSyncError;
+    state.suiteSync.suiteSyncError;
