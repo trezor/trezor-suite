@@ -33,9 +33,6 @@ export enum EventType {
     DeviceConnectionHintModal = 'device-connection/hint-modal',
     // The rest of device-connection events are in shared constants.
 
-    FirmwareValidateHashError = 'firmware-validate-hash-error',
-    FirmwareValidateHashMismatch = 'firmware-validate-hash-mismatch',
-
     CreateBackup = 'create-backup',
 
     CreateReceiveAddressShowAddress = 'create-receive-address/show-address',

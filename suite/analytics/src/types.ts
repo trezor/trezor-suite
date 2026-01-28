@@ -704,15 +704,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               type: 'hidden' | 'standard';
           };
       }
-    | {
-          type: EventType.FirmwareValidateHashError;
-          payload: {
-              error: string;
-          };
-      }
-    | {
-          type: EventType.FirmwareValidateHashMismatch;
-      }
     | { type: EventType.GetDesktopApp }
     | {
           type: EventType.GetMobileApp;
