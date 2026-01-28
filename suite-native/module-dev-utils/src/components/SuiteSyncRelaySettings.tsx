@@ -4,7 +4,6 @@ import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
-    updateIsFeatureSuiteSyncAvailable,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
@@ -38,14 +37,6 @@ export const SuiteSyncRelaySettings = () => {
             variant: 'success',
         });
     });
-
-    const handleSuiteSyncEnableToggle = () => {
-        dispatch(
-            updateIsFeatureSuiteSyncAvailable({
-                isShownInSettings: !isFeatureSuiteSyncEnabled,
-            }),
-        );
-    };
 
     const handleSuiteSyncDebugToggle = () => {
         dispatch(
