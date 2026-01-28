@@ -4,8 +4,7 @@ import {
     DEFAULT_SUITE_SYNC_RELAY_URL,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
-    updateIsFeatureSuiteSyncAvailable,
-    updateSuiteSyncDebugEnabled,
+    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
@@ -39,17 +38,9 @@ export const SuiteSyncRelaySettings = () => {
         });
     });
 
-    const handleSuiteSyncEnableToggle = () => {
-        dispatch(
-            updateIsFeatureSuiteSyncAvailable({
-                isShownInSettings: !isFeatureSuiteSyncEnabled,
-            }),
-        );
-    };
-
     const handleSuiteSyncDebugToggle = () => {
         dispatch(
-            updateSuiteSyncDebugEnabled({
+            suiteSyncActions.updateSuiteSyncDebugEnabled({
                 isEnabled: !isSuiteSyncDebugEnabled,
             }),
         );

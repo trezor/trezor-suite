@@ -5,8 +5,7 @@ import {
     selectIsFeatureSuiteSyncAvailable,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncRelayUrl,
-    updateIsFeatureSuiteSyncAvailable,
-    updateSuiteSyncDebugEnabled,
+    suiteSyncActions,
 } from '@suite-common/suite-sync';
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
@@ -28,7 +27,7 @@ export const SuiteSyncSettings = () => {
 
     const toggleIsFeatureSuiteSyncAvailable = () => {
         dispatch(
-            updateIsFeatureSuiteSyncAvailable({
+            suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
                 isShownInSettings: !isFeatureSuiteSyncAvailable,
             }),
         );
@@ -44,7 +43,7 @@ export const SuiteSyncSettings = () => {
 
     const handleToggleSuiteSyncDebug = () => {
         dispatch(
-            updateSuiteSyncDebugEnabled({
+            suiteSyncActions.updateSuiteSyncDebugEnabled({
                 isEnabled: !isSuiteSyncDebugEnabled,
             }),
         );

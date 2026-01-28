@@ -8,15 +8,9 @@ export {
 export type { WithSuiteSyncAndDeviceState, WithSuiteSyncState } from './suiteSyncSelectors';
 export type { SuiteSyncInteraction } from './suiteSyncSelectors';
 export { createSuiteSyncCompositionRoot } from './createSuiteSyncCompositionRoot';
-export {
-    suiteSyncReducer,
-    initialSuiteSyncState,
-    updateSuiteSyncDebugEnabled,
-    updateSuiteSyncEnabled,
-    updateIsFeatureSuiteSyncAvailable,
-    setSuiteSyncRelayUrl,
-} from './suiteSyncReducer';
+export { suiteSyncReducer, initialSuiteSyncState } from './suiteSyncReducer';
 export type { SuiteSyncState, SuiteSyncSettings } from './suiteSyncReducer';
+export { suiteSyncActions } from './suiteSyncActions';
 export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
