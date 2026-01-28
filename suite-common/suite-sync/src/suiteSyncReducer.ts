@@ -2,15 +2,6 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export type SuiteSyncSettings = {
     /**
-     * This is flag, that enables the Suite Sync Feature.
-     * On mobile, it is managed by Experimental Features.
-     * On desktop, it is managed by Debug Settings.
-     *
-     * It shall be removed once we release the Suite Sync feature.
-     */
-    isFeatureSuiteSyncAvailable: boolean;
-
-    /**
      * This is flag to show some extra Debug UI.
      */
     isSuiteSyncDebugEnabled: boolean;
@@ -39,7 +30,6 @@ export type SuiteSyncState = {
 
 export const initialSuiteSyncState: SuiteSyncState = {
     settings: {
-        isFeatureSuiteSyncAvailable: false,
         isSuiteSyncEnabled: false,
         isSuiteSyncDebugEnabled: false,
         suiteSyncRelayUrl: null,
@@ -60,12 +50,6 @@ export const suiteSyncSlice = createSlice({
         ) => {
             state.settings.isSuiteSyncDebugEnabled = payload.isEnabled;
         },
-        updateIsFeatureSuiteSyncAvailable: (
-            state,
-            { payload }: PayloadAction<{ isShownInSettings: boolean }>,
-        ) => {
-            state.settings.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
-        },
         setSuiteSyncRelayUrl: (state, { payload }: PayloadAction<{ url: string | null }>) => {
             state.settings.suiteSyncRelayUrl = payload.url;
         },
@@ -78,7 +62,6 @@ export const suiteSyncSlice = createSlice({
 export const {
     updateSuiteSyncEnabled,
     updateSuiteSyncDebugEnabled,
-    updateIsFeatureSuiteSyncAvailable,
     setSuiteSyncRelayUrl,
     setSuiteSyncError,
 } = suiteSyncSlice.actions;
