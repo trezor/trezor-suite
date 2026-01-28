@@ -1,4 +1,4 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics-types';
+import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
