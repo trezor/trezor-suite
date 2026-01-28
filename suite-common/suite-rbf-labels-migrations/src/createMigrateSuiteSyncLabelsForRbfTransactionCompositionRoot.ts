@@ -1,6 +1,6 @@
 import { Dispatch } from '@reduxjs/toolkit';
 
-import { toGetter } from '@suite-common/redux-utils';
+import { toGetter } from '@suite-common/dependency-injection';
 import { selectSuiteSyncOutputLabelsByAccount } from '@suite-common/suite-sync';
 import { UpdateOutputLabelDep } from '@suite-common/suite-sync-types';
 

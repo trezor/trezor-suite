@@ -5,7 +5,7 @@
         "exactOptionalPropertyTypes": true
     },
     "references": [
-        { "path": "../redux-utils" },
+        { "path": "../dependency-injection" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },
