@@ -1,5 +1,6 @@
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { dashboardActionsEvent } from './dashboardActionsEvent';
+export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';

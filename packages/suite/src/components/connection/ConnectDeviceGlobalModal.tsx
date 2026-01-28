@@ -29,7 +29,7 @@ import {
     selectIsUnpairingDevice,
 } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { BluetoothAdapterStatusModal } from './BluetoothAdapterStatusModal';
 import { BluetoothConnectionModal } from './BluetoothConnectionModal';
@@ -217,7 +217,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
 );
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {
@@ -291,7 +291,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
         return (
             <CantSeeTrezorModal
                 onClose={() => {
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.DeviceConnectionHintModal,
                         payload: {
                             option: 'close',
