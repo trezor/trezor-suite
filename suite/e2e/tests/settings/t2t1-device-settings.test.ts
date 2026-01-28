@@ -41,8 +41,7 @@ test.describe('T2T1 - Device settings', { tag: ['@T2T1'] }, () => {
 
     test('Device Wipe', async ({ page, device }) => {
         await page.getByTestId('@settings/device/open-wipe-modal-button').click();
-        await page.getByTestId('@wipe/checkbox-1').click();
-        await page.getByTestId('@wipe/checkbox-2').click();
+        await page.getByTestId('@wipe/wipe-button').click();
         await page.getByTestId('@wipe/wipe-button').click();
         await device.pressYes();
         //TODO: Any verification?

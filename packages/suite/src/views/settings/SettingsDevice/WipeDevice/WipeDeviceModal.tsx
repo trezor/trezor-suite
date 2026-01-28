@@ -1,33 +1,76 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { Translation } from '@suite/intl';
 import { EventType } from '@suite-common/analytics';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
-import { Card, Column, H3, Modal, Paragraph } from '@trezor/components';
+import {
+    Button,
+    Card,
+    Column,
+    Divider,
+    Icon,
+    IconName,
+    Modal,
+    Paragraph,
+    Row,
+    Text,
+} from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { spacings } from '@trezor/theme';
 
-import * as routerActions from 'src/actions/suite/routerActions';
-import { CheckItem } from 'src/components/suite';
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { selectRouterApp } from 'src/reducers/suite/routerReducer';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useAnalytics } from 'src/support/useAnalytics';
 
 type WipeDeviceModalProps = {
     onCancel: () => void;
 };
 
+type StepCardProps = {
+    heading: ReactNode;
+    description: ReactNode;
+    actions: ReactNode;
+    icon: IconName;
+    state: 'default' | 'confirmed' | 'pending';
+};
+
+const StepCard = ({ heading, description, actions, icon, state }: StepCardProps) => {
+    const variant = state === 'confirmed' ? 'primary' : 'tertiary';
+
+    return (
+        <Card paddingType="none" fillType={state === 'pending' ? 'flat' : 'default'}>
+            <Column>
+                <Row gap={8} padding={{ horizontal: 16, vertical: 12 }}>
+                    <Icon
+                        name={state === 'confirmed' ? 'check' : icon}
+                        variant={variant}
+                        size={20}
+                    />
+                    <Text typographyStyle="hint" variant={variant}>
+                        {heading}
+                    </Text>
+                </Row>
+                {state === 'default' && (
+                    <>
+                        <Divider margin={0} />
+                        <Column gap={16} padding={{ horizontal: 16, vertical: 12 }}>
+                            <Paragraph typographyStyle="highlight">{description}</Paragraph>
+                            <Row gap={12}>{actions}</Row>
+                        </Column>
+                    </>
+                )}
+            </Column>
+        </Card>
+    );
+};
+
 export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
     const analytics = useAnalytics();
-    const [checkbox1, setCheckbox1] = useState(false);
-    const [checkbox2, setCheckbox2] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
     const { device, isLocked } = useDevice();
     const dispatch = useDispatch();
-    const appRoute = useSelector(selectRouterApp);
 
     const isBootloaderMode = isDeviceInBootloaderMode(device);
 
@@ -39,10 +82,7 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
             analytics.report({
                 type: EventType.SettingsDeviceWipe,
             });
-            if (appRoute === 'settings') {
-                // redirect to the index to close the settings and show initial device setup
-                dispatch(routerActions.goto('suite-index'));
-            }
+            onCancel();
         }
 
         setIsLoading(false);
@@ -60,55 +100,70 @@ export const WipeDeviceModal = ({ onCancel }: WipeDeviceModalProps) => {
     return (
         <Modal
             onCancel={handleCancel}
+            heading={<Translation id={headingTranslation} />}
+            description={<Translation id="TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION" />}
             variant="destructive"
-            iconName="shieldWarning"
             width={600}
-            bottomContent={
-                <>
-                    <Modal.Button
-                        onClick={handleWipeDevice}
-                        isLoading={isLoading}
-                        isDisabled={isLocked() || !checkbox1 || !checkbox2}
-                        data-testid="@wipe/wipe-button"
-                    >
-                        <Translation id={headingTranslation} />
-                    </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={handleCancel}>
-                        <Translation id="TR_CANCEL" />
-                    </Modal.Button>
-                </>
-            }
         >
-            <H3>
-                <Translation id={headingTranslation} />
-            </H3>
-            <Paragraph variant="tertiary" margin={{ top: spacings.xs }}>
-                <Translation
-                    id={
-                        isBootloaderMode
-                            ? 'TR_FACTORY_RESET_MODAL_DESCRIPTION'
-                            : 'TR_WIPE_DEVICE_MODAL_DESCRIPTION'
+            <Column gap={16}>
+                <StepCard
+                    heading={<Translation id="TR_WIPE_DEVICE_ERASE_ALL_DATA" />}
+                    description={<Translation id="TR_WIPE_DEVICE_ERASE_ALL_DATA_DESCRIPTION" />}
+                    actions={
+                        <>
+                            <Button
+                                intent="critical"
+                                onClick={() => setIsConfirmed(true)}
+                                isLoading={isLoading}
+                                isDisabled={isLocked()}
+                                data-testid="@wipe/wipe-button"
+                                size="large"
+                            >
+                                <Translation id="TR_I_UNDERSTAND_THE_RISK" />
+                            </Button>
+
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                size="large"
+                                onClick={handleCancel}
+                            >
+                                <Translation id="TR_GO_BACK" />
+                            </Button>
+                        </>
                     }
+                    icon="trash"
+                    state={isConfirmed ? 'confirmed' : 'default'}
                 />
-            </Paragraph>
-            <Card margin={{ top: spacings.lg }}>
-                <Column gap={spacings.md} alignItems="center">
-                    <CheckItem
-                        title={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_TITLE" />}
-                        description={<Translation id="TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION" />}
-                        isChecked={checkbox1}
-                        onClick={() => setCheckbox1(!checkbox1)}
-                        data-testid="@wipe/checkbox-1"
-                    />
-                    <CheckItem
-                        title={<Translation id="TR_WIPE_DEVICE_CHECKBOX_2_TITLE" />}
-                        description={<Translation id="TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION" />}
-                        isChecked={checkbox2}
-                        onClick={() => setCheckbox2(!checkbox2)}
-                        data-testid="@wipe/checkbox-2"
-                    />
-                </Column>
-            </Card>
+                <StepCard
+                    heading={<Translation id="TR_WIPE_DEVICE_WALLET_BACKUP" />}
+                    description={<Translation id="TR_WIPE_DEVICE_WALLET_BACKUP_DESCRIPTION" />}
+                    actions={
+                        <>
+                            <Button
+                                intent="critical"
+                                onClick={handleWipeDevice}
+                                isLoading={isLoading}
+                                isDisabled={isLocked()}
+                                data-testid="@wipe/wipe-button"
+                                size="large"
+                            >
+                                <Translation id="TR_I_UNDERSTAND_THE_RISK" />
+                            </Button>
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                onClick={() => setIsConfirmed(false)}
+                                size="large"
+                            >
+                                <Translation id="TR_GO_BACK" />
+                            </Button>
+                        </>
+                    }
+                    icon="newspaper"
+                    state={isConfirmed ? 'default' : 'pending'}
+                />
+            </Column>
         </Modal>
     );
 };

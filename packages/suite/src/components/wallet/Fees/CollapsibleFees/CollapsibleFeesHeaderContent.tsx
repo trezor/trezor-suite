@@ -26,7 +26,7 @@ export const CollapsibleFeesHeaderContent = ({
     const content = (
         <ContentFlex justifyContent="space-between" gap={12}>
             <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
-            <Row gap={8}>
+            <Row gap={12}>
                 <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
                 {supportsAdjustableFees && (
                     <Collapsible.ToggleIcon iconName="caretDown" size="mediumLarge" />

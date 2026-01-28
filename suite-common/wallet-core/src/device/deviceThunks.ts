@@ -443,7 +443,7 @@ const handlePostWipeCleanupThunk = createThunk(
             initialDevice: TrezorDevice;
             deviceInstances: AcquiredDevice[];
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         // Wiping a device triggers device.id change, and this change is propagated to device reducer via @trezor/connect DEVICE.CHANGE event.
         // Accounts data are related to the old device.id; to properly clear reducers and indexed db,
@@ -463,7 +463,7 @@ const handlePostWipeCleanupThunk = createThunk(
             dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
         }
 
-        dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
+        dispatch(extra.actions.openModal({ type: 'wipe-device-success' }));
 
         // Special case with webusb: Device after wipe changes device_id. With webusb transport, device_id is used as a path
         // and thus as a descriptor for webusb. So, after the device is wiped, in the transport layer, the device is still paired

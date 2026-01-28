@@ -68,7 +68,7 @@ export function CollapsibleFees({
                 composedLevels,
             }}
         >
-            <Collapsible>
+            <Collapsible gap={12}>
                 <CollapsibleFeesHeaderContent
                     label={label}
                     headerTypographyStyle={headerTypographyStyle}
