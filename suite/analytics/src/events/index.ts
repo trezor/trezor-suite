@@ -7,3 +7,4 @@ export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
+export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';
