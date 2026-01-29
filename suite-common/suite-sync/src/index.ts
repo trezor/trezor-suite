@@ -1,7 +1,7 @@
 export {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncRelayUrl,
-    selectIsTurnOnSuiteSyncInteractionNeeded,
+    selectSuiteSyncInteraction,
     selectIsSuiteSyncDebugEnabled,
     selectSuiteSyncError,
 } from './suiteSyncSelectors';

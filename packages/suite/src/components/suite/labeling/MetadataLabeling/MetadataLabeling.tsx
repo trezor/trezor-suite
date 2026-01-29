@@ -4,10 +4,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import {
-    selectIsSuiteSyncEnabled,
-    selectIsTurnOnSuiteSyncInteractionNeeded,
-} from '@suite-common/suite-sync';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { Button, DropdownMenuItemProps, Row } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { EditableText, EditableTextProps } from '@trezor/product-components';
@@ -15,6 +12,7 @@ import { spacingsPx } from '@trezor/theme';
 import { TimerId, exhaustive } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadata/metadataLabelingActions';
+import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectIsLabelingAvailableForEntity,
@@ -26,8 +24,10 @@ import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
-import { updateShowEnableSuiteSyncModal } from '../../../../actions/suiteSync/suiteSyncSlice';
-import { processLegacyMetadataIntoSuiteSyncThunk } from '../../../../actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
+import {
+    selectDesktopSuiteSyncInteraction,
+    updateShowEnableSuiteSyncModal,
+} from '../../../../actions/suiteSync/suiteSyncSlice';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 import { NO_HIGHLIGHT_ATTRIBUTE } from '../../FindBar/consts';
 
@@ -383,7 +383,7 @@ export const Labeling = ({
     );
 
     const suiteSyncInteraction = useSelector(state =>
-        selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId),
+        selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     const handleEdit = useCallback(async () => {
@@ -525,7 +525,7 @@ export const MetadataLabeling = ({
     );
 
     const suiteSyncInteraction = useSelector(state =>
-        selectIsTurnOnSuiteSyncInteractionNeeded(state, deviceStaticSessionId),
+        selectDesktopSuiteSyncInteraction(state, deviceStaticSessionId),
     );
 
     // is this concrete instance being edited?

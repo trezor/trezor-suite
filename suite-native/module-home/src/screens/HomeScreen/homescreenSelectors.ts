@@ -2,8 +2,8 @@ import { MessageSystemRootState } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     WithSuiteSyncState,
-    selectIsTurnOnSuiteSyncInteractionNeeded,
     selectSuiteSyncError,
+    selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import {
     DeviceRootState,
@@ -55,7 +55,7 @@ export const selectShouldDisplaySuiteSyncAlert = createMemoizedSelector(
         selectSuiteSyncError,
         selectIsDeviceConnected,
         (state: WithSuiteSyncState & DeviceRootState) =>
-            selectIsTurnOnSuiteSyncInteractionNeeded(state, selectDeviceStaticSessionId(state)),
+            selectSuiteSyncInteraction(state, selectDeviceStaticSessionId(state)),
     ],
     (suiteSyncError, isDeviceConnected, interactionNeeded) =>
         interactionNeeded === 'keys-needed' && (!!suiteSyncError || !isDeviceConnected),
