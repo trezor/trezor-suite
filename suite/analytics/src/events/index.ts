@@ -6,6 +6,7 @@ export { accountsStatusEvent } from './accountsStatusEvent';
 export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
+export { coinjoinAnonymityGainEvent } from './coinjoinAnonymityGainEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';

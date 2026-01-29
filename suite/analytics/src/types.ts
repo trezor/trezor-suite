@@ -167,13 +167,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.CoinjoinAnonymityGain;
-          payload: {
-              networkSymbol: string;
-              value: number;
-          };
-      }
-    | {
           type: EventType.TradingBuy;
           payload: {
               action: 'continue' | 'cancel';

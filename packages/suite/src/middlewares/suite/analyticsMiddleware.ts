@@ -291,7 +291,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 );
 
                 if (coinjoinAccount && anonymityGainToReport !== null) {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report(
+                    getTypedDesktopAnalytics(analytics).report(
                         {
                             type: EventType.CoinjoinAnonymityGain,
                             payload: {
