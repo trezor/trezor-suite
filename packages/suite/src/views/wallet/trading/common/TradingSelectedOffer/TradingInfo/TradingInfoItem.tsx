@@ -1,14 +1,12 @@
 import { CryptoId } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { ExperimentId } from '@suite-common/message-system';
 import { type TradingType, cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Text } from '@trezor/components';
 import { borders, spacings } from '@trezor/theme';
 
 import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
-import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCoinLogo } from 'src/views/wallet/trading/common/TradingCoinLogo';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
@@ -78,32 +76,19 @@ export const TradingInfoItem = ({
                     <Column>
                         <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
-                        <ExperimentWrapper
-                            id={ExperimentId.tradingFiatValues}
-                            components={[
-                                { variant: 'A', element: <></> },
-                                {
-                                    variant: 'B',
-                                    element: currencyInfo?.symbol ? (
-                                        <Text variant="tertiary" typographyStyle="hint">
-                                            <BaseCurrencyValue
-                                                amount={amount}
-                                                symbol={currencyInfo.symbol}
-                                                rateType="current"
-                                                tokenAddress={
-                                                    currencyInfo.contractAddress as
-                                                        | TokenAddress
-                                                        | undefined
-                                                }
-                                                showApproximationIndicator
-                                            />
-                                        </Text>
-                                    ) : (
-                                        <></>
-                                    ),
-                                },
-                            ]}
-                        />
+                        {currencyInfo?.symbol && (
+                            <Text variant="tertiary" typographyStyle="hint">
+                                <BaseCurrencyValue
+                                    amount={amount}
+                                    symbol={currencyInfo.symbol}
+                                    rateType="current"
+                                    tokenAddress={
+                                        currencyInfo.contractAddress as TokenAddress | undefined
+                                    }
+                                    showApproximationIndicator
+                                />
+                            </Text>
+                        )}
                     </Column>
                 </Row>
             </Box>

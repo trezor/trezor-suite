@@ -2,7 +2,6 @@ import { CryptoId } from 'invity-api';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { ExperimentId } from '@suite-common/message-system';
 import {
     TradingTradeMapProps,
     cryptoIdToNetworkSymbolAndContractAddress,
@@ -14,7 +13,6 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingCryptoAmountProps } from 'src/types/trading/trading';
 import {
@@ -129,37 +127,23 @@ export const TradingUtilsPrice = ({
                                             displayLogo
                                         />
                                     )}
-                                    <ExperimentWrapper
-                                        id={ExperimentId.tradingFiatValues}
-                                        components={[
-                                            { variant: 'A', element: <></> },
-                                            {
-                                                variant: 'B',
-                                                element:
-                                                    symbol && receiveAmount ? (
-                                                        <Text
-                                                            variant="tertiary"
-                                                            typographyStyle="hint"
-                                                            margin={{ left: spacings.xxl }}
-                                                        >
-                                                            <BaseCurrencyValue
-                                                                amount={receiveAmount.toString()}
-                                                                symbol={symbol}
-                                                                rateType="current"
-                                                                tokenAddress={
-                                                                    contractAddress as
-                                                                        | TokenAddress
-                                                                        | undefined
-                                                                }
-                                                                showApproximationIndicator
-                                                            />
-                                                        </Text>
-                                                    ) : (
-                                                        <></>
-                                                    ),
-                                            },
-                                        ]}
-                                    />
+                                    {symbol && receiveAmount && (
+                                        <Text
+                                            variant="tertiary"
+                                            typographyStyle="hint"
+                                            margin={{ left: spacings.xxl }}
+                                        >
+                                            <BaseCurrencyValue
+                                                amount={receiveAmount.toString()}
+                                                symbol={symbol}
+                                                rateType="current"
+                                                tokenAddress={
+                                                    contractAddress as TokenAddress | undefined
+                                                }
+                                                showApproximationIndicator
+                                            />
+                                        </Text>
+                                    )}
                                 </Column>
                             )}
                         </PriceValue>

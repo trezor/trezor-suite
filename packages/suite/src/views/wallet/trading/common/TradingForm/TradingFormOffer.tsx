@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     type TradingType,
     isSendingEvmNativeToken,
-    parseCryptoId,
     tradingExchangeActions,
     tradingSellActions,
-    useTradingUtils,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
@@ -19,7 +16,6 @@ import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
 import { breakpoints, spacings } from '@trezor/theme';
 
-import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -120,8 +116,6 @@ export const TradingFormOffer = () => {
 
     const isLoadingQuote = isTradingExchangeContext(context) && context.isLoadingQuote;
 
-    const { cryptoIdToPlatformName } = useTradingUtils();
-
     const bestScoredQuote = quotes?.[0];
     const { preselectedQuote } = context;
     const quote = preselectedQuote ?? getSelectedQuote(context);
@@ -140,8 +134,6 @@ export const TradingFormOffer = () => {
 
     const selectQuote = getSelectQuoteTyped(context);
     const shouldDisplayFiatAmount = isTradingExchangeContext(context) ? false : amountInCrypto;
-    const { networkId, contractAddress } = parseCryptoId(selectedCryptoId ?? ('' as CryptoId));
-    const network = selectedCryptoId ? cryptoIdToPlatformName(networkId) : undefined;
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
 
@@ -339,27 +331,6 @@ export const TradingFormOffer = () => {
                                 : '0'
                         }
                         cryptoId={selectedAssetCryptoId}
-                    />
-                )}
-                {isTradingExchangeContext(context) && contractAddress && network && (
-                    <ExperimentWrapper
-                        id={ExperimentId.tradingFiatValues}
-                        components={[
-                            {
-                                variant: 'A',
-                                element: (
-                                    <Paragraph typographyStyle="label" variant="tertiary">
-                                        <Translation
-                                            id="TR_TRADING_ON_NETWORK_CHAIN"
-                                            values={{
-                                                networkName: network,
-                                            }}
-                                        />
-                                    </Paragraph>
-                                ),
-                            },
-                            { variant: 'B', element: <></> },
-                        ]}
                     />
                 )}
             </Column>
