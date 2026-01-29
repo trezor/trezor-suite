@@ -1,7 +1,7 @@
 import { ComponentProps, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AccordionList, Box, BulletListItem, Text, VStack } from '@suite-native/atoms';
+import { AccordionList, Box, BulletListItem, Card, Text, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -251,7 +251,7 @@ const getIosFaqItems = (coinLabel: string) => [
     },
 ];
 
-export const FaqInfoPanel = () => {
+export const FaqCard = () => {
     const coinLabel = useCoinLabel();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
@@ -283,8 +283,10 @@ export const FaqInfoPanel = () => {
     }, [coinLabel, isTradingEnabled]);
 
     return (
-        <VStack paddingHorizontal="sp8">
-            <AccordionList items={items} />
-        </VStack>
+        <Card>
+            <VStack paddingHorizontal="sp8">
+                <AccordionList items={items} />
+            </VStack>
+        </Card>
     );
 };

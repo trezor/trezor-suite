@@ -1,4 +1,4 @@
-import { Card, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, IconButton, Text, TitledSection, VStack } from '@suite-native/atoms';
 import { useCoinLabel } from '@suite-native/device';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -29,24 +29,7 @@ export const AboutUsBanners = () => {
     const coinLabel = useCoinLabel();
 
     return (
-        <VStack spacing="sp20">
-            <Text>
-                <Translation
-                    id="moduleSettings.aboutUs.title"
-                    values={{
-                        grey: chunks => (
-                            <Text variant="titleSmall" color="textOnTertiary">
-                                {chunks}
-                            </Text>
-                        ),
-                        green: chunks => (
-                            <Text variant="titleSmall" color="textSecondaryHighlight">
-                                {chunks}
-                            </Text>
-                        ),
-                    }}
-                />
-            </Text>
+        <TitledSection title={<Translation id="moduleSettings.aboutUs.title" />}>   
             <VStack>
                 <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>
@@ -110,6 +93,6 @@ export const AboutUsBanners = () => {
                     </VStack>
                 </Card>
             </VStack>
-        </VStack>
+        </TitledSection>
     );
 };
