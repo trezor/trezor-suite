@@ -264,11 +264,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsDeviceCheckSeed;
-          status: 'finished' | 'error';
-          error?: string;
-      }
-    | {
           type: EventType.SettingsDeviceUpdateAutoLock;
           payload: {
               value: number;
