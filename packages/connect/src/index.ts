@@ -1,7 +1,5 @@
-import EventEmitter from 'events';
-
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import { createDeferredManager } from '@trezor/utils';
+import { TypedEmitter, createDeferredManager } from '@trezor/utils';
 
 import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
@@ -21,9 +19,10 @@ import {
 } from './events';
 import { factory } from './factory';
 import type { ConnectSettings, Manifest } from './types';
+import { ConnectEvents } from './types/emitter';
 import { initLog } from './utils/debug';
 
-export const eventEmitter = new EventEmitter();
+export const eventEmitter = new TypedEmitter<ConnectEvents>();
 const _log = initLog('@trezor/connect');
 
 let _settings = parseConnectSettings();
@@ -46,41 +45,39 @@ const dispose = () => {
 
 // handle message received from Core
 const onCoreEvent = (message: CoreEventMessage) => {
-    const { event, type, payload } = message;
-
     _log.debug('handleMessage', message.type);
 
-    switch (event) {
+    switch (message.event) {
         case RESPONSE_EVENT: {
-            const { id = 0, success, device } = message;
+            const { id = 0, success, payload, device } = message;
             const resolved = messagePromises.resolve(id, { id, success, payload, device });
             if (!resolved) _log.warn(`Unknown message id ${id}`);
             break;
         }
         case DEVICE_EVENT:
             // pass DEVICE event up to html
-            eventEmitter.emit(event, message);
-            eventEmitter.emit(type, payload); // DEVICE_EVENT also emit single events (connect/disconnect...)
+            eventEmitter.emit(message.event, message);
+            eventEmitter.emit(message.type, message.payload); // DEVICE_EVENT also emit single events (connect/disconnect...)
             break;
 
         case TRANSPORT_EVENT:
-            eventEmitter.emit(event, message);
-            eventEmitter.emit(type, payload);
+            eventEmitter.emit(message.event, message);
+            eventEmitter.emit(message.type, message.payload);
             break;
 
         case BLOCKCHAIN_EVENT:
-            eventEmitter.emit(event, message);
-            eventEmitter.emit(type, payload);
+            eventEmitter.emit(message.event, message);
+            eventEmitter.emit(message.type, message.payload);
             break;
 
         case UI_EVENT:
             // pass UI event up
-            eventEmitter.emit(event, message);
-            eventEmitter.emit(type, payload);
+            eventEmitter.emit(message.event, message);
+            eventEmitter.emit(message.type, message.payload);
             break;
 
         default:
-            _log.warn('Undefined message', event, message);
+            _log.warn('Undefined message', message);
     }
 };
 
