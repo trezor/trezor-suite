@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
-import { Banner, Card, Row } from '@trezor/components';
+import { Banner, Card, Modal, Row } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';
 import { BluetoothTips } from './BluetoothTips';
@@ -48,11 +48,13 @@ const ErrorComponent = ({ device, onReScanClick }: ErrorComponentProps) => (
 
 export type BluetoothSelectedDeviceProps = {
     device: DesktopBluetoothDevice;
+    onCancel: () => void;
     onReScanClick: () => void;
 };
 
 export const BluetoothSelectedDevice = ({
     device,
+    onCancel,
     onReScanClick,
 }: BluetoothSelectedDeviceProps) => {
     const isError =
@@ -67,17 +69,38 @@ export const BluetoothSelectedDevice = ({
         device.connectionStatus.type,
     );
 
+    const devicePairing = device.connectionStatus.type === 'pairing';
+
     return (
-        <Card>
-            <OkComponent device={device} />
-            {showHint && (
-                <Banner
-                    intent="info"
-                    icon="info"
-                    margin={{ top: 16 }}
-                    description={<Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />}
-                />
-            )}
-        </Card>
+        <Modal
+            onCancel={onCancel}
+            heading={
+                devicePairing ? (
+                    <Translation id="TR_CONFIRM_PAIRING_TREZOR" />
+                ) : (
+                    <Translation id="TR_CONNECT_YOUR_TREZOR" />
+                )
+            }
+            description={
+                devicePairing ? (
+                    <Translation id="TR_CONFIRM_PAIRING_TREZOR_DESCRIPTION" />
+                ) : (
+                    <Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />
+                )
+            }
+            width={600}
+        >
+            <Card>
+                <OkComponent device={device} />
+                {showHint && (
+                    <Banner
+                        intent="info"
+                        icon="info"
+                        margin={{ top: 16 }}
+                        description={<Translation id="TR_CONFIRM_BLUETOOTH_PAIRING" />}
+                    />
+                )}
+            </Card>
+        </Modal>
     );
 };

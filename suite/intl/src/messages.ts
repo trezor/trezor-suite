@@ -7348,6 +7348,10 @@ export const messages = defineMessages({
         id: 'TR_USE_CHAT',
         defaultMessage: 'Click below and use the <b>Chat</b> option on the next page.',
     },
+    TR_CONFIRM_PAIRING_TREZOR: {
+        id: 'TR_CONFIRM_PAIRING_TREZOR',
+        defaultMessage: 'Confirm pairing',
+    },
     TR_CONNECT_YOUR_TREZOR: {
         id: 'TR_CONNECT_YOUR_TREZOR',
         defaultMessage: 'Connect your Trezor',
@@ -7355,6 +7359,10 @@ export const messages = defineMessages({
     TR_CONNECT_YOUR_TREZOR_DESCRIPTION: {
         id: 'TR_CONNECT_YOUR_TREZOR_DESCRIPTION',
         defaultMessage: 'Select a device to connect.',
+    },
+    TR_CONFIRM_PAIRING_TREZOR_DESCRIPTION: {
+        id: 'TR_CONFIRM_PAIRING_TREZOR_DESCRIPTION',
+        defaultMessage: 'Confirm pairing using your Trezor device.',
     },
     TR_DISCONNECT_YOUR_TREZOR: {
         id: 'TR_DISCONNECT_YOUR_TREZOR',

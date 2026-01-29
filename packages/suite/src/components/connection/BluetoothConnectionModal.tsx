@@ -42,16 +42,11 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
         (selectedDevice.connectionStatus?.pin?.length ?? 0) > 0
     ) {
         return (
-            <Modal
+            <BluetoothPairingPin
+                device={selectedDevice}
+                pairingPin={selectedDevice.connectionStatus.pin}
                 onCancel={() => handlePairingCancel(selectedDevice.id)}
-                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
-                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-            >
-                <BluetoothPairingPin
-                    device={selectedDevice}
-                    pairingPin={selectedDevice.connectionStatus.pin}
-                />
-            </Modal>
+            />
         );
     }
 
@@ -61,14 +56,11 @@ export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalPr
             connectingDevices.includes(selectedDevice.id))
     ) {
         return (
-            <Modal
+            <BluetoothSelectedDevice
+                device={selectedDevice}
                 onCancel={handleClose}
-                heading={<Translation id="TR_CONNECT_YOUR_TREZOR" />}
-                description={<Translation id="TR_CONNECT_YOUR_TREZOR_DESCRIPTION" />}
-                width={600}
-            >
-                <BluetoothSelectedDevice device={selectedDevice} onReScanClick={onReScanClick} />
-            </Modal>
+                onReScanClick={onReScanClick}
+            />
         );
     }
 
