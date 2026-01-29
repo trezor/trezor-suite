@@ -8,6 +8,7 @@
     "references": [
         { "path": "../env-utils" },
         { "path": "../utils" },
+        { "path": "../device-utils" },
         { "path": "../protobuf" },
         { "path": "../protocol" }
     ]

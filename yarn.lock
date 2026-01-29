@@ -14427,6 +14427,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-common@workspace:packages/connect-common"
   dependencies:
+    "@trezor/device-utils": "workspace:^"
     "@trezor/env-utils": "workspace:*"
     "@trezor/protobuf": "workspace:^"
     "@trezor/protocol": "workspace:^"
@@ -15477,6 +15478,7 @@ __metadata:
   dependencies:
     "@babel/preset-env": "npm:7.28.5"
     "@babel/preset-typescript": "npm:^7.28.5"
+    "@trezor/connect-common": "workspace:^"
     "@trezor/eslint": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"

@@ -30,8 +30,10 @@ describe('helpers/paramsValidator', () => {
                         jest.resetModules();
 
                         const mock = f.config;
-                        jest.mock('../../../data/config', () => {
-                            const actualConfig = jest.requireActual('../../../data/config').config;
+                        jest.mock('@trezor/connect-common/src/data/config', () => {
+                            const { config: actualConfig } = jest.requireActual(
+                                '@trezor/connect-common/src/data/config',
+                            );
 
                             return {
                                 __esModule: true,

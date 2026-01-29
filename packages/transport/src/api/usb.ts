@@ -1,3 +1,8 @@
+import {
+    T1_HID_PRODUCT,
+    TREZOR_USB_DESCRIPTORS,
+    WEBUSB_BOOTLOADER_PRODUCT,
+} from '@trezor/connect-common/src/constants';
 import { arrayPartition, createDeferred, getSynchronize, resolveAfter } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams } from './abstract';
@@ -8,10 +13,7 @@ import {
     DEVICE_TYPE,
     ENDPOINT_ID,
     INTERFACE_ID,
-    T1_HID_PRODUCT,
     T1_HID_VENDOR,
-    TREZOR_USB_DESCRIPTORS,
-    WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
 import * as ERRORS from '../errors';
 import { DescriptorApiLevel, PathInternal } from '../types';

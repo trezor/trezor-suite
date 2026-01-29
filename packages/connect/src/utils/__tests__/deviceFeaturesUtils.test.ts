@@ -247,7 +247,7 @@ describe('utils/deviceFeaturesUtils', () => {
             new Promise<void>(done => {
                 jest.resetModules();
 
-                jest.mock('../../data/config', () => ({
+                jest.mock('@trezor/connect-common/src/data/config', () => ({
                     __esModule: true,
                     config: {
                         supportedFirmware: [
@@ -273,7 +273,7 @@ describe('utils/deviceFeaturesUtils', () => {
             new Promise<void>(done => {
                 jest.resetModules();
 
-                jest.mock('../../data/config', () => ({
+                jest.mock('@trezor/connect-common/src/data/config', () => ({
                     __esModule: true,
                     config: {
                         supportedFirmware: [

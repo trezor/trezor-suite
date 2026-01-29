@@ -89,6 +89,7 @@
         "tsx": "^4.21.0"
     },
     "dependencies": {
+        "@trezor/connect-common": "workspace:^",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/type-utils": "workspace:*",
