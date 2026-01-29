@@ -14,7 +14,7 @@ import { spacings } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingExchangeProvidersInfoProps } from 'src/types/trading/trading';
 import { TradingOfferExchangeProps } from 'src/types/trading/tradingForm';
 import { tradingGetAmountLabels } from 'src/utils/wallet/trading/tradingUtils';
@@ -30,7 +30,7 @@ export const TradingOfferExchange = ({
     quoteAmounts,
 }: TradingOfferExchangeProps) => {
     const { handleClick, disabled } = useAsyncClickHandler();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
     const receiveAccount = useSelector(
@@ -56,7 +56,7 @@ export const TradingOfferExchange = ({
     const confirmAndSend = async () => {
         const result = await sendTransaction();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingExchange,
             payload: {
                 action: result ? 'continue' : 'cancel',

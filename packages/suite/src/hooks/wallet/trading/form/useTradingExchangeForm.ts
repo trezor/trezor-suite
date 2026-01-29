@@ -292,7 +292,7 @@ export const useTradingExchangeForm = ({
 
         switch (pageType) {
             case 'form': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingExchange,
                     payload: {
                         action: 'continue',
@@ -315,7 +315,7 @@ export const useTradingExchangeForm = ({
                 break;
             }
             case 'offers': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingExchange,
                     payload: {
                         action: 'continue',
