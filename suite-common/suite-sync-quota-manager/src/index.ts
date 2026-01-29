@@ -6,7 +6,10 @@ export { registerStorageThunk } from './storage/registerStorageThunk';
 export { transferStorageThunk } from './storage/transferStorageThunk';
 export { prepareChallengeSession } from './challenge/prepareChallengeSession';
 export { ensureDeviceHasQuotaThunk } from './ensureDeviceHasQuotaThunk';
-export { ensureOwnerHasAllocatedQuotaThunk } from './ensureOwnerHasAllocatedQuotaThunk';
+export {
+    ensureOwnerHasAllocatedQuotaThunk,
+    WriteModeRequiredForAllocation,
+} from './ensureOwnerHasAllocatedQuotaThunk';
 export { increaseOwnerQuotaThunk } from './increaseOwnerQuotaThunk';
 
 /**

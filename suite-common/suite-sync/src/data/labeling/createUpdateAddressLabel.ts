@@ -8,6 +8,7 @@ export const createUpdateAddressLabel =
     async ({ deviceStaticSessionId, address, label, accountDescriptor, networkSymbol }) => {
         const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
             deviceStaticSessionId,
+            isWriteMode: true,
         });
 
         if (!ensureWalletOnResult.success) {

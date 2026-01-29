@@ -15,6 +15,7 @@ export const createUpdateOutputLabel =
     }) => {
         const ensureWalletOnResult = await deps.ensureWalletSuiteSyncOn({
             deviceStaticSessionId,
+            isWriteMode: true,
         });
 
         if (!ensureWalletOnResult.success) {

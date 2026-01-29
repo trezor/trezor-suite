@@ -24,6 +24,7 @@ export const createTurnOnSuiteSync =
         if (deviceStaticSessionId !== undefined) {
             const result = await deps.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
+                isWriteMode: false,
             });
 
             if (!result.success) {

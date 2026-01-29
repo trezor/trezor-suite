@@ -40,7 +40,10 @@ describe(createTurnOnSuiteSync.name, () => {
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
         expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
         expect(result).toEqual(ok());
     });
 
@@ -72,7 +75,10 @@ describe(createTurnOnSuiteSync.name, () => {
         const result = await turnOnSuiteSync({ deviceStaticSessionId });
 
         expect(deps.dispatch).toHaveBeenCalledWith(updateSuiteSyncEnabled({ isEnabled: true }));
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
 });

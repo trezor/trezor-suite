@@ -35,7 +35,10 @@ describe(createUpdateAddressLabel.name, () => {
             networkSymbol,
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
 
         expect(storage.data.addresses.update).toHaveBeenCalledWith({
             address: 'bc1address',
@@ -63,7 +66,10 @@ describe(createUpdateAddressLabel.name, () => {
             networkSymbol,
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
 });

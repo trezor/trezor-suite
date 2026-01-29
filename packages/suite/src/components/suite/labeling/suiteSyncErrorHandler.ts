@@ -33,6 +33,11 @@ export const suiteSyncErrorHandler = ({
             dispatch(notificationsActions.addToast({ type: 'error', error: type }));
 
             return;
+
+        case 'WriteModeRequiredForAllocation':
+            // Do nothing, this is expected control flow error when we want allocate on-demand.
+            return;
+
         default:
             return exhaustive(type);
     }

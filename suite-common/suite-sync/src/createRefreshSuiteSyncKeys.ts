@@ -2,6 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import {
+    WriteModeRequiredForAllocation,
     ensureDeviceHasQuotaThunk,
     ensureOwnerHasAllocatedQuotaThunk,
 } from '@suite-common/suite-sync-quota-manager';
@@ -36,7 +37,7 @@ export type RefreshSuiteSyncKeysDeps = {
 
 export const createRefreshSuiteSync =
     (deps: RefreshSuiteSyncKeysDeps): RefreshSuiteSyncKeys =>
-    async ({ device }): ReturnType<RefreshSuiteSyncKeys> => {
+    async ({ device, isWriteMode }): ReturnType<RefreshSuiteSyncKeys> => {
         if (!device || !isTrezorDeviceWithState(device)) {
             return err(SuiteSyncUnavailableOnDeviceError());
         }
@@ -90,13 +91,21 @@ export const createRefreshSuiteSync =
                 return ownerResult;
             }
 
-            await deps.dispatch(
+            const allocatedQuota = await deps.dispatch(
                 ensureOwnerHasAllocatedQuotaThunk({
                     walletDescriptor,
                     ownerId: ownerResult.payload.ownerId,
                     delegatedKey: delegatedKeyResult.payload,
+                    isWriteMode,
                 }),
             );
+
+            if (
+                allocatedQuota.success === false &&
+                allocatedQuota.error.type === 'WriteModeRequiredForAllocation'
+            ) {
+                return err(WriteModeRequiredForAllocation());
+            }
 
             return ok(ownerResult.payload);
         };
@@ -109,6 +118,7 @@ export const createRefreshSuiteSync =
             switch (errType) {
                 case 'DeviceError':
                 case 'DeviceCancelled':
+                case 'WriteModeRequiredForAllocation':
                     return err(result.error);
 
                 // Those errors are most likely due to Bug in the code or data corruption

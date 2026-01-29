@@ -65,6 +65,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({
             device: createDevice({}, null),
+            isWriteMode: false,
         });
 
         expect(result.success).toEqual(false);
@@ -79,6 +80,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({
             device: createDevice(),
+            isWriteMode: false,
         });
 
         expect(result.success).toEqual(true);
@@ -92,6 +94,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({
             device: createDevice({ connected: false }),
+            isWriteMode: false,
         });
 
         expect(result.success).toEqual(false);
@@ -100,7 +103,7 @@ describe(createRefreshSuiteSync.name, () => {
 
     it('ensures that the delegated identity key is available when owner is not in state', async () => {
         const deps = createMockDeps();
-        deps.dispatch.mockImplementation(() => Promise.resolve(undefined));
+        deps.dispatch.mockImplementation(() => Promise.resolve(ok()));
         deps.loadSuiteSyncOwnerFromState.mockResolvedValue(null);
         deps.ensureSuiteSyncOwner.mockResolvedValue(ok(OWNER_1));
         deps.ensureDelegatedIdentityKey.mockResolvedValue(
@@ -113,6 +116,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         await refreshSuiteSyncKeys({
             device: mockDevice,
+            isWriteMode: false,
         });
 
         expect(deps.ensureDelegatedIdentityKey).toHaveBeenCalledWith({
@@ -122,7 +126,12 @@ describe(createRefreshSuiteSync.name, () => {
 
     it('requests ensureSuiteSyncOwner when owner is not in state', async () => {
         const deps = createMockDeps();
-        deps.dispatch.mockImplementation(() => Promise.resolve(undefined));
+        deps.dispatch.mockImplementation(() =>
+            Promise.resolve({
+                success: false,
+                error: { type: 'WriteModeRequiredForAllocation' },
+            }),
+        );
         deps.loadSuiteSyncOwnerFromState.mockResolvedValue(null);
         deps.ensureSuiteSyncOwner.mockResolvedValue(ok(OWNER_1));
         deps.ensureDelegatedIdentityKey.mockResolvedValue(
@@ -135,6 +144,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         await refreshSuiteSyncKeys({
             device: mockDevice,
+            isWriteMode: false,
         });
 
         expect(deps.ensureSuiteSyncOwner).toHaveBeenCalledWith({
@@ -145,7 +155,7 @@ describe(createRefreshSuiteSync.name, () => {
 
     it('finally returns the new refreshed owner', async () => {
         const deps = createMockDeps();
-        deps.dispatch.mockImplementation(() => Promise.resolve(undefined));
+        deps.dispatch.mockImplementation(() => Promise.resolve(ok()));
         deps.loadSuiteSyncOwnerFromState.mockResolvedValue(null);
         deps.ensureDelegatedIdentityKey.mockResolvedValue(
             ok(asDelegatedIdentityKey('delegated-key-value')),
@@ -163,6 +173,7 @@ describe(createRefreshSuiteSync.name, () => {
         const refreshSuiteSyncKeys = createRefreshSuiteSync(deps);
         const result = await refreshSuiteSyncKeys({
             device: mockDevice,
+            isWriteMode: false,
         });
 
         expect(result.success).toBe(true);

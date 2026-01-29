@@ -6,7 +6,11 @@ export type {
     StorageId,
 } from './storage/suiteSyncStorageRepository';
 
-export type { RefreshSuiteSyncKeys, RefreshSuiteSyncKeysDep } from './refreshSuiteSyncKeys';
+export type {
+    RefreshSuiteSyncKeys,
+    RefreshSuiteSyncKeysDep,
+    WriteModeRequiredForAllocationErrType,
+} from './refreshSuiteSyncKeys';
 export type { TurnOffSuiteSyncDep, TurnOffSuiteSync } from './turnOffSuiteSync';
 export type { TurnOnSuiteSyncDep, TurnOnSuiteSync } from './turnOnSuiteSync';
 export type { SuiteSyncUnavailableOnDeviceErrorType } from './refreshSuiteSyncKeys';
@@ -71,3 +75,11 @@ export type {
     Errors,
     CreateSuiteSyncErrorHandlerDep,
 } from './SuiteSyncErrorHandler';
+
+export type {
+    EnsureOwnerHasAllocatedQuotaParams,
+    EnsureOwnerHasAllocatedQuota,
+    ChallengeFailedErrType,
+    HttpErrType,
+    ProofOfDelegatedIdentityFailedErrType,
+} from './quotaManager/ensureOwnerHasAllocatedQuotaThunk';

@@ -36,7 +36,10 @@ describe(createUpdateOutputLabel.name, () => {
             networkSymbol,
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
 
         expect(storage.data.outputs.update).toHaveBeenCalledWith({
             txId: 'txid',
@@ -66,7 +69,10 @@ describe(createUpdateOutputLabel.name, () => {
             networkSymbol,
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
 });

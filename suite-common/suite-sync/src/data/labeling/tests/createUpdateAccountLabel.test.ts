@@ -29,7 +29,10 @@ describe(createUpdateAccountLabel.name, () => {
             label: 'New Account Label',
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
 
         expect(storage.data.accounts.update).toHaveBeenCalledWith({
             accountDescriptor: asAccountDescriptor('accountDescriptor'),
@@ -54,7 +57,10 @@ describe(createUpdateAccountLabel.name, () => {
             label: 'New Account Label',
         });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
 });

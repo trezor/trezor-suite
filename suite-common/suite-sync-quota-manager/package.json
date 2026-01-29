@@ -15,6 +15,7 @@
         "@reduxjs/toolkit": "2.10.1",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

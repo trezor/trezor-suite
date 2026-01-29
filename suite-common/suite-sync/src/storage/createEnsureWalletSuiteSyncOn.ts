@@ -22,7 +22,7 @@ export type EnsureWalletSuiteSyncOnDeps = {
 
 export const createEnsureWalletSuiteSyncOn =
     (deps: EnsureWalletSuiteSyncOnDeps): EnsureWalletSuiteSyncOn =>
-    async ({ deviceStaticSessionId }) => {
+    async ({ deviceStaticSessionId, isWriteMode }) => {
         const device = selectDeviceByStaticSessionId(deps.getState(), deviceStaticSessionId);
 
         if (isFwUpgradeNeededForSuiteSync(device)) {
@@ -36,7 +36,10 @@ export const createEnsureWalletSuiteSyncOn =
             return err({ type: 'SuiteSyncUnavailableOnDeviceError' });
         }
 
-        const result = await deps.ensureSuiteSyncData({ deviceStaticSessionId });
+        const result = await deps.ensureSuiteSyncData({
+            deviceStaticSessionId,
+            isWriteMode,
+        });
 
         if (!result.success) {
             const { type } = result.error;
@@ -50,6 +53,10 @@ export const createEnsureWalletSuiteSyncOn =
                 case 'SuiteSyncUnavailableOnDeviceError':
                     // This error is now not handled in the UI, so we don't need to set the error. It will probably be added as a follow up.
                     deps.dispatch(setSuiteSyncError({ error: null }));
+                    break;
+
+                case 'WriteModeRequiredForAllocation':
+                    // Do nothing, this is expected control flow error when we want allocate on-demand.
                     break;
 
                 default:

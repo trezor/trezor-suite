@@ -37,6 +37,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
 
         expect(result.success).toBe(false);
@@ -59,6 +60,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
 
         expect(result.success).toBe(false);
@@ -89,6 +91,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
 
         expect(!result.success && result.error.type).toBe(
@@ -110,10 +113,12 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
 
         expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
         expect(result).toBe(ensureResult);
     });
@@ -131,10 +136,12 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const result = await createEnsureWalletSuiteSyncOn(deps)({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
 
         expect(deps.ensureSuiteSyncData).toHaveBeenCalledWith({
             deviceStaticSessionId: DEVICE_STATIC_SESSION_ID_123,
+            isWriteMode: false,
         });
         expect(result).toBe(ensureResult);
     });
