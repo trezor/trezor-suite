@@ -11,9 +11,9 @@ import TrezorConnect, {
     CallMethodPayload,
 } from '@trezor/connect';
 import { MethodInfo, MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
-import { DEEPLINK_VERSION } from '@trezor/connect/src/data/version';
 import { connectCallableMethods } from '@trezor/connect/src/factory';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
+import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';

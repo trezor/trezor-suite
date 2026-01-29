@@ -2,11 +2,11 @@
 
 import EventEmitter from 'events';
 
-import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect/src/data/version';
 import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
+import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect-common/src/data/version';
 import {
     AbstractMessageChannel,
     Message,
