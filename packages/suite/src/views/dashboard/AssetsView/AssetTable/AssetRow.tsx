@@ -25,7 +25,7 @@ import {
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { AssetCoinLogo } from '../AssetCoinLogo';
 import { AssetCoinName } from '../AssetCoinName';
@@ -64,7 +64,6 @@ export const AssetRow = memo(
         const { symbol } = network;
         const dispatch = useDispatch();
         const analytics = useAnalytics();
-        const legacyAnalytics = useLegacyAnalytics();
         const theme = useTheme();
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
@@ -115,7 +114,7 @@ export const AssetRow = memo(
         };
 
         const onBuyButtonClick = () => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingNavigate,
                 payload: {
                     action: 'navigate',

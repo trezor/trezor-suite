@@ -6,7 +6,7 @@ import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Dropdown, DropdownMenuItemProps, IconName } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useGoToWithAnalytics } from './useGoToWithAnalytics';
 import { useSelector } from '../../../../../hooks/suite';
@@ -28,7 +28,7 @@ type HeaderDropdownProps = {
     showSignAndVerify?: boolean;
 };
 export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
@@ -60,7 +60,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             callback: () => {
                 goToWithAnalytics('wallet-trading-buy', { preserveParams: true });
 
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',
@@ -81,7 +81,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                     preserveParams: false,
                 });
 
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',

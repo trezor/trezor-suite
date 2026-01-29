@@ -5,7 +5,7 @@ import { IconName, SubTabs } from '@trezor/components';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];
@@ -32,13 +32,13 @@ const navigationItems: NavigationItem[] = [
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const goToRoute = (route: Route['name']) => () => {
         dispatch(goto(route, { preserveParams: true }));
 
         switch (route) {
             case 'wallet-trading-buy':
-                return legacyAnalytics.report({
+                return analytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',
@@ -47,7 +47,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     },
                 });
             case 'wallet-trading-sell':
-                return legacyAnalytics.report({
+                return analytics.report({
                     type: EventType.TradingNavigate,
                     payload: {
                         action: 'navigate',

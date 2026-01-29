@@ -24,7 +24,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 import { formatApyValue } from 'src/views/wallet/staking/utils/formatStakeValues';
 
@@ -34,7 +34,6 @@ import { StakingDashboardRewardsAmount } from './StakingDashboardRewardsAmount';
 export const StakingDashboardAccountRow = ({ account }: { account: Account }) => {
     const dispatch = useDispatch();
     const { CryptoAmountFormatter } = useFormatters();
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
     const apy = useSelector(state => selectPoolStatsApyData(state, account));
     const displaySymbol = getDisplaySymbol(account.symbol);
@@ -109,7 +108,7 @@ export const StakingDashboardAccountRow = ({ account }: { account: Account }) =>
             }),
         );
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',

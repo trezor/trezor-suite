@@ -67,7 +67,7 @@ import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
@@ -91,6 +91,7 @@ export const TokenRow = ({
     isUnverifiedTable,
     isCollapsed,
 }: TokenRowProps) => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { isBelowTablet } = useLayoutSize();
@@ -188,7 +189,7 @@ export const TokenRow = ({
             ...{ preserveParams: type !== 'exchange' },
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
