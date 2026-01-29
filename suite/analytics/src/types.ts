@@ -145,12 +145,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SendInitialised;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.SendConfirmerOnDevice;
           payload: {
               assetSymbol: NetworkSymbol;
