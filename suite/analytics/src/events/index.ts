@@ -39,4 +39,5 @@ export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
 export { switchDeviceRememberEvent } from './switchDeviceRememberEvent';
 export { tradeApprovalEvent } from './tradeApprovalEvent';
 export { tradeConfirmTradeEvent } from './tradeConfirmTradeEvent';
+export { tradeNavigateEvent } from './tradeNavigateEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';

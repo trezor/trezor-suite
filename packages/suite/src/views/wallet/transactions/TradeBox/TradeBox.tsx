@@ -15,7 +15,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { DashboardSection } from 'src/components/dashboard';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useDevice, useDispatch, useLayoutSize } from 'src/hooks/suite';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 type TradeBoxProps = {
@@ -28,7 +28,6 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
 
@@ -60,7 +59,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 case 'buy':
                 case 'sell':
                 case 'exchange': {
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.TradingNavigate,
                         payload: {
                             action: 'navigate',
