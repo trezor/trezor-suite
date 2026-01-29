@@ -13965,6 +13965,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/intl@workspace:suite/intl"
   dependencies:
+    "@crowdin/cli": "npm:4.8.0"
+    "@formatjs/cli": "npm:6.7.2"
     "@trezor/type-utils": "workspace:^"
     react: "npm:19.1.0"
     react-intl: "npm:^8.0.6"
@@ -15247,9 +15249,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
-    "@crowdin/cli": "npm:4.8.0"
     "@floating-ui/react": "npm:^0.27.12"
-    "@formatjs/cli": "npm:6.7.2"
     "@formatjs/intl": "npm:3.1.6"
     "@hookform/resolvers": "npm:^5.2.2"
     "@mobily/ts-belt": "npm:^3.13.1"

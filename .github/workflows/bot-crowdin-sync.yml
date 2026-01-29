@@ -62,15 +62,15 @@ jobs:
       - name: Run crowdin sync [desktop]
         if: github.event.inputs.platform == 'desktop'
         run: |
-          yarn workspace @trezor/suite translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          yarn workspace @trezor/suite translations:backport-en
+          yarn workspace @suite/intl translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace @suite/intl translations:backport-en
           if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
-            yarn workspace @trezor/suite translations:list-unused --cleanup
+            yarn workspace @suite/intl translations:list-unused --cleanup
           fi
-          yarn workspace @trezor/suite translations:format
-          yarn workspace @trezor/suite translations:extract
+          yarn workspace @suite/intl translations:format
+          yarn workspace @suite/intl translations:extract
           cat packages/suite-data/files/translations/master.json
-          yarn workspace @trezor/suite translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace @suite/intl translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Run crowdin sync [mobile]
         if: github.event.inputs.platform == 'mobile'
