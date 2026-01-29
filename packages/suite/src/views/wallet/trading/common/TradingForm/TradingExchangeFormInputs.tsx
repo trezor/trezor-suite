@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -20,7 +19,6 @@ import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
-import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -152,28 +150,14 @@ export const TradingExchangeFormInputs = () => {
                                     />
                                 ))}
                             </Row>
-                            <ExperimentWrapper
-                                id={ExperimentId.tradingFiatValues}
-                                components={[
-                                    {
-                                        variant: 'A',
-                                        element: <></>,
-                                    },
-                                    {
-                                        variant: 'B',
-                                        element: (
-                                            <TradingBalance
-                                                balance={outputAmount}
-                                                displaySymbol={sendCryptoSelect?.displaySymbol}
-                                                symbol={account.symbol}
-                                                tokenAddress={tokenAddress}
-                                                showOnlyAmount
-                                                amountInCrypto={amountInCrypto}
-                                                decimals={sendAssetDecimals}
-                                            />
-                                        ),
-                                    },
-                                ]}
+                            <TradingBalance
+                                balance={outputAmount}
+                                displaySymbol={sendCryptoSelect?.displaySymbol}
+                                symbol={account.symbol}
+                                tokenAddress={tokenAddress}
+                                showOnlyAmount
+                                amountInCrypto={amountInCrypto}
+                                decimals={sendAssetDecimals}
                             />
                         </Row>
                     )}

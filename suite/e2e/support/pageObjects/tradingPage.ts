@@ -636,11 +636,17 @@ export class TradingPage {
     }
 
     @step()
-    private async validateQuotes(
-        quotesResponse: any[],
-        listType: 'buyList' | 'sellList',
-        formatExpectedAmount: (quote: any) => string,
-    ) {
+    private async validateQuotes({
+        quotesResponse,
+        listType,
+        amountElementID,
+        formatExpectedAmount,
+    }: {
+        quotesResponse: any[];
+        listType: 'buyList' | 'sellList';
+        amountElementID: string;
+        formatExpectedAmount: (quote: any) => string;
+    }) {
         const paymentMethod = await this.getSelectedPaymentMethod();
         const expectedQuotes = quotesResponse.filter(
             quote => quote.paymentMethod === paymentMethod && quote.error === undefined,
@@ -657,7 +663,7 @@ export class TradingPage {
             );
             await expect.soft(provider).toHaveText(expectedProvider);
             //validate amount of the quote row
-            const amount = quote.getByTestId('@trading/offers/quote/amount');
+            const amount = quote.getByTestId(amountElementID);
             const expectedAmount = formatExpectedAmount(expectedQuotes[index]);
             await expect.soft(amount).toHaveText(expectedAmount);
         }
@@ -665,20 +671,22 @@ export class TradingPage {
 
     @step()
     async validateBuyQuotes(quotesResponse: any[]) {
-        await this.validateQuotes(
+        await this.validateQuotes({
             quotesResponse,
-            'buyList',
-            quote => `${quote.receiveStringAmount} BTC`,
-        );
+            listType: 'buyList',
+            amountElementID: '@trading/offers/quote/crypto-amount-with-symbol',
+            formatExpectedAmount: quote => `${quote.receiveStringAmount} BTC`,
+        });
     }
 
     @step()
     async validateSellQuotes(quotesResponse: any[]) {
-        await this.validateQuotes(
+        await this.validateQuotes({
             quotesResponse,
-            'sellList',
-            quote => `€${parseFloat(quote.fiatStringAmount).toFixed(2)}`,
-        );
+            listType: 'sellList',
+            amountElementID: '@trading/offers/quote/amount',
+            formatExpectedAmount: quote => `€${parseFloat(quote.fiatStringAmount).toFixed(2)}`,
+        });
     }
 
     @step()

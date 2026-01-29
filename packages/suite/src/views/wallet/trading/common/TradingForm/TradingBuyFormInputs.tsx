@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import { ExperimentId } from '@suite-common/message-system';
 import {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
@@ -16,7 +15,6 @@ import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { spacings } from '@trezor/theme';
 
-import { ExperimentWrapper } from 'src/components/suite/Experiment/ExperimentWrapper';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
@@ -84,35 +82,19 @@ export const TradingBuyFormInputs = () => {
                             />
 
                             {amountInCrypto && (
-                                <ExperimentWrapper
-                                    id={ExperimentId.tradingFiatValues}
-                                    components={[
-                                        {
-                                            variant: 'A',
-                                            element: <></>,
-                                        },
-                                        {
-                                            variant: 'B',
-                                            element: cryptoSelect.networkSymbol ? (
-                                                <Row justifyContent="end">
-                                                    <TradingBalance
-                                                        balance={cryptoInput}
-                                                        displaySymbol={cryptoSelect.displaySymbol}
-                                                        symbol={cryptoSelect.networkSymbol}
-                                                        tokenAddress={
-                                                            (cryptoSelect.contractAddress as TokenAddress) ??
-                                                            undefined
-                                                        }
-                                                        showOnlyAmount
-                                                        amountInCrypto={amountInCrypto}
-                                                    />
-                                                </Row>
-                                            ) : (
-                                                <></>
-                                            ),
-                                        },
-                                    ]}
-                                />
+                                <Row justifyContent="end">
+                                    <TradingBalance
+                                        balance={cryptoInput}
+                                        displaySymbol={cryptoSelect.displaySymbol}
+                                        symbol={cryptoSelect.networkSymbol}
+                                        tokenAddress={
+                                            (cryptoSelect.contractAddress as TokenAddress) ??
+                                            undefined
+                                        }
+                                        showOnlyAmount
+                                        amountInCrypto={amountInCrypto}
+                                    />
+                                </Row>
                             )}
                         </Column>
 
