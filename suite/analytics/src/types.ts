@@ -199,36 +199,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingExchange;
-          payload: {
-              action: 'continue' | 'cancel';
-              step:
-                  | 'exchange-form'
-                  | 'offers-form'
-                  | 'receive-address'
-                  | 'create-approval'
-                  | 'already-approved'
-                  | 'confirm-and-send';
-
-              sendCryptoLabel?: string;
-              sendCryptoNetworkSymbol?: string;
-              sendCryptoContractAddress?: string;
-
-              receiveCryptoLabel?: string;
-              receiveCryptoNetworkSymbol?: string;
-              receiveCryptoContractAddress?: string;
-
-              exchangeName?: string;
-              exchangeType?: string;
-
-              fractionButton?: string;
-              accountType?: string;
-              approvalType?: string;
-              slippage?: string;
-              rateType?: string;
-          };
-      }
-    | {
           type: EventType.TradingBuy;
           payload: {
               action: 'continue' | 'cancel';
