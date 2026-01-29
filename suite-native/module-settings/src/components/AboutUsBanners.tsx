@@ -29,7 +29,7 @@ export const AboutUsBanners = () => {
     const coinLabel = useCoinLabel();
 
     return (
-        <TitledSection title={<Translation id="moduleSettings.aboutUs.title" />}>   
+        <TitledSection title={<Translation id="moduleSettings.aboutUs.title" />}>
             <VStack>
                 <Card style={applyStyle(cardStyle, { backgroundColor: 'backgroundNeutralBold' })}>
                     <VStack spacing="sp24" style={applyStyle(stackStyle)}>

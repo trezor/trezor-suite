@@ -21,7 +21,7 @@ export const NeedHelpSection = () => {
 
     const openLink = useOpenLink();
 
-    const handlePressContactSupport = () => {
+    const openContactSupport = () => {
         openLink(SUITE_MOBILE_SUPPORT_URL);
     };
 
@@ -34,11 +34,11 @@ export const NeedHelpSection = () => {
             <CompactCardWithIconLayout
                 title={<Translation id="moduleSettings.faq.needHelp.support" />}
                 icon="lifebuoy"
-                onPress={handlePressContactSupport}
+                onPress={openContactSupport}
             />
             {areAppLogsEnabled && (
                 <CompactCardWithIconLayout
-                    title={<Translation id="moduleSettings.faq.needHelp.appLogs" />}
+                    title={<Translation id="moduleSettings.faq.needHelp.appLog" />}
                     icon="fileTxt"
                     onPress={navigateToAppLogs}
                 />
