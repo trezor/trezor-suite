@@ -2,7 +2,6 @@ export type ImageType = keyof typeof IMAGES;
 
 export const IMAGES = {
     APP_STORE: 'app-store.svg',
-    BRIDGE_CHECK_TREZOR_T2T1: 'bridge-check-trezor-t2t1.svg',
     CONFIRM_EVM_EXPLANATION_ETH: 'confirm-evm-explanation-eth.svg',
     CONFIRM_EVM_EXPLANATION_OTHER: 'confirm-evm-explanation-other.svg',
     CONFIRM_FW_INSTALLATION_SCREEN_T1B1: 'confirm-fw-installation-screen-t1b1.png',
@@ -19,7 +18,6 @@ export const IMAGES = {
     INVITY_LOGO: 'invity-logo.svg',
     PLAY_STORE: 'play-store.svg',
     RECOVERY_2x: 'recovery@2x.png',
-    SPINNER: 'spinner.svg',
     STROKE_BORDER: 'stroke-border.svg',
     TOUCH: 'touch.webp',
     TRADING_SUCCESS: 'trading-success.svg',
@@ -71,6 +69,5 @@ export const IMAGES = {
     TREZOR_UNKNOWN_LARGE_2x: 'trezor-unknown@2x.webp',
     UNDERSTAND_2x: 'understand@2x.png',
     UNI_ERROR: 'uni-error.svg',
-    UNI_SUCCESS: 'uni-success.svg',
     UNI_WARNING: 'uni-warning.svg',
 } as const;
