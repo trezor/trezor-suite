@@ -13,14 +13,6 @@ export const messages = defineMessages({
         defaultMessage: 'Error 404: Link not found',
         id: 'TR_404_TITLE',
     },
-    TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Passphrase wallet',
-        id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
-    },
-    TR_WALLET_SELECTION_HIDDEN_WALLET: {
-        defaultMessage: 'Hidden wallet',
-        id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
-    },
     TR_NEW_PASSPHRASE_WALLET: {
         defaultMessage: 'New passphrase',
         id: 'TR_NEW_PASSPHRASE_WALLET',
@@ -32,15 +24,6 @@ export const messages = defineMessages({
     TR_WALLET_PASSPHRASE_WALLET: {
         defaultMessage: 'Passphrase wallet',
         id: 'TR_WALLET_PASSPHRASE_WALLET',
-    },
-    TR_HIDDEN_WALLET_TOOLTIP: {
-        id: 'TR_HIDDEN_WALLET_TOOLTIP',
-        defaultMessage:
-            'A passphrase adds a custom phrase (like a word, sentence, or string of characters) to your existing wallet backup, creating a hidden wallet. Each hidden wallet has its own passphrase. Your Standard wallet remains accessible without a passphrase.',
-    },
-    TR_ACCESS_STANDARD_WALLET: {
-        defaultMessage: 'Access Standard wallet',
-        id: 'TR_ACCESS_STANDARD_WALLET',
     },
     TR_ACCOUNT_ENABLE_PASSPHRASE: {
         defaultMessage: 'Enable passphrase',
@@ -548,10 +531,6 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
         defaultMessage: 'Select {symbol} receive account',
     },
-    TR_EXCHANGE_RECEIVING_ADDRESS: {
-        defaultMessage: 'Receive address',
-        id: 'TR_EXCHANGE_RECEIVING_ADDRESS',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
         defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
@@ -708,7 +687,7 @@ export const messages = defineMessages({
         id: 'TR_SELL_BANK_ACCOUNT_STEP',
     },
     TR_SELL_CONFIRM_SEND_STEP: {
-        defaultMessage: 'Confirm & Send',
+        defaultMessage: 'Confirm & send',
         id: 'TR_SELL_CONFIRM_SEND_STEP',
     },
     TR_SELL_SEND_FROM: {
@@ -720,7 +699,7 @@ export const messages = defineMessages({
         id: 'TR_SELL_SEND_TO',
     },
     TR_SELL_CONFIRM_ON_TREZOR_SEND: {
-        defaultMessage: 'Confirm on Trezor & Send',
+        defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_SELL_CONFIRM_ON_TREZOR_SEND',
     },
     TR_SELL_BANK_ACCOUNT: {
@@ -1131,7 +1110,7 @@ export const messages = defineMessages({
         dynamic: true,
     },
     TR_TRADING_NO_METHODS_AVAILABLE: {
-        defaultMessage: 'No methods available',
+        defaultMessage: 'No payout methods',
         id: 'TR_TRADING_NO_METHODS_AVAILABLE',
     },
     TR_TRADING_SWAP_AMOUNT: {
@@ -1256,10 +1235,6 @@ export const messages = defineMessages({
     TR_TRADING_EXCHANGE_TYPE: {
         defaultMessage: 'Exchange type',
         id: 'TR_TRADING_EXCHANGE_TYPE',
-    },
-    TR_ADDRESS_MODAL_CLIPBOARD: {
-        defaultMessage: 'Copy address',
-        id: 'TR_ADDRESS_MODAL_CLIPBOARD',
     },
     TR_COPY_TO_CLIPBOARD: {
         defaultMessage: 'Copy',
@@ -2436,10 +2411,6 @@ export const messages = defineMessages({
             'The holographic seal of Trezor Safe 3 was updated in April 2024. Devices manufactured after this date feature the updated seal, as depicted at the bottom of the image. However, older-produced devices may still carry the original security seal.',
         id: 'TR_HOLOGRAM_T2B1_NEW_SEAL',
     },
-    TR_I_UNDERSTAND_PASSPHRASE: {
-        defaultMessage: "You understand that passphrases can't be retrieved.",
-        id: 'TR_I_UNDERSTAND_PASSPHRASE',
-    },
     TR_IF_YOUR_DEVICE_IS_EVER_LOST: {
         defaultMessage: 'If your Trezor is lost or damaged, your funds may be irreversibly lost.',
         id: 'TR_IF_YOUR_DEVICE_IS_EVER_LOST',
@@ -3361,10 +3332,6 @@ export const messages = defineMessages({
         defaultMessage: 'West',
         id: 'TR_WEST',
     },
-    TR_WHAT_IS_PASSPHRASE: {
-        defaultMessage: 'Learn more about the difference',
-        id: 'TR_WHAT_IS_PASSPHRASE',
-    },
     TR_FACTORY_RESET_DESCRIPTION: {
         defaultMessage:
             'Performing a factory reset in bootloader mode erases all device data, including your wallet backup, PIN, and firmware. Without a wallet backup, any funds on the device will be irrecoverable. Make sure you have your wallet backup before performing a factory reset, as it is essential for restoring access to your funds. Proceed with caution.',
@@ -3737,11 +3704,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_REVOKED: {
         id: 'TOAST_TX_REVOKED',
-        defaultMessage: 'Revoke transaction of {tokenSymbol} was broadcast',
+        defaultMessage: 'Revoke transaction was broadcast',
     },
     TOAST_TX_APPROVED: {
         id: 'TOAST_TX_APPROVED',
-        defaultMessage: 'Approve transaction of {amount} {tokenSymbol} was broadcast',
+        defaultMessage: 'Approve transaction was broadcast',
     },
     TOAST_TX_APPROVED_MAX: {
         id: 'TOAST_TX_APPROVED_MAX',
@@ -3749,12 +3716,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_SENT: {
         id: 'TOAST_TX_SENT',
-        defaultMessage: '{amount} sent from {account}',
+        defaultMessage: 'Sent from {account}',
     },
     TOAST_TX_EXCHANGE_BROADCASTED: {
         id: 'TOAST_TX_EXCHANGE_BROADCASTED',
-        defaultMessage:
-            'Swap transaction of {sendAmount} {sendAsset} ({sendAccount}) to {receiveAmount} {receiveAsset} ({receiveAccount}) was broadcast',
+        defaultMessage: 'Swap transaction from {sendAccount} to {receiveAccount} was broadcast',
     },
     TOAST_RAW_TX_SENT: {
         id: 'TOAST_RAW_TX_SENT',
@@ -3762,11 +3728,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_RECEIVED: {
         id: 'TOAST_TX_RECEIVED',
-        defaultMessage: '{amount} received in {account}',
+        defaultMessage: 'Received to {account}',
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction {amount} in {account} confirmed successfully',
+        defaultMessage: 'Transaction in {account} confirmed',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -4401,14 +4367,6 @@ export const messages = defineMessages({
         id: 'TR_FORGET_DEVICE_MODAL_BULLET_NOT_WIPE',
         defaultMessage: "Your wallet backup and funds stay intact—they won't be erased",
     },
-    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE: {
-        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_ENABLE',
-        defaultMessage: 'Enable',
-    },
-    TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DISABLE: {
-        id: 'TR_DEVICE_SETTINGS_STORE_DEVICE_DATA_DISABLE',
-        defaultMessage: 'Disable',
-    },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {networkDisplaySymbol}',
@@ -4467,10 +4425,6 @@ export const messages = defineMessages({
     RECEIVE_TABLE_NOT_USED: {
         id: 'RECEIVE_TABLE_NOT_USED',
         defaultMessage: 'Unused',
-    },
-    RECEIVE_TABLE_USED: {
-        id: 'RECEIVE_TABLE_USED',
-        defaultMessage: 'Used',
     },
     TR_SHOW_MORE: {
         defaultMessage: 'Show more',
@@ -5020,7 +4974,7 @@ export const messages = defineMessages({
     },
     TR_FIRMWARE_NEW_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_NEW_FW_DESCRIPTION',
-        defaultMessage: 'New firmware is now available. Update your device now.',
+        defaultMessage: 'New firmware is available. Update your device now.',
     },
     TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
@@ -6333,10 +6287,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Failed to sync labels with cloud storage provider {provider}. User was logged out.',
     },
-    TR_REVEAL_ADDRESS: {
-        id: 'TR_REVEAL_ADDRESS',
-        defaultMessage: 'Reveal address',
-    },
     TR_ENABLE_MORE_COINS: {
         id: 'TR_ENABLE_MORE_COINS',
         defaultMessage: 'Activate more assets',
@@ -6349,14 +6299,6 @@ export const messages = defineMessages({
         id: 'TR_BACKUP_RECOVERY_SEED_FAILED_DESC',
         defaultMessage:
             "Your wallet backup has failed. It's highly recommended to back up your wallet. Follow the link to learn how to create a wallet backup.",
-    },
-    TR_STANDARD_WALLET_DESCRIPTION: {
-        id: 'TR_STANDARD_WALLET_DESCRIPTION',
-        defaultMessage: 'No passphrase',
-    },
-    TR_HIDDEN_WALLET_DESCRIPTION: {
-        id: 'TR_HIDDEN_WALLET_DESCRIPTION',
-        defaultMessage: 'Passphrase is required',
     },
     TR_FEEDBACK_ANALYTICS_ITEM_OS: {
         id: 'TR_FEEDBACK_ANALYTICS_ITEM_OS',
@@ -7276,7 +7218,7 @@ export const messages = defineMessages({
         id: 'TR_ONBOARDING_DEVICE_CHECK_4',
         description: 'Shown only if device has firmware already installed',
         defaultMessage:
-            'Firmware is already installed on this connected Trezor. Continue only if this is your device and you’ve set it up before, or if you started setup earlier and didn’t finish.',
+            'Firmware is already installed on this connected Trezor. Continue only if this is your device and you’ve set it up before, or if you previously started setup and didn’t finish.',
     },
     TR_I_HAVE_NOT_USED_IT: {
         id: 'TR_I_HAVE_NOT_USED_IT',
@@ -7382,7 +7324,7 @@ export const messages = defineMessages({
     },
     TR_AUTHENTICATE_DEVICE_DESCRIPTION: {
         id: 'TR_AUTHENTICATE_DEVICE_DESCRIPTION',
-        defaultMessage: 'We just want to make sure that your Trezor is legit.',
+        defaultMessage: 'We just want to make sure that your Trezor is genuine.',
     },
     TR_DEVICE_AUTHENTICITY_ITEM_1: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_1',
@@ -7392,12 +7334,12 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_ITEM_2: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_2',
         defaultMessage:
-            'This confirms that the chip inside your hardware wallet is genuine and from Trezor.',
+            'This confirms that the secure hardware inside your device is genuine and from Trezor.',
     },
     TR_DEVICE_AUTHENTICITY_ITEM_3: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_3',
         defaultMessage:
-            'Once your device has been given a clean bill of health, you’re all set to Trezor with confidence.',
+            'Once your device has passed this check and been verified, you’re ready to Trezor with confidence.',
     },
     TR_START_CHECK: {
         id: 'TR_START_CHECK',
@@ -7632,7 +7574,7 @@ export const messages = defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION: {
         defaultMessage:
-            'If you last updated your device firmware in 2019 or earlier, follow the instructions in <a>the Knowledge Base</a>',
+            'If you last updated your device firmware in 2019 or earlier, follow the instructions in <a>this Knowledge Base article</a>',
         id: 'TR_TROUBLESHOOTING_TIP_UNREADABLE_HID_DESCRIPTION',
     },
     TR_TROUBLESHOOTING_TIP_SUITE_DESKTOP_DESCRIPTION: {
@@ -7659,7 +7601,7 @@ export const messages = defineMessages({
     },
     TR_TROUBLESHOOTING_TIP_CABLE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_CABLE_TITLE',
-        defaultMessage: 'Use a different USB cable',
+        defaultMessage: 'Use a different USB cable.',
     },
     TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_DIFFERENT_COMPUTER_TITLE',
@@ -8801,23 +8743,6 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_BUTTON',
         defaultMessage: 'Learn more',
     },
-    TR_CANDIDATE_TRANSACTION_HEADER: {
-        id: 'TR_CANDIDATE_TRANSACTION_HEADER',
-        defaultMessage: 'Candidate transactions',
-    },
-    TR_CANDIDATE_TRANSACTION: {
-        id: 'TR_CANDIDATE_TRANSACTION',
-        defaultMessage: 'Coinjoin candidate',
-    },
-    TR_CANDIDATE_TRANSACTION_DESCRIPTION: {
-        id: 'TR_CANDIDATE_TRANSACTION_DESCRIPTION',
-        defaultMessage: 'Signed by you, waiting for others',
-    },
-    TR_CANDIDATE_TRANSACTION_EXPLANATION: {
-        id: 'TR_CANDIDATE_TRANSACTION_EXPLANATION',
-        defaultMessage:
-            "You've signed the transaction, but it still needs signatures from all participants. We can't guarantee transaction processing unless everyone signs.",
-    },
     TR_ENABLE_AUTOSTOP_COINJOIN: {
         id: 'TR_ENABLE_AUTOSTOP_COINJOIN',
         defaultMessage: 'Stop coinjoin after this round',
@@ -9281,10 +9206,6 @@ export const messages = defineMessages({
         id: 'TR_STAKE_APY_APPROX',
         defaultMessage: '~{apyPercent}% APY',
     },
-    TR_STAKE_UNKNOWN_APY: {
-        id: 'TR_STAKE_UNKNOWN_APY',
-        defaultMessage: 'Unknown',
-    },
     TR_STAKE_NOT_AVAILABLE: {
         id: 'TR_STAKE_NOT_AVAILABLE',
         defaultMessage: 'Not available',
@@ -9608,7 +9529,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_UNSTAKING_APPROXIMATE: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE',
-        defaultMessage: 'Approximate amount of {symbol} available instantly',
+        defaultMessage: 'Estimated {symbol} available instantly',
     },
     TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION: {
         id: 'TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION',
@@ -9653,15 +9574,15 @@ export const messages = defineMessages({
     },
     TOAST_TX_STAKED: {
         id: 'TOAST_TX_STAKED',
-        defaultMessage: '{amount} staked from {account}',
+        defaultMessage: 'Staked from {account}',
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: '{amount} unstaked',
+        defaultMessage: 'Unstaked from {account}',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
-        defaultMessage: '{amount} claimed',
+        defaultMessage: 'Claimed from {account}',
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
@@ -10420,7 +10341,7 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
         id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
-        defaultMessage: 'Only devices you’ve authorized through your Trezor can decrypt your data.',
+        defaultMessage: 'Only devices you’ve approved through your Trezor can decrypt your data.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING',
