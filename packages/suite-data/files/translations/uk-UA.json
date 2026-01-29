@@ -707,7 +707,6 @@
   "TR_EXCHANGE_USE_NON_SUITE_ACCOUNT": "Використовуйте обліковий запис ({symbol}), якого немає в Suite",
   "TR_EXPERIMENTAL_FEATURES": "Експериментальні функції",
   "TR_EXPERIMENTAL_FEATURES_ALLOW": "Дозволити експериментальні функції",
-  "TR_EXPERIMENTAL_FEATURES_WARNING": "Довготривала підтримка цих функцій не гарантується.",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER": "Менеджер паролів",
   "TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION": "Повторна реалізація веб-розширення менеджера паролів Trezor",
   "TR_EXPORT_AS": "Експортувати як {as}",
