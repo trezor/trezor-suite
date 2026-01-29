@@ -30,7 +30,7 @@ test.describe.skip('Solana staking', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.Solana,
                 priority: TestPriority.Critical,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

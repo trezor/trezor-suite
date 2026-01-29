@@ -38,6 +38,9 @@ export enum TestCategory {
     Staking = 'Staking',
     Solana = 'Solana',
     Engagement = 'Engagement',
+    Buy = 'Buy',
+    Sell = 'Sell',
+    Swap = 'Swap',
     NotCategorized = 'Not Categorized',
 }
 
