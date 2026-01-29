@@ -25,7 +25,7 @@ export type SuiteSyncInteraction =
     | 'unsupported'
     | 'keys-needed';
 
-export const selectIsTurnOnSuiteSyncInteractionNeeded = (
+export const selectSuiteSyncInteraction = (
     state: WithSuiteSyncAndDeviceState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
