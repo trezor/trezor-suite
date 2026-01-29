@@ -314,12 +314,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingConfirmTrade;
-          payload: {
-              action: 'exchange' | 'buy' | 'sell';
-          };
-      }
-    | {
           type: EventType.TradingCompareOffers;
           payload: {
               type: 'exchange' | 'buy' | 'sell';
