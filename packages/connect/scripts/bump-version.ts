@@ -24,7 +24,7 @@ if (!allowedSemvers.includes(semver)) {
 const connectPaths = [
     './packages/connect/package.json',
     './packages/connect/README.md',
-    './packages/connect/src/data/version.ts',
+    './packages/connect-common/src/data/version.ts',
     './packages/connect-web/package.json',
     './packages/connect-web/src/webextension/trezor-usb-permissions.js',
     './packages/connect-webextension/package.json',
