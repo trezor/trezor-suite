@@ -9,12 +9,13 @@ import {
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccounts, selectDevices, selectSelectedDevice } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { sanitizeFilename } from '@trezor/utils';
 
 import { GetDefaultAccountLabelParams } from 'src/hooks/suite/useDefaultAccountLabel';
 import {
-    selectLabelingDataForSelectedAccount,
+    selectLabelingDataForAccount,
     selectSelectedProviderForLabels,
 } from 'src/reducers/suite/metadataReducer';
 import { Dispatch, GetState } from 'src/types/suite';
@@ -130,98 +131,101 @@ export const encryptAndSaveMetadata = async ({
 
 export const exportMetadataToBip329File = createThunk<
     void,
-    { getDefaultAccountLabel: (params: GetDefaultAccountLabelParams) => string },
+    {
+        getDefaultAccountLabel: (params: GetDefaultAccountLabelParams) => string;
+        account: Account;
+    },
     void
->(METADATA.EXPORT_METADATA_TO_BIP329_FILE, ({ getDefaultAccountLabel }, { dispatch, getState }) => {
-    const showExportErrorToast = () => {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: 'Exporting labels BIP 329 failed',
-            }),
-        );
-    };
+>(
+    METADATA.EXPORT_METADATA_TO_BIP329_FILE,
+    ({ account, getDefaultAccountLabel }, { dispatch, getState }) => {
+        const showExportErrorToast = () => {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Exporting labels BIP 329 failed',
+                }),
+            );
+        };
 
-    try {
-        const state = getState();
-        const device = selectSelectedDevice(state);
-        const { selectedAccount } = state.wallet;
-        const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
+        try {
+            const state = getState();
+            const device = selectSelectedDevice(state);
+            const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
 
-        const staticSessionId = device?.state?.staticSessionId;
-        if (!staticSessionId) {
-            showExportErrorToast();
-
-            return;
-        }
-
-        let finalAccountLabel = getDefaultAccountLabel({
-            accountType: selectedAccount.account.accountType,
-            symbol: selectedAccount.account.symbol,
-            index: selectedAccount.account.index,
-        });
-        let labelsToExport: Bip329Label[] = [];
-
-        if (isSuiteSyncEnabled) {
-            const owner = device?.suiteSyncOwner;
-            if (owner === undefined) {
+            const staticSessionId = device?.state?.staticSessionId;
+            if (!staticSessionId) {
                 showExportErrorToast();
 
                 return;
             }
 
-            const { walletDescriptor } = parseDeviceStaticSessionId(
-                selectedAccount.account.deviceState,
-            );
-
-            const suiteSyncAccountLabel = selectSuiteSyncAccountLabel(
-                state,
-                walletDescriptor,
-                selectedAccount.account.descriptor,
-                selectedAccount.account.symbol,
-            );
-            if (suiteSyncAccountLabel) {
-                finalAccountLabel = suiteSyncAccountLabel;
-            }
-
-            const suiteSyncAddressLabels = selectSuiteSyncAccountAddressesByAccount(
-                state,
-                walletDescriptor,
-                selectedAccount.account.descriptor,
-                selectedAccount.account.symbol,
-            );
-
-            const suiteSyncOutputLabels = selectSuiteSyncOutputLabelsByAccount(
-                state,
-                walletDescriptor,
-                selectedAccount.account.descriptor,
-                selectedAccount.account.symbol,
-            );
-
-            labelsToExport = suiteSyncToBip329({
-                outputLabels: suiteSyncOutputLabels,
-                addressLabels: suiteSyncAddressLabels,
-                allSpendable: true,
+            let finalAccountLabel = getDefaultAccountLabel({
+                accountType: account.accountType,
+                symbol: account.symbol,
+                index: account.index,
             });
-        } else {
-            // Legacy non-SuiteSync export.
-            const labelForSelectedAccount = selectLabelingDataForSelectedAccount(state);
-            if (labelForSelectedAccount.accountLabel) {
-                finalAccountLabel = labelForSelectedAccount.accountLabel;
+            let labelsToExport: Bip329Label[] = [];
+
+            if (isSuiteSyncEnabled) {
+                const owner = device?.suiteSyncOwner;
+                if (owner === undefined) {
+                    showExportErrorToast();
+
+                    return;
+                }
+
+                const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
+                const suiteSyncAccountLabel = selectSuiteSyncAccountLabel(
+                    state,
+                    walletDescriptor,
+                    account.descriptor,
+                    account.symbol,
+                );
+                if (suiteSyncAccountLabel) {
+                    finalAccountLabel = suiteSyncAccountLabel;
+                }
+
+                const suiteSyncAddressLabels = selectSuiteSyncAccountAddressesByAccount(
+                    state,
+                    walletDescriptor,
+                    account.descriptor,
+                    account.symbol,
+                );
+
+                const suiteSyncOutputLabels = selectSuiteSyncOutputLabelsByAccount(
+                    state,
+                    walletDescriptor,
+                    account.descriptor,
+                    account.symbol,
+                );
+
+                labelsToExport = suiteSyncToBip329({
+                    outputLabels: suiteSyncOutputLabels,
+                    addressLabels: suiteSyncAddressLabels,
+                    allSpendable: true,
+                });
+            } else {
+                // Legacy non-SuiteSync export.
+                const accountMetadata = selectLabelingDataForAccount(state, account.key);
+                if (accountMetadata.accountLabel) {
+                    finalAccountLabel = accountMetadata.accountLabel;
+                }
+                labelsToExport = slip15ToBip329(accountMetadata);
             }
-            labelsToExport = slip15ToBip329(labelForSelectedAccount as AccountLabels);
+
+            // Maps each object to its JSON string representation
+            const jsonlString = labelsToExport.map(obj => JSON.stringify(obj)).join('\n');
+
+            const blob = new Blob([jsonlString], { type: 'application/jsonl' });
+
+            const safeLabel = sanitizeFilename(finalAccountLabel);
+            const filename = `${safeLabel || 'account_labels'}_export_bip329.jsonl`;
+
+            triggerWebDownloadFile(blob, filename);
+        } catch {
+            showExportErrorToast();
         }
-
-        // Maps each object to its JSON string representation
-        const jsonlString = labelsToExport.map(obj => JSON.stringify(obj)).join('\n');
-
-        const blob = new Blob([jsonlString], { type: 'application/jsonl' });
-
-        const safeLabel = sanitizeFilename(finalAccountLabel);
-        const filename = `${safeLabel || 'account_labels'}_export_bip329.jsonl`;
-
-        triggerWebDownloadFile(blob, filename);
-    } catch {
-        showExportErrorToast();
-    }
-});
+    },
+);

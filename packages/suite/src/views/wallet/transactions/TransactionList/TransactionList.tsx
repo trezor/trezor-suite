@@ -156,7 +156,6 @@ export const TransactionList = ({
                     searchQuery={searchQuery}
                     setSearch={setSearchQuery}
                     setSelectedPage={setSelectedPage}
-                    accountMetadata={accountMetadata}
                     isExportable={isExportable}
                     isTxFilteringEnabled={isTxFilteringEnabled}
                 />

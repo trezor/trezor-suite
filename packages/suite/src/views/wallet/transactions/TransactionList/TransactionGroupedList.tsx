@@ -9,7 +9,6 @@ import {
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 import { useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { Account, WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
@@ -28,7 +27,6 @@ export const TransactionGroupedList = ({
     isPending,
 }: TransactionGroupedListProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getNetwork(symbol);
 
     const transactionWithLowestNonce: WalletAccountTransaction | null =
@@ -56,7 +54,6 @@ export const TransactionGroupedList = ({
                         key={item.tx.txid}
                         transaction={item.tx}
                         isPending={isPending}
-                        accountMetadata={accountMetadata}
                         accountKey={account.key}
                         network={network}
                         accountType={account.accountType}

@@ -3,7 +3,6 @@ import {
     TokenTransfer as TokenTransferType,
 } from '@trezor/blockchain-link-types';
 
-import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTarget } from './TransactionTarget';
@@ -28,7 +27,6 @@ type TransactionTargetsListProps = {
     limit: number;
     defaultLimit: number;
     accountKey: string;
-    accountMetadata?: AccountLabels;
     isActionDisabled?: boolean;
     isPhishingTransaction?: boolean;
 };
@@ -39,7 +37,6 @@ export const TransactionTargetsList = ({
     limit,
     defaultLimit,
     accountKey,
-    accountMetadata,
     isActionDisabled,
     isPhishingTransaction,
 }: TransactionTargetsListProps) => {
@@ -49,7 +46,6 @@ export const TransactionTargetsList = ({
         const commonProps = {
             ...target,
             transaction,
-            accountMetadata,
             accountKey,
             isActionDisabled,
             isPhishingTransaction,

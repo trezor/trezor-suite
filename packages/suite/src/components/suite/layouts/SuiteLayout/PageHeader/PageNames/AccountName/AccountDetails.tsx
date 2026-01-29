@@ -17,7 +17,7 @@ import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { Labeling } from 'src/components/suite/labeling';
 import { useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 const DetailsContainer = styled(motion.div)`
@@ -33,7 +33,9 @@ type AccountDetailsProps = {
 export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetailsProps) => {
     const hasMountedRef = useRef(false);
     const controls = useAnimation();
-    const selectedAccountLabels = useSelector(selectLabelingDataForSelectedAccount);
+    const selectedAccountLabels = useSelector(state =>
+        selectLabelingDataForAccount(state, selectedAccount.key),
+    );
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint();
     const { translationString } = useTranslation();
