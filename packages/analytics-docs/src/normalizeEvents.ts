@@ -1,4 +1,4 @@
-import type { EventDef, AttributeDef } from '@suite-common/analytics-types';
+import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { normalizeChangelog } from './normalizeChangelog';
 import { AttributeDoc, EventDoc } from './types';

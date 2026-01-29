@@ -1,4 +1,4 @@
-import type { AppVersion } from '@suite-common/analytics-types';
+import type { AppVersion } from '@suite-common/analytics';
 
 export type NormalizedChangelog = {
     entries: {

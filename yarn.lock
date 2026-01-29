@@ -14728,7 +14728,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/analytics-docs@workspace:packages/analytics-docs"
   dependencies:
-    "@suite-common/analytics-types": "workspace:*"
+    "@suite-common/analytics": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@vitejs/plugin-react": "npm:^4.7.0"
@@ -44690,7 +44690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsx@npm:^4.21.0":
+"tsx@npm:^4.20.3, tsx@npm:^4.21.0":
   version: 4.21.0
   resolution: "tsx@npm:4.21.0"
   dependencies:

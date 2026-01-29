@@ -28,7 +28,7 @@ const getPlatformDirectory = (platform: string) => {
         case 'desktop':
             return 'suite/analytics';
         default:
-            return 'suite-common/analytics-types';
+            return 'suite-common/analytics';
     }
 };
 
