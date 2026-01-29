@@ -32,6 +32,7 @@ export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
+export { settingsDeviceMultiShareBackupEvent } from './settingsDeviceMultiShareBackupEvent';
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';

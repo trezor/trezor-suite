@@ -14,7 +14,7 @@ import {
 
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
 import { MultiShareBackupStep2to4 } from './MultiShareBackupStep2to4';
@@ -31,7 +31,7 @@ type MultiShareBackupModalProps = {
 type StepConfig = Partial<ModalProps>;
 
 export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const device = useSelector(selectSelectedDevice);
 
     const isInBackupMode =
@@ -44,7 +44,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     const learnMoreClicked = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsMultiShareBackup,
             payload: { action: 'learn-more' },
         });
@@ -52,7 +52,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const handleCancel = () => {
         if (step !== 'done') {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SettingsMultiShareBackup,
                 payload: { action: 'close-modal' },
             });
@@ -127,7 +127,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                         setStep('backup-seed');
                         TrezorConnect.backupDevice().then(response => {
                             if (response.success) {
-                                legacyAnalytics.report({
+                                analytics.report({
                                     type: EventType.SettingsMultiShareBackup,
                                     payload: { action: 'done' },
                                 });
