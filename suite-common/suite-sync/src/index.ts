@@ -22,6 +22,7 @@ export { DEFAULT_SUITE_SYNC_RELAY_URL } from './relay/relayUrl';
 export { prepareSuiteSyncMiddleware } from './suiteSyncMiddleware';
 export {
     suiteSyncDataReducer,
+    initialSuiteSyncDataState,
     suiteSyncDataSlice,
     clearAll,
     type SuiteSyncDataRootState,

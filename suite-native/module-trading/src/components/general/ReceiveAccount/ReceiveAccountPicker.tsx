@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -6,6 +7,7 @@ import { TradingType } from '@suite-common/trading';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
@@ -111,6 +113,21 @@ export const ReceiveAccountPicker = ({
     const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProps>();
 
+    const account = receiveAccount?.account;
+
+    const accountLabel =
+        useSelector((state: CombinedLabelingState) =>
+            account !== undefined
+                ? selectAccountLabel(
+                      state,
+                      account.deviceState,
+                      account.descriptor,
+                      account.symbol,
+                      account.key,
+                  )
+                : null,
+        ) ?? '';
+
     if (!symbol) {
         return null;
     }
@@ -118,7 +135,6 @@ export const ReceiveAccountPicker = ({
     const openAccountPicker = () =>
         navigation.navigate(TradingStackRoutes.ReceiveAccounts, { symbol, tradingType });
 
-    const accountLabel = receiveAccount?.account.accountLabel;
     const addressText = getReceiveAccountAddressText(receiveAccount) ?? '';
 
     return (
