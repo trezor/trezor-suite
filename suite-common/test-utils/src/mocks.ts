@@ -24,7 +24,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
  * @returns {Features}
  */
 // @ts-expect-error - related to backendType and status
-const getWalletAccount = (account?: Partial<Account>): Account => ({
+export const getWalletAccount = (account?: Partial<Account>): Account => ({
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/44'/60'/0'/0/1",
