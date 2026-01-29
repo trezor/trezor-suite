@@ -34,7 +34,6 @@ import { goto } from 'src/actions/suite/routerActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 const NetworkItemWrapper = styled.div<{ $isDisabled: boolean }>`
     display: flex;
@@ -52,7 +51,6 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
     const dispatch = useDispatch();
     const pendingProposal = useSelector(selectPendingProposal);
     const accounts = useSelector(selectAllAccountsToList);
-    const accountLabels = useSelector(selectAccountLabels);
     const selectableAccounts = useMemo<Account[]>(
         () =>
             pendingProposal?.networks
@@ -237,10 +235,7 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                                             />
                                         )}
                                         <AccountLabel
-                                            account={{
-                                                ...account,
-                                                accountLabel: accountLabels[account.key],
-                                            }}
+                                            account={account}
                                             key={account.descriptor}
                                             showAccountTypeBadge
                                             accountTypeBadgeSize="small"

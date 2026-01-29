@@ -19,7 +19,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 const MessageText = styled.pre`
     font-family: monospace;
@@ -49,7 +48,6 @@ export const SignMessageModal = ({
     serializedPath,
 }: SignMessageModalProps) => {
     const accounts = useSelector(selectDeviceAccounts);
-    const accountLabels = useSelector(selectAccountLabels);
     const deviceModelInternal = device.features?.internal_model;
 
     const onCancel = () => {
@@ -110,11 +108,7 @@ export const SignMessageModal = ({
                                 <CoinLogo size={14} symbol={network.symbol} />
                                 {account ? (
                                     <AccountLabel
-                                        account={{
-                                            ...account,
-                                            accountLabel:
-                                                accountLabels[account.key] || account.accountLabel,
-                                        }}
+                                        account={account}
                                         showAccountTypeBadge
                                         accountTypeBadgeSize="small"
                                     />

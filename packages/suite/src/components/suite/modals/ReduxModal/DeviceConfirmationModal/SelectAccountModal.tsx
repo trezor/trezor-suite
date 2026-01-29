@@ -22,7 +22,6 @@ import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 interface SelectAccountModalProps {
     data: UiRequestSelectAccount['payload'];
@@ -31,7 +30,6 @@ interface SelectAccountModalProps {
 export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
     const dispatch = useDispatch();
     const suiteAccounts = useSelector(selectAccounts);
-    const suiteAccountLabels = useSelector(selectAccountLabels);
 
     const [accounts, setAccounts] = useState(data.accounts);
     const [accountTypes, setAccountTypes] = useState(data.accountTypes);
@@ -138,15 +136,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                                         />
                                                     )}
                                                     {suiteAccount ? (
-                                                        <AccountLabel
-                                                            account={{
-                                                                ...suiteAccount,
-                                                                accountLabel:
-                                                                    suiteAccountLabels[
-                                                                        suiteAccount.key
-                                                                    ],
-                                                            }}
-                                                        />
+                                                        <AccountLabel account={suiteAccount} />
                                                     ) : (
                                                         account.label
                                                     )}
