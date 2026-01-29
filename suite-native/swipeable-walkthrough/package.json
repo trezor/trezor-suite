@@ -13,7 +13,6 @@
     "dependencies": {
         "@suite-native/atoms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@suite-native/theme": "workspace:*",
         "@trezor/styles": "workspace:*",
         "jotai": "2.15.0",
         "react": "19.1.0",
