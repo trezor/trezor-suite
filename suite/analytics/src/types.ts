@@ -1,5 +1,4 @@
 import { MetadataProviderType } from '@suite-common/metadata-types';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EventType } from './constants';
 import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
@@ -145,12 +144,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SendConfirmerOnDevice;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;
@@ -224,13 +217,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               type: 'buy' | 'sell' | 'exchange';
               count: number;
-          };
-      }
-    | {
-          type: EventType.TransactionCancel;
-          payload: {
-              txType?: 'trade' | 'stake';
-              networkSymbol: string;
           };
       }
     | {

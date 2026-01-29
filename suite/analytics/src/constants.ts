@@ -39,7 +39,7 @@ export enum EventType {
     CreateReceiveAddressConfirmOnTrezor = 'create-receive-address/confirm-on-trezor',
 
     SendInitialised = 'send/initialised',
-    SendConfirmerOnDevice = 'send/confirmed-on-device',
+    SendConfirmedOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
     SendQrScan = 'send/qr-scan',
 
