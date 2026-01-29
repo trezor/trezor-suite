@@ -116,7 +116,7 @@ const Details = () => {
     const handleXpubClick = () => dispatch(showXpub());
 
     const handleExportBip329 = () =>
-        dispatch(exportMetadataToBip329File({ getDefaultAccountLabel }));
+        dispatch(exportMetadataToBip329File({ getDefaultAccountLabel, account }));
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>

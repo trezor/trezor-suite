@@ -1,4 +1,3 @@
-import { AccountLabels } from '@suite-common/metadata-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions';
 import {
@@ -12,6 +11,8 @@ import { advancedSearchTransactions, getAccountTransactions } from '@suite-commo
 
 import { formatData, getExportedFileName } from 'src/utils/wallet/exportTransactionsUtils';
 
+import { selectLabelingDataForAccount } from '../../reducers/suite/metadataReducer';
+
 export const exportTransactionsThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
     async (
@@ -20,17 +21,16 @@ export const exportTransactionsThunk = createThunk(
             accountName,
             type,
             searchQuery,
-            accountMetadata,
         }: {
             account: Account;
             accountName: string;
             type: ExportFileType;
             searchQuery: string;
-            accountMetadata: AccountLabels;
         },
         { getState, extra },
     ) => {
         const { services } = extra;
+        const accountMetadata = selectLabelingDataForAccount(getState(), account.key);
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());

@@ -17,7 +17,6 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { AccountLabels } from 'src/types/suite/metadata';
 import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionHeading } from './TransactionHeading';
@@ -42,7 +41,6 @@ type TransactionItemProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
-    accountMetadata?: AccountLabels;
     accountKey: string;
     network: Network;
     accountType: AccountType;
@@ -54,7 +52,6 @@ export const TransactionItem = memo(
     ({
         transaction,
         accountKey,
-        accountMetadata,
         isActionDisabled,
         isPending,
         network,
@@ -248,7 +245,6 @@ export const TransactionItem = memo(
                                 allOutputs={allOutputs}
                                 isActionDisabled={isActionDisabled}
                                 accountKey={accountKey}
-                                accountMetadata={accountMetadata}
                                 limit={limit}
                                 defaultLimit={DEFAULT_LIMIT}
                                 isPhishingTransaction={isPhishingTransaction}

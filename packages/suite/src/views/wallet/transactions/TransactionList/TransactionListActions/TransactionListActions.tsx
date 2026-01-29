@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
-import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -20,7 +19,6 @@ interface TransactionListActionsProps {
     searchQuery: string;
     setSearch: Dispatch<SetStateAction<string>>;
     setSelectedPage: Dispatch<SetStateAction<number>>;
-    accountMetadata: AccountLabels;
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
 }
@@ -30,7 +28,6 @@ export const TransactionListActions = ({
     searchQuery,
     setSearch,
     setSelectedPage,
-    accountMetadata,
     isExportable = true,
     isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
@@ -101,13 +98,7 @@ export const TransactionListActions = ({
             {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
                 <FilterAction />
             )}
-            {isExportable && (
-                <ExportAction
-                    account={account}
-                    searchQuery={searchQuery}
-                    accountMetadata={accountMetadata}
-                />
-            )}
+            {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
         </Row>
     );
 };

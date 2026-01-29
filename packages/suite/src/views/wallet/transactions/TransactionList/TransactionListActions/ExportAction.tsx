@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 
 import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
-import { AccountLabels } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -20,10 +19,9 @@ import { Account } from 'src/types/wallet';
 export interface ExportActionProps {
     account: Account;
     searchQuery: string;
-    accountMetadata: AccountLabels;
 }
 
-export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportActionProps) => {
+export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
     const analytics = useAnalytics();
@@ -71,7 +69,6 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                         accountName,
                         type,
                         searchQuery,
-                        accountMetadata,
                     }),
                 );
             } catch (error) {
@@ -94,7 +91,6 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
             accountLabel,
             getAccountTitle,
             searchQuery,
-            accountMetadata,
             translationString,
         ],
     );
