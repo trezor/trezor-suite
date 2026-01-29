@@ -49,7 +49,7 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
@@ -62,6 +62,7 @@ export const useTradingSellForm = ({
     pageType = 'form',
 }: UseTradingFormProps): TradingSellFormContextProps => {
     const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const type = 'sell';
     const isNotFormPage = pageType !== 'form';
     const dispatch = useDispatch();
@@ -377,7 +378,7 @@ export const useTradingSellForm = ({
         const { returnUrl, processResponseData } = commonFunctions;
 
         const triggerAnalyticsTradeConfirmation = () => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingConfirmTrade,
                 payload: { action: type },
             });
