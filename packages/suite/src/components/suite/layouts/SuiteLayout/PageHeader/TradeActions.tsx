@@ -13,14 +13,13 @@ import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/Pag
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsAccountTabPage, selectRouteName } from 'src/reducers/suite/routerReducer';
 import { ConditionalRender } from 'src/support/suite/ConditionalRender';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface TradeActionsProps {
     selectedAccount?: SelectedAccountStatus;
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
     const dispatch = useDispatch();
     const account = selectedAccount?.account;
@@ -37,7 +36,7 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
         }
 
         if (isAccountTabPage && account?.symbol) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: account?.symbol, action: routeName },
             });

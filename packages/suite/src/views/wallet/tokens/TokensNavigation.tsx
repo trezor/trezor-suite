@@ -14,7 +14,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { GetTokensOutputType, getTokens } from 'src/utils/wallet/tokenUtils';
 
 type SubTabConfig = {
@@ -82,7 +82,7 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)
@@ -103,7 +103,7 @@ export const TokensNavigation = ({
 
     const handleAddToken = () => {
         if (account.symbol) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: account.symbol, action: 'add-token' },
             });

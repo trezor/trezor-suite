@@ -1,3 +1,4 @@
+export { accountsActionsEvent } from './accountsActionsEvent';
 export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';

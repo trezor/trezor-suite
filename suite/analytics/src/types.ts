@@ -177,13 +177,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AccountsActions;
-          payload: {
-              action: string;
-              symbol: string;
-          };
-      }
-    | {
           type: EventType.AddToken;
           payload: {
               networkSymbol: string;
