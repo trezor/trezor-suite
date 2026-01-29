@@ -569,7 +569,7 @@
     "moduleSettings.preferences.theme.standard": "Standard",
     "moduleSettings.preferences.theme.dark": "Dark",
     "moduleSettings.preferences.theme.system": "System",
-    "moduleSettings.aboutUs.title": "<grey>About</grey> <green>Trezor Suite</green>",
+    "moduleSettings.aboutUs.title": "About Trezor Suite",
     "moduleSettings.aboutUs.followUs": "Follow us",
     "moduleSettings.aboutUs.lastCommitHash": "Last commit hash: {lastCommitHash}",
     "moduleSettings.aboutUs.body": "Trezor Suite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.",

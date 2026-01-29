@@ -1080,15 +1080,15 @@ export const messages = {
             },
         },
         faq: {
-            title: 'Get help',
             legal: {
                 label: 'Legal',
                 termsAndConditions: 'Terms & conditions',
                 privacyPolicy: 'Privacy policy',
             },
-            supportCard: {
-                title: 'Need more help?',
-                contact: 'Contact support',
+            needHelp: {
+                label: 'Need more help?',
+                support: 'Trezor Support',
+                appLog: 'Application log',
             },
             bluetoothEnabled: {
                 android: {
@@ -1256,7 +1256,7 @@ export const messages = {
             },
         },
         aboutUs: {
-            title: '<grey>About</grey> <green>Trezor Suite</green>',
+            title: 'About Trezor Suite',
             followUs: 'Follow us',
             lastCommitHash: 'Last commit hash: {lastCommitHash}',
             body: 'Trezor Suite is a safe and secure way to stay connected to the {coinLabel} on your hardware wallet. Track coin balances on the go without exposing your private data. Easily create and send payment addresses to anyone.',
@@ -1422,6 +1422,14 @@ export const messages = {
                         'Keep your wallet, account, and transaction labels updated in Trezor Suite on all your devices. Your data stays safe—only your Trezor can decrypt it.',
                 },
             },
+        },
+        appLog: {
+            sensitiveDataToggle: {
+                title: 'Include sensitive data',
+                subtitle:
+                    'Enabling this option includes sensitive data including balance, transaction IDs, device labels, device ID, and public addresses in the app log. If your issue is unrelated, keep it disabled.',
+            },
+            exportButton: 'Export to file',
         },
     },
     moduleOnboarding: {
