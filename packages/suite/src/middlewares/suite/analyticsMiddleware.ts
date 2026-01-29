@@ -335,7 +335,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.SettingsGeneralChangeBitcoinUnit,
                     payload: {
                         unit: UNIT_ABBREVIATIONS[action.payload],
