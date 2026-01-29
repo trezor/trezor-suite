@@ -27,6 +27,7 @@ export enum RootStackRoutes {
     DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',
     Storybook = 'Storybook',
     PassphraseStack = 'PassphraseStack',
+    StellarManageTokenStack = 'StellarManageTokenStack',
 }
 
 export enum AppTabsRoutes {
@@ -268,4 +269,11 @@ export enum TradingStackRoutes {
 export enum TransactionDetailStackRoutes {
     TransactionDetail = 'TransactionDetail',
     TransactionDetailOverview = 'TransactionDetailOverview',
+}
+
+export enum StellarManageTokenStackRoutes {
+    TokenSelection = 'TokenSelection',
+    ManualTokenInput = 'ManualTokenInput',
+    ActivationFee = 'ActivationFee',
+    DeactivationFee = 'DeactivationFee',
 }

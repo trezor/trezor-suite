@@ -17,6 +17,7 @@ import { prepareNativeStyle } from '@trezor/styles';
 
 import { NetworkTransactionDetailSummary } from './NetworkTransactionDetailSummary';
 import { TokenTransactionDetailSummary } from './TokenTransactionDetailSummary';
+import { TransactionDetailStellarTrustlineSummary } from './TransactionDetailStellarTrustlineSummary';
 
 type TransactionDetailSummaryProps = {
     transaction: WalletAccountTransaction;
@@ -57,6 +58,35 @@ export const TransactionOverview = ({
 
     const isUtxoBasedNetwork = isUtxoBased(account);
 
+    // Check if this is a Stellar trustline transaction
+    const isStellarTrustline =
+        transaction.stellarSpecific?.operationType === 'changeTrust' &&
+        transaction.stellarSpecific?.changeTrust;
+
+    const renderContent = () => {
+        if (isStellarTrustline) {
+            return <TransactionDetailStellarTrustlineSummary transaction={transaction} />;
+        }
+
+        if (isTokenTransferDetail) {
+            return (
+                <TokenTransactionDetailSummary
+                    transaction={transaction}
+                    tokenTransfer={tokenTransfer}
+                    onShowMore={navigateToOverview}
+                />
+            );
+        }
+
+        return (
+            <NetworkTransactionDetailSummary
+                accountKey={accountKey}
+                transaction={transaction}
+                onShowMore={navigateToOverview}
+            />
+        );
+    };
+
     return (
         <Card noPadding={true}>
             <HStack padding="sp16" alignItems="center" flex={1} justifyContent="space-between">
@@ -75,21 +105,7 @@ export const TransactionOverview = ({
                 )}
             </HStack>
             <Divider />
-            <Box padding="sp16">
-                {isTokenTransferDetail ? (
-                    <TokenTransactionDetailSummary
-                        transaction={transaction}
-                        tokenTransfer={tokenTransfer}
-                        onShowMore={navigateToOverview}
-                    />
-                ) : (
-                    <NetworkTransactionDetailSummary
-                        accountKey={accountKey}
-                        transaction={transaction}
-                        onShowMore={navigateToOverview}
-                    />
-                )}
-            </Box>
+            <Box padding="sp16">{renderContent()}</Box>
         </Card>
     );
 };

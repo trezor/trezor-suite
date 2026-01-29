@@ -7,6 +7,7 @@ import { VinVoutAddress } from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ChangeAddressesHeader } from './ChangeAddressesHeader';
+import { TransactionDetailStepper } from './TransactionDetailStepper';
 import { SummaryRow } from './TransactionSummaryRow';
 import { TransactionUtxoAddress } from './TransactionUtxoAddress';
 
@@ -21,33 +22,6 @@ const showMoreButtonContainerStyle = prepareNativeStyle(utils => ({
     flexDirection: 'row',
     marginLeft: utils.spacings.sp32,
 }));
-
-const stepperDotWrapperStyle = prepareNativeStyle(utils => ({
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: utils.spacings.sp12,
-    backgroundColor: utils.colors.backgroundSurfaceElevation2,
-    width: utils.spacings.sp16,
-    height: utils.spacings.sp16,
-    borderRadius: utils.borders.radii.round,
-}));
-
-const stepperDotStyle = prepareNativeStyle(utils => ({
-    width: utils.spacings.sp4,
-    height: utils.spacings.sp4,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.backgroundNeutralSubdued,
-}));
-
-const TransactionDetailSummaryStepper = () => {
-    const { applyStyle } = useNativeStyles();
-
-    return (
-        <Box style={applyStyle(stepperDotWrapperStyle)}>
-            <Box style={applyStyle(stepperDotStyle)} />
-        </Box>
-    );
-};
 
 export const formatAddressesCount = (count: number) => {
     if (count > 1) {
@@ -84,7 +58,7 @@ export const TransactionDetailAddressesSection = ({
 
     return (
         <VStack>
-            <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+            <SummaryRow leftComponent={<TransactionDetailStepper />}>
                 <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                     <Box>
                         <Text color="textSubdued" variant="hint">
@@ -126,7 +100,7 @@ export const TransactionDetailAddressesSection = ({
             {areChangeAddressesVisible && (
                 <>
                     <CardDivider horizontalPadding="sp16" />
-                    <SummaryRow leftComponent={<TransactionDetailSummaryStepper />}>
+                    <SummaryRow leftComponent={<TransactionDetailStepper />}>
                         <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                             <Box>
                                 <ChangeAddressesHeader addressesCount={changeAddresses.length} />

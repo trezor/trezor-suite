@@ -3,9 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/fiat-services"
+            "path": "../../suite-common/redux-utils"
         },
-        { "path": "../../suite-common/graph" },
         {
             "path": "../../suite-common/token-definitions"
         },
@@ -21,35 +20,24 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../accounts" },
         { "path": "../alerts" },
-        { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../banner-flags" },
         { "path": "../device" },
-        { "path": "../device-manager" },
-        { "path": "../discovery" },
-        { "path": "../feature-flags" },
-        { "path": "../formatters" },
         { "path": "../forms" },
-        { "path": "../graph" },
         { "path": "../icons" },
         { "path": "../intl" },
-        { "path": "../labeling" },
         { "path": "../link" },
-        { "path": "../module-device-onboarding" },
-        { "path": "../module-earn" },
-        {
-            "path": "../module-stellar-token-management"
-        },
         { "path": "../navigation" },
-        { "path": "../qr-code" },
-        { "path": "../services" },
-        { "path": "../toasts" },
-        { "path": "../tokens" },
-        { "path": "../transactions" },
+        { "path": "../transaction-management" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        {
+            "path": "../../packages/blockchain-link-utils"
+        },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }
-    ]
+    ],
+    "include": [".", "**/*.json"]
 }
