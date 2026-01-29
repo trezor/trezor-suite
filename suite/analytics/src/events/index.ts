@@ -1,6 +1,9 @@
 export { accountsActionsEvent } from './accountsActionsEvent';
 export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
+export { accountsNonZeroBalanceEvent } from './accountsNonZeroBalanceEvent';
+export { accountsStatusEvent } from './accountsStatusEvent';
+export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
