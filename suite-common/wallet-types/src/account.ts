@@ -178,11 +178,16 @@ export type AccountBase = {
     utxo: AccountInfo['utxo'];
     history: AccountInfo['history'];
     metadata: AccountEntityKeys;
+
     /**
-     * accountLabel was introduced by mobile app. In early stage of development, it was not possible to connect device and work with
-     * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
+     * @deprecated AccountLabel was introduced by mobile app for Portfolio Manager. Now this is
+     *             deprecated in favor of Suite Sync. However, we have to keep back compatibility,
+     *             as currently user has no option to label Portfolio Manager Account.
+     *
+     * IMPORTANT: This is relevant only for Mobile App.
      */
     accountLabel?: string;
+
     ts: number;
 };
 

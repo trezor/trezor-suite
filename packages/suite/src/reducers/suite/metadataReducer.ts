@@ -34,6 +34,9 @@ import { Account } from 'src/types/wallet';
 
 import { SuiteRootState } from './suiteReducer';
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const initialMetadataState: MetadataState = {
     // is Suite trying to load metadata (get master key -> sync cloud)?
     enabled: false,
@@ -54,6 +57,9 @@ export type MetadataRootState = {
     AccountsRootState &
     DesktopSuiteSyncRootState;
 
+/**
+ * @deprecated Legacy Labeling
+ */
 const metadataReducer = (state = initialMetadataState, action: Action): MetadataState =>
     produce(state, draft => {
         switch (action.type) {
@@ -125,8 +131,14 @@ const metadataReducer = (state = initialMetadataState, action: Action): Metadata
         }
     });
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectMetadata = (state: MetadataRootState) => state.metadata;
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectIsMetadataEnabled = (state: MetadataRootState) =>
     state.metadata.enabled && !state.metadata.initiating;
 
@@ -136,10 +148,14 @@ export const selectIsMetadataEnabled = (state: MetadataRootState) =>
 export const selectSelectedProviderForLabels = (state: { metadata: MetadataState }) =>
     state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels);
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectSelectedProviderForPasswords = (state: { metadata: MetadataState }) =>
     state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.passwords);
 
 /**
+ * @deprecated Legacy Labeling
  * Select metadata of type 'labels' for currently selected account
  */
 export const selectLabelingDataForSelectedAccount = (state: {
@@ -158,6 +174,7 @@ export const selectLabelingDataForSelectedAccount = (state: {
 };
 
 /**
+ * @deprecated Legacy Labeling
  * Select metadata of type 'labels' for requested account
  */
 export const selectLabelingDataForAccount = (
@@ -176,6 +193,7 @@ export const selectLabelingDataForAccount = (
 };
 
 /**
+ * @deprecated Legacy Labeling
  * Returns dict <account-key: account-label>
  */
 export const selectAccountLabels = (state: {
@@ -206,6 +224,7 @@ export const selectAccountLabels = (state: {
 };
 
 /**
+ * @deprecated Legacy Labeling
  * Select metadata of type 'labels' for requested device
  */
 export const selectLabelingDataForWallet = (
@@ -232,6 +251,9 @@ export const selectLabelingDataForWallet = (
     return DEFAULT_WALLET_METADATA;
 };
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectLabelableEntities = (state: MetadataRootState, deviceState: StaticSessionId) => {
     const { wallet, device } = state;
     const { devices } = device;
@@ -255,6 +277,9 @@ export const selectLabelableEntities = (state: MetadataRootState, deviceState: S
     ];
 };
 
+/**
+ * @deprecated Legacy Labeling
+ */
 const selectLabelableEntityByKey = (
     state: MetadataRootState,
     deviceState: StaticSessionId,
@@ -272,6 +297,7 @@ const selectLabelableEntityByKey = (
     });
 
 /**
+ * @deprecated Legacy Labeling
  * Is everything ready to add label?
  */
 export const selectIsLabelingAvailable = (state: MetadataRootState) => {
@@ -312,7 +338,9 @@ export const selectIsLabelingInitPossible = (state: MetadataRootState): boolean 
     );
 };
 
-/** @deprecated Legacy labeling  */
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectIsLabelingAvailableForEntity = (
     state: MetadataRootState,
     entityKey: string,
@@ -331,6 +359,9 @@ export const selectIsLabelingAvailableForEntity = (
     );
 };
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectPasswordManagerState = (
     state: {
         metadata: MetadataState;
@@ -347,8 +378,14 @@ export const selectPasswordManagerState = (
         METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE) as PasswordManagerState;
 };
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectLabelingValueBeingEdited = ({ metadata }: MetadataRootState) => metadata.editing;
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export const selectSelectedLabelsProviderType = (state: MetadataRootState) => {
     const isMetadataEnabled = selectIsMetadataEnabled(state);
     if (!isMetadataEnabled) return '';
@@ -358,4 +395,7 @@ export const selectSelectedLabelsProviderType = (state: MetadataRootState) => {
     return selectedProvider?.type ?? 'missing-provider';
 };
 
+/**
+ * @deprecated Legacy Labeling
+ */
 export default metadataReducer;

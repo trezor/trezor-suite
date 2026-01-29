@@ -21,7 +21,6 @@ import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { DebugOnlyBadge } from 'src/components/suite/DebugOnlyBadge';
 import { useLocales } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
 import { Account } from 'src/types/wallet';
 
@@ -58,7 +57,6 @@ export const TransactionReviewSummary = ({
     timer,
 }: TransactionReviewSummaryProps) => {
     const drafts = useSelector(state => state.wallet.send.drafts);
-    const { accountLabel } = useSelector(selectLabelingDataForSelectedAccount);
     const currentAccountKey = useSelector(
         state => state.wallet.selectedAccount.account?.key,
     ) as string;
@@ -84,10 +82,7 @@ export const TransactionReviewSummary = ({
                     <Row gap={spacings.xxs}>
                         <CoinLogo size={14} symbol={symbol} />
                         <AccountLabel
-                            account={{
-                                ...account,
-                                accountLabel: accountLabel || account.accountLabel,
-                            }}
+                            account={account}
                             showAccountTypeBadge
                             accountTypeBadgeSize="small"
                         />

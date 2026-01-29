@@ -18,7 +18,6 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import { AccountLabel } from 'src/components/suite/AccountLabel';
 import { AccountTypeBadge } from 'src/components/suite/AccountTypeBadge';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 
 interface WalletConnectSwitchAccountModalProps {
     sessionTopic: string;
@@ -31,7 +30,7 @@ export const WalletConnectSwitchAccountModal = ({
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);
     const accounts = useSelector(selectAllAccountsToList);
-    const accountLabels = useSelector(selectAccountLabels);
+
     const selectableAccounts = useMemo<Account[]>(
         () =>
             session
@@ -88,13 +87,7 @@ export const WalletConnectSwitchAccountModal = ({
                             {account.symbol && (
                                 <CoinLogo type="token" symbol={account.symbol} size={24} />
                             )}
-                            <AccountLabel
-                                account={{
-                                    ...account,
-                                    accountLabel: accountLabels[account.key],
-                                }}
-                                key={account.descriptor}
-                            />
+                            <AccountLabel account={account} key={account.descriptor} />
                             <AccountTypeBadge
                                 accountType={account.accountType}
                                 networkType={account.networkType}

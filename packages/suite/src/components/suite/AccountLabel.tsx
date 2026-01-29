@@ -11,7 +11,9 @@ import { AccountTypeBadge } from './AccountTypeBadge';
 interface AccountLabelProps {
     showAccountTypeBadge?: boolean;
     accountTypeBadgeSize?: BadgeSize;
-    account: Account;
+    // Defensive programming to prevent passing 'accountLabel' by mistake.
+    // Labeling shall be solved (selected for) only here!
+    account: Omit<Account, 'accountLabel'>;
     variant?: TextProps['variant'];
     typographyStyle?: TextProps['typographyStyle'];
     rowProps?: Omit<FlexProps, 'children'>;
@@ -27,17 +29,17 @@ export const AccountLabel = ({
 }: AccountLabelProps) => {
     const { getDefaultAccountLabel } = useDefaultAccountLabel();
     const { walletDescriptor } = parseDeviceStaticSessionId(account.deviceState);
+
     const suiteSyncAccountLabel = useSelector(state =>
         selectSuiteSyncAccountLabel(state, walletDescriptor, account.descriptor, account.symbol),
     );
-    const { accountLabel: legacyAccountLabel } = useSelector(state =>
-        selectLabelingDataForAccount(state, account.key),
-    );
+
+    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
+
     const { symbol, accountType, index, path, networkType } = account;
     const accountLabel =
-        suiteSyncAccountLabel ||
-        legacyAccountLabel ||
-        account.accountLabel ||
+        suiteSyncAccountLabel || // Suite Sync
+        accountMetadata.accountLabel || // Legacy Labeling
         getDefaultAccountLabel({ accountType, symbol, index });
 
     return (
