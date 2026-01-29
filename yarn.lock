@@ -15209,6 +15209,7 @@ __metadata:
     lodash: "npm:^4.17.21"
     react-intl: "npm:^8.0.6"
     tsx: "npm:^4.21.0"
+    type-fest: "npm:^5.4.1"
     xvfb-maybe: "npm:^0.2.1"
   languageName: unknown
   linkType: soft

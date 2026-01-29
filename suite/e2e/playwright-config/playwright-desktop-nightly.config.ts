@@ -4,56 +4,65 @@ import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import type { PlaywrightProjectDefinition } from './playwright-project-builder';
 import { tagsCanary, tagsNightly } from './projectTags';
 import { PlaywrightTarget, SuiteTestOptions } from '../support/testExtends/suiteTestOptions';
-
-const target = PlaywrightTarget.Desktop;
 
 /*
  * Desktop Nightly config
  * This config is used to run tests once a day against the latest desktop application build (nightly).
  * There are projects for all supported device models with the latest and main (canary) firmware versions
  */
+const target = PlaywrightTarget.Desktop;
+const definition: PlaywrightProjectDefinition[] = [
+    { model: Model.T3W1, currentsTags: tagsNightly },
+    { model: Model.T3T1, currentsTags: tagsNightly },
+    { model: Model.T3B1, currentsTags: tagsNightly },
+    { model: Model.T2T1, currentsTags: tagsNightly },
+    { model: Model.T1B1, currentsTags: tagsNightly },
+    { name: 'no_device', currentsTags: tagsNightly, grep: /(?=.*@noDevice)/ },
+    // FW Canary projects
+    {
+        model: Model.T3W1,
+        nameSuffix: 'fw_canary',
+        firmware: '2-main',
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
+    },
+    {
+        model: Model.T3T1,
+        nameSuffix: 'fw_canary_smoke',
+        firmware: '2-main',
+        grep: /(?=.*@T3T1)(?=.*@smoke)/,
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
+    },
+    {
+        model: Model.T3B1,
+        nameSuffix: 'fw_canary',
+        firmware: '2-main',
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
+    },
+    {
+        model: Model.T2T1,
+        nameSuffix: 'fw_canary',
+        firmware: '2-main',
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
+    },
+    {
+        model: Model.T1B1,
+        nameSuffix: 'fw_canary',
+        firmware: '1-main',
+        additionalGrepInvert: /@specificFirmware/,
+        currentsTags: tagsCanary,
+    },
+];
+
 const config = defineConfig<SuiteTestOptions & PlaywrightTestOptions, PlaywrightWorkerOptions>({
     ...baseConfig,
-    projects: [
-        new PlaywrightProjectBuilder(target, Model.T3W1).setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, Model.T3T1).setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, Model.T3B1).setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, Model.T2T1).setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, Model.T1B1).setCurrentsTags(tagsNightly).build(),
-        new PlaywrightProjectBuilder(target, 'no_device')
-            .setGrep(/(?=.*@noDevice)/)
-            .setCurrentsTags(tagsNightly)
-            .build(),
-        // FW Canary projects
-        new PlaywrightProjectBuilder(target, Model.T3W1, 'fw_canary')
-            .setFirmwareVersion('2-main')
-            .addGrepInvert(/@specificFirmware/)
-            .setCurrentsTags(tagsCanary)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T3T1, 'fw_canary_smoke')
-            .setFirmwareVersion('2-main')
-            .setGrep(/(?=.*@T3T1)(?=.*@smoke)/)
-            .addGrepInvert(/@specificFirmware/)
-            .setCurrentsTags(tagsCanary)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T3B1, 'fw_canary')
-            .setFirmwareVersion('2-main')
-            .addGrepInvert(/@specificFirmware/)
-            .setCurrentsTags(tagsCanary)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T2T1, 'fw_canary')
-            .setFirmwareVersion('2-main')
-            .addGrepInvert(/@specificFirmware/)
-            .setCurrentsTags(tagsCanary)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T1B1, 'fw_canary')
-            .setFirmwareVersion('1-main')
-            .addGrepInvert(/@specificFirmware/)
-            .setCurrentsTags(tagsCanary)
-            .build(),
-    ],
+    projects: PlaywrightProjectBuilder.buildFromDefinitions(target, definition),
 });
 
 /* eslint-disable-next-line import/no-default-export */
