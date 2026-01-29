@@ -14,7 +14,7 @@ import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsAc
 import { useDispatch } from 'src/hooks/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 export interface ExportActionProps {
@@ -26,7 +26,7 @@ export interface ExportActionProps {
 export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { translationString } = useTranslation();
 
     const getAccountTitle = useCallback(() => {
@@ -48,7 +48,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                 return;
             }
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AccountsTransactionsExport,
                 payload: {
                     format: type,
@@ -88,7 +88,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         },
         [
             isExportRunning,
-            legacyAnalytics,
+            analytics,
             account,
             dispatch,
             accountLabel,

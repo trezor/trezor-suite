@@ -212,13 +212,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               count: number;
           };
       }
-    | {
-          type: EventType.AccountsTransactionsExport;
-          payload: {
-              symbol: string;
-              format: 'pdf' | 'csv' | 'json';
-          };
-      }
     | TransactionCreatedEvent
     | {
           type: EventType.SendRawTransaction;
