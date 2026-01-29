@@ -214,27 +214,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: 'exchange';
-              status: 'converting' | 'sending' | 'success' | 'kyc' | 'error';
-          };
-      }
-    | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: 'buy';
-              status: 'waiting' | 'processing' | 'success' | 'error';
-          };
-      }
-    | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: 'sell';
-              status: 'pending' | 'success' | 'error';
-          };
-      }
-    | {
           type: EventType.TradingCompareOffers;
           payload: {
               type: 'exchange' | 'buy' | 'sell';

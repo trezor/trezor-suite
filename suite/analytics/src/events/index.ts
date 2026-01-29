@@ -48,4 +48,5 @@ export { tradeApprovalEvent } from './tradeApprovalEvent';
 export { tradeConfirmTradeEvent } from './tradeConfirmTradeEvent';
 export { tradeExchangeEvent } from './tradeExchangeEvent';
 export { tradeNavigateEvent } from './tradeNavigateEvent';
+export { tradeStatusEvent } from './tradeStatusEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';

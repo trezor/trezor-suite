@@ -13,7 +13,7 @@ import { Box, BulletList, Card, Column, H3, Paragraph } from '@trezor/components
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailBuyPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailBuy/TradingDetailBuyPaymentFailed';
@@ -47,7 +47,7 @@ const getTradeStatusStep = (tradeStatus?: BuyTradeStatus) => {
 };
 
 export const TradingDetailBuy = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const accounts = useSelector(selectAccounts);
     const { trade, info, account } = useTradingDetailContext<TradingBuyType>();
     const dispatch = useDispatch();
@@ -82,14 +82,14 @@ export const TradingDetailBuy = () => {
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingStatus,
             payload: {
                 type: 'buy',
                 status: tradeStatusStep,
             },
         });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep, legacyAnalytics]);
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep, analytics]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
