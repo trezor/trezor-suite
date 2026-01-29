@@ -6,6 +6,7 @@ import { Account } from '@suite-common/wallet-types';
 import { getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import { AccountLabel } from '@suite-native/labeling';
 import {
     NativeStakingRootState,
     doesCoinSupportStaking,
@@ -36,7 +37,9 @@ export const AccountSectionTitle: React.FC<AccountSectionTitleProps> = ({
 
     return (
         <HStack alignItems="center" justifyContent="space-between" marginBottom="sp16">
-            <Text variant="highlight">{account.accountLabel}</Text>
+            <Text variant="highlight">
+                <AccountLabel account={account} />
+            </Text>
 
             {hasAnyKnownTokens && (
                 <VStack spacing={0} alignItems="flex-end">

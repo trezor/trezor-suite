@@ -1,7 +1,9 @@
-export * from './components/AddressLabel';
-export * from './components/AddressLabelEditable';
-export * from './components/SendFormLabelEditable';
-export * from './components/TransactionOutputLabel';
-export * from './components/TransactionOutputLabelEditable';
-export * from './components/WalletLabel';
-export * from './selectors';
+export { AddressLabel } from './components/AddressLabel';
+export { AddressLabelEditable } from './components/AddressLabelEditable';
+export { SendFormLabelEditable } from './components/SendFormLabelEditable';
+export { TransactionOutputLabel } from './components/TransactionOutputLabel';
+export { TransactionOutputLabelEditable } from './components/TransactionOutputLabelEditable';
+export { WalletLabel } from './components/WalletLabel';
+export { selectSuiteSyncLabelingEnabled, selectAccountLabel } from './selectors';
+export type { CombinedLabelingState } from './selectors';
+export { AccountLabel } from './components/AccountLabel';

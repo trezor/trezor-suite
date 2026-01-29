@@ -12,7 +12,7 @@ import {
 } from '@suite-native/formatters';
 import { CryptoIcon, CryptoIconWithNetwork } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { AccountLabel } from '@suite-native/labeling';
 import { NativeStakingRootState, selectAccountHasStaking } from '@suite-native/staking';
 import {
     TokensRootState,
@@ -94,16 +94,6 @@ export const AccountsListItem = ({
         [account.symbol, isNativeCoinOnly],
     );
 
-    const accountLabel = useSelector((state: CombinedLabelingState) =>
-        selectAccountLabel(
-            state,
-            account.deviceState,
-            account.descriptor,
-            account.symbol,
-            account.key,
-        ),
-    );
-
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
     const shouldShowAccountLabel = !isNetworkSupportingTokens || !isNativeCoinOnly;
     const shouldShowTokenBadge = accountHasAnyTokens && !isNativeCoinOnly;
@@ -120,7 +110,7 @@ export const AccountsListItem = ({
             icon={icon}
             title={
                 shouldShowAccountLabel ? (
-                    accountLabel
+                    <AccountLabel account={account} />
                 ) : (
                     <NetworkDisplaySymbolNameFormatter value={account.symbol} />
                 )

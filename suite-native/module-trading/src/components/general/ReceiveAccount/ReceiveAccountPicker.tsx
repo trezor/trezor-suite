@@ -118,13 +118,7 @@ export const ReceiveAccountPicker = ({
     const accountLabel =
         useSelector((state: CombinedLabelingState) =>
             account !== undefined
-                ? selectAccountLabel(
-                      state,
-                      account.deviceState,
-                      account.descriptor,
-                      account.symbol,
-                      account.key,
-                  )
+                ? selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol)
                 : null,
         ) ?? '';
 

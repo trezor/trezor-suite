@@ -11,7 +11,7 @@ import {
     selectAccountLabel as selectReduxAccountLabel,
 } from '@suite-common/wallet-core';
 import { AccountDescriptor } from '@suite-common/wallet-types';
-import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { createAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { StaticSessionId } from '@trezor/connect';
 
 export type CombinedLabelingState = SuiteSyncDataRootState &
@@ -30,7 +30,6 @@ export const selectAccountLabel = (
     deviceStaticSessionId: StaticSessionId,
     accountDescriptor: AccountDescriptor,
     networkSymbol: NetworkSymbol,
-    accountKey: string,
 ) => {
     const suiteSyncLabelingEnabled = selectSuiteSyncLabelingEnabled(state);
 
@@ -46,6 +45,12 @@ export const selectAccountLabel = (
     if (suiteSyncLabelingEnabled && syncedLabel) {
         return syncedLabel;
     }
+
+    const accountKey = createAccountKey({
+        accountDescriptor,
+        networkSymbol,
+        deviceStaticSessionId,
+    });
 
     return selectReduxAccountLabel(state, accountKey);
 };

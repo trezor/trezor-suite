@@ -5,7 +5,7 @@ import { Account } from '@suite-common/wallet-types';
 import { NativeAccountsRootState, selectAccountFiatBalance } from '@suite-native/accounts';
 import { Badge, HStack, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
+import { AccountLabel } from '@suite-native/labeling';
 
 export type MyAssetListSectionHeaderProps = {
     account: Account;
@@ -23,17 +23,6 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
         selectAccountFiatBalance(state, account.key, false),
     );
 
-    const accountLabel =
-        useSelector((state: CombinedLabelingState) =>
-            selectAccountLabel(
-                state,
-                account.deviceState,
-                account.descriptor,
-                account.symbol,
-                account.key,
-            ),
-        ) ?? '';
-
     return (
         <HStack
             justifyContent="space-between"
@@ -43,7 +32,7 @@ export const MyAssetListSectionHeader = ({ account, isFirst }: MyAssetListSectio
         >
             <HStack alignItems="center" spacing="sp8">
                 <Text variant="body" color="textDefault">
-                    {accountLabel}
+                    <AccountLabel account={account} />
                 </Text>
                 {formattedAccountType && (
                     <Badge

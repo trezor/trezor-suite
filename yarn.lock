@@ -11467,6 +11467,7 @@ __metadata:
     "@suite-native/tokens": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:^"
+    "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"
     react: "npm:19.1.0"
     react-hook-form: "npm:^7.66.1"

@@ -6,6 +6,7 @@ import { atom, useSetAtom } from 'jotai';
 
 import { Account } from '@suite-common/wallet-types';
 import { Card, VStack } from '@suite-native/atoms';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
 import {
@@ -38,7 +39,7 @@ export const AccountsList = ({
             isSendFilterEnabled,
         ),
     );
-    const groups = useMemo(() => Object.entries(groupedAccounts), [groupedAccounts]);
+    const groups = useMemo(() => typedObjectEntries(groupedAccounts), [groupedAccounts]);
     const bottomSheetAccountAtom = useMemo(() => atom<Account | null>(null), []);
     const setBottomSheetAccountAtom = useSetAtom(bottomSheetAccountAtom);
 

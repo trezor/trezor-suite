@@ -40,6 +40,7 @@
         { "path": "../tokens" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" },
+        { "path": "../../packages/utils" },
         { "path": "../test-utils" }
     ]
 }

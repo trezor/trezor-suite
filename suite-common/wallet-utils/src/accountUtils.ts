@@ -1138,6 +1138,16 @@ export const parseAccountKey = (accountKey: AccountKey) => {
     };
 };
 
+export const createAccountKey = ({
+    accountDescriptor,
+    networkSymbol,
+    deviceStaticSessionId,
+}: {
+    accountDescriptor: AccountDescriptor;
+    networkSymbol: NetworkSymbol;
+    deviceStaticSessionId: StaticSessionId;
+}) => `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
+
 export const prepareNewAccountPayload = async ({
     accountType,
     networkSymbol,
