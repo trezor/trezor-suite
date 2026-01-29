@@ -351,12 +351,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralChangeBitcoinUnit;
-          payload: {
-              unit: string;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralEarlyAccess;
           payload: {
               allowPrerelease: boolean;
