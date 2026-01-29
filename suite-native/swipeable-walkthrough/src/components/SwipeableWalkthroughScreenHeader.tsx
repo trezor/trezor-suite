@@ -1,11 +1,9 @@
 import { useCallback } from 'react';
-import { StatusBar } from 'react-native';
 import Animated, { SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Box, IconButton } from '@suite-native/atoms';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
-import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type SwipeableWalkthroughScreenHeaderProps = {
@@ -21,15 +19,6 @@ type SwipeableWalkthroughBackButtonProps = {
 
 const ANIMATION_DURATION = 800;
 
-const screenHeaderContainerStyle = prepareNativeStyle(utils => ({
-    // The negative top offset is necessary to fill the transparent gap between the status bar and the screen header
-    // where would be visible the swipeable walkthrough steps animated transitions.
-    marginTop: -utils.spacings.sp8,
-    paddingTop: utils.spacings.sp8,
-    backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    zIndex: 2,
-}));
-
 const statusBarStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
     (utils, { topSafeAreaInset }) => ({
         zIndex: 2,
@@ -39,6 +28,10 @@ const statusBarStyle = prepareNativeStyle<{ topSafeAreaInset: number }>(
         backgroundColor: utils.colors.backgroundSurfaceElevation0,
     }),
 );
+
+const screenHeaderContainerStyle = prepareNativeStyle(() => ({
+    zIndex: 2,
+}));
 
 const SwipeableWalkthroughBackButton = ({
     onPressBack,
@@ -73,9 +66,8 @@ export const SwipeableWalkthroughScreenHeader = ({
     CustomBackButton,
     onPressBack,
 }: SwipeableWalkthroughScreenHeaderProps) => {
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const { top: topSafeAreaInset } = useSafeAreaInsets();
-    const activeColorScheme = useActiveColorScheme();
 
     const BackButton = CustomBackButton || SwipeableWalkthroughBackButton;
 
@@ -92,13 +84,8 @@ export const SwipeableWalkthroughScreenHeader = ({
 
     return (
         <>
-            {/* Status bar can not be transparent same as on the other screens, because then is the animated content visible in in while transitioning. */}
-            <Box style={applyStyle(statusBarStyle, { topSafeAreaInset })}>
-                <StatusBar
-                    backgroundColor={utils.colors.backgroundSurfaceElevation0}
-                    barStyle={activeColorScheme === 'dark' ? 'light-content' : 'dark-content'}
-                />
-            </Box>
+            {/* Fill the status bar area so that the animated content is not visible while transitioning. */}
+            <Box style={applyStyle(statusBarStyle, { topSafeAreaInset })} />
             <Box style={applyStyle(screenHeaderContainerStyle)}>
                 <ScreenHeader
                     leftIcon={
