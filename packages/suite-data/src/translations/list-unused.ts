@@ -57,7 +57,7 @@ if (unused.length) {
         let messagesContent = fs.readFileSync(pathToMessages, 'utf-8');
 
         for (const message of unused) {
-            const regex = new RegExp(`\\s+${message}:\\s+\\{[^}]*\\},?\\n`, 'g');
+            const regex = new RegExp(`\\s+${message}:\\s+\\{[\\s\\S]*?\\},?\\n`, 'g');
             messagesContent = messagesContent.replace(regex, '');
         }
         fs.writeFileSync(pathToMessages, messagesContent);
