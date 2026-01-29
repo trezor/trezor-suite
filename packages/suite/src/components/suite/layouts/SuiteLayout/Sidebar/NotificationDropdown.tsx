@@ -8,7 +8,7 @@ import { Box, Menu, Popover, PopoverRef } from '@trezor/components';
 
 import { Notifications } from 'src/components/suite/notifications/Notifications/Notifications';
 import { useDispatch, useLayoutSize } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 
@@ -22,7 +22,7 @@ const StyledNavigationItem = styled(NavigationItem)`
 `;
 
 export const NotificationDropdown = (props: NavigationItemProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [isOpen, setIsOpen] = useState(false);
     const { isBelowLaptop } = useLayoutSize();
     const popoverRef = useRef<PopoverRef>(null);
@@ -34,7 +34,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
             dispatch(notificationsActions.resetUnseen());
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.MenuNotificationsToggle,
             payload: {
                 value: !isOpen,
