@@ -30,6 +30,7 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
 import { CloseActionType } from '@suite-native/navigation';
+import { TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import TrezorConnect from '@trezor/connect';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
@@ -53,6 +54,9 @@ export const ReceiveAddressScreen = ({
     const { askForRating } = useInAppRating();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
+    );
+    const tokenSymbol = useSelector((state: TokensRootState) =>
+        selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
 
@@ -147,7 +151,7 @@ export const ReceiveAddressScreen = ({
                                             textPressedColor="textSubdued"
                                         />
                                     ),
-                                    coinSymbol: getDisplaySymbol(account.symbol),
+                                    coinSymbol: tokenSymbol ?? getDisplaySymbol(account.symbol),
                                 }}
                             />
                         }

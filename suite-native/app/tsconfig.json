@@ -64,6 +64,9 @@
         { "path": "../module-passphrase" },
         { "path": "../module-send" },
         { "path": "../module-settings" },
+        {
+            "path": "../module-stellar-token-management"
+        },
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },

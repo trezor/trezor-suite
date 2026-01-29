@@ -2577,21 +2577,21 @@ __metadata:
   linkType: hard
 
 "@emnapi/core@npm:^1.1.0":
-  version: 1.7.1
-  resolution: "@emnapi/core@npm:1.7.1"
+  version: 1.8.1
+  resolution: "@emnapi/core@npm:1.8.1"
   dependencies:
     "@emnapi/wasi-threads": "npm:1.1.0"
     tslib: "npm:^2.4.0"
-  checksum: 10/260841f6dd2a7823a964d9de6da3a5e6f565dac8d21a5bd8f6215b87c45c22a4dc371b9ad877961579ee3cca8a76e55e3dd033ae29cba1998999cda6d794bdab
+  checksum: 10/904ea60c91fc7d8aeb4a8f2c433b8cfb47c50618f2b6f37429fc5093c857c6381c60628a5cfbc3a7b0d75b0a288f21d4ed2d4533e82f92c043801ef255fd6a5c
   languageName: node
   linkType: hard
 
 "@emnapi/runtime@npm:^1.1.0, @emnapi/runtime@npm:^1.7.0":
-  version: 1.7.1
-  resolution: "@emnapi/runtime@npm:1.7.1"
+  version: 1.8.1
+  resolution: "@emnapi/runtime@npm:1.8.1"
   dependencies:
     tslib: "npm:^2.4.0"
-  checksum: 10/6fc83f938e3c70e32e84c1fbe5cab6cb9340b8107cee4048384ad5b8f2998a06502b4bed342acaf6e44f473f2c14c4ab1e3fd5083bd7823fc63abfca9eff0175
+  checksum: 10/26725e202d4baefdc4a6ba770f703dfc80825a27c27a08c22bac1e1ce6f8f75c47b4fe9424d9b63239463c33ef20b650f08d710da18dfa1164a95e5acb865dba
   languageName: node
   linkType: hard
 
@@ -8059,22 +8059,22 @@ __metadata:
   linkType: hard
 
 "@react-navigation/elements@npm:^2.9.3":
-  version: 2.9.3
-  resolution: "@react-navigation/elements@npm:2.9.3"
+  version: 2.9.4
+  resolution: "@react-navigation/elements@npm:2.9.4"
   dependencies:
     color: "npm:^4.2.3"
     use-latest-callback: "npm:^0.2.4"
     use-sync-external-store: "npm:^1.5.0"
   peerDependencies:
     "@react-native-masked-view/masked-view": ">= 0.2.0"
-    "@react-navigation/native": ^7.1.26
+    "@react-navigation/native": ^7.1.27
     react: ">= 18.2.0"
     react-native: "*"
     react-native-safe-area-context: ">= 4.0.0"
   peerDependenciesMeta:
     "@react-native-masked-view/masked-view":
       optional: true
-  checksum: 10/96cd302eef1ebbbaa2eea205e47ae9f5644e909a4995fc8944b6160ab9586adec2a82b02e09714a2df92034bc90148649225fd080fb040d1b18d2428f603979d
+  checksum: 10/0a6b3264c551042075ffe3c13c04c2332e05588ed413b14bff9e0eea142e47a76fe34d573c13277b6047f0de230ae42150c47359c552d5dce1cb697253df0228
   languageName: node
   linkType: hard
 
@@ -11636,6 +11636,7 @@ __metadata:
     "@suite-native/module-passphrase": "workspace:*"
     "@suite-native/module-send": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
+    "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -12541,6 +12542,7 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/module-device-onboarding": "workspace:*"
     "@suite-native/module-earn": "workspace:*"
+    "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/services": "workspace:*"
@@ -13135,6 +13137,41 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     jotai: "npm:2.15.0"
+    react: "npm:19.1.0"
+    react-native: "npm:0.81.5"
+    react-native-reanimated: "npm:~4.1.5"
+    react-redux: "npm:9.2.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-stellar-token-management@workspace:*, @suite-native/module-stellar-token-management@workspace:suite-native/module-stellar-token-management":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-stellar-token-management@workspace:suite-native/module-stellar-token-management"
+  dependencies:
+    "@gorhom/bottom-sheet": "npm:5.2.6"
+    "@react-navigation/native": "npm:7.1.26"
+    "@react-navigation/native-stack": "npm:7.9.0"
+    "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/icons": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/transaction-management": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.1.0"
     react-native: "npm:0.81.5"
     react-native-reanimated: "npm:~4.1.5"

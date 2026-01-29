@@ -42,6 +42,9 @@
         { "path": "../link" },
         { "path": "../module-device-onboarding" },
         { "path": "../module-earn" },
+        {
+            "path": "../module-stellar-token-management"
+        },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../services" },
