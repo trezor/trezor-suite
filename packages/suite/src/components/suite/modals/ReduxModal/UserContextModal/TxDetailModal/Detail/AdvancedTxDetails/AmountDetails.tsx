@@ -10,6 +10,7 @@ import {
     formatCardanoDeposit,
     formatCardanoWithdrawal,
     formatNetworkAmount,
+    getCardanoStakingSignValue,
     getFiatRateKey,
     getTxOperation,
     isStakeTypeTx,
@@ -52,19 +53,6 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
     const isStakeTypeTxNoAmount = isStakeType && amount.eq(0);
-
-    const getCardanoStakingSignValue = () => {
-        const subtype = tx.cardanoSpecific?.subtype;
-
-        switch (subtype) {
-            case 'stake_registration':
-                return 'negative';
-            case 'stake_deregistration':
-                return 'positive';
-        }
-
-        return 'positive';
-    };
 
     const getAmountSignValue = () => {
         const txOp = getTxOperation(tx.type, true);
@@ -270,7 +258,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <FormattedCryptoAmount
                                     value={cardanoWithdrawal}
                                     symbol={tx.symbol}
-                                    signValue="negative"
+                                    signValue={getCardanoStakingSignValue(tx)}
                                 />
                             </Text>
                         </Table.Cell>
@@ -303,7 +291,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <FormattedCryptoAmount
                                     value={cardanoDeposit}
                                     symbol={tx.symbol}
-                                    signValue={getCardanoStakingSignValue()}
+                                    signValue={getCardanoStakingSignValue(tx)}
                                 />
                             </Text>
                         </Table.Cell>
