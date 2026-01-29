@@ -10,7 +10,9 @@
         "dev": "yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
         "dev:vite": "PROJECT=web yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web:vite",
         "analyze": "ANALYZE=true yarn build",
-        "build": "yarn rimraf ./build && yarn workspace @trezor/suite-build run build:web"
+        "build": "yarn rimraf ./build && yarn workspace @trezor/suite-build run build:web",
+        "preview": "vite preview -c ./preview.vite.config.mts --outDir ./build --mode production",
+        "build:preview": "yarn build && yarn preview"
     },
     "dependencies": {
         "@sentry/browser": "10.32.1",
@@ -33,6 +35,7 @@
         "rimraf": "^6.0.1",
         "stylelint": "^16.17.0",
         "stylelint-config-standard": "^38.0.0",
-        "tsx": "^4.21.0"
+        "tsx": "^4.21.0",
+        "vite": "^7.2.4"
     }
 }
