@@ -1,6 +1,6 @@
 import { address } from '@solana/kit';
 
-import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
@@ -258,7 +258,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+            getTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.TransactionCancel,
                 payload: {
                     txType: 'stake',
