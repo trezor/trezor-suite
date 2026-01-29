@@ -25,6 +25,7 @@
         "build:libs": "yarn nx run-many --skip-nx-cache --target=build:lib",
         "build:essential": "yarn message-system-sign-config & yarn workspace @trezor/suite-data build:lib & yarn workspace @trezor/transport-bridge build:lib",
         "suite:build:web": "yarn workspace @trezor/suite-web build",
+        "suite:build:web:preview": "yarn workspace @trezor/suite-web build:preview",
         "_______ Start Scripts _______": "Here are standalone scripts for running individual applications for development.",
         "suite:dev": "yarn workspace @trezor/suite-web dev",
         "suite:dev:vite": "yarn workspace @trezor/suite-web dev:vite",

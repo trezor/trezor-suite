@@ -49,6 +49,7 @@ Run a dev build:
 - `yarn suite:dev:vite` (⚠️ EXPERIMENTAL: web app with Vite bundler used for **development only**, use `yarn suite:dev` if you want fidelity to production app)
 - `yarn suite:dev:desktop` (electron app)
     - React dev tools are available with a known caveat: you need to reload the renderer process (Ctrl+R or Cmd+R) while having the dev tools open
+- `yarn suite:build:web:preview` (localhost of production web app with applied security headers)
 
 Local `.env` setup (optional):
 
