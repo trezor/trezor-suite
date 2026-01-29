@@ -8,17 +8,17 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorOnionLinks } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
    when tor is off this value has no effect anyway (handled by ExternalLink hook) */
 export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleChange = () => {
         dispatch(setOnionLinks(!torOnionLinks));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsTorOnionLinks,
             payload: {
                 value: !torOnionLinks,

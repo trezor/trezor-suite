@@ -1,10 +1,9 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
-import { TradingType } from '@suite-common/trading';
 
 import { EventType } from '../constants';
 
 type Attributes = {
-    action: AttributeDef<TradingType>;
+    action: AttributeDef<'buy' | 'sell' | 'exchange'>;
 };
 
 export const tradeConfirmTradeEvent: EventDef<Attributes, EventType.TradingConfirmTrade> = {

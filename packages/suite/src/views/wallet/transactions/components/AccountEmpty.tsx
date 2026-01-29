@@ -9,7 +9,7 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 interface AccountEmptyProps {
@@ -19,7 +19,6 @@ interface AccountEmptyProps {
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const dispatch = useDispatch();
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
 
@@ -28,7 +27,7 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
 
     const handleNavigateToReceivePage = () => {
         dispatch(goto('wallet-receive', { preserveParams: true }));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.AccountsEmptyAccountReceive,
             payload: {
                 symbol: account.symbol,
