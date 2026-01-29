@@ -38,7 +38,7 @@ export const NeedHelpSection = () => {
             />
             {areAppLogsEnabled && (
                 <CompactCardWithIconLayout
-                    title={<Translation id="moduleSettings.faq.needHelp.appLogs" />}
+                    title={<Translation id="moduleSettings.faq.needHelp.appLog" />}
                     icon="fileTxt"
                     onPress={navigateToAppLogs}
                 />

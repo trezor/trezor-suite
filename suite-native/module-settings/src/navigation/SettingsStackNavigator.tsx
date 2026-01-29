@@ -9,6 +9,7 @@ import { SettingsTradingLocationScreen } from '@suite-native/trading-residence';
 
 import { BitcoinBackendsScreen } from '../screens/BitcoinBackendsScreen';
 import { SettingsAdvancedScreen } from '../screens/SettingsAdvancedScreen';
+import { SettingsAppLogScreen } from '../screens/SettingsAppLogScreen';
 import { SettingsAutoEjectScreen } from '../screens/SettingsAutoEjectScreen';
 import { SettingsCoinEnablingScreen } from '../screens/SettingsCoinEnablingScreen';
 import { SettingsPreferencesScreen } from '../screens/SettingsPreferencesScreen';
@@ -43,7 +44,11 @@ export const SettingsStackNavigator = () => (
             name={SettingsStackRoutes.SettingsSupport}
             component={SettingsSupportScreen}
         />
-
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsAppLog }}
+            name={SettingsStackRoutes.SettingsAppLog}
+            component={SettingsAppLogScreen}
+        />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsCoinEnabling }}
             name={SettingsStackRoutes.SettingsCoinEnabling}
