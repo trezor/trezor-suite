@@ -227,12 +227,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.MenuNotificationsToggle;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.MenuToggleDiscreet;
           payload: {
               value: boolean;

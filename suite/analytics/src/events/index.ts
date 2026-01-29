@@ -19,6 +19,7 @@ export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectBut
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { menuGuideEvent } from './menuGuideEvent';
+export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
