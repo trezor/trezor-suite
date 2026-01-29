@@ -11,7 +11,7 @@
     },
     "references": [
         {
-            "path": "../../suite-common/analytics-types"
+            "path": "../../suite-common/analytics"
         },
         {
             "path": "../../suite-native/analytics"

@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import * as desktopEvents from '@suite/analytics';
-import * as sharedEvents from '@suite-common/analytics-types';
+import * as sharedEvents from '@suite-common/analytics';
 import * as mobileEvents from '@suite-native/analytics/src/events'; // @TODO
 
 import { extractAttributeTypesByEventName, findPackageRoot, findUp } from './extractAttributeTypes';
@@ -38,7 +38,7 @@ const eventsArray = [
 const normalizedEvents = normalizeEvents(eventsArray);
 
 const entrypoints = [
-    require.resolve('@suite-common/analytics-types'),
+    require.resolve('@suite-common/analytics'),
     require.resolve('@suite/analytics'),
     require.resolve('@suite-native/analytics/src/events'),
 ];

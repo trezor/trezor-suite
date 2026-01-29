@@ -9,7 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@suite-common/analytics-types": "workspace:*",
+        "@suite-common/analytics": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite/analytics": "workspace:*",
         "react": "19.1.0",
