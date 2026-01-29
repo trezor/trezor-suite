@@ -14,7 +14,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';
 import { tradeFinalStatuses } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { AfterTradeExperiment } from 'src/views/wallet/trading/common/TradingDetail/AfterTradeExperiment';
 import { TradingDetailSellPaymentFailed } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailSell/TradingDetailSellPaymentFailed';
@@ -40,7 +40,7 @@ const getTradeStatusStep = (tradeStatus: SellTradeStatus) => {
 };
 
 export const TradingDetailSell = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const accounts = useSelector(selectAccounts);
     const { account, trade, info } = useTradingDetailContext<TradingSellType>();
     const dispatch = useDispatch();
@@ -75,14 +75,14 @@ export const TradingDetailSell = () => {
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingStatus,
             payload: {
                 type: 'sell',
                 status: tradeStatusStep,
             },
         });
-    }, [tradeStatus, previousTradeStatus, tradeStatusStep, legacyAnalytics]);
+    }, [tradeStatus, previousTradeStatus, tradeStatusStep, analytics]);
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default trading page, the trade is shown there in the previous trades
