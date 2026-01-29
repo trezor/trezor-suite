@@ -4,10 +4,9 @@ import { Model } from '@trezor/trezor-user-env-link';
 
 import { baseConfig } from './playwright-base.config';
 import { PlaywrightProjectBuilder } from './playwright-project-builder';
+import type { PlaywrightProjectDefinition } from './playwright-project-builder';
 import { tagsPr } from './projectTags';
 import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
-
-const target = PlaywrightTarget.Web;
 
 /*
  * Web PR config
@@ -15,40 +14,50 @@ const target = PlaywrightTarget.Web;
  * There are projects for all supported device models with the latest firmware version
  * Additionally we only run smoke tests on T3T1 model and tests tagged as @webOnly to reduce the total number of tests executed on each PR
  */
+const target = PlaywrightTarget.Web;
+const definition: PlaywrightProjectDefinition[] = [
+    {
+        model: Model.T3W1,
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        grep: /(?=.*@T3W1)(?=.*@webOnly)/,
+    },
+    {
+        model: Model.T3T1,
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        nameSuffix: 'smoke',
+        grep: /(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/,
+    },
+    {
+        model: Model.T3B1,
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        grep: /(?=.*@T3B1)(?=.*@webOnly)/,
+    },
+    {
+        model: Model.T2T1,
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        grep: /(?=.*@T2T1)(?=.*@webOnly)/,
+    },
+    {
+        model: Model.T1B1,
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        grep: /(?=.*@T1B1)(?=.*@webOnly)/,
+    },
+    {
+        name: 'no_device',
+        additionalGrepInvert: /@nightlyOnly/,
+        currentsTags: tagsPr,
+        grep: /(?=.*@noDevice)(?=.*@webOnly)/,
+    },
+];
+
 const config = defineConfig({
     ...baseConfig,
-    projects: [
-        new PlaywrightProjectBuilder(target, Model.T3W1)
-            .setGrep(/(?=.*@T3W1)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T3T1, 'smoke')
-            .setGrep(/(?=.*@T3T1)(?=.*@smoke)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T3B1)
-            .setGrep(/(?=.*@T3B1)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T2T1)
-            .setGrep(/(?=.*@T2T1)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-        new PlaywrightProjectBuilder(target, Model.T1B1)
-            .setGrep(/(?=.*@T1B1)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-        new PlaywrightProjectBuilder(target, 'no_device')
-            .setGrep(/(?=.*@noDevice)(?=.*@webOnly)/)
-            .addGrepInvert(/@nightlyOnly/)
-            .setCurrentsTags(tagsPr)
-            .build(),
-    ],
+    projects: PlaywrightProjectBuilder.buildFromDefinitions(target, definition),
 });
 
 /* eslint-disable-next-line import/no-default-export */

@@ -1,21 +1,44 @@
 import { PlaywrightTestOptions, PlaywrightWorkerOptions, Project, devices } from '@playwright/test';
+import { RequireAtLeastOne } from 'type-fest';
 
 import { Model } from '@trezor/trezor-user-env-link';
 
 import { PlaywrightTarget, SuiteTestOptions } from '../support/testExtends/suiteTestOptions';
 
+export type PlaywrightProjectDefinition = RequireAtLeastOne<
+    {
+        name?: string;
+        model?: Model;
+        nameSuffix?: string;
+        grep?: RegExp;
+        additionalGrepInvert?: RegExp;
+        currentsTags?: string[];
+        firmware?: string;
+    },
+    'name' | 'model'
+>;
+
 export class PlaywrightProjectBuilder {
     private project: Project<SuiteTestOptions & PlaywrightTestOptions, PlaywrightWorkerOptions>;
 
-    constructor(target: PlaywrightTarget, nameOrModel: string | Model, nameSuffix?: string) {
-        const model: Model | undefined = nameOrModel in Model ? (nameOrModel as Model) : undefined;
-
-        const name = nameSuffix ? `${nameOrModel}_${nameSuffix}` : (nameOrModel as string);
+    constructor({
+        target,
+        name,
+        model,
+        nameSuffix,
+    }: {
+        target: PlaywrightTarget;
+        name?: string;
+        model?: Model;
+        nameSuffix?: string;
+    }) {
+        const namePrefix = name ?? model; // at least one of them is guaranteed to be defined
+        const projectName = nameSuffix ? `${namePrefix}_${nameSuffix}` : namePrefix;
 
         switch (target) {
             case PlaywrightTarget.Web:
                 this.project = {
-                    name,
+                    name: projectName,
                     use: {
                         ...devices['Desktop Chrome'],
                         channel: 'chromium',
@@ -28,7 +51,7 @@ export class PlaywrightProjectBuilder {
                 break;
             case PlaywrightTarget.Desktop:
                 this.project = {
-                    name,
+                    name: projectName,
                     use: {
                         target: PlaywrightTarget.Desktop,
                     },
@@ -44,58 +67,67 @@ export class PlaywrightProjectBuilder {
             const defaultFirmwareMajorVersion = model === Model.T1B1 ? 1 : 2;
             this.setFirmwareVersion(`${defaultFirmwareMajorVersion}-latest`);
             this.setModel(model);
-            this.addGrep(new RegExp(`(?=.*@${model})`));
+            this.setGrep(new RegExp(`(?=.*@${model})`));
         }
     }
 
-    setModel(model: Model): this {
+    get playwrightProject() {
+        return this.project;
+    }
+
+    setModel(model: Model) {
         this.project.use = { ...this.project.use, model };
-
-        return this;
     }
 
-    setFirmwareVersion(firmwareVersion: string): this {
+    setFirmwareVersion(firmwareVersion: string) {
         this.project.use = { ...this.project.use, firmwareVersion };
-
-        return this;
     }
 
-    setGrep(pattern: RegExp | RegExp[]): this {
+    setGrep(pattern: RegExp | RegExp[]) {
         this.project.grep = pattern;
-
-        return this;
     }
 
-    addGrep(pattern: RegExp): this {
-        const current = this.project.grep;
-        this.project.grep = Array.isArray(current)
-            ? [...current, pattern]
-            : [current as RegExp, pattern];
-
-        return this;
-    }
-
-    addGrepInvert(pattern: RegExp): this {
+    addGrepInvert(pattern: RegExp) {
         const current = this.project.grepInvert;
         this.project.grepInvert = Array.isArray(current)
             ? [...current, pattern]
             : [current as RegExp, pattern];
-
-        return this;
     }
 
-    setCurrentsTags(tags: string[]): this {
+    setCurrentsTags(tags: string[]) {
         this.project.metadata = {
             ...this.project.metadata,
             pwc: {
                 tags,
             },
         };
-
-        return this;
     }
 
-    build(): Project {
-        return this.project;
+    static buildFromDefinitions(
+        target: PlaywrightTarget,
+        definitions: PlaywrightProjectDefinition[],
+    ): Project[] {
+        return definitions.map(def => {
+            const builder = new PlaywrightProjectBuilder({
+                target,
+                name: def.name,
+                model: def.model,
+                nameSuffix: def.nameSuffix,
+            });
+            if (def.grep) {
+                builder.setGrep(def.grep);
+            }
+            if (def.additionalGrepInvert) {
+                builder.addGrepInvert(def.additionalGrepInvert);
+            }
+            if (def.currentsTags) {
+                builder.setCurrentsTags(def.currentsTags);
+            }
+            if (def.firmware) {
+                builder.setFirmwareVersion(def.firmware);
+            }
+
+            return builder.playwrightProject;
+        });
     }
 }
