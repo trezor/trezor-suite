@@ -6,7 +6,7 @@ import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { goto } from '../../../actions/suite/routerActions';
 
@@ -30,7 +30,7 @@ const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
 };
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     }
 
     const handleClick = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsMultiShareBackup,
             payload: { action: 'start' },
         });
