@@ -29,11 +29,13 @@ export const TransactionLayout = ({
                 {icon}
                 <Column flex="1" gap={8}>
                     <Row justifyContent="space-between" gap={24}>
-                        <InfoSegments variant="disabled" typographyStyle="body">
-                            <Text variant="default" as="div">
+                        <InfoSegments variant="tertiary">
+                            <Text typographyStyle="highlight" variant="default" as="div">
                                 {heading}
                             </Text>
-                            {timestamp}
+                            <Text typographyStyle="body" variant="disabled" as="div">
+                                {timestamp}
+                            </Text>
                         </InfoSegments>
                         {actions}
                     </Row>
