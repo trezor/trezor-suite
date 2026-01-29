@@ -42,6 +42,8 @@ import { useAnalytics } from 'src/support/useAnalytics';
 import { ThunkAction } from 'src/types/suite';
 import { DESTINATION_TAG_GUIDE_PATH } from 'src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag';
 
+import { ConfirmValueMessage } from './ConfirmValueMessage';
+
 export type ConfirmValueModalProps = Pick<ModalProps, 'onCancel' | 'heading'> & {
     account?: Account;
     'data-testid'?: string;
@@ -185,6 +187,7 @@ export const ConfirmValueModal = ({
                             }
                         />
                     )}
+                    <ConfirmValueMessage isAddress={isAddress} />
                     <Card fillType="flat" paddingType="large">
                         <Row gap={32} alignItems="stretch" data-testid="@modal/output-address">
                             <Box aspectRatio="1" width={170} height={170}>
