@@ -39,13 +39,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const accountLabel = useSelector((state: CombinedLabelingState) => {
         if (!account) return null;
 
-        return selectAccountLabel(
-            state,
-            account.deviceState,
-            account.descriptor,
-            account.symbol,
-            accountKey,
-        );
+        return selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol);
     });
 
     const form = useAccountLabelForm(accountLabel ?? undefined);
@@ -58,7 +52,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     useEffect(() => {
         // Focus account label input field and open keyboard on the first render.
         // Timeout is needed to prevent random placement of the cursor at beginning of the input field instead of the end.
-        // Also it's needed to prevent the keyboard from opening when the modal is animating.
+        // Also, it's needed to prevent the keyboard from opening when the modal is animating.
         const timeout = setTimeout(() => {
             inputRef.current?.focus();
         }, 300);

@@ -36,6 +36,7 @@
         "@suite-native/tokens": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:^",
+        "@trezor/utils": "workspace:*",
         "jotai": "2.15.0",
         "react": "19.1.0",
         "react-hook-form": "^7.66.1",
