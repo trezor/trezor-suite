@@ -212,24 +212,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingNavigate;
-          payload: {
-              action: 'navigate' | 'cancel';
-              type: 'exchange' | 'buy' | 'sell' | 'buy/sell';
-              from:
-                  | 'dashboard/header'
-                  | 'dashboard/assets'
-                  | 'dashboard/staking-dashboard'
-                  | 'account/header'
-                  | 'account/tokens'
-                  | 'account/tradebox'
-                  | 'account/empty'
-                  | 'buy/sell';
-              networkSymbol?: string;
-              contractAddress?: string;
-          };
-      }
-    | {
           type: EventType.TradingExchange;
           payload: {
               action: 'continue' | 'cancel';
