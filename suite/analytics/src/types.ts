@@ -151,18 +151,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AccountsStatus;
-          payload: Record<string, number>;
-      }
-    | {
-          type: EventType.AccountsNonZeroBalance;
-          payload: Record<string, number>;
-      }
-    | {
-          type: EventType.AccountsTokensStatus;
-          payload: Record<string, number>;
-      }
-    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;

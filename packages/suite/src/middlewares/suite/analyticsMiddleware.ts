@@ -226,17 +226,17 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsStatus,
                     payload: accountsWithTransactions,
                 });
 
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsNonZeroBalance,
                     payload: accountsWithNonZeroBalance,
                 });
 
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsTokensStatus,
                     payload: accountsWithTokens,
                 });
