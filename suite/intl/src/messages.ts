@@ -4051,11 +4051,6 @@ export const messages = defineMessages({
         id: 'EVENT_WALLET_CREATED',
         defaultMessage: 'Wallet added successfully',
     },
-    TR_FACTORY_RESET_MODAL_DESCRIPTION: {
-        id: 'TR_FACTORY_RESET_MODAL_DESCRIPTION',
-        defaultMessage:
-            'Resetting your device will erase all its data. Make sure you have your wallet backup before resetting, so you can restore access to your funds.',
-    },
     TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION: {
         id: 'TR_WIPE_DEVICE_MODAL_PROCEED_WITH_CAUTION',
         defaultMessage: "This will erase all of your Trezor's data. Proceed with caution.",
@@ -4080,11 +4075,6 @@ export const messages = defineMessages({
     TR_WIPE_DEVICE_SUCCESS_HEADING: {
         id: 'TR_WIPE_DEVICE_SUCCESS_HEADING',
         defaultMessage: 'Device wiped successfully',
-    },
-    TR_WIPE_DEVICE_SUCCESS_DESCRIPTION: {
-        id: 'TR_WIPE_DEVICE_SUCCESS_DESCRIPTION',
-        defaultMessage:
-            'Your device has been wiped. You can now set it up as a new device or restore from a backup.',
     },
     TR_BACK_TO_DASHBOARD: {
         id: 'TR_BACK_TO_DASHBOARD',
@@ -9600,11 +9590,11 @@ export const messages = defineMessages({
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: 'Unstaked from {account}',
+        defaultMessage: '{amount} unstaked',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
-        defaultMessage: 'Claimed from {account}',
+        defaultMessage: '{amount} claimed',
     },
     TOAST_SUCCESSFUL_CLAIM: {
         id: 'TOAST_SUCCESSFUL_CLAIM',
