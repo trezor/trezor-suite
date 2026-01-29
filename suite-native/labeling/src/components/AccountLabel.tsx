@@ -15,7 +15,8 @@ type AccountLabelProps = {
 
 type AccountLabelPropsWithAccount = AccountLabelProps | { account: Account };
 
-const normalizeProps = (props: AccountLabelPropsWithAccount): AccountLabelProps => 'account' in props
+const normalizeProps = (props: AccountLabelPropsWithAccount): AccountLabelProps =>
+    'account' in props
         ? {
               deviceStaticSessionId: props.account.deviceState,
               networkSymbol: props.account.symbol,
