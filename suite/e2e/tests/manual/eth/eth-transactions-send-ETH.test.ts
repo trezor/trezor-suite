@@ -40,7 +40,7 @@ test.describe.skip('Eth transactions', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.High,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

@@ -26,7 +26,7 @@ test.describe.skip('Eth transactions Internal transaction', { tag: ['@group=manu
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.High,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

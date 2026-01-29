@@ -8,8 +8,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
         'Ethereum staking core FW',
         {
             annotation: createTestAnnotation({
-                testCase:
-                    'Verifies that a user can stake Ethereum. Hoodi testnet can be used as backup',
+                testCase: 'Verifies that a user can stake Ethereum - SLIP39',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "academic" seed',
                     'Connected Trezor Suite',
@@ -35,7 +34,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.High,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},
@@ -45,8 +44,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
         'Ethereum unstaking core FW',
         {
             annotation: createTestAnnotation({
-                testCase:
-                    'Verifies that a user can unstake Ethereum. Hoodi testnet can be used as backup',
+                testCase: 'Verifies that a user can unstake Ethereum - SLIP39',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "academic" seed',
                     'Connected Trezor Suite',
@@ -64,7 +62,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.High,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},
@@ -73,8 +71,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
         'Ethereum claiming core FW',
         {
             annotation: createTestAnnotation({
-                testCase:
-                    'Verifies that a user can claim Ethereum rewards. Hoodi testnet can be used as backup',
+                testCase: 'Verifies that a user can claim Ethereum rewards - SLIP39',
                 prerequisites: [
                     'Seeded Trezor device with transactions with "academic" seed',
                     'Connected Trezor Suite',
@@ -93,7 +90,7 @@ test.describe.skip('Ethereum staking core FW', { tag: ['@group=manual'] }, () =>
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.Medium,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},

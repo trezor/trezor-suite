@@ -18,7 +18,7 @@ test.describe.skip('Eth transactions NFT', { tag: ['@group=manual'] }, () => {
                 ],
                 steps: [
                     'navigate to the "Accounts"',
-                    'Select or enable and then Select "Ethereum"',
+                    'Select or enable and then Select "Ethereum" or other EVM account',
                     'Select random user account',
                     'Transaction history is present',
                     'find NFT transaction in the transaction history',
@@ -28,7 +28,7 @@ test.describe.skip('Eth transactions NFT', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.Low,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},
@@ -39,19 +39,19 @@ test.describe.skip('Eth transactions NFT', { tag: ['@group=manual'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies that an NFT transfer using MetaMask is reflected correctly in Trezor Suite.',
+                    'Verifies that an NFT transfer using MetaMask or Rabby is reflected correctly in Trezor Suite.',
                 prerequisites: [
                     'Seeded Trezor device',
                     'Trezor Suite with a funded wallet connected',
-                    'MetaMask wallet installed and configured',
-                    'NFT available in MetaMask wallet',
+                    'MetaMask wallet/Rabby wallet installed and configured',
+                    'NFT available in MetaMask/Rabby wallet',
                 ],
                 steps: [
-                    'Open MetaMask and log in',
-                    'Navigate to the NFT section in MetaMask',
+                    'Open MetaMask/Rabby and log in',
+                    'Navigate to the NFT section in MetaMask/Rabby',
                     'Select an NFT to transfer',
                     'Enter recipient address (Trezor Suite account)',
-                    'Confirm the transaction in MetaMask',
+                    'Confirm the transaction in MetaMask/Rabby',
                     'Wait for the transaction to be mined',
                     'Open Trezor Suite and navigate to the Ethereum account',
                     'Verify the NFT transfer is reflected in the transaction history',
@@ -59,7 +59,7 @@ test.describe.skip('Eth transactions NFT', { tag: ['@group=manual'] }, () => {
                 ],
                 category: TestCategory.ETH,
                 priority: TestPriority.Low,
-                stream: TestStream.Trends,
+                stream: TestStream.Wallet,
             }),
         },
         async () => {},
