@@ -270,10 +270,6 @@ export const messages = defineMessages({
         defaultMessage: 'No offers found. Adjust the currency, assets, or amounts.',
         id: 'TR_TRADING_NO_OFFER_BUY_OR_SELL',
     },
-    TR_TRADING_NO_OFFER_SWAP: {
-        defaultMessage: 'No {offers} found. Adjust the rate type, assets, or amounts.',
-        id: 'TR_TRADING_NO_OFFER_SWAP',
-    },
     TR_TRADING_NO_OFFER_BUY_OR_SELL_TOR: {
         defaultMessage:
             'No offers found. Adjust the currency, assets, amounts, or disable Tor to see more offers.',
@@ -307,10 +303,6 @@ export const messages = defineMessages({
     TR_TOKEN_NOT_FOUND: {
         defaultMessage: 'No token found',
         id: 'TR_TOKEN_NOT_FOUND',
-    },
-    TR_TOKEN_NOT_FOUND_ON_NETWORK: {
-        defaultMessage: 'Token not found on the {networkName} network.',
-        id: 'TR_TOKEN_NOT_FOUND_ON_NETWORK',
     },
     TR_TOKEN_TRY_DIFFERENT_SEARCH: {
         defaultMessage: 'Try a different search.',
@@ -389,10 +381,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_COMPLETE: {
         defaultMessage: 'Swap complete',
         id: 'TR_EXCHANGE_COMPLETE',
-    },
-    TR_EXCHANGE_SEND_TO: {
-        defaultMessage: '{providerName}’s address',
-        id: 'TR_EXCHANGE_SEND_TO',
     },
     TR_EXCHANGE_APPROVAL_APPROVE_TOKEN_SPENDING: {
         defaultMessage: 'Set {displaySymbol} spending',
@@ -478,10 +466,6 @@ export const messages = defineMessages({
         defaultMessage: 'Set limit',
         id: 'TR_EXCHANGE_APPROVAL_SET_LIMIT',
     },
-    TR_EXCHANGE_SWAP_SEND_TO: {
-        defaultMessage: '{provider} contract address',
-        id: 'TR_EXCHANGE_SWAP_SEND_TO',
-    },
     TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED: {
         defaultMessage: 'Swap offer amount',
         id: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED',
@@ -527,10 +511,6 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
         defaultMessage: 'This is the address for receiving your assets.',
     },
-    TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT: {
-        id: 'TR_EXCHANGE_SELECT_RECEIVE_ACCOUNT',
-        defaultMessage: 'Select {symbol} receive account',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
         defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
@@ -538,10 +518,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_RECEIVING_ADDRESS_INVALID: {
         defaultMessage: 'Receive address is invalid',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_INVALID',
-    },
-    TR_EXCHANGE_EXTRA_FIELD: {
-        defaultMessage: '{extraFieldName}',
-        id: 'TR_EXCHANGE_EXTRA_FIELD',
     },
     TR_EXCHANGE_EXTRA_FIELD_SWITCH: {
         defaultMessage: 'Add {extraFieldName}',
@@ -1241,10 +1217,6 @@ export const messages = defineMessages({
         defaultMessage: 'Copied',
         id: 'TR_COPIED_TO_CLIPBOARD',
     },
-    TR_ADDRESS_MODAL_TITLE: {
-        defaultMessage: '{networkName} network receive address',
-        id: 'TR_ADDRESS_MODAL_TITLE',
-    },
     TR_IMPORT_CSV_MODAL_TITLE: {
         defaultMessage: 'Import addresses from CSV',
         id: 'TR_IMPORT_CSV_MODAL_TITLE',
@@ -1730,14 +1702,6 @@ export const messages = defineMessages({
     TR_CONFIRMED_TX: {
         defaultMessage: 'Confirmed',
         id: 'TR_CONFIRMED_TX',
-    },
-    TR_NON_ASCII_CHAR: {
-        defaultMessage: '{label} (with non-recommended "{char}")',
-        id: 'TR_NON_ASCII_CHAR',
-    },
-    TR_NON_ASCII_CHARS: {
-        defaultMessage: '{label} (with non-recommended characters)',
-        id: 'TR_NON_ASCII_CHARS',
     },
     TR_CONNECT_UNLOCK_YOUR_DEVICE: {
         defaultMessage: 'Connect & unlock your Trezor',
@@ -7632,10 +7596,6 @@ export const messages = defineMessages({
         defaultMessage:
             'Restarting your computer may fix the communication issue between Trezor Suite and your Trezor device.',
     },
-    TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN: {
-        id: 'TR_TROUBLESHOOTING_UNREADABLE_UNKNOWN',
-        defaultMessage: 'Unexpected state: {error}',
-    },
     TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE: {
         id: 'TR_SEEDLESS_SETUP_IS_NOT_SUPPORTED_TITLE',
         defaultMessage: "Seedless setup isn't supported in Trezor Suite",
@@ -7738,16 +7698,6 @@ export const messages = defineMessages({
         id: 'TR_TX_DEPOSIT',
         defaultMessage: 'Deposit',
         description: 'Label for a deposit amount in transaction detail',
-    },
-    TR_STAKING_DEPOSIT_FEE_DECRIPTION: {
-        id: 'TR_STAKING_DEPOSIT_FEE_DECRIPTION',
-        defaultMessage:
-            'To start staking, a deposit of {feeAmount} ADA is required to register your address. If you decide to unstake later, the full deposit will be returned to you.',
-    },
-    TR_STAKING_TX_PENDING: {
-        id: 'TR_STAKING_TX_PENDING',
-        defaultMessage:
-            'Your transaction {txid} was sent successfully to the blockchain and is waiting for confirmation.',
     },
     TR_STAKING_IS_NOT_SUPPORTED: {
         id: 'TR_STAKING_IS_NOT_SUPPORTED',
@@ -9084,11 +9034,6 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DREP_ID',
         defaultMessage: 'DRep ID',
     },
-    TR_STAKING_CARD_TEXT: {
-        id: 'TR_STAKING_CARD_TEXT',
-        defaultMessage:
-            'Stake your full balance and earn ~{potentialRewards} {displaySymbol} yearly at the current APY. Temporarily locking your {displaySymbol} earns you rewards while boosting the network’s security.',
-    },
     TR_STAKING_CARD_TEXT_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
         defaultMessage:
@@ -9506,10 +9451,6 @@ export const messages = defineMessages({
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
-    },
-    TR_STAKE_EXPECTED_REWARDS: {
-        id: 'TR_STAKE_EXPECTED_REWARDS',
-        defaultMessage: 'Next estimated reward in ~{count, plural, one {# day} other {# days}}',
     },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
