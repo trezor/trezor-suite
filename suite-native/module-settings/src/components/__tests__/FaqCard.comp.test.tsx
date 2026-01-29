@@ -1,6 +1,6 @@
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
-import { FaqInfoPanel } from '../FaqInfoPanel';
+import { FaqCard } from '../FaqCard';
 
 let mockIsAndroid: boolean;
 let mockIsTradingEnabled: boolean;
@@ -15,9 +15,9 @@ jest.mock('@suite-native/trading-state', () => ({
     selectIsTradingEnabled: () => mockIsTradingEnabled,
 }));
 
-describe('FaqInfoPanel', () => {
-    const renderFAQInfoPanel = (preloadedState: PreloadedState = {}) =>
-        renderWithStoreProviderAsync(<FaqInfoPanel />, { preloadedState });
+describe('FaqCard', () => {
+    const renderFaqCard = (preloadedState: PreloadedState = {}) =>
+        renderWithStoreProviderAsync(<FaqCard />, { preloadedState });
 
     beforeEach(() => {
         mockIsTradingEnabled = true;
@@ -29,7 +29,7 @@ describe('FaqInfoPanel', () => {
         });
 
         it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFAQInfoPanel();
+            const { getByText } = await renderFaqCard();
 
             // Android BT-specific info
             expect(getByText('For wireless connections:')).toBeOnTheScreen();
@@ -41,7 +41,7 @@ describe('FaqInfoPanel', () => {
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFAQInfoPanel();
+            const { queryByText } = await renderFaqCard();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });
@@ -53,7 +53,7 @@ describe('FaqInfoPanel', () => {
         });
 
         it('should render appropriate sections when BT is enabled', async () => {
-            const { getByText } = await renderFAQInfoPanel();
+            const { getByText } = await renderFaqCard();
 
             // iOS BT-specific info
             expect(
@@ -67,7 +67,7 @@ describe('FaqInfoPanel', () => {
         it('should not render trading section when trading is disabled', async () => {
             mockIsTradingEnabled = false;
 
-            const { queryByText } = await renderFAQInfoPanel();
+            const { queryByText } = await renderFaqCard();
 
             expect(queryByText('What trading features are available?')).toBeNull();
         });
