@@ -21,6 +21,7 @@ export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
+export { sendInitialisedEvent } from './sendInitialisedEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
 export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
