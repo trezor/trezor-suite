@@ -130,7 +130,13 @@ export const getAccountListSections = (
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
-    const tokens = filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
+    // For Stellar, show all tokens without filtering.
+    // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
+    // require explicit user action to activate. See tokensSelectors.ts for details.
+    const tokens =
+        account.networkType === 'stellar'
+            ? (account.tokens ?? [])
+            : filterKnownTokens(tokenDefinitions, account.symbol, account.tokens ?? []);
     const hasAnyKnownTokens = isNetworkSupportingTokens && !!tokens.length;
 
     const stakingBalance = getAccountTotalStakingBalance(account) ?? '0';
@@ -163,13 +169,18 @@ export const getAccountListSections = (
     }
 
     if (hasAnyKnownTokens) {
-        const tokensWithBalance = tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
-        tokensWithBalance.forEach((token, index) => {
+        // For Stellar, show all tokens (trustlines) regardless of balance since they are explicitly activated
+        // For other networks, only show tokens with balance > 0
+        const tokensToShow =
+            account.networkType === 'stellar'
+                ? tokens
+                : tokens.filter(token => parseFloat(token?.balance ?? '0') > 0);
+        tokensToShow.forEach((token, index) => {
             sections.push({
                 type: 'token',
                 account,
                 token: token as TokenInfoBranded,
-                isLast: index === tokensWithBalance.length - 1,
+                isLast: index === tokensToShow.length - 1,
             });
         });
     }

@@ -40,6 +40,7 @@ import {
     RootStackRoutes,
     SendStackRoutes,
     SettingsStackRoutes,
+    StellarManageTokenStackRoutes,
     TradingStackRoutes,
     TransactionDetailStackRoutes,
     WipeDeviceStackRoutes,
@@ -396,6 +397,7 @@ export type RootStackParamList = {
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
+    [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
 };
 
 export type TransactionDetailStackParamList = {
@@ -444,5 +446,22 @@ export type TradingStackParamList = {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
+    };
+};
+
+export type StellarManageTokenStackParamList = {
+    [StellarManageTokenStackRoutes.TokenSelection]: {
+        accountKey: AccountKey;
+    };
+    [StellarManageTokenStackRoutes.ManualTokenInput]: {
+        accountKey: AccountKey;
+    };
+    [StellarManageTokenStackRoutes.ActivationFee]: {
+        accountKey: AccountKey;
+        tokenContract: TokenAddress;
+    };
+    [StellarManageTokenStackRoutes.DeactivationFee]: {
+        accountKey: AccountKey;
+        tokenContract: TokenAddress;
     };
 };

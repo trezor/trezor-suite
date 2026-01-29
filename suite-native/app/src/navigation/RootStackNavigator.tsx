@@ -31,6 +31,7 @@ import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
+import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
 import { TradingWebViewScreen } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
@@ -183,6 +184,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.TradingLocationModal}
                     component={TradingLocationModalScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.StellarManageTokenStack}
+                    component={StellarManageTokenStackNavigator}
                 />
 
                 {isDevelopOrDebugEnv() && (

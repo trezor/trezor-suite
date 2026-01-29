@@ -1877,6 +1877,8 @@ export const messages = {
             transactionOverviewTitle: 'Transaction overview',
             showDetails: 'Show details',
             showMoreButton: 'and {amount} more',
+            stellarTrustlineAdded: 'Established trustline to {assetCode}',
+            stellarTrustlineRemoved: 'Removed trustline to {assetCode}',
             sheet: {
                 parameters: 'Parameters',
                 values: 'Compare values',
@@ -1902,6 +1904,8 @@ export const messages = {
             stakeDelegation: 'Stake delegation',
             stakeRegistration: 'Registration of a stake address',
             stakeDeregistration: 'Deregistration of a stake address',
+            stellarTrustlineAdded: 'Established trustline',
+            stellarTrustlineRemoved: 'Removed trustline',
         },
         TransactionDetailScreen: {
             sheetSubtitle: 'Transaction #{transactionId}',
@@ -3090,5 +3094,55 @@ export const messages = {
     },
     moduleClipboard: {
         copiedToClipboard: 'Copied to clipboard',
+    },
+    moduleStellarToken: {
+        screenTitle: {
+            activateToken: 'Activate token',
+            deactivateToken: 'Deactivate token',
+        },
+        accountDetail: {
+            activateToken: 'Activate token',
+            deactivateToken: 'Deactivate token',
+        },
+        tokenSelection: {
+            title: 'Select token',
+            subtitle: 'Activate a token below to receive it or trade it.',
+            searchPlaceholder: 'Search token or address',
+            activateManually: 'Activate token manually',
+            noResults: 'No tokens found',
+        },
+        tokenDetail: {
+            issuer: 'Issuer',
+            issuerAddress: 'Issuer address',
+            unknownIssuer: 'Unknown',
+        },
+        networkFee: {
+            token: 'Token',
+            reserveInfo: 'This will increase your <link>reserved balance</link> by {reserve}.',
+            reviewAndSign: 'Review and sign',
+            activationFailed: 'Activation Failed',
+            activationFailedDescription: 'Failed to activate token. Please try again.',
+            unexpectedError: 'An unexpected error occurred. Please try again.',
+            insufficientBalance:
+                'Insufficient funds. You need {required} but only have {available} available.',
+        },
+        manualInput: {
+            title: 'Activate token manually',
+            subtitle: 'You can activate any token if you know its asset code and issuer address.',
+            assetCode: 'Asset code',
+            assetCodePlaceholder: 'e.g. SHX',
+            assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',
+            issuerAddressPlaceholder: 'e.g. GARDNV3Q...',
+            issuerAddressError: 'Invalid issuer address. Enter a valid Stellar address.',
+        },
+        deactivationFee: {
+            warningText:
+                "You won't be able to receive, send, or trade this token until you activate it again. Deactivation makes the {reserve} reserve available for use.",
+            deactivationFailed: 'Deactivation Failed',
+            deactivationFailedDescription: 'Failed to deactivate token. Please try again.',
+            cantDeactivateTitle: "You can't deactivate a token with a balance",
+            cantDeactivateDescription:
+                'You need to transfer or convert your balance to zero first. Try selling for XLM.',
+        },
     },
 };

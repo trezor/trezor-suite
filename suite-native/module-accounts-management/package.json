@@ -40,6 +40,7 @@
         "@suite-native/link": "workspace:*",
         "@suite-native/module-device-onboarding": "workspace:*",
         "@suite-native/module-earn": "workspace:*",
+        "@suite-native/module-stellar-token-management": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/services": "workspace:*",

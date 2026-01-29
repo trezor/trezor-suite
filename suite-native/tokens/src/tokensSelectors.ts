@@ -122,6 +122,13 @@ export const selectAnyOfTokensIsKnown = (
     if (!account?.symbol) {
         return false;
     }
+
+    // For Stellar, all tokens are considered "known" since trustlines require explicit user action.
+    // See comment in selectAccountsKnownTokens for details.
+    if (account.networkType === 'stellar') {
+        return tokens.length > 0;
+    }
+
     const result = A.any(tokens, token => {
         const isKnown = selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract);
 
@@ -154,6 +161,15 @@ export const selectAccountKnownTokens = createMemoizedSelector(
     (account, tokenDefinitions): TokenInfoBranded[] => {
         if (!account || !isNetworkWithTokens(account.symbol)) {
             return returnStableArrayIfEmpty<TokenInfoBranded>([]);
+        }
+
+        // For Stellar, show all tokens without filtering.
+        // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
+        // require explicit user action to activate - users must sign a transaction to add each
+        // trustline. Therefore, all Stellar tokens on an account are intentionally added by the
+        // user and should be displayed, even if they're not in the token-definitions list.
+        if (account.networkType === 'stellar') {
+            return returnStableArrayIfEmpty(account.tokens ?? []) as TokenInfoBranded[];
         }
 
         const tokenDefinitionsForNetwork = getSimpleCoinDefinitionsByNetwork(
