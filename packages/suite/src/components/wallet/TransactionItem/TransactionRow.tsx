@@ -6,6 +6,7 @@ import {
     formatCardanoDeposit,
     formatCardanoWithdrawal,
     formatNetworkAmount,
+    getCardanoStakingSignValue,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -114,11 +115,7 @@ export const DepositRow = ({
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_DEPOSIT"
-        sign={
-            transaction.cardanoSpecific?.subtype === 'stake_deregistration'
-                ? 'positive'
-                : 'negative'
-        }
+        sign={getCardanoStakingSignValue(transaction)}
         amount={formatCardanoDeposit(transaction) ?? '0'}
         transaction={transaction}
         useFiatValues={useFiatValues}

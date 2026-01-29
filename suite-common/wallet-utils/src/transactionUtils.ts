@@ -167,6 +167,21 @@ export const formatCardanoDeposit = (tx: WalletAccountTransaction) =>
         ? formatNetworkAmount(tx.cardanoSpecific.deposit, tx.symbol)
         : undefined;
 
+export const getCardanoStakingSignValue = (transaction: WalletAccountTransaction) => {
+    if (!transaction?.cardanoSpecific) return 'negative';
+    const subtype = transaction.cardanoSpecific?.subtype;
+
+    switch (subtype) {
+        case 'stake_registration':
+            return 'negative';
+        case 'stake_deregistration':
+        case 'withdrawal':
+            return 'positive';
+    }
+
+    return 'positive';
+};
+
 export const isTxFeePaid = (tx: WalletAccountTransaction) => {
     const showFeeRowForSolClaim = tx?.solanaSpecific?.stakeOperation?.type === 'claim';
     const showFeeRowForStellar = tx?.stellarSpecific?.feeSource === tx.descriptor;
