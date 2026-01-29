@@ -2,8 +2,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
+    SuiteSyncInteraction,
     SuiteSyncState,
+    WithSuiteSyncAndDeviceState,
     initialSuiteSyncState as commonInitialState,
+    selectSuiteSyncInteraction,
     suiteSyncReducer,
 } from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
@@ -79,6 +82,19 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
 
 export const selectIsFeatureSuiteSyncAvailable = (state: DesktopSuiteSyncRootState): boolean =>
     state.suiteSync.settings.isFeatureSuiteSyncAvailable;
+
+export const selectShowEnableSuiteSyncModal = (
+    state: DesktopSuiteSyncRootState,
+): StaticSessionId | null => state.suiteSync.showEnableSuiteSyncModal;
+
+export const selectDesktopSuiteSyncInteraction = (
+    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState,
+    deviceStaticSessionId: StaticSessionId | null,
+): SuiteSyncInteraction | null => {
+    if (!selectIsFeatureSuiteSyncAvailable(state)) return null;
+
+    return selectSuiteSyncInteraction(state, deviceStaticSessionId);
+};
 
 export const { updateShowEnableSuiteSyncModal, updateIsFeatureSuiteSyncAvailable } =
     suiteSyncSlice.actions;
