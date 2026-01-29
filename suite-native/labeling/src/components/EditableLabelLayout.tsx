@@ -50,6 +50,11 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
                             showToast({ variant: 'error', icon: 'warning', message: type });
 
                             return;
+
+                        case 'WriteModeRequiredForAllocation':
+                            // Do nothing, this is expected control flow error when we want allocate on-demand.
+                            return;
+
                         default:
                             return exhaustive(type);
                     }

@@ -4,32 +4,54 @@ import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
-import { DelegatedIdentityKey, SuiteSyncOwnerId } from '@suite-common/suite-types';
-import { WalletDescriptor } from '@suite-common/wallet-types';
+import {
+    ChallengeFailedErrType,
+    EnsureOwnerHasAllocatedQuota,
+    EnsureOwnerHasAllocatedQuotaParams,
+    HttpErrType,
+    ProofOfDelegatedIdentityFailedErrType,
+    WriteModeRequiredForAllocationErrType,
+} from '@suite-common/suite-sync-types';
+import { err, ok } from '@trezor/type-utils';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {
     DEFAULT_ACCOUNT_SIZE_QUOTA,
     EVOLU_SIGN_ADD_SPACE_TO_OWNER_REQUEST_HEADER,
 } from './constants';
-import { quotaManagerFetchError, quotaManagerOwnerFetched } from './quotaManagerActions';
+import { quotaManagerOwnerFetched } from './quotaManagerActions';
 import { selectIsQuotaManagerEnabled, selectQuotaManagerBaseUrl } from './quotaManagerSelectors';
 import { checkStorageByOwnerId } from './storage/checkStorage';
 import { transferStorageThunk } from './storage/transferStorageThunk';
 import { prepareMessageBufferEvoluAddSpaceToOwner } from './util/prepareMessageBufferEvoluAddSpaceToOwner';
 
-type EnsureOwnerHasAllocatedQuotaParams = {
-    ownerId: SuiteSyncOwnerId;
-    walletDescriptor: WalletDescriptor;
-    delegatedKey: DelegatedIdentityKey;
-};
+export const WriteModeRequiredForAllocation = (): WriteModeRequiredForAllocationErrType => ({
+    type: 'WriteModeRequiredForAllocation',
+});
+
+export const ChallengeFailed = (): ChallengeFailedErrType => ({
+    type: 'ChallengeFailed',
+});
+
+export const HttpError = (): HttpErrType => ({
+    type: 'HttpError',
+});
+
+export const ProofOfDelegatedIdentityFailed = (): ProofOfDelegatedIdentityFailedErrType => ({
+    type: 'ProofOfDelegatedIdentityFailed',
+});
 
 export const ensureOwnerHasAllocatedQuotaThunk =
-    ({ ownerId, walletDescriptor, delegatedKey }: EnsureOwnerHasAllocatedQuotaParams) =>
-    async (dispatch: Dispatch, getState: () => any) => {
+    ({
+        ownerId,
+        walletDescriptor,
+        delegatedKey,
+        isWriteMode,
+    }: EnsureOwnerHasAllocatedQuotaParams) =>
+    async (dispatch: Dispatch, getState: () => any): ReturnType<EnsureOwnerHasAllocatedQuota> => {
         const isQuotaManagerEnabled = selectIsQuotaManagerEnabled(getState());
 
-        if (!isQuotaManagerEnabled) return;
+        if (!isQuotaManagerEnabled) return ok();
 
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
 
@@ -46,16 +68,19 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                 }),
             );
 
-            return;
+            return ok();
         }
 
         const isHttp404 =
             hasOwnerStorage.error.type === 'HttpError' && hasOwnerStorage.error.code === 404;
 
         if (!isHttp404) {
-            dispatch(quotaManagerFetchError({ error: hasOwnerStorage.error.message }));
+            return err(HttpError());
+        }
 
-            return;
+        if (isWriteMode === false) {
+            // we want to allocate on-demand
+            return err(WriteModeRequiredForAllocation());
         }
 
         const sessionChallenge = await prepareChallengeSession({
@@ -63,9 +88,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
         });
 
         if (!sessionChallenge.success) {
-            dispatch(quotaManagerFetchError({ error: sessionChallenge.error.message }));
-
-            return;
+            return err(HttpError());
         }
 
         const proofOfDelegatedIdentity = getProofOfDelegatedIdentity({
@@ -80,7 +103,7 @@ export const ensureOwnerHasAllocatedQuotaThunk =
         });
 
         if (!proofOfDelegatedIdentity.success) {
-            return;
+            return err(ProofOfDelegatedIdentityFailed());
         }
 
         await dispatch(
@@ -96,4 +119,6 @@ export const ensureOwnerHasAllocatedQuotaThunk =
                 walletDescriptor,
             }),
         );
+
+        return ok();
     };

@@ -62,6 +62,7 @@ export const SuiteSyncKeysAlert = () => {
         } else {
             await suiteSync.ensureWalletSuiteSyncOn({
                 deviceStaticSessionId,
+                isWriteMode: false,
             });
         }
     }, [deviceStaticSessionId, isDeviceConnected, navigation, suiteSync]);

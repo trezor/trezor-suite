@@ -21,7 +21,7 @@ import { createSubscriptionStorage } from '../../storage/createSubscriptionStora
 import {
     CreateSubscribeSuiteSyncDataDeps,
     createEnsureSubscribeSuiteSyncData,
-} from '../createEnsureSuiteSyncData';
+} from '../createEnsureSubscribeSuiteSyncData';
 
 const deviceStaticSessionId: StaticSessionId = '1@2:3';
 
@@ -86,9 +86,12 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
         });
 
         const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId });
+        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
 
-        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureStorage).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
         expect(result).toBe(storageResult);
     });
 
@@ -116,9 +119,12 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
         });
 
         const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId });
+        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
 
-        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureStorage).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
         expect(result.success && result.payload).toBe(storage);
     });
 
@@ -138,9 +144,12 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
         });
 
         const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
-        const result = await subscribeLabeling({ deviceStaticSessionId });
+        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
 
-        expect(deps.ensureStorage).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureStorage).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: false,
+        });
         expect(result.success).toBe(true);
 
         expect(storage.data.wallets.subscribe).toHaveBeenCalledTimes(1);
@@ -169,7 +178,7 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
 
         const subscribeLabeling = createEnsureSubscribeSuiteSyncData(deps);
 
-        const result = await subscribeLabeling({ deviceStaticSessionId });
+        const result = await subscribeLabeling({ deviceStaticSessionId, isWriteMode: false });
 
         expect(result.success).toBe(true);
 

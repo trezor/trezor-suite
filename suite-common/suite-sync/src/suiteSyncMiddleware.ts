@@ -18,6 +18,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             if (action.payload.success) {
                 extra.services.suiteSync.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: action.payload.staticSessionId,
+                    isWriteMode: false,
                 });
             }
         }
@@ -28,6 +29,7 @@ export const prepareSuiteSyncMiddleware = createMiddlewareWithExtraDeps(
             if (isTrezorDeviceWithState(payload.device)) {
                 extra.services.suiteSync.ensureWalletSuiteSyncOn({
                     deviceStaticSessionId: payload.device.state.staticSessionId,
+                    isWriteMode: false,
                 });
             }
         }

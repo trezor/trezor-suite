@@ -7,10 +7,14 @@ import {
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
+import {
+    SuiteSyncUnavailableOnDeviceErrorType,
+    WriteModeRequiredForAllocationErrType,
+} from '../refreshSuiteSyncKeys';
 
 type SubscribeSuiteSyncDataParams = {
     deviceStaticSessionId: StaticSessionId;
+    isWriteMode: boolean;
 };
 
 export type Subscriptions = {
@@ -34,7 +38,10 @@ export type SubscribeSuiteSyncData = (
 ) => Promise<
     Result<
         SuiteSyncStorage,
-        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | DeviceErrorType
+        | DeviceCancelledErrType
+        | WriteModeRequiredForAllocationErrType
     >
 >;
 

@@ -42,6 +42,10 @@ export const SuiteSyncTurnOnModal = ({
 
                     return;
 
+                case 'WriteModeRequiredForAllocation':
+                    // Do nothing, this is expected control flow error when we want allocate on-demand.
+                    return;
+
                 case 'SuiteSyncUnavailableOnDeviceError':
                 case 'DeviceCancelled':
                 case 'DeviceError':

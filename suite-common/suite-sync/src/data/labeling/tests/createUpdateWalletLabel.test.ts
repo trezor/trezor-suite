@@ -23,9 +23,15 @@ describe(createUpdateWalletLabel.name, () => {
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);
-        const result = await updateWalletLabel({ deviceStaticSessionId, label: 'New Label' });
+        const result = await updateWalletLabel({
+            deviceStaticSessionId,
+            label: 'New Label',
+        });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
 
         expect(storage.data.wallets.update).toHaveBeenCalledWith({
             walletDescriptor: asWalletDescriptor('1'),
@@ -43,9 +49,15 @@ describe(createUpdateWalletLabel.name, () => {
         });
 
         const updateWalletLabel = createUpdateWalletLabel(deps);
-        const result = await updateWalletLabel({ deviceStaticSessionId, label: 'New Label' });
+        const result = await updateWalletLabel({
+            deviceStaticSessionId,
+            label: 'New Label',
+        });
 
-        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({ deviceStaticSessionId });
+        expect(deps.ensureWalletSuiteSyncOn).toHaveBeenCalledWith({
+            deviceStaticSessionId,
+            isWriteMode: true,
+        });
         expect(result).toBe(ensureWalletSuiteSyncOnResult);
     });
 });

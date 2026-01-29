@@ -3,13 +3,19 @@ import { DeviceCancelledErrType, DeviceErrorType } from '@suite-common/wallet-ty
 import { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
-import { SuiteSyncUnavailableOnDeviceErrorType } from '../refreshSuiteSyncKeys';
+import {
+    SuiteSyncUnavailableOnDeviceErrorType,
+    WriteModeRequiredForAllocationErrType,
+} from '../refreshSuiteSyncKeys';
 
 export type SuiteSyncFirmwareUpgradeNeededDeviceErrorType = {
     type: 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType';
 };
 
-export type EnsureWalletSuiteSyncOnParams = { deviceStaticSessionId: StaticSessionId };
+export type EnsureWalletSuiteSyncOnParams = {
+    deviceStaticSessionId: StaticSessionId;
+    isWriteMode: boolean;
+};
 
 /**
  * Those are all errors that may happen during ensuring that SuiteSync is in on.
@@ -20,7 +26,8 @@ export type EnsureWalletSuiteSyncOnErrors =
     | SuiteSyncUnavailableOnDeviceErrorType
     | SuiteSyncFirmwareUpgradeNeededDeviceErrorType
     | DeviceErrorType
-    | DeviceCancelledErrType;
+    | DeviceCancelledErrType
+    | WriteModeRequiredForAllocationErrType;
 
 export type EnsureWalletSuiteSyncOn = (
     params: EnsureWalletSuiteSyncOnParams,

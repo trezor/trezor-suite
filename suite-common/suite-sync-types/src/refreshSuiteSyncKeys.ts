@@ -4,6 +4,7 @@ import { Result } from '@trezor/type-utils';
 
 type RefreshSuiteSyncKeysParams = {
     device: TrezorDevice;
+    isWriteMode: boolean;
 };
 
 /**
@@ -16,12 +17,19 @@ export type SuiteSyncUnavailableOnDeviceErrorType = {
     type: 'SuiteSyncUnavailableOnDeviceError';
 };
 
+export type WriteModeRequiredForAllocationErrType = {
+    type: 'WriteModeRequiredForAllocation';
+};
+
 export type RefreshSuiteSyncKeys = (
     params: RefreshSuiteSyncKeysParams,
 ) => Promise<
     Result<
         SuiteSyncOwner,
-        SuiteSyncUnavailableOnDeviceErrorType | DeviceErrorType | DeviceCancelledErrType
+        | SuiteSyncUnavailableOnDeviceErrorType
+        | DeviceErrorType
+        | DeviceCancelledErrType
+        | WriteModeRequiredForAllocationErrType
     >
 >;
 
