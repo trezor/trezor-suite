@@ -1,4 +1,5 @@
 export { accountsActionsEvent } from './accountsActionsEvent';
+export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
 export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
@@ -31,6 +32,7 @@ export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeE
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
+export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
 export { stakingConfirmEvent } from './stakingConfirmEvent';
