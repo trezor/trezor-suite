@@ -186,12 +186,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AccountsEmptyAccountReceive;
-          payload: {
-              symbol: string;
-          };
-      }
-    | {
           type: EventType.CoinjoinAnonymityGain;
           payload: {
               networkSymbol: string;
@@ -452,12 +446,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               value: boolean;
               location: string;
               modal?: string;
-          };
-      }
-    | {
-          type: EventType.SettingsTorOnionLinks;
-          payload: {
-              value: boolean;
           };
       }
     | {
