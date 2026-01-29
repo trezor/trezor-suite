@@ -48,9 +48,10 @@ if (unused.length) {
             '..',
             '..',
             '..',
+            '..',
             'suite',
+            'intl',
             'src',
-            'support',
             'messages.ts',
         );
         let messagesContent = fs.readFileSync(pathToMessages, 'utf-8');

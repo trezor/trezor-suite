@@ -42,7 +42,7 @@ jobs:
           node-version-file: ".nvmrc"
 
       - run: yarn install --immutable
-      - run: yarn workspace @trezor/suite translations:list-unused
+      - run: yarn workspace @suite/intl translations:list-unused
 
   media-duplicates:
     runs-on: ubuntu-latest

@@ -7,13 +7,6 @@
         "depcheck": "yarn g:depcheck",
         "lint": "yarn lint:styles && yarn lint:js",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "translations:format": "yarn g:prettier --write \"../suite-data/files/translations/*\"",
-        "translations:extract": "formatjs extract src/support/messages.ts --format simple > ../suite-data/files/translations/master.json",
-        "translations:upload": "crowdin upload",
-        "translations:download": "crowdin download --all -l en -l es-ES -l cs -l de -l fr -l hu -l it -l ja -l ko -l pt-BR -l ru -l tr -l uk -l zh-CN -l zh-TW",
-        "translations:backport-en": "yarn g:tsx ../suite-data/src/translations/backport-en.ts && yarn g:prettier --write \"./src/support/messages.ts\"",
-        "translations:list-duplicates": "yarn g:tsx ../suite-data/src/translations/list-duplicates.ts",
-        "translations:list-unused": "yarn g:tsx ../suite-data/src/translations/list-unused.ts",
         "make:migration": "yarn workspace @suite/idb-migration-utils make:migration",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
@@ -142,8 +135,6 @@
         "web3-utils": "^4.3.2"
     },
     "devDependencies": {
-        "@crowdin/cli": "4.8.0",
-        "@formatjs/cli": "6.7.2",
         "@testing-library/react": "^16.3.0",
         "@testing-library/user-event": "^14.6.1",
         "@trezor/eslint": "workspace:*",

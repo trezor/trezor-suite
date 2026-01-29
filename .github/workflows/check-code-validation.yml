@@ -171,7 +171,7 @@ jobs:
       - name: Msg-system Config Validation
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
-        run: yarn workspace @trezor/suite translations:list-duplicates
+        run: yarn workspace @suite/intl translations:list-duplicates
 
   releases-revision-checks:
     name: Releases revision Checks
