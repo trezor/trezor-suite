@@ -55,10 +55,7 @@ export const AccountSection = ({
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
             forceOnlyItemClick={forceOnlyItemClick}
-            account={{
-                ...account,
-                accountLabel: account.accountLabel,
-            }}
+            account={account}
             selected={selected}
             showStaking={isStakeShown}
             tokens={tokens.shownWithBalance}
@@ -70,10 +67,7 @@ export const AccountSection = ({
             type="coin"
             key={`${descriptor}-${symbol}`}
             forceOnlyItemClick={forceOnlyItemClick}
-            account={{
-                ...account,
-                accountLabel: account.accountLabel,
-            }}
+            account={account}
             isSelected={selected}
             onClick={onItemClick}
             formattedBalance={formattedBalance}

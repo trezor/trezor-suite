@@ -24,6 +24,7 @@ const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>>
 export const isFilterValueMatchingAccount = (account: Account, filterValue: string) => {
     const lowerCaseFilterValue = filterValue?.trim().toLowerCase();
 
+    // Todo: this is wrong, this shall reflect SuiteSync labels. See https://github.com/trezor/trezor-suite/issues/24803
     const isMatchingLabel = account.accountLabel?.toLowerCase().includes(lowerCaseFilterValue);
 
     if (isMatchingLabel) return true;

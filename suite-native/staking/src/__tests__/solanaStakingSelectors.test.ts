@@ -1,9 +1,6 @@
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { TrezorDevice } from '@suite-common/suite-types';
-import {
-    StakeState,
-    initialWalletSettingsState,
-    stakeInitialState,
-} from '@suite-common/wallet-core';
+import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
 import { Account, Timestamp } from '@suite-common/wallet-types';
 
 import {
@@ -17,6 +14,7 @@ import {
     selectSolanaTotalStakePendingByAccountKey,
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from '../solanaStakingSelectors';
+import { NativeStakingRootState } from '../types';
 
 type SolStakeData = NonNullable<StakeState['data']['sol']>;
 
@@ -120,13 +118,14 @@ const getTestState = ({
 }: {
     accounts: Account[];
     withSolStakeData?: boolean;
-}) => ({
+}): NativeStakingRootState => ({
     wallet: {
         accounts,
         stake: { ...stakeInitialState, data: { sol: withSolStakeData ? solStakeData : {} } },
         transactions: { transactions: {}, fetchStatusDetail: {} },
-        settings: initialWalletSettingsState,
     },
+    suiteSync: initialSuiteSyncState,
+    suiteSyncData: initialSuiteSyncDataState,
     device: {
         devices: [
             {

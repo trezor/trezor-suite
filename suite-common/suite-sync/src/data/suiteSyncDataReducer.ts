@@ -19,7 +19,7 @@ export type SuiteSyncDataState = {
     wallets: Record<WalletDescriptor, WalletData>;
 };
 
-const initialState: SuiteSyncDataState = {
+export const initialSuiteSyncDataState: SuiteSyncDataState = {
     wallets: {},
 };
 
@@ -44,7 +44,7 @@ const ensureWallet = (
 
 export const suiteSyncDataSlice = createSlice({
     name: 'suiteSyncData',
-    initialState,
+    initialState: initialSuiteSyncDataState,
     reducers: {
         upsertManyWallets: (state, action: PayloadAction<SuiteSyncWallet[]>) => {
             action.payload.forEach(wallet => {
@@ -101,7 +101,7 @@ export const suiteSyncDataSlice = createSlice({
             });
         },
 
-        clearAll: () => initialState,
+        clearAll: () => initialSuiteSyncDataState,
     },
 });
 

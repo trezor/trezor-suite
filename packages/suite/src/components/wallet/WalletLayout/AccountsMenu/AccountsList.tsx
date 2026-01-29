@@ -5,7 +5,6 @@ import { selectAllAccountsToList, selectSelectedDevice } from '@suite-common/wal
 import { Account } from '@suite-common/wallet-types';
 import { accountSearchFn, parseAccountKey } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-import type { StaticSessionId } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
 
 import { useAccountSearch, useDefaultAccountLabel, useSelector } from 'src/hooks/suite';
@@ -38,7 +37,6 @@ type AccountsProps = {
     // NOTE: this is to disable completely default click behavior of the item
     forceOnlyItemClick?: boolean;
     onItemClick?: (account: Account, type: AccountItemType) => void;
-    deviceStaticSessionId: StaticSessionId;
 };
 
 const Accounts = ({
@@ -49,16 +47,9 @@ const Accounts = ({
     discoveryInProgress,
     type,
     onItemClick,
-    deviceStaticSessionId,
 }: AccountsProps) => {
-    const accountLabels = useSelector(selectAccountLabelsOld);
-
     const isSkeletonShown = discoveryInProgress || (type === 'coinjoin' && coinjoinIsPreloading);
     const params = useSelector(selectRouterParams) as RouteParams;
-
-    const suiteSyncAccountLabels = useSelector(state =>
-        selectSuiteSyncAccountLabels(state, deviceStaticSessionId),
-    );
 
     return (
         <>
@@ -71,24 +62,12 @@ const Accounts = ({
 
                 const selected = !!isSelected(account);
 
-                const { accountDescriptor, networkSymbol } = parseAccountKey(account.key);
-
-                const label =
-                    findSuiteSyncAccountLabel({
-                        accounts: suiteSyncAccountLabels,
-                        accountDescriptor,
-                        networkSymbol,
-                    })?.label ?? accountLabels[account.key];
-
                 return (
                     <AccountSection
                         key={account.key}
                         forceOnlyItemClick={forceOnlyItemClick}
                         hideStaking={hideStaking}
-                        account={{
-                            ...account,
-                            accountLabel: label,
-                        }}
+                        account={account}
                         selected={selected}
                         onItemClick={onItemClick}
                     />
@@ -182,11 +161,6 @@ export const AccountsList = ({
             return;
         }
 
-        const deviceStaticSessionId = device.state?.staticSessionId;
-        if (deviceStaticSessionId === undefined) {
-            return;
-        }
-
         const accountProps: AccountsProps = {
             forceOnlyItemClick,
             accounts,
@@ -194,7 +168,6 @@ export const AccountsList = ({
             coinjoinIsPreloading,
             discoveryInProgress: false,
             type,
-            deviceStaticSessionId,
         };
 
         return (

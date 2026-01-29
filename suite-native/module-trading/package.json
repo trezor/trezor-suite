@@ -51,6 +51,7 @@
         "@suite-native/helpers": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/message-system": "workspace:*",
         "@suite-native/module-add-accounts": "workspace:*",

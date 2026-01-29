@@ -295,6 +295,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
 
                     return {
                         key: `section_${account.key}`,
+                        // Todo: this is wrong, correct label is determined by `selectAccountLabel` selector
                         label: account.accountLabel ?? '',
                         sectionData: account,
                         data: assets,

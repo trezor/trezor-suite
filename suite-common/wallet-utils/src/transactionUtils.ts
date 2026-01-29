@@ -991,7 +991,7 @@ const numberSearchFilter = (
 const searchDateRegex = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
 export const simpleSearchTransactions = (
     transactions: WalletAccountTransaction[],
-    accountMetadata: AccountLabels,
+    accountMetadata: AccountLabels, // Todo: this is wrong, this shall reflect SuiteSync labels. See https://github.com/trezor/trezor-suite/issues/24803
     search: string,
 ) => {
     // Trim

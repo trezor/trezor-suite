@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../labeling" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
