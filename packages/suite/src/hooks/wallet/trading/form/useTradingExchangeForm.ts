@@ -62,7 +62,7 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -80,6 +80,7 @@ import { useTradingReceiveAddress } from './useTradingReceiveAddress';
 export const useTradingExchangeForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const type = 'exchange';
     const isFormPage = pageType === 'form';
@@ -352,7 +353,7 @@ export const useTradingExchangeForm = ({
             );
 
             const triggerAnalyticsTradeConfirmation = () => {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingConfirmTrade,
                     payload: { action: type },
                 });
@@ -379,7 +380,7 @@ export const useTradingExchangeForm = ({
             account,
             selectedFee,
             composed,
-            legacyAnalytics,
+            analytics,
             dispatch,
             navigateToExchangeDetail,
         ],

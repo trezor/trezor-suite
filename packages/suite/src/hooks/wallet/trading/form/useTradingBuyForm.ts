@@ -38,7 +38,7 @@ import { useTradingBuyFormDefaultValues } from 'src/hooks/wallet/trading/form/us
 import { useTradingBuyFormRedirectValues } from 'src/hooks/wallet/trading/form/useTradingBuyFormRedirectValues';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import {
@@ -55,6 +55,7 @@ export const useTradingBuyForm = ({
     selectedAccount,
     pageType = 'form',
 }: UseTradingFormProps): TradingBuyFormContextProps => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const type = 'buy';
     const isNotFormPage = pageType !== 'form';
@@ -215,7 +216,7 @@ export const useTradingBuyForm = ({
         };
 
         const triggerAnalyticsTradeConfirmation = () => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingConfirmTrade,
                 payload: { action: type },
             });
