@@ -67,7 +67,7 @@ import {
     selectIsCopyAddressModalShown,
     selectIsUnhideTokenModalShown,
 } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { getTokenAddressTranslationId } from 'src/utils/wallet/tokenUtils';
 
 import { BlurUrls } from '../BlurUrls';
@@ -92,7 +92,6 @@ export const TokenRow = ({
     isCollapsed,
 }: TokenRowProps) => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { isBelowTablet } = useLayoutSize();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
@@ -117,7 +116,7 @@ export const TokenRow = ({
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AccountsActions,
                 payload: { symbol: network.symbol, action: routeName },
             });
