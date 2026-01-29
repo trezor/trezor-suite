@@ -34,6 +34,7 @@ export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
+export { settingsDeviceCheckSeedEvent } from './settingsDeviceCheckSeedEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
 export { settingsDeviceMultiShareBackupEvent } from './settingsDeviceMultiShareBackupEvent';
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
