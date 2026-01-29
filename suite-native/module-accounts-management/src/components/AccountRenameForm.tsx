@@ -17,6 +17,8 @@ import {
     selectSuiteSyncLabelingEnabled,
 } from '@suite-native/labeling';
 import { useNativeServices } from '@suite-native/services';
+import { useToast } from '@suite-native/toasts';
+import { exhaustive } from '@trezor/type-utils';
 
 type AccountRenameFormProps = {
     accountKey: string;
@@ -27,6 +29,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
     const { translate } = useTranslate();
     const dispatch = useDispatch();
     const { suiteSync } = useNativeServices();
+    const { showToast } = useToast();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -65,14 +68,31 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
 
     if (!account) return null;
 
-    const handleRenameAccount = handleSubmit((formValues: AccountFormValues) => {
+    const handleRenameAccount = handleSubmit(async (formValues: AccountFormValues) => {
         if (suiteSyncLabelingEnabled) {
             if (!account.deviceState) return;
-            suiteSync.labeling.updateAccountLabel({
+
+            const result = await suiteSync.labeling.updateAccountLabel({
                 deviceStaticSessionId: account.deviceState,
                 accountKey,
                 label: formValues.accountLabel,
             });
+
+            if (!result.success) {
+                const { type } = result.error;
+                switch (type) {
+                    case 'SuiteSyncUnavailableOnDeviceError':
+                    case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                    case 'DeviceCancelled':
+                    case 'DeviceError':
+                    case 'SuiteSyncUpdateError':
+                        showToast({ variant: 'error', icon: 'warning', message: type });
+
+                        return;
+                    default:
+                        return exhaustive(type);
+                }
+            }
         } else {
             dispatch(accountsActions.renameAccount(accountKey, formValues.accountLabel));
         }

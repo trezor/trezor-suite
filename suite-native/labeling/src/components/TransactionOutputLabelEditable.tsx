@@ -4,7 +4,9 @@ import { SuiteSyncDataRootState, selectSuiteSyncOutputLabel } from '@suite-commo
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 import { useNativeServices } from '@suite-native/services';
+import { useToast } from '@suite-native/toasts';
 import type { StaticSessionId } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
@@ -27,6 +29,7 @@ export const TransactionOutputLabelEditable = ({
 }: TransactionOutputLabelEditableProps) => {
     const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
     const { suiteSync } = useNativeServices();
+    const { showToast } = useToast();
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
@@ -36,20 +39,40 @@ export const TransactionOutputLabelEditable = ({
         return null;
     }
 
+    const onSubmit = async (value: string) => {
+        const result = await suiteSync.labeling.updateOutputLabel({
+            deviceStaticSessionId,
+            txId,
+            outputIndex,
+            label: value,
+            accountDescriptor,
+            networkSymbol,
+        });
+
+        if (!result.success) {
+            const { type } = result.error;
+            switch (type) {
+                case 'SuiteSyncUnavailableOnDeviceError':
+                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                case 'DeviceCancelled':
+                case 'DeviceError':
+                case 'SuiteSyncUpdateError':
+                    showToast({ variant: 'error', icon: 'warning', message: type });
+
+                    return;
+                default:
+                    return exhaustive(type);
+            }
+        }
+    };
+
     return (
         <EditableLabelLayout label={label}>
             {({ onClose }) => (
                 <LabelEditForm
                     label={label ?? ''}
                     onSubmit={value => {
-                        suiteSync.labeling.updateOutputLabel({
-                            deviceStaticSessionId,
-                            txId,
-                            outputIndex,
-                            label: value,
-                            accountDescriptor,
-                            networkSymbol,
-                        });
+                        onSubmit(value);
                         onClose();
                     }}
                 />
