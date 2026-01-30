@@ -5,7 +5,7 @@ import { SuiteSyncDataRootState, selectSuiteSyncAddressLabel } from '@suite-comm
 import { Text } from '@suite-native/atoms';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { selectSuiteSyncLabelingEnabled } from '../selectors';
+import { selectIsLabellingAllowed } from '../selectors';
 
 type AddressLabelEProps = {
     address: string;
@@ -14,13 +14,13 @@ type AddressLabelEProps = {
 };
 
 export const AddressLabel = ({ address, deviceStaticSessionId, fallback }: AddressLabelEProps) => {
-    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
     const label = useSelector((state: SuiteSyncDataRootState) =>
         selectSuiteSyncAddressLabel(state, deviceStaticSessionId, address),
     );
 
-    if (!isLabelingEnabled || label === null) {
+    if (!isLabellingAllowed || label === null) {
         return fallback;
     }
 

@@ -23,8 +23,10 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/services": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.1.0",
         "react-redux": "9.2.0"

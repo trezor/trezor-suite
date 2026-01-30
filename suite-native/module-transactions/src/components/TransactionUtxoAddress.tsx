@@ -8,7 +8,7 @@ import { AccountAddressFormatter } from '@suite-native/formatters';
 import {
     AddressLabel,
     TransactionOutputLabelEditable,
-    selectSuiteSyncLabelingEnabled,
+    selectIsLabellingAllowed,
 } from '@suite-native/labeling';
 import type { StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -37,7 +37,7 @@ export const TransactionUtxoAddress = ({
     showLabels,
 }: TransactionUtxoAddressProps) => {
     const { applyStyle } = useNativeStyles();
-    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
 
     return (
         <VStack alignItems="flex-start">
@@ -54,7 +54,7 @@ export const TransactionUtxoAddress = ({
                     }
                 />
 
-                {isLabelingEnabled && isDebugEnv() && <Text>[{outputIndex}]</Text>}
+                {isLabellingAllowed && isDebugEnv() && <Text>[{outputIndex}]</Text>}
             </HStack>
 
             {showLabels && (

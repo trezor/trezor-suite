@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { yup } from '@suite-common/validators';
 import { Button, InputType, VStack } from '@suite-native/atoms';
@@ -23,11 +23,18 @@ export const LabelEditForm = ({ label, onSubmit }: LabelEditFormParam) => {
         validation: labelValidationSchema,
         defaultValues: { label: label ?? '' },
     });
-
     const {
         handleSubmit,
-        formState: { isValid },
+        reset,
+        formState: { isValid, isDirty },
     } = form;
+
+    // Sync form when labels load asynchronously (e.g. after turning on Suite Sync).
+    useEffect(() => {
+        if (!isDirty) {
+            reset({ label: label ?? '' });
+        }
+    }, [isDirty, label, reset]);
 
     const onConfirm = handleSubmit((formValues: FormValues) => {
         onSubmit(formValues.label);

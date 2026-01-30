@@ -10,7 +10,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { EditableLabelLayout } from './EditableLabelLayout';
 import { LabelEditForm } from './LabelEditForm';
-import { selectSuiteSyncLabelingEnabled } from '../selectors';
+import { selectIsLabellingAllowed } from '../selectors';
 
 type AddressLabelEditableProps = {
     address: string;
@@ -27,7 +27,7 @@ export const AddressLabelEditable = ({
     networkSymbol,
     testID,
 }: AddressLabelEditableProps) => {
-    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
 
@@ -65,9 +65,7 @@ export const AddressLabelEditable = ({
         }
     };
 
-    if (!isLabelingEnabled) {
-        return null;
-    }
+    if (!isLabellingAllowed) return null;
 
     return (
         <EditableLabelLayout label={label} testID={testID}>

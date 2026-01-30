@@ -9,7 +9,7 @@ import { HStack, Radio, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { WalletLabel, selectSuiteSyncLabelingEnabled } from '@suite-native/labeling';
+import { WalletLabel, selectIsLabellingAllowed } from '@suite-native/labeling';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type WalletItemBaseVariant = 'standard' | 'passphrase';
@@ -59,12 +59,13 @@ const labelStyle = prepareNativeStyle(() => ({
 }));
 
 const SuiteSyncWalletDebug = ({ device }: { device?: TrezorDevice }) => {
-    const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
 
-    if (!isLabelingEnabled || !device || !isSuiteSyncDebugEnabled) {
+    if (!isLabellingAllowed || !device || !isSuiteSyncDebugEnabled) {
         return null;
     }
+
     const deviceStaticSessionId = device.state?.staticSessionId;
 
     if (deviceStaticSessionId === undefined) {
