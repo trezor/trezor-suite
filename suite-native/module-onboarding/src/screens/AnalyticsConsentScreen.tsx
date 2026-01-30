@@ -48,10 +48,11 @@ const reportAnalyticsOnboardingCompleted = (
         analytics.enable();
         legacyAnalytics.enable();
     }
-    legacyAnalytics.report({
+    analytics.report({
         type: EventType.OnboardingCompleted,
         payload: { analyticsPermission: isTrackingAllowed },
     });
+
     if (!isTrackingAllowed) {
         analytics.disable();
         legacyAnalytics.disable();

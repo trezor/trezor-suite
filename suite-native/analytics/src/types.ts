@@ -30,12 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.OnboardingCompleted;
-          payload: {
-              analyticsPermission: boolean;
-          };
-      }
-    | {
           type: EventType.AssetsSync;
           payload: {
               assetSymbol: NetworkSymbol;
