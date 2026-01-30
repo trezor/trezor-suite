@@ -70,7 +70,7 @@ export const TransactionReviewModalBottomContent = ({
     const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
-    const reportTransactionCreatedEvent = (action: TransactionCreatedEvent['payload']['action']) =>
+    const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>
         analytics.report({
             type: EventType.TransactionCreated,
             payload: {
