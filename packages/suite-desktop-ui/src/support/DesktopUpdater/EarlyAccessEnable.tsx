@@ -7,7 +7,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 
 import { CheckItem } from 'src/components/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface EarlyAccessEnableProps {
     hideWindow: () => void;
@@ -16,9 +16,9 @@ interface EarlyAccessEnableProps {
 export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
     const [understood, setUnderstood] = useState(false);
     const [enabled, setEnabled] = useState(false);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const allowPrerelease = useCallback(() => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralEarlyAccess,
             payload: {
                 allowPrerelease: true,
@@ -26,7 +26,7 @@ export const EarlyAccessEnable = ({ hideWindow }: EarlyAccessEnableProps) => {
         });
         desktopApi.allowPrerelease(true);
         setEnabled(true);
-    }, [legacyAnalytics]);
+    }, [analytics]);
 
     const checkForUpdates = useCallback(() => desktopApi.checkForUpdates({ isManual: true }), []);
 
