@@ -75,13 +75,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           type: EventType.DeviceDisconnect;
       }
     | {
-          type: EventType.CreateBackup;
-          payload: {
-              status: 'finished' | 'error';
-              error: string;
-          };
-      }
-    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;
