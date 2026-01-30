@@ -89,12 +89,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GuideFeedbackNavigation;
-          payload: {
-              type: 'overview' | 'bug' | 'suggestion';
-          };
-      }
-    | {
           type: EventType.GuideFeedbackSubmit;
           payload: {
               type: 'bug' | 'suggestion';
