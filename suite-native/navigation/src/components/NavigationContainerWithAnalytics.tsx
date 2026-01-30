@@ -10,7 +10,7 @@ import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { EventType } from '@suite-native/analytics';
 import { addSentryBreadcrumb, setSentryTag } from '@suite-native/sentry';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { useNativeStyles } from '@trezor/styles';
 
 import { useReportSendFlowExitToAnalytics } from '../hooks/useReportSendFlowExitToAnalytics';
@@ -23,7 +23,7 @@ export const navigationContainerRef = createNavigationContainerRef<RootStackPara
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
     const routeNameRef = useRef<string | undefined>(undefined);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();
@@ -74,7 +74,7 @@ export const NavigationContainerWithAnalytics = ({ children }: { children: React
 
             if (!currentRouteName || !previousRouteName) return;
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.ScreenChange,
                 payload: {
                     previousScreen: previousRouteName,
