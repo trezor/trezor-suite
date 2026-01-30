@@ -14,6 +14,7 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { EXPERIMENTAL_FEATURES, ExperimentalFeature } from 'src/constants/suite/experimental';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -22,6 +23,7 @@ type FeatureLineProps = {
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
     const dispatch = useDispatch();
+    const services = useSuiteServices();
     const checked = enabledFeatures.includes(feature);
 
     const config = EXPERIMENTAL_FEATURES[feature];
@@ -32,7 +34,7 @@ const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
         const newValue = !checked;
 
         try {
-            await config?.onToggle?.({ dispatch, newValue });
+            await config?.onToggle?.({ services, newValue });
             dispatch({
                 type: SUITE.SET_EXPERIMENTAL_FEATURES,
                 payload: {
@@ -113,12 +115,13 @@ export const Experimental = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
+    const services = useSuiteServices();
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
             EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
-                dispatch,
-                newValue: false,
+                services,
+                newValue: !isExperimentalEnabled,
             }),
         );
 

@@ -5,7 +5,7 @@ import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { EXPERIMENTAL_PASSWORD_MANAGER_KB_URL, HELP_CENTER_TOR_URL, Url } from '@trezor/urls';
 
-import { Dispatch } from '../../types/suite';
+import { SuiteServices } from '../../support/extraDependencies';
 
 const experimentalNetworks = networksCollection.filter(
     network => network.isExperimentalOnlyNetwork,
@@ -17,8 +17,8 @@ export type ExperimentalFeature =
     | 'tor-external'
     | 'testnet-networks'
     | 'nft-section'
-    | 'experimental-networks';
-// | 'suite-sync';
+    | 'experimental-networks'
+    | 'suite-sync';
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -26,7 +26,7 @@ export type ExperimentalFeatureConfig = {
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
     isDisabled?: (context: { isDebug: boolean }) => boolean;
-    onToggle?: ({ newValue, dispatch }: { newValue: boolean; dispatch: Dispatch }) => void;
+    onToggle?: ({ newValue, services }: { newValue: boolean; services: SuiteServices }) => void;
 };
 
 export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeatureConfig> = {
@@ -76,16 +76,14 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         },
         isDisabled: () => experimentalNetworks.length === 0,
     },
-    // temporarily disabled, moved to debug
-    /*     'suite-sync': {
+    'suite-sync': {
         title: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE' },
         description: { id: 'TR_EXPERIMENTAL_SUITE_SYNC_DESCRIPTION' },
-        onToggle: ({ newValue, dispatch }) => {
-            dispatch(
-                suiteSyncActions.updateIsFeatureSuiteSyncAvailable({
-                    isShownInSettings: newValue,
-                }),
-            );
+        onToggle: ({ newValue, services }) => {
+            if (!newValue) {
+                // Turn off Suite Sync
+                services.suiteSync.turnOffSuiteSync();
+            }
         },
-    }, */
+    },
 };
