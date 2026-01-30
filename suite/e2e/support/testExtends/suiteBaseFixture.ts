@@ -183,29 +183,27 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             use,
             testInfo,
         ) => {
-            await TrezorUserEnvLink.logTestDetails(
-                ` - - - EXECUTING TENV CLEANUP FOR TEST ${testInfo.titlePath.join(' - ')}`,
-            );
             const setupPromise = (async () => {
+                await TrezorUserEnvLink.logTestDetails(
+                    ` - - - EXECUTING TENV CLEANUP FOR TEST ${testInfo.titlePath.join(' - ')}`,
+                );
                 await TrezorUserEnvLink.stopBridge();
                 await TrezorUserEnvLink.stopEmu();
                 await TrezorUserEnvLink.connect();
+                await TrezorUserEnvLink.logTestDetails(
+                    ` - - - TENV CLEANUP COMPLETED FOR TEST ${testInfo.titlePath.join(' - ')}`,
+                );
             })();
 
-            await trezorUserEnvStuckProtection(setupPromise);
-
-            await TrezorUserEnvLink.logTestDetails(
-                ` - - - TENV CLEANUP COMPLETED FOR TEST ${testInfo.titlePath.join(' - ')}`,
-            );
+            await base.step('Device environment cleanup', async () => {
+                await trezorUserEnvStuckProtection(setupPromise);
+            });
 
             if (!model || !firmwareVersion) {
                 await use(undefined as unknown as DeviceFixture);
 
                 return;
             }
-            await TrezorUserEnvLink.logTestDetails(
-                ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
-            );
             testInfo.annotations.push({
                 type: TestAnnotationType.DeviceModel,
                 description: model,
@@ -214,6 +212,9 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
             const device = new DeviceFixture(model, firmwareVersion);
 
             const startDevicePromise = (async () => {
+                await TrezorUserEnvLink.logTestDetails(
+                    ` - - - STARTING TEST ${testInfo.titlePath.join(' - ')}`,
+                );
                 if (startEmulator) {
                     await device.powerOn({ wipe: true });
                 }
@@ -223,13 +224,20 @@ const suiteBaseTest = currentsTest.extend<SuiteTestOptions & SuiteBaseFixture>({
                 }
             })();
 
-            await trezorUserEnvStuckProtection(startDevicePromise);
-
+            await base.step('Device startup', async () => {
+                await trezorUserEnvStuckProtection(startDevicePromise);
+            });
             await use(device);
 
-            await TrezorUserEnvLink.logTestDetails(
-                ` - - - FINISHING TEST ${testInfo.titlePath.join(' - ')}`,
-            );
+            await base.step('Logging test-end to Device logs', async () => {
+                await trezorUserEnvStuckProtection(
+                    (async () => {
+                        await TrezorUserEnvLink.logTestDetails(
+                            ` - - - FINISHING TEST ${testInfo.titlePath.join(' - ')}`,
+                        );
+                    })(),
+                );
+            });
         },
         { auto: true },
     ],
