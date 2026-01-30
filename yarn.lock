@@ -11516,6 +11516,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    react-native: "npm:0.81.5"
   languageName: unknown
   linkType: soft
 
