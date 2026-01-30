@@ -2,12 +2,12 @@
 
 ## Reading
 
-- Avoid testing implementation details - https://kentcdodds.com/blog/testing-implementation-details
+- Avoid testing implementation details: https://kentcdodds.com/blog/testing-implementation-details
 
 ## Translations in tests
 
-Copy in the app may change as translators and copywriters update the strings in Crowdin, independently of developers. To
-avoid failing tests in Crowdin sync PRs, get a string by its translation ID instead of using the literal text.
+Text in the app may change as translators and copywriters update strings in Crowdin, independently of developers. To
+avoid failing tests in Crowdin sync PRs, get the string by its translation ID instead of using the literal text.
 
 ```ts
 // bad
@@ -24,16 +24,12 @@ expect(screen.getByText(getTranslation('path.to.translation'))).toBe(
 );
 ```
 
-## Fixtures in tests shall be typed
-
-Although it may produce some boilerplate code, the fixtures shall be declaratively typed. In case the type is changed,
-without typed fixtures, this will produce a hardly fixable failed test instead of easily fixable type-error.
-
 ## Naming conventions
 
 - Tests are placed in `__tests__` folders and have `.test.ts` extension.
 - When testing components suffix should be `.comp.test.tsx`.
 - When testing hooks suffix should be `.hook.test.ts`.
+- When testing types, suffix should be `.type-test.ts`, to prevent from being executed by jest. (For example: `packages/utils/tests/typedObjectFromEntries.type-test.ts`)
 - Fixtures are placed in `__fixtures__` folders and have `.fixture.ts` or `.mock.ts` extension.
 
 ### Example:
@@ -50,3 +46,39 @@ my-module/src/
 ├── useMyData.ts
 └── utils.ts
 ```
+
+### Reusability
+
+To keep things simple, avoid creating complex mocks to be shared between multiple test suites. In case you do reuse a
+mock, keep it generic and non-opinionated.
+
+Simple test: change in shared mock SHALL NOT break existing tests (or make fixes trivial).
+
+## Mocks (& Fixtures)
+
+### Typing
+
+All fixtures and mocks shall be typed and declaratively defined; using `as` to cast an incomplete object is only a last
+resort. This may add boilerplate, but it ensures type changes surface as type errors instead of hard-to-fix failing
+tests.
+
+### Organization & Naming Convention
+
+- Mock/fixture files shall be placed in the same package where the subject being mocked resides.
+- Putting them in a types package is OK. A mock for `Device` shall be in the same package where the _type declaration_
+  is located.
+- Use `mock` prefix to distinguish it from type or original implementation. `Device` => `mockDevice`.
+- Prefer factories to static objects. A factory is better because it can provide an API to create a mock with desired
+  changes. (`mockDevice(data: Partial<Device>): Device => ({ ... })`)
+- Put mocks into a `__mocks__` directory within the same package.
+- Export them from the package via a separate file. In this example:
+  `import { mockDevice } from '@common/device-types/mocks'`
+    ```
+    device-types
+      - __mocks__
+         - mockDevice.ts
+         - index.ts // If you need to export them in `package.json`
+      - src
+         - device.ts
+    ```
+- Name the file the same as the exported mock.
