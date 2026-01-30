@@ -1,6 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceActions } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types/libDev/src';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as metadataActions from '../metadataActions';
