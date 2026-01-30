@@ -30,12 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.CreateReceiveAddressShowAddress;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.SettingsChangeCurrency;
           payload: {
               localCurrency: BaseCurrencyCode;

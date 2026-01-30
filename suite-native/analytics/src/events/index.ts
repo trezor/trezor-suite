@@ -1,6 +1,7 @@
 export { appReadyEvent } from './AppReadyEvent';
 export { assetDetailEvent } from './assetDetailEvent';
 export { createReceiveAddressEvent } from './createReceiveAddressEvent';
+export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
 export { assetDetailTimeframeChangeEvent } from './AssetDetailTimeframeChangeEvent';
 export { assetsSyncEvent } from './AssetsSyncEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
