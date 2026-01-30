@@ -30,12 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.CreateReceiveAddress;
-          payload: {
-              assetSymbol: NetworkSymbol;
-          };
-      }
-    | {
           type: EventType.CreateReceiveAddressShowAddress;
           payload: {
               assetSymbol: NetworkSymbol;
