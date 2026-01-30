@@ -1,8 +1,12 @@
 import { getUnixTime } from 'date-fns';
 
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+    networkSpecificDefaultEthereum,
+} from '@suite-common/wallet-types/mocks';
 import { BlockchainBlock } from '@trezor/connect';
 
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
@@ -13,13 +17,26 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { CARDANO_STAKING } from '../constants';
 
-const cardanoAccount = testMocks.getWalletAccount({
-    networkType: 'cardano',
-    symbol: 'ada',
-    descriptor: asAccountDescriptor('addr123'),
-});
-const defaultAccount = testMocks.getWalletAccount();
+const cardanoAccount = mockWalletAccount(
+    {
+        symbol: 'ada',
+        descriptor: asAccountDescriptor('addr123'),
+        deviceState: '1stTestnetAddress@device_id:0',
+    },
+    networkSpecificDefaultCardano,
+);
+
+const defaultAccount = mockWalletAccount(
+    {
+        descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
+        symbol: 'eth',
+        deviceState: '1stTestnetAddress@device_id:0',
+    },
+    networkSpecificDefaultEthereum,
+);
+
 type CardanoStakingState = ReturnType<typeof cardanoStakingReducer>;
+
 const getInitialState = (cardanoStaking?: CardanoStakingState) => ({
     devices: [],
     suite: {

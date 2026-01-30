@@ -1,19 +1,41 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     WALLET_SETTINGS,
     accountsActions,
     convertSendFormDraftsBtcAmountUnitsThunk,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account, Output, FormState as SendFormState } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountBase,
+    Output,
+    FormState as SendFormState,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 
-export const blockchainSubscription = [
+export const blockchainSubscription: Array<{
+    description: string;
+    initialAccounts: Pick<AccountBase, 'descriptor' | 'symbol'>[];
+    actions: Array<any>;
+    result: {
+        subscribe: {
+            called: number;
+            accounts?: Pick<AccountBase, 'descriptor' | 'symbol'>[];
+            coin?: NetworkSymbol;
+        };
+        disconnect?: {
+            called: number;
+            coin?: NetworkSymbol;
+        };
+    };
+}> = [
     {
         description: 'create account, only one subscribed',
-        initialAccounts: [{ descriptor: '1', symbol: 'ltc' }],
+        initialAccounts: [{ descriptor: asAccountDescriptor('1'), symbol: 'ltc' }],
         actions: [
             {
                 type: accountsActions.createAccount.type,
@@ -23,14 +45,17 @@ export const blockchainSubscription = [
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: '1', symbol: 'btc' }],
+                accounts: [{ descriptor: asAccountDescriptor('1'), symbol: 'btc' }],
                 coin: 'btc',
             },
         },
     },
     {
         description: 'remove account, one subscription remain',
-        initialAccounts: [{ descriptor: '1' }, { descriptor: '2' }],
+        initialAccounts: [
+            { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+        ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
@@ -40,7 +65,7 @@ export const blockchainSubscription = [
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: '2' }],
+                accounts: [{ descriptor: asAccountDescriptor('2'), symbol: 'eth' }],
                 coin: 'eth',
             },
             disconnect: {
@@ -50,11 +75,17 @@ export const blockchainSubscription = [
     },
     {
         description: 'remove account and disconnect backend',
-        initialAccounts: [{ descriptor: '1' }, { descriptor: '2' }],
+        initialAccounts: [
+            { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+        ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
-                payload: [{ descriptor: '1' }, { descriptor: '2' }],
+                payload: [
+                    { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
+                    { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+                ],
             },
         ],
         result: {
@@ -70,25 +101,25 @@ export const blockchainSubscription = [
     {
         description: 'disconnect LTC backend, subscribe one account on BTC backend',
         initialAccounts: [
-            { descriptor: '1btc', symbol: 'btc' },
-            { descriptor: '2btc', symbol: 'btc' },
-            { descriptor: '1ltc', symbol: 'ltc' },
-            { descriptor: '2ltc', symbol: 'ltc' },
+            { descriptor: asAccountDescriptor('1btc'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('2btc'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('1ltc'), symbol: 'ltc' },
+            { descriptor: asAccountDescriptor('2ltc'), symbol: 'ltc' },
         ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
                 payload: [
-                    { descriptor: '1btc', symbol: 'btc' },
-                    { descriptor: '1ltc', symbol: 'ltc' },
-                    { descriptor: '2ltc', symbol: 'ltc' },
+                    { descriptor: asAccountDescriptor('1btc'), symbol: 'btc' },
+                    { descriptor: asAccountDescriptor('1ltc'), symbol: 'ltc' },
+                    { descriptor: asAccountDescriptor('2ltc'), symbol: 'ltc' },
                 ],
             },
         ],
         result: {
             subscribe: {
                 called: 1,
-                accounts: [{ descriptor: '2btc', symbol: 'btc' }],
+                accounts: [{ descriptor: asAccountDescriptor('2btc'), symbol: 'btc' }],
                 coin: 'btc',
             },
             disconnect: {

@@ -16,11 +16,14 @@ import {
 import type { SuiteSync } from '@suite-common/suite-sync-types';
 import { ReportSecurityCheckParams, Route } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import {
+    AddressDisplayOptions,
+    SelectedAccountLoaded,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
-
-import { testMocks } from './mocks';
 
 const suiteSyncMock: SuiteSync = {
     changeRelayUrl: () => Promise.resolve(),
@@ -116,7 +119,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         ),
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
-            account: testMocks.getWalletAccount({
+            account: mockWalletAccount({
                 symbol: 'btc',
                 deviceState: '1@2:3',
                 descriptor: asAccountDescriptor('btc1'),

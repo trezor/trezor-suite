@@ -3,6 +3,8 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 
 import { coinjoinMiddleware } from 'src/middlewares/wallet/coinjoinMiddleware';
@@ -321,10 +323,10 @@ describe('coinjoinClientActions', () => {
         const initializeStore = () =>
             initStore({
                 accounts: [
-                    testMocks.getWalletAccount({
+                    mockWalletAccount({
                         deviceState: '1stTestnetAddress@device_id:0',
                         accountType: 'coinjoin',
-                        key: 'btc-account1',
+                        descriptor: asAccountDescriptor('account1'),
                         symbol: 'btc',
                     }),
                 ],

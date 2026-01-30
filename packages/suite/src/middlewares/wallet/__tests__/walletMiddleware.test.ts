@@ -4,7 +4,7 @@ import {
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
 import { RouterState } from 'src/reducers/suite/routerReducer';
@@ -18,8 +18,6 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
 
 import * as fixtures from '../__fixtures__/walletMiddleware';
-
-const { getWalletAccount } = testMocks;
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
@@ -101,7 +99,7 @@ describe('walletMiddleware', () => {
 
     fixtures.blockchainSubscription.forEach(f => {
         it(f.description, () => {
-            const initialAccounts = f.initialAccounts.map((a: any) => getWalletAccount(a));
+            const initialAccounts = f.initialAccounts.map((a: any) => mockWalletAccount(a));
             const store = initStore(
                 getInitialState({
                     accounts: initialAccounts,
@@ -111,8 +109,8 @@ describe('walletMiddleware', () => {
             f.actions.forEach((action: any) => {
                 const payload = Array.isArray(action.payload)
                     ? // @ts-expect-error
-                      action.payload.map(a => getWalletAccount(a))
-                    : getWalletAccount(action.payload);
+                      action.payload.map(a => mockWalletAccount(a))
+                    : mockWalletAccount(action.payload);
                 store.dispatch({ ...action, payload });
             });
 
@@ -120,8 +118,7 @@ describe('walletMiddleware', () => {
             if (subscribe) {
                 expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(subscribe.called);
                 if (subscribe.called) {
-                    const accounts =
-                        subscribe.accounts?.map(a => getWalletAccount(a as Partial<Account>)) ?? [];
+                    const accounts = subscribe.accounts?.map(a => mockWalletAccount(a)) ?? [];
                     expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith(
                         expect.objectContaining({
                             accounts: accounts.map(a => expect.objectContaining(a)),

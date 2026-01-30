@@ -23,6 +23,22 @@ export type TokenInfoBranded = TokenInfo & {
     contract: TokenAddress;
 };
 
+export type AccountNetworkSpecificRipple = {
+    networkType: 'ripple';
+    misc: { sequence: number; reserve: string };
+    marker: AccountInfo['marker'];
+    stellarCursor: undefined;
+    page: undefined;
+};
+
+export type AccountNetworkSpecificStellar = {
+    networkType: 'stellar';
+    misc: { stellarSequence: string; reserve: string };
+    marker: undefined;
+    stellarCursor: AccountInfo['stellarCursor'];
+    page: undefined;
+};
+
 export type AccountNetworkSpecific =
     | {
           networkType: 'bitcoin';
@@ -31,13 +47,7 @@ export type AccountNetworkSpecific =
           stellarCursor: undefined;
           page: AccountInfo['page'];
       }
-    | {
-          networkType: 'ripple';
-          misc: { sequence: number; reserve: string };
-          marker: AccountInfo['marker'];
-          stellarCursor: undefined;
-          page: undefined;
-      }
+    | AccountNetworkSpecificRipple
     | {
           networkType: 'cardano';
           marker: undefined;
@@ -93,13 +103,7 @@ export type AccountNetworkSpecific =
           stellarCursor: undefined;
           page: AccountInfo['page'];
       }
-    | {
-          networkType: 'stellar';
-          misc: { stellarSequence: string; reserve: string };
-          marker: undefined;
-          stellarCursor: AccountInfo['stellarCursor'];
-          page: undefined;
-      };
+    | AccountNetworkSpecificStellar;
 
 // decides if account is using TrezorConnect/blockchain-link or other non-standard api
 export type AccountBackendSpecific =
@@ -123,6 +127,16 @@ export type AccountFailureSpecific =
  *             prefer the separate `AccountDescriptor`, `NetworkSymbol` and `DeviceStaticSessionId`
  */
 export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
+
+export const createAccountKey = ({
+    accountDescriptor,
+    networkSymbol,
+    deviceStaticSessionId,
+}: {
+    accountDescriptor: AccountDescriptor;
+    networkSymbol: NetworkSymbol;
+    deviceStaticSessionId: StaticSessionId;
+}) => `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
 
 /**
  * Descriptor or xpub/zpub/..

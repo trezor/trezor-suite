@@ -1,12 +1,8 @@
-import {
-    getWalletAccount,
-    networkSpecificDefaultEthereum,
-    networkSpecificDefaultSolana,
-} from '@suite-common/test-utils';
 import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 export const accounts: Account[] = [
-    getWalletAccount({
+    mockWalletAccount({
         symbol: 'btc',
         accountLabel: 'BTC Account #1',
         deviceState: '1@2:3',
@@ -62,7 +58,7 @@ export const accounts: Account[] = [
         },
         visible: true,
     }),
-    getWalletAccount({
+    mockWalletAccount({
         symbol: 'btc',
         accountLabel: 'BTC Account #2',
         deviceState: '1@2:3',
@@ -76,49 +72,37 @@ export const accounts: Account[] = [
         },
         visible: true,
     }),
-    getWalletAccount(
-        {
-            symbol: 'eth',
-            accountLabel: 'ETH Account #1',
-            deviceState: '1@2:3',
+    mockWalletAccount({
+        symbol: 'eth',
+        accountLabel: 'ETH Account #1',
+        deviceState: '1@2:3',
 
-            accountType: 'normal',
-            descriptor: asAccountDescriptor('eth1-normal'),
-            visible: true,
-        },
-        networkSpecificDefaultEthereum,
-    ),
-    getWalletAccount(
-        {
-            symbol: 'eth',
-            accountLabel: 'ETH Account #2',
-            deviceState: '1@2:3',
-            accountType: 'legacy',
-            descriptor: asAccountDescriptor('eth2-legacy'),
-            visible: true,
-        },
-        networkSpecificDefaultEthereum,
-    ),
-    getWalletAccount(
-        {
-            symbol: 'eth',
-            accountLabel: 'ETH Account #3 HIDDEN',
-            deviceState: '1@2:3',
-            accountType: 'legacy',
-            descriptor: asAccountDescriptor('eth3-legacy'),
-            visible: false,
-        },
-        networkSpecificDefaultEthereum,
-    ),
-    getWalletAccount(
-        {
-            symbol: 'sol',
-            accountLabel: 'SOL Account #1',
-            deviceState: '1@2:3',
-            accountType: 'normal',
-            descriptor: asAccountDescriptor('sol1-normal'),
-            visible: true,
-        },
-        networkSpecificDefaultSolana,
-    ),
+        accountType: 'normal',
+        descriptor: asAccountDescriptor('eth1-normal'),
+        visible: true,
+    }),
+    mockWalletAccount({
+        symbol: 'eth',
+        accountLabel: 'ETH Account #2',
+        deviceState: '1@2:3',
+        accountType: 'legacy',
+        descriptor: asAccountDescriptor('eth2-legacy'),
+        visible: true,
+    }),
+    mockWalletAccount({
+        symbol: 'eth',
+        accountLabel: 'ETH Account #3 HIDDEN',
+        deviceState: '1@2:3',
+        accountType: 'legacy',
+        descriptor: asAccountDescriptor('eth3-legacy'),
+        visible: false,
+    }),
+    mockWalletAccount({
+        symbol: 'sol',
+        accountLabel: 'SOL Account #1',
+        deviceState: '1@2:3',
+        accountType: 'normal',
+        descriptor: asAccountDescriptor('sol1-normal'),
+        visible: true,
+    }),
 ];

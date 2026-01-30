@@ -8,6 +8,11 @@ import { Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { SendState, accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
 import { FeesState, SelectedAccountStatus, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    mockWalletAccount,
+    networkSpecificDefaultEthereum,
+    networkSpecificDefaultRipple,
+} from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -59,12 +64,10 @@ const UTXO = {
 // The type was needed because of error TS7056: The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed.
 export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Partial<Network> } = {
     status: 'loaded',
-    account: testMocks.getWalletAccount({
+    account: mockWalletAccount({
         symbol: 'btc',
-        networkType: 'bitcoin',
         descriptor: asAccountDescriptor('xpub'),
         deviceState: '1stTestnetAddress@device_id:0',
-        key: 'xpub-btc-1stTestnetAddress@device_id:0',
         addresses: {
             change: [
                 {
@@ -131,40 +134,40 @@ export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Pa
 
 export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: testMocks.getWalletAccount({
-        symbol: 'eth',
-        networkType: 'ethereum',
-        descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
-        deviceState: '1stTestnetAddress@device_id:0',
-        key: '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0',
-        balance: '10000000000000000000', // 10 ETH
-        availableBalance: '10000000000000000000', // 10 ETH
-        misc: { nonce: '0' },
-        tokens: [
-            {
-                standard: 'ERC20',
-                contract: '0xABCD',
-                symbol: '0xABCD',
-                decimals: 3,
-                balance: '1',
-            },
-        ],
-    }),
+    account: mockWalletAccount(
+        {
+            symbol: 'eth',
+            descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
+            deviceState: '1stTestnetAddress@device_id:0',
+            balance: '10000000000000000000', // 10 ETH
+            availableBalance: '10000000000000000000', // 10 ETH
+            tokens: [
+                {
+                    standard: 'ERC20',
+                    contract: '0xABCD',
+                    symbol: '0xABCD',
+                    decimals: 3,
+                    balance: '1',
+                },
+            ],
+        },
+        networkSpecificDefaultEthereum,
+    ),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: testMocks.getWalletAccount({
-        symbol: 'xrp',
-        networkType: 'ripple',
-        descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
-        deviceState: '1stTestnetAddress@device_id:0',
-        key: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0',
-        balance: '100000000', // 100 XRP
-        availableBalance: '100000000', // 100 XRP
-        misc: { reserve: '21', sequence: 0 },
-    }),
+    account: mockWalletAccount(
+        {
+            symbol: 'xrp',
+            descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
+            deviceState: '1stTestnetAddress@device_id:0',
+            balance: '100000000', // 100 XRP
+            availableBalance: '100000000', // 100 XRP
+        },
+        networkSpecificDefaultRipple,
+    ),
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 

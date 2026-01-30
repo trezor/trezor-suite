@@ -1,9 +1,15 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import type { transactionsActions } from '../transactionsActions';
 import type { TransactionsState } from '../transactionsReducer';
 
-const ACCOUNT = testMocks.getWalletAccount();
+const ACCOUNT = mockWalletAccount({
+    descriptor: asAccountDescriptor('btc1'),
+    symbol: 'btc',
+    deviceState: '1@2:3',
+});
 
 export const addTransaction: {
     description: string;

@@ -1,6 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types/libDev/src';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as metadataActions from '../metadataActions';
 import * as METADATA from '../metadataConstants';
@@ -8,8 +9,6 @@ import * as metadataLabelingActions from '../metadataLabelingActions';
 import * as METADATA_LABELING from '../metadataLabelingConstants';
 import * as metadataProviderActions from '../metadataProviderThunks';
 import * as metadataThunks from '../metadataThunks';
-
-const { getWalletAccount } = testMocks;
 
 type Fixture<T extends (...a: any) => any> = {
     description: string;
@@ -118,11 +117,13 @@ const setAccountMetadataKey: Fixture<(typeof metadataLabelingActions)['setAccoun
                 },
             },
             params: [
-                getWalletAccount({
+                mockWalletAccount({
+                    symbol: 'btc',
+                    deviceState: '1stTestnetAddress@device_id:0',
+                    descriptor: asAccountDescriptor('btc1'),
                     metadata: {
                         key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
                     },
-                    deviceState: '1stTestnetAddress@device_id:0',
                 }),
             ],
             result: {

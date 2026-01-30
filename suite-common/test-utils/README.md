@@ -1,37 +1,6 @@
-# @suite-common/test-utils
+## Mocks
 
-This package defines mocks for TrezorConnect to be shared between more packages that use these mocks in their tests.
+This package shall only contain `extraDependenciesCommonMock` to provide a shared mocks for
+common extra for Redux Thunks
 
-## Usage and configuration
-
-1. add `@suite-common/test-utils` to a project dependencies
-2. import mocks in your tests or fixtures
-
-```javascript
-import { testMocks } from '@suite-common/test-utils';
-```
-
-3. use it
-
-```javascript
-testMocks.getWalletAccount({
-    deviceState: '1stTestnetAddress@device_id:0',
-    descriptor:
-        'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-    symbol: 'btc',
-});
-```
-
-See the package `@suite-common/wallet-utils` and its tests for an example configuration.
-
-## configureMockStore
-
-Testing Redux async action creators and middleware. The mock store will create an array of dispatched actions which serve as an action log for tests. It supports partial injecting of extra dependencies:
-
-```typescript
-const mockStore = configureStore({
-    extra: { selectors: { getAccounts: [mocks.getWalletAccount()] } },
-});
-```
-
-All other APIs should be same as in [redux-mock-store](https://github.com/reduxjs/redux-mock-store).
+`// Todo`: Everything else here needs to be moved to other place
