@@ -286,7 +286,8 @@ export interface AccountInfo {
         // SOL
         owner?: string; // The Solana program owning the account
         rent?: number; // The rent required for the account to opened
-        solStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts
+        solStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (Everstake)
+        solExternalStakingAccounts?: SolanaStakingAccount[]; // Solana staking accounts (non-Everstake)
         solEpoch?: number; // Solana current epoch
     };
     page?: {
