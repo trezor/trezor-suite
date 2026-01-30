@@ -153,16 +153,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralChangeTheme;
-          payload: {
-              previousTheme: 'light' | 'dark' | 'debug';
-              previousAutodetectTheme: boolean;
-              theme: 'light' | 'dark' | 'debug';
-              autodetectTheme: boolean;
-              platformTheme: 'light' | 'dark' | 'debug';
-          };
-      }
-    | {
           type: EventType.SettingsGeneralAddressDisplayType;
           payload: {
               addressDisplayType: 'original' | 'chunked';

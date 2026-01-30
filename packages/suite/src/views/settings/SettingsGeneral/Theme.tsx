@@ -9,7 +9,7 @@ import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { getOsTheme } from 'src/utils/suite/env';
 
 type ThemeColorVariantWithSystem = ThemeColorVariant | 'system';
@@ -53,7 +53,7 @@ const useThemeOptions = () => {
 };
 
 export const Theme = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const theme = useSelector(state => state.suite.settings.theme);
     const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
     const dispatch = useDispatch();
@@ -67,7 +67,7 @@ export const Theme = () => {
         const themeValue = value === 'standard' ? 'light' : value;
 
         const platformTheme = getOsTheme();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralChangeTheme,
             payload: {
                 platformTheme,
