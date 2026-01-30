@@ -12,6 +12,7 @@ export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
 export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { settingsChangeThemeEvent } from './settingsChangeThemeEvent';
+export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';
 export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
 export { transactionDetailCompareValuesEvent } from './transactionDetailCompareValuesEvent';
 export { transactionDetailEvent } from './transactionDetailEvent';

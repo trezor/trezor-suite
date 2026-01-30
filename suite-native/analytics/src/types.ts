@@ -28,12 +28,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.SettingsDataPermission;
-          payload: {
-              analyticsPermission: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsChangeCoinEnabled;
           payload: {
               symbol: NetworkSymbol;

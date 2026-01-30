@@ -12,6 +12,7 @@ import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploade
 import { getCommitHash } from '@trezor/env-utils';
 
 import { EventType } from './constants';
+import { getTypedNativeAnalytics } from './getTypedNativeAnalytics';
 import { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
 
 const ACTION_PREFIX = '@suite-native/analytics';
@@ -19,7 +20,7 @@ const ACTION_PREFIX = '@suite-native/analytics';
 export const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
+        getTypedNativeAnalytics(extra.services.analytics).report({
             type: EventType.SettingsDataPermission,
             payload: { analyticsPermission: true },
         });
@@ -31,7 +32,7 @@ export const enableAnalyticsThunk = createThunk(
 export const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
-        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report(
+        getTypedNativeAnalytics(extra.services.analytics).report(
             { type: EventType.SettingsDataPermission, payload: { analyticsPermission: false } },
             { force: true },
         );
