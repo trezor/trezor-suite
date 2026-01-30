@@ -6,6 +6,7 @@ export { assetDetailTimeframeChangeEvent } from './AssetDetailTimeframeChangeEve
 export { assetsSyncEvent } from './AssetsSyncEvent';
 export { biometricsChangeEvent } from './biometricsChangeEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
+export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';

@@ -28,19 +28,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.DeviceManagerClick;
-          payload: {
-              action:
-                  | 'deviceItem'
-                  | 'portfolioTracker'
-                  | 'connectDeviceButton'
-                  | 'syncCoinsButton'
-                  | 'educationLink'
-                  | 'eshopLink'
-                  | 'deviceSettings';
-          };
-      }
-    | {
           type: EventType.EjectDeviceClick;
           payload: {
               origin: 'deviceManager' | 'deviceNotReadyModal';

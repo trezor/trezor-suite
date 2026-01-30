@@ -13,7 +13,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceAction } from './DeviceAction';
@@ -43,7 +43,7 @@ const contentStyle = prepareNativeStyle<{ showAsFullWidth: boolean }>(
 );
 
 export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
@@ -54,7 +54,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
         navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
             screen: DeviceSettingsStackRoutes.DeviceSettings,
         });
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'deviceSettings' },
         });
