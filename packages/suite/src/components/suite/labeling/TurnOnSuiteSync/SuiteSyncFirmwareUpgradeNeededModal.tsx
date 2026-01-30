@@ -46,7 +46,7 @@ export const SuiteSyncFirmwareUpgradeNeededModal = ({
             width={600}
             bottomContent={
                 <>
-                    <Modal.Button onClick={onClick}>
+                    <Modal.Button onClick={onClick} intent="info">
                         <Translation id="TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE" />
                     </Modal.Button>
                     <Modal.Button onClick={onClose} intent="neutral" priority="secondary">

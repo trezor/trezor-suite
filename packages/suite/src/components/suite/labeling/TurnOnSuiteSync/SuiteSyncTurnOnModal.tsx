@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Card, Column, IconCircle, List, Modal, Paragraph } from '@trezor/components';
+import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -61,7 +61,6 @@ export const SuiteSyncTurnOnModal = ({
     return (
         <Modal
             heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
-            description={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION" />}
             onCancel={onClose}
             width={600}
             bottomContent={
@@ -78,44 +77,19 @@ export const SuiteSyncTurnOnModal = ({
             <Column gap={16}>
                 <Card paddingType="large">
                     <List gap={16} intent="neutral" priority="secondary">
-                        <List.Item
-                            bulletComponent={
-                                <IconCircle
-                                    name="tag"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
-                                />
-                            }
-                        >
+                        <List.Item bulletComponent={<Icon name="tag" size={20} />}>
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_LABELS" />
                             </Paragraph>
                         </List.Item>
                         <List.Item
-                            bulletComponent={
-                                <IconCircle
-                                    name="cloudX"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
-                                />
-                            }
+                            bulletComponent={<Icon name="arrowsCounterClockwise" size={20} />}
                         >
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY" />
                             </Paragraph>
                         </List.Item>
-                        <List.Item
-                            bulletComponent={
-                                <IconCircle
-                                    name="desktopTower"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
-                                />
-                            }
-                        >
+                        <List.Item bulletComponent={<Icon name="shieldCheck" size={20} />}>
                             <Paragraph>
                                 <Translation id="TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES" />
                             </Paragraph>
