@@ -3,7 +3,6 @@ import { RouteProp } from '@react-navigation/native';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { PreloadedState, fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts, getBuyTrade, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
 
 import { TradingHistoryScreen } from '../TradingHistoryScreen';
 
@@ -47,7 +46,7 @@ const getPreloadedState = (): PreloadedState => ({
     device: {
         selectedDevice: {
             state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+                staticSessionId: '1@2:3',
             },
         },
     },

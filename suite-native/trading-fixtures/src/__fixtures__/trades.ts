@@ -12,6 +12,8 @@ import {
     TradingTransactionSell,
 } from '@suite-common/trading';
 
+import { btc1NormalAccount, eth1NormalAccount, sol1normalAccount } from './accounts';
+
 export const getBuyTrade = ({
     status,
 }: {
@@ -45,8 +47,8 @@ export const getBuyTrade = ({
     date: '2025-04-10T20:21:25.042Z',
     key: '7546b3a9-ba27-4c9c-b3ae-45524fe63a97',
     tradeType: 'buy',
-    receiveAccountKey: 'eth1',
-    selectedAccountKey: 'eth1',
+    receiveAccountKey: eth1NormalAccount.key,
+    selectedAccountKey: eth1NormalAccount.key,
 });
 
 export const getExchangeTrade = ({
@@ -68,8 +70,8 @@ export const getExchangeTrade = ({
         receiveStringAmount: '0.462586',
         exchange: 'mercuryo',
     },
-    sendAccountKey: 'sol1',
-    receiveAccountKey: 'sol1',
+    sendAccountKey: sol1normalAccount.key,
+    receiveAccountKey: sol1normalAccount.key,
 });
 
 export const getSellTrade = ({
@@ -91,5 +93,5 @@ export const getSellTrade = ({
         partnerData:
             'https://exchange.mercuryo.io/?widget_id=865f3f01-ab22-447c-990c-dc37232ee643&type=buy&fix_amount=true&currency=SOL&network=SOLANA&fix_currency=true&fix_fiat_amount=true&fiat_currency=CZK&fix_fiat_currency=true&address=Ee11dZkVEMN7u3E7xabReNp45RNgHJZAGqreVAhngh9t&hide_address=false&country_code=CZ&merchant_transaction_id=1146b3a9-ba27-4c9c-b3ae-45524fe63a97&theme=invity&return_url=trezorsuite%3A%2F%2Fbuy%2Ftrade%3Freceive%3Dsolana%26send%3DCZK%26fiatAmount%3Dundefined&utm_source=Trezor&utm_referral=referral&payment_method=card&signature=1ef703a2175a7d1a3ab255aabb753c8a54146c7c19453dc6ebc1f667fb0045755a03d4df979c3c68a37af5cb9f5e73b88eec390a49fd31311019a2a7a65c6cfb&fiat_amount=1234',
     },
-    sendAccountKey: 'btc1',
+    sendAccountKey: btc1NormalAccount.key,
 });
