@@ -9,14 +9,10 @@ import {
 import { Button, Checkbox, Code, Column, Input, Text } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
-import * as storageActions from 'src/actions/suite/storageActions';
-import {
-    selectIsFeatureSuiteSyncAvailable,
-    updateIsFeatureSuiteSyncAvailable,
-} from 'src/actions/suiteSync/suiteSyncSlice';
 import { SettingsSection } from 'src/components/settings/SettingsSection';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 
 export const SuiteSyncSettings = () => {
@@ -25,22 +21,8 @@ export const SuiteSyncSettings = () => {
     const dispatch = useDispatch();
     const { suiteSync } = useSuiteServices();
 
-    const isFeatureSuiteSyncAvailable = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const isSuiteSyncFeatureEnabled = useSelector(selectHasExperimentalFeature('suite-sync'));
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
-
-    const toggleIsFeatureSuiteSyncAvailable = () => {
-        dispatch(
-            updateIsFeatureSuiteSyncAvailable({
-                isShownInSettings: !isFeatureSuiteSyncAvailable,
-            }),
-        );
-
-        if (isFeatureSuiteSyncAvailable) {
-            suiteSync.turnOffSuiteSync({
-                ensureSettingsPersisted: () => dispatch(storageActions.saveSuiteSettings()),
-            });
-        }
-    };
 
     const suiteSyncRelayUrl = useSelector(selectSuiteSyncRelayUrl);
 
@@ -65,63 +47,51 @@ export const SuiteSyncSettings = () => {
         }, 300);
     };
 
+    if (!isSuiteSyncFeatureEnabled) {
+        return (
+            <SettingsSection title="Suite Sync">
+                <p>Suite Sync is disabled. Enable it in the Experimental Features settings.</p>
+            </SettingsSection>
+        );
+    }
+
     return (
         <SettingsSection title="Suite Sync">
             <SectionItem>
-                <TextColumn
-                    title="Suite Sync (Evolu)"
-                    description="This enables Suite Sync (Evolu) for labeling in the application settings. This is an experimental feature."
-                />
+                <TextColumn title="Relay URL" />
+                <ActionColumn>
+                    <Column gap={spacings.xxs}>
+                        <Input
+                            data-testid="@settings/debug/suite-sync/relay-url-input"
+                            isDisabled={isLoading}
+                            value={relayUrl}
+                            onChange={e => setRelayUrl(e.target.value)}
+                            rightContent={
+                                <Button
+                                    data-testid="@settings/debug/suite-sync/save-button"
+                                    isLoading={isLoading}
+                                    onClick={onRelayUrlSave}
+                                    size="small"
+                                >
+                                    Save
+                                </Button>
+                            }
+                        />
+                        <Text typographyStyle="hint" variant="tertiary">
+                            Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
+                        </Text>
+                    </Column>
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem>
+                <TextColumn title="Suite Sync (Evolu) Debug" />
                 <ActionColumn>
                     <Checkbox
-                        data-testid="@settings/debug/suite-sync/checkbox"
-                        isChecked={isFeatureSuiteSyncAvailable}
-                        onClick={toggleIsFeatureSuiteSyncAvailable}
+                        isChecked={isSuiteSyncDebugEnabled}
+                        onClick={handleToggleSuiteSyncDebug}
                     />
                 </ActionColumn>
             </SectionItem>
-            {!isFeatureSuiteSyncAvailable && (
-                <p>Suite Sync is disabled. Enable it in the Experimental Features settings.</p>
-            )}
-            {isFeatureSuiteSyncAvailable && (
-                <>
-                    <SectionItem>
-                        <TextColumn title="Relay URL" />
-                        <ActionColumn>
-                            <Column gap={spacings.xxs}>
-                                <Input
-                                    data-testid="@settings/debug/suite-sync/relay-url-input"
-                                    isDisabled={isLoading}
-                                    value={relayUrl}
-                                    onChange={e => setRelayUrl(e.target.value)}
-                                    rightContent={
-                                        <Button
-                                            data-testid="@settings/debug/suite-sync/save-button"
-                                            isLoading={isLoading}
-                                            onClick={onRelayUrlSave}
-                                            size="small"
-                                        >
-                                            Save
-                                        </Button>
-                                    }
-                                />
-                                <Text typographyStyle="hint" variant="tertiary">
-                                    Default is: <Code>{DEFAULT_SUITE_SYNC_RELAY_URL}</Code>
-                                </Text>
-                            </Column>
-                        </ActionColumn>
-                    </SectionItem>
-                    <SectionItem>
-                        <TextColumn title="Suite Sync (Evolu) Debug" />
-                        <ActionColumn>
-                            <Checkbox
-                                isChecked={isSuiteSyncDebugEnabled}
-                                onClick={handleToggleSuiteSyncDebug}
-                            />
-                        </ActionColumn>
-                    </SectionItem>
-                </>
-            )}
         </SettingsSection>
     );
 };

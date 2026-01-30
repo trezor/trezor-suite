@@ -5,7 +5,6 @@ import { step } from '../../common';
 import { PromoBannerType } from '../dashboardPage';
 
 export class DebugTab {
-    readonly suiteSyncCheckbox: Locator;
     readonly suiteSyncUrlInput: Locator;
     readonly suiteSyncUrlSaveButton: Locator;
     readonly modal: Locator;
@@ -19,7 +18,6 @@ export class DebugTab {
     readonly quotaManagerUrlSaveButton: Locator;
 
     constructor(private readonly page: Page) {
-        this.suiteSyncCheckbox = page.getByTestId('@settings/debug/suite-sync/checkbox');
         this.suiteSyncUrlInput = page.getByTestId('@settings/debug/suite-sync/relay-url-input');
         this.suiteSyncUrlSaveButton = page.getByTestId('@settings/debug/suite-sync/save-button');
         this.modal = page.getByTestId('@modal');

@@ -2,18 +2,16 @@ import { WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
-import {
-    selectDesktopSuiteSyncInteraction,
-    selectIsFeatureSuiteSyncAvailable,
-} from '../../../../actions/suiteSync/suiteSyncSlice';
+import { selectDesktopSuiteSyncInteraction } from '../../../../actions/suiteSync/suiteSyncSlice';
 import {
     MetadataRootState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '../../../../reducers/suite/metadataReducer';
+import { SuiteRootState } from '../../../../reducers/suite/suiteReducer';
 
 export const selectIsLabelActionEnabled = (
-    state: WithSuiteSyncAndDeviceState & MetadataRootState,
+    state: WithSuiteSyncAndDeviceState & MetadataRootState & SuiteRootState,
     deviceStaticSessionId: StaticSessionId,
     legacyEntityKey: string,
 ): boolean => {
@@ -24,10 +22,11 @@ export const selectIsLabelActionEnabled = (
         deviceStaticSessionId,
     );
 
-    const isSuiteSyncFeatureAvailable = selectIsFeatureSuiteSyncAvailable(state);
+    const isSuiteSyncFeatureEnabled =
+        state.suite.settings.experimental?.includes('suite-sync') ?? false;
 
-    // Turn ON in Debug/Experimental Features
-    if (isSuiteSyncFeatureAvailable) {
+    // Turn ON in Experimental Features
+    if (isSuiteSyncFeatureEnabled) {
         const suiteSyncInteraction = selectDesktopSuiteSyncInteraction(
             state,
             deviceStaticSessionId,

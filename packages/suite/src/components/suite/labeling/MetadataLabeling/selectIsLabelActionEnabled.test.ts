@@ -10,13 +10,13 @@ import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
 import { selectIsLabelActionEnabled } from './selectIsLabelActionEnabled';
-import { DesktopSuiteSyncState } from '../../../../actions/suiteSync/suiteSyncSlice';
 import {
     MetadataRootState,
     initialMetadataState,
     selectIsLabelingAvailableForEntity,
     selectIsLabelingInitPossible,
 } from '../../../../reducers/suite/metadataReducer';
+import { SuiteRootState, suiteInitialState } from '../../../../reducers/suite/suiteReducer';
 
 /**
  * It was really hard to mock the state for metadata. So I statically mocked
@@ -33,6 +33,7 @@ const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 const createMockState = (
     deviceOverrides: Parameters<typeof getSuiteDevice>[0] = {},
     suiteSyncOverrides: Partial<SuiteSyncState> = {},
+    isSuiteSyncFeatureEnabled = false,
 ) =>
     ({
         device: {
@@ -43,6 +44,13 @@ const createMockState = (
             ...initialSuiteSyncState,
             ...suiteSyncOverrides,
         },
+        suite: {
+            ...suiteInitialState,
+            settings: {
+                ...suiteInitialState.settings,
+                experimental: isSuiteSyncFeatureEnabled ? ['suite-sync'] : undefined,
+            },
+        },
         wallet: {
             accounts: [] as any[],
         },
@@ -51,39 +59,39 @@ const createMockState = (
         },
         // This HARD CAST is here because MetadataRootState is HUGE,
         // and I do not want to refactor Legacy Labeling
-    }) as WithSuiteSyncAndDeviceState & MetadataRootState;
+    }) as WithSuiteSyncAndDeviceState & MetadataRootState & SuiteRootState;
 
 describe(selectIsLabelActionEnabled.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    const testLabelActionEnabled = (
-        unavailableCapabilities: UnavailableCapabilities,
-        suiteSyncSettings: Partial<DesktopSuiteSyncState['settings']>,
-    ) => {
-        const state = createMockState(
-            { unavailableCapabilities },
-            { settings: { ...initialSuiteSyncState.settings, ...suiteSyncSettings } },
-        );
+    const testLabelActionEnabled = ({
+        unavailableCapabilities,
+        isSuiteSyncFeatureEnabled,
+    }: {
+        unavailableCapabilities: UnavailableCapabilities;
+        isSuiteSyncFeatureEnabled: boolean;
+    }) => {
+        const state = createMockState({ unavailableCapabilities }, {}, isSuiteSyncFeatureEnabled);
 
         return selectIsLabelActionEnabled(state, DEVICE_STATIC_SESSION_ID_123, 'address-123');
     };
 
     it('allows labeling despite update-needed for Suite Sync', () => {
-        const result = testLabelActionEnabled(
-            { evolu: 'update-required' },
-            { isFeatureSuiteSyncAvailable: true },
-        );
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: { evolu: 'update-required' },
+            isSuiteSyncFeatureEnabled: true,
+        });
 
         expect(result).toBe(true);
     });
 
     it('disables labeling for unsupported device', () => {
-        const result = testLabelActionEnabled(
-            { evolu: 'no-capability' },
-            { isFeatureSuiteSyncAvailable: true },
-        );
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: { evolu: 'no-capability' },
+            isSuiteSyncFeatureEnabled: true,
+        });
 
         expect(result).toBe(false);
     });
@@ -92,7 +100,10 @@ describe(selectIsLabelActionEnabled.name, () => {
         mocked(selectIsLabelingAvailableForEntity).mockReturnValue(false);
         mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
-        const result = testLabelActionEnabled({}, { isFeatureSuiteSyncAvailable: false });
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: false,
+        });
 
         expect(result).toBe(false);
     });
@@ -101,7 +112,10 @@ describe(selectIsLabelActionEnabled.name, () => {
         mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
         mocked(selectIsLabelingInitPossible).mockReturnValue(false);
 
-        const result = testLabelActionEnabled({}, { isFeatureSuiteSyncAvailable: false });
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: false,
+        });
 
         expect(result).toBe(true);
     });
@@ -110,7 +124,10 @@ describe(selectIsLabelActionEnabled.name, () => {
         mocked(selectIsLabelingAvailableForEntity).mockReturnValue(true);
         mocked(selectIsLabelingInitPossible).mockReturnValue(true);
 
-        const result = testLabelActionEnabled({}, { isFeatureSuiteSyncAvailable: false });
+        const result = testLabelActionEnabled({
+            unavailableCapabilities: {},
+            isSuiteSyncFeatureEnabled: false,
+        });
 
         expect(result).toBe(true);
     });
