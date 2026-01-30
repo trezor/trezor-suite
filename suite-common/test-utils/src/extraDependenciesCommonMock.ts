@@ -116,7 +116,11 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         ),
         selectSelectedAccount: notImplementedSelector('selectSelectedAccount', {
             status: 'loaded',
-            account: testMocks.getWalletAccount(),
+            account: testMocks.getWalletAccount({
+                symbol: 'btc',
+                deviceState: '1@2:3',
+                descriptor: asAccountDescriptor('btc1'),
+            }),
         } as SelectedAccountLoaded),
         selectSelectedAccountStatus: notImplementedSelector(
             'selectSelectedAccountStatus',

@@ -1,4 +1,5 @@
 import { getWalletAccount } from '@suite-common/test-utils';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { ReceiveAccount } from '@suite-native/trading-types';
 
@@ -40,8 +41,9 @@ describe('AccountListItem', () => {
     it('should call onPress callback when pressed', async () => {
         const receiveAccount: ReceiveAccount = {
             account: getWalletAccount({
-                key: 'abc-btc-1@2:3',
+                descriptor: asAccountDescriptor('abc'),
                 symbol: 'btc',
+                deviceState: '1@2:3',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -56,8 +58,9 @@ describe('AccountListItem', () => {
     it('should render account name', async () => {
         const receiveAccount: ReceiveAccount = {
             account: getWalletAccount({
-                key: 'abc-btc-1@2:3',
+                descriptor: asAccountDescriptor('abc'),
                 symbol: 'btc',
+                deviceState: '1@2:3',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -74,7 +77,9 @@ describe('AccountListItem', () => {
     it('should display caret when account defines addresses', async () => {
         const receiveAccount: ReceiveAccount = {
             account: getWalletAccount({
-                key: 'abc-btc-1@2:3',
+                descriptor: asAccountDescriptor('abc'),
+                symbol: 'btc',
+                deviceState: '1@2:3',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
                 addresses: {
