@@ -73,7 +73,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
 
             if (device?.features) {
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.DeviceUpdateFirmware,
                     payload: {
                         model: device.features.internal_model,
