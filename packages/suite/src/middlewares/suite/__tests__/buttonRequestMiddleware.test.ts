@@ -1,6 +1,6 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 import { UI, UI_EVENT } from '@trezor/connect';

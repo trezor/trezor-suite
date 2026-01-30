@@ -1,4 +1,4 @@
-import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, Device, TRANSPORT } from '@trezor/connect';

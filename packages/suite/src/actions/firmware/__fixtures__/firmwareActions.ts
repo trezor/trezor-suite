@@ -1,5 +1,5 @@
 import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
-import { mockGetFirmwareReleaseConfigInfo, mockSuiteDevice } from '@suite-common/suite-types';
+import { mockGetFirmwareReleaseConfigInfo, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { FirmwareType, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

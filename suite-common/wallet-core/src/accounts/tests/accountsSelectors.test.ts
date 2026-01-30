@@ -1,4 +1,5 @@
-import { TrezorDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 

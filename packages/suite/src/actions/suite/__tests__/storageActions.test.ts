@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
     changeCoinVisibility,

@@ -1,4 +1,5 @@
-import { TrezorDevice, mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     DeviceReducerState,
     deviceActions,

@@ -5,7 +5,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState,
 } from '@suite-common/suite-sync';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 

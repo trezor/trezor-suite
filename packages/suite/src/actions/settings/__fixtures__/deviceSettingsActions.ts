@@ -1,6 +1,7 @@
 import assert from 'assert';
 
-import { TrezorDevice , mockSuiteDevice } from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     deviceActions,
@@ -14,7 +15,6 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
-
 
 export const deviceReducer = prepareDeviceReducer(extraDependencies);
 

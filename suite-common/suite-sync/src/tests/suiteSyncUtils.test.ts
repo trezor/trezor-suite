@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { portfolioTrackerDevice } from '@suite-common/wallet-core';
 
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';

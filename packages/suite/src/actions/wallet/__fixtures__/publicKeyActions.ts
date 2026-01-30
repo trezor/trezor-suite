@@ -1,5 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { MODAL } from 'src/actions/suite/constants';
