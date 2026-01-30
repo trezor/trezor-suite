@@ -25,6 +25,7 @@ export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { deviceUpdateFirmwareEvent } from './deviceUpdateFirmwareEvent';
 export { guideFeedbackNavigationEvent } from './guideFeedbackNavigationEvent';
+export { guideFeedbackSubmitEvent } from './guideFeedbackSubmitEvent';
 export { guideTooltipLinkNavigationEvent } from './guideTooltipLinkNavigationEvent';
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
