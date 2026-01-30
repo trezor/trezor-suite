@@ -29,12 +29,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.SettingsChangeTheme;
-          payload: {
-              theme: string;
-          };
-      }
-    | {
           type: EventType.SettingsChangeBtcUnit;
           payload: {
               bitcoinUnit: UNIT_ABBREVIATION;
