@@ -165,12 +165,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralEarlyAccess;
-          payload: {
-              allowPrerelease: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralAutoEject;
           payload: {
               value: boolean;

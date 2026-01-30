@@ -46,6 +46,7 @@ export { settingsDeviceMultiShareBackupEvent } from './settingsDeviceMultiShareB
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
 export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEvent';
+export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
 export { settingsTorEvent } from './settingsTorEvent';

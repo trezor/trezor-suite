@@ -7,7 +7,7 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { spacings } from '@trezor/theme';
 import { SUITE_URL } from '@trezor/urls';
 
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface EarlyAccessDisableProps {
     hideWindow: () => void;
@@ -15,10 +15,10 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     const allowPrerelease = useCallback(() => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralEarlyAccess,
             payload: {
                 allowPrerelease: false,
@@ -26,7 +26,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
         });
         desktopApi.allowPrerelease(false);
         setEnabled(false);
-    }, [legacyAnalytics]);
+    }, [analytics]);
 
     return enabled ? (
         <Modal
