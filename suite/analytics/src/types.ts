@@ -1,7 +1,7 @@
 import { MetadataProviderType } from '@suite-common/metadata-types';
 
 import { EventType } from './constants';
-import type { AppUpdateEvent, FirmwareSource, OnboardingAnalytics } from './definitions';
+import type { AppUpdateEvent, FirmwareSource } from './definitions';
 
 /** @deprecated */
 export type SuiteAnalyticsEventSuiteReady = {
@@ -84,14 +84,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               toBtcOnly?: boolean;
               firmwareSource: FirmwareSource;
               error: string;
-          };
-      }
-    | {
-          type: EventType.DeviceSetupCompleted;
-          payload: Partial<Omit<OnboardingAnalytics, 'startTime'>> & {
-              duration: number;
-              device: string;
-              unitPackaging: number;
           };
       }
     | {
