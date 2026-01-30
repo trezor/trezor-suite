@@ -27,10 +27,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
-    | {
-          type: EventType.BiometricsChange;
-          payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
-      }
     | { type: EventType.ConfirmedReceiveAddress }
     | { type: EventType.EmptyDashboardClick; payload: { action: 'syncCoins' | 'connectDevice' } }
     | {

@@ -12,7 +12,7 @@ import {
     ScreenHeader,
     StackProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -30,7 +30,7 @@ const titleStyle = prepareNativeStyle(_ => ({
 
 export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { applyStyle } = useNativeStyles();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { toggleBiometricsOption } = useBiometricsSettings();
     const exitOnboardingFlow = useExitOnboardingFlow();
 
@@ -39,7 +39,7 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();
         if (result === 'enabled') {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.BiometricsChange,
                 payload: {
                     enabled: true,
