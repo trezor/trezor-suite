@@ -5,7 +5,6 @@ import { Account } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
 
 import { TradingReceiveAccountsPickerScreen } from '../TradingReceiveAccountsPickerScreen';
 
@@ -26,7 +25,7 @@ const getPreloadedState = (preloadedAccounts: Account[]): PreloadedState => ({
     device: {
         selectedDevice: {
             state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+                staticSessionId: '1@2:3',
             },
             connected: true,
             available: true,

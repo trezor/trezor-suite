@@ -1,80 +1,124 @@
-import { Account } from '@suite-common/wallet-types';
+import {
+    getWalletAccount,
+    networkSpecificDefaultEthereum,
+    networkSpecificDefaultSolana,
+} from '@suite-common/test-utils';
+import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 
-export const accounts = [
-    {
+export const accounts: Account[] = [
+    getWalletAccount({
         symbol: 'btc',
         accountLabel: 'BTC Account #1',
-        deviceState: 'staticSessionId',
-        key: 'btc1',
-        networkType: 'bitcoin',
+        deviceState: '1@2:3',
         accountType: 'normal',
-        descriptor: 'btc1-normal',
+        descriptor: asAccountDescriptor('btc1-normal'),
         addresses: {
             used: [
-                { address: 'USED1', path: 'path_USED1', balance: '10000000' },
-                { address: 'USED2', path: 'path_USED2', balance: '20000000' },
+                {
+                    address: 'USED1',
+                    path: 'path_USED1',
+                    balance: '10000000',
+                    transfers: 0,
+                    sent: '0',
+                    received: '0',
+                },
+                {
+                    address: 'USED2',
+                    path: 'path_USED2',
+                    balance: '20000000',
+                    transfers: 0,
+                    sent: '0',
+                    received: '0',
+                },
             ],
-            change: [{ address: 'CHANGE1', path: 'path_CHANGE1' }],
+            change: [
+                {
+                    address: 'CHANGE1',
+                    path: 'path_CHANGE1',
+                    transfers: 0,
+                    sent: '0',
+                    received: '0',
+                    balance: '0',
+                },
+            ],
             unused: [
-                { address: 'UNUSED1', path: 'path_UNUSED1' },
-                { address: 'UNUSED2', path: 'path_UNUSED2' },
+                {
+                    address: 'UNUSED1',
+                    path: 'path_UNUSED1',
+                    transfers: 0,
+                    sent: '0',
+                    received: '0',
+                    balance: '0',
+                },
+                {
+                    address: 'UNUSED2',
+                    path: 'path_UNUSED2',
+                    transfers: 0,
+                    sent: '0',
+                    received: '0',
+                    balance: '0',
+                },
             ],
         },
         visible: true,
-    },
-    {
+    }),
+    getWalletAccount({
         symbol: 'btc',
         accountLabel: 'BTC Account #2',
-        deviceState: 'staticSessionId',
-        key: 'btc2',
-        networkType: 'bitcoin',
+        deviceState: '1@2:3',
+
         accountType: 'legacy',
-        descriptor: 'btc2-legacy',
+        descriptor: asAccountDescriptor('btc2-legacy'),
         addresses: {
             used: [],
             change: [],
             unused: [],
         },
         visible: true,
-    },
-    {
-        symbol: 'eth',
-        accountLabel: 'ETH Account #1',
-        deviceState: 'staticSessionId',
-        key: 'eth1',
-        networkType: 'ethereum',
-        accountType: 'normal',
-        descriptor: 'eth1-normal',
-        visible: true,
-    },
-    {
-        symbol: 'eth',
-        accountLabel: 'ETH Account #2',
-        deviceState: 'staticSessionId',
-        key: 'eth2',
-        networkType: 'ethereum',
-        accountType: 'legacy',
-        descriptor: 'eth2-legacy',
-        visible: true,
-    },
-    {
-        symbol: 'eth',
-        accountLabel: 'ETH Account #3 HIDDEN',
-        deviceState: 'staticSessionId',
-        key: 'eth3',
-        networkType: 'ethereum',
-        accountType: 'legacy',
-        descriptor: 'eth3-legacy',
-        visible: false,
-    },
-    {
-        symbol: 'sol',
-        accountLabel: 'SOL Account #1',
-        deviceState: 'staticSessionId',
-        key: 'sol1',
-        networkType: 'solana',
-        accountType: 'normal',
-        descriptor: 'sol1-normal',
-        visible: true,
-    },
-] as unknown as Account[];
+    }),
+    getWalletAccount(
+        {
+            symbol: 'eth',
+            accountLabel: 'ETH Account #1',
+            deviceState: '1@2:3',
+
+            accountType: 'normal',
+            descriptor: asAccountDescriptor('eth1-normal'),
+            visible: true,
+        },
+        networkSpecificDefaultEthereum,
+    ),
+    getWalletAccount(
+        {
+            symbol: 'eth',
+            accountLabel: 'ETH Account #2',
+            deviceState: '1@2:3',
+            accountType: 'legacy',
+            descriptor: asAccountDescriptor('eth2-legacy'),
+            visible: true,
+        },
+        networkSpecificDefaultEthereum,
+    ),
+    getWalletAccount(
+        {
+            symbol: 'eth',
+            accountLabel: 'ETH Account #3 HIDDEN',
+            deviceState: '1@2:3',
+            accountType: 'legacy',
+            descriptor: asAccountDescriptor('eth3-legacy'),
+            visible: false,
+        },
+        networkSpecificDefaultEthereum,
+    ),
+    getWalletAccount(
+        {
+            symbol: 'sol',
+            accountLabel: 'SOL Account #1',
+            deviceState: '1@2:3',
+            accountType: 'normal',
+            descriptor: asAccountDescriptor('sol1-normal'),
+            visible: true,
+        },
+        networkSpecificDefaultSolana,
+    ),
+];

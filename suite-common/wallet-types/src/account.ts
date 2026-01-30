@@ -23,7 +23,7 @@ export type TokenInfoBranded = TokenInfo & {
     contract: TokenAddress;
 };
 
-type AccountNetworkSpecific =
+export type AccountNetworkSpecific =
     | {
           networkType: 'bitcoin';
           misc: undefined;
@@ -130,7 +130,7 @@ export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceS
 export type AccountDescriptor = string & Branded<'AccountDescriptor'>;
 export const asAccountDescriptor = (value: string) => value as AccountDescriptor;
 
-export type Account = {
+export type AccountBase = {
     deviceState: StaticSessionId;
     key: AccountKey;
     index: number;
@@ -157,7 +157,10 @@ export type Account = {
      */
     accountLabel?: string;
     ts: number;
-} & AccountBackendSpecific &
+};
+
+export type Account = AccountBase &
+    AccountBackendSpecific &
     AccountNetworkSpecific &
     AccountFailureSpecific;
 

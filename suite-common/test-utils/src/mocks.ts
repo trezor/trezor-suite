@@ -7,50 +7,104 @@ import {
     GuideNode,
     MessageSystem,
 } from '@suite-common/suite-types';
-import { networksCollection } from '@suite-common/wallet-config';
+import { NetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import {
     Account,
+    AccountBase,
+    AccountDescriptor,
+    AccountFailureSpecific,
+    AccountNetworkSpecific,
     BlockchainNetworks,
     FeeInfo,
     WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { AccountUtxo, Device, Features, FirmwareType, TrezorConnect } from '@trezor/connect';
+import { createAccountKey } from '@suite-common/wallet-utils';import { AccountUtxo, Device, Features, FirmwareType,StaticSessionId, TrezorConnect } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-/**
- * Generate wallet account
- * @param {Partial<Account>} [account]
- * @returns {Features}
- */
-// @ts-expect-error - related to backendType and status
-export const getWalletAccount = (account?: Partial<Account>): Account => ({
-    deviceState: '1stTestnetAddress@device_id:0',
-    index: 0,
-    path: "m/44'/60'/0'/0/1",
-    descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
-    key: `${account?.descriptor ?? '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'}-${
-        account?.symbol ?? 'eth'
-    }-${account?.deviceState ?? '1stTestnetAddress@device_id:0'}`,
-    accountType: 'normal',
-    networkType: 'ethereum',
-    symbol: 'eth',
-    empty: false,
-    visible: true,
-    balance: '0',
-    availableBalance: '0',
-    formattedBalance: '0',
-    tokens: [],
-    history: { total: 13, tokens: 0, unconfirmed: 0 },
-    misc: { nonce: '6' },
-    page: { index: 1, size: 25, total: 1 },
-    utxo: undefined,
+type MandatoryAccountData = {
+    descriptor: AccountDescriptor;
+    symbol: NetworkSymbol;
+    deviceState: StaticSessionId;
+};
+
+const networkSpecificDefaultBitcoin: AccountNetworkSpecific = {
+    networkType: 'bitcoin',
+    misc: undefined,
     marker: undefined,
-    addresses: undefined,
-    metadata: { key: 'xpub' },
-    ts: 0,
-    ...account,
-});
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+};
+
+export const networkSpecificDefaultEthereum: AccountNetworkSpecific = {
+    networkType: 'ethereum',
+    misc: { nonce: '6' },
+    marker: undefined,
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+};
+
+export const networkSpecificDefaultSolana: AccountNetworkSpecific = {
+    networkType: 'solana',
+    marker: undefined,
+    stellarCursor: undefined,
+    page: { index: 1, size: 25, total: 1 },
+};
+
+export const getWalletAccount = (
+    account: Omit<
+        Partial<AccountBase>,
+        | 'key' // key is always constructed inside to enforce consistency
+        | 'deviceState'
+        | 'symbol'
+        | 'descriptor'
+    > &
+        MandatoryAccountData,
+    networkSpecific?: AccountNetworkSpecific,
+): Account => {
+    const accountBase: AccountBase = {
+        index: 0,
+        path: "m/44'/60'/0'/0/1",
+        accountType: 'normal',
+        empty: false,
+        visible: true,
+        balance: '0',
+        availableBalance: '0',
+        formattedBalance: '0',
+        tokens: [],
+        history: { total: 13, tokens: 0, unconfirmed: 0 },
+
+        utxo: undefined,
+        addresses: undefined,
+        metadata: { key: 'xpub' },
+        ts: 0,
+        ...account,
+
+        // This is mandatory to pass to enforce consistency
+        deviceState: account.deviceState,
+        descriptor: account.descriptor,
+        key: createAccountKey({
+            accountDescriptor: account.descriptor,
+            networkSymbol: account.symbol,
+            deviceStaticSessionId: account.deviceState,
+        }),
+        symbol: account.symbol,
+    };
+
+    // This is needed as typing the `Account` type with the union-type of
+    // the Networks and Backends seems impossible.
+    // This way, we at least get type-safe for AccountBase data.
+
+    const accountFailure: AccountFailureSpecific = {
+        failed: false,
+    };
+
+    return {
+        ...accountBase,
+        ...accountFailure,
+        ...(networkSpecific ?? networkSpecificDefaultBitcoin),
+    };
+};
 
 /**
  * device.firmwareReleaseConfigInfo property
