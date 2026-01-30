@@ -167,23 +167,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingSell;
-          payload: {
-              action: 'continue' | 'cancel';
-              step: 'sell-form' | 'offers-form' | 'confirm-and-send-transaction';
-
-              cryptoLabel?: string;
-              cryptoNetworkSymbol?: string;
-              cryptoContractAddress?: string;
-
-              receiveMethod?: string;
-              countryOfResidence?: string;
-
-              exchangeName?: string;
-              fractionButton?: string;
-          };
-      }
-    | {
           type: EventType.TradingCompareOffers;
           payload: {
               type: 'exchange' | 'buy' | 'sell';
