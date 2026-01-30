@@ -49,6 +49,10 @@ export const DeactivationFeeScreen = () => {
         areFeesLoading,
         form,
         feeLevels,
+        selectedFeeLevel,
+        formDraft,
+        handleFeeLevelChange,
+        handleCustomFeeSet,
         assetCode,
         tokenName,
         issuerDomain,
@@ -118,9 +122,14 @@ export const DeactivationFeeScreen = () => {
                             </Card>
 
                             <FeeOptionsSection
+                                accountKey={accountKey}
                                 feeLevels={feeLevels}
                                 symbol={account.symbol}
-                                isLoading={areFeesLoading}
+                                areFeesLoading={areFeesLoading}
+                                selectedFeeLevel={selectedFeeLevel}
+                                onSelectedFeeLevel={handleFeeLevelChange}
+                                onCustomFeeSet={handleCustomFeeSet}
+                                formDraft={formDraft}
                             />
                         </VStack>
 
