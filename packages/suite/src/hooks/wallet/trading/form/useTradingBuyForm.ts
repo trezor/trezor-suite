@@ -249,7 +249,7 @@ export const useTradingBuyForm = ({
 
         switch (pageType) {
             case 'form': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingBuy,
                     payload: {
                         action: 'continue',
@@ -265,7 +265,7 @@ export const useTradingBuyForm = ({
                 break;
             }
             case 'offers': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingBuy,
                     payload: {
                         action: 'continue',
