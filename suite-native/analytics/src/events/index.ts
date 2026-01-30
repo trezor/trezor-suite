@@ -10,6 +10,7 @@ export { onboardingCompletedEvent } from './OnboardingCompletedEvent';
 export { screenChangeEvent } from './ScreenChangeEvent';
 export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
+export { settingsChangeCoinEnabledEvent } from './settingsChangeCoinEnabledEvent';
 export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { settingsChangeThemeEvent } from './settingsChangeThemeEvent';
 export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';

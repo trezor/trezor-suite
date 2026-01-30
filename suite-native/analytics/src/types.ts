@@ -28,13 +28,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.SettingsChangeCoinEnabled;
-          payload: {
-              symbol: NetworkSymbol;
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.BiometricsChange;
           payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
       }

@@ -12,7 +12,7 @@ import {
 } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { DiscoveryCoinsFilter } from './DiscoveryCoinsFilter';
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
@@ -20,7 +20,7 @@ import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coi
 export const CoinEnablingForm = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const networkSymbols = useSelector(selectDiscoveryNetworkSymbols);
 
@@ -58,7 +58,7 @@ export const CoinEnablingForm = () => {
             const isEnabled = values.enabledCoins.includes(symbol);
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SettingsChangeCoinEnabled,
                 payload: {
                     symbol,
