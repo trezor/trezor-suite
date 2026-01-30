@@ -1,4 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { deviceActions, initialWalletSettingsState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
@@ -10,9 +10,7 @@ import fixtures, {
     deviceReducer,
 } from '../__fixtures__/deviceSettingsActions';
 
-const { getSuiteDevice } = testMocks;
-
-const DEVICE = getSuiteDevice({ path: '1', connected: true });
+const DEVICE = mockSuiteDevice({ path: '1', connected: true });
 
 const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     suite: {

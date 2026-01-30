@@ -1,6 +1,6 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { testMocks } from '@suite-common/test-utils';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
@@ -24,9 +24,9 @@ const authenticityChecksFail: AcquiredDevice['authenticityChecks'] = {
     firmwareHash: { success: false, error: 'hash-mismatch' },
 };
 
-const defaultDevice = testMocks.getSuiteDevice();
+const defaultDevice = mockSuiteDevice();
 if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
-    throw 'testMocks.getSuiteDevice() must return an AcquiredDevice here.';
+    throw 'mockSuiteDevice() must return an AcquiredDevice here.';
 }
 
 const fixtures: Fixture[] = [

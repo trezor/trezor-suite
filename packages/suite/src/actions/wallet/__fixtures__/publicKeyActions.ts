@@ -1,11 +1,9 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { MODAL } from 'src/actions/suite/constants';
 import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
-
-const { getSuiteDevice } = testMocks;
 
 const LOCK_DEVICE = 'notImplemented/lockDevice';
 
@@ -87,7 +85,7 @@ export default [
         description: 'Show public key, device not connected',
         initialState: {
             device: {
-                selectedDevice: getSuiteDevice({ connected: false }),
+                selectedDevice: mockSuiteDevice({ connected: false }),
                 devices: [],
             },
         },

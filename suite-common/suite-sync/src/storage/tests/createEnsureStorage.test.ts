@@ -3,8 +3,8 @@ import {
     SuiteSyncOwner,
     asSuiteSyncOwnerId,
     asSuiteSyncOwnerSecretHex,
+    mockSuiteDevice,
 } from '@suite-common/suite-types';
-import { getSuiteDevice } from '@suite-common/test-utils';
 import type { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -70,7 +70,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('returns error when refreshSuiteSyncKeys fails', async () => {
-        const device = getSuiteDevice();
+        const device = mockSuiteDevice();
         const refreshError = err(SuiteSyncUnavailableOnDeviceError());
 
         const deps = createMockDeps<EnsureStorageDeps>({
@@ -95,7 +95,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('creates and stores new storage when all dependencies succeed', async () => {
-        const device = getSuiteDevice();
+        const device = mockSuiteDevice();
         const newStorage = createSuiteSyncStorageMock();
 
         const deps = createMockDeps<EnsureStorageDeps>({
@@ -124,7 +124,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses custom relay URL when provided and not empty', async () => {
-        const device = getSuiteDevice();
+        const device = mockSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
         const customRelayUrl = 'wss://custom-relay.example.com';
@@ -153,7 +153,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses default relay URL when custom relay URL is empty string', async () => {
-        const device = getSuiteDevice();
+        const device = mockSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
 
@@ -180,7 +180,7 @@ describe(createEnsureStorage.name, () => {
     });
 
     it('uses default relay URL when custom relay URL is whitespace only', async () => {
-        const device = getSuiteDevice();
+        const device = mockSuiteDevice();
 
         const newStorage = createSuiteSyncStorageMock();
 

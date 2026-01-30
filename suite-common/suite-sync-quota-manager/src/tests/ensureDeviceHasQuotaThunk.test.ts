@@ -1,7 +1,10 @@
 import { mocked } from 'jest-mock';
 
-import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
-import { getSuiteDevice } from '@suite-common/test-utils';
+import {
+    TrezorDeviceWithState,
+    asDelegatedIdentityKey,
+    mockSuiteDevice,
+} from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
@@ -37,7 +40,7 @@ const delegatedKey = asDelegatedIdentityKey(
     '0c9d40cd155e7ddb93e7b3c7b2acd8d75e7a3ebd543a3504c8f8164fb692772b',
 );
 
-const device = getSuiteDevice(
+const device = mockSuiteDevice(
     { id: 'device-id' },
     { internal_model: DeviceModelInternal.T2T1 },
 ) as TrezorDeviceWithState;

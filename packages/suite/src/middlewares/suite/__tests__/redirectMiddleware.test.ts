@@ -1,4 +1,5 @@
-import { extraDependenciesCommonMock, testMocks } from '@suite-common/test-utils';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
@@ -11,8 +12,6 @@ import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 import { Action } from 'src/types/suite';
-
-const { getSuiteDevice, getConnectDevice } = testMocks;
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
@@ -83,7 +82,7 @@ describe('redirectMiddleware', () => {
         it('DEVICE.CONNECT mode=initialize', () => {
             const store = initStore(getInitialState());
 
-            const connectDevice = getConnectDevice({ mode: 'initialize' });
+            const connectDevice = mockConnectDevice({ mode: 'initialize' });
             store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
 
             const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
@@ -95,7 +94,7 @@ describe('redirectMiddleware', () => {
         it('DEVICE.CONNECT firmware=required', () => {
             const store = initStore(getInitialState());
 
-            const connectDevice = getConnectDevice({ mode: 'normal', firmware: 'required' });
+            const connectDevice = mockConnectDevice({ mode: 'normal', firmware: 'required' });
             store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
 
             const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
@@ -110,7 +109,7 @@ describe('redirectMiddleware', () => {
                     undefined,
                     {
                         devices: [],
-                        selectedDevice: getSuiteDevice(
+                        selectedDevice: mockSuiteDevice(
                             {
                                 path: '2',
                             },
@@ -142,7 +141,7 @@ describe('redirectMiddleware', () => {
             );
             store.dispatch({
                 type: deviceActions.selectDevice.type,
-                payload: getSuiteDevice(),
+                payload: mockSuiteDevice(),
             });
             expect(goto).toHaveBeenNthCalledWith(1, 'wallet-index');
         });

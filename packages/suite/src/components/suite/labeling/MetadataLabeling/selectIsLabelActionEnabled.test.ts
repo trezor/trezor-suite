@@ -5,7 +5,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     initialSuiteSyncState,
 } from '@suite-common/suite-sync';
-import { getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import { StaticSessionId, UnavailableCapabilities } from '@trezor/connect';
 
@@ -31,14 +31,14 @@ jest.mock('../../../../reducers/suite/metadataReducer', () => ({
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 const createMockState = (
-    deviceOverrides: Parameters<typeof getSuiteDevice>[0] = {},
+    deviceOverrides: Parameters<typeof mockSuiteDevice>[0] = {},
     suiteSyncOverrides: Partial<SuiteSyncState> = {},
     isSuiteSyncFeatureEnabled = false,
 ) =>
     ({
         device: {
             ...deviceReducerInitialState,
-            devices: [getSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
+            devices: [mockSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
         },
         suiteSync: {
             ...initialSuiteSyncState,

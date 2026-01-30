@@ -1,5 +1,7 @@
-import { testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
+
+import { mockSuiteDevice } from '@suite-common/suite-types';
+import { testMocks } from '@suite-common/test-utils';
 import {
     changeCoinVisibility,
     deviceActions,
@@ -29,7 +31,7 @@ import { AcquiredDevice, AppState } from 'src/types/suite';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
 
-const { getSuiteDevice, getWalletAccount, getWalletTransaction } = testMocks;
+const { getWalletAccount, getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
@@ -40,19 +42,19 @@ const quotaManagerSliceReducer = suiteSyncQuotaManagerSlice.prepareReducer(extra
 // TODO: add method in suite-storage for deleting all stored data (done as a static method on SuiteDB), call it after each test
 // TODO: test deleting device instances on parent device forget
 
-const dev1 = getSuiteDevice({
+const dev1 = mockSuiteDevice({
     state: '1stTestnetAddress@device_a_id:0',
     path: '1',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
-const dev2 = getSuiteDevice({
+const dev2 = mockSuiteDevice({
     state: '1stTestnetAddress@device_b_id:0',
     path: '2',
     instance: 1,
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
-const dev2Instance1 = getSuiteDevice({
+const dev2Instance1 = mockSuiteDevice({
     state: '1stTestnetAddress@device_c_id:0',
     path: '2',
     instance: 2,

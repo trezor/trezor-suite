@@ -1,6 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { SuiteSyncDataState, SuiteSyncState } from '@suite-common/suite-sync';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
@@ -185,7 +186,7 @@ export const SOL_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     network: { networkType: 'solana', symbol: 'sol', decimals: 9, chainId: 1399811149 },
 };
 
-const DEVICE = testMocks.getSuiteDevice({
+const DEVICE = mockSuiteDevice({
     state: '1stTestnetAddress@device_id:0',
     connected: true,
     available: true,

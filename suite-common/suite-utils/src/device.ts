@@ -1,4 +1,3 @@
-import { AnyAction } from '@suite-common/redux-utils';
 import { AcquiredDevice, TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -490,7 +489,7 @@ export const isDeviceWithButtonOnlyNoTouchscreen = (deviceModel: DeviceModelInte
     return map[deviceModel];
 };
 
-export const isAnyDeviceEventAction = (action: AnyAction): action is DeviceEvent =>
+export const isAnyDeviceEventAction = (action: any): action is DeviceEvent =>
     isArrayMember(action.type, Object.values(DEVICE));
 
 export const getDeviceInternalModel = (

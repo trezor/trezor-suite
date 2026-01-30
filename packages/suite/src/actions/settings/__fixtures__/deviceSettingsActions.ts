@@ -1,7 +1,6 @@
 import assert from 'assert';
 
-import { TrezorDevice } from '@suite-common/suite-types';
-import { testMocks } from '@suite-common/test-utils';
+import { TrezorDevice , mockSuiteDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     deviceActions,
@@ -16,7 +15,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 
 import * as deviceSettingsActions from '../deviceSettingsActions';
 
-const { getSuiteDevice } = testMocks;
 
 export const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -25,7 +23,7 @@ export type DeviceSettingsFixtureState = {
     device: ReturnType<typeof deviceReducer>;
 };
 
-const deviceChange = getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' });
+const deviceChange = mockSuiteDevice({ path: '1' }, { device_id: 'new-device-id' });
 assert(deviceChange.features !== undefined);
 
 type Fixture = {
@@ -101,17 +99,17 @@ const fixture: Fixture[] = [
             device: {
                 ...deviceInitialState,
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         connected: true,
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         connected: true,
                         instance: 1,
                         state: '1stTestnetAddress@device_1_id:0',
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         connected: true,
                         instance: 2,
@@ -122,7 +120,7 @@ const fixture: Fixture[] = [
         },
         action: () => wipeDeviceThunk(),
         mocks: { success: true, payload: { message: 'Success' } },
-        deviceChange: getSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
+        deviceChange: mockSuiteDevice({ path: '1' }, { device_id: 'new-device-id' }),
         result: {
             actions: [
                 {
@@ -340,7 +338,7 @@ const fixture: Fixture[] = [
         initialState: {
             device: {
                 ...deviceInitialState,
-                selectedDevice: getSuiteDevice({
+                selectedDevice: mockSuiteDevice({
                     mode: 'initialize',
                 }),
             },
@@ -361,7 +359,7 @@ const fixture: Fixture[] = [
         initialState: {
             device: {
                 ...deviceInitialState,
-                selectedDevice: getSuiteDevice({ mode: 'initialize' }),
+                selectedDevice: mockSuiteDevice({ mode: 'initialize' }),
             },
         },
     },
@@ -392,7 +390,7 @@ const fixture: Fixture[] = [
         initialState: {
             device: {
                 ...deviceInitialState,
-                selectedDevice: getSuiteDevice({
+                selectedDevice: mockSuiteDevice({
                     mode: 'initialize',
                 }),
             },

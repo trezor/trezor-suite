@@ -1,3 +1,4 @@
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { NetworkFeature } from '@suite-common/wallet-config';
 import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -30,7 +31,7 @@ import {
     networkAmountToSmallestUnit,
 } from '../amountUtils';
 
-const { getSuiteDevice, getWalletAccount } = testMocks;
+const { getWalletAccount } = testMocks;
 
 describe('account utils', () => {
     fixtures.getFirstFreshAddress.forEach(f => {
@@ -123,16 +124,16 @@ describe('account utils', () => {
                     symbol: 'btc',
                 }),
                 [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         state: '1stTestnet@device_id:0',
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         state: '1stTestnet@device_id:3',
                     }),
                 ],
             ),
         ).toEqual(
-            getSuiteDevice({
+            mockSuiteDevice({
                 state: '1stTestnet@device_id:0',
             }),
         );

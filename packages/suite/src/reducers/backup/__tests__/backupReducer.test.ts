@@ -1,4 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { BackupAvailability } from '@trezor/protobuf/src/messages';
 
 import { AppState } from 'src/reducers/store';
@@ -6,8 +6,6 @@ import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState'
 
 import type { BackupState } from '../backupReducer';
 import { selectBackupStatus } from '../backupReducer';
-
-const { getSuiteDevice } = testMocks;
 
 describe('selectBackupStatus', () => {
     const baseBackup: BackupState = {
@@ -36,7 +34,7 @@ describe('selectBackupStatus', () => {
             persistentDeviceData: [],
             isConnectionModalOpen: true,
             defaultConnectionMode: 'cable',
-            selectedDevice: getSuiteDevice({}, { backup_availability }),
+            selectedDevice: mockSuiteDevice({}, { backup_availability }),
         },
     });
 

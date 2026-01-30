@@ -1,3 +1,4 @@
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 
 import { showAddress, sign, verify } from 'src/actions/wallet/signVerifyActions';
@@ -8,15 +9,13 @@ const ADDRESS = 'ADDRESS';
 const MESSAGE = 'MESSAGE';
 const SIGNATURE = 'SIGNATURE';
 
-const { getSuiteDevice } = testMocks;
-
 describe('Sign/Verify actions', () => {
     let store: any;
 
     beforeEach(() => {
         store = configureStore()({
             wallet: { selectedAccount: { account: { symbol: 'btc', networkType: 'bitcoin' } } },
-            device: { selectedDevice: getSuiteDevice({ connected: true, available: true }) },
+            device: { selectedDevice: mockSuiteDevice({ connected: true, available: true }) },
             suite: { settings: { addressDisplayType: 'chunked' } },
         });
     });

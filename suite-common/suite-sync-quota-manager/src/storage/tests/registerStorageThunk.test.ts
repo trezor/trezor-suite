@@ -1,6 +1,6 @@
 import { mocked } from 'jest-mock';
 
-import { getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ok } from '@trezor/type-utils';
 
@@ -38,7 +38,7 @@ describe(registerStorageThunk.name, () => {
     });
 
     it('dispatches quotaManagerDeviceFetched on success', async () => {
-        mocked(selectSelectedDevice).mockReturnValue(getSuiteDevice({ id: 'device-id' }));
+        mocked(selectSelectedDevice).mockReturnValue(mockSuiteDevice({ id: 'device-id' }));
 
         mocked(quotaManagerFetch).mockResolvedValue(
             ok({
@@ -76,7 +76,7 @@ describe(registerStorageThunk.name, () => {
     });
 
     it('dispatches quotaManagerFetchError on failure', async () => {
-        mocked(selectSelectedDevice).mockReturnValue(getSuiteDevice({ id: 'device-id' }));
+        mocked(selectSelectedDevice).mockReturnValue(mockSuiteDevice({ id: 'device-id' }));
 
         mocked(quotaManagerFetch).mockResolvedValue({
             success: false,

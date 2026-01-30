@@ -3,6 +3,7 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import {
     acquireDevice,
@@ -27,8 +28,6 @@ import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 import fixtures from '../__fixtures__/suiteActions';
 import { SUITE } from '../constants';
 import * as suiteActions from '../suiteActions';
-
-const { getSuiteDevice } = testMocks;
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
@@ -252,7 +251,7 @@ describe('Suite Actions', () => {
 
     // just for coverage
     it('misc', () => {
-        const SUITE_DEVICE = getSuiteDevice({ path: '1' });
+        const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
         expect(deviceActions.forgetDevice({ device: SUITE_DEVICE })).toMatchObject({
             type: deviceActions.forgetDevice.type,
         });

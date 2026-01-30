@@ -1,4 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectNewlyConnectedDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, Device, TRANSPORT } from '@trezor/connect';
@@ -9,15 +9,13 @@ import { AppState, TorStatus } from 'src/types/suite';
 import { SuiteState } from '../../../reducers/suite/suiteReducer';
 import * as suiteActions from '../suiteActions';
 
-const { getSuiteDevice, getConnectDevice } = testMocks;
-
-const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-const SUITE_DEVICE_UNACQUIRED = getSuiteDevice({
+const SUITE_DEVICE = mockSuiteDevice({ path: '1' });
+const SUITE_DEVICE_UNACQUIRED = mockSuiteDevice({
     type: 'unacquired',
     path: '2',
 });
-const SUITE_DEVICE_REMEMBERED = getSuiteDevice({ connected: false });
-const CONNECT_DEVICE = getConnectDevice({ path: '1' });
+const SUITE_DEVICE_REMEMBERED = mockSuiteDevice({ connected: false });
+const CONNECT_DEVICE = mockConnectDevice({ path: '1' });
 
 const reducerActions = [
     {
@@ -226,7 +224,7 @@ const selectDevice = [
         state: {
             device: {
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         type: 'unacquired',
                         path: '2',
                     }),
@@ -244,22 +242,22 @@ const selectDevice = [
         state: {
             device: {
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: 1,
                     }),
                 ],
             },
         },
-        device: getSuiteDevice({
+        device: mockSuiteDevice({
             path: '1',
             instance: 1,
         }),
         result: {
-            payload: getSuiteDevice({
+            payload: mockSuiteDevice({
                 path: '1',
                 instance: 1,
             }),
@@ -270,11 +268,11 @@ const selectDevice = [
         state: {
             device: {
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         ts: 1,
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: 1,
                         ts: 2,
@@ -282,11 +280,11 @@ const selectDevice = [
                 ],
             },
         },
-        device: getConnectDevice({
+        device: mockConnectDevice({
             path: '1',
         }),
         result: {
-            payload: getSuiteDevice({
+            payload: mockSuiteDevice({
                 path: '1',
                 instance: 1,
                 ts: 2,
@@ -374,7 +372,7 @@ const handleDeviceDisconnect = [
             suite: {},
             device: { selectedDevice: SUITE_DEVICE },
         },
-        device: getConnectDevice({
+        device: mockConnectDevice({
             path: '2',
         }),
     },
@@ -399,7 +397,7 @@ const handleDeviceDisconnect = [
             device: {
                 selectedDevice: SUITE_DEVICE,
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         state: '1stTestnetAddress@device_b_id:0',
                         remember: true,
@@ -417,13 +415,13 @@ const handleDeviceDisconnect = [
                 selectedDevice: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         state: '1stTestnetAddress@device_a_id:0',
                         instance: 2,
                         remember: true,
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         state: '1stTestnetAddress@device_b_id:0',
                         instance: 1,
@@ -435,7 +433,7 @@ const handleDeviceDisconnect = [
         device: CONNECT_DEVICE,
         result: {
             type: deviceActions.selectDevice.type,
-            payload: getSuiteDevice({
+            payload: mockSuiteDevice({
                 state: '1stTestnetAddress@device_b_id:0',
                 instance: 1,
                 remember: true,
@@ -450,15 +448,15 @@ const handleDeviceDisconnect = [
                 selectedDevice: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         type: 'unacquired',
                         path: '3',
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         type: 'unacquired',
                         path: '2',
                     }),
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '4',
                         },
@@ -471,7 +469,7 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
         result: {
-            payload: getSuiteDevice({
+            payload: mockSuiteDevice({
                 type: 'unacquired',
                 path: '3',
             }),
@@ -484,7 +482,7 @@ const handleDeviceDisconnect = [
             device: {
                 selectedDevice: SUITE_DEVICE,
                 devices: [
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '2',
                         },
@@ -492,7 +490,7 @@ const handleDeviceDisconnect = [
                             device_id: '2',
                         },
                     ),
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '3',
                             connected: true,
@@ -502,7 +500,7 @@ const handleDeviceDisconnect = [
                             device_id: '3',
                         },
                     ),
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '4',
                             connected: true,
@@ -517,7 +515,7 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
         result: {
-            payload: getSuiteDevice(
+            payload: mockSuiteDevice(
                 {
                     connected: true,
                     path: '4',
@@ -536,7 +534,7 @@ const handleDeviceDisconnect = [
             device: {
                 selectedDevice: SUITE_DEVICE,
                 devices: [
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '2',
                             ts: 2,
@@ -545,7 +543,7 @@ const handleDeviceDisconnect = [
                             device_id: '2',
                         },
                     ),
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '3',
                             ts: 3,
@@ -554,7 +552,7 @@ const handleDeviceDisconnect = [
                             device_id: '3',
                         },
                     ),
-                    getSuiteDevice(
+                    mockSuiteDevice(
                         {
                             path: '4',
                             ts: 1,
@@ -568,7 +566,7 @@ const handleDeviceDisconnect = [
         },
         device: CONNECT_DEVICE,
         result: {
-            payload: getSuiteDevice(
+            payload: mockSuiteDevice(
                 {
                     path: '3',
                     ts: 3,
@@ -591,7 +589,7 @@ const forgetDisconnectedDevices = [
                 devices: [SUITE_DEVICE_UNACQUIRED],
             },
         },
-        device: getConnectDevice({
+        device: mockConnectDevice({
             path: '2',
         }),
         result: [],
@@ -604,7 +602,7 @@ const forgetDisconnectedDevices = [
                 selectedDevice: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: 1,
                     }),
@@ -625,17 +623,17 @@ const forgetDisconnectedDevices = [
                 selectedDevice: SUITE_DEVICE,
                 devices: [
                     SUITE_DEVICE,
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: 1,
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: 2,
                         remember: true,
                         state: '1stTestnetAddress@device_1_id:0',
                     }),
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '2',
                         id: 'device-id-2',
                     }),
@@ -655,7 +653,7 @@ const forgetDisconnectedDevices = [
             device: {
                 selectedDevice: SUITE_DEVICE,
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         path: '1',
                         instance: undefined,
                         remember: true,
@@ -710,7 +708,7 @@ const observeSelectedDevice = [
             device: {
                 selectedDevice: SUITE_DEVICE,
                 devices: [
-                    getSuiteDevice({
+                    mockSuiteDevice({
                         connected: true,
                     }),
                 ],

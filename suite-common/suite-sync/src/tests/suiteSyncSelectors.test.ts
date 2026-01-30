@@ -1,6 +1,6 @@
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import type { SuiteSyncOwnerSerialized } from '@suite-common/suite-types';
-import { getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
 import { StaticSessionId } from '@trezor/connect';
@@ -12,12 +12,12 @@ import { SuiteSyncState, initialSuiteSyncState } from '../suiteSyncSlice';
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 const createMockState = (
-    deviceOverrides: Parameters<typeof getSuiteDevice>[0] = {},
+    deviceOverrides: Parameters<typeof mockSuiteDevice>[0] = {},
     suiteSyncOverrides: Partial<SuiteSyncState> = {},
 ): WithSuiteSyncAndDeviceState => ({
     device: {
         ...deviceReducerInitialState,
-        devices: [getSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
+        devices: [mockSuiteDevice({ ...deviceOverrides, state: DEVICE_STATIC_SESSION_ID_123 })],
     },
     suiteSync: {
         ...initialSuiteSyncState,

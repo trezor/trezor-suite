@@ -1,3 +1,4 @@
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 
@@ -11,7 +12,7 @@ describe('logsUtils', () => {
         ),
         symbol: 'btc',
     });
-    const device = testMocks.getSuiteDevice();
+    const device = mockSuiteDevice();
 
     describe('redactAccount', () => {
         it('should redact sensitive fields on account', () => {

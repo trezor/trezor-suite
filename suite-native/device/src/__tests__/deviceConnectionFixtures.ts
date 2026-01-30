@@ -1,7 +1,8 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { extraDependenciesCommonMock, getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
+import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 import {
     deviceActions,
@@ -213,7 +214,7 @@ export const deviceDisconnectBlockedFixtures: NoNavigationFixture[] = [
                 isFirmwareInstallationRunning: true,
             },
         }),
-        action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+        action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
     },
 ];
 
@@ -221,7 +222,7 @@ export const deviceDisconnectHomeResetFixtures: ResetNavigationFixture[] = [
     {
         description: 'resets to Home screen on device disconnect',
         initialState: buildInitialState(),
-        action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+        action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
         expectedReset: {
             index: 0,
             routes: [
@@ -240,7 +241,7 @@ export const deviceDisconnectDuringOnboardingFixtures: NavigationFixture[] = [
     {
         description: 'navigates to DeviceDisconnected screen (USB connection)',
         initialState: buildInitialState(),
-        action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+        action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
         expectedNavigation: {
             route: RootStackRoutes.DeviceOnboardingStack,
             params: {
@@ -254,7 +255,7 @@ export const deviceDisconnectDuringOnboardingFixtures: NavigationFixture[] = [
         initialState: buildInitialState(),
         action: {
             type: deviceActions.deviceDisconnect.type,
-            payload: { ...getSuiteDevice(), descriptor: { apiType: 'bluetooth' } },
+            payload: { ...mockSuiteDevice(), descriptor: { apiType: 'bluetooth' } },
         },
         expectedNavigation: {
             route: RootStackRoutes.DeviceOnboardingStack,
@@ -270,7 +271,7 @@ export const deviceDisconnectNotOnHomeFixtures: ResetNavigationFixture[] = [
     {
         description: 'resets to Home screen when not already on Home',
         initialState: buildInitialState(),
-        action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+        action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
         expectedReset: {
             index: 0,
             routes: [
@@ -289,7 +290,7 @@ export const deviceDisconnectOnHomeFixtures: NoNavigationFixture[] = [
     {
         description: 'does not navigate when already on Home screen',
         initialState: buildInitialState(),
-        action: { type: deviceActions.deviceDisconnect.type, payload: getSuiteDevice() },
+        action: { type: deviceActions.deviceDisconnect.type, payload: mockSuiteDevice() },
     },
 ];
 
@@ -299,7 +300,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         initialState: buildInitialState(),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
     },
     {
@@ -309,7 +310,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         }),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
     },
     {
@@ -319,14 +320,14 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         }),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
     },
     {
         description: 'blocks navigation when device is remembered and a network is enabled',
         initialState: buildInitialState({
             device: {
-                devices: [getSuiteDevice()],
+                devices: [mockSuiteDevice()],
             },
             walletSettings: {
                 enabledNetworks: ['btc'],
@@ -334,7 +335,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
         }),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
     },
     {
@@ -344,7 +345,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
             type: deviceActions.connectDevice.type,
             payload: {
                 device: {
-                    ...getSuiteDevice(
+                    ...mockSuiteDevice(
                         { mode: 'initialize' },
                         { initialized: false, internal_model: DeviceModelInternal.T1B1 },
                     ),
@@ -365,16 +366,16 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
                 enabledNetworks: ['btc'],
             },
             device: {
-                selectedDevice: getSuiteDevice(),
+                selectedDevice: mockSuiteDevice(),
                 deviceAuthenticity: {
-                    [getSuiteDevice().id ?? '']: { valid: false, error: 'foo' },
+                    [mockSuiteDevice().id ?? '']: { valid: false, error: 'foo' },
                 },
             },
         }),
         action: {
             type: deviceActions.connectDevice.type,
             payload: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         expectedNavigation: {
@@ -389,7 +390,7 @@ export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
         initialState: buildInitialState({}),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice(undefined, { initialized: false }) },
+            payload: { device: mockSuiteDevice(undefined, { initialized: false }) },
         },
         expectedReset: {
             index: 1,
@@ -421,7 +422,7 @@ export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
         }),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice(undefined, { initialized: false }) },
+            payload: { device: mockSuiteDevice(undefined, { initialized: false }) },
         },
         expectedReset: {
             index: 0,
@@ -448,7 +449,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
         }),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
@@ -462,7 +463,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
         initialState: buildInitialState({}),
         action: {
             type: deviceActions.connectDevice.type,
-            payload: { device: getSuiteDevice() },
+            payload: { device: mockSuiteDevice() },
         },
         expectedNavigation: {
             route: RootStackRoutes.AuthorizeDeviceStack,
@@ -475,14 +476,14 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
         description: 'Skips coin enabling for bitcoin only FW and goes to connecting screen',
         initialState: buildInitialState({
             device: {
-                selectedDevice: getSuiteDevice(),
+                selectedDevice: mockSuiteDevice(),
             },
         }),
         action: {
             type: deviceActions.connectDevice.type,
             payload: {
                 device: {
-                    ...getSuiteDevice(),
+                    ...mockSuiteDevice(),
                     firmwareType: FirmwareType.BitcoinOnly,
                 },
             },

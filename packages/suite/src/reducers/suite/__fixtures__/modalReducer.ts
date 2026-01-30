@@ -1,14 +1,13 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
 import { DEVICE, UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
 
-const { getConnectDevice, getSuiteDevice } = testMocks;
 // Default devices
-const CONNECT_DEVICE = getConnectDevice({
+const CONNECT_DEVICE = mockConnectDevice({
     path: '1',
 });
-const SUITE_DEVICE = getSuiteDevice({
+const SUITE_DEVICE = mockSuiteDevice({
     path: '1',
 });
 
@@ -63,7 +62,7 @@ export default [
         description: 'Disconnect device, modal is opened and should not be closed',
         initialState: {
             context: MODAL.CONTEXT_DEVICE,
-            device: getConnectDevice({
+            device: mockConnectDevice({
                 path: '2',
             }),
         },
@@ -75,7 +74,7 @@ export default [
         ],
         result: {
             context: MODAL.CONTEXT_DEVICE,
-            device: getConnectDevice({
+            device: mockConnectDevice({
                 path: '2',
             }),
         },

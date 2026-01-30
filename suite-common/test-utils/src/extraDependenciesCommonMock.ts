@@ -14,7 +14,7 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import { ReportSecurityCheckParams, Route } from '@suite-common/suite-types';
+import { ReportSecurityCheckParams, Route, mockSuiteDevice } from '@suite-common/suite-types';
 import { AddressDisplayOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Analytics } from '@trezor/analytics-uploader';
 import { err, ok } from '@trezor/type-utils';
@@ -106,7 +106,7 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
         selectRoute: notImplementedSelector('selectRoute', {} as Route),
         selectMetadata: notImplementedSelector('selectMetadata', {}),
         selectDevice: notImplementedSelector('selectDevice', {
-            ...testMocks.getSuiteDevice(),
+            ...mockSuiteDevice(),
         }),
         selectLanguage: notImplementedSelector('selectLanguage', 'en'),
         selectAddressDisplayType: notImplementedSelector(

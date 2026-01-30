@@ -1,4 +1,4 @@
-import { getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { portfolioTrackerDevice } from '@suite-common/wallet-core';
 
 import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
@@ -7,12 +7,12 @@ describe(isSuiteSyncSupportedByDevice.name, () => {
     it.each([
         [portfolioTrackerDevice, false, "portfolio tracker doesn't support evolu"],
         [
-            getSuiteDevice({ unavailableCapabilities: {} }),
+            mockSuiteDevice({ unavailableCapabilities: {} }),
             true,
             'trezor device with no unavailable capabilities',
         ],
         [
-            getSuiteDevice({ unavailableCapabilities: { evolu: 'no-capability' } }),
+            mockSuiteDevice({ unavailableCapabilities: { evolu: 'no-capability' } }),
             false,
             'trezor device with evolu unavailable',
         ],

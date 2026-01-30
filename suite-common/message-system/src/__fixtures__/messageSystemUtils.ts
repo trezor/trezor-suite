@@ -4,6 +4,7 @@ import {
     Localization,
     Message,
     MessageSystem,
+    mockConnectDevice,
 } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { FirmwareType, TransportInfo } from '@trezor/connect';
@@ -12,7 +13,7 @@ import { EnvUtils } from '@trezor/env-utils';
 
 import { Options } from '../messageSystemUtils';
 
-const { getDeviceFeatures, getConnectDevice, getMessageSystemConfig } = testMocks;
+const { getDeviceFeatures, getMessageSystemConfig } = testMocks;
 
 const defaultOptions: Options = {
     settings: { tor: false, enabledNetworks: ['btc'] },
@@ -24,8 +25,8 @@ const defaultTransportsOption: TransportInfo = {
     version: '2.0.33',
     outdated: false,
 };
-type GetConnectAcquiredDevice = (...args: Parameters<typeof getConnectDevice>) => AcquiredDevice;
-const getConnectAcquiredDevice = getConnectDevice as GetConnectAcquiredDevice;
+type GetConnectAcquiredDevice = (...args: Parameters<typeof mockConnectDevice>) => AcquiredDevice;
+const getConnectAcquiredDevice = mockConnectDevice as GetConnectAcquiredDevice;
 
 export const createVersionRange = [
     {
