@@ -10,10 +10,10 @@ import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
@@ -21,7 +21,7 @@ import { useUserColorScheme } from '@suite-native/theme';
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
     const [initWasReported, setInitWasReported] = useState(false);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
@@ -40,8 +40,8 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     useEffect(() => {
         if (isAppReady && isOnboardingFinished && loadDuration && !initWasReported) {
             setInitWasReported(true);
-            legacyAnalytics.report({
-                type: EventType.AppReady,
+            analytics.report({
+                type: events.appReadyEvent.name,
                 payload: {
                     appLanguage: 'en',
                     deviceLanguage: undefined,
@@ -76,6 +76,6 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         rememberedStandardWallets,
         rememberedHiddenWallets,
         enabledNetworks,
-        legacyAnalytics,
+        analytics,
     ]);
 };

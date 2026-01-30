@@ -30,28 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.AppReady;
-          payload: {
-              appLanguage: string;
-              deviceLanguage?: string;
-              localCurrency: BaseCurrencyCode;
-              bitcoinUnit: UNIT_ABBREVIATION;
-              screenWidth: number;
-              screenHeight: number;
-              pixelDensity: number;
-              fontScale: number;
-              osName: string;
-              osVersion: string | number;
-              discreetMode: boolean;
-              theme: string;
-              loadDuration: number;
-              isBiometricsEnabled: boolean;
-              rememberedStandardWallets: number;
-              rememberedHiddenWallets: number;
-              enabledNetworks: NetworkSymbol[];
-          };
-      }
-    | {
           type: EventType.OnboardingCompleted;
           payload: {
               analyticsPermission: boolean;
