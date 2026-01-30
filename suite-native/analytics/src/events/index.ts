@@ -5,6 +5,7 @@ export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShow
 export { assetDetailTimeframeChangeEvent } from './AssetDetailTimeframeChangeEvent';
 export { assetsSyncEvent } from './AssetsSyncEvent';
 export { biometricsChangeEvent } from './biometricsChangeEvent';
+export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { onboardingCompletedEvent } from './OnboardingCompletedEvent';
