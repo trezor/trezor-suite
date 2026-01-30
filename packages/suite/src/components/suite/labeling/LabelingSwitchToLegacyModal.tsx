@@ -24,19 +24,19 @@ export const LabelingSwitchToLegacyModal = ({
             </>
         }
     >
-        <Card>
-            <List
-                bulletGap={0}
-                gap={0}
-                bulletComponent={<Icon name="dot" variant="tertiary" size={32} />}
-            >
-                <List.Item>
-                    <Paragraph variant="tertiary">
+        <Card paddingType="large">
+            <List gap={16} variant="tertiary">
+                <List.Item
+                    bulletComponent={<Icon name="tag" size={20} />}
+                >
+                    <Paragraph>
                         <Translation id="TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED" />
                     </Paragraph>
                 </List.Item>
-                <List.Item>
-                    <Paragraph variant="tertiary">
+                <List.Item
+                    bulletComponent={<Icon name="deviceMobile" size={20} />}
+                >
+                    <Paragraph>
                         <Translation id="TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE" />
                     </Paragraph>
                 </List.Item>

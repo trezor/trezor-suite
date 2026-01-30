@@ -6048,10 +6048,13 @@ export const messages = defineMessages({
         id: 'FIRMWARE_NEEDS_UPGRADE_FOR_SUITE_SYNC',
         defaultMessage: "Upgrade your Trezor's firmware to use Suite Sync.",
     },
+    TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING: {
+        id: 'TR_UNSUPPORTED_DEVICE_SUITE_SYNC_HEADING',
+        defaultMessage: "This device isn't compatible with Suite Sync",
+    },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
-        defaultMessage:
-            'Your device “{name}” is not compatible with Suite Sync. You can use Trezor Safe 3, Trezor Safe 5, and Trezor Safe 7 devices.',
+        defaultMessage: 'Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT',
@@ -10343,7 +10346,7 @@ export const messages = defineMessages({
     },
     TR_SWITCH_ANYWAY: {
         id: 'TR_SWITCH_ANYWAY',
-        defaultMessage: 'Yes, switch',
+        defaultMessage: 'Switch',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
@@ -10367,15 +10370,15 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING',
-        defaultMessage: 'Firmware update needed for Suite Sync',
+        defaultMessage: 'Firmware update required',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION',
-        defaultMessage: 'Update the firmware on your device “{name}” to use Suite Sync.',
+        defaultMessage: 'Update the firmware on the device "{name}" to use Suite Sync.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
-        defaultMessage: 'Upgrade',
+        defaultMessage: 'Update',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW',
@@ -10387,11 +10390,11 @@ export const messages = defineMessages({
     },
     TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED: {
         id: 'TR_SECURE_SYNC_LABELS_CANNOT_BE_MIGRATED',
-        defaultMessage: 'Labels created with Suite Sync can’t be migrated.',
+        defaultMessage: 'Labels created with Suite Sync can’t be migrated and won’t be visible.',
     },
     TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE: {
         id: 'TR_LEGACY_LABELS_CANNOT_BE_SYNCED_TO_MOBILE',
-        defaultMessage: 'Legacy labeling doesn’t sync labels to mobile devices.',
+        defaultMessage: 'Legacy labeling doesn’t sync labels to your mobile devices.',
     },
     TR_SWITCH_ACCOUNT: {
         id: 'TR_SWITCH_ACCOUNT',

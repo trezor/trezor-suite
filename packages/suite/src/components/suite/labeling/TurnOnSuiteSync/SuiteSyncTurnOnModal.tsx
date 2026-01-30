@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDeviceByStaticSessionId } from '@suite-common/wallet-core';
-import { Card, Column, IconCircle, List, Modal, Paragraph } from '@trezor/components';
+import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -57,7 +57,6 @@ export const SuiteSyncTurnOnModal = ({
     return (
         <Modal
             heading={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING" />}
-            description={<Translation id="TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION" />}
             onCancel={onClose}
             width={600}
             bottomContent={
@@ -76,11 +75,9 @@ export const SuiteSyncTurnOnModal = ({
                     <List gap={16} variant="tertiary">
                         <List.Item
                             bulletComponent={
-                                <IconCircle
+                                <Icon
                                     name="tag"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
+                                    size={20}
                                 />
                             }
                         >
@@ -90,11 +87,9 @@ export const SuiteSyncTurnOnModal = ({
                         </List.Item>
                         <List.Item
                             bulletComponent={
-                                <IconCircle
-                                    name="cloudX"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
+                                <Icon
+                                    name="arrowsCounterClockwise"
+                                    size={20}
                                 />
                             }
                         >
@@ -104,11 +99,9 @@ export const SuiteSyncTurnOnModal = ({
                         </List.Item>
                         <List.Item
                             bulletComponent={
-                                <IconCircle
-                                    name="desktopTower"
-                                    hasBorder={false}
-                                    paddingType="medium"
-                                    size={40}
+                                <Icon
+                                    name="shieldCheck"
+                                    size={20}
                                 />
                             }
                         >
