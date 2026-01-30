@@ -17,7 +17,7 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -28,6 +28,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const { showToast } = useToast();
 
@@ -128,7 +129,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {
             if (symbol) {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.CreateReceiveAddressShowAddress,
                     payload: { assetSymbol: symbol },
                 });
@@ -151,6 +152,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             }
         }
     }, [
+        analytics,
         isDeviceInViewOnlyMode,
         isPortfolioTrackerDevice,
         legacyAnalytics,
