@@ -11,7 +11,6 @@
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
-        { "path": "../../packages/type-utils" },
-        { "path": "../test-utils" }
+        { "path": "../../packages/type-utils" }
     ]
 }

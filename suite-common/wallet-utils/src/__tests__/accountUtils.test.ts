@@ -36,7 +36,7 @@ describe('account utils', () => {
         it(`getFirstFreshAddress: ${f.description}`, () => {
             const { account, receive, pendingAddresses, utxoBasedAccount } = f.params;
             const freshAddress = getFirstFreshAddress(
-                account,
+                account as Account,
                 receive,
                 pendingAddresses,
                 utxoBasedAccount,

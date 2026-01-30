@@ -53,13 +53,13 @@ export const blockchainSubscription: Array<{
     {
         description: 'remove account, one subscription remain',
         initialAccounts: [
-            { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
-            { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+            { descriptor: asAccountDescriptor('1'), symbol: 'eth' },
+            { descriptor: asAccountDescriptor('2'), symbol: 'eth' },
         ],
         actions: [
             {
                 type: accountsActions.removeAccount.type,
-                payload: [{ descriptor: '1' }],
+                payload: [{ descriptor: asAccountDescriptor('1'), symbol: 'eth' }],
             },
         ],
         result: {
@@ -83,8 +83,8 @@ export const blockchainSubscription: Array<{
             {
                 type: accountsActions.removeAccount.type,
                 payload: [
-                    { descriptor: asAccountDescriptor('1'), symbol: 'btc' },
-                    { descriptor: asAccountDescriptor('2'), symbol: 'btc' },
+                    { descriptor: asAccountDescriptor('1'), symbol: 'eth' },
+                    { descriptor: asAccountDescriptor('2'), symbol: 'eth' },
                 ],
             },
         ],
