@@ -5,11 +5,7 @@ import { urlSearchParams } from '@trezor/suite/src//utils/suite/metadata';
 
 import { step } from './common';
 import { expect } from './testExtends/customMatchers';
-import {
-    EventPayload,
-    Requests,
-    SuiteDesktopAnalyticsEventsForE2e,
-} from './types';
+import { EventPayload, Requests, SuiteDesktopAnalyticsEventsForE2e } from './types';
 
 export class AnalyticsFixture {
     private page: Page;
