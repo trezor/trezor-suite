@@ -14,7 +14,11 @@ import {
     notImplementedThunk,
 } from '@suite-common/redux-utils';
 import type { SuiteSync } from '@suite-common/suite-sync-types';
-import { ReportSecurityCheckParams, Route } from '@suite-common/suite-types';
+import {
+    ReportSecurityCheckParams,
+    Route,
+    asDelegatedIdentityKey,
+} from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     AddressDisplayOptions,
@@ -77,6 +81,8 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
     },
     services: {
         suiteSync: suiteSyncMock,
+        ensureDelegatedIdentityKey: () =>
+            Promise.resolve(ok(asDelegatedIdentityKey('mockDelegatedIdentityKey'))),
         platformEncryption: platformEncryptionMock,
         analytics: analyticsMock,
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>

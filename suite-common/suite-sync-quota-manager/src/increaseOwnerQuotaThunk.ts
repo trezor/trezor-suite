@@ -4,12 +4,10 @@ import {
     getProofOfDelegatedIdentity,
     getPublicIdentityKeyFromDelegatedKey,
 } from '@suite-common/delegated-identity-key';
-import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key/src/delegatedIdentityKeyCompositionRoot';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { SuiteSyncOwnerId, asDelegatedIdentityKey } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { isTrezorDeviceWithState, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
 
 import { prepareChallengeSession } from './challenge/prepareChallengeSession';
 import {
@@ -38,14 +36,7 @@ export const increaseOwnerQuotaThunk =
         const { walletDescriptor } = parseDeviceStaticSessionId(device.state.staticSessionId);
         const quotaManagerBaseUrl = selectQuotaManagerBaseUrl(getState());
 
-        const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
-            dispatch,
-            getState,
-            trezorConnect: TrezorConnect,
-            platformEncryption: extra.services.platformEncryption,
-        });
-
-        const delegatedKey = await ensureDelegatedIdentityKey({ device });
+        const delegatedKey = await extra.services.ensureDelegatedIdentityKey({ device });
         if (!delegatedKey.success) {
             return;
         }
