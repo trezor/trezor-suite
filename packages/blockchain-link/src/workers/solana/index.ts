@@ -436,15 +436,14 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Not necessary for basic and tokens details
     if (!['basic', 'tokens'].includes(details)) {
         const solEpoch = await getEpoch();
-        const solStakingAccounts = await getSolanaStakingData(
-            api?.rpc,
-            publicKey,
-            solEpoch,
-            'only',
-        );
+        const [solStakingAccounts, solExternalStakingAccounts] = await Promise.all([
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'everstake'),
+            getSolanaStakingData(api?.rpc, publicKey, solEpoch, 'non-everstake'),
+        ]);
 
         misc = {
             solStakingAccounts,
+            solExternalStakingAccounts,
             solEpoch,
         };
 

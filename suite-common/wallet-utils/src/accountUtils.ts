@@ -763,6 +763,7 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
             misc: {
                 rent: misc?.rent,
                 solStakingAccounts: misc?.solStakingAccounts,
+                solExternalStakingAccounts: misc?.solExternalStakingAccounts,
                 solEpoch: misc?.solEpoch,
                 owner: misc?.owner,
             },

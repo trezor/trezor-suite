@@ -292,6 +292,38 @@ export const selectSolAccountHasStaked = createMemoizedSelector([selectAccountBy
     return !!account.misc.solStakingAccounts?.length;
 });
 
+export const selectSolExternalStakingAccounts = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return [];
+
+        return account.misc.solExternalStakingAccounts ?? [];
+    },
+);
+
+export const selectHasSolExternalStakingAccounts = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return false;
+
+        return (account.misc.solExternalStakingAccounts?.length ?? 0) > 0;
+    },
+);
+
+export const selectSolExternalStakingAccountsTotalStaked = createMemoizedSelector(
+    [selectAccountByKey],
+    account => {
+        if (!account?.misc || account.networkType !== 'solana') return '0';
+
+        const totalLamports = (account.misc.solExternalStakingAccounts ?? []).reduce(
+            (sum, { stake }) => sum + BigInt(stake ?? '0'),
+            0n,
+        );
+
+        return totalLamports.toString();
+    },
+);
+
 export const selectAdaAccountHasStaked = createMemoizedSelector([selectAccountByKey], account =>
     isCardanoStakingActive(account),
 );
