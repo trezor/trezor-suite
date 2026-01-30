@@ -136,6 +136,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     return {
         suiteSync,
+        ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
         disableLegacyMetadataIfNeeded,

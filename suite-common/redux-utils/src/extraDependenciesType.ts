@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import type { AnalyticsSharedEvents } from '@suite-common/analytics';
+import { EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { PlatformEncryptionDep } from '@suite-common/platform-encryption'; // also only types
 import { MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
@@ -37,6 +38,7 @@ export type ConnectInitSettings = {
 } & Partial<ConnectSettings>;
 
 export type CommonServices = SuiteSyncDep &
+    EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
         saveAs: (data: Blob, fileName: string) => void;

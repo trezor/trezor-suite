@@ -11222,6 +11222,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.11.0"
     "@suite-common/analytics": "workspace:*"
+    "@suite-common/delegated-identity-key-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"

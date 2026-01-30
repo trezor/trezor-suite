@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        {
+            "path": "../delegated-identity-key-types"
+        },
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },
         {
