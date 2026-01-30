@@ -89,12 +89,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GuideFeedbackSubmit;
-          payload: {
-              type: 'bug' | 'suggestion';
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeThpAutoconnect;
           payload: {
               action: 'disable-autoconnect' | 'enable-autoconnect';

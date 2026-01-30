@@ -17,7 +17,7 @@ import { typography } from '@trezor/theme';
 import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { EmojiRatingSelector } from '../suite/EmojiRatingSelector';
 
@@ -57,7 +57,7 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const router = useSelector(state => state.router);
     const [description, setDescription] = useState('');
@@ -136,11 +136,11 @@ export const Feedback = ({ type }: FeedbackProps) => {
             );
         }
         dispatch(setView('GUIDE_DEFAULT'));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideFeedbackSubmit,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
-    }, [device, type, dispatch, legacyAnalytics, description, category, rating]);
+    }, [device, type, dispatch, analytics, description, category, rating]);
 
     return (
         <GuideViewWrapper>
