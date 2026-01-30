@@ -312,7 +312,7 @@ export const useTradingSellForm = ({
 
         switch (pageType) {
             case 'form': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingSell,
                     payload: {
                         action: 'continue',
@@ -332,7 +332,7 @@ export const useTradingSellForm = ({
                 break;
             }
             case 'offers': {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingSell,
                     payload: {
                         action: 'continue',

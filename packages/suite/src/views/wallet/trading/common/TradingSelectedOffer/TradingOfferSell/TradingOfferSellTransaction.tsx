@@ -12,7 +12,7 @@ import { AccountLabeling } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTrade';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const Wrapper = styled.div`
     display: flex;
@@ -46,7 +46,7 @@ const Row = styled.div`
 const Address = styled.div``;
 
 export const TradingSelectedOfferSellTransaction = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { handleClick, disabled } = useAsyncClickHandler();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const {
@@ -81,7 +81,7 @@ export const TradingSelectedOfferSellTransaction = () => {
     const onConfirmAndSendClick = async () => {
         const result = await sendTransaction();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingSell,
             payload: {
                 action: result ? 'continue' : 'cancel',
