@@ -1,7 +1,6 @@
 import { MetadataProviderType } from '@suite-common/metadata-types';
 
 import { EventType } from './constants';
-import type { FirmwareSource } from './definitions';
 
 /** @deprecated */
 export type SuiteAnalyticsEventSuiteReady = {
