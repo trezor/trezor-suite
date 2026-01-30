@@ -30,26 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.TransactionDetail;
-          payload: {
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenAddress?: TokenAddress;
-          };
-      }
-    | {
-          type: EventType.TransactionDetailParameters;
-      }
-    | {
-          type: EventType.TransactionDetailCompareValues;
-      }
-    | {
-          type: EventType.TransactionDetailInputOutput;
-      }
-    | {
-          type: EventType.TransactionDetailExploreInBlockchain;
-      }
-    | {
           type: EventType.CreateReceiveAddress;
           payload: {
               assetSymbol: NetworkSymbol;
