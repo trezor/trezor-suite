@@ -75,18 +75,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           type: EventType.DeviceDisconnect;
       }
     | {
-          type: EventType.DeviceUpdateFirmware;
-          payload: {
-              model: string;
-              fromBlVersion: string;
-              fromFwVersion: string;
-              toFwVersion?: string;
-              toBtcOnly?: boolean;
-              firmwareSource: FirmwareSource;
-              error: string;
-          };
-      }
-    | {
           type: EventType.CreateBackup;
           payload: {
               status: 'finished' | 'error';

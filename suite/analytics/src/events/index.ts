@@ -21,6 +21,7 @@ export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectBut
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
+export { deviceUpdateFirmwareEvent } from './deviceUpdateFirmwareEvent';
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
