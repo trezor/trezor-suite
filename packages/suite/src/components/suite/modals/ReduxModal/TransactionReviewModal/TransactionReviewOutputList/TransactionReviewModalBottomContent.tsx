@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EventType, TransactionCreatedEvent } from '@suite/analytics';
+import { EventType, type TransactionCreatedEventAction } from '@suite/analytics';
 import { ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -16,10 +16,10 @@ import { useAnalytics } from 'src/support/useAnalytics';
 
 import { getTxType } from '../utils';
 
-const mapRbfTypeToReporting: Record<
-    RbfTransactionType,
-    TransactionCreatedEvent['payload']['action']
-> = { 'bump-fee': 'replaced', cancel: 'canceled' };
+const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
+    'bump-fee': 'replaced',
+    cancel: 'canceled',
+};
 
 type TransactionReviewModalBottomContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
