@@ -32,12 +32,7 @@ export const TurnOnSuiteSyncModalManager = () => {
             return null;
 
         case 'unsupported':
-            return (
-                <SuiteSyncTurnOnUnsupportedModal
-                    onClose={onClose}
-                    deviceStaticSessionId={deviceStaticSessionId}
-                />
-            );
+            return <SuiteSyncTurnOnUnsupportedModal onClose={onClose} />;
         case 'suite-sync-off':
             return (
                 <SuiteSyncTurnOnModal
