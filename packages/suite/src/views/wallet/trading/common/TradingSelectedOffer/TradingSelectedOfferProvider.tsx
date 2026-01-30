@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Column, Divider, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, GhostContainer, Icon, Row, SkeletonRectangle, Text } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -20,7 +19,7 @@ interface TradingReceiveAddressEmptyProps {
 }
 
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
-    <Column alignItems="center" gap={spacings.xxs} padding={{ vertical: spacings.md }}>
+    <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
         <Text typographyStyle="body">{title}</Text>
         <Text typographyStyle="hint" variant="tertiary">
             {text}
@@ -49,15 +48,13 @@ export const TradingSelectedOfferProvider = () => {
     }
 
     return (
-        <Column cursor="pointer">
-            <Divider margin={0} />
-            <Row
-                data-testid="@trading/selected-offer-provider"
-                alignItems="center"
-                justifyContent="space-between"
-                onClick={onGoToOffers}
-                padding={spacings.lg}
-            >
+        <GhostContainer
+            onClick={onGoToOffers}
+            cursor="pointer"
+            data-testid="@trading/selected-offer-provider"
+            borderRadius={0}
+        >
+            <Row alignItems="center" justifyContent="space-between" padding={20}>
                 <Text typographyStyle="body">
                     <Translation id="TR_TRADING_PROVIDER" />
                 </Text>
@@ -66,17 +63,17 @@ export const TradingSelectedOfferProvider = () => {
                         <SkeletonRectangle animate />
                     ) : (
                         <>
-                            <Column alignItems="flex-end">
+                            <Text typographyStyle="body" as="div">
                                 <TradingUtilsProvider
                                     providers={providers}
                                     exchange={quote.exchange}
                                 />
-                            </Column>
+                            </Text>
                             <Icon name="caretRight" size={20} variant="tertiary" />
                         </>
                     )}
                 </Row>
             </Row>
-        </Column>
+        </GhostContainer>
     );
 };

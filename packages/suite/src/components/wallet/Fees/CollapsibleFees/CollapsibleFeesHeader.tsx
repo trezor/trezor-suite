@@ -4,7 +4,7 @@ import { useTheme } from 'styled-components';
 
 import { Translation, TranslationKey } from '@suite/intl';
 import { Icon, Link, Row, Text, Tooltip } from '@trezor/components';
-import { TypographyStyle, spacings } from '@trezor/theme';
+import { TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';
 
 import { useFeesContext } from '../context/FeesContext';
@@ -43,7 +43,7 @@ export function CollapsibleFeesHeader({ label, typographyStyle }: CollapsibleFee
     }, [networkType]);
 
     return (
-        <Row flexWrap="wrap" justifyContent="space-between" gap={spacings.sm} minHeight={44}>
+        <Row flexWrap="wrap" justifyContent="space-between" gap={12} minHeight={44}>
             <Tooltip
                 addon={
                     networkType === 'ethereum' && (

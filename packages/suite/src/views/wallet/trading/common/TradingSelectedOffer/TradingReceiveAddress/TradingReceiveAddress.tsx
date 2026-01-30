@@ -1,8 +1,7 @@
 import { ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { Box, Column, Divider, Icon, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
+import { Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
 
 import { AccountLabeling, Address } from 'src/components/suite';
 
@@ -15,7 +14,7 @@ interface TradingReceiveAddressEmptyProps {
 }
 
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
-    <Column alignItems="center" gap={spacings.xxs} padding={{ vertical: spacings.md }}>
+    <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
         <Text typographyStyle="body">{title}</Text>
         <Text typographyStyle="hint" variant="tertiary">
             {text}
@@ -34,17 +33,18 @@ export const TradingReceiveAddress = () => {
     };
 
     return (
-        <Box cursor="pointer" backgroundColorOnInteraction="backgroundSurfaceElevation2">
-            <Divider margin={0} />
-
+        <GhostContainer
+            onClick={onReceiveAccountClick}
+            data-testid="@trading/receive-address-picker"
+            cursor="pointer"
+            borderRadius={0}
+        >
             <Row
-                data-testid="@trading/receive-address-picker"
                 alignItems="center"
                 justifyContent="space-between"
-                onClick={onReceiveAccountClick}
                 padding={{
-                    vertical: !receiveAddress ? spacings.lg : spacings.sm,
-                    horizontal: spacings.lg,
+                    vertical: selectedAccountOption?.account && receiveAddress ? 12 : 16,
+                    horizontal: 20,
                 }}
             >
                 <Text typographyStyle="body">
@@ -60,12 +60,17 @@ export const TradingReceiveAddress = () => {
                     <Column alignItems="flex-end">
                         {selectedAccountOption?.account && receiveAddress ? (
                             <>
-                                <AccountLabeling
-                                    data-test-id="@trading/selected-receive-account"
-                                    account={selectedAccountOption.account}
-                                    accountTypeBadgeSize="small"
-                                    showAccountTypeBadge
-                                />
+                                <Text
+                                    typographyStyle="body"
+                                    as="div"
+                                    data-testid="@trading/selected-receive-account"
+                                >
+                                    <AccountLabeling
+                                        account={selectedAccountOption.account}
+                                        accountTypeBadgeSize="small"
+                                        showAccountTypeBadge
+                                    />
+                                </Text>
                                 <Address
                                     value={receiveAddress}
                                     typographyStyle="hint"
@@ -78,8 +83,8 @@ export const TradingReceiveAddress = () => {
                                 {receiveAddress ? (
                                     <Address
                                         value={receiveAddress}
-                                        typographyStyle="hint"
-                                        variant="tertiary"
+                                        typographyStyle="body"
+                                        variant="default"
                                         isTruncated
                                     />
                                 ) : (
@@ -94,6 +99,6 @@ export const TradingReceiveAddress = () => {
                     <Icon name="caretRight" size={20} variant="tertiary" />
                 </Row>
             </Row>
-        </Box>
+        </GhostContainer>
     );
 };

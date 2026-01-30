@@ -15,31 +15,32 @@ import {
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
+import { Column, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
+import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { TradingFormFees } from './TradingFormFees';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import {
     TradingFormInputBuyAsset,
     TradingFormInputBuyAssetProps,
 } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
-import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
-import { generateFractionButtons } from './tradingFormInputsUtils';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
-import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputSellAsset,
     TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
+import { TradingFormSection } from './TradingFormSection';
+import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
+import { generateFractionButtons } from './tradingFormInputsUtils';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
@@ -115,8 +116,8 @@ export const TradingExchangeFormInputs = () => {
     const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
 
     return (
-        <Card paddingType="none">
-            <Column gap={spacings.lg} padding={spacings.lg}>
+        <TradingFormCard>
+            <TradingFormSection>
                 <TradingFormInputSellAsset
                     inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     inputLabel="TR_FROM"
@@ -128,7 +129,7 @@ export const TradingExchangeFormInputs = () => {
                     dataTestId="@trading/form/select-crypto-for-sell"
                     onAssetSelect={handleSellAssetSelect}
                 />
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <TradingFormInputFiatCrypto
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
@@ -138,7 +139,7 @@ export const TradingExchangeFormInputs = () => {
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={spacings.xs} data-testid="@trading/form/fraction-buttons">
+                            <Row gap={8} data-testid="@trading/form/fraction-buttons">
                                 {generateFractionButtons(helpers).map(button => (
                                     <FractionButton
                                         key={button.id}
@@ -179,24 +180,19 @@ export const TradingExchangeFormInputs = () => {
                     onAssetSelect={handleReceiveAssetSelect}
                     dataTestId="@trading/form/select-crypto-for-buy"
                 />
-            </Column>
+            </TradingFormSection>
 
             {receiveCryptoSelect && !isLoading && <TradingReceiveAddress />}
-
-            <Divider margin={0} />
-            <Fees
+            <TradingFormFees
                 feeInfo={feeInfo}
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                isHeaderRowLayout
             />
             <TradingSelectedOfferProvider />
-            <Divider margin={0} />
-
-            <Column gap={spacings.lg} padding={{ vertical: spacings.lg, horizontal: spacings.lg }}>
+            <TradingFormSection>
                 <TradingFormFeesDisclamer />
-            </Column>
-        </Card>
+            </TradingFormSection>
+        </TradingFormCard>
     );
 };
