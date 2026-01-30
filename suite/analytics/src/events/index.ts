@@ -8,6 +8,7 @@ export { accountsTransactionsExportEvent } from './accountsTransactionsExportEve
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
 export { coinjoinAnonymityGainEvent } from './coinjoinAnonymityGainEvent';
+export { createBackupEvent } from './createBackupEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
