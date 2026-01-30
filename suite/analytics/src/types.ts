@@ -101,12 +101,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GuideTooltipLinkNavigation;
-          payload: {
-              id: string;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeThpAutoconnect;
           payload: {
               action: 'disable-autoconnect' | 'enable-autoconnect';
