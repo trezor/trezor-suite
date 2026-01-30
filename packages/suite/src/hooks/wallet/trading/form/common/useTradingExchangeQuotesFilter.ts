@@ -9,8 +9,8 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     TradingExchangeFormProps,
     TradingExchangeFormType,
-    exchangeUtils,
 } from '@suite-common/trading';
+import { arrayPartition } from '@trezor/utils';
 
 interface TradingExchangeQuotesFilterProps {
     quotes: ExchangeTrade[];
@@ -22,13 +22,11 @@ interface TradingExchangeQuotesFilterProps {
 export const useTradingExchangeQuotesFilter = ({
     exchangeType,
     quotes,
-    exchangeInfo,
     setValue,
 }: TradingExchangeQuotesFilterProps) => {
-    const dexQuotes = useMemo(() => quotes.filter(quote => quote.isDex), [quotes]);
-    const cexQuotes = useMemo(
-        () => exchangeUtils.getPreferredCexQuotes(quotes, exchangeInfo),
-        [quotes, exchangeInfo],
+    const [dexQuotes, cexQuotes] = useMemo(
+        () => arrayPartition(quotes, quote => quote?.isDex ?? false),
+        [quotes],
     );
 
     // handle edge case when there are no longer quotes of selected exchange type

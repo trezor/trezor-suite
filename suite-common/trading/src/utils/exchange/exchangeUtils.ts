@@ -81,20 +81,6 @@ const fixedRateCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo 
             !isQuoteError(q),
     );
 
-const floatRateCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo | undefined) =>
-    quotes.filter(q => {
-        const provider = exchangeInfo?.providerInfos[q.exchange || ''];
-
-        return provider && !provider.isFixedRate && !q.isDex && !isQuoteError(q);
-    });
-
-// Prefer floating-rate quotes, fallback to fixed-rate if none available
-const getPreferredCexQuotes = (quotes: ExchangeTrade[], exchangeInfo: ExchangeInfo | undefined) => {
-    const floatQuotes = floatRateCexQuotes(quotes, exchangeInfo);
-
-    return floatQuotes.length > 0 ? floatQuotes : fixedRateCexQuotes(quotes, exchangeInfo);
-};
-
 const getSuccessQuotesOrdered = (quotes: ExchangeTrade[]): ExchangeTrade[] =>
     quotes.filter(q => !isQuoteError(q));
 
@@ -127,8 +113,6 @@ export const exchangeUtils = {
     getAmountLimits,
     isQuoteError,
     fixedRateCexQuotes,
-    floatRateCexQuotes,
-    getPreferredCexQuotes,
     getSuccessQuotesOrdered,
     getStatusMessage,
     tokenSupportsIncreasingAllowance,
