@@ -5,6 +5,7 @@ export const FormDraftWithSendPrefixKeyValues = [
     'stake',
     'unstake',
     'send',
+    'stellar-token',
 ] as const;
 
 // 'send' is excluded because it currently uses own drafts in state.wallet.send.drafts indexed by accountKey and tokenContract.

@@ -7,12 +7,16 @@ import { ThunkDispatch, UnknownAction, isFulfilled } from '@reduxjs/toolkit';
 import {
     AccountsRootState,
     DeviceRootState,
+    FormDraftRootState,
     fetchAndUpdateAccountThunk,
     selectAccountByKey,
+    selectDeepCopyOfFormDraft,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/wallet-core';
 import {
+    FeeLevelLabel,
+    FormState,
     PrecomposedTransactionFinal,
     TokenAddress,
     isFinalPrecomposedTransaction,
@@ -32,11 +36,12 @@ import {
 import {
     NativeSendRootState,
     selectFeeLevels,
-    useFeeCalculation,
+    useFeesManagement,
 } from '@suite-native/transaction-management';
 import { BASE_INFO } from '@trezor/blockchain-link-utils/src/stellar';
 import { BigNumber } from '@trezor/utils';
 
+import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';
 import { useStellarTokenInfo } from './useStellarTokenInfo';
 
 export type StellarFeeScreenMode = 'activation' | 'deactivation';
@@ -56,6 +61,7 @@ type UseStellarFeeScreenParams = {
         account: NonNullable<ReturnType<typeof selectAccountByKey>>;
         contractAddress: string;
         selectedFee: string;
+        customFeePerUnit?: string;
     }) => any;
     onSuccess: () => void;
 };
@@ -101,6 +107,14 @@ export const useStellarFeeScreen = ({
     // Ref to track if we have a pending sign operation after device connection
     const pendingSignRef = useRef(false);
 
+    // Generate form draft key for this token operation
+    const formDraftKey = getStellarTokenFormDraftKey(accountKey, tokenContract);
+
+    // Get form draft from Redux
+    const formDraft = useSelector((state: FormDraftRootState) =>
+        selectDeepCopyOfFormDraft(state, formDraftKey),
+    ) as FormState | undefined;
+
     // Get precomposed fee levels from Redux to extract the default fee per unit
     const precomposedFeeLevels = useSelector((state: NativeSendRootState) =>
         selectFeeLevels(state),
@@ -109,10 +123,21 @@ export const useStellarFeeScreen = ({
         ? (precomposedFeeLevels.normal as PrecomposedTransactionFinal).feePerByte
         : undefined;
 
-    const { form, fee, isSubmittable, areFeesLoading, feeLevels } = useFeeCalculation({
+    const {
+        form,
+        selectedFeeLevel,
+        fee,
+        isSubmittable,
+        areFeesLoading,
+        feeLevels,
+        handleFeeLevelChange,
+        handleCustomFeeSet,
+    } = useFeesManagement({
         accountKey,
-        selectedFee: 'normal',
-        selectedFeePerUnit: normalFeePerUnit,
+        selectedFee: (formDraft?.selectedFee as FeeLevelLabel) ?? 'normal',
+        selectedFeePerUnit: formDraft?.feePerUnit ?? normalFeePerUnit,
+        updateThunk: updateStellarTokenSelectedFeeLevelThunk,
+        formDraftKey,
     });
 
     const { tokenInfo } = useStellarTokenInfo(tokenContract);
@@ -186,11 +211,16 @@ export const useStellarFeeScreen = ({
         setIsWaitingForDevice(true);
 
         try {
+            // Get custom fee per unit from form when using custom fee
+            const customFeePerUnit =
+                selectedFeeLevel === 'custom' ? form.getValues('customFeePerUnit') : undefined;
+
             const result = await dispatch(
                 thunkAction({
                     account,
                     contractAddress: tokenContract,
-                    selectedFee: 'normal',
+                    selectedFee: selectedFeeLevel,
+                    customFeePerUnit,
                 }),
             );
 
@@ -229,7 +259,9 @@ export const useStellarFeeScreen = ({
         errorDescriptionKey,
         errorTitleKey,
         fee,
+        form,
         onSuccess,
+        selectedFeeLevel,
         showAlert,
         thunkAction,
         tokenContract,
@@ -280,6 +312,11 @@ export const useStellarFeeScreen = ({
         form,
         fee,
         feeLevels,
+        selectedFeeLevel,
+        formDraft,
+        // Fee selection handlers
+        handleFeeLevelChange,
+        handleCustomFeeSet,
         // Token info
         assetCode,
         tokenName,

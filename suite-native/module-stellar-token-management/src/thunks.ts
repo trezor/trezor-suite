@@ -3,16 +3,68 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    FormDraftRootState,
     composeSendFormTransactionFeeLevelsThunk,
+    formDraftActions,
     selectAccountByKey,
     selectConvertedNetworkFeeInfo,
+    selectDeepCopyOfFormDraft,
 } from '@suite-common/wallet-core';
-import { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
-import { transactionManagementActions } from '@suite-native/transaction-management';
+import {
+    AccountKey,
+    FormState,
+    PrecomposedTransactionFinal,
+    TokenAddress,
+    isFinalPrecomposedTransaction,
+} from '@suite-common/wallet-types';
+import {
+    UpdateSelectedFeeLevelThunkParams,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
 
-const STELLAR_TOKEN_THUNK_PREFIX = 'stellarToken';
+const STELLAR_TOKEN_MODULE_PREFIX = '@suite-native/stellar-token';
 
 const STELLAR_DEFAULT_FEE_STROOPS = '100';
+
+const STELLAR_TOKEN_FORM_DRAFT_PREFIX = 'stellar-token';
+
+/**
+ * Generates a unique form draft key for Stellar token operations.
+ */
+export const getStellarTokenFormDraftKey = (accountKey: AccountKey, tokenContract: TokenAddress) =>
+    `${STELLAR_TOKEN_FORM_DRAFT_PREFIX}/${accountKey}/${tokenContract}`;
+
+/**
+ * Updates the selected fee level for Stellar token operations.
+ * Stores the updated form draft in Redux.
+ */
+export const updateStellarTokenSelectedFeeLevelThunk = createThunk(
+    `${STELLAR_TOKEN_MODULE_PREFIX}/updateSelectedFeeLevel`,
+    (
+        { feeLevelLabel, feePerUnit, formDraftKey }: UpdateSelectedFeeLevelThunkParams,
+        { dispatch, getState },
+    ) => {
+        if (!formDraftKey) {
+            return;
+        }
+
+        const formDraft = selectDeepCopyOfFormDraft(
+            getState() as FormDraftRootState,
+            formDraftKey,
+        ) as FormState | undefined;
+
+        if (!formDraft) {
+            return;
+        }
+
+        formDraft.selectedFee = feeLevelLabel;
+        if (feePerUnit) {
+            formDraft.feePerUnit = feePerUnit;
+        }
+
+        dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
+    },
+);
 
 /**
  * Creates a minimal FormState for Stellar trustline operations.
@@ -59,9 +111,9 @@ type ComposeStellarTrustlineFeesParams = {
  * are available in Redux when the screen renders.
  */
 export const composeStellarTrustlineFeesThunk = createThunk(
-    `${STELLAR_TOKEN_THUNK_PREFIX}/composeTrustlineFees`,
+    `${STELLAR_TOKEN_MODULE_PREFIX}/composeTrustlineFees`,
     async (
-        { accountKey }: ComposeStellarTrustlineFeesParams,
+        { accountKey, tokenContract }: ComposeStellarTrustlineFeesParams,
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
@@ -93,6 +145,20 @@ export const composeStellarTrustlineFeesThunk = createThunk(
 
         if (isFulfilled(result)) {
             dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: result.payload }));
+
+            // Get the actual composed normal fee to use as default for custom fee
+            const composedNormalFee = isFinalPrecomposedTransaction(result.payload.normal)
+                ? (result.payload.normal as PrecomposedTransactionFinal).feePerByte
+                : normalFeePerUnit;
+
+            // Store form draft for fee selection with the composed fee
+            const formDraftKey = getStellarTokenFormDraftKey(accountKey, tokenContract);
+            dispatch(
+                formDraftActions.storeDraft({
+                    key: formDraftKey,
+                    formDraft: { ...formState, feePerUnit: composedNormalFee },
+                }),
+            );
 
             return fulfillWithValue(result.payload);
         }
