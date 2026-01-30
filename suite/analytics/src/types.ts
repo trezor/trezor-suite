@@ -1,50 +1,7 @@
-import { MetadataProviderType } from '@suite-common/metadata-types';
-
 import { EventType } from './constants';
-
-/** @deprecated */
-export type SuiteAnalyticsEventSuiteReady = {
-    type: EventType.SuiteReady;
-    payload: {
-        language: string;
-        enabledNetworks: string[];
-        customBackends: string[];
-        localCurrency: string;
-        bitcoinUnit: string;
-        discreetMode: boolean;
-        screenWidth: number;
-        screenHeight: number;
-        tor: boolean;
-        labeling: MetadataProviderType | 'missing-provider' | 'suite-sync' | 'off';
-        rememberedStandardWallets: number;
-        rememberedHiddenWallets: number;
-        theme: string;
-        suiteVersion: string;
-        earlyAccessProgram: boolean;
-        experimentalFeatures?: string[];
-        browserName: string;
-        browserVersion: string;
-        osName: string;
-        osVersion: string;
-        osCpuArch: string;
-        windowWidth: number;
-        windowHeight: number;
-        platformLanguages: string;
-        autodetectLanguage: boolean;
-        autodetectTheme: boolean;
-        desktopOsVersion?: string;
-        desktopOsName?: string;
-        desktopOsArchitecture?: string;
-        isAutomaticUpdateEnabled: boolean;
-        experimentVariants: string[];
-        mevProtection: boolean;
-        networkReserve: boolean;
-    };
-};
 
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
-    | SuiteAnalyticsEventSuiteReady
     | { type: EventType.TransportType; payload: { type: string; version: string } }
     | {
           type: EventType.DashboardActions;
