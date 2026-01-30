@@ -6,13 +6,17 @@ import {
     AccountBase,
     AccountFailureSpecific,
     AccountNetworkSpecific,
+    AccountNetworkSpecificBitcoin,
+    AccountNetworkSpecificCardano,
+    AccountNetworkSpecificEthereum,
     AccountNetworkSpecificRipple,
+    AccountNetworkSpecificSolana,
     AccountNetworkSpecificStellar,
     asAccountDescriptor,
     createAccountKey,
 } from '../src/account';
 
-const networkSpecificDefaultBitcoin: AccountNetworkSpecific = {
+const networkSpecificDefaultBitcoin: AccountNetworkSpecificBitcoin = {
     networkType: 'bitcoin',
     misc: undefined,
     marker: undefined,
@@ -20,7 +24,7 @@ const networkSpecificDefaultBitcoin: AccountNetworkSpecific = {
     page: { index: 1, size: 25, total: 1 },
 };
 
-export const networkSpecificDefaultEthereum: AccountNetworkSpecific = {
+export const networkSpecificDefaultEthereum: AccountNetworkSpecificEthereum = {
     networkType: 'ethereum',
     misc: { nonce: '6' },
     marker: undefined,
@@ -28,7 +32,7 @@ export const networkSpecificDefaultEthereum: AccountNetworkSpecific = {
     page: { index: 1, size: 25, total: 1 },
 };
 
-export const networkSpecificDefaultSolana: AccountNetworkSpecific = {
+export const networkSpecificDefaultSolana: AccountNetworkSpecificSolana = {
     networkType: 'solana',
     marker: undefined,
     stellarCursor: undefined,
@@ -43,7 +47,7 @@ export const networkSpecificDefaultRipple: AccountNetworkSpecificRipple = {
     page: undefined,
 };
 
-export const networkSpecificDefaultCardano: AccountNetworkSpecific = {
+export const networkSpecificDefaultCardano: AccountNetworkSpecificCardano = {
     networkType: 'cardano',
     marker: undefined,
     stellarCursor: undefined,
