@@ -27,7 +27,7 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { AccountInfo, TokenInfo } from '@trezor/connect';
 
 import { importAccountThunk } from '../accountsImportThunks';
@@ -52,7 +52,7 @@ export const AccountImportConfirmFormScreen = ({
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);
@@ -84,7 +84,7 @@ export const AccountImportConfirmFormScreen = ({
                 }),
             ).unwrap();
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AssetsSync,
                 payload: {
                     assetSymbol: symbol,
