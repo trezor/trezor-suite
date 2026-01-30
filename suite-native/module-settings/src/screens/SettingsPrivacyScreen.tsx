@@ -35,10 +35,10 @@ const DiscreetTextExample = () => {
 
 const DiscreetModeSwitchRow = () => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDiscreetToggle,
             payload: { discreetMode: value },
         });
