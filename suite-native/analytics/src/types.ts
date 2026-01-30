@@ -30,21 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.AssetsSync;
-          payload: {
-              assetSymbol: NetworkSymbol;
-              tokenSymbols?: TokenSymbol[];
-              tokenAddresses?: TokenAddress[];
-          };
-      }
-    | {
-          type: EventType.ScreenChange;
-          payload: {
-              previousScreen: string;
-              currentScreen: string;
-          };
-      }
-    | {
           type: EventType.WatchPortfolioTimeframeChange;
           payload: {
               timeframe: string;
