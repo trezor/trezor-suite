@@ -1,4 +1,4 @@
-import { AppUpdateEvent, SuiteAnalyticsEventSuiteReady } from '@suite/analytics';
+import type { AppUpdateEvent, SuiteReadyPayload } from '@suite/analytics';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
@@ -55,9 +55,7 @@ export const redactTransactionIdFromAnchor = (anchor?: string) => {
 // 1. replace coinjoin by taproot
 export const redactRouterUrl = (url: string) => url.replace(/coinjoin/g, 'taproot');
 
-export const getSuiteReadyPayload = async (
-    state: AppState,
-): Promise<SuiteAnalyticsEventSuiteReady['payload']> => {
+export const getSuiteReadyPayload = async (state: AppState): Promise<SuiteReadyPayload> => {
     const experimentVariants = selectActiveExperimentsWithVariants(state);
     const [osVersion, osCpuArch] = await Promise.all([getOsVersion(), getCpuArch()]);
 

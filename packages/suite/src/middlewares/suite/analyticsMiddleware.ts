@@ -108,7 +108,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case SUITE.READY:
                 getSuiteReadyPayload(state).then(payload => {
-                    getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                    getTypedDesktopAnalytics(analytics).report({
                         type: EventType.SuiteReady,
                         payload,
                     });
