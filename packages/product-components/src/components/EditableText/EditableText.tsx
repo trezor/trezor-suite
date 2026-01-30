@@ -140,6 +140,7 @@ export const EditableText = ({
         currentValueTextContent && currentValueTextContent !== defaultValueTextContent,
     );
     const isActive = isHovered || isEditable || savingStatus !== 'idle';
+    const isDirty = currentValueTextContent !== savedValueRef.current;
     const zIndex = isDisabled ? undefined : zIndices.labeling;
 
     useEffect(() => {
@@ -314,7 +315,7 @@ export const EditableText = ({
         };
     }, [isEditable, handleCancel]);
 
-    useShortcuts({ isEditable, handleSave, handleCancel });
+    useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
 
     return (
         <Row
@@ -344,7 +345,7 @@ export const EditableText = ({
                 savingStatus={savingStatus}
                 isDisabled={isDisabled}
                 isHovered={isHovered}
-                isSubmitButtonVisible={currentValueTextContent !== savedValueRef.current}
+                isSubmitButtonVisible={isDirty}
                 isDeleteButtonVisible={hasCustomValue}
             />
             {leftAddon && (
