@@ -5,6 +5,7 @@ export { accountsNonZeroBalanceEvent } from './accountsNonZeroBalanceEvent';
 export { accountsStatusEvent } from './accountsStatusEvent';
 export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
+export { appUpdateEvent } from './appUpdateEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
 export { coinjoinAnonymityGainEvent } from './coinjoinAnonymityGainEvent';
