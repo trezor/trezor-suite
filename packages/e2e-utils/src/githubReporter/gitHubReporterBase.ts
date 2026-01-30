@@ -9,6 +9,7 @@ import { LoggingFunctions, ProjectField } from './types';
 import {
     TestOsEmoticons,
     TestOsMatrix,
+    TestStatus,
     osMatrixAnnotation,
     statusAnnotation,
 } from '../enums/testAnnotations';
@@ -189,9 +190,18 @@ abstract class GitHubReporterBase implements LoggingFunctions {
             (async () => {
                 try {
                     await this.waitForOnBeginInit();
+
                     if (report.isRetryAttempt && this.createdIssuesMap.has(report.id)) {
+                        // Retry attempts update the existing issue instead of creating a new one
                         await this.updateIssue(report);
+                    } else if (!report.isManual && report.status === TestStatus.AutoPass) {
+                        this.log(
+                            `Skipping reporting because test is automated and passed: "${report.testTitle}"`,
+                        );
+
+                        return;
                     } else {
+                        // Otherwise, create a new issue(s)
                         await this.createIssuePerOs(report);
                     }
                 } catch (error) {
