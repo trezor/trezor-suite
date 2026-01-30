@@ -13,10 +13,7 @@ type Attributes = {
     error: AttributeDef<string>;
 };
 
-export const deviceUpdateFirmwareEvent: EventDef<
-    Attributes,
-    EventType.DeviceUpdateFirmware
-> = {
+export const deviceUpdateFirmwareEvent: EventDef<Attributes, EventType.DeviceUpdateFirmware> = {
     name: EventType.DeviceUpdateFirmware,
     descriptionTrigger: 'Fired when firmware update is finished. (Custom firmware also installed)',
     changelog: [{ version: '1.0.0', notes: 'added' }],

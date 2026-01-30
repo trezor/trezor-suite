@@ -267,14 +267,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsTor;
-          payload: {
-              value: boolean;
-              location: string;
-              modal?: string;
-          };
-      }
-    | {
           type: EventType.SettingsAnalytics;
           payload: {
               value: boolean;

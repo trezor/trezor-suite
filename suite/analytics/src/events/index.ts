@@ -44,6 +44,7 @@ export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeE
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
+export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
 export { stakingConfirmEvent } from './stakingConfirmEvent';
