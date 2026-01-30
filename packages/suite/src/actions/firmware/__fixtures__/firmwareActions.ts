@@ -1,18 +1,16 @@
 import { firmwareActions, firmwareUpdate } from '@suite-common/firmware';
-import { testMocks } from '@suite-common/test-utils';
+import { mockGetFirmwareReleaseConfigInfo, mockSuiteDevice } from '@suite-common/suite-types';
 import { FirmwareType, UI } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-const { getSuiteDevice, getFirmwareReleaseConfigInfo } = testMocks;
-
-const bootloaderDevice = getSuiteDevice({ mode: 'bootloader', connected: true });
+const bootloaderDevice = mockSuiteDevice({ mode: 'bootloader', connected: true });
 const bootloaderDeviceNeedsIntermediary = {
-    ...getSuiteDevice(
+    ...mockSuiteDevice(
         {
             mode: 'bootloader',
             connected: true,
             firmwareReleaseConfigInfo: {
-                ...getFirmwareReleaseConfigInfo(),
+                ...mockGetFirmwareReleaseConfigInfo(),
                 intermediary: {
                     min_firmware_version: [1, 6, 2],
                     min_bootloader_version: [1, 6, 2],
@@ -24,12 +22,12 @@ const bootloaderDeviceNeedsIntermediary = {
     ),
 };
 const bootloaderDeviceNoIntermediaryT1 = {
-    ...getSuiteDevice(
+    ...mockSuiteDevice(
         {
             mode: 'bootloader',
             connected: true,
             firmwareReleaseConfigInfo: {
-                ...getFirmwareReleaseConfigInfo(),
+                ...mockGetFirmwareReleaseConfigInfo(),
                 intermediary: undefined,
             },
         },

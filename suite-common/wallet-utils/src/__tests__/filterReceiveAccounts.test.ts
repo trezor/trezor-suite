@@ -1,10 +1,11 @@
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 
 import { filterReceiveAccounts, isDebugOnlyAccountType } from '../filterReceiveAccounts';
 
-const { getSuiteDevice, getWalletAccount } = testMocks;
+const { getWalletAccount } = testMocks;
 
 const accountsList: Account[] = [
     getWalletAccount({ symbol: 'eth', accountType: 'legacy' }),
@@ -41,7 +42,7 @@ const runFilterReceiveAccouns = ({
     deviceState = '1stTestnetAddress@device_id:0',
     accounts = accountsList,
 }: RunFilterReceiveAccountsTestParams) => {
-    const device = getSuiteDevice({
+    const device = mockSuiteDevice({
         unavailableCapabilities: {
             dash: 'no-support',
         },

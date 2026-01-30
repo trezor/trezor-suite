@@ -1,4 +1,4 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import * as helpers from '@trezor/env-utils';
 
@@ -16,7 +16,7 @@ describe(buildUserFeedbackData.name, () => {
     });
 
     it('returns full payload when device is connected', () => {
-        const device = testMocks.getSuiteDevice();
+        const device = mockSuiteDevice();
 
         const data = buildUserFeedbackData(device);
 

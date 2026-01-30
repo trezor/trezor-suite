@@ -16,3 +16,9 @@ export type Selector<TReturnValue> = (state: any) => TReturnValue;
 export type SuiteCompatibleAction<TPayload> = (
     payload: TPayload,
 ) => AnyAction | ActionCreatorWithPayload<TPayload> | ActionCreatorWithoutPayload;
+
+export {
+    mockConnectDevice,
+    mockSuiteDevice,
+    mockGetFirmwareReleaseConfigInfo,
+} from '../tests/mockSuiteDevice';

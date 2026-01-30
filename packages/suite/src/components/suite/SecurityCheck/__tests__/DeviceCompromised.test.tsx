@@ -1,8 +1,8 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { TranslationKey } from '@suite/intl';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
-import { testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 
@@ -46,9 +46,9 @@ const getInitialState = (device: DeviceReducerState): AppState =>
         },
     }) as AppState;
 
-const defaultDevice = testMocks.getSuiteDevice();
+const defaultDevice = mockSuiteDevice();
 if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
-    throw 'testMocks.getSuiteDevice() must return an AcquiredDevice here.';
+    throw 'mockSuiteDevice() must return an AcquiredDevice here.';
 }
 
 const deviceCompromisedFixtures: Array<{
@@ -66,7 +66,7 @@ const deviceCompromisedFixtures: Array<{
                     lastEntropyCheckResult: { success: false },
                 },
             ],
-            selectedDevice: testMocks.getSuiteDevice(),
+            selectedDevice: mockSuiteDevice(),
         },
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },

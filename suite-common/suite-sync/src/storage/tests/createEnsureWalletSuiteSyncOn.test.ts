@@ -2,7 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { TrezorDevice } from '@suite-common/suite-types';
-import { getSuiteDevice } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import type { DeviceRootState } from '@suite-common/wallet-core';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';
@@ -16,7 +16,7 @@ import { createSubscriptionStorageMock } from '../createSubscriptionStorage.mock
 
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
-const DEVICE_123 = getSuiteDevice({ state: DEVICE_STATIC_SESSION_ID_123 });
+const DEVICE_123 = mockSuiteDevice({ state: DEVICE_STATIC_SESSION_ID_123 });
 
 const createMockState = (devices: TrezorDevice[] = []): DeviceRootState => ({
     device: {
@@ -51,7 +51,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
         const deps = createMockDeps<EnsureWalletSuiteSyncOnDeps>({
             dispatch: null,
-            getState: () => createMockState([getSuiteDevice({ unavailableCapabilities })]),
+            getState: () => createMockState([mockSuiteDevice({ unavailableCapabilities })]),
             refreshSuiteSyncKeys: null,
             ensureSuiteSyncData: null,
             subscriptionStorage: createSubscriptionStorageMock(),
@@ -70,7 +70,7 @@ describe(createEnsureWalletSuiteSyncOn.name, () => {
 
     it('returns error when device needs firmware upgrade', async () => {
         const unavailableCapabilities: UnavailableCapabilities = { evolu: 'update-required' };
-        const device = getSuiteDevice({
+        const device = mockSuiteDevice({
             unavailableCapabilities,
             state: DEVICE_STATIC_SESSION_ID_123,
         });

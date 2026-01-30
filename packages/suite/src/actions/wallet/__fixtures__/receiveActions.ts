@@ -1,5 +1,5 @@
 import { connectInitThunk } from '@suite-common/connect-init';
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 
@@ -161,7 +161,7 @@ export default [
                 settings: { debug: {} },
             },
             device: {
-                selectedDevice: testMocks.getSuiteDevice({ connected: false }),
+                selectedDevice: mockSuiteDevice({ connected: false }),
             },
         },
         mocks: {},

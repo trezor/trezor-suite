@@ -1,5 +1,6 @@
 import { getUnixTime } from 'date-fns';
 
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { BlockchainBlock } from '@trezor/connect';
@@ -12,7 +13,6 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 
 import { CARDANO_STAKING } from '../constants';
 
-const { getSuiteDevice } = testMocks;
 const cardanoAccount = testMocks.getWalletAccount({
     networkType: 'cardano',
     symbol: 'ada',
@@ -23,7 +23,7 @@ type CardanoStakingState = ReturnType<typeof cardanoStakingReducer>;
 const getInitialState = (cardanoStaking?: CardanoStakingState) => ({
     devices: [],
     suite: {
-        device: getSuiteDevice({ available: true, connected: true }),
+        device: mockSuiteDevice({ available: true, connected: true }),
     },
     wallet: {
         accounts: [defaultAccount, cardanoAccount],

@@ -2,6 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 
@@ -42,7 +43,7 @@ const setTrezorConnectFixtures = (fixture: any) => {
     jest.spyOn(TrezorConnect, 'cardanoGetPublicKey').mockImplementation(getPublicKey);
 };
 
-const device = testMocks.getSuiteDevice({
+const device = mockSuiteDevice({
     state: '1stTestnetAddress@device_id:0',
     connected: true,
     available: true,

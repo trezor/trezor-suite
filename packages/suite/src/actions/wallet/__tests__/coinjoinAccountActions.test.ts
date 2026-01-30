@@ -1,6 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from 'src/reducers/wallet';
@@ -19,7 +20,7 @@ jest.mock('src/services/coinjoin/coinjoinService', () => {
     return mock.mockCoinjoinService();
 });
 
-const DEVICE = testMocks.getSuiteDevice({
+const DEVICE = mockSuiteDevice({
     state: '1stTestnetAddress@device_id:0',
     connected: true,
 });

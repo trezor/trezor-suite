@@ -1,11 +1,8 @@
-import type { TrezorDevice } from '@suite-common/suite-types';
-import { testMocks } from '@suite-common/test-utils';
+import { TrezorDevice, mockSuiteDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import * as URLS from '@trezor/urls';
 
-const { getSuiteDevice } = testMocks;
-
-const SUITE_DEVICE = getSuiteDevice();
+const SUITE_DEVICE = mockSuiteDevice();
 const connected = { connected: true, available: true };
 
 const getStatus: Array<{ device: TrezorDevice; status: string }> = [
@@ -14,47 +11,47 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
         status: 'disconnected',
     },
     {
-        device: getSuiteDevice({ connected: true, available: false }),
+        device: mockSuiteDevice({ connected: true, available: false }),
         status: 'unavailable',
     },
     {
-        device: getSuiteDevice({ ...connected, mode: 'bootloader' }),
+        device: mockSuiteDevice({ ...connected, mode: 'bootloader' }),
         status: 'bootloader',
     },
     {
-        device: getSuiteDevice({ ...connected, mode: 'initialize' }),
+        device: mockSuiteDevice({ ...connected, mode: 'initialize' }),
         status: 'initialize',
     },
     {
-        device: getSuiteDevice({ ...connected, mode: 'seedless' }),
+        device: mockSuiteDevice({ ...connected, mode: 'seedless' }),
         status: 'seedless',
     },
     {
-        device: getSuiteDevice({ ...connected, firmware: 'required' }),
+        device: mockSuiteDevice({ ...connected, firmware: 'required' }),
         status: 'firmware-required',
     },
     {
-        device: getSuiteDevice({ ...connected, status: 'occupied' }),
+        device: mockSuiteDevice({ ...connected, status: 'occupied' }),
         status: 'used-in-other-window',
     },
     {
-        device: getSuiteDevice({ ...connected, status: 'used' }),
+        device: mockSuiteDevice({ ...connected, status: 'used' }),
         status: 'was-used-in-other-window',
     },
     {
-        device: getSuiteDevice({ ...connected, firmware: 'outdated' }),
+        device: mockSuiteDevice({ ...connected, firmware: 'outdated' }),
         status: 'firmware-recommended',
     },
     {
-        device: getSuiteDevice(connected),
+        device: mockSuiteDevice(connected),
         status: 'connected',
     },
     {
-        device: getSuiteDevice({ type: 'unacquired' }),
+        device: mockSuiteDevice({ type: 'unacquired' }),
         status: 'unacquired',
     },
     {
-        device: getSuiteDevice({ type: 'unreadable' }),
+        device: mockSuiteDevice({ type: 'unreadable' }),
         status: 'unreadable',
     },
 ];
@@ -62,7 +59,7 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
 const getIsDeviceConnectedViaBluetooth = [
     {
         description: 'device is connected via bluetooth',
-        device: getSuiteDevice({
+        device: mockSuiteDevice({
             descriptor: { apiType: 'bluetooth' },
             connected: true,
         }) as TrezorDevice,
@@ -70,7 +67,7 @@ const getIsDeviceConnectedViaBluetooth = [
     },
     {
         description: 'device is not connected and api type is bluetooth',
-        device: getSuiteDevice({
+        device: mockSuiteDevice({
             descriptor: { apiType: 'bluetooth' },
             connected: false,
         }) as TrezorDevice,
@@ -109,20 +106,20 @@ const isSelectedDevice = [
     },
     {
         description: `Device is not selected (currently selected is unacquired)`,
-        selected: getSuiteDevice({ type: 'unacquired' }),
+        selected: mockSuiteDevice({ type: 'unacquired' }),
         device: SUITE_DEVICE,
         result: false,
     },
     {
         description: `Device is not selected (device is unacquired)`,
         selected: SUITE_DEVICE,
-        device: getSuiteDevice({ type: 'unacquired' }),
+        device: mockSuiteDevice({ type: 'unacquired' }),
         result: false,
     },
     {
         description: `Device is not selected (device_id is different)`,
         selected: SUITE_DEVICE,
-        device: getSuiteDevice(undefined, { device_id: 'different' }),
+        device: mockSuiteDevice(undefined, { device_id: 'different' }),
         result: false,
     },
 ];
@@ -149,13 +146,13 @@ const isSelectedInstance = [
     {
         description: `Device instance is not selected (device_id is different)`,
         selected: SUITE_DEVICE,
-        device: getSuiteDevice(undefined, { device_id: 'different' }),
+        device: mockSuiteDevice(undefined, { device_id: 'different' }),
         result: false,
     },
     {
         description: `Device instance is not selected (instance is different)`,
         selected: SUITE_DEVICE,
-        device: getSuiteDevice({ instance: 1 }),
+        device: mockSuiteDevice({ instance: 1 }),
         result: false,
     },
 ];
@@ -169,26 +166,26 @@ const getNewInstanceNumber = [
     },
     {
         description: `second instance`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
         device: SUITE_DEVICE,
         result: 2,
     },
     {
         description: `odd instances`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 1 }), getSuiteDevice({ instance: 4 })],
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 }), mockSuiteDevice({ instance: 4 })],
         device: SUITE_DEVICE,
         result: 5,
     },
     {
         description: `odd mixed unsorted instances`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 4 }), getSuiteDevice({ instance: 1 })],
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 4 }), mockSuiteDevice({ instance: 1 })],
         device: SUITE_DEVICE,
         result: 5,
     },
     {
         description: `device not found in state`,
         state: [
-            getSuiteDevice(undefined, {
+            mockSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
             }),
         ],
@@ -212,7 +209,7 @@ const getNewWalletNumber = [
     },
     {
         description: `second instance`,
-        state: [SUITE_DEVICE, getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false })],
+        state: [SUITE_DEVICE, mockSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false })],
         device: SUITE_DEVICE,
         result: 2,
     },
@@ -220,8 +217,8 @@ const getNewWalletNumber = [
         description: `odd instances`,
         state: [
             SUITE_DEVICE,
-            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
-            getSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
         ],
         device: SUITE_DEVICE,
         result: 5,
@@ -230,8 +227,8 @@ const getNewWalletNumber = [
         description: `odd mixed unsorted instances`,
         state: [
             SUITE_DEVICE,
-            getSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
-            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: 4, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
         ],
         device: SUITE_DEVICE,
         result: 5,
@@ -240,9 +237,9 @@ const getNewWalletNumber = [
         description: `standard wallet id skipped`,
         state: [
             SUITE_DEVICE,
-            getSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
-            getSuiteDevice({ walletNumber: undefined, useEmptyPassphrase: true }),
-            getSuiteDevice({ walletNumber: 3, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: 1, useEmptyPassphrase: false }),
+            mockSuiteDevice({ walletNumber: undefined, useEmptyPassphrase: true }),
+            mockSuiteDevice({ walletNumber: 3, useEmptyPassphrase: false }),
         ],
         device: SUITE_DEVICE,
         result: 4,
@@ -250,7 +247,7 @@ const getNewWalletNumber = [
     {
         description: `device not found in state`,
         state: [
-            getSuiteDevice(undefined, {
+            mockSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
             }),
         ],
@@ -274,20 +271,20 @@ const findInstanceIndex = [
     },
     {
         description: `get second instance`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
-        device: getSuiteDevice({ instance: 1 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
+        device: mockSuiteDevice({ instance: 1 }),
         result: 1,
     },
     {
         description: `get second from mixed instances`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 4 }), getSuiteDevice({ instance: 1 })],
-        device: getSuiteDevice({ instance: 4 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 4 }), mockSuiteDevice({ instance: 1 })],
+        device: mockSuiteDevice({ instance: 4 }),
         result: 1,
     },
     {
         description: `unknown instance (not found)`,
-        state: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
-        device: getSuiteDevice({ instance: 2 }),
+        state: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
+        device: mockSuiteDevice({ instance: 2 }),
         result: -1,
     },
     {
@@ -299,7 +296,7 @@ const findInstanceIndex = [
     {
         description: `unknown instance (different device)`,
         state: [
-            getSuiteDevice(undefined, {
+            mockSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
             }),
         ],
@@ -311,15 +308,15 @@ const findInstanceIndex = [
 const getSelectedDevice = [
     {
         description: `unacquired device`,
-        device: getSuiteDevice({ type: 'unacquired' }),
-        state: [getSuiteDevice({ type: 'unacquired' })],
-        result: getSuiteDevice({ type: 'unacquired' }),
+        device: mockSuiteDevice({ type: 'unacquired' }),
+        state: [mockSuiteDevice({ type: 'unacquired' })],
+        result: mockSuiteDevice({ type: 'unacquired' }),
     },
     {
         description: `bootloader device`,
-        device: getSuiteDevice({ mode: 'bootloader' }),
-        state: [getSuiteDevice({ mode: 'bootloader' })],
-        result: getSuiteDevice({ mode: 'bootloader' }),
+        device: mockSuiteDevice({ mode: 'bootloader' }),
+        state: [mockSuiteDevice({ mode: 'bootloader' })],
+        result: mockSuiteDevice({ mode: 'bootloader' }),
     },
     {
         description: `acquired device`,
@@ -337,7 +334,7 @@ const getSelectedDevice = [
         description: `unknown device (not found)`,
         device: SUITE_DEVICE,
         state: [
-            getSuiteDevice(undefined, {
+            mockSuiteDevice(undefined, {
                 device_id: 'ignored-device-id',
             }),
         ],
@@ -345,9 +342,9 @@ const getSelectedDevice = [
     },
     {
         description: `identical device, but with different device_id because of preceding device-wipe call`,
-        device: getSuiteDevice({ path: '1' }, { device_id: '2' }),
-        state: [getSuiteDevice({ path: '1' }, { device_id: '3' })],
-        result: getSuiteDevice({ path: '1' }, { device_id: '3' }),
+        device: mockSuiteDevice({ path: '1' }, { device_id: '2' }),
+        state: [mockSuiteDevice({ path: '1' }, { device_id: '3' })],
+        result: mockSuiteDevice({ path: '1' }, { device_id: '3' }),
     },
 ];
 
@@ -359,12 +356,12 @@ const sortByTimestamp = {
 const isDeviceRemembered = [
     {
         description: 'acquired non remembered device',
-        device: getSuiteDevice({ type: 'acquired', remember: true }),
+        device: mockSuiteDevice({ type: 'acquired', remember: true }),
         result: true,
     },
     {
         description: 'acquired remembered device',
-        device: getSuiteDevice({ type: 'acquired', remember: false }),
+        device: mockSuiteDevice({ type: 'acquired', remember: false }),
         result: false,
     },
 ];

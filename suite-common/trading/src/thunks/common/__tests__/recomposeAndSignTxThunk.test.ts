@@ -1,11 +1,10 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice } from '@suite-common/suite-types';
+import { TrezorDevice, mockSuiteDevice } from '@suite-common/suite-types';
 import {
     configureMockStore,
     extraDependenciesCommonMock,
-    testMocks,
 } from '@suite-common/test-utils';
 import {
     DeviceReducerState,
@@ -100,7 +99,7 @@ describe('recomposeAndSignTxThunk', () => {
 
     const getMocks = (initialTradingState?: Partial<TradingState>) => {
         const account = accountBtc as Account;
-        const device = testMocks.getSuiteDevice();
+        const device = mockSuiteDevice();
 
         const deviceState: Partial<DeviceReducerState> = {
             selectedDevice: {

@@ -1,17 +1,15 @@
-import { testMocks } from '@suite-common/test-utils';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';
 import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
-
-const { getSuiteDevice } = testMocks;
 
 export default [
     {
         description: 'goToNextStep (without param)',
         initialState: {
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.goToNextStep(),
@@ -23,7 +21,7 @@ export default [
         description: 'goToNextStep (with param)',
         initialState: {
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.goToNextStep('firmware'),
@@ -50,7 +48,7 @@ export default [
                 path: ['new'],
             },
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.addPath('create'),
@@ -65,7 +63,7 @@ export default [
                 path: ['create'],
             },
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.addPath('create'),
@@ -92,7 +90,7 @@ export default [
                 path: ['create', 'recovery'],
             },
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.removePath(['recovery']),
@@ -108,7 +106,7 @@ export default [
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
             suite: {
-                device: getSuiteDevice(),
+                device: mockSuiteDevice(),
             },
         },
         action: () => onboardingActions.resetOnboarding(),

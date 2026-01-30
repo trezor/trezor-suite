@@ -1,3 +1,4 @@
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { deviceActions } from '@suite-common/wallet-core';
 
@@ -8,7 +9,7 @@ import * as METADATA_LABELING from '../metadataLabelingConstants';
 import * as metadataProviderActions from '../metadataProviderThunks';
 import * as metadataThunks from '../metadataThunks';
 
-const { getSuiteDevice, getWalletAccount } = testMocks;
+const { getWalletAccount } = testMocks;
 
 type Fixture<T extends (...a: any) => any> = {
     description: string;
@@ -21,7 +22,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Metadata not enabled`,
         params: [
-            getSuiteDevice({ state: '1stTestnetAddress@device_a_id:0' }),
+            mockSuiteDevice({ state: '1stTestnetAddress@device_a_id:0' }),
             METADATA_LABELING.ENCRYPTION_VERSION,
         ],
         initialState: {
@@ -30,7 +31,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     },
     {
         description: `Device without state`,
-        params: [getSuiteDevice({ state: undefined }), METADATA_LABELING.ENCRYPTION_VERSION],
+        params: [mockSuiteDevice({ state: undefined }), METADATA_LABELING.ENCRYPTION_VERSION],
         initialState: {
             metadata: { enabled: true, providers: [] },
         },
@@ -38,7 +39,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Device not connected (remembered)`,
         params: [
-            getSuiteDevice({
+            mockSuiteDevice({
                 state: '1stTestnetAddress@device_id:0',
                 connected: false,
                 metadata: {},
@@ -52,7 +53,7 @@ const setDeviceMetadataKey: Fixture<(typeof metadataLabelingActions)['setDeviceM
     {
         description: `Master key successfully generated`,
         params: [
-            getSuiteDevice({
+            mockSuiteDevice({
                 state: '1stTestnetAddress@device_id:0',
                 connected: true,
                 metadata: {},

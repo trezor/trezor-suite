@@ -1,5 +1,6 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { mockSuiteDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';
@@ -13,8 +14,6 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { configureStore } from 'src/support/tests/configureStore';
 
 import fixtures from '../__fixtures__/receiveActions';
-
-const { getSuiteDevice } = testMocks;
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 
@@ -112,7 +111,7 @@ const getInitialState = (state: Partial<InitialState> | undefined) => ({
     },
     device: {
         ...deviceReducer(undefined, { type: 'foo' } as any),
-        selectedDevice: getSuiteDevice({ available: true, connected: true }),
+        selectedDevice: mockSuiteDevice({ available: true, connected: true }),
         ...state?.device,
     },
     messageSystem: messageSystemInitialState,

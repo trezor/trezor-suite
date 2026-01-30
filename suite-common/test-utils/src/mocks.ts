@@ -6,7 +6,6 @@ import {
     GuideCategory,
     GuideNode,
     MessageSystem,
-    TrezorDevice,
 } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
@@ -16,15 +15,7 @@ import {
     WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import {
-    AccountUtxo,
-    Device,
-    DeviceUniquePath,
-    Features,
-    FirmwareType,
-    TrezorConnect,
-    asDeviceUniquePath,
-} from '@trezor/connect';
+import { AccountUtxo, Device, Features, FirmwareType, TrezorConnect } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 /**
@@ -151,111 +142,6 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => {
         experimental_features: false,
         ...feat,
     };
-};
-
-type StringPath<T extends { path: DeviceUniquePath }> = Omit<T, 'path'> & { path: string };
-
-/**
- * Create a simplified mocked Device as emitted from '@trezor/connect'.
- * Note that type inferrence for KnownDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
- * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not known).
- */
-const getConnectDevice = (dev?: Partial<StringPath<Device>>, feat?: Partial<Features>): Device => {
-    const path = asDeviceUniquePath(dev?.path ?? '1');
-
-    if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
-        return {
-            descriptor: { apiType: 'usb', id: 'device-id' },
-            type: 'unreadable',
-            path,
-            label: 'Unreadable device',
-            name: 'name of unreadable device',
-            error: 'unreadable device',
-            hid: true,
-        };
-    }
-
-    if (dev && typeof dev.type === 'string' && dev.type === 'unacquired') {
-        return {
-            descriptor: { apiType: 'usb', id: 'device-id' },
-            type: dev.type,
-            path,
-            label: 'Unacquired device',
-            name: 'name of unacquired device',
-            transportSessionOwner: 'another app name',
-            thp: dev.thp,
-            status: dev.status,
-        };
-    }
-
-    const features = getDeviceFeatures(feat);
-
-    return {
-        descriptor: { apiType: 'usb', id: 'device-id' },
-        id: features.device_id,
-        // @ts-expect-error
-        path: '',
-        label: 'My Trezor',
-        firmware: 'valid',
-        firmwareReleaseConfigInfo: getFirmwareReleaseConfigInfo(),
-        status: 'available',
-        mode: 'normal',
-        state: undefined,
-        features,
-        unavailableCapabilities: {},
-        firmwareType:
-            feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
-                ? FirmwareType.BitcoinOnly
-                : FirmwareType.Universal,
-        name: '',
-        availableTranslations: {},
-        ...dev,
-        error: undefined,
-        type: 'acquired',
-        authenticityChecks: {
-            firmwareRevision: { success: true },
-            firmwareHash: { success: true },
-        },
-    };
-};
-
-/**
- * Create a mocked extended device, as processed by wallet-core deviceReducer.
- * Note that type inference for AcquiredDevice | UnknownDevice | UnreadableDevice cannot work here because of Partial<>.
- * If you want tighter types in a test, do narrowing with type guards (e.g. throw if not acquired).
- */
-export const getSuiteDevice = (
-    dev?: Partial<
-        Omit<StringPath<TrezorDevice>, 'state'> & {
-            state?: `${string}@${string}:${number}`;
-        }
-    >,
-    feat?: Partial<Features>,
-): TrezorDevice => {
-    const bootloader_mode = dev?.mode === 'bootloader';
-    const device = getConnectDevice(dev, { bootloader_mode, ...feat });
-    if (device.type === 'acquired') {
-        return {
-            useEmptyPassphrase: dev?.state ? true : undefined,
-            remember: false,
-            connected: false,
-            available: false,
-            instance: undefined,
-            ts: 0,
-            buttonRequests: [],
-            metadata: {},
-            suiteSyncOwner: null,
-            ...dev,
-            ...device,
-            state: dev?.state
-                ? {
-                      staticSessionId: dev.state,
-                  }
-                : undefined,
-        } as TrezorDevice;
-    }
-
-    return device as TrezorDevice;
 };
 
 const getWalletTransaction = (t?: Partial<WalletAccountTransaction>): WalletAccountTransaction => ({
@@ -674,8 +560,6 @@ export const testMocks = {
     getWalletAccount,
     getFirmwareReleaseConfigInfo,
     getDeviceFeatures,
-    getConnectDevice,
-    getSuiteDevice,
     getWalletTransaction,
     getAnalytics,
     getMessageSystemConfig,
