@@ -1,5 +1,5 @@
 import { TranslationKey } from '@suite/intl';
-import { Box, Collapsible, Row } from '@trezor/components';
+import { Collapsible, Row } from '@trezor/components';
 import { TypographyStyle } from '@trezor/theme';
 
 import { ContentFlex } from 'src/support/suite/ContentFlex';
@@ -11,20 +11,24 @@ import { useTransactionMaxFee } from './hooks/useTransactionMaxFee';
 export type CollapsibleFeesHeaderContentProps = {
     label?: TranslationKey;
     headerTypographyStyle?: TypographyStyle;
-    isHeaderRowLayout?: boolean;
     supportsAdjustableFees: boolean;
     txMaxFee: ReturnType<typeof useTransactionMaxFee>;
+    isOpen?: boolean;
 };
 
 export const CollapsibleFeesHeaderContent = ({
     label,
     headerTypographyStyle = 'body',
     supportsAdjustableFees,
-    isHeaderRowLayout,
     txMaxFee,
+    isOpen,
 }: CollapsibleFeesHeaderContentProps) => {
     const content = (
-        <ContentFlex justifyContent="space-between" gap={12}>
+        <ContentFlex
+            justifyContent="space-between"
+            gap={12}
+            data-testid="@wallet/fees/collapsible-fees-toggle"
+        >
             <CollapsibleFeesHeader label={label} typographyStyle={headerTypographyStyle} />
             <Row gap={12}>
                 <MaximumFee typographyStyle={headerTypographyStyle} txMaxFee={txMaxFee} />
@@ -35,20 +39,5 @@ export const CollapsibleFeesHeaderContent = ({
         </ContentFlex>
     );
 
-    return (
-        <Collapsible.Toggle data-testid="@wallet/fees/collapsible-fees-toggle">
-            {isHeaderRowLayout ? (
-                <Box
-                    backgroundColorOnInteraction={
-                        supportsAdjustableFees ? 'backgroundSurfaceElevation2' : undefined
-                    }
-                    padding={{ vertical: 12, horizontal: 16 }}
-                >
-                    {content}
-                </Box>
-            ) : (
-                content
-            )}
-        </Collapsible.Toggle>
-    );
+    return isOpen !== undefined ? content : <Collapsible.Toggle>{content}</Collapsible.Toggle>;
 };

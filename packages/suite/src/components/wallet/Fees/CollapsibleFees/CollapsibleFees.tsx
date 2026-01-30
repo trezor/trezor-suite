@@ -19,8 +19,9 @@ export type CollapsibleFeesProps = {
     networkSymbol: NetworkSymbol;
     networkType: NetworkType;
     rbfForm?: boolean;
+    isOpen?: boolean;
 } & Pick<FeesContextType, 'feeInfo' | 'composedLevels' | 'changeFeeLevel'> &
-    Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee'>;
+    Omit<CollapsibleFeesHeaderContentProps, 'supportsAdjustableFees' | 'txMaxFee' | 'isOpen'>;
 
 export function CollapsibleFees({
     label,
@@ -31,7 +32,7 @@ export function CollapsibleFees({
     changeFeeLevel,
     rbfForm,
     headerTypographyStyle = 'body',
-    isHeaderRowLayout,
+    isOpen,
 }: CollapsibleFeesProps) {
     const selectedFee = useWatch<FormState, 'selectedFee'>({
         name: 'selectedFee',
@@ -68,17 +69,17 @@ export function CollapsibleFees({
                 composedLevels,
             }}
         >
-            <Collapsible gap={12}>
+            <Collapsible gap={12} isOpen={isOpen} data-testid="@wallet/fees/collapsible-fees">
                 <CollapsibleFeesHeaderContent
                     label={label}
                     headerTypographyStyle={headerTypographyStyle}
                     supportsAdjustableFees={supportsAdjustableFees}
-                    isHeaderRowLayout={isHeaderRowLayout}
                     txMaxFee={txMaxFee}
+                    isOpen={isOpen}
                 />
 
                 {supportsAdjustableFees && (
-                    <Collapsible.Content overflow="unset">
+                    <Collapsible.Content overflow="unset" onClick={ev => ev.stopPropagation()}>
                         <Column gap={16}>
                             <Column gap={16}>
                                 {!isCustomFee && <StandardFee />}

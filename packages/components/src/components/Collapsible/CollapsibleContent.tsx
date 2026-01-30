@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { HTMLProps, ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { CSSProperties } from 'styled-components';
@@ -13,7 +13,7 @@ const Container = styled(motion.div)<{ $overflow?: CSSProperties['overflow'] }>`
     overflow: ${({ $overflow = 'hidden' }) => $overflow};
 `;
 
-type CollapsibleContentProps = {
+type CollapsibleContentProps = Pick<HTMLProps<HTMLDivElement>, 'onClick'> & {
     children: ReactNode;
     'data-testid'?: string;
     onAnimationComplete?: (isOpen: boolean) => void;
@@ -25,6 +25,7 @@ export const CollapsibleContent = ({
     onAnimationComplete,
     'data-testid': dataTestId,
     overflow,
+    onClick,
 }: CollapsibleContentProps) => {
     const { isOpen, contentId, gap } = useCollapsible();
 
@@ -47,6 +48,7 @@ export const CollapsibleContent = ({
                     aria-expanded={isOpen}
                     id={contentId}
                     $overflow={overflow}
+                    onClick={onClick}
                 >
                     <Box padding={{ top: gap }}>{children}</Box>
                 </Container>

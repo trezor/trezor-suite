@@ -17,6 +17,7 @@ export class FeeSection {
         this.page.getByTestId(`@fee-card/${feeType}-fiat-amount`);
     readonly rateOnCard = (feeType: FeeTypes) => this.page.getByTestId(`@fee-card/${feeType}-rate`);
     readonly collapsibleFeesToggle: Locator;
+    readonly collapsibleFees: Locator;
     readonly maxFeeLoading: Locator;
     readonly customInput: Locator;
     readonly maxFee: Locator;
@@ -31,6 +32,7 @@ export class FeeSection {
 
     constructor(private readonly page: Page) {
         this.collapsibleFeesToggle = this.page.getByTestId('@wallet/fees/collapsible-fees-toggle');
+        this.collapsibleFees = this.page.getByTestId('@wallet/fees/collapsible-fees');
         this.maxFeeLoading = this.page.getByTestId('@trading/quote/maximum-fee-amount-loading');
         this.customInput = this.page.getByTestId('feePerUnit');
         this.maxFee = this.page.getByTestId('@trading/quote/maximum-fee-amount');
@@ -74,7 +76,7 @@ export class FeeSection {
 
     @step()
     async openCollapsibleFees() {
-        const isExpanded = await this.collapsibleFeesToggle.getAttribute('aria-expanded');
+        const isExpanded = await this.collapsibleFees.getAttribute('aria-expanded');
 
         if (isExpanded === 'true') {
             return;
@@ -93,9 +95,9 @@ export class FeeSection {
             );
         }
 
-        await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(this.collapsibleFees).toHaveAttribute('aria-expanded', 'false');
         await this.collapsibleFeesToggle.click();
-        await expect(this.collapsibleFeesToggle).toHaveAttribute('aria-expanded', 'true');
+        await expect(this.collapsibleFees).toHaveAttribute('aria-expanded', 'true');
     }
 
     @step()

@@ -11,11 +11,9 @@ import {
 } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
-import { Card, Column, Divider, FractionButton, Row } from '@trezor/components';
+import { Column, FractionButton, Row } from '@trezor/components';
 import { useCurrentRef } from '@trezor/react-utils';
-import { spacings } from '@trezor/theme';
 
-import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -24,15 +22,18 @@ import { TradingFormInputCountry } from 'src/views/wallet/trading/common/Trading
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod';
 
+import { TradingFormCard } from './TradingFormCard';
 import { TradingFormFeesDisclamer } from './TradingFormFeeDisclamer';
+import { TradingFormFees } from './TradingFormFees';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
-import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
-import { generateFractionButtons } from './tradingFormInputsUtils';
-import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import {
     TradingFormInputSellAsset,
     TradingFormInputSellAssetProps,
 } from './TradingFormInput/TradingFormInputSellAsset/TradingFormInputSellAsset';
+import { TradingFormSection } from './TradingFormSection';
+import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
+import { generateFractionButtons } from './tradingFormInputsUtils';
+import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 
 export const TradingSellFormInputs = () => {
     const context = useTradingFormContext<TradingSellType>();
@@ -78,8 +79,8 @@ export const TradingSellFormInputs = () => {
     const sellSupportedCryptoIds = useSelector(selectTradingSellSupportedCryptoIds);
 
     return (
-        <Card paddingType="none">
-            <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
+        <TradingFormCard>
+            <TradingFormSection>
                 <TradingFormInputSellAsset
                     inputName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                     inputLabel="TR_TRADING_YOU_SELL"
@@ -90,7 +91,7 @@ export const TradingSellFormInputs = () => {
                     dataTestId="@trading/form/select-crypto-for-sell"
                     onAssetSelect={handleSellAssetSelect}
                 />
-                <Column gap={spacings.xs}>
+                <Column gap={8}>
                     <TradingFormInputFiatCrypto
                         cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                         fiatInputName={TRADING_FORM_OUTPUT_FIAT}
@@ -100,7 +101,7 @@ export const TradingSellFormInputs = () => {
                     />
                     {amountInCrypto && (
                         <Row justifyContent="space-between" alignItems="flex-start">
-                            <Row gap={spacings.xs} data-testid="@trading/form/fraction-buttons">
+                            <Row gap={8} data-testid="@trading/form/fraction-buttons">
                                 {generateFractionButtons(helpers).map(button => (
                                     <FractionButton key={button.id} {...button} />
                                 ))}
@@ -117,32 +118,27 @@ export const TradingSellFormInputs = () => {
                         </Row>
                     )}
                 </Column>
-
                 {showReserveBanner && (
                     <TradingNetworkReserveBanner
                         symbol={account.symbol}
                         contractAddress={tokenAddress}
                     />
                 )}
-            </Column>
-            <Divider margin={0} />
-            <Fees
+            </TradingFormSection>
+            <TradingFormFees
                 feeInfo={feeInfo}
                 account={account}
                 composedLevels={composedLevels}
                 changeFeeLevel={changeFeeLevel}
-                isHeaderRowLayout
             />
-            <Divider margin={0} />
-            <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
+            <TradingFormSection>
                 <TradingFormInputPaymentMethod label="TR_TRADING_RECEIVE_METHOD" />
                 <TradingFormInputCountry label="TR_TRADING_COUNTRY" />
-            </Column>
+            </TradingFormSection>
             <TradingSelectedOfferProvider />
-            <Divider margin={0} />
-            <Column gap={spacings.lg} padding={{ vertical: spacings.md, horizontal: spacings.lg }}>
+            <TradingFormSection>
                 <TradingFormFeesDisclamer />
-            </Column>
-        </Card>
+            </TradingFormSection>
+        </TradingFormCard>
     );
 };

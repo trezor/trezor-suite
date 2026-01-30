@@ -9,10 +9,15 @@ import { FieldErrorBanner } from './FieldErrorBanner';
 
 export type FeesProps = {
     account: Pick<Account, 'symbol' | 'networkType'>;
-    isHeaderRowLayout?: boolean;
 } & Pick<
     CollapsibleFeesProps,
-    'label' | 'rbfForm' | 'feeInfo' | 'changeFeeLevel' | 'composedLevels' | 'headerTypographyStyle'
+    | 'label'
+    | 'rbfForm'
+    | 'feeInfo'
+    | 'changeFeeLevel'
+    | 'composedLevels'
+    | 'headerTypographyStyle'
+    | 'isOpen'
 >;
 
 export const Fees = ({
@@ -23,7 +28,7 @@ export const Fees = ({
     label,
     rbfForm,
     headerTypographyStyle,
-    isHeaderRowLayout,
+    isOpen,
 }: FeesProps) => {
     useFetchFees({ networkSymbol });
 
@@ -38,7 +43,7 @@ export const Fees = ({
                 changeFeeLevel={changeFeeLevel}
                 rbfForm={rbfForm}
                 headerTypographyStyle={headerTypographyStyle}
-                isHeaderRowLayout={isHeaderRowLayout}
+                isOpen={isOpen}
             />
 
             <FieldErrorBanner fieldName="selectedFee" />
