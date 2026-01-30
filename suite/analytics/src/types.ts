@@ -1,7 +1,7 @@
 import { MetadataProviderType } from '@suite-common/metadata-types';
 
 import { EventType } from './constants';
-import type { AppUpdateEvent, FirmwareSource } from './definitions';
+import type { FirmwareSource } from './definitions';
 
 /** @deprecated */
 export type SuiteAnalyticsEventSuiteReady = {
@@ -47,10 +47,6 @@ export type SuiteAnalyticsEventSuiteReady = {
 export type SuiteDesktopLegacyAnalyticsEvents =
     | SuiteAnalyticsEventSuiteReady
     | { type: EventType.TransportType; payload: { type: string; version: string } }
-    | {
-          type: EventType.AppUpdate;
-          payload: AppUpdateEvent;
-      }
     | {
           type: EventType.DashboardActions;
           payload: {
