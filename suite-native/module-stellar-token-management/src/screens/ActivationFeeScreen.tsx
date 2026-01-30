@@ -51,6 +51,10 @@ export const ActivationFeeScreen = () => {
         areFeesLoading,
         form,
         feeLevels,
+        selectedFeeLevel,
+        formDraft,
+        handleFeeLevelChange,
+        handleCustomFeeSet,
         assetCode,
         tokenName,
         issuerDomain,
@@ -147,9 +151,14 @@ export const ActivationFeeScreen = () => {
                             )}
 
                             <FeeOptionsSection
+                                accountKey={accountKey}
                                 feeLevels={feeLevels}
                                 symbol={account.symbol}
-                                isLoading={areFeesLoading}
+                                areFeesLoading={areFeesLoading}
+                                selectedFeeLevel={selectedFeeLevel}
+                                onSelectedFeeLevel={handleFeeLevelChange}
+                                onCustomFeeSet={handleCustomFeeSet}
+                                formDraft={formDraft}
                             />
                         </VStack>
 
