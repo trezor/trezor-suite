@@ -111,7 +111,7 @@ export const ActionsContainer = ({
                 <Spinner
                     size={20}
                     margin={{ right: 4 }}
-                    hasFinished={!isLoading}
+                    hasFinished={savingStatus === 'saved'}
                     isGrey={isLoading}
                     data-testid={savingStatus === 'saved' ? `@metadata/success` : undefined}
                 />
