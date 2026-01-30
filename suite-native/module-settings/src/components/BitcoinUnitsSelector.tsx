@@ -5,7 +5,7 @@ import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wa
 import { EventType } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { PROTO } from '@trezor/connect';
 
 import { PreferencesSettingsCard } from './PreferencesSettingsCard';
@@ -18,10 +18,10 @@ const bitcoinUnitsItems = [
 export const BitcoinUnitsSelector = () => {
     const dispatch = useDispatch();
     const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleSelectUnit = (value: PROTO.AmountUnit) => {
         dispatch(setBitcoinAmountUnits(value));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsChangeBtcUnit,
             payload: { bitcoinUnit: UNIT_ABBREVIATIONS[value] },
         });

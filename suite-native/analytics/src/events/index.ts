@@ -8,6 +8,7 @@ export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { onboardingCompletedEvent } from './OnboardingCompletedEvent';
 export { screenChangeEvent } from './ScreenChangeEvent';
+export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
 export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { settingsChangeThemeEvent } from './settingsChangeThemeEvent';

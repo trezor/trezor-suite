@@ -1,4 +1,3 @@
-import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
@@ -28,12 +27,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
-    | {
-          type: EventType.SettingsChangeBtcUnit;
-          payload: {
-              bitcoinUnit: UNIT_ABBREVIATION;
-          };
-      }
     | {
           type: EventType.SettingsDiscreetToggle;
           payload: {
