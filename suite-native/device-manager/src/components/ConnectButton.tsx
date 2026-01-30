@@ -7,7 +7,7 @@ import { EventType } from '@suite-native/analytics';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -24,7 +24,7 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
 export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const { applyStyle } = useNativeStyles();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const device = useSelector(selectSelectedDevice);
 
@@ -42,7 +42,7 @@ export const ConnectButton = ({ onSelectDevice }: ConnectButtonProps) => {
 
         onConnectDevicePress();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceManagerClick,
             payload: { action: 'connectDeviceButton' },
         });
