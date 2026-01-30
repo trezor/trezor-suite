@@ -2,7 +2,6 @@ import { UNIT_ABBREVIATION } from '@suite-common/suite-constants';
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -29,12 +28,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
-    | {
-          type: EventType.SettingsChangeCurrency;
-          payload: {
-              localCurrency: BaseCurrencyCode;
-          };
-      }
     | {
           type: EventType.SettingsChangeTheme;
           payload: {
