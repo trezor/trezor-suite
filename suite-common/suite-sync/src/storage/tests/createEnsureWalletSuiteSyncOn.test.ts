@@ -2,7 +2,7 @@ import { Dispatch } from '@reduxjs/toolkit';
 
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { TrezorDevice } from '@suite-common/suite-types';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import type { DeviceRootState } from '@suite-common/wallet-core';
 import { deviceReducerInitialState } from '@suite-common/wallet-core';
 import type { UnavailableCapabilities } from '@trezor/connect';

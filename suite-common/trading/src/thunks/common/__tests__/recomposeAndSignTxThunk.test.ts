@@ -1,11 +1,9 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
-import { TrezorDevice, mockSuiteDevice } from '@suite-common/suite-types';
-import {
-    configureMockStore,
-    extraDependenciesCommonMock,
-} from '@suite-common/test-utils';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import {
     DeviceReducerState,
     composeSendFormTransactionFeeLevelsThunk,

@@ -1,5 +1,5 @@
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
 

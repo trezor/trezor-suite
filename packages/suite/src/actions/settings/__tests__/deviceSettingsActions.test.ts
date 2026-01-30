@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { deviceActions, initialWalletSettingsState } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 

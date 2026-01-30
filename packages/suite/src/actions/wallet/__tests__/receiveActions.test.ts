@@ -1,6 +1,6 @@
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import type { NetworkSymbol, NetworkType } from '@suite-common/wallet-config';
 import { prepareDeviceReducer } from '@suite-common/wallet-core';

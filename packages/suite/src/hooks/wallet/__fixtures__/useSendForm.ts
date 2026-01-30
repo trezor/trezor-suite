@@ -1,7 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { SuiteSyncDataState, SuiteSyncState } from '@suite-common/suite-sync';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';

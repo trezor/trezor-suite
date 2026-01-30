@@ -1,10 +1,7 @@
 import { mocked } from 'jest-mock';
 
-import {
-    TrezorDeviceWithState,
-    asDelegatedIdentityKey,
-    mockSuiteDevice,
-} from '@suite-common/suite-types';
+import { TrezorDeviceWithState, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';

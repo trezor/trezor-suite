@@ -1,6 +1,6 @@
 import { mocked } from 'jest-mock';
 
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { ok } from '@trezor/type-utils';
 

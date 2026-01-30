@@ -1,4 +1,4 @@
-import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';

@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import * as helpers from '@trezor/env-utils';
 

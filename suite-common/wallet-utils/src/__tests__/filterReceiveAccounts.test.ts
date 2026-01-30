@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';

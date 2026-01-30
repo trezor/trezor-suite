@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';

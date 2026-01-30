@@ -2,7 +2,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { connectInitThunk } from '@suite-common/connect-init';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, testMocks } from '@suite-common/test-utils';
 import { DeviceReducerState } from '@suite-common/wallet-core';
 

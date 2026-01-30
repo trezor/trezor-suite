@@ -1,7 +1,7 @@
 import { UnknownAction } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { prepareThpReducer } from '@suite-common/thp';
 import {

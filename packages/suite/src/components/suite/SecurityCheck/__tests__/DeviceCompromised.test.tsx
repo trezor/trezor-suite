@@ -1,7 +1,7 @@
 import '@suite-common/test-utils/src/globalOverrides';
 
 import { TranslationKey } from '@suite/intl';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';

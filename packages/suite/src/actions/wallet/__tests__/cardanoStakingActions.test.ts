@@ -1,6 +1,6 @@
 import { getUnixTime } from 'date-fns';
 
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { BlockchainBlock } from '@trezor/connect';

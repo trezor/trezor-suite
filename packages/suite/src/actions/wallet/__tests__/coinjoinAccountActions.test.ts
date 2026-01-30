@@ -1,7 +1,7 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 
 import { accountsReducer } from 'src/reducers/wallet';

@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { BackupAvailability } from '@trezor/protobuf/src/messages';
 
 import { AppState } from 'src/reducers/store';

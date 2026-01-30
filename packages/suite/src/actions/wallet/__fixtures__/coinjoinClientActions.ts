@@ -1,4 +1,4 @@
-import { mockSuiteDevice } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 
 import * as MODAL from 'src/actions/suite/constants/modalConstants';
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';

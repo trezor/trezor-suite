@@ -1,4 +1,4 @@
-import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEVICE, UI } from '@trezor/connect';
 
 import { MODAL } from 'src/actions/suite/constants';
