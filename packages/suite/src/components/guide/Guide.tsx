@@ -16,7 +16,7 @@ import {
     GuideViewWrapper,
 } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const FeedbackLinkWrapper = styled.div`
     padding: ${spacingsPx.md};
@@ -65,10 +65,10 @@ export const Guide = () => {
     const [searchActive, setSearchActive] = useState(false);
     const indexNode = useSelector(state => state.guide.indexNode);
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleFeedbackButtonClick = () => {
         dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'overview' },
         });

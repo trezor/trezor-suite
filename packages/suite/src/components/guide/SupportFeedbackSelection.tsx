@@ -14,7 +14,7 @@ import { setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideViewWrapper } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const Section = styled.div`
     & + & {
@@ -85,7 +85,7 @@ const LabelHeadline = styled.strong`
 `;
 
 export const SupportFeedbackSelection = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const device = useSelector(selectSelectedDevice);
     const dispatch = useDispatch();
@@ -104,14 +104,14 @@ export const SupportFeedbackSelection = () => {
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
     const handleBugButtonClick = () => {
         dispatch(setView('FEEDBACK_BUG'));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'bug' },
         });
     };
     const handleFeedbackButtonClick = () => {
         dispatch(setView('FEEDBACK_SUGGESTION'));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideFeedbackNavigation,
             payload: { type: 'suggestion' },
         });
