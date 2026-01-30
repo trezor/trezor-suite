@@ -30,21 +30,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.WatchPortfolioTimeframeChange;
-          payload: {
-              timeframe: string;
-          };
-      }
-    | {
-          type: EventType.AssetDetailTimeframeChange;
-          payload: {
-              timeframe: string;
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenAddress?: TokenAddress;
-          };
-      }
-    | {
           type: EventType.TransactionDetail;
           payload: {
               assetSymbol: NetworkSymbol;
