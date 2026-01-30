@@ -6,6 +6,7 @@ import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     selectBaseCurrency,
     selectBitcoinAmountUnit,
+    selectDeviceLanguage,
     selectEnabledNetworks,
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
@@ -13,7 +14,8 @@ import {
 import { EventType } from '@suite-native/analytics';
 import { useDiscreetMode } from '@suite-native/atoms';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { selectLocale } from '@suite-native/intl';
+import { useAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
@@ -21,7 +23,7 @@ import { useUserColorScheme } from '@suite-native/theme';
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
     const [initWasReported, setInitWasReported] = useState(false);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();
@@ -32,6 +34,8 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);
     const rememberedHiddenWallets = useSelector(selectRememberedHiddenWalletsCount);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const appLanguage = useSelector(selectLocale);
+    const deviceLanguage = useSelector(selectDeviceLanguage);
 
     useEffect(() => {
         if (isAppReady && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
@@ -40,11 +44,11 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     useEffect(() => {
         if (isAppReady && isOnboardingFinished && loadDuration && !initWasReported) {
             setInitWasReported(true);
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AppReady,
                 payload: {
-                    appLanguage: 'en',
-                    deviceLanguage: undefined,
+                    appLanguage,
+                    deviceLanguage,
                     osName: Platform.OS,
                     osVersion: Platform.Version,
                     screenHeight: Dimensions.get('screen').height,
@@ -76,6 +80,8 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         rememberedStandardWallets,
         rememberedHiddenWallets,
         enabledNetworks,
-        legacyAnalytics,
+        appLanguage,
+        deviceLanguage,
+        analytics,
     ]);
 };

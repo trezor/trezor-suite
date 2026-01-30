@@ -23,6 +23,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*"
+        "@trezor/env-utils": "workspace:*",
+        "react-native": "0.81.5"
     }
 }
