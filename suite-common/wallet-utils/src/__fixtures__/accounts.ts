@@ -1,5 +1,5 @@
-import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 export const ACCOUNTS = {
     test: {
@@ -268,7 +268,7 @@ export const ACCOUNTS = {
         },
     },
     txrp: {
-        ...testMocks.getWalletAccount({
+        ...mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
             symbol: 'txrp',

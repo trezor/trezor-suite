@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
 import { deviceSlice } from 'src/actions/device/deviceSlice';
@@ -31,7 +32,7 @@ import { AcquiredDevice, AppState } from 'src/types/suite';
 import * as storageActions from '../storageActions';
 import * as suiteActions from '../suiteActions';
 
-const { getWalletAccount, getWalletTransaction } = testMocks;
+const { getWalletTransaction } = testMocks;
 
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const deviceReducer = deviceSlice.prepareReducer(extraDependencies);
@@ -61,19 +62,15 @@ const dev2Instance1 = mockSuiteDevice({
     remember: true, // normally it would be set by SUITE.REMEMBER_DEVICE dispatched from modalActions.onRememberDevice()
 });
 
-const acc1 = getWalletAccount({
+const acc1 = mockWalletAccount({
     deviceState: dev1.state?.staticSessionId,
     symbol: 'btc',
     descriptor: asAccountDescriptor('desc1'),
-    key: `desc1-btc-${dev1.state?.staticSessionId}`,
-    networkType: 'bitcoin',
 });
-const acc2 = getWalletAccount({
+const acc2 = mockWalletAccount({
     deviceState: dev2.state?.staticSessionId,
     symbol: 'btc',
     descriptor: asAccountDescriptor('desc2'),
-    key: `desc2-btc-${dev2.state?.staticSessionId}`,
-    networkType: 'bitcoin',
 });
 
 const tx1 = getWalletTransaction({
@@ -408,12 +405,10 @@ describe('Storage actions', () => {
     });
 
     it('should store graph data with the device and remove it on ACCOUNT.REMOVE (triggered by disabling the coin)', async () => {
-        const accLtc = getWalletAccount({
+        const accLtc = mockWalletAccount({
             deviceState: dev1.state!.staticSessionId!,
             symbol: 'ltc',
             descriptor: asAccountDescriptor('desc2'),
-            key: `desc2-ltc-${dev1.state}`,
-            networkType: 'bitcoin',
         });
 
         const store = mockStore(

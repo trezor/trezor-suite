@@ -1,7 +1,7 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
 import { NetworkFeature } from '@suite-common/wallet-config';
 import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from '../__fixtures__/accountUtils';
 import {
@@ -31,14 +31,11 @@ import {
     networkAmountToSmallestUnit,
 } from '../amountUtils';
 
-const { getWalletAccount } = testMocks;
-
 describe('account utils', () => {
     fixtures.getFirstFreshAddress.forEach(f => {
         it(`getFirstFreshAddress: ${f.description}`, () => {
             const { account, receive, pendingAddresses, utxoBasedAccount } = f.params;
             const freshAddress = getFirstFreshAddress(
-                // @ts-expect-error params are partial
                 account,
                 receive,
                 pendingAddresses,
@@ -116,7 +113,7 @@ describe('account utils', () => {
     it('findAccountDevice', () => {
         expect(
             findAccountDevice(
-                getWalletAccount({
+                mockWalletAccount({
                     deviceState: '1stTestnet@device_id:0',
                     descriptor: asAccountDescriptor(
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -163,7 +160,7 @@ describe('account utils', () => {
     it('getAccountIdentifier', () => {
         expect(
             getAccountIdentifier(
-                getWalletAccount({
+                mockWalletAccount({
                     deviceState: '1stTestnet@device_id:0',
                     descriptor: asAccountDescriptor(
                         'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -180,7 +177,7 @@ describe('account utils', () => {
     });
 
     it('accountSearchFn', () => {
-        const btcAcc = getWalletAccount({
+        const btcAcc = mockWalletAccount({
             deviceState: '1stTestnet@device_id:0',
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -232,11 +229,11 @@ describe('account utils', () => {
     });
 
     it('getNetworkAccountFeatures', () => {
-        const btcAcc = getWalletAccount({ symbol: 'btc' });
-        const btcTaprootAcc = getWalletAccount({ symbol: 'btc', accountType: 'taproot' });
-        const btcLegacy = getWalletAccount({ symbol: 'btc', accountType: 'legacy' });
-        const ethAcc = getWalletAccount();
-        const coinjoinAcc = getWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
+        const btcAcc = mockWalletAccount({ symbol: 'btc' });
+        const btcTaprootAcc = mockWalletAccount({ symbol: 'btc', accountType: 'taproot' });
+        const btcLegacy = mockWalletAccount({ symbol: 'btc', accountType: 'legacy' });
+        const ethAcc = mockWalletAccount({ symbol: 'eth' });
+        const coinjoinAcc = mockWalletAccount({ symbol: 'regtest', accountType: 'coinjoin' });
 
         expect(getNetworkAccountFeatures(btcAcc)).toEqual([
             'rbf',
@@ -263,12 +260,9 @@ describe('account utils', () => {
     });
 
     it('hasNetworkFeatures', () => {
-        const btcAcc = getWalletAccount({
-            networkType: 'bitcoin',
-            symbol: 'btc',
-        });
+        const btcAcc = mockWalletAccount({ symbol: 'btc' });
 
-        const ethAcc = getWalletAccount();
+        const ethAcc = mockWalletAccount({ symbol: 'eth' });
 
         expect(hasNetworkFeatures(btcAcc, 'amount-unit')).toEqual(true);
         expect(hasNetworkFeatures(btcAcc, ['amount-unit', 'sign-verify'])).toEqual(true);

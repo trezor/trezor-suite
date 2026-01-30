@@ -1,11 +1,11 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { testMocks } from '@suite-common/test-utils';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { REDACTED_REPLACEMENT, redactAccount, redactDevice } from '../utils';
 
 describe('logsUtils', () => {
-    const account = testMocks.getWalletAccount({
+    const account = mockWalletAccount({
         deviceState: '1stTestnetAddress@device_id:0',
         descriptor: asAccountDescriptor(
             'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',

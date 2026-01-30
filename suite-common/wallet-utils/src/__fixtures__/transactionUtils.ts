@@ -1,11 +1,9 @@
-import { testMocks } from '@suite-common/test-utils';
 import { WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { TokenTransfer, TransferType } from '@trezor/blockchain-link-types';
 import { AccountTransaction } from '@trezor/connect';
 
 import { TXS } from './transactions';
-
-const { getWalletAccount } = testMocks;
 
 export const token: TokenTransfer = {
     type: 'sent' as TransferType,
@@ -465,13 +463,12 @@ export const enhanceTransaction = [
                 totalOutput: '80719868',
             },
         },
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
             symbol: 'btc',
-            networkType: 'bitcoin',
         }),
         result: {
             amount: '123',
@@ -558,13 +555,12 @@ export const enhanceTransaction = [
                 size: 255,
             },
         },
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
             symbol: 'btc',
-            networkType: 'bitcoin',
         }),
         result: {
             amount: '0.00006497',
@@ -622,13 +618,12 @@ export const enhanceTransaction = [
                 size: 255,
             },
         },
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
             symbol: 'btc',
-            networkType: 'bitcoin',
         }),
         result: {
             amount: '0.00006497',
@@ -1279,7 +1274,7 @@ export const getAccountTransactions = [
     {
         testName: 'BTC account, 2txs',
         transactions: TXS,
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
@@ -1328,7 +1323,7 @@ export const getAccountTransactions = [
     {
         testName: 'XRP testnet account, 2',
         transactions: TXS,
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
             symbol: 'txrp',
@@ -1379,7 +1374,7 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 5 txs',
         transactions: TXS,
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
             symbol: 'eth',
@@ -1527,7 +1522,7 @@ export const getAccountTransactions = [
     {
         testName: 'eth account, 0 txs',
         transactions: TXS,
-        account: getWalletAccount({
+        account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
             symbol: 'eth',

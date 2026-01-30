@@ -1,5 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
 import { networks, networksCollection } from '@suite-common/wallet-config';
+import {
+    mockWalletAccount,
+    networkSpecificDefaultRipple,
+    networkSpecificDefaultStellar,
+} from '@suite-common/wallet-types/mocks';
 import { FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -22,7 +27,7 @@ import {
     restoreOrigOutputsOrder,
 } from '../sendFormUtils';
 
-const { getUtxo, getWalletAccount } = testMocks;
+const { getUtxo } = testMocks;
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -243,7 +248,8 @@ describe('sendForm utils', () => {
             type: 'payment',
         };
 
-        const EthAccount = getWalletAccount({
+        const EthAccount = mockWalletAccount({
+            symbol: 'eth',
             tokens: [
                 {
                     standard: 'ERC20',
@@ -413,8 +419,7 @@ describe('sendForm utils', () => {
 
     describe('getAmountValidationResult', () => {
         describe('should test bitcoin without tokens', () => {
-            const btcAccount = getWalletAccount({
-                networkType: 'bitcoin',
+            const btcAccount = mockWalletAccount({
                 symbol: 'btc',
                 tokens: undefined,
                 balance: '1000000000', // 10 BTC
@@ -439,14 +444,15 @@ describe('sendForm utils', () => {
         });
 
         describe('should test ripple (with reserve)', () => {
-            const rippleAccount = getWalletAccount({
-                networkType: 'ripple',
-                symbol: 'xrp',
-                tokens: undefined,
-                balance: '10000000', // 10 XRP
-                availableBalance: '9000000', // 9 XRP
-                misc: { reserve: '1000000', sequence: 0 },
-            });
+            const rippleAccount = mockWalletAccount(
+                {
+                    symbol: 'xrp',
+                    tokens: undefined,
+                    balance: '10000000', // 10 XRP
+                    availableBalance: '9000000', // 9 XRP
+                },
+                { ...networkSpecificDefaultRipple, misc: { reserve: '1000000', sequence: 0 } },
+            );
 
             it('returns reserve when amount is above available but below total balance', () => {
                 expect(
@@ -465,13 +471,17 @@ describe('sendForm utils', () => {
         });
 
         describe('should test stellar (with reserve)', () => {
-            const stellarAccount = getWalletAccount({
-                networkType: 'stellar',
-                symbol: 'xlm',
-                balance: '100000000', // 10 XLM
-                availableBalance: '95000000', // 9.5 XLM
-                misc: { reserve: '5000000', stellarSequence: '0' },
-            });
+            const stellarAccount = mockWalletAccount(
+                {
+                    symbol: 'xlm',
+                    balance: '100000000', // 10 XLM
+                    availableBalance: '95000000', // 9.5 XLM
+                },
+                {
+                    ...networkSpecificDefaultStellar,
+                    misc: { reserve: '5000000', stellarSequence: '0' },
+                },
+            );
 
             it('returns reserve when amount exceeds available but below total', () => {
                 expect(
@@ -490,8 +500,7 @@ describe('sendForm utils', () => {
         });
 
         describe('should test token balances', () => {
-            const tokenAccount = getWalletAccount({
-                networkType: 'ethereum',
+            const tokenAccount = mockWalletAccount({
                 symbol: 'eth',
                 balance: '0',
                 availableBalance: '0',
