@@ -260,13 +260,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsCoins;
-          payload: {
-              symbol: string;
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsAnalytics;
           payload: {
               value: boolean;

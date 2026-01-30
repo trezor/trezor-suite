@@ -325,7 +325,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case WALLET_SETTINGS.CHANGE_COIN_VISIBILITY:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.SettingsCoins,
                     payload: {
                         symbol: action.payload.symbol,
