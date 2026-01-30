@@ -11,7 +11,6 @@ import {
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -25,7 +24,7 @@ import {
     TransactionDetailStackParamList,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { TypedTokenTransfer, WalletAccountTransaction } from '@suite-native/tokens';
 import { TransactionName } from '@suite-native/transactions';
 
@@ -37,7 +36,7 @@ export const TransactionDetailScreen = ({
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
     const openLink = useOpenLink();
     const transaction = useSelector((state: TransactionsRootState) =>
@@ -59,22 +58,22 @@ export const TransactionDetailScreen = ({
 
     useEffect(() => {
         if (transaction) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TransactionDetail,
                 payload: {
                     assetSymbol: transaction.symbol,
-                    tokenSymbol: tokenTransfer?.symbol as TokenSymbol,
-                    tokenAddress: tokenTransfer?.contract as TokenAddress,
+                    tokenSymbol: tokenTransfer?.symbol,
+                    tokenAddress: tokenTransfer?.contract,
                 },
             });
         }
-    }, [transaction, tokenTransfer, legacyAnalytics]);
+    }, [transaction, tokenTransfer, analytics]);
 
     if (!transaction) return null;
 
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
-        legacyAnalytics.report({ type: EventType.TransactionDetailExploreInBlockchain });
+        analytics.report({ type: EventType.TransactionDetailExploreInBlockchain, payload: undefined });
         const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
         openLink(`${explorerUrl}${transaction.txid}`);
     };

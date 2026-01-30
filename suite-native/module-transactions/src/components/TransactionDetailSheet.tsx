@@ -11,7 +11,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type TransactionDetailSheetProps = {
@@ -72,11 +72,11 @@ export const TransactionDetailSheet = ({
     children,
     sheetName,
 }: TransactionDetailSheetProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const openSheet = () => {
-        legacyAnalytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
+        analytics.report({ type: sheetToAnalyticsEventMap[sheetName], payload: undefined });
         openModal();
     };
 
