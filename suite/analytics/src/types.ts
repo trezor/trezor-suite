@@ -43,26 +43,6 @@ export type SuiteAnalyticsEventSuiteReady = {
     };
 };
 
-/** @deprecated */
-export type TransactionCreatedEvent = {
-    type: EventType.TransactionCreated;
-    payload: {
-        action: 'sent' | 'copied' | 'downloaded' | 'replaced' | 'canceled';
-        symbol: string;
-        tokens: string;
-        outputsCount: number;
-        broadcast: boolean;
-        bitcoinLocktime: boolean;
-        transactionData: boolean;
-        ethereumNonce: boolean;
-        destinationTag: boolean;
-        selectedFee: string;
-        isCoinControlEnabled: boolean;
-        hasCoinControlBeenOpened: boolean;
-        txType?: 'trade' | 'stake';
-    };
-};
-
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
     | SuiteAnalyticsEventSuiteReady
@@ -179,7 +159,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
               count: number;
           };
       }
-    | TransactionCreatedEvent
     | {
           type: EventType.SendRawTransaction;
           payload: {
