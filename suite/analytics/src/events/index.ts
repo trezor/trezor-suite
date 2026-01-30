@@ -34,6 +34,7 @@ export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
 export { sendInitialisedEvent } from './sendInitialisedEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
+export { settingsCoinsEvent } from './settingsCoinsEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
