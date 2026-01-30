@@ -14,7 +14,6 @@ export default createMigration<SuiteDBSchema>('25.12.0', (db, tx) => {
 
         tx.objectStore('suiteSyncSettings').put(
             {
-                isFeatureSuiteSyncAvailable: false,
                 isSuiteSyncEnabled: false,
                 isSuiteSyncDebugEnabled: false,
                 suiteSyncRelayUrl: null,

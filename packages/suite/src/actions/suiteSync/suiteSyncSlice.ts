@@ -1,5 +1,3 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-
 import { AnyAction, createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     SuiteSyncInteraction,
@@ -11,31 +9,19 @@ import {
 } from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
 
+import { SuiteRootState } from 'src/reducers/suite/suiteReducer';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { Action } from 'src/types/suite';
 
 import { STORAGE } from '../suite/constants';
 
 export type DesktopSuiteSyncState = SuiteSyncState & {
     showEnableSuiteSyncModal: StaticSessionId | null;
-    settings: {
-        /**
-         * This is flag, that enables the Suite Sync Feature.
-         * On mobile, it is managed by Experimental Features.
-         * On desktop, it is managed by Debug Settings.
-         *
-         * It shall be removed once we release the Suite Sync feature.
-         */
-        isFeatureSuiteSyncAvailable: boolean;
-    };
 };
 
 export const initialSuiteSyncState: DesktopSuiteSyncState = {
     ...commonInitialState,
     showEnableSuiteSyncModal: null,
-    settings: {
-        ...commonInitialState.settings,
-        isFeatureSuiteSyncAvailable: false,
-    },
 };
 
 export type DesktopSuiteSyncRootState = {
@@ -48,12 +34,6 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     reducers: {
         updateShowEnableSuiteSyncModal: (state, action) => {
             state.showEnableSuiteSyncModal = action.payload.deviceStaticSessionId;
-        },
-        updateIsFeatureSuiteSyncAvailable: (
-            state,
-            { payload }: PayloadAction<{ isShownInSettings: boolean }>,
-        ) => {
-            state.settings.isFeatureSuiteSyncAvailable = payload.isShownInSettings;
         },
     },
     extraReducers: builder => {
@@ -80,21 +60,18 @@ export const suiteSyncSlice = createSliceWithExtraDeps({
     },
 });
 
-export const selectIsFeatureSuiteSyncAvailable = (state: DesktopSuiteSyncRootState): boolean =>
-    state.suiteSync.settings.isFeatureSuiteSyncAvailable;
-
 export const selectShowEnableSuiteSyncModal = (
     state: DesktopSuiteSyncRootState,
 ): StaticSessionId | null => state.suiteSync.showEnableSuiteSyncModal;
 
 export const selectDesktopSuiteSyncInteraction = (
-    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState,
+    state: DesktopSuiteSyncRootState & WithSuiteSyncAndDeviceState & SuiteRootState,
     deviceStaticSessionId: StaticSessionId | null,
 ): SuiteSyncInteraction | null => {
-    if (!selectIsFeatureSuiteSyncAvailable(state)) return null;
+    const isSuiteSyncFeatureEnabled = selectHasExperimentalFeature('suite-sync')(state);
+    if (!isSuiteSyncFeatureEnabled) return null;
 
     return selectSuiteSyncInteraction(state, deviceStaticSessionId);
 };
 
-export const { updateShowEnableSuiteSyncModal, updateIsFeatureSuiteSyncAvailable } =
-    suiteSyncSlice.actions;
+export const { updateShowEnableSuiteSyncModal } = suiteSyncSlice.actions;

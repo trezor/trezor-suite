@@ -8,7 +8,6 @@ import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
 import * as metadataLabelingActions from 'src/actions/suite/metadata/metadataLabelingActions';
-import { selectIsFeatureSuiteSyncAvailable } from 'src/actions/suiteSync/suiteSyncSlice';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
@@ -21,6 +20,7 @@ import {
 } from 'src/constants/suite/labeling';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { useLabelingDeviceState } from 'src/hooks/suite/useLabelingDeviceState';
+import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
 import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { useAnalytics } from 'src/support/useAnalytics';
 
@@ -37,7 +37,7 @@ export const Labeling = () => {
     const deviceStaticSessionId = device?.state?.staticSessionId;
     const { isDeviceLabelingDisabled } = useLabelingDeviceState();
 
-    const showSuiteSync = useSelector(selectIsFeatureSuiteSyncAvailable);
+    const showSuiteSync = useSelector(selectHasExperimentalFeature('suite-sync'));
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     const legacyMetadataState = useSelector(state => state.metadata);

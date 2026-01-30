@@ -475,7 +475,6 @@ export const saveSuiteSyncSettings = () => (_dispatch: Dispatch, getState: GetSt
     return db.addItem(
         'suiteSyncSettings',
         {
-            isFeatureSuiteSyncAvailable: suiteSync.settings.isFeatureSuiteSyncAvailable,
             isSuiteSyncEnabled: suiteSync.settings.isSuiteSyncEnabled,
             isSuiteSyncDebugEnabled: suiteSync.settings.isSuiteSyncDebugEnabled,
             suiteSyncRelayUrl: suiteSync.settings.suiteSyncRelayUrl,

@@ -49,8 +49,6 @@ import { db } from 'src/storage';
 import type { AppState, Dispatch, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 
-import { updateIsFeatureSuiteSyncAvailable } from '../../actions/suiteSync/suiteSyncSlice';
-
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
     db.onBlocked = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocked' });
@@ -187,7 +185,6 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 isAnyOf(
                     updateSuiteSyncDebugEnabled,
                     updateSuiteSyncEnabled,
-                    updateIsFeatureSuiteSyncAvailable,
                     setSuiteSyncRelayUrl,
                 )(action)
             ) {
