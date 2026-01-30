@@ -58,5 +58,6 @@ export { tradeExchangeEvent } from './tradeExchangeEvent';
 export { tradeNavigateEvent } from './tradeNavigateEvent';
 export { tradeSellEvent } from './tradeSellEvent';
 export { transactionCancelEvent } from './transactionCancelEvent';
+export { transactionCreatedEvent } from './transactionCreatedEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';

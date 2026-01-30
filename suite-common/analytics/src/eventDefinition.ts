@@ -13,6 +13,7 @@ export type AnalyticsBaseAttribute = BaseData & {
 export type AnalyticsBaseEvent = BaseData & {
     name: string;
     descriptionTrigger: string;
+    possibleImprovements?: string;
 };
 
 export type AttributeDef<T> = AnalyticsBaseAttribute & {

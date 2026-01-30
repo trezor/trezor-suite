@@ -12,7 +12,7 @@ import { Modal } from '@trezor/components';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { Deferred } from '@trezor/utils';
 
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { getTxType } from '../utils';
 
@@ -54,7 +54,6 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
     const dispatch = useDispatch();
     const connectPopupCall = useSelector(selectConnectPopupCall);
@@ -72,7 +71,7 @@ export const TransactionReviewModalBottomContent = ({
     const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEvent['payload']['action']) =>
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TransactionCreated,
             payload: {
                 action,
