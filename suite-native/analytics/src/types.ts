@@ -27,7 +27,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
-    | { type: EventType.ConfirmedReceiveAddress }
     | { type: EventType.EmptyDashboardClick; payload: { action: 'syncCoins' | 'connectDevice' } }
     | {
           type: EventType.DeviceManagerClick;

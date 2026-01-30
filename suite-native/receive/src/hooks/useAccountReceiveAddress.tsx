@@ -17,7 +17,7 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation } from '@suite-native/intl';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -29,7 +29,6 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
@@ -145,20 +144,13 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             const wasVerificationSuccessful = await verifyAddressOnDevice();
 
             if (wasVerificationSuccessful) {
-                legacyAnalytics.report({ type: EventType.ConfirmedReceiveAddress });
+                analytics.report({ type: EventType.ConfirmedReceiveAddress });
                 setIsReceiveApproved(true);
             } else {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [
-        analytics,
-        isDeviceInViewOnlyMode,
-        isPortfolioTrackerDevice,
-        legacyAnalytics,
-        symbol,
-        verifyAddressOnDevice,
-    ]);
+    }, [analytics, isDeviceInViewOnlyMode, isPortfolioTrackerDevice, symbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,
