@@ -21,7 +21,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
@@ -58,6 +58,7 @@ type SecondaryCardConfig = {
 };
 
 export const EmptyPortfolioCrossroads = () => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
@@ -69,7 +70,7 @@ export const EmptyPortfolioCrossroads = () => {
 
     const handleConnectDevice = () => {
         onConnectDevicePress();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.EmptyDashboardClick,
             payload: { action: 'connectDevice' },
         });
@@ -79,7 +80,7 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.EmptyDashboardClick,
             payload: { action: 'syncCoins' },
         });

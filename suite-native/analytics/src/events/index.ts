@@ -8,6 +8,7 @@ export { biometricsChangeEvent } from './biometricsChangeEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
+export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';
 export { onboardingCompletedEvent } from './OnboardingCompletedEvent';
 export { screenChangeEvent } from './ScreenChangeEvent';
 export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
