@@ -119,7 +119,6 @@ const setAccountMetadataKey: Fixture<(typeof metadataLabelingActions)['setAccoun
             params: [
                 mockWalletAccount({
                     symbol: 'btc',
-                    deviceState: '1stTestnetAddress@device_id:0',
                     descriptor: asAccountDescriptor('btc1'),
                     metadata: {
                         key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
