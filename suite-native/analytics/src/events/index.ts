@@ -9,6 +9,7 @@ export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { onboardingCompletedEvent } from './OnboardingCompletedEvent';
 export { screenChangeEvent } from './ScreenChangeEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
+export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { transactionDetailCompareValuesEvent } from './transactionDetailCompareValuesEvent';
 export { transactionDetailEvent } from './transactionDetailEvent';
 export { transactionDetailExploreInBlockchainEvent } from './transactionDetailExploreInBlockchainEvent';
