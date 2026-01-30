@@ -4,8 +4,8 @@ import {
     Localization,
     Message,
     MessageSystem,
-    mockConnectDevice,
 } from '@suite-common/suite-types';
+import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { FirmwareType, TransportInfo } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';

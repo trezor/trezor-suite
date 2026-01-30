@@ -17,8 +17,5 @@
         "@suite-common/toast-notifications": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*"
-    },
-    "devDependencies": {
-        "@suite-common/test-utils": "workspace:*"
     }
 }

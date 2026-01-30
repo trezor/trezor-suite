@@ -14,7 +14,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.26",
         "@reduxjs/toolkit": "2.11.0",
-        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/alerts": "workspace:*",

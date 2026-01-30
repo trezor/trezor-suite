@@ -6,7 +6,6 @@
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
-        { "path": "../test-utils" }
+        { "path": "../../packages/env-utils" }
     ]
 }
