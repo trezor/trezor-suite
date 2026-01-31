@@ -102,7 +102,9 @@ export const ConnectPermissionsModal = () => {
                                 <Row gap={spacings.sm}>
                                     {source.manifest?.appName ? (
                                         <>
-                                            <Text>{source.manifest.appName}</Text>
+                                            <Text data-testid="@connect-permissions-modal/app-name">
+                                                {source.manifest.appName}
+                                            </Text>
                                             <Text variant="tertiary">{source.origin}</Text>
                                         </>
                                     ) : (
