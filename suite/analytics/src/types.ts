@@ -75,13 +75,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GuideHeaderNavigation;
-          payload: {
-              type: 'back' | 'close' | 'category';
-              id?: string;
-          };
-      }
-    | {
           type: EventType.GuideNodeNavigation;
           payload: {
               type: 'page' | 'category';

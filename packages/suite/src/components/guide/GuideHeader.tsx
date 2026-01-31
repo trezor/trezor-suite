@@ -9,7 +9,7 @@ import { Elevation, mapElevationToBorder, typography, zIndices } from '@trezor/t
 import { close } from 'src/actions/suite/guideActions';
 import { ContentScrolledContext, HeaderBreadcrumb } from 'src/components/guide';
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const HeaderWrapper = styled.div<{
     $noLabel?: boolean;
@@ -62,14 +62,14 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { elevation } = useElevation();
     const dispatch = useDispatch();
     const isScrolled = useContext(ContentScrolledContext);
 
     const goBack = () => {
         back?.();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'back',
@@ -78,7 +78,7 @@ export const GuideHeader = ({ back, label, useBreadcrumb }: GuideHeaderProps) =>
     };
     const handleClose = () => {
         dispatch(close());
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'close',
