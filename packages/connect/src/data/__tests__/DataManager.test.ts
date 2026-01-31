@@ -1,7 +1,6 @@
 import { DataManager } from '../DataManager';
 
 const settings = {
-    connectSrc: 'https://connect.trezor.io/9/',
     transportReconnect: true,
     debug: false,
     webusb: true,
@@ -35,7 +34,6 @@ describe('data/DataManager', () => {
     });
 
     test('getSettings', () => {
-        expect(DataManager.getSettings('connectSrc')).toEqual(settings.connectSrc);
         expect(DataManager.getSettings()).toEqual(settings);
         // @ts-expect-error
         expect(DataManager.getSettings('foo')).toEqual(undefined);

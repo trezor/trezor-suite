@@ -59,12 +59,7 @@ import {
     SuiteRouterHistoryDeps,
 } from './suite/suiteRouterHistory';
 
-const connectSrc = '../';
-// 'https://localhost:8088/';
-// 'https://connect.corp.sldev.cz/develop/';
-
 const connectInitSettings: ConnectInitSettings = {
-    connectSrc,
     transportReconnect: true,
     debug: false,
     manifest: {

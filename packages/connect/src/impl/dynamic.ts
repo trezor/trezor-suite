@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getSynchronize } from '@trezor/utils';
 
-import { parseConnectSrc, parseManifest, parseVersion } from '../data/connectSettings';
+import { parseManifest, parseVersion } from '../data/connectSettings';
 import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { ConnectSettings } from '../types';
@@ -13,7 +13,6 @@ export type ConnectImplSettings = {
     version: NonNullable<ConnectSettings['version']>;
     env?: ConnectSettings['env'];
     debug?: ConnectSettings['debug'];
-    connectSrc?: ConnectSettings['connectSrc'];
 };
 
 type CoreMode = 'auto' | 'suite-desktop' | 'suite-web';
@@ -99,7 +98,6 @@ export class TrezorConnectDynamic implements ConnectFactoryDependencies<{}> {
             env: settings.env,
             debug: settings.debug,
             version: parseVersion(settings.version),
-            connectSrc: parseConnectSrc(settings.connectSrc),
         };
 
         this.currentTarget = this.getInitTarget();
