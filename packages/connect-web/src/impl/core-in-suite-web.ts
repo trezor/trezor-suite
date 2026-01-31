@@ -1,7 +1,5 @@
 import EventEmitter from 'events';
 
-// NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
-import { corsValidator } from '@trezor/connect/src/data/connectSettings';
 import {
     CORE_CALL,
     CallMethodAnyResponse,
@@ -13,7 +11,7 @@ import type { ConnectImpl, ConnectImplSettings } from '@trezor/connect/src/impl/
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
-import { getEnv, getGlobalConnectSrc } from '../connectSettings';
+import { getEnv } from '../connectSettings';
 import { PopupManager } from '../popup';
 
 /**
@@ -41,17 +39,15 @@ export class CoreInSuiteWeb implements ConnectImpl {
         });
     }
 
-    public init({ env, manifest, version, connectSrc, debug }: ConnectImplSettings): Promise<void> {
-        const globalSrc = getGlobalConnectSrc();
-
-        this.logger.enabled = !!debug || !!globalSrc;
+    public init({ env, manifest, version, debug }: ConnectImplSettings): Promise<void> {
+        this.logger.enabled = !!debug;
 
         if (!this._popupManager) {
             this._popupManager = new PopupManager({
                 manifest,
                 version,
                 env: env ?? getEnv(),
-                popupSrc: this.getSuiteUrl(globalSrc || connectSrc),
+                popupSrc: this.getSuiteUrl(),
                 logger: this.logger,
             });
         }
@@ -61,16 +57,22 @@ export class CoreInSuiteWeb implements ConnectImpl {
         return Promise.resolve();
     }
 
-    private getSuiteUrl(connectSrc?: string) {
-        const valid = corsValidator(connectSrc);
-
-        if (valid?.startsWith('http://localhost')) {
+    private getSuiteUrl() {
+        // this is for web
+        // todo: the only problem I see here is that a 3rd party when developing locally
+        // on the http://localhost:8088 will not fallback to the the production version of connect-popup
+        if (typeof window !== 'undefined' && window.location.origin === 'http://localhost:8088') {
             return 'http://localhost:8000/connect-popup';
         }
-        if (valid?.startsWith('https://dev.suite.sldev.cz/connect/')) {
-            const branch = valid?.replace('https://dev.suite.sldev.cz/connect/', '');
+        if (
+            typeof window !== 'undefined' &&
+            window.location.href.startsWith('https://dev.suite.sldev.cz/connect/')
+        ) {
+            const branch = window.location.href
+                .replace('https://dev.suite.sldev.cz/connect/', '')
+                .split('/')[0];
 
-            return `https://dev.suite.sldev.cz/suite-web/${branch}web/connect-popup`;
+            return `https://dev.suite.sldev.cz/suite-web/${branch}/web/connect-popup`;
         }
 
         return 'https://suite.trezor.io/web/connect-popup';

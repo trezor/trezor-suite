@@ -7,7 +7,6 @@ export const InitSchema = Type.Object({
         appUrl: Type.String(),
         email: Type.String(),
     }),
-    connectSrc: Type.Optional(Type.String()),
     debug: Type.Optional(Type.Boolean()),
     transportReconnect: Type.Optional(Type.Boolean()),
     pendingTransportEvent: Type.Optional(Type.Boolean()),
@@ -32,7 +31,6 @@ export const InitSchema = Type.Object({
 
 export const paramDescriptions = {
     manifest: 'Application manifest with your email and appUrl.',
-    connectSrc: 'Set custom src for TrezorConnect.',
     debug: 'default `false`. Prints debug logs.',
     transportReconnect:
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',

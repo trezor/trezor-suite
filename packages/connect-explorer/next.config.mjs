@@ -36,9 +36,6 @@ export default withNextra({
 
         config.plugins.push(
             new webpack.DefinePlugin({
-                'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(
-                    process.env.__TREZOR_CONNECT_SRC,
-                ),
                 'process.env.COMMIT_HASH': JSON.stringify(commitHash),
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
                 'process.env.BUILD_TARGET': JSON.stringify(process.env.BUILD_TARGET),

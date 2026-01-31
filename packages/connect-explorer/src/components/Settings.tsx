@@ -25,7 +25,6 @@ export const ErrorMessage = styled(ConfirmationMessage)`
 
 export const Settings = () => {
     const connectOptions = useSelector(state => ({
-        connectSrc: state.connect?.options?.connectSrc,
         coreMode: state?.connect?.options?.coreMode,
     }));
 
@@ -50,12 +49,6 @@ export const Settings = () => {
                 { value: 'suite-desktop', label: 'Suite desktop' },
                 { value: 'suite-web', label: 'Suite web' },
             ],
-        },
-        {
-            name: 'connectSrc',
-            type: 'input' as const,
-            key: 'connectSrc',
-            value: connectOptions?.connectSrc || '',
         },
     ];
 

@@ -47,7 +47,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
 
         this._settings = {
             ...parseConnectSettings({ ...this._settings, ...settings }),
-            connectSrc,
             deeplinkUrl: `${removeTrailingSlashes(connectSrc)}/deeplink/${DEEPLINK_VERSION}/`,
             deeplinkOpen: settings.deeplinkOpen,
             deeplinkCallbackUrl: settings.deeplinkCallbackUrl,
