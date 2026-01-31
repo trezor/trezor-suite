@@ -6,17 +6,15 @@ type Attributes = {
     type: AttributeDef<'overview' | 'bug' | 'suggestion'>;
 };
 
-export const guideFeedbackNavigationEvent: EventDef<
-    Attributes,
-    EventType.GuideFeedbackNavigation
-> = {
-    name: EventType.GuideFeedbackNavigation,
-    descriptionTrigger: 'Guide > Report Bug & Feedback',
-    changelog: [{ version: '1.11.0', notes: 'added' }],
+export const guideFeedbackNavigationEvent: EventDef<Attributes, EventType.GuideFeedbackNavigation> =
+    {
+        name: EventType.GuideFeedbackNavigation,
+        descriptionTrigger: 'Guide > Report Bug & Feedback',
+        changelog: [{ version: '1.11.0', notes: 'added' }],
 
-    attributes: {
-        type: {
-            changelog: [{ version: '1.11.0', notes: 'added' }],
+        attributes: {
+            type: {
+                changelog: [{ version: '1.11.0', notes: 'added' }],
+            },
         },
-    },
-};
+    };

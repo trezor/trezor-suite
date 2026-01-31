@@ -6,11 +6,11 @@ import { Row, Text, TextButton } from '@trezor/components';
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectLanguage } from 'src/selectors/suite/suiteSelectors';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { findAncestorNodes, getNodeTitle } from 'src/utils/suite/guide';
 
 export const HeaderBreadcrumb = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const language = useSelector(selectLanguage);
     const indexNode = useSelector(state => state.guide.indexNode);
     const currentNode = useSelector(state => state.guide.currentNode);
@@ -41,7 +41,7 @@ export const HeaderBreadcrumb = () => {
 
     const navigateToCategory = (node: GuideCategory) => {
         dispatch(openNode(node));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',
@@ -52,7 +52,7 @@ export const HeaderBreadcrumb = () => {
 
     const navigateToGuideDashboard = () => {
         dispatch(setView('GUIDE_DEFAULT'));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.GuideHeaderNavigation,
             payload: {
                 type: 'category',

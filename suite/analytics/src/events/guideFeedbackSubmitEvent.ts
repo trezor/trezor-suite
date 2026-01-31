@@ -6,10 +6,7 @@ type Attributes = {
     type: AttributeDef<'bug' | 'suggestion'>;
 };
 
-export const guideFeedbackSubmitEvent: EventDef<
-    Attributes,
-    EventType.GuideFeedbackSubmit
-> = {
+export const guideFeedbackSubmitEvent: EventDef<Attributes, EventType.GuideFeedbackSubmit> = {
     name: EventType.GuideFeedbackSubmit,
     descriptionTrigger: 'Guide > Report Bug & Feedback > Feedback > Submit',
     changelog: [{ version: '1.11.0', notes: 'added' }],
