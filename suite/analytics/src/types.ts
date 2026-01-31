@@ -75,13 +75,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.GuideNodeNavigation;
-          payload: {
-              type: 'page' | 'category';
-              id: string;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeThpAutoconnect;
           payload: {
               action: 'disable-autoconnect' | 'enable-autoconnect';
