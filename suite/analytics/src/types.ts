@@ -157,12 +157,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SelectWalletType;
-          payload: {
-              type: 'hidden' | 'standard';
-          };
-      }
-    | {
           type: EventType.ViewOnlyPromo;
           payload: {
               wasAccepted: boolean;
