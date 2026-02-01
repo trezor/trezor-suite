@@ -3,7 +3,7 @@
  * @docs docs/misc/analytics.md
  */
 
-import { EventType, getTypedDesktopLegacyAnalytics } from '@suite/analytics';
+import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
 import {
     analyticsActions,
     selectAnalyticsInstanceId,
@@ -26,7 +26,7 @@ export const enableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
     (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         if (sendReport) {
-            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report({
+            getTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.SettingsAnalytics,
                 payload: { value: true },
             });
@@ -40,7 +40,7 @@ export const disableAnalyticsThunk =
     ({ sendReport }: SendReportProps) =>
     (dispatch: Dispatch, _getState: GetState, extra: ExtraDependencies) => {
         if (sendReport) {
-            getTypedDesktopLegacyAnalytics(extra.services.legacyAnalytics).report(
+            getTypedDesktopAnalytics(extra.services.analytics).report(
                 { type: EventType.SettingsAnalytics, payload: { value: false } },
                 { force: true },
             );

@@ -58,6 +58,7 @@ export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeE
 export { settingsDeviceChangeOrientationEvent } from './settingsDeviceChangeOrientationEvent';
 export { settingsDeviceChangePassphraseProtectionEvent } from './settingsDeviceChangePassphraseProtectionEvent';
 export { settingsDeviceUpdateAutoLockEvent } from './settingsDeviceUpdateAutoLockEvent';
+export { settingsAnalyticsEvent } from './settingsAnalyticsEvent';
 export { settingsGeneralBioAuthEvent } from './settingsGeneralBioAuthEvent';
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
 export { settingsGeneralChangeFiatEvent } from './settingsGeneralChangeFiatEvent';
