@@ -170,7 +170,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case DEVICE.DISCONNECT:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.DeviceDisconnect,
                 });
                 break;

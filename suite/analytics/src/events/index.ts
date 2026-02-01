@@ -20,6 +20,7 @@ export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOption
 export { dashboardSendModalEvent } from './dashboardSendModalEvent';
 export { dashboardSendModalOptionsEvent } from './dashboardSendModalOptionsEvent';
 export { deviceConnectEvent } from './deviceConnectEvent';
+export { deviceDisconnectEvent } from './deviceDisconnectEvent';
 export { deviceConnectionConnectButtonEvent } from './deviceConnectionConnectButtonEvent';
 export { deviceConnectionHintModalEvent } from './deviceConnectionHintModalEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';

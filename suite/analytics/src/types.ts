@@ -24,9 +24,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DeviceDisconnect;
-      }
-    | {
           type: EventType.AccountsNewAccount;
           payload: {
               type: string;
