@@ -14,7 +14,7 @@ import { spacings } from '@trezor/theme';
 
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 const INPUT_NAME = 'rawTx';
@@ -37,7 +37,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
     });
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const inputValue = watch(INPUT_NAME);
     const error = errors[INPUT_NAME];
     const inputState = getInputState(error);
@@ -66,7 +66,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
 
         if (result) {
             setValue(INPUT_NAME, '');
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SendRawTransaction,
                 payload: {
                     networkSymbol: account.symbol,
