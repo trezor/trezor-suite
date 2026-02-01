@@ -29,11 +29,9 @@ export const settingsGeneralChangeLanguageEvent: EventDef<
         },
         previousAutodetectLanguage: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'boolean',
         },
         autodetectLanguage: {
             changelog: [{ version: '1.17.0', notes: 'added' }],
-            description: 'boolean',
         },
         platformLanguages: {
             changelog: [{ version: '1.17.0', notes: 'added' }],

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
@@ -27,7 +27,7 @@ export const BaseCurrency = () => {
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
-        getTypedDesktopAnalytics(analytics).report({
+        analytics.report({
             type: EventType.SettingsGeneralChangeFiat,
             payload: {
                 fiat: option.value,

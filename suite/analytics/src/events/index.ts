@@ -90,3 +90,4 @@ export { transactionCancelEvent } from './transactionCancelEvent';
 export { transactionCreatedEvent } from './transactionCreatedEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
+export { transportTypeEvent } from './transportTypeEvent';

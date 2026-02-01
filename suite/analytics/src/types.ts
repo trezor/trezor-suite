@@ -2,7 +2,6 @@ import { EventType } from './constants';
 
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
-    | { type: EventType.TransportType; payload: { type: string; version: string } }
     | {
           type: EventType.DashboardActions;
           payload: {

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { LANGUAGES, Locale, LocaleInfo } from '@suite-common/suite-types';
 import { getPlatformLanguages } from '@trezor/env-utils';
@@ -78,7 +78,7 @@ export const Language = () => {
           };
 
     const onChange = ({ value }: { value: Locale | 'system' }) => {
-        getTypedDesktopAnalytics(analytics).report({
+        analytics.report({
             type: EventType.SettingsGeneralChangeLanguage,
             payload: {
                 platformLanguages: getPlatformLanguages().join(','),
