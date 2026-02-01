@@ -9,7 +9,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
 const AUTO_LOCK_TIMES = {
@@ -33,7 +33,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const locale = useLocales();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {
@@ -49,7 +49,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
         const value = option.value * 1000;
 
         dispatch(applySettings({ auto_lock_delay_ms: value }));
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDeviceUpdateAutoLock,
             payload: {
                 value,
