@@ -1,10 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import {
-    EventType,
-    getTypedDesktopAnalytics,
-    getTypedDesktopLegacyAnalytics,
-} from '@suite/analytics';
+import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
 import { EventType as EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -116,7 +112,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case TRANSPORT.START:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.TransportType,
                     payload: {
                         type: action.payload.type,
