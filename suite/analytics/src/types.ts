@@ -9,13 +9,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DashboardSendModalOptions;
-          payload: {
-              option: 'account' | 'close';
-              filledSearch: boolean;
-          };
-      }
-    | {
           type: EventType.DashboardReceiveModalOptions;
           payload: {
               option: 'account' | 'close' | 'addAccount';
