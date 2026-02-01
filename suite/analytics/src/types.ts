@@ -55,16 +55,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralChangeLanguage;
-          payload: {
-              previousLanguage: string;
-              previousAutodetectLanguage: boolean;
-              language: string;
-              autodetectLanguage: boolean;
-              platformLanguages: string;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralAddressDisplayType;
           payload: {
               addressDisplayType: 'original' | 'chunked';
