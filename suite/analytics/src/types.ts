@@ -55,12 +55,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsDeviceChangePassphraseProtection;
-          payload: {
-              use_passphrase: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralChangeLanguage;
           payload: {
               previousLanguage: string;
