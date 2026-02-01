@@ -35,14 +35,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AddToken;
-          payload: {
-              networkSymbol: string;
-              addedNth: number;
-              token: string;
-          };
-      }
-    | {
           type: EventType.RemoveToken;
           payload: {
               networkSymbol: string;

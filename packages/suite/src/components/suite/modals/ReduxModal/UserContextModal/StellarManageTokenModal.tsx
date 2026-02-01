@@ -23,7 +23,7 @@ import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useFees } from 'src/hooks/wallet/form/useFees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
 
 type StellarManageTokenModalProps =
     | {
@@ -41,6 +41,7 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
@@ -184,7 +185,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         }),
                     );
 
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.AddToken,
                         payload: {
                             networkSymbol: account.symbol,
