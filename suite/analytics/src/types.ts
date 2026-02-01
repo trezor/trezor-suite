@@ -50,10 +50,4 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               value: boolean;
           };
-      }
-    | {
-          type: EventType.SettingsGeneralNetworkReserve;
-          payload: {
-              value: boolean;
-          };
       };

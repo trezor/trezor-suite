@@ -68,6 +68,7 @@ export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEve
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
 export { settingsGeneralMevProtectionEvent } from './settingsGeneralMevProtectionEvent';
+export { settingsGeneralNetworkReserveEvent } from './settingsGeneralNetworkReserveEvent';
 export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
