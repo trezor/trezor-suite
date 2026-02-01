@@ -6,10 +6,7 @@ type Attributes = {
     value: AttributeDef<boolean>;
 };
 
-export const settingsAnalyticsEvent: EventDef<
-    Attributes,
-    EventType.SettingsAnalytics
-> = {
+export const settingsAnalyticsEvent: EventDef<Attributes, EventType.SettingsAnalytics> = {
     name: EventType.SettingsAnalytics,
     descriptionTrigger: 'User enables or disables analytics in Settings',
     changelog: [{ version: '1.0.0', notes: 'added' }],
