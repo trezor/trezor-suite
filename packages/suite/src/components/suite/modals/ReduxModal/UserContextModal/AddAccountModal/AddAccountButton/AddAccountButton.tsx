@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -85,7 +85,7 @@ const AddDefaultAccountButton = ({
                 setCoinFilter([]);
             }
 
-            getTypedDesktopAnalytics(analytics).report({
+            analytics.report({
                 type: EventType.AccountsNewAccount,
                 payload: {
                     type: defaultAccount.accountType,
