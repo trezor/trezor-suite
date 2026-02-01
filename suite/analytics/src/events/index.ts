@@ -40,6 +40,7 @@ export { sendConfirmedOnDeviceEvent } from './sendConfirmedOnDeviceEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
 export { sendInitialisedEvent } from './sendInitialisedEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
+export { selectWalletTypeEvent } from './selectWalletTypeEvent';
 export { settingsCoinsBackendEvent } from './settingsCoinsBackendEvent';
 export { settingsCoinsEvent } from './settingsCoinsEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';

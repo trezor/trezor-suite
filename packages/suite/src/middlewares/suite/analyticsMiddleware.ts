@@ -98,7 +98,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case deviceActions.addAuthorizedDevice.type:
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.SelectWalletType,
                     payload: {
                         type: action.payload.device.walletNumber ? 'hidden' : 'standard',
