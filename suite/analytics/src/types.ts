@@ -43,12 +43,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.MenuToggleDiscreet;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeThpAutoconnect;
           payload: {
               action: 'disable-autoconnect' | 'enable-autoconnect';

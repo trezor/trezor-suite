@@ -34,6 +34,7 @@ export { guideNodeNavigationEvent } from './guideNodeNavigationEvent';
 export { guideTooltipLinkNavigationEvent } from './guideTooltipLinkNavigationEvent';
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
+export { menuToggleDiscreetEvent } from './menuToggleDiscreetEvent';
 export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
