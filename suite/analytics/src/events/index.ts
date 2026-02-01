@@ -61,6 +61,7 @@ export { settingsDeviceUpdateAutoLockEvent } from './settingsDeviceUpdateAutoLoc
 export { settingsGeneralBioAuthEvent } from './settingsGeneralBioAuthEvent';
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
 export { settingsGeneralChangeFiatEvent } from './settingsGeneralChangeFiatEvent';
+export { settingsGeneralChangeLanguageEvent } from './settingsGeneralChangeLanguageEvent';
 export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEvent';
 export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
