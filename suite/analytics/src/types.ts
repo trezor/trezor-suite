@@ -43,12 +43,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsDeviceChangeOrientation;
-          payload: {
-              value: 0 | 90 | 180 | 270;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeHapticFeedback;
           payload: {
               value: boolean;

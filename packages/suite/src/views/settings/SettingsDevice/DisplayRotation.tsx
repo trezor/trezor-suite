@@ -11,7 +11,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type Rotation = { label: JSX.Element; value: DisplayRotationType };
 
@@ -60,7 +60,7 @@ interface DisplayRotationProps {
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isSupported =
         device?.features !== undefined &&
         DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);
@@ -87,7 +87,7 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                         size="small"
                         onChange={(value: DisplayRotationType) => {
                             dispatch(applySettings({ display_rotation: value }));
-                            legacyAnalytics.report({
+                            analytics.report({
                                 type: EventType.SettingsDeviceChangeOrientation,
                                 payload: {
                                     value: PROTO.Enum_DisplayRotation[value],

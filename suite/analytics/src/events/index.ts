@@ -55,6 +55,7 @@ export { settingsDeviceCheckSeedEvent } from './settingsDeviceCheckSeedEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';
 export { settingsDeviceMultiShareBackupEvent } from './settingsDeviceMultiShareBackupEvent';
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
+export { settingsDeviceChangeOrientationEvent } from './settingsDeviceChangeOrientationEvent';
 export { settingsDeviceUpdateAutoLockEvent } from './settingsDeviceUpdateAutoLockEvent';
 export { settingsGeneralBioAuthEvent } from './settingsGeneralBioAuthEvent';
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
