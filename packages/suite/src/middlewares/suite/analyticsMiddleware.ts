@@ -318,7 +318,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (!state.suite.flags.discreetModeCompleted) {
                     dispatch(setFlag('discreetModeCompleted', true));
                 }
-                getTypedDesktopLegacyAnalytics(legacyAnalytics).report({
+                getTypedDesktopAnalytics(analytics).report({
                     type: EventType.MenuToggleDiscreet,
                     payload: { value: action.toggled },
                 });
