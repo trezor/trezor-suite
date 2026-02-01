@@ -9,7 +9,7 @@ import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Account } from 'src/types/wallet';
 
 type AddTokenModalProps = {
@@ -24,7 +24,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const account = useSelector(selectSelectedAccount);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     const loadTokenInfo = useCallback(
         async (acc: Account, contractAddress: string) => {
@@ -101,7 +101,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             dispatch(addToken(account, tokenInfo));
             onCancel();
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.AddToken,
                 payload: {
                     networkSymbol: account.symbol,
