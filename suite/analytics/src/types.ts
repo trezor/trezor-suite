@@ -126,12 +126,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralBioAuth;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralNetworkReserve;
           payload: {
               value: boolean;
