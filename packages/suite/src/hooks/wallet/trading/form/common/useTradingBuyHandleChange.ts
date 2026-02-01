@@ -12,7 +12,7 @@ import { Network } from '@suite-common/wallet-config';
 import { Timer } from '@trezor/react-utils';
 
 import { useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 type TradingBuyUseHandleChangeProps = {
     formValues: TradingBuyFormProps;
@@ -40,7 +40,7 @@ export const useTradingBuyHandleChange = ({
 }: TradingBuyUseHandleChangeProps) => {
     const dispatch = useDispatch();
     const previousPromise = useRef<PromiseType>(null);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleChange = useCallback(async () => {
         if (previousPromise.current) {
             previousPromise.current.abort('Request was replaced by another one.');
@@ -60,7 +60,7 @@ export const useTradingBuyHandleChange = ({
         try {
             const quotes = await promise.unwrap();
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingReceivedQuotes,
                 payload: {
                     type: 'buy',
@@ -88,7 +88,7 @@ export const useTradingBuyHandleChange = ({
         } catch (error) {
             console.warn('Request was aborted:', error.message);
         }
-    }, [dispatch, formValues, network, timer, shouldSendInSats, legacyAnalytics, setValue]);
+    }, [dispatch, formValues, network, timer, shouldSendInSats, analytics, setValue]);
 
     // cleanup signal
     useEffect(
