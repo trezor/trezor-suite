@@ -56,6 +56,7 @@ export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEve
 export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
+export { settingsGeneralMevProtectionEvent } from './settingsGeneralMevProtectionEvent';
 export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';

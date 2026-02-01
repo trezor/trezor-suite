@@ -10,10 +10,10 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const MevProtection = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const isMevProtectionEnabled = useSelector(selectIsMevProtectionEnabled);
 
@@ -26,7 +26,7 @@ export const MevProtection = () => {
 
         dispatch(setMevProtection(nextIsMevProtectionEnabled));
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralMevProtection,
             payload: { value: nextIsMevProtectionEnabled },
         });
