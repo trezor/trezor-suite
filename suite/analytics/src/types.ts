@@ -81,12 +81,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsDeviceUpdateAutoLock;
-          payload: {
-              value: number;
-          };
-      }
-    | {
           type: EventType.SettingsDeviceChangeOrientation;
           payload: {
               value: 0 | 90 | 180 | 270;
