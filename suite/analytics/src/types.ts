@@ -62,10 +62,4 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               value: boolean;
           };
-      }
-    | {
-          type: EventType.ViewOnlyPromo;
-          payload: {
-              wasAccepted: boolean;
-          };
       };
