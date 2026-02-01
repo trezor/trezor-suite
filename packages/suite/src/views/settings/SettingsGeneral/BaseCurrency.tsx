@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
@@ -15,10 +15,10 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 export const BaseCurrency = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ export const BaseCurrency = () => {
 
     const handleChange = (option: { value: BaseCurrencyCode; label: string }) => {
         dispatch(setBaseCurrency(option.value));
-        legacyAnalytics.report({
+        getTypedDesktopAnalytics(analytics).report({
             type: EventType.SettingsGeneralChangeFiat,
             payload: {
                 fiat: option.value,

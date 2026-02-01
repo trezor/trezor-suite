@@ -71,12 +71,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralChangeFiat;
-          payload: {
-              fiat: string;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralAutoEject;
           payload: {
               value: boolean;

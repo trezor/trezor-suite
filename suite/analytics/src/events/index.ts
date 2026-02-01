@@ -60,6 +60,7 @@ export { settingsDeviceChangePassphraseProtectionEvent } from './settingsDeviceC
 export { settingsDeviceUpdateAutoLockEvent } from './settingsDeviceUpdateAutoLockEvent';
 export { settingsGeneralBioAuthEvent } from './settingsGeneralBioAuthEvent';
 export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBitcoinUnitEvent';
+export { settingsGeneralChangeFiatEvent } from './settingsGeneralChangeFiatEvent';
 export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEvent';
 export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
