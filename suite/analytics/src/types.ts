@@ -56,10 +56,4 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               value: boolean;
           };
-      }
-    | {
-          type: EventType.SettingsAnalytics;
-          payload: {
-              value: boolean;
-          };
       };
