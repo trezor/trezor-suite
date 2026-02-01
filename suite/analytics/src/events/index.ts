@@ -64,6 +64,7 @@ export { settingsGeneralChangeBitcoinUnitEvent } from './settingsGeneralChangeBi
 export { settingsGeneralChangeFiatEvent } from './settingsGeneralChangeFiatEvent';
 export { settingsGeneralChangeLanguageEvent } from './settingsGeneralChangeLanguageEvent';
 export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEvent';
+export { settingsGeneralAutoEjectEvent } from './settingsGeneralAutoEjectEvent';
 export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
 export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';

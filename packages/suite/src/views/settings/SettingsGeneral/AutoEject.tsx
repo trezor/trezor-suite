@@ -10,7 +10,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const AutoEjectConfirmationModal = ({
     onCancel,
@@ -46,7 +46,7 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
     const dispatch = useDispatch();
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
@@ -62,7 +62,7 @@ export const AutoEject = () => {
             }),
         );
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralAutoEject,
             payload: {
                 value: !isAutoEjectEnabled,

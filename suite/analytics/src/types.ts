@@ -44,10 +44,4 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           payload: {
               addressDisplayType: 'original' | 'chunked';
           };
-      }
-    | {
-          type: EventType.SettingsGeneralAutoEject;
-          payload: {
-              value: boolean;
-          };
       };
