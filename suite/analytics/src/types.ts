@@ -56,13 +56,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingReceivedQuotes;
-          payload: {
-              type: 'buy' | 'sell' | 'exchange';
-              count: number;
-          };
-      }
-    | {
           type: EventType.SendRawTransaction;
           payload: {
               networkSymbol: string;
