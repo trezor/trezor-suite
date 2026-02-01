@@ -4,6 +4,7 @@ export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveE
 export { accountsNonZeroBalanceEvent } from './accountsNonZeroBalanceEvent';
 export { accountsStatusEvent } from './accountsStatusEvent';
 export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
+export { accountsNewAccountEvent } from './accountsNewAccountEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
 export { addTokenEvent } from './addTokenEvent';
 export { appUpdateEvent } from './appUpdateEvent';
