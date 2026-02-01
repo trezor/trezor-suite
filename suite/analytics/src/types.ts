@@ -24,14 +24,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.AccountsNewAccount;
-          payload: {
-              type: string;
-              path: string;
-              symbol: string;
-          };
-      }
-    | {
           type: EventType.RemoveToken;
           payload: {
               networkSymbol: string;
