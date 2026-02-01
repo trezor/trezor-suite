@@ -139,12 +139,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.SettingsGeneralMevProtection;
-          payload: {
-              value: boolean;
-          };
-      }
-    | {
           type: EventType.SettingsGeneralNetworkReserve;
           payload: {
               value: boolean;
