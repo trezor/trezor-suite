@@ -8,14 +8,14 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useBioAuthDesktopApi } from 'src/hooks/suite/useBioAuthDesktopApi';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
 `;
 
 export const BioAuthSettings = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const {
         isBioAuthEnabled,
         isBioAuthAvailable,
@@ -26,7 +26,7 @@ export const BioAuthSettings = () => {
 
     const onChange = (nextBioAuthEnabledValue: boolean) => {
         requestBioAuthChange();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralBioAuth,
             payload: {
                 value: nextBioAuthEnabledValue,
