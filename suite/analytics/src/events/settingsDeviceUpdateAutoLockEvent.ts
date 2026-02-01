@@ -11,8 +11,7 @@ export const settingsDeviceUpdateAutoLockEvent: EventDef<
     EventType.SettingsDeviceUpdateAutoLock
 > = {
     name: EventType.SettingsDeviceUpdateAutoLock,
-    descriptionTrigger:
-        'Settings > Device > CUSTOMIZATION > Auto-lock time (PIN required)',
+    descriptionTrigger: 'Settings > Device > CUSTOMIZATION > Auto-lock time (PIN required)',
     changelog: [{ version: '1.8.0', notes: 'added' }],
 
     attributes: {

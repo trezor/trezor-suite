@@ -6,10 +6,7 @@ type Attributes = {
     value: AttributeDef<boolean>;
 };
 
-export const menuToggleDiscreetEvent: EventDef<
-    Attributes,
-    EventType.MenuToggleDiscreet
-> = {
+export const menuToggleDiscreetEvent: EventDef<Attributes, EventType.MenuToggleDiscreet> = {
     name: EventType.MenuToggleDiscreet,
     descriptionTrigger: 'Eye icon in top-right corner',
     changelog: [{ version: '1.0.0', notes: 'added' }],

@@ -6,10 +6,7 @@ type Attributes = {
     networkSymbol: AttributeDef<string>;
 };
 
-export const sendRawTransactionEvent: EventDef<
-    Attributes,
-    EventType.SendRawTransaction
-> = {
+export const sendRawTransactionEvent: EventDef<Attributes, EventType.SendRawTransaction> = {
     name: EventType.SendRawTransaction,
     descriptionTrigger: 'Accounts > Send > ... > Send raw > Send',
     changelog: [{ version: '1.0.0', notes: 'added' }],
