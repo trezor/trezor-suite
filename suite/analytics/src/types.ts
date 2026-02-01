@@ -9,13 +9,6 @@ export type SuiteDesktopLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.DashboardReceiveModalOptions;
-          payload: {
-              option: 'account' | 'close' | 'addAccount';
-              filledSearch: boolean;
-          };
-      }
-    | {
           type: EventType.RemoveToken;
           payload: {
               networkSymbol: string;
