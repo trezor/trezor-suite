@@ -33,13 +33,13 @@
                 "types": "./lib/index.d.ts"
             },
             "./lib/*": "./lib/*.js",
+            "./lib/data": "./lib/data/index.js",
             "./lib/data/*": "./lib/data/*.js",
+            "./lib/constants": "./lib/constants/index.js",
             "./lib/constants/*": "./lib/constants/*.js",
-            "./lib/types/*": "./lib/types/*.js",
-            "./libESM/*": "./libESM/*.js",
-            "./libESM/constants/*": "./libESM/constants/*.js",
-            "./libESM/data/*": "./libESM/data/*.js",
-            "./libESM/types/*": "./libESM/types/*.js"
+            "./libESM/*": "./libESM/*",
+            "./libESM/constants/*": "./libESM/constants/*",
+            "./libESM/data/*": "./libESM/data/*"
         }
     },
     "scripts": {
