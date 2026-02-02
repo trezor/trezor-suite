@@ -39,13 +39,29 @@ export const deviceStatuses = [
 export type DeviceStatus = (typeof deviceStatuses)[number];
 
 export const getStatus = (device: TrezorDevice): DeviceStatus => {
+    if (!device.connected) {
+        return 'disconnected';
+    }
     if (device.status === 'busy') {
         return 'device-busy';
     }
+    if (device.status === 'thp-locked') {
+        return 'device-thp-locked';
+    }
+    if (device.status === 'rebooting') {
+        return 'device-rebooting';
+    }
+    if (device.status === 'bootloader-locked') {
+        return 'device-bootloader-locked';
+    }
+    if (device.status === 'hard-locked') {
+        return 'device-hard-locked';
+    }
+    if (device.status === 'pin-locked') {
+        return 'device-pin-locked';
+    }
+
     if (device.type === 'acquired') {
-        if (!device.connected) {
-            return 'disconnected';
-        }
         if (!device.available) {
             return 'unavailable';
         }
@@ -75,26 +91,6 @@ export const getStatus = (device: TrezorDevice): DeviceStatus => {
         }
 
         return 'connected';
-    }
-
-    if (device.status === 'rebooting') {
-        return 'device-rebooting';
-    }
-
-    if (device.status === 'bootloader-locked') {
-        return 'device-bootloader-locked';
-    }
-
-    if (device.status === 'hard-locked') {
-        return 'device-hard-locked';
-    }
-
-    if (device.status === 'pin-locked') {
-        return 'device-pin-locked';
-    }
-
-    if (device.status === 'thp-locked') {
-        return 'device-thp-locked';
     }
 
     if (device.type === 'unacquired') {

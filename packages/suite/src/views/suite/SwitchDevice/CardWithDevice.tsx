@@ -31,7 +31,7 @@ export const CardWithDevice = ({
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
 
-    const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
+    const needsAttention = device.connected && deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
 
     return (

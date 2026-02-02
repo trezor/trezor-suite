@@ -270,6 +270,8 @@ const connect: Fixture<
                     type: 'acquired',
                     path: '1',
                     remember: true,
+                    connected: false,
+                    available: false,
                 }),
             ],
         },
@@ -288,10 +290,12 @@ const connect: Fixture<
         ],
         result: [
             {
-                type: 'unacquired',
+                type: 'acquired',
                 status: 'thp-locked',
                 path: '1',
                 remember: true,
+                connected: true,
+                available: true,
             },
         ],
     },

@@ -208,5 +208,8 @@ export const mockSuiteDevice = (
         } as TrezorDevice;
     }
 
-    return device as TrezorDevice;
+    return {
+        ...device,
+        ...dev,
+    } as TrezorDevice;
 };
