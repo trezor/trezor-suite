@@ -189,7 +189,6 @@
   "TOAST_SIGN_TX_ERROR": "交易簽署時發生錯誤：{error}",
   "TOAST_SUCCESSFUL_CLAIM": "成功領回了 {networkDisplaySymbol}",
   "TOAST_TX_APPROVED": "已經公告額度為 {amount} {tokenSymbol} 的許可交易",
-  "TOAST_TX_APPROVED_MAX": "已經公告不限額度的 {tokenSymbol} 許可交易",
   "TOAST_TX_BUTTON": "檢視明細資料",
   "TOAST_TX_CLAIMED": "已領回 {amount}",
   "TOAST_TX_CONFIRMED": "金額 {amount} 的 {account} 交易已成功確認",
