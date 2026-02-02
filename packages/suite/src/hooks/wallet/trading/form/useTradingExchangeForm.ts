@@ -63,7 +63,7 @@ import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/fo
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { Dispatch } from 'src/types/suite';
 import { UseTradingFormCommonProps } from 'src/types/trading/trading';
 import {
@@ -82,7 +82,6 @@ export const useTradingExchangeForm = ({
     pageType = 'form',
 }: UseTradingFormCommonProps): TradingExchangeFormContextProps => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const type = 'exchange';
     const isFormPage = pageType === 'form';
     const dispatch = useDispatch();
@@ -506,7 +505,7 @@ export const useTradingExchangeForm = ({
 
         navigateToExchangeOffers();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'exchange',

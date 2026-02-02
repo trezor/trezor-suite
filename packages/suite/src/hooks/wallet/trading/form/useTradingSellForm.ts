@@ -50,7 +50,7 @@ import { useTradingSellFormRedirectValues } from 'src/hooks/wallet/trading/form/
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { useTradingNavigation } from 'src/hooks/wallet/useTradingNavigation';
 import { selectHasExperimentalFeature } from 'src/selectors/suite/suiteSelectors';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 import { UseTradingFormProps } from 'src/types/trading/trading';
 import { TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
@@ -62,7 +62,6 @@ export const useTradingSellForm = ({
     selectedAccount,
     pageType = 'form',
 }: UseTradingFormProps): TradingSellFormContextProps => {
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
     const type = 'sell';
     const isNotFormPage = pageType !== 'form';
@@ -306,7 +305,7 @@ export const useTradingSellForm = ({
         dispatch(tradingSellActions.setTradingAccountKey(account.key)); // save account for offers page
         navigateToSellOffers();
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'sell',
