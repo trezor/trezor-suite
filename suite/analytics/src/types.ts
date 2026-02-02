@@ -3,13 +3,6 @@ import { EventType } from './constants';
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
     | {
-          type: EventType.RemoveToken;
-          payload: {
-              networkSymbol: string;
-              token: string;
-          };
-      }
-    | {
           type: EventType.TradingCompareOffers;
           payload: {
               type: 'exchange' | 'buy' | 'sell';

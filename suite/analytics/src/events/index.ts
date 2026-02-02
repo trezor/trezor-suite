@@ -39,6 +39,7 @@ export { promoDashboardBannerEvent } from './promoDashboardBannerEvent';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';
+export { removeTokenEvent } from './removeTokenEvent';
 export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { sendConfirmedOnDeviceEvent } from './sendConfirmedOnDeviceEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
