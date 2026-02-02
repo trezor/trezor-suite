@@ -19,7 +19,10 @@ export {
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
-export { deviceSetupInfoEvent } from './deviceSetupInfoEvent';
+export {
+    deviceSetupInfoEvent,
+    type DeviceSetupInfoLocation,
+} from './deviceSetupInfoEvent';
 export { deviceSetupSecurityCheckEvent } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
