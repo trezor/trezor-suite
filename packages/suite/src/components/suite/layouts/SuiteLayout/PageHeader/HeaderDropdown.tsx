@@ -25,14 +25,19 @@ type ActionItem = {
 
 type HeaderDropdownProps = {
     isDisabled?: boolean;
+    isTradingDisabled?: boolean;
     showSignAndVerify?: boolean;
 };
-export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
+export const HeaderDropdown = ({
+    isDisabled,
+    isTradingDisabled,
+    showSignAndVerify,
+}: HeaderDropdownProps) => {
     const analytics = useAnalytics();
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
 
-    const isTradingVisible = useConditionalRender({
+    const isBuyVisible = useConditionalRender({
         container: 'content',
         minWidth: breakpoints.laptop,
     });
@@ -72,7 +77,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_TRADING_BUY_AND_SELL" />,
             icon: 'currencyCircleDollar',
-            isHidden: isTradingVisible,
+            isHidden: isBuyVisible || isTradingDisabled,
         },
         {
             id: 'wallet-swap',
@@ -93,7 +98,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
             },
             title: <Translation id="TR_TRADING_SWAP" />,
             icon: 'arrowsLeftRight',
-            isHidden: isSwapVisible,
+            isHidden: isSwapVisible || isTradingDisabled,
         },
     ];
 
