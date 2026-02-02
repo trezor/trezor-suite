@@ -410,7 +410,7 @@ export const getFirstFreshAddress = [
         },
         result: {
             address: 'tb1qk0qgmxtaw3kc9366eccjjgklef0g8lxv3l8nvk',
-            path: "m/84\\'/1\\'/0\\'/0/1",
+            path: "m/84'/1'/0'/0/1",
             transfers: 0,
         },
     },
@@ -430,7 +430,7 @@ export const getFirstFreshAddress = [
         },
         result: {
             address: 'tb1q99ml7urce6m77c2hmxeppm3ylvx7lqk6avhgh7',
-            path: "m/84\\'/1\\'/0\\'/0/2",
+            path: "m/84'/1'/0'/0/2",
             transfers: 0,
         },
     },
