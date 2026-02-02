@@ -8,13 +8,13 @@ type Attributes = {
 
 export const settingsDiscreetToggleEvent: EventDef<Attributes, EventType.SettingsDiscreetToggle> = {
     name: EventType.SettingsDiscreetToggle,
-    descriptionTrigger: 'On discreet mode toggle in settings',
+    descriptionTrigger: 'On Toggling discreet mode settings.',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         discreetMode: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Whether discreet mode is enabled (`true`, `false`)',
+            description: 'Whether discreet mode is enabled',
         },
     },
 };

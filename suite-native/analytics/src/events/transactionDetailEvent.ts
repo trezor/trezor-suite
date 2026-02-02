@@ -12,22 +12,21 @@ type Attributes = {
 
 export const transactionDetailEvent: EventDef<Attributes, EventType.TransactionDetail> = {
     name: EventType.TransactionDetail,
-    descriptionTrigger: 'On transaction detail opening',
+    descriptionTrigger: 'On transaction detail opening.',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Describes the network of the account (`btc`, `eth`,…)',
+            description: 'Describes the network of the account',
         },
         tokenSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Symbol of the token (`usdt`, `link`...)',
+            description: 'Symbol of the token',
         },
         tokenAddress: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description:
-                'Token contract address, e.g: `0xdac17f958d2ee523a2206206994597c13d831ec7`',
+            description: 'Token contract address',
         },
     },
 };

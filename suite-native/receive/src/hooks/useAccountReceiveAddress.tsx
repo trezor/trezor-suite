@@ -151,7 +151,13 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [analytics, isDeviceInViewOnlyMode, isPortfolioTrackerDevice, symbol, verifyAddressOnDevice]);
+    }, [
+        analytics,
+        isDeviceInViewOnlyMode,
+        isPortfolioTrackerDevice,
+        symbol,
+        verifyAddressOnDevice,
+    ]);
 
     return {
         address: freshAddress?.address,

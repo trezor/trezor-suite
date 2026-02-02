@@ -12,13 +12,13 @@ export const createReceiveAddressShowAddressEvent: EventDef<
     EventType.CreateReceiveAddressShowAddress
 > = {
     name: EventType.CreateReceiveAddressShowAddress,
-    descriptionTrigger: 'On show address button click',
+    descriptionTrigger: 'On Show address action.',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Describes the network of the account (`btc`, `eth`,…)',
+            description: 'Describes the network of the account',
         },
     },
 };
