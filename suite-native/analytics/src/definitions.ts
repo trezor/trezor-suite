@@ -51,8 +51,3 @@ export type TradingSellStep =
     | 'sign-and-send'
     | 'webview';
 
-export type DemoAccountQuestionnaireLinkKey =
-    | 'hardwareWallet'
-    | 'trezorSecurity'
-    | 'TS7'
-    | 'dashboard';
