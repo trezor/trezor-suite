@@ -112,11 +112,11 @@ jobs:
           docker compose pull trezor-user-env-unix trezor-user-env-regtest
           docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
-      - name: Read test .apk from cache
-        uses: actions/cache/restore@v4
+      - name: Download Android build artifact
+        uses: actions/download-artifact@v4
         with:
+          name: android-test-build-${{ github.run_id }}
           path: suite-native/app/android/app/build/
-          key: android_test_build/${{ github.ref }}/${{github.run_id}}
 
       - name: Enable Android emulator KVM optimalization
         run: |
