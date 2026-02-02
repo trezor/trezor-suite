@@ -190,7 +190,6 @@
   "TOAST_SIGN_TX_ERROR": "Ошибка подписи транзакции: {error}",
   "TOAST_SUCCESSFUL_CLAIM": "{networkDisplaySymbol} получено успешно",
   "TOAST_TX_APPROVED": "Подтверждение транзакции на {amount} {tokenSymbol} было отправлено в сеть",
-  "TOAST_TX_APPROVED_MAX": "Подтверждение транзакции на неограниченное количество {tokenSymbol} было отправлено в сеть",
   "TOAST_TX_BUTTON": "Подробнее",
   "TOAST_TX_CLAIMED": "Заявлено {amount}",
   "TOAST_TX_CONFIRMED": "Транзакция {amount} на {account} успешно подтверждена",
