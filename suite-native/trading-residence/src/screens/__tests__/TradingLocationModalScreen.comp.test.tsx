@@ -82,7 +82,7 @@ describe('TradingLocationModalScreen', () => {
         const { getByText } = renderTradingLocationModalScreen();
 
         await userEvent.press(getByText('Country of residence'));
-        await userEvent.press(getByText('🇦🇷 Argentina'));
+        await userEvent.press(getByText('Argentina'));
 
         expect(reportMock).toHaveBeenCalledTimes(1);
         expect(reportMock).toHaveBeenCalledWith({
