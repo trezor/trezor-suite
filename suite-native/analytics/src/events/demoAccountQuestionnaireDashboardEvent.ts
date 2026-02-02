@@ -2,8 +2,10 @@ import type { EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
+type Attributes = {};
+
 export const demoAccountQuestionnaireDashboardEvent: EventDef<
-    {},
+    Attributes,
     EventType.DemoAccountQuestionnaireDashboard
 > = {
     name: EventType.DemoAccountQuestionnaireDashboard,
