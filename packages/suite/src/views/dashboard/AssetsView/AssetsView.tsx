@@ -177,7 +177,12 @@ export const AssetsView = () => {
     const isError =
         discoveryStatus && discoveryStatus.status === 'exception' && !assetSymbols.length;
 
-    const goToCoinsSettings = () => dispatch(goto('settings-coins'));
+    const goToCoinsSettings = () => {
+        analytics.report({
+            type: EventType.DashboardAssetsGoToSettingCoins,
+        });
+        dispatch(goto('settings-coins'));
+    };
     const setTable = () => {
         analytics.report({
             type: EventType.DashboardAssetsGridModeChange,

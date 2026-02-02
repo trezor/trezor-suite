@@ -16,6 +16,7 @@ export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddress
 export { createReceiveAddressCopyAddressEvent } from './createReceiveAddressCopyAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
 export { dashboardActionsEvent } from './dashboardActionsEvent';
+export { dashboardAssetsGoToSettingCoinsEvent } from './dashboardAssetsGoToSettingCoinsEvent';
 export { dashboardAssetsGridModeChangeEvent } from './dashboardAssetsGridModeChangeEvent';
 export { dashboardReceiveModalEvent } from './dashboardReceiveModalEvent';
 export { dashboardReceiveModalOptionsEvent } from './dashboardReceiveModalOptionsEvent';
