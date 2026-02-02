@@ -1252,3 +1252,17 @@ export function filterAccountsByNetworkSymbol(
 ): Account[] {
     return networkSymbol ? findAccountsByNetwork(networkSymbol, accounts) : accounts;
 }
+
+export const getAccountsWithSomeTransactionHistory = (accounts: Account[]) =>
+    accounts.filter(account => account.history.total + (account.history.unconfirmed || 0));
+
+export const accumulateAccountCountBySymbolAndType = (
+    acc: Record<string, number>,
+    { symbol, accountType }: Account,
+) => {
+    const accType = accountType === 'coinjoin' ? 'taproot' : accountType;
+    const id = `${symbol}_${accType}`;
+    acc[id] = (acc[id] || 0) + 1;
+
+    return acc;
+};
