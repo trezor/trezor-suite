@@ -8,7 +8,7 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const options = [
     {
@@ -24,9 +24,9 @@ const options = [
 export const AddressDisplay = () => {
     const selectedAddressDisplay = useSelector(state => state.suite.settings.addressDisplayType);
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const onChange = (value: AddressDisplayOptions) => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsGeneralAddressDisplayType,
             payload: {
                 addressDisplayType: value,
