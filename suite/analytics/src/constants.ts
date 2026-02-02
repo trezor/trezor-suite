@@ -10,6 +10,7 @@ export enum AppUpdateEventStatus {
 
 export enum EventType {
     SuiteReady = 'suite-ready',
+    DashboardAssetsGridModeChange = 'dashboard/assets-grid-mode-change',
     RouterLocationChange = 'router/location-change',
     TransportType = 'transport-type',
     AppUpdate = 'app-update',
