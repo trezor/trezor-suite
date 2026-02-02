@@ -32,3 +32,7 @@ export function hasOwn<T extends object, K extends KeysOfUnion<T>>(
 ): obj is NarrowObjectWithKey<T, K> {
     return Object.hasOwn(obj, key);
 }
+
+export function hasProp<K extends PropertyKey>(obj: unknown, prop: K): obj is Record<K, unknown> {
+    return typeof obj === 'object' && obj !== null && prop in obj;
+}
