@@ -1,5 +1,17 @@
 [
     {
+        "exchange": "sideshift",
+        "send": "solana",
+        "receive": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "0.05",
+        "receiveStringAmount": "8.3318799699925",
+        "fee": "UNKNOWN",
+        "min": 0.01,
+        "max": 350.71311666,
+        "rate": 166.63759939985
+    },
+    {
         "exchange": "changeherofr",
         "send": "solana",
         "receive": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
@@ -11,18 +23,6 @@
         "max": 551.4413810596296,
         "rate": 160.96471164572347,
         "rateIdentificator": "58c25a03-fced-4a52-abac-191cd28a2be9"
-    },
-    {
-        "exchange": "sideshift",
-        "send": "solana",
-        "receive": "ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
-        "sendStringAmount": "0.05",
-        "receiveStringAmount": "8.3318799699925",
-        "fee": "UNKNOWN",
-        "min": 0.01,
-        "max": 350.71311666,
-        "rate": 166.63759939985
     },
     {
         "exchange": "changelly",
