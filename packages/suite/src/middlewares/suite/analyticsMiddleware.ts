@@ -63,7 +63,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
         const result = next(action);
 
         const state: AppState = getState();
-        const { legacyAnalytics, analytics } = extra.services;
+        const { analytics } = extra.services;
 
         if (isAnyOf(firmwareUpdate.fulfilled, firmwareUpdate.rejected)(action)) {
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
@@ -87,7 +87,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
         switch (action.type) {
             case connectThpDeviceThunk.fulfilled.type:
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventTypeShared.DeviceConnectionDeviceConfirmation,
                     payload: { option: 'confirmed' },
                 });
