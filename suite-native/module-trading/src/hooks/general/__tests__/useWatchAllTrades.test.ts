@@ -5,10 +5,14 @@ import {
     renderHookWithStoreProviderAsync,
 } from '@suite-native/test-utils';
 import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    btc1NormalAccount,
+    eth1NormalAccount,
     getBuyTrade,
     getExchangeTrade,
     getInitializedTradingState,
     getSellTrade,
+    sol1normalAccount,
 } from '@suite-native/trading-fixtures';
 
 import { useWatchAllTrades } from '../useWatchAllTrades';
@@ -56,25 +60,25 @@ describe('useWatchAllTrades', () => {
                 },
                 accounts: [
                     {
-                        key: 'btc1',
+                        key: btc1NormalAccount.key,
                         symbol: 'btc',
-                        deviceState: 'device1@test:123',
+                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
                         descriptor: 'btc-descriptor',
                         addresses: { unused: [{ address: 'btc-address' }] },
                         visible: true,
                     },
                     {
-                        key: 'eth1',
+                        key: eth1NormalAccount.key,
                         symbol: 'eth',
-                        deviceState: 'device1@test:123',
+                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
                         descriptor: 'eth-descriptor',
                         addresses: { unused: [{ address: 'eth-address' }] },
                         visible: true,
                     },
                     {
-                        key: 'sol1',
+                        key: sol1normalAccount.key,
                         symbol: 'sol',
-                        deviceState: 'device1@test:123',
+                        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
                         descriptor: 'sol-descriptor',
                         addresses: { unused: [{ address: 'sol-address' }] },
                         visible: true,
@@ -83,7 +87,7 @@ describe('useWatchAllTrades', () => {
             },
             device: {
                 selectedDevice: {
-                    state: { staticSessionId: 'device1@test:123' },
+                    state: { staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID },
                 },
             },
         };

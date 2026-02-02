@@ -1,7 +1,11 @@
 import { EventType } from '@suite-native/analytics';
 import { useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
-import { accounts, getInitializedTradingState } from '@suite-native/trading-fixtures';
+import {
+    accounts,
+    btc1NormalAccount,
+    getInitializedTradingState,
+} from '@suite-native/trading-fixtures';
 
 import { TradingFeesScreen } from '../TradingFeesScreen';
 
@@ -67,7 +71,7 @@ describe('TradingFeesScreen', () => {
     beforeEach(() => {
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
-            params: { accountKey: 'btc1' },
+            params: { accountKey: btc1NormalAccount.key },
         });
     });
 
@@ -88,7 +92,7 @@ describe('TradingFeesScreen', () => {
         await renderScreen();
 
         expect(mockTradingFeesForm).toHaveBeenCalledWith({
-            accountKey: 'btc1',
+            accountKey: btc1NormalAccount.key,
         });
     });
 
@@ -125,7 +129,7 @@ describe('TradingFeesScreen', () => {
     it('should report to analytics on mount for exchange when explicitly set', async () => {
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
-            params: { accountKey: 'btc1', tradingType: 'exchange' },
+            params: { accountKey: btc1NormalAccount.key, tradingType: 'exchange' },
         });
 
         const { reportMock } = await renderScreen();
@@ -148,7 +152,7 @@ describe('TradingFeesScreen', () => {
         };
         mockUseRoute.mockReturnValue({
             name: 'TradingFeesScreen',
-            params: { accountKey: 'btc1', tradingType: 'sell' },
+            params: { accountKey: btc1NormalAccount.key, tradingType: 'sell' },
         });
 
         const { reportMock } = await renderScreen(sellPreloadedState);
