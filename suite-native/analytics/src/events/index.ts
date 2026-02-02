@@ -8,7 +8,11 @@ export { createReceiveAddressEvent } from './createReceiveAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
 export { demoAccountQuestionnaireDashboardEvent } from './demoAccountQuestionnaireDashboardEvent';
 export { demoAccountQuestionnaireLinksEvent } from './demoAccountQuestionnaireLinksEvent';
-export { demoAccountQuestionnaireQuestionEvent } from './demoAccountQuestionnaireQuestionEvent';
+export {
+    demoAccountQuestionnaireQuestionEvent,
+    type DemoAccountQuestionnaireQuestion,
+    type DemoAccountQuestionnaireQuestionOption,
+} from './demoAccountQuestionnaireQuestionEvent';
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
