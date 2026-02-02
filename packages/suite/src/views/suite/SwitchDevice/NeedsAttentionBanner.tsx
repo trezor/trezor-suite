@@ -101,6 +101,12 @@ export const NeedsAttentionBanner = ({
 
     const createOnIssueClickHandler = (): (() => void) | null => {
         switch (deviceStatus) {
+            case 'firmware-required':
+                return () => {
+                    onCancel?.(false);
+                    dispatch(selectDeviceThunk({ device }));
+                    dispatch(goto('firmware-index'));
+                };
             // If onboarding is pending, then it should pass through Manual Device Check.
             case 'initialize': // Wiped device with firmware present.
             case 'bootloader': // Fresh or factory-reset device? Can also be initalized device manually put into BL,
@@ -111,7 +117,6 @@ export const NeedsAttentionBanner = ({
                 };
 
             case 'seedless':
-            case 'firmware-required':
             case 'firmware-corrupted':
             case 'unavailable':
             case 'unreadable':
