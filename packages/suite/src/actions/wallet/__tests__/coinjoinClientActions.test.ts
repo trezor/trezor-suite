@@ -320,20 +320,20 @@ describe('coinjoinClientActions', () => {
     });
 
     it('clientEmitException from coinjoinMiddleware', async () => {
+        const account = mockWalletAccount({
+            deviceState: '1stTestnetAddress@device_id:0',
+            accountType: 'coinjoin',
+            descriptor: asAccountDescriptor('account1'),
+            symbol: 'btc',
+        });
+
         const initializeStore = () =>
             initStore({
-                accounts: [
-                    mockWalletAccount({
-                        deviceState: '1stTestnetAddress@device_id:0',
-                        accountType: 'coinjoin',
-                        descriptor: asAccountDescriptor('account1'),
-                        symbol: 'btc',
-                    }),
-                ],
+                accounts: [account],
                 coinjoin: {
                     accounts: [
                         {
-                            key: 'btc-account1',
+                            key: account.key,
                             symbol: 'btc',
                             session: { roundPhase: 1, signedRounds: [], maxRounds: 10 },
                         },
@@ -355,11 +355,11 @@ describe('coinjoinClientActions', () => {
         const restoreSession = () => {
             store.dispatch({
                 type: '@coinjoin/session-restore',
-                payload: { accountKey: 'btc-account1' },
+                payload: { accountKey: account.key },
             });
             store.dispatch({
                 type: '@coinjoin/session-round-changed',
-                payload: { accountKey: 'btc-account1', round: { phase: 1 } },
+                payload: { accountKey: account.key, round: { phase: 1 } },
             });
         };
 
@@ -376,7 +376,7 @@ describe('coinjoinClientActions', () => {
 
         store2.dispatch({
             type: '@common/wallet-core/accounts/removeAccount',
-            payload: [{ key: 'btc-account1' }],
+            payload: [{ key: account.key }],
         });
         expect(cli.client.emit).toHaveBeenCalledTimes(4);
     });
