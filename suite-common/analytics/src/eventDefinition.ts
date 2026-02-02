@@ -20,8 +20,28 @@ export type AttributeDef<T> = AnalyticsBaseAttribute & {
     value?: T;
 };
 
-type Domain = string;
-type EventName = `${Domain}/${string}` | `${string}`;
+export type Domain =
+    | 'accounts'
+    | 'app'
+    | 'coin'
+    | 'dashboard'
+    | 'device'
+    | 'device_connection'
+    | 'device_setup'
+    | 'firmware'
+    | 'guide'
+    | 'menu'
+    | 'passphrase'
+    | 'promo'
+    | 'receive'
+    | 'send'
+    | 'settings'
+    | 'staking'
+    | 'trading'
+    | 'transaction'
+    | 'wallet_connect';
+
+type EventName = `${Domain}/${string}`;
 
 type HasKeys<T> = keyof T extends never ? false : true;
 type IsAttributeMap<T> = T extends Record<string, AttributeDef<any>> ? true : false;
