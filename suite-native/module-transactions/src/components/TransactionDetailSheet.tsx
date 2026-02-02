@@ -76,7 +76,7 @@ export const TransactionDetailSheet = ({
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const openSheet = () => {
-        analytics.report({ type: sheetToAnalyticsEventMap[sheetName], payload: undefined });
+        analytics.report({ type: sheetToAnalyticsEventMap[sheetName] });
         openModal();
     };
 

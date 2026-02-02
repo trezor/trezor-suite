@@ -13,17 +13,17 @@ export const settingsChangeCoinEnabledEvent: EventDef<
     EventType.SettingsChangeCoinEnabled
 > = {
     name: EventType.SettingsChangeCoinEnabled,
-    descriptionTrigger: 'On coin enabled/disabled in settings',
-    changelog: [{ version: '23.4.1', notes: 'added' }],
+    descriptionTrigger: 'On changing whether network is enabled or not',
+    changelog: [{ version: '24.9.1', notes: 'added' }],
 
     attributes: {
         symbol: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The network symbol of the coin (`btc`, `eth`,…)',
+            changelog: [{ version: '24.9.1', notes: 'added' }],
+            description: 'The network symbol of the coin',
         },
         value: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Whether the coin is enabled (`true`, `false`)',
+            changelog: [{ version: '24.9.1', notes: 'added' }],
+            description: 'Whether the coin is enabled',
         },
     },
 };

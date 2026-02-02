@@ -6,9 +6,6 @@ type DeviceManagerAction =
     | 'deviceItem'
     | 'portfolioTracker'
     | 'connectDeviceButton'
-    | 'syncCoinsButton'
-    | 'educationLink'
-    | 'eshopLink'
     | 'deviceSettings';
 
 type Attributes = {
@@ -17,14 +14,13 @@ type Attributes = {
 
 export const deviceManagerClickEvent: EventDef<Attributes, EventType.DeviceManagerClick> = {
     name: EventType.DeviceManagerClick,
-    descriptionTrigger: 'On device manager action clicked',
-    changelog: [{ version: '23.4.1', notes: 'added' }],
+    descriptionTrigger: 'Click on something within device manager / switcher',
+    changelog: [{ version: '23.11.1', notes: 'added' }],
 
     attributes: {
         action: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description:
-                'The action performed (`deviceItem`, `portfolioTracker`, `connectDeviceButton`, `syncCoinsButton`, `educationLink`, `eshopLink`, `deviceSettings`)',
+            changelog: [{ version: '23.11.1', notes: 'added' }],
+            description: 'The action performed',
         },
     },
 };

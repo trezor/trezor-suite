@@ -9,13 +9,13 @@ type Attributes = {
 
 export const createReceiveAddressEvent: EventDef<Attributes, EventType.CreateReceiveAddress> = {
     name: EventType.CreateReceiveAddress,
-    descriptionTrigger: 'On receive address creation',
+    descriptionTrigger: 'On receive address creation.',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         assetSymbol: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Describes the network of the account (`btc`, `eth`,…)',
+            description: 'Describes the network of the account',
         },
     },
 };

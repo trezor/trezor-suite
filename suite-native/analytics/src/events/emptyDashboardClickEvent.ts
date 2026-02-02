@@ -10,13 +10,13 @@ type Attributes = {
 
 export const emptyDashboardClickEvent: EventDef<Attributes, EventType.EmptyDashboardClick> = {
     name: EventType.EmptyDashboardClick,
-    descriptionTrigger: 'On empty dashboard action clicked',
-    changelog: [{ version: '23.4.1', notes: 'added' }],
+    descriptionTrigger: 'Click on something on crossroads screen',
+    changelog: [{ version: '23.11.1', notes: 'added' }],
 
     attributes: {
         action: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The action performed (`syncCoins`, `connectDevice`)',
+            changelog: [{ version: '23.11.1', notes: 'added' }],
+            description: 'The action performed',
         },
     },
 };

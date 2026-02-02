@@ -4,7 +4,7 @@ import { EventType } from '../constants';
 
 export const confirmedReceiveAddressEvent: EventDef<{}, EventType.ConfirmedReceiveAddress> = {
     name: EventType.ConfirmedReceiveAddress,
-    descriptionTrigger: 'On receive address confirmed on device',
-    changelog: [{ version: '23.4.1', notes: 'added' }],
+    descriptionTrigger: 'Confirm address on Trezor',
+    changelog: [{ version: '23.11.1', notes: 'added' }],
     attributes: {},
 };

@@ -9,13 +9,13 @@ type Attributes = {
 
 export const settingsChangeBtcUnitEvent: EventDef<Attributes, EventType.SettingsChangeBtcUnit> = {
     name: EventType.SettingsChangeBtcUnit,
-    descriptionTrigger: 'On Bitcoin unit change in settings',
+    descriptionTrigger: 'On changing Bitcoin units settings.',
     changelog: [{ version: '23.4.1', notes: 'added' }],
 
     attributes: {
         bitcoinUnit: {
             changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'The selected Bitcoin unit (`BTC`, `sat`)',
+            description: 'The selected Bitcoin unit',
         },
     },
 };

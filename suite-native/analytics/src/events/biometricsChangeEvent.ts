@@ -9,17 +9,17 @@ type Attributes = {
 
 export const biometricsChangeEvent: EventDef<Attributes, EventType.BiometricsChange> = {
     name: EventType.BiometricsChange,
-    descriptionTrigger: 'On biometrics enabled/disabled',
-    changelog: [{ version: '23.4.1', notes: 'added' }],
+    descriptionTrigger: 'Changing biometrics on / off',
+    changelog: [{ version: '23.11.1', notes: 'added' }],
 
     attributes: {
         enabled: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Whether biometrics is enabled (`true`, `false`)',
+            changelog: [{ version: '23.11.1', notes: 'added' }],
+            description: 'Whether biometrics is enabled',
         },
         origin: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
-            description: 'Where the change was triggered (`bottomSheet`, `settingsToggle`)',
+            changelog: [{ version: '23.11.1', notes: 'added' }],
+            description: 'Where the change was triggered',
         },
     },
 };
