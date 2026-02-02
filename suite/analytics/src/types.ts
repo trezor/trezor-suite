@@ -3,12 +3,6 @@ import { EventType } from './constants';
 /** @deprecated use `AnalyticsDesktopEvents` */
 export type SuiteDesktopLegacyAnalyticsEvents =
     | {
-          type: EventType.DashboardActions;
-          payload: {
-              type: string;
-          };
-      }
-    | {
           type: EventType.RemoveToken;
           payload: {
               networkSymbol: string;
