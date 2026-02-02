@@ -62,7 +62,6 @@ export const useSellFlow = () => {
                 actionType: 'trade',
                 tradeType: 'sell',
                 orderId: tradeToUse.orderId,
-                exchange: tradeToUse.exchange,
             });
 
             const triggerAnalyticsTradeConfirmation = () => {

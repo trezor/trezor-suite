@@ -147,7 +147,6 @@ export const TradeDetailAlert = ({
                     actionType: 'trade',
                     tradeType: trade.tradeType,
                     orderId,
-                    exchange: trade.data.partnerData,
                 }),
                 tradingType: trade.tradeType,
                 source: { uri: trade.data.partnerData },
