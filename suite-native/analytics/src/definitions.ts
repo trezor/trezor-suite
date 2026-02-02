@@ -51,17 +51,6 @@ export type TradingSellStep =
     | 'sign-and-send'
     | 'webview';
 
-export type DemoAccountQuestionnaireQuestion = 'reason' | 'suiteAction';
-
-export type DemoAccountQuestionnaireQuestionOption =
-    | 'considering'
-    | 'ad'
-    | 'friend'
-    | 'none'
-    | 'explore'
-    | 'transaction'
-    | 'hardwareWallet';
-
 export type DemoAccountQuestionnaireLinkKey =
     | 'hardwareWallet'
     | 'trezorSecurity'
