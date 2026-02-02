@@ -8,6 +8,7 @@
         "nextra-theme-docs",
         "// yarn depcheck does not support *.mdx files by default. It may solvable by custom-parser. But it is probably not worth the hassle",
         "remark-gfm",
-        "swr"
+        "swr",
+        "@suite-common/icons"
     ]
 }
