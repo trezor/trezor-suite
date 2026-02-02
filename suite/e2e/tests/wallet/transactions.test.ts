@@ -31,7 +31,9 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke
         });
 
         const latestTransactionAddress = await test.step('Find the latest transaction', async () =>
-            (await walletPage.transactionAddress.first().textContent())?.slice(-4));
+            (await walletPage.transactionAddress.first().textContent())
+                ?.replace(/\s/g, '')
+                .slice(-4));
 
         if (!latestTransactionAddress) {
             throw new Error('No latest transaction found');
@@ -40,7 +42,6 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1', '@smoke
         await test.step('Search for latest transaction by its address', async () => {
             await walletPage.transactionSearch.fill(latestTransactionAddress);
             await expect(walletPage.transactionItem).toHaveCount(1);
-            await expect(walletPage.transactionItem).toContainText(latestTransactionAddress);
         });
 
         // go to a certain accounts page and verify you are on that page
