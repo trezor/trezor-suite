@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectAddressDisplayType } from 'src/selectors/suite/suiteSelectors';
 
 const TRUNCATION_PLACEHOLDER = ' ... ';
-const REGEXP_ADDRESS = /^(0x)?((.{8}).*(.{8})$)/;
+const REGEXP_ADDRESS = /^(0x)?((.{8})(?:.{4})*(.{5,8}))$/;
 const REGEXP_ADDRESS_CHUNKS = /((?:\S+\s){3}\S+)\s/g;
 
 const mapDeviceModelToFontStyle = (deviceModelInternal: DeviceModelInternal): RuleSet<object> => {
