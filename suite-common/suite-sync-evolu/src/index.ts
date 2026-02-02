@@ -6,3 +6,5 @@
 export { createEvoluStorageFactory } from './evoluStorage';
 export { createEvoluInstanceFactory } from './createEvoluInstance';
 export { evoluCreateSuiteSyncOwner } from './evoluCreateSuiteSyncOwner';
+export { createEvoluAppOwnerFromTrezorData } from './createEvoluAppOwnerFromTrezorData';
+export { Schema } from './schema';
