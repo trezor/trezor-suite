@@ -10,14 +10,14 @@ import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDevice, useDispatch } from 'src/hooks/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 interface PinProtectionProps {
     isDeviceLocked: boolean;
 }
 
 export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const { device } = useDevice();
@@ -47,7 +47,7 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
             dispatch(startThpAutoconnectThunk({ device }));
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsDeviceChangeThpAutoconnect,
             payload: {
                 action: isAutoconnectOn ? 'disable-autoconnect' : 'enable-autoconnect',

@@ -58,6 +58,7 @@ export { settingsDeviceMultiShareBackupEvent } from './settingsDeviceMultiShareB
 export { settingsDeviceSetupWipeCodeEvent } from './settingsDeviceSetupWipeCodeEvent';
 export { settingsDeviceChangeOrientationEvent } from './settingsDeviceChangeOrientationEvent';
 export { settingsDeviceChangePassphraseProtectionEvent } from './settingsDeviceChangePassphraseProtectionEvent';
+export { settingsDeviceChangeThpAutoconnectEvent } from './settingsDeviceChangeThpAutoconnectEvent';
 export { settingsDeviceUpdateAutoLockEvent } from './settingsDeviceUpdateAutoLockEvent';
 export { settingsAnalyticsEvent } from './settingsAnalyticsEvent';
 export { settingsGeneralBioAuthEvent } from './settingsGeneralBioAuthEvent';
