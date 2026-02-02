@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'node:util';
 
-import { exec, getTrezorDependencies } from './helpers';
+import { exec, getPackageDependencies } from './helpers';
 
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
@@ -15,12 +15,12 @@ const __dirname = import.meta.dirname;
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'tmp/packed-packages');
 
-// Get dependencies for connect.
-const connectDeps = await getTrezorDependencies(ROOT_DIR, 'connect');
-
-const PACKAGES = [...new Set([...connectDeps, 'connect'])];
-
 const buildAllPackages = async () => {
+    // Get dependencies for connect.
+    const connectDeps = (await getPackageDependencies('connect')).update;
+
+    const PACKAGES = [...new Set([...connectDeps, 'connect'])];
+
     if (await existsDirectory(OUTPUT_DIR)) {
         await removeDir(OUTPUT_DIR, { recursive: true });
     }
