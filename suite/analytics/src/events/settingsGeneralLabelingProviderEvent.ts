@@ -9,7 +9,6 @@ type Attributes = {
         | 'fileSystem'
         | 'missing-provider'
         | 'inMemoryTest'
-        | 'closed'
         | 'evolu'
         | 'legacy'
         | ''

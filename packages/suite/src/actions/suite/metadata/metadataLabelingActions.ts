@@ -635,7 +635,7 @@ export const init =
                 getTypedDesktopAnalytics(extra.services.analytics).report({
                     type: EventType.SettingsGeneralLabelingProvider,
                     payload: {
-                        provider: 'closed',
+                        provider: 'missing-provider',
                     },
                 });
 
