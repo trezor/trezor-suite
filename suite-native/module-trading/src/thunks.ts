@@ -250,17 +250,16 @@ export const signTradingTransactionThunk = createThunk(
         }: TradingSignAndPushSendFormTransactionProps,
         { dispatch, rejectWithValue, fulfillWithValue },
     ) => {
-        const deviceAccessResponse = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                dispatch(
-                    signTransactionThunk({
-                        formState,
-                        precomposedTransaction,
-                        selectedAccount,
-                        paymentRequests,
-                    }),
-                ),
-        });
+        const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
+            dispatch(
+                signTransactionThunk({
+                    formState,
+                    precomposedTransaction,
+                    selectedAccount,
+                    paymentRequests,
+                }),
+            ),
+        );
 
         if (!deviceAccessResponse.success) {
             return rejectWithValue({

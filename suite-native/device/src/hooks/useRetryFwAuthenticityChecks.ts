@@ -26,9 +26,7 @@ export const useRetryFwAuthenticityChecks = () => {
                 if (deviceAccessMutex.taskQueue.length === 0) {
                     // any device call will cause the tests to be rerun, so getFeatures is used as the most basic one
                     // it'd be useless to await the result; what interests us is the Device state that updates, and gets propagated into redux
-                    requestDeviceAccess({
-                        deviceCallback: () => TrezorConnect.getFeatures(),
-                    });
+                    requestDeviceAccess(() => TrezorConnect.getFeatures());
                 }
                 timeoutHandle = setTimeout(recheckFwRevision, REFRESH_INTERVAL);
             }

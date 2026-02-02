@@ -97,13 +97,12 @@ export const createAndBackupWalletThunk = createThunk<
                       }
                     : {};
 
-            const deviceResponse = await requestPrioritizedDeviceAccess({
-                deviceCallback: () =>
-                    TrezorConnect.backupDevice({
-                        ...backupParams,
-                        device: { path: device.path },
-                    }),
-            });
+            const deviceResponse = await requestPrioritizedDeviceAccess(() =>
+                TrezorConnect.backupDevice({
+                    ...backupParams,
+                    device: { path: device.path },
+                }),
+            );
             // error from device-mutex
             if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
@@ -111,16 +110,15 @@ export const createAndBackupWalletThunk = createThunk<
             return fulfillWithValue(deviceResponse.payload);
         }
 
-        const deviceResponse = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                TrezorConnect.resetDevice({
-                    device: { path: devicePath },
-                    skip_backup: false,
-                    ...getResetDeviceConfig(walletBackupType),
-                    //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
-                    entropy_check: isEntropyCheckEnabled,
-                }),
-        });
+        const deviceResponse = await requestPrioritizedDeviceAccess(() =>
+            TrezorConnect.resetDevice({
+                device: { path: devicePath },
+                skip_backup: false,
+                ...getResetDeviceConfig(walletBackupType),
+                //Entropy check can be toggled via message system config so it should be always last to avoid unintentional disabling.
+                entropy_check: isEntropyCheckEnabled,
+            }),
+        );
         // error from device-mutex
         if (!deviceResponse.success) return rejectWithValue(deviceResponse.error);
 
@@ -144,9 +142,9 @@ export const recoverWalletThunk = createThunk(
     async (_, { getState }) => {
         const devicePath = selectDevicePath(getState());
 
-        const deviceResponse = await requestPrioritizedDeviceAccess({
-            deviceCallback: () => TrezorConnect.recoveryDevice({ device: { path: devicePath } }),
-        });
+        const deviceResponse = await requestPrioritizedDeviceAccess(() =>
+            TrezorConnect.recoveryDevice({ device: { path: devicePath } }),
+        );
 
         if (!deviceResponse.success) {
             throw new Error(deviceResponse.error);

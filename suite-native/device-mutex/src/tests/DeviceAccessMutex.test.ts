@@ -63,9 +63,7 @@ describe('RequestDeviceAccess', () => {
 
         // Put multiple tasks in the queue.
         const queuedTasks = A.makeWithIndex(numberOfTasks, () =>
-            requestDeviceAccess({
-                deviceCallback: deviceAccessCallbackMock,
-            }),
+            requestDeviceAccess(deviceAccessCallbackMock),
         );
 
         let expectedQueueLength = 4;
@@ -90,11 +88,7 @@ describe('RequestDeviceAccess', () => {
         const callbackError = 'Callback failed';
         const mockCallback = jest.fn().mockRejectedValue(callbackError);
 
-        const result = await requestDeviceAccess({
-            deviceCallback: mockCallback,
-            isPrioritized: false,
-            callbackParams: [],
-        });
+        const result = await requestDeviceAccess(mockCallback, false);
 
         expect(result).toEqual({ success: false, error: callbackError });
         expect(deviceAccessMutex.isLocked).toBe(false);
@@ -104,18 +98,12 @@ describe('RequestDeviceAccess', () => {
 describe('RequestPrioritizedDeviceAccess', () => {
     test('prioritized task execution', async () => {
         // Put multiple tasks in the queue.
-        A.makeWithIndex(5, () =>
-            requestDeviceAccess({
-                deviceCallback: deviceAccessCallbackMock,
-            }),
-        );
+        A.makeWithIndex(5, () => requestDeviceAccess(deviceAccessCallbackMock));
 
         expect(deviceAccessMutex.isLocked).toBe(true);
 
         // Execute prioritized task.
-        await requestPrioritizedDeviceAccess({
-            deviceCallback: deviceAccessCallbackMock,
-        });
+        await requestPrioritizedDeviceAccess(deviceAccessCallbackMock);
 
         // The prioritized task should be put at the beginning of the queue, so after its execution,
         // so there should be still the rest of the tasks in the queue.
@@ -130,9 +118,7 @@ describe('clearAndUnlockDeviceAccessQueue', () => {
 
         // Put multiple tasks in the queue.
         const queuedTasks = A.makeWithIndex(numberOfTasks, () =>
-            requestDeviceAccess({
-                deviceCallback: deviceAccessCallbackMock,
-            }),
+            requestDeviceAccess(deviceAccessCallbackMock),
         );
         expect(deviceAccessMutex.isLocked).toBe(true);
 

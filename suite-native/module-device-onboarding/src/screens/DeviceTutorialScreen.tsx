@@ -25,9 +25,9 @@ export const DeviceTutorialScreen = ({
     useFocusEffect(
         useCallback(() => {
             const showTutorial = async () => {
-                await requestPrioritizedDeviceAccess({
-                    deviceCallback: () => TrezorConnect.showDeviceTutorial({ device }),
-                });
+                await requestPrioritizedDeviceAccess(() =>
+                    TrezorConnect.showDeviceTutorial({ device }),
+                );
                 navigation.replace(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
             };
             showTutorial();

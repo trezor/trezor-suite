@@ -12,15 +12,14 @@ export const checkBackupThunk = createThunk(
 
         if (!device?.features) throw new Error('Device is not ready for check backup.');
 
-        const mutexResponse = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                TrezorConnect.recoveryDevice({
-                    type: 'DryRun',
-                    device: {
-                        path: device.path,
-                    },
-                }),
-        });
+        const mutexResponse = await requestPrioritizedDeviceAccess(() =>
+            TrezorConnect.recoveryDevice({
+                type: 'DryRun',
+                device: {
+                    path: device.path,
+                },
+            }),
+        );
 
         if (!mutexResponse.success) throw new Error(mutexResponse.error);
 

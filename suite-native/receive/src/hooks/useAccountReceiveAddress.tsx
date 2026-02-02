@@ -47,16 +47,15 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
 
     const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
         if (accountKey && freshAddress) {
-            const response = await requestPrioritizedDeviceAccess({
-                deviceCallback: () =>
-                    dispatch(
-                        confirmAddressOnDeviceThunk({
-                            accountKey,
-                            addressPath: freshAddress.path,
-                            chunkify: true,
-                        }),
-                    ).unwrap(),
-            });
+            const response = await requestPrioritizedDeviceAccess(() =>
+                dispatch(
+                    confirmAddressOnDeviceThunk({
+                        accountKey,
+                        addressPath: freshAddress.path,
+                        chunkify: true,
+                    }),
+                ).unwrap(),
+            );
 
             if (!response.success) {
                 // Wasn't able to get access to device
