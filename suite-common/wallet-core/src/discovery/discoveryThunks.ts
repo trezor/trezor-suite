@@ -1,8 +1,27 @@
-import { createThunk } from '@suite-common/redux-utils';
-import { AcquiredDevice, AuthorizedDevice, TrezorDevice } from '@suite-common/suite-types';
+import { ThunkDispatch } from '@reduxjs/toolkit';
+
+import { EventType } from '@suite-common/analytics';
+import {
+    AnyAction,
+    ExtraDependencies,
+    SuiteCompatibleThunk,
+    createThunk,
+} from '@suite-common/redux-utils';
+import {
+    AcquiredDevice,
+    AuthorizedDevice,
+    TrezorDevice,
+    TrezorDeviceWithState,
+} from '@suite-common/suite-types';
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
-import { Bip43Path, TrezorConnectBackendType } from '@suite-common/wallet-config';
-import { DiscoveryStatus } from '@suite-common/wallet-types';
+import {
+    Bip43Path,
+    NetworkSymbol,
+    TrezorConnectBackendType,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
+import { Account, DiscoveryStatus, TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
+import { getAccountsWithSomeTransactionHistory } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     AccountInfo,
     BundleProgress,
@@ -12,10 +31,12 @@ import TrezorConnect, {
     UI,
 } from '@trezor/connect';
 import { DiscoverAccountsProgress } from '@trezor/connect/src/types/api/discoverAccounts';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import { CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
+import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import { deviceActions } from '../device/deviceActions';
 import {
     selectDeviceByStaticSessionId,
@@ -233,6 +254,80 @@ const applyDeviceStateErrorThunk = createThunk(
     },
 );
 
+const trackCompleteDiscoveryResult = (
+    deviceStaticSessionId: StaticSessionId,
+    {
+        getState,
+        analytics,
+    }: { getState: () => any; analytics: ExtraDependencies['services']['analytics'] },
+) => {
+    const discoveredAccounts = selectAccountsByDeviceState(getState(), deviceStaticSessionId);
+
+    const accountsBySymbol = discoveredAccounts.reduce<Record<NetworkSymbol, Account[]>>(
+        (agg, account) => {
+            const { symbol } = account;
+            if (!agg[symbol]) {
+                agg[symbol] = [];
+            }
+            agg[symbol].push(account);
+
+            return agg;
+        },
+        {} as Record<NetworkSymbol, Account[]>,
+    );
+
+    typedObjectEntries(accountsBySymbol).forEach(([symbol, accounts]) => {
+        if (isNetworkSymbol(symbol)) {
+            analytics.report({
+                type: EventType.CoinDiscovery,
+                payload: {
+                    discoveryId: deviceStaticSessionId,
+                    symbol,
+                    numberOfAccounts: getAccountsWithSomeTransactionHistory(accounts).length,
+                    numberOfNonZeroAccounts: accounts.filter(account => !account.empty).length,
+                    tokenSymbols: accounts.flatMap(
+                        account =>
+                            account.tokens
+                                ?.map(token => token.symbol)
+                                .filter(
+                                    (tokenSymbol): tokenSymbol is TokenSymbol => !!tokenSymbol,
+                                ) ?? [],
+                    ),
+                    tokenAddresses: accounts.flatMap(
+                        account =>
+                            account.tokens?.map(token => toTokenAddress(token.contract)) ?? [],
+                    ),
+                },
+            });
+        }
+    });
+};
+
+const completeDiscovery = (
+    devicePath: DeviceUniquePath,
+    deviceState: TrezorDeviceWithState['state'],
+    {
+        analytics,
+        dispatch,
+        fetchAndSaveMetadata,
+        getState,
+    }: {
+        getState: () => any;
+        dispatch: ThunkDispatch<any, ExtraDependencies, AnyAction>;
+        fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+        analytics: ExtraDependencies['services']['analytics'];
+    },
+) => {
+    dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, devicePath));
+    dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));
+    dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
+
+    trackCompleteDiscoveryResult(deviceState.staticSessionId, {
+        getState,
+        analytics,
+    });
+};
+
 export const runDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async (passedDevice: TrezorDevice, { dispatch, getState, extra }): Promise<void> => {
@@ -428,9 +523,12 @@ export const runDiscoveryThunk = createThunk(
             }
 
             if (!isAddingHiddenWallet) {
-                dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
-                dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
-                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
+                completeDiscovery(device.path, deviceState, {
+                    analytics: extra.services.analytics,
+                    dispatch,
+                    getState,
+                    fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
+                });
 
                 return;
             }
@@ -440,9 +538,12 @@ export const runDiscoveryThunk = createThunk(
             const allAccountsEmpty = result.payload.nonempty === 0;
             // there is at least one account with balance - passphrase is not empty
             if (!allAccountsEmpty) {
-                dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
-                dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
-                dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
+                completeDiscovery(device.path, deviceState, {
+                    analytics: extra.services.analytics,
+                    dispatch,
+                    getState,
+                    fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
+                });
 
                 // finish here, device state was applied from bundle progress handler
                 return;
@@ -497,9 +598,12 @@ export const runDiscoveryThunk = createThunk(
                 }),
             );
 
-            dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
-            dispatch(extra.thunks.fetchAndSaveMetadata(deviceState.staticSessionId));
-            dispatch(deviceActions.setDiscovered(deviceState.staticSessionId, true));
+            completeDiscovery(device.path, deviceState, {
+                analytics: extra.services.analytics,
+                dispatch,
+                getState,
+                fetchAndSaveMetadata: extra.thunks.fetchAndSaveMetadata,
+            });
         } catch (error) {
             dispatch(
                 discoveryActions.updateDiscovery({ status: 'failed', error }, passedDevice.path),
@@ -558,7 +662,7 @@ export const startDiscoveryThunk = createThunk(
 
 export const runAdditionalDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId: StaticSessionId, { dispatch, getState }): Promise<void> => {
+    async (staticSessionId: StaticSessionId, { dispatch, getState, extra }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -656,6 +760,13 @@ export const runAdditionalDiscoveryThunk = createThunk(
             ),
         );
         dispatch(deviceActions.setDiscovered(staticSessionId, result.success));
+
+        if (result.success) {
+            trackCompleteDiscoveryResult(staticSessionId, {
+                getState,
+                analytics: extra.services.analytics,
+            });
+        }
     },
 );
 

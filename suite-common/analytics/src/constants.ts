@@ -16,4 +16,5 @@ export enum EventType {
     WalletConnectProposalApproved = 'wallet-connect/proposal-approved',
     WalletConnectProposalRejected = 'wallet-connect/proposal-rejected',
     WalletConnectSessionRequest = 'wallet-connect/session-request',
+    CoinDiscovery = 'coin_discovery',
 }
