@@ -1,5 +1,17 @@
 [
     {
+        "exchange": "sideshift",
+        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
+        "sendStringAmount": "9",
+        "receiveStringAmount": "8.68630294",
+        "fee": "UNKNOWN",
+        "min": 1.0,
+        "max": 50000,
+        "rate": 0.965144771716
+    },
+    {
         "exchange": "changeherofr",
         "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
         "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
@@ -12,18 +24,7 @@
         "rate": 0.9706117549014007,
         "rateIdentificator": "e270b1fd-8358-4dde-ad78-6d816c9f0c33"
     },
-    {
-        "exchange": "sideshift",
-        "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
-        "receive": "solana--EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-        "exp": "N3F1XsERV+McG2zVZXSbaLRkxjv7pkSk5oqTjxFToQw=",
-        "sendStringAmount": "9",
-        "receiveStringAmount": "8.68630294",
-        "fee": "UNKNOWN",
-        "min": 1.0,
-        "max": 50000,
-        "rate": 0.965144771716
-    },
+
     {
         "exchange": "changenow",
         "send": "solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",

@@ -13,9 +13,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 
 // Expected values based on our mocked responses
-const sendAmount = swapQuotesSolanaUSDC[1].sendStringAmount;
-const receiveAmount = localizeNumber(swapQuotesSolanaUSDC[1].receiveStringAmount);
-const provider = getCompanyNameFromList(swapQuotesSolanaUSDC[1].exchange, 'swapList');
+const sendAmount = swapQuotesSolanaUSDC[0].sendStringAmount;
+const receiveAmount = localizeNumber(swapQuotesSolanaUSDC[0].receiveStringAmount);
+const provider = getCompanyNameFromList(swapQuotesSolanaUSDC[0].exchange, 'swapList');
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const formattedReceiveAmount = `${receiveAmount} USDC`;
 const { sendAddress, receive: usdcMint, receiveAddress } = swapTradeSolanaUSDC;
