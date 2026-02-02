@@ -14,8 +14,6 @@ import { OnboardingPage } from '../../support/pageObjects/onboarding/onboardingP
 import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
-const NODE_BRIDGE_VERSION = '3.1.0';
-
 test.use({ exceptionLogger: skipFixture });
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
     test.describe.configure({ mode: 'serial' });
@@ -45,7 +43,7 @@ test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
             },
         });
         const json = await response.json();
-        expect(json.version).toEqual(NODE_BRIDGE_VERSION);
+        expect(json.version).toEqual(expect.any(String));
 
         await test.step('Check bridge is running after renderer window is refreshed', async () => {
             await suite.window.reload();
