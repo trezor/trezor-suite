@@ -4,6 +4,7 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 import { isWebProject, skipFixture } from '../../support/common';
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
+import { createEvoluClient } from '../../support/helpers/evoluClient';
 
 test.use({ exceptionLogger: skipFixture });
 test.describe(
@@ -29,6 +30,7 @@ test.describe(
                 await onboardingPage.completeOnboarding({ keepDebugModeEnabled: true });
                 await metadataPage.setupQuotaManager();
                 await metadataPage.enableSuiteSync();
+                await createEvoluClient();
             });
 
             const newLabel = 'my synced btc account label';
