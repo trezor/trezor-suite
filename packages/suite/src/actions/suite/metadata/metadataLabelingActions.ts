@@ -328,7 +328,7 @@ export const addDeviceMetadata =
 
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({
-                clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                clientId: provider.clientId,
                 dataType: 'labels',
             }),
         );
@@ -437,7 +437,7 @@ export const addAccountMetadata =
 
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({
-                clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                clientId: provider.clientId,
                 dataType: 'labels',
             }),
         );
@@ -518,19 +518,27 @@ export const addMetadata =
         );
 
         if (!result.success) {
+            const provider = selectSelectedProviderForLabels(getState());
+            
+            // Provider might have been disconnected during the operation
+            if (!provider) {
+                console.error('Cannot handle metadata error: provider not found');
+                return result.success;
+            }
+
             if ('code' in result) {
                 console.log(result.code);
                 dispatch(
                     metadataProviderActions.handleProviderError({
                         error: result,
                         action: ProviderErrorAction.SAVE,
-                        clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                        clientId: provider.clientId,
                     }),
                 );
             } else {
                 const providerInstance = dispatch(
                     metadataProviderActions.getProviderInstance({
-                        clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                        clientId: provider.clientId,
                         dataType: 'labels',
                     }),
                 );
@@ -542,7 +550,7 @@ export const addMetadata =
                                 'error' in result ? result.error : '',
                             ),
                             action: ProviderErrorAction.SAVE,
-                            clientId: selectSelectedProviderForLabels(getState())!.clientId,
+                            clientId: provider.clientId,
                         }),
                     );
                 }
