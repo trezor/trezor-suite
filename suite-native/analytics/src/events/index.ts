@@ -23,7 +23,10 @@ export {
     deviceSetupInfoEvent,
     type DeviceSetupInfoLocation,
 } from './deviceSetupInfoEvent';
-export { deviceSetupSecurityCheckEvent } from './deviceSetupSecurityCheckEvent';
+export {
+    deviceSetupSecurityCheckEvent,
+    type DeviceSetupSecurityCheckLocation,
+} from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
