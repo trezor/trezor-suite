@@ -1,9 +1,39 @@
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
+import {
+    TestStore,
+    fireEvent,
+    initStore,
+    renderWithStoreProviderAsync,
+} from '@suite-native/test-utils';
 import { ReceiveAccount } from '@suite-native/trading-types';
+import { StaticSessionId } from '@trezor/connect';
 
 import { AccountListItem } from '../AccountListItem';
+
+const DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
+
+const btc10000000Account = mockWalletAccount({
+    descriptor: asAccountDescriptor('abc'),
+    symbol: 'btc',
+    deviceState: '1@2:3',
+    accountLabel: 'My BTC account',
+    availableBalance: '10000000',
+});
+
+const defaultPreloadedState = {
+    device: {
+        selectedDevice: {
+            state: {
+                staticSessionId: DEVICE_SESSION_ID,
+            },
+            connected: true,
+            available: true,
+            remember: true,
+        },
+    },
+    wallet: { accounts: [btc10000000Account] },
+};
 
 jest.mock('@suite-common/wallet-core', () => {
     const fiatRate = { rate: 1e8 };
@@ -29,10 +59,19 @@ jest.mock('@suite-common/trading', () => {
 describe('AccountListItem', () => {
     const onPressMock = jest.fn();
 
-    const renderAccountListItem = (receiveAccount: ReceiveAccount) =>
-        renderWithStoreProviderAsync(
+    let store: TestStore;
+
+    const renderAccountListItem = (
+        receiveAccount: ReceiveAccount,
+        preloadedState = defaultPreloadedState,
+    ) => {
+        store = initStore(preloadedState).store;
+
+        return renderWithStoreProviderAsync(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
+            { store },
         );
+    };
 
     beforeEach(() => {
         jest.resetAllMocks();
@@ -40,13 +79,7 @@ describe('AccountListItem', () => {
 
     it('should call onPress callback when pressed', async () => {
         const receiveAccount: ReceiveAccount = {
-            account: mockWalletAccount({
-                descriptor: asAccountDescriptor('abc'),
-                symbol: 'btc',
-                deviceState: '1@2:3',
-                accountLabel: 'My BTC account',
-                availableBalance: '10000000',
-            }),
+            account: btc10000000Account,
         };
         const { getByText } = await renderAccountListItem(receiveAccount);
 
@@ -57,13 +90,7 @@ describe('AccountListItem', () => {
 
     it('should render account name', async () => {
         const receiveAccount: ReceiveAccount = {
-            account: mockWalletAccount({
-                descriptor: asAccountDescriptor('abc'),
-                symbol: 'btc',
-                deviceState: '1@2:3',
-                accountLabel: 'My BTC account',
-                availableBalance: '10000000',
-            }),
+            account: btc10000000Account,
         };
         const { getByText, queryByAccessibilityHint, getByLabelText } =
             await renderAccountListItem(receiveAccount);
@@ -76,18 +103,14 @@ describe('AccountListItem', () => {
 
     it('should display caret when account defines addresses', async () => {
         const receiveAccount: ReceiveAccount = {
-            account: mockWalletAccount({
-                descriptor: asAccountDescriptor('abc'),
-                symbol: 'btc',
-                deviceState: '1@2:3',
-                accountLabel: 'My BTC account',
-                availableBalance: '10000000',
+            account: {
+                ...btc10000000Account,
                 addresses: {
                     change: [],
                     used: [],
                     unused: [],
                 },
-            }),
+            },
         };
         const { getByText, getByAccessibilityHint } = await renderAccountListItem(receiveAccount);
 

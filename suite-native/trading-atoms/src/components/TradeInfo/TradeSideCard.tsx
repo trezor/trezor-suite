@@ -10,7 +10,7 @@ import { NetworkAndAccountCard } from './NetworkAndAccountCard';
 import { TradeInfoRow } from './TradeInfoRow';
 
 export type TradeSideCardProps = {
-    accountLabel?: string;
+    accountLabel?: ReactNode;
     cryptoId?: CryptoId;
     amount: ReactNode;
     title: ReactNode;

@@ -9,6 +9,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-sync"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
@@ -32,6 +35,7 @@
         },
         { "path": "../accounts" },
         { "path": "../feature-flags" },
+        { "path": "../labeling" },
         { "path": "../tokens" },
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },

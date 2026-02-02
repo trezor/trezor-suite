@@ -4,8 +4,8 @@ import { selectFormattedAccountType } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync, screen } from '@suite-native/test-utils';
 import {
-    getBtcAccount,
-    getEthAccount,
+    btc1NormalAccount,
+    eth1NormalAccount,
     getInitializedTradingState,
 } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionCondensedListByTradingType } from '@suite-native/trading-state';
@@ -31,8 +31,8 @@ jest.mock('@suite-common/wallet-core', () => ({
 const mockedSelectFormattedAccountType = selectFormattedAccountType as unknown as jest.Mock;
 
 describe('MyAssetSheet', () => {
-    const btcAccount = getBtcAccount();
-    const ethAccount = getEthAccount();
+    const btcAccount = btc1NormalAccount;
+    const ethAccount = eth1NormalAccount;
 
     const defaultAssets: MyAssetTradeable[] = [
         {
@@ -95,7 +95,7 @@ describe('MyAssetSheet', () => {
         const { getByText } = await renderMyAssetsSheet();
 
         expect(getByText('BTC Account #1')).toBeTruthy();
-        expect(getByText('Ethereum #1')).toBeTruthy();
+        expect(getByText('ETH Account #1')).toBeTruthy();
     });
 
     it('should render correct empty component', async () => {
@@ -134,7 +134,7 @@ describe('MyAssetSheet', () => {
 
         // Mock the selector to return a formatted account type for the first account
         mockedSelectFormattedAccountType.mockImplementation((_state, accountKey) =>
-            accountKey === 'btc-account-1' ? 'SegWit' : null,
+            accountKey === btcAccount.key ? 'SegWit' : null,
         );
 
         const { getByText } = await renderMyAssetsSheet();

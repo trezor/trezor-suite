@@ -10,7 +10,7 @@ import { TradeInfoRow } from './TradeInfoRow';
 
 export type NetworkAndAccountCardProps = {
     title: ReactNode;
-    accountLabel?: string;
+    accountLabel?: ReactNode;
     symbol: NetworkSymbol;
     children?: ReactNode;
 };
