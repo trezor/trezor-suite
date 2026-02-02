@@ -74,16 +74,15 @@ export const signTransactionNativeThunk = createThunk<
                 error: 'sign-transaction-failed',
                 message: 'Unable to precompose transaction for signing.',
             });
-        const deviceAccessResponse = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                dispatch(
-                    signTransactionThunk({
-                        formState,
-                        precomposedTransaction,
-                        selectedAccount: account,
-                    }),
-                ),
-        });
+        const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
+            dispatch(
+                signTransactionThunk({
+                    formState,
+                    precomposedTransaction,
+                    selectedAccount: account,
+                }),
+            ),
+        );
 
         if (!deviceAccessResponse.success) {
             return rejectWithValue({

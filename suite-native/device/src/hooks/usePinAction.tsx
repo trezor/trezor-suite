@@ -88,15 +88,14 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
 
         const { remove, successMessageKey, canceledMessageKey } = actionConfigMap[type];
 
-        const result = await requestPrioritizedDeviceAccess({
-            deviceCallback: () =>
-                TrezorConnect.changePin({
-                    device: {
-                        path: device?.path,
-                    },
-                    remove,
-                }),
-        });
+        const result = await requestPrioritizedDeviceAccess(() =>
+            TrezorConnect.changePin({
+                device: {
+                    path: device?.path,
+                },
+                remove,
+            }),
+        );
 
         if (!result.success) {
             return;

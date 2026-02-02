@@ -39,9 +39,7 @@ export const useBluetoothDevice = () => {
                 return;
             }
 
-            const result = await requestPrioritizedDeviceAccess({
-                deviceCallback: () => TrezorConnect.bleUnpair({}),
-            });
+            const result = await requestPrioritizedDeviceAccess(() => TrezorConnect.bleUnpair({}));
 
             if (!result.success) {
                 return;

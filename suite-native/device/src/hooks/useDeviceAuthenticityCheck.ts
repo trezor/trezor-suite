@@ -152,15 +152,14 @@ export const useDeviceAuthenticityCheck = () => {
             // Clear previous result
             dispatch(deviceActions.setDeviceAuthenticityResult({ device, result: undefined }));
 
-            const deviceAccessResponse = await requestPrioritizedDeviceAccess({
-                deviceCallback: () =>
-                    TrezorConnect.authenticateDevice({
-                        device: {
-                            path: device.path,
-                        },
-                        allowDebugKeys,
-                    }),
-            });
+            const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
+                TrezorConnect.authenticateDevice({
+                    device: {
+                        path: device.path,
+                    },
+                    allowDebugKeys,
+                }),
+            );
 
             if (!deviceAccessResponse.success) {
                 handleDeviceAccessError(deviceAccessResponse.error);
