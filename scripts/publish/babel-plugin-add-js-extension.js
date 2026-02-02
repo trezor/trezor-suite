@@ -32,7 +32,11 @@ const addJSExtensionPlugin = ({ types }) => {
             const match = src.match(/^@trezor\/([^/]+)\/libESM\/(.+)$/);
             const [, packageName, subpath] = match;
 
-            const packagesRoot = path.resolve(state.filename, '..', '..', '..', '..');
+            // Find packages/ root from the current file's absolute path by locating the libESM/ segment.
+            // e.g., /packages/connect/libESM/device/thp/pairing.js → /packages/
+            const libESMIndex = state.filename.indexOf(`${path.sep}libESM${path.sep}`);
+            const packageDir = state.filename.substring(0, libESMIndex);
+            const packagesRoot = path.dirname(packageDir);
             const resolvedPath = path.join(packagesRoot, packageName, 'libESM', subpath);
 
             const isDirectory =
