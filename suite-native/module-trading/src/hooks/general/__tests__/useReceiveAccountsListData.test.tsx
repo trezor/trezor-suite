@@ -1,8 +1,16 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
-import { accounts } from '@suite-native/trading-fixtures';
-import { StaticSessionId } from '@trezor/connect';
+import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    accounts,
+    btc1NormalAccount,
+    btc2legacyAccount,
+    eth1NormalAccount,
+    eth2legacyAccount,
+} from '@suite-native/trading-fixtures';
+
+const ADDRESS_COMMON = { received: '0', sent: '0', transfers: 0 };
 
 import { ReceiveAccountsListMode, useReceiveAccountsListData } from '../useReceiveAccountsListData';
 
@@ -11,7 +19,7 @@ describe('useReceiveAccountsListData', () => {
         device: {
             selectedDevice: {
                 state: {
-                    staticSessionId: 'staticSessionId' as StaticSessionId,
+                    staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
                 },
             },
         },
@@ -50,8 +58,8 @@ describe('useReceiveAccountsListData', () => {
                     key: '',
                     label: '',
                     data: [
-                        { account: expect.objectContaining({ key: 'btc1' }) },
-                        { account: expect.objectContaining({ key: 'btc2' }) },
+                        { account: expect.objectContaining({ key: btc1NormalAccount.key }) },
+                        { account: expect.objectContaining({ key: btc2legacyAccount.key }) },
                     ],
                 },
             ]);
@@ -71,8 +79,8 @@ describe('useReceiveAccountsListData', () => {
                     key: '',
                     label: '',
                     data: [
-                        { account: expect.objectContaining({ key: 'eth1' }) },
-                        { account: expect.objectContaining({ key: 'eth2' }) },
+                        { account: expect.objectContaining({ key: eth1NormalAccount.key }) },
+                        { account: expect.objectContaining({ key: eth2legacyAccount.key }) },
                     ],
                 },
             ]);
@@ -97,7 +105,7 @@ describe('useReceiveAccountsListData', () => {
         it('should be empty array for non BTC like assets', async () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'eth',
-                defaultPreloadedState.wallet.accounts[2],
+                eth1NormalAccount,
                 'address',
             );
 
@@ -107,7 +115,7 @@ describe('useReceiveAccountsListData', () => {
         it('should return 1 unused address and all used addresses for BTC like assets', async () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'btc',
-                defaultPreloadedState.wallet.accounts[0],
+                btc1NormalAccount,
                 'address',
             );
 
@@ -115,24 +123,41 @@ describe('useReceiveAccountsListData', () => {
                 {
                     key: 'unused',
                     label: 'New address',
+                    sectionData: undefined,
                     data: [
                         {
-                            account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'UNUSED1', path: 'path_UNUSED1' },
+                            account: expect.objectContaining({ key: btc1NormalAccount.key }),
+                            address: {
+                                address: 'UNUSED1',
+                                path: 'path_UNUSED1',
+                                balance: '0',
+                                ...ADDRESS_COMMON,
+                            },
                         },
                     ],
                 },
                 {
                     key: 'used',
                     label: 'Used addresses',
+                    sectionData: undefined,
                     data: [
                         {
-                            account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'USED1', balance: '10000000', path: 'path_USED1' },
+                            account: expect.objectContaining({ key: btc1NormalAccount.key }),
+                            address: {
+                                address: 'USED1',
+                                balance: '10000000',
+                                path: 'path_USED1',
+                                ...ADDRESS_COMMON,
+                            },
                         },
                         {
-                            account: expect.objectContaining({ key: 'btc1' }),
-                            address: { address: 'USED2', balance: '20000000', path: 'path_USED2' },
+                            account: expect.objectContaining({ key: btc1NormalAccount.key }),
+                            address: {
+                                address: 'USED2',
+                                balance: '20000000',
+                                path: 'path_USED2',
+                                ...ADDRESS_COMMON,
+                            },
                         },
                     ],
                 },
@@ -142,7 +167,7 @@ describe('useReceiveAccountsListData', () => {
         it('should not return empty sections', async () => {
             const { result } = await renderUseReceiveAccountsListDataHook(
                 'btc',
-                defaultPreloadedState.wallet.accounts[1],
+                btc2legacyAccount,
                 'address',
             );
 
@@ -154,7 +179,7 @@ describe('useReceiveAccountsListData', () => {
                 device: {
                     selectedDevice: {
                         state: {
-                            staticSessionId: 'staticSessionId' as StaticSessionId,
+                            staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
                         },
                     },
                 },
@@ -165,7 +190,7 @@ describe('useReceiveAccountsListData', () => {
                             accountLabel: 'ETH Account #1',
                             deviceState: 'staticSessionId',
                             addresses: undefined,
-                            key: 'eth1',
+                            key: eth1NormalAccount.key,
                             visible: false,
                         },
                     ] as unknown as Account[],

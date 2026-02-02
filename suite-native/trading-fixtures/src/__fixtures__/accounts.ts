@@ -1,10 +1,13 @@
 import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { StaticSessionId } from '@trezor/connect';
+
+export const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
 
 export const btc1NormalAccount = mockWalletAccount({
     symbol: 'btc',
     accountLabel: 'BTC Account #1',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
     descriptor: asAccountDescriptor('btc1-normal'),
     addresses: {
@@ -61,7 +64,7 @@ export const btc1NormalAccount = mockWalletAccount({
 export const btc2legacyAccount = mockWalletAccount({
     symbol: 'btc',
     accountLabel: 'BTC Account #2',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
     accountType: 'legacy',
     descriptor: asAccountDescriptor('btc2-legacy'),
@@ -76,7 +79,7 @@ export const btc2legacyAccount = mockWalletAccount({
 export const eth1NormalAccount = mockWalletAccount({
     symbol: 'eth',
     accountLabel: 'ETH Account #1',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
 
     accountType: 'normal',
     descriptor: asAccountDescriptor('eth1-normal'),
@@ -86,7 +89,7 @@ export const eth1NormalAccount = mockWalletAccount({
 export const eth2legacyAccount = mockWalletAccount({
     symbol: 'eth',
     accountLabel: 'ETH Account #2',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
     descriptor: asAccountDescriptor('eth2-legacy'),
     visible: true,
@@ -95,7 +98,7 @@ export const eth2legacyAccount = mockWalletAccount({
 export const eth3legacyAccount = mockWalletAccount({
     symbol: 'eth',
     accountLabel: 'ETH Account #3 HIDDEN',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'legacy',
     descriptor: asAccountDescriptor('eth3-legacy'),
     visible: false,
@@ -104,7 +107,7 @@ export const eth3legacyAccount = mockWalletAccount({
 export const sol1normalAccount = mockWalletAccount({
     symbol: 'sol',
     accountLabel: 'SOL Account #1',
-    deviceState: '1@2:3',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accountType: 'normal',
     descriptor: asAccountDescriptor('sol1-normal'),
     visible: true,
