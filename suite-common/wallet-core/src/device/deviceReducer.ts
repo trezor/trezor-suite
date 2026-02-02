@@ -153,14 +153,14 @@ const connectDevice = (
     if (!device.features) {
         const knownDevices = draft.devices.filter(
             ({ descriptor }) =>
-                descriptor &&
-                descriptor?.id === device.descriptor?.id &&
+                descriptor?.id &&
+                descriptor.id === device.descriptor?.id &&
                 descriptor.apiType === device.descriptor?.apiType,
         );
         if (knownDevices.length > 0) {
             knownDevices.forEach(dd => {
-                dd.type = device.type;
                 dd.connected = true;
+                dd.available = true;
                 dd.path = device.path;
                 dd.status = device.status;
                 dd.thp = device.thp;

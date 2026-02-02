@@ -48,12 +48,29 @@ const getStatus: Array<{ device: TrezorDevice; status: string }> = [
         status: 'connected',
     },
     {
-        device: mockSuiteDevice({ type: 'unacquired' }),
+        device: mockSuiteDevice({ connected: true, available: false, type: 'unacquired' }),
         status: 'unacquired',
     },
     {
-        device: mockSuiteDevice({ type: 'unreadable' }),
+        device: mockSuiteDevice({ connected: true, available: false, type: 'unreadable' }),
         status: 'unreadable',
+    },
+    {
+        device: mockSuiteDevice({
+            connected: true,
+            available: false,
+            type: 'unacquired',
+            status: 'thp-locked',
+        }),
+        status: 'device-thp-locked',
+    },
+    {
+        device: mockSuiteDevice({
+            connected: true,
+            available: false,
+            status: 'thp-locked',
+        }),
+        status: 'device-thp-locked',
     },
 ];
 
