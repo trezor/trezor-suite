@@ -5,11 +5,14 @@ import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/t
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { ALTERNATIVE_QUOTES } from '../../../__fixtures__/buyUtils';
-import { TradingAssetOption } from '../../../hooks/useTradingAssets';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
-import { HandleBuyRequestThunkProps, TradingBuyFormProps } from '../../../types';
+import {
+    HandleBuyRequestThunkProps,
+    TradingAssetOption,
+    TradingBuyFormProps,
+} from '../../../types';
 import { MIN_MAX_QUOTES_OK } from '../../../utils/buy/__fixtures__/buyUtils';
 import { buyThunks } from '../index';
 

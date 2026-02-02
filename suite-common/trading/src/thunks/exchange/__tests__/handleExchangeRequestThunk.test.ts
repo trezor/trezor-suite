@@ -6,12 +6,12 @@ import { getNetwork } from '@suite-common/wallet-config';
 
 import { exchangeThunks } from '../';
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
-import { TradingAssetOption } from '../../../hooks/useTradingAssets';
 import { invityAPI } from '../../../invityAPI';
 import { initialState } from '../../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../../reducers/tradingReducer';
 import {
     HandleExchangeRequestThunkProps,
+    TradingAssetOption,
     TradingAssetSellOption,
     TradingExchangeFormProps,
 } from '../../../types';
