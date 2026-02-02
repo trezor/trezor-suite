@@ -7,7 +7,10 @@ export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
 export { createReceiveAddressEvent } from './createReceiveAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
 export { demoAccountQuestionnaireDashboardEvent } from './demoAccountQuestionnaireDashboardEvent';
-export { demoAccountQuestionnaireLinksEvent } from './demoAccountQuestionnaireLinksEvent';
+export {
+    demoAccountQuestionnaireLinksEvent,
+    type DemoAccountQuestionnaireLinkKey,
+} from './demoAccountQuestionnaireLinksEvent';
 export {
     demoAccountQuestionnaireQuestionEvent,
     type DemoAccountQuestionnaireQuestion,
