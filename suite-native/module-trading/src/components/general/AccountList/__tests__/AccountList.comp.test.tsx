@@ -7,7 +7,11 @@ import {
     renderWithStoreProviderAsync,
     screen,
 } from '@suite-native/test-utils';
-import { accounts } from '@suite-native/trading-fixtures';
+import {
+    MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    accounts,
+    btc1NormalAccount,
+} from '@suite-native/trading-fixtures';
 import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
@@ -15,7 +19,6 @@ import {
 } from '@suite-native/trading-state';
 import { ReceiveAccount } from '@suite-native/trading-types';
 import { Address } from '@trezor/blockchain-link-types';
-import { StaticSessionId } from '@trezor/connect';
 
 import { AccountList, AccountsListProps, keyExtractor } from '../AccountList';
 
@@ -23,7 +26,7 @@ const defaultPreloadedState = {
     device: {
         selectedDevice: {
             state: {
-                staticSessionId: 'staticSessionId' as StaticSessionId,
+                staticSessionId: MOCK_ACCOUNT_DEVICE_SESSION_ID,
             },
             connected: true,
             available: true,
@@ -114,7 +117,7 @@ describe('AccountList', () => {
                     symbol: 'btc',
                     pickerMode: 'address',
                 },
-                getStateMockupBuy({ account: accounts[0] }),
+                getStateMockupBuy({ account: btc1NormalAccount }),
             );
 
             const item = getByText('UNUSED1');
@@ -170,7 +173,7 @@ describe('AccountList', () => {
                     pickerMode: 'address',
                     onSetPickerMode: onSetPickerModeMock,
                 },
-                getStateMockupBuy({ account: accounts[0] }),
+                getStateMockupBuy({ account: btc1NormalAccount }),
             );
 
             const item = getByText('UNUSED1');
@@ -190,7 +193,7 @@ describe('AccountList', () => {
             fireEvent.press(getByText('BTC Account #1'));
 
             expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
-                account: accounts[0],
+                account: btc1NormalAccount,
                 address: undefined,
             });
         });
@@ -205,7 +208,7 @@ describe('AccountList', () => {
             fireEvent.press(getByText('BTC Account #1'));
 
             expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
-                account: accounts[0],
+                account: btc1NormalAccount,
                 address: undefined,
             });
         });
@@ -219,7 +222,7 @@ describe('AccountList', () => {
                     onSetPickerMode: onSetPickerModeMock,
                     tradingType: 'exchange',
                 },
-                getStateMockupExchange({ account: accounts[0] }),
+                getStateMockupExchange({ account: btc1NormalAccount }),
             );
 
             const item = getByText('UNUSED1');
@@ -251,7 +254,7 @@ describe('AccountList', () => {
                     symbol: 'btc',
                     pickerMode: 'address',
                 },
-                getStateMockupBuy({ account: accounts[0] }),
+                getStateMockupBuy({ account: btc1NormalAccount }),
             );
 
             expect(queryByText('Add new')).toBeNull();
@@ -260,15 +263,18 @@ describe('AccountList', () => {
 
     describe('keyExtractor', () => {
         it('should use default string for undefined address', () => {
-            expect(keyExtractor({ account: accounts[0], address: undefined })).toBe(
-                'btc1_address_undefined',
+            expect(keyExtractor({ account: btc1NormalAccount, address: undefined })).toBe(
+                btc1NormalAccount.key + '_address_undefined',
             );
         });
 
         it('should use address string for set address', () => {
             expect(
-                keyExtractor({ account: accounts[0], address: { address: 'ADDRESS1' } as Address }),
-            ).toBe('btc1_ADDRESS1');
+                keyExtractor({
+                    account: btc1NormalAccount,
+                    address: { address: 'ADDRESS1' } as Address,
+                }),
+            ).toBe(btc1NormalAccount.key + '_ADDRESS1');
         });
     });
 });
