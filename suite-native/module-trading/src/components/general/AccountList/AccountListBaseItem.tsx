@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -7,6 +8,7 @@ import { useCoinLabel } from '@suite-native/device';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { CryptoIcon, Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
+import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import { ReceiveAccount } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -74,12 +76,13 @@ export const AccountListBaseItem = ({
     const shouldDisplayCaret = !isAddressDetail && !!account.addresses;
     const shouldDisplayBalance = !isAddressDetail || address?.balance != null;
 
+    const accountLabel =
+        useSelector((state: CombinedLabelingState) =>
+            selectAccountLabel(state, account.deviceState, account.descriptor, account.symbol),
+        ) ?? undefined;
+
     return (
-        <Pressable
-            onPress={onPress}
-            accessibilityRole="button"
-            accessibilityLabel={account.accountLabel}
-        >
+        <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={accountLabel}>
             <HStack
                 alignItems="center"
                 spacing="sp12"

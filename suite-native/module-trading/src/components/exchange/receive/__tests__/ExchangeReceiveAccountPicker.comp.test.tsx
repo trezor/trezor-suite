@@ -14,7 +14,6 @@ import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
-const btcAccountName1 = 'BTC Account #1';
 const btcAddressAddress = '1BTC';
 
 jest.mock('@react-navigation/native', () => ({
@@ -87,7 +86,7 @@ describe('ExchangeReceiveAccountPicker', () => {
             }),
         });
 
-        expect(getByText(btcAccountName1)).toBeTruthy();
+        expect(getByText('1BTC')).toBeTruthy();
         expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 

@@ -21,8 +21,8 @@ describe('ExchangePreviewView', () => {
     it('should render all sections except alert', async () => {
         const { getByText } = await renderExchangePreviewView({});
 
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('Bitcoin')).toBeOnTheScreen();
+        expect(getByText('Ethereum')).toBeOnTheScreen();
         expect(getByText('Fee')).toBeOnTheScreen();
     });
 
@@ -31,8 +31,8 @@ describe('ExchangePreviewView', () => {
             txnErrorString: 'txnErrorString',
         });
 
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
-        expect(getByText('Ethereum #1')).toBeOnTheScreen();
+        expect(getByText('Bitcoin')).toBeOnTheScreen();
+        expect(getByText('Ethereum')).toBeOnTheScreen();
         expect(getByText('txnErrorString')).toBeOnTheScreen();
         expect(queryByText('Fee')).toBeNull();
     });

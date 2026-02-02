@@ -1,8 +1,14 @@
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
-export const getBtcAccount = (key = 'btc-account-1', overrides: Partial<Account> = {}) =>
+/**
+ * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
+ */
+export const getBtcAccount = (
+    key: AccountKey = 'btc-account-1',
+    overrides: Partial<Account> = {},
+) =>
     ({
-        key,
+        key, // <--- this key is not possible to be in-sync with descriptor
         symbol: 'btc',
         accountType: 'normal',
         accountLabel: 'BTC Account #1',
@@ -30,9 +36,15 @@ export const getBtcAccount = (key = 'btc-account-1', overrides: Partial<Account>
         ...overrides,
     }) as Account;
 
-export const getEthAccount = (key = 'eth-account-1', overrides: Partial<Account> = {}) =>
+/**
+ * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
+ */
+export const getEthAccount = (
+    key: AccountKey = 'eth-account-1',
+    overrides: Partial<Account> = {},
+) =>
     ({
-        key,
+        key, // <--- this key is not possible to be in-sync with descriptor
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Ethereum #1',
         index: 0,
@@ -100,9 +112,15 @@ export const getEthAccount = (key = 'eth-account-1', overrides: Partial<Account>
         ...overrides,
     }) as Account;
 
-export const getBaseAccount = (key = 'base-account-1', overrides: Partial<Account> = {}) =>
+/**
+ * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
+ */
+export const getBaseAccount = (
+    key: AccountKey = 'base-account-1',
+    overrides: Partial<Account> = {},
+) =>
     ({
-        key,
+        key, // <--- this key is not possible to be in-sync with descriptor
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Base #1',
         index: 0,
@@ -139,9 +157,15 @@ export const getBaseAccount = (key = 'base-account-1', overrides: Partial<Accoun
         ...overrides,
     }) as Account;
 
-export const getCardanoAccount = (key = 'ada-account-1', overrides: Partial<Account> = {}) =>
+/**
+ * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
+ */
+export const getCardanoAccount = (
+    key: AccountKey = 'ada-account-1',
+    overrides: Partial<Account> = {},
+) =>
     ({
-        key,
+        key, // <--- this key is not possible to be in-sync with descriptor
         symbol: 'ada',
         accountType: 'normal',
         accountLabel: 'Cardano Account #1',
@@ -155,9 +179,15 @@ export const getCardanoAccount = (key = 'ada-account-1', overrides: Partial<Acco
         ...overrides,
     }) as Account;
 
-export const getSolAccount = (key = 'sol-account-1', overrides: Partial<Account> = {}) =>
+/**
+ * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
+ */
+export const getSolAccount = (
+    key: AccountKey = 'sol-account-1',
+    overrides: Partial<Account> = {},
+) =>
     ({
-        key,
+        key, // <--- this key is not possible to be in-sync with descriptor
         deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
         accountLabel: 'Solana #1',
         index: 0,

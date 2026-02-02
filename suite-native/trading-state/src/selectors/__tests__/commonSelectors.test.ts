@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { Action, Feature, Message, TrezorDevice } from '@suite-common/suite-types';
 import {
     InvityServerEnvironment,
@@ -1243,7 +1244,12 @@ describe('commonSelectors', () => {
         it('should return account label if account exists', () => {
             expect(
                 selectAccountLabelWithNetworkFallback(
-                    { wallet: { accounts: [getEthAccount()] } },
+                    {
+                        wallet: { accounts: [getEthAccount()] },
+                        suiteSyncData: initialSuiteSyncDataState,
+                        suiteSync: initialSuiteSyncState,
+                        device: deviceInitialState,
+                    },
                     'eth-account-1',
                     'eth' as CryptoId,
                 ),
@@ -1259,7 +1265,12 @@ describe('commonSelectors', () => {
             (asset, expectedLabel) => {
                 expect(
                     selectAccountLabelWithNetworkFallback(
-                        { wallet: { accounts: [getEthAccount()] } },
+                        {
+                            wallet: { accounts: [getEthAccount()] },
+                            suiteSyncData: initialSuiteSyncDataState,
+                            suiteSync: initialSuiteSyncState,
+                            device: deviceInitialState,
+                        },
                         'eth-account-2',
                         asset as CryptoId,
                     ),
@@ -1270,7 +1281,12 @@ describe('commonSelectors', () => {
         it('should return undefined when neither account nor asset are specified', () => {
             expect(
                 selectAccountLabelWithNetworkFallback(
-                    { wallet: { accounts: [getEthAccount()] } },
+                    {
+                        wallet: { accounts: [getEthAccount()] },
+                        suiteSyncData: initialSuiteSyncDataState,
+                        suiteSync: initialSuiteSyncState,
+                        device: deviceInitialState,
+                    },
                     undefined,
                     undefined,
                 ),

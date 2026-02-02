@@ -13,6 +13,7 @@ import { AccountsRootState } from '@suite-common/wallet-core';
 import { Card, HStack, Text } from '@suite-native/atoms';
 import { CryptoIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { CombinedLabelingState } from '@suite-native/labeling';
 import { selectAccountLabelWithNetworkFallback } from '@suite-native/trading-state';
 
 import { TradeDetailInfoRow } from './TradeDetailInfoRow';
@@ -51,7 +52,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
     const { fromStringValue, toStringValue, fromCurrency, toCurrency, isFromCrypto, isToCrypto } =
         useChangeStringsExtractor(trade?.data);
 
-    const fromAccountLabel = useSelector((state: AccountsRootState) => {
+    const fromAccountLabel = useSelector((state: AccountsRootState & CombinedLabelingState) => {
         if (isBuy) {
             return undefined;
         }
@@ -63,7 +64,7 @@ export const TradeDetailTransactionInfo = ({ orderId }: TradeDetailTransactionIn
         );
     });
 
-    const toAccountLabel = useSelector((state: AccountsRootState) => {
+    const toAccountLabel = useSelector((state: AccountsRootState & CombinedLabelingState) => {
         if (isSell) {
             return undefined;
         }

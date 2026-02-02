@@ -44,7 +44,7 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         });
 
         expect(getByText('Account')).toBeOnTheScreen();
-        expect(getByText('BTC Account #1')).toBeOnTheScreen();
+        expect(getByText('Bitcoin')).toBeOnTheScreen();
         expect(getByText('+100')).toBeOnTheScreen();
     });
 });

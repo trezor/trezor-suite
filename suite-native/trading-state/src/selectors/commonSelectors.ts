@@ -31,7 +31,6 @@ import {
     AccountsRootState,
     FiatRatesRootState,
     WalletSettingsRootState,
-    selectAccountByKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
@@ -39,13 +38,19 @@ import {
     selectVisibleDeviceAccountsMap,
 } from '@suite-common/wallet-core';
 import { Account, AccountKey, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { getAccountFiatBalance, getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getAccountFiatBalance,
+    getFiatRateKey,
+    parseAccountKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import { CombinedLabelingState, selectAccountLabel } from '@suite-native/labeling';
 import { TokensRootState } from '@suite-native/tokens';
 import {
     SectionListData,
@@ -369,13 +374,27 @@ export const selectVisibleDeviceAccountsByNetworkSymbolSorted =
     );
 
 export const selectAccountLabelWithNetworkFallback = (
-    state: AccountsRootState,
+    state: AccountsRootState & CombinedLabelingState,
     accountKey?: AccountKey,
     cryptoId?: CryptoId,
 ) => {
-    const label = selectAccountByKey(state, accountKey)?.accountLabel;
-    if (label) {
-        return label;
+    if (accountKey) {
+        const {
+            accountDescriptor,
+            networkSymbol: accountNetworkSymbol,
+            deviceStaticSessionId,
+        } = parseAccountKey(accountKey);
+
+        const accountLabel = selectAccountLabel(
+            state,
+            deviceStaticSessionId,
+            accountDescriptor,
+            accountNetworkSymbol,
+        );
+
+        if (accountLabel) {
+            return accountLabel;
+        }
     }
 
     if (cryptoId) {
