@@ -291,9 +291,11 @@ export const connectProvider =
     };
 
 export const exportMetadataToLocalFile = () => async (dispatch: Dispatch, getState: GetState) => {
+    const provider = selectSelectedProviderForLabels(getState());
+    if (!provider) return;
     const providerInstance = dispatch(
         getProviderInstance({
-            clientId: selectSelectedProviderForLabels(getState())!.clientId,
+            clientId: provider.clientId,
             dataType: 'labels',
         }),
     );
