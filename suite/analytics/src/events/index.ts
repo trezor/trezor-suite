@@ -52,6 +52,7 @@ export { settingsCoinsEvent } from './settingsCoinsEvent';
 export { settingsDeviceChangePinEvent } from './settingsDeviceChangePinEvent';
 export { settingsDeviceChangePinProtectionEvent } from './settingsDeviceChangePinProtectionEvent';
 export { settingsDeviceChangeWipeCodeEvent } from './settingsDeviceChangeWipeCodeEvent';
+export { settingsDeviceChangeBrightnessEvent } from './settingsDeviceChangeBrightnessEvent';
 export { settingsDeviceChangeHapticFeedbackEvent } from './settingsDeviceChangeHapticFeedbackEvent';
 export { settingsDeviceCheckSeedEvent } from './settingsDeviceCheckSeedEvent';
 export { settingsDeviceDisableWipeCodeEvent } from './settingsDeviceDisableWipeCodeEvent';

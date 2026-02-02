@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
-import { useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 import { useDevice } from '../../../hooks/suite';
 
@@ -13,7 +13,7 @@ interface DeviceLabelProps {
 
 export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     const { device } = useDevice();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isSupportedDevice = device?.features?.capabilities?.includes('Capability_Brightness');
 
     if (!isSupportedDevice) {
@@ -23,7 +23,7 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
     const handleClick = async () => {
         const result = await TrezorConnect.setBrightness({});
         if (result.success) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SettingsDeviceChangeBrightness,
                 payload: {},
             });
