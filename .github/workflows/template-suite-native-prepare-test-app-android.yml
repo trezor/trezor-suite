@@ -153,9 +153,9 @@ jobs:
         working-directory: ./suite-native/app/android/app/build/outputs
         run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
-      - name: Save build to cache
-        uses: actions/cache/save@v4
+      - name: Upload Android build artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: |
-            suite-native/app/android/app/build/
-          key: android_test_build/${{ github.ref }}/${{github.run_id}}
+          name: android-test-build-${{ github.run_id }}
+          path: suite-native/app/android/app/build/
+          retention-days: 1
