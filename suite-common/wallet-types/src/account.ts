@@ -148,7 +148,8 @@ export const createAccountKey = ({
     accountDescriptor,
     networkSymbol,
     deviceStaticSessionId,
-}: CreateAccountKeyParams) => `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
+}: CreateAccountKeyParams): AccountKey =>
+    `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
 
 /**
  * Descriptor or xpub/zpub/..
