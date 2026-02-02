@@ -13,6 +13,7 @@ import {
 import addressValidator from '@trezor/address-validator';
 import { TokenInfo } from '@trezor/connect';
 
+import { TradingAssetOption } from '../types';
 import {
     cryptoIdToNetwork,
     getCryptoId,
@@ -59,7 +60,11 @@ interface CreateAssetOptionProps {
     platformInfo?: PlatformsInfo;
 }
 
-export function createAssetOption({ cryptoId, coinInfo, platformInfo }: CreateAssetOptionProps) {
+export function createAssetOption({
+    cryptoId,
+    coinInfo,
+    platformInfo,
+}: CreateAssetOptionProps): TradingAssetOption | null {
     const { networkId, contractAddress = null } = parseCryptoId(cryptoId);
     let network = cryptoIdToNetwork(cryptoId);
     const isNativeToken = Boolean(
@@ -157,7 +162,6 @@ export function createAssetOption({ cryptoId, coinInfo, platformInfo }: CreateAs
     }
  * ```
  */
-export type TradingAssetOption = NonNullable<ReturnType<typeof createAssetOption>>;
 
 export function createAssetNativeTokenOption(
     networkSymbol: NetworkConfigWithoutTestnets['symbol'],
