@@ -20,8 +20,8 @@ export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSet
     descriptionTrigger: 'User successfully finished device onboarding flow.',
     changelog: [
         { version: '25.5.1', notes: 'added' },
-        { version: '25.6.1', notes: 'added recoveryStepBack attribute' },
-        { version: '25.7.1', notes: 'added wasBackupSkipped, wasPinSkipped attributes' },
+        { version: '25.6.1', notes: 'added `recoveryStepBack` attribute' },
+        { version: '25.7.1', notes: 'added `wasBackupSkipped`, `wasPinSkipped` attributes' },
     ],
     attributes: {
         osName: {
@@ -51,15 +51,13 @@ export const deviceSetupCompletedEvent: EventDef<Attributes, EventType.DeviceSet
         },
         recoveryStepBack: {
             changelog: [{ version: '25.6.1', notes: 'added' }],
-            description: 'Whether user stepped back during recovery',
+            description: 'Whether user stepped back to previous screen during recovery',
         },
         wasBackupSkipped: {
             changelog: [{ version: '25.7.1', notes: 'added' }],
-            description: 'Whether backup was skipped',
         },
         wasPinSkipped: {
             changelog: [{ version: '25.7.1', notes: 'added' }],
-            description: 'Whether PIN setup was skipped',
         },
     },
 };

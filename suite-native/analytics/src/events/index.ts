@@ -29,6 +29,7 @@ export {
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
+export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';
