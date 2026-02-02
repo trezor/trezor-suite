@@ -1,16 +1,11 @@
 import { useCallback } from 'react';
 
-import {
-    type CountryChangeContext,
-    EventType,
-    SuiteNativeLegacyAnalyticsEvents,
-} from '@suite-native/analytics';
+import { type CountryChangeContext, EventType } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, useBottomSheetControls } from '@suite-native/trading-atoms';
-import { Analytics } from '@trezor/analytics-uploader';
 
 import { CountrySheet } from './CountrySheet';
 import { TradingLocationFormValues } from '../../types/tradingLocationForm';
@@ -22,9 +17,9 @@ export type CountryOfResidencePickerProps = {
 
 const reportCountryChange = (
     type: CountryChangeContext,
-    legacyAnalytics: Analytics<SuiteNativeLegacyAnalyticsEvents>,
+    analytics: ReturnType<typeof useAnalytics>,
 ) => {
-    legacyAnalytics.report({
+    analytics.report({
         type: EventType.TradingParameterChanged,
         payload: {
             type,
@@ -35,7 +30,7 @@ const reportCountryChange = (
 
 export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidencePickerProps) => {
     const { translate } = useTranslate();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { isSheetVisible, hideSheet, showSheet } = useBottomSheetControls();
 
     const { watch, setValue } = useFormContext<TradingLocationFormValues>();
@@ -51,10 +46,10 @@ export const CountryOfResidencePicker = ({ testID, context }: CountryOfResidence
             setSelectedValue(country);
 
             if (selectedValue?.value !== country?.value) {
-                reportCountryChange(context, legacyAnalytics);
+                reportCountryChange(context, analytics);
             }
         },
-        [setSelectedValue, selectedValue?.value, context, legacyAnalytics],
+        [setSelectedValue, selectedValue?.value, context, analytics],
     );
 
     const valueTestID = testID ? `${testID}/value` : undefined;

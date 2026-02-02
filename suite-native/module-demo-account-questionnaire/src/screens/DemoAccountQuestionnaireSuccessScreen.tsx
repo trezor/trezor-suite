@@ -12,7 +12,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     ESHOP_WHAT_IS_A_HARDWARE_WALLET_URL,
     ESHOP_WHY_TREZOR_IS_SECURE_URL,
@@ -57,9 +57,9 @@ type NavigationProp = StackNavigationProps<
 export const DemoAccountQuestionnaireSuccessScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const openLink = useOpenLink();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleOpenUrl = (recommendation: Recommendation) => {
-        legacyAnalytics.report(
+        analytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireLinks,
                 payload: {
@@ -73,7 +73,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
     };
 
     const handleBackToDashboard = () => {
-        legacyAnalytics.report(
+        analytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireLinks,
                 payload: {

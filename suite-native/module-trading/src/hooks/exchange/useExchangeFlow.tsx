@@ -16,7 +16,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 import { buildTradingUrl, getSourceForForm } from '../../utils/general/formUtils';
@@ -37,7 +37,7 @@ export type TradingExchangeSignAndSendTransactionProps = {
 
 export const useExchangeFlow = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const rootNavigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
@@ -83,7 +83,7 @@ export const useExchangeFlow = () => {
             });
 
             const triggerAnalyticsTradeConfirmation = () => {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.TradingConfirmTrade,
                     payload: {
                         type: 'exchange',
@@ -100,7 +100,7 @@ export const useExchangeFlow = () => {
                 processResponseData,
             };
         },
-        [handleWebview, legacyAnalytics, quote],
+        [handleWebview, analytics, quote],
     );
 
     const {

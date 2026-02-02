@@ -9,9 +9,6 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { EventType } from './constants';
 import {
     AnalyticsSendFlowStep,
-    DemoAccountQuestionnaireLinkKey,
-    DemoAccountQuestionnaireQuestion,
-    DemoAccountQuestionnaireQuestionOption,
     DeviceAuthenticityCheckResult,
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
@@ -19,8 +16,6 @@ import {
     TradingExchangeAction,
     TradingExchangeStep,
     TradingNavigateFrom,
-    TradingSellAction,
-    TradingSellStep,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -450,129 +445,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
               approvalType?: string;
               slippage?: string;
               rateType?: string;
-          };
-      }
-    | {
-          type: EventType.TradingSell;
-          payload: {
-              action: TradingSellAction;
-              step: TradingSellStep;
-
-              cryptoLabel?: string;
-              cryptoNetworkSymbol?: string;
-              cryptoContractAddress?: string;
-
-              receiveMethod?: string;
-              countryOfResidence?: string;
-
-              exchangeName?: string;
-          };
-      }
-    | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: TradingType;
-              status:
-                  | 'waiting'
-                  | 'processing'
-                  | 'pending'
-                  | 'converting'
-                  | 'sending'
-                  | 'kyc'
-                  | 'success'
-                  | 'error';
-          };
-      }
-    | {
-          type: EventType.TradingSuccess;
-          payload: {
-              type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingConfirmTrade;
-          payload: {
-              type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingParameterChanged;
-          payload: {
-              type: TradingType;
-              parameter: 'fiat' | 'cryptoFrom' | 'cryptoTo' | 'paymentMethod' | 'provider';
-          };
-      }
-    | {
-          type: EventType.TradingParameterChanged;
-          payload: {
-              type: CountryChangeContext;
-              parameter: 'country';
-          };
-      }
-    | {
-          type: EventType.TradingCountrySelection;
-          payload: {
-              type: CountryChangeContextCheck;
-              action: CountryChangeAction;
-          };
-      }
-    | {
-          type: EventType.DeviceSetupStarted;
-          payload: {
-              osName: string;
-              deviceModel: DeviceModelInternal | null;
-          };
-      }
-    | {
-          type: EventType.DeviceSetupCompleted;
-          payload: Partial<{
-              osName: string;
-              deviceModel: DeviceModelInternal | null;
-              duration: number;
-              seed: 'create' | 'recovery';
-              firmware: 'install' | 'update' | 'skip' | 'up-to-date';
-              seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
-              recoveryStepBack: boolean;
-              wasBackupSkipped: boolean;
-              wasPinSkipped: boolean;
-          }>;
-      }
-    | {
-          type: EventType.DeviceSetupSecurityCheck;
-          payload: {
-              location:
-                  | 'deviceLooksDifferent'
-                  | 'firmwareAlreadyInstalled'
-                  | 'untrustedReseller'
-                  | 'securitySeal'
-                  | 'packaging';
-          };
-      }
-    | {
-          type: EventType.DeviceSetupInfo;
-          payload: {
-              location: 'untrustedReseller' | 'securitySeal';
-          };
-      }
-    | {
-          type: EventType.ReferralButtonPress;
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireDashboard;
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireStart;
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireQuestion;
-          payload: {
-              option: DemoAccountQuestionnaireQuestionOption;
-              question: DemoAccountQuestionnaireQuestion;
-          };
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireLinks;
-          payload: {
-              option: DemoAccountQuestionnaireLinkKey;
           };
       };

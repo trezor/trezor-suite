@@ -18,7 +18,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 
@@ -41,7 +41,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
     answerOptions,
     nextRoute,
 }: DemoAccountQuestionnaireScreenContentProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -53,7 +53,7 @@ export const DemoAccountQuestionnaireScreenContent = ({
         useState<DemoAccountQuestionnaireQuestionOption | null>(null);
 
     const submitOption = (key: DemoAccountQuestionnaireQuestionOption) => {
-        legacyAnalytics.report(
+        analytics.report(
             {
                 type: EventType.DemoAccountQuestionnaireQuestion,
                 payload: {

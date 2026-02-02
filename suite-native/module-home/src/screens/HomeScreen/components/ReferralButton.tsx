@@ -2,14 +2,14 @@ import { EventType } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { SUITE_REFERRAL } from '@trezor/urls';
 
 export const ReferralButton = () => {
     const openLink = useOpenLink();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const handleOpenLink = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.ReferralButtonPress,
         });
         openLink(SUITE_REFERRAL);

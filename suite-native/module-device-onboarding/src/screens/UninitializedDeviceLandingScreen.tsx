@@ -18,7 +18,7 @@ import {
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -65,7 +65,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
@@ -100,7 +100,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause: 'firmwareAlreadyInstalled',
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
@@ -114,7 +114,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause,
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
@@ -124,7 +124,7 @@ export const UninitializedDeviceLandingScreen = ({
 
     useEffect(() => {
         resetOnboardingAnalytics();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupStarted,
             payload: {
                 osName: Platform.OS,
