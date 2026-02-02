@@ -95,6 +95,10 @@ export const TREZOR_SUPPORT_TRADING_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/trading-crypto-in-trezor-suite',
 );
 
+export const TREZOR_SUPPORT_UNDERSTANDING_FEES: Url = withPlatformUtm(
+    'https://trezor.io/guides/sending-receiving-staking-funds/trading-crypto-in-trezor-suite/trade-crypto-in-trezor-suite#understanding-trading-fees',
+);
+
 // =====================
 // 📚 HELP CENTER
 // =====================
