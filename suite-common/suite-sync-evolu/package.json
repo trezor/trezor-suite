@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@evolu/common": "^7.3.0",
+        "@evolu/common": "patch:@evolu/common@npm%3A7.3.0#~/.yarn/patches/@evolu-common-npm-7.3.0-dc4f142770.patch",
         "@noble/hashes": "^1.6.1",
         "@suite-common/suite-sync-storage": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
