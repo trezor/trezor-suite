@@ -316,7 +316,6 @@ export const HOMESCREEN_EDITOR_URL: Url = 'https://trezor.github.io/homescreen-e
 // 💸 INVITY
 // =====================
 export const INVITY_URL: Url = 'https://invity.io/invest-crypto';
-export const INVITY_SCHEDULE_OF_FEES: Url = 'https://blog.invity.io/schedule-of-fees/';
 export const LTC_ADDRESS_INFO_URL: Url = withPlatformUtm(
     'https://blog.trezor.io/litecoins-new-p2sh-segwit-addresses-843633e3e707',
 );
