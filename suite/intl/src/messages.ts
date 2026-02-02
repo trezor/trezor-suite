@@ -3733,7 +3733,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_CONFIRMED: {
         id: 'TOAST_TX_CONFIRMED',
-        defaultMessage: 'Transaction in {account} confirmed successfully',
+        defaultMessage: 'Transaction in {account} confirmed',
     },
     TOAST_TX_BUTTON: {
         id: 'TOAST_TX_BUTTON',
@@ -4058,7 +4058,7 @@ export const messages = defineMessages({
     },
     TR_WIPE_DEVICE_ERASE_ALL_DATA_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_ERASE_ALL_DATA_DESCRIPTION',
-        defaultMessage: "This will erase all device data. This action can't be undone.",
+        defaultMessage: "This will erase all of your device's data. This action can't be undone.",
     },
     TR_WIPE_DEVICE_WALLET_BACKUP: {
         id: 'TR_WIPE_DEVICE_WALLET_BACKUP',
@@ -4075,7 +4075,7 @@ export const messages = defineMessages({
     },
     TR_BACK_TO_DASHBOARD: {
         id: 'TR_BACK_TO_DASHBOARD',
-        defaultMessage: 'Back to dashboard',
+        defaultMessage: 'Back to Dashboard',
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -6046,7 +6046,7 @@ export const messages = defineMessages({
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC',
         defaultMessage:
-            'Your device “{name}” is not compatible with Suite Sync. You can use Trezor Safe 3, Trezor Safe 5, and Trezor Safe 7 devices.',
+            'The device {name} isn’t compatible with Suite Sync. Suite Sync supports Trezor Safe 3, 5, and 7 devices.',
     },
     FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT: {
         id: 'FIRMWARE_UNSUPPORTED_DEVICE_SUITE_SYNC_GOT_IT',
@@ -6074,8 +6074,7 @@ export const messages = defineMessages({
     },
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
-        defaultMessage:
-            'Name your wallets, personalize accounts, and label transactions to stay organized.',
+        defaultMessage: 'Name your wallets, personalize accounts, and label transactions.',
     },
     TR_LABELING_ENABLED: {
         id: 'TR_LABELING_ENABLED',
@@ -6100,7 +6099,7 @@ export const messages = defineMessages({
     },
     TR_BACKEND_DEFAULT_SERVERS: {
         id: 'TR_BACKEND_DEFAULT_SERVERS',
-        defaultMessage: 'Trezor servers (default)',
+        defaultMessage: 'Trezor (default)',
     },
     TR_BACKEND_CUSTOM_RPC: {
         id: 'TR_BACKEND_CUSTOM_RPC',
@@ -7554,7 +7553,7 @@ export const messages = defineMessages({
     },
     TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE: {
         id: 'TR_TREZOR_NEEDS_TO_BE_IN_PAIRING_MODE',
-        defaultMessage: 'Your Trezor needs to be in pairing mode to continue.',
+        defaultMessage: 'Turn on pairing mode on your Trezor',
     },
     TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED: {
         id: 'TR_WINDOW_WILL_CLOSE_WHEN_TREZOR_IS_PAIRED',
@@ -9595,7 +9594,7 @@ export const messages = defineMessages({
     },
     TOAST_TX_UNSTAKED: {
         id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: 'Unstaked from {account}',
+        defaultMessage: 'Unstake from {account}',
     },
     TOAST_TX_CLAIMED: {
         id: 'TOAST_TX_CLAIMED',
@@ -10342,7 +10341,7 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_HEADING',
-        defaultMessage: 'Turn on Suite Sync to use labels',
+        defaultMessage: 'Turn on Suite Sync',
     },
     TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_LABELS_MODAL_DESCRIPTION',
@@ -10350,27 +10349,27 @@ export const messages = defineMessages({
     },
     TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_STORED_LOCALLY',
-        defaultMessage: 'Your data is stored locally and only synced with devices you’ve approved.',
+        defaultMessage: 'Securely sync your labels and names between mobile & desktop.',
     },
     TR_TURN_ON_SECURE_SYNC_DATA_LABELS: {
         id: 'TR_TURN_ON_SECURE_SYNC_DATA_LABELS',
-        defaultMessage: 'Name your wallets, personalize accounts, and label transactions. ',
+        defaultMessage: 'Name your wallets, personalize accounts, and label transactions.',
     },
     TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES: {
         id: 'TR_TURN_ON_SECURE_SYNC_ONLY_AUTHORIZED_DEVICES',
-        defaultMessage: 'Only devices you’ve approved through your Trezor can decrypt your data.',
+        defaultMessage: 'Only devices you approve using your Trezor can access your labels.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_HEADING',
-        defaultMessage: 'Firmware update needed for Suite Sync',
+        defaultMessage: 'Firmware update required',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_DESCRIPTION',
-        defaultMessage: 'Update the firmware on your device “{name}” to use Suite Sync.',
+        defaultMessage: 'Update firmware on the device {name} to use Suite Sync.',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_UPGRADE',
-        defaultMessage: 'Upgrade',
+        defaultMessage: 'Update',
     },
     TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW: {
         id: 'TR_TURN_ON_SECURE_SYNC_FW_UPDATE_MODAL_NOT_NOW',
@@ -10705,7 +10704,7 @@ export const messages = defineMessages({
     },
     TR_HIDDEN_TOKEN_WITHOUT_FIAT: {
         id: 'TR_HIDDEN_TOKEN_WITHOUT_FIAT',
-        defaultMessage: 'No pair',
+        defaultMessage: 'No trading pair',
     },
     TR_NON_TRADABLE_TOKENS: {
         id: 'TR_NON_TRADABLE_TOKENS',
