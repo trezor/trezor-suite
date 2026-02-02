@@ -19,7 +19,7 @@ import type {
 
 import { ExtendedMessageDescriptor } from '@suite/intl';
 import { CountryCode } from '@suite-common/geolocation';
-import { Network } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     Account,
     AccountKey,
@@ -32,7 +32,6 @@ import { Timer } from '@trezor/react-utils';
 import { PrimitiveType } from '@trezor/type-utils';
 
 import * as constants from './constants';
-import type { TradingAssetOption } from './hooks/useTradingAssets';
 
 export type InvityServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type InvityServers = Record<InvityServerEnvironment, string>;
@@ -46,6 +45,17 @@ export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeBuyExchangeType = Exclude<TradingType, TradingSellType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
+export type TradingAssetOption = {
+    isNativeToken: boolean;
+    id: CryptoId;
+    name: string;
+    coingeckoId: string;
+    symbol: string;
+    displaySymbol: string;
+    contractAddress: string | null;
+    networkName: string;
+    networkSymbol: NetworkSymbol;
+};
 // information about created trade
 export type TradingTradeType = BuyTrade | SellFiatTrade | ExchangeTrade;
 export type TradingTradeMapProps = {
