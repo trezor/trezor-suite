@@ -177,6 +177,7 @@ const prepareContent = (
             let tokens: Array<Fields | null> = [];
             let internalTransfers: Array<Fields | null> = [];
             let targets: Array<Fields | null> = [];
+            let cardanoSpecific: Array<Fields | null> = [];
 
             if (t.targets.length > 0) {
                 targets = t.targets.map(target => {
@@ -286,7 +287,70 @@ const prepareContent = (
                 });
             }
 
-            return [...targets, ...tokens, ...internalTransfers];
+            if (t.cardanoSpecific) {
+                const { subtype } = t.cardanoSpecific;
+
+                const getAmount = () => {
+                    if (!t.cardanoSpecific || !subtype) return '0';
+
+                    switch (subtype) {
+                        case 'withdrawal':
+                            return t.cardanoSpecific.withdrawal || '0';
+                        case 'stake_registration':
+                        case 'stake_deregistration':
+                        case 'stake_delegation':
+                            return t.cardanoSpecific.deposit || '0';
+                        default:
+                            return '0';
+                    }
+                };
+                const getAddress = () => {
+                    if (!t.cardanoSpecific || !subtype) return '';
+
+                    switch (subtype) {
+                        case 'withdrawal':
+                        case 'stake_deregistration':
+                            return t.details.vout[0]?.addresses?.[0] || '';
+                        case 'stake_registration':
+                        case 'stake_delegation':
+                        case 'governance_delegation':
+                            return t.details.vin[0]?.addresses?.[0] || '';
+                        default:
+                            return '';
+                    }
+                };
+                if (subtype) {
+                    const amount = getAmount();
+                    cardanoSpecific = [
+                        {
+                            ...sharedData,
+                            symbol: getNetworkDisplaySymbol(data.symbol),
+                            amount,
+                            fee: !hasFeeBeenAlreadyUsed ? t.fee : '',
+                            feeSymbol: !hasFeeBeenAlreadyUsed
+                                ? getNetworkDisplaySymbol(data.symbol)
+                                : '',
+                            address: getAddress(),
+                            label: '',
+                            fiat:
+                                amount && historicRate
+                                    ? localizeNumber(
+                                          new BigNumber(amount)
+                                              .multipliedBy(historicRate)
+                                              .toNumber(),
+                                          undefined,
+                                          2,
+                                          2,
+                                      ).toString()
+                                    : '',
+                            other: '',
+                        },
+                    ];
+                    hasFeeBeenAlreadyUsed = true;
+                }
+            }
+
+            return [...targets, ...tokens, ...internalTransfers, ...cardanoSpecific];
         })
         .filter(record => record !== null) as Fields[];
 };
