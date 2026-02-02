@@ -1,5 +1,4 @@
 import { memo, useCallback } from 'react';
-import { Keyboard } from 'react-native';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { BottomSheetSectionList, ItemRenderConfig } from '@suite-native/trading-atoms';
@@ -44,10 +43,8 @@ export const TradeableAssetSheet = memo(
         testID,
     }: TradeableAssetsSheetProps) => {
         const onAssetSelectCallback = (asset: TradeableAsset) => {
-            // has to be before onAssetSelect callback call to allow focusing another input from it
-            Keyboard.dismiss();
-            onAssetSelect(asset);
             onClose();
+            onAssetSelect(asset);
         };
 
         const listData = useFavouriteAssetsSectionList(assets);

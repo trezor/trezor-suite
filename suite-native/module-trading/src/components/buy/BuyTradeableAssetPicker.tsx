@@ -39,10 +39,11 @@ export const BuyTradeableAssetPicker = () => {
             setSelectedValue(asset);
             if (shouldFocusInput) {
                 setShouldFocusInput(false);
-                // CryptoAmountInput is rendered disabled allow changes to propagate.
+                // CryptoAmountInput is rendered disabled allow changes to propagate and
+                // allow bottom-sheet to hide first.
                 setTimeout(() => {
                     inputRef.current?.focus();
-                }, 0);
+                }, 300);
             }
         },
         [shouldFocusInput, setSelectedValue],
