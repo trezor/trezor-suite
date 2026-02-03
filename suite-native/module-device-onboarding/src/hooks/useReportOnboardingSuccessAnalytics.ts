@@ -10,7 +10,7 @@ import {
     selectIsDeviceProtectedByPin,
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
 
@@ -19,10 +19,10 @@ export const useReportOnboardingSuccessAnalytics = () => {
     const isDeviceBackupRequired = useSelector(selectIsDeviceBackupRequired);
     const isDeviceProtectedByPin = useSelector(selectIsDeviceProtectedByPin);
     const onboardingAnalytics = useAtomValue(onboardingAnalyticsAtom);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     return useCallback(() => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupCompleted,
             payload: {
                 deviceModel,
@@ -39,7 +39,7 @@ export const useReportOnboardingSuccessAnalytics = () => {
         deviceModel,
         isDeviceBackupRequired,
         isDeviceProtectedByPin,
-        legacyAnalytics,
+        analytics,
         onboardingAnalytics,
     ]);
 };
