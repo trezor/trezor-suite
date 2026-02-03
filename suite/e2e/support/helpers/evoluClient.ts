@@ -1,81 +1,112 @@
 /* eslint-disable no-console */
-import { SimpleName, createIdFromString, id } from '@evolu/common';
-import { OwnerId, createEvolu } from '@evolu/common/local-first';
-// import { createEvolu, createOwnerWebSocketTransport, OwnerId } from '@evolu/common/local-first';
+import { Evolu, SimpleName, createIdFromString, getOrThrow, id } from '@evolu/common';
+import { createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
+import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
 
 import { createNodeEvoluDeps } from './createEvoluNodeDeps';
+import { expect } from '../../support/fixtures';
 
-const ownerId = 'yg0UgROParTpm60ltI3hDw';
-const ownerSecret =
-    'e17818d7c458f171885280eeef2d70078c6842b51e18ec6f2f8c9f44d3d171fd0f49a3aeff32a560d7f823321fcd24f8d8773ffa59855c6447b11af88a2fd7b5';
+export class EvoluClient {
+    private _evolu?: Evolu<typeof Schema>;
 
-export const createEvoluClient = async () => {
-    const { deps } = await createNodeEvoluDeps();
+    async init({
+        ownerSecret,
+        //TODO: replace with one source definition
+        relayUrl = 'http://localhost:4000',
+    }: {
+        ownerSecret: SuiteSyncOwnerSecretHex;
+        relayUrl?: string;
+    }) {
+        const { deps } = await createNodeEvoluDeps();
 
-    const owner = createEvoluAppOwnerFromTrezorData({ data: ownerSecret });
+        const owner = createEvoluAppOwnerFromTrezorData({ data: ownerSecret });
+        if (!owner.ok) {
+            throw new Error(`Failed to parse owner: ${JSON.stringify(owner.error)}`);
+        }
 
-    if (!owner.ok) {
-        console.error(owner.error);
+        //db name just on client side
+        //TODO: I think it is not used not at all because of how deps are created
+        const sanitizedOwnerId = owner.value.id.replaceAll('_', '-');
+        const databaseName = getOrThrow(SimpleName.from(`trezor-suite-e2e-${sanitizedOwnerId}`));
 
-        throw owner.error;
+        this._evolu = createEvolu(deps)(Schema, {
+            name: databaseName,
+            transports: [
+                createOwnerWebSocketTransport({
+                    url: relayUrl,
+                    ownerId: owner.value.id,
+                }),
+            ],
+            externalAppOwner: owner.value,
+            // This turns on the Encryption-at-rest (encryption of the SQLLite file),
+            encryptionKey: owner.value.encryptionKey,
+        });
+
+        this._evolu.subscribeError(() => {
+            console.error('Evolu Error:', this._evolu?.getError());
+        });
     }
 
-    // better var name
-    const ownerIdResult = OwnerId.fromUnknown(ownerId);
-    if (!ownerIdResult.ok) {
-        throw ownerIdResult.error;
+    get evolu() {
+        if (!this._evolu) {
+            throw new Error('EvoluClient not initialized. Call init() first.');
+        }
+
+        return this._evolu;
     }
 
-    const sanitizedOwnerId = ownerId.replaceAll('_', '-');
-    const databaseName = SimpleName.from(`trezor-suite-e2e-${sanitizedOwnerId}`);
-    if (!databaseName.ok) {
-        console.error(databaseName.error);
+    //TMP
+    async getAccountData() {
+        const accountData = await this.evolu.loadQuery(
+            this.evolu.createQuery(db => db.selectFrom('account').selectAll()),
+        );
+        const error = this.evolu.getError();
+        if (error) {
+            console.error('Evolu Error detected during wait:', error);
+        }
 
-        throw databaseName.error;
-    }
-    console.log('Database name:', databaseName);
-    console.log('Owner:', owner);
-
-    const evolu = createEvolu(deps)(Schema, {
-        name: databaseName.value,
-        transports: [
-            // createOwnerWebSocketTransport({
-            //     url: 'http://localhost:4000',
-            //     ownerId: ownerIdResult.value,
-            // }),
-        ],
-        externalAppOwner: owner.value,
-        // This turns on the Encryption-at-rest (encryption of the SQLLite file),
-        encryptionKey: owner.value.encryptionKey,
-    });
-
-    // Insert a wallet label
-    const WalletLabelId = id('WalletLabelId');
-    const walletDescriptor = 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zTXPD';
-    const walletIdResult = WalletLabelId.from(createIdFromString(walletDescriptor));
-
-    if (!walletIdResult.ok) {
-        throw walletIdResult.error;
+        return accountData;
     }
 
-    const upsertResult = evolu.upsert('wallet', {
-        id: walletIdResult.value,
-        walletDescriptor,
-        label: 'My Test Wallet',
-    });
-
-    if (!upsertResult.ok) {
-        console.error('Upsert failed:', upsertResult.error);
-        throw upsertResult.error;
+    //TMP
+    async testWriteAndRead() {
+        this.writeTestData();
+        await this.readTestData();
     }
 
-    console.log('Wallet upserted successfully');
+    //TMP
+    writeTestData() {
+        // Insert a wallet label
+        const WalletLabelId = id('WalletLabelId');
+        const walletDescriptor = 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zTXPD';
+        const walletIdResult = WalletLabelId.from(createIdFromString(walletDescriptor));
+        if (!walletIdResult.ok) {
+            throw walletIdResult.error;
+        }
+        const upsertResult = this.evolu.upsert('wallet', {
+            id: walletIdResult.value,
+            walletDescriptor,
+            label: 'My Test Wallet',
+        });
+        if (!upsertResult.ok) {
+            console.error('Upsert failed:', upsertResult.error);
+            throw upsertResult.error;
+        }
+    }
 
-    // get by using the public API:
-    const walletData = await evolu.loadQuery(
-        evolu.createQuery(db => db.selectFrom('wallet').selectAll()),
-    );
-    console.log('Wallet data', walletData);
-};
+    //TMP
+    async readTestData() {
+        // Get and log the wallet data to verify
+        await expect(async () => {
+            const walletData = await this.evolu.loadQuery(
+                this.evolu.createQuery(db => db.selectFrom('wallet').selectAll()),
+            );
+            console.log('Wallet data:', walletData);
+
+            expect(walletData).not.toEqual([]);
+            console.error('Wallet data from Evolu:', JSON.stringify(walletData));
+        }).toPass({ timeout: 30_000 });
+    }
+}

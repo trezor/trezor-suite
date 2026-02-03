@@ -16,6 +16,9 @@
             "path": "../../suite-common/message-system"
         },
         {
+            "path": "../../suite-common/suite-sync-evolu"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/trading" },
