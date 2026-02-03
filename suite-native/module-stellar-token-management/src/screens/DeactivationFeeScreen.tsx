@@ -12,9 +12,12 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
+    HomeStackRoutes,
+    RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
     StackProps,
+    StackToStackCompositeNavigationProps,
     StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
@@ -30,15 +33,24 @@ type RouteProps = StackProps<
     StellarManageTokenStackRoutes.DeactivationFee
 >['route'];
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    StellarManageTokenStackParamList,
+    StellarManageTokenStackRoutes.DeactivationFee,
+    RootStackParamList
+>;
+
 export const DeactivationFeeScreen = () => {
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
 
     const handleSuccess = useCallback(() => {
         // Navigate to home page after deactivation
-        navigation.getParent()?.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
         });
     }, [navigation]);
 
