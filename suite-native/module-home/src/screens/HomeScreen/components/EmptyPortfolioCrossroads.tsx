@@ -21,7 +21,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
@@ -59,7 +59,6 @@ type SecondaryCardConfig = {
 
 export const EmptyPortfolioCrossroads = () => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
 
@@ -90,7 +89,7 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.DemoAccountQuestionnaireStack, {
             screen: DemoAccountQuestionnaireStackRoutes.Intro,
         });
-        legacyAnalytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
+        analytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
     };
 
     const secondaryCardConfig: SecondaryCardConfig = isQuestionnaireEnabled
