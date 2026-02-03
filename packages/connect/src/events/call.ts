@@ -1,6 +1,6 @@
 import { serializeError } from '@trezor/connect-common/src/constants/errors';
 
-import type { IFRAME } from './iframe';
+import type { CORE_CALL } from './core-call';
 import type { Device } from '../device/Device';
 import type { TrezorConnect } from '../types/api';
 import type { CommonParams, DeviceIdentity } from '../types/params';
@@ -66,9 +66,9 @@ export type CallMethodAnyResponse = ReturnType<CallMethodUnion>;
 
 export type CallMethod = (params: CallMethodPayload) => Promise<any>;
 
-export interface IFrameCallMessage {
+export interface CoreCallMessage {
     id: number;
-    type: typeof IFRAME.CALL;
+    type: typeof CORE_CALL;
     payload: CallMethodPayload;
 }
 

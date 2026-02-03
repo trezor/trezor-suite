@@ -2,9 +2,9 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index
 import {
+    CORE_CALL,
     CallMethod,
     ConnectSettings,
-    IFRAME,
     Manifest,
     POPUP,
     createErrorMessage,
@@ -87,7 +87,7 @@ const setTransports = () => {
 const call: CallMethod = async (params: any) => {
     try {
         const response = await _channel.postMessage({
-            type: IFRAME.CALL,
+            type: CORE_CALL,
             payload: params,
         });
         if (response) {

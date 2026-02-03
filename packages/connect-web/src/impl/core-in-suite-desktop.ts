@@ -2,9 +2,9 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
+    CORE_CALL,
     CallMethodAnyResponse,
     CallMethodPayload,
-    IFRAME,
     POPUP,
     UiResponseEvent,
 } from '@trezor/connect/src/events';
@@ -155,7 +155,7 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
 
             const response = await this.ws.sendMessage(
                 {
-                    type: IFRAME.CALL,
+                    type: CORE_CALL,
                     payload: params,
                 },
                 {
