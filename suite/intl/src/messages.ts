@@ -7784,6 +7784,10 @@ export const messages = defineMessages({
         id: 'TR_STAKE_DELEGATED',
         defaultMessage: 'Stake delegation',
     },
+    TR_STAKE_VOTING_DELEGATION: {
+        id: 'TR_STAKE_VOTING_DELEGATION',
+        defaultMessage: 'Voting delegation',
+    },
     TR_STAKE_REGISTERED: {
         id: 'TR_STAKE_REGISTERED',
         defaultMessage: 'Registration of a stake address',
@@ -9443,6 +9447,26 @@ export const messages = defineMessages({
     TR_STAKE_CLAIM_REWARDS: {
         id: 'TR_STAKE_CLAIM_REWARDS',
         defaultMessage: 'Claim rewards',
+    },
+    TR_STAKE_CHANGE_DELEGATE: {
+        id: 'TR_STAKE_CHANGE_DELEGATE',
+        defaultMessage: 'Change delegate',
+    },
+    TR_STAKE_CHANGE_YOUR_DELEGATE: {
+        id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
+        defaultMessage: 'Change your stake delegate?',
+    },
+    TR_STAKE_CURRENT_DELEGATE: {
+        id: 'TR_STAKE_CURRENT_DELEGATE',
+        defaultMessage: 'Current delegate',
+    },
+    TR_STAKE_PROVIDER_UNKNOWN: {
+        id: 'TR_STAKE_PROVIDER_UNKNOWN',
+        defaultMessage: 'Unknown provider',
+    },
+    TR_STAKE_NONE: {
+        id: 'TR_STAKE_NONE',
+        defaultMessage: 'None',
     },
     TR_STAKE_ETH_REWARDS_EARN_APY: {
         id: 'TR_STAKE_ETH_REWARDS_EARN_APY',

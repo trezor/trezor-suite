@@ -4,6 +4,8 @@ import {
     SupportedSolanaNetworkSymbols,
 } from '@suite-common/wallet-types';
 
+import { VotingDelegationOption } from './stakeActions';
+
 export const EVERSTAKE_ENDPOINT_PREFIX: Record<
     SupportedEthereumNetworkSymbol | SupportedSolanaNetworkSymbols | SupportedCardanoNetworkSymbols,
     string
@@ -20,3 +22,5 @@ export const EVERSTAKE_REWARDS_SOLANA_ENPOINT =
 
 export const EVERSTAKE_VALIDATOR = '9QU2QSxhb24FUX3Tu2FpczXjpK3VYrvRudywSZaM29mF';
 export const EVERSTAKE_API_KEY = '70ab9ee4-7699-47af-9f79-ad85aee1d490';
+
+export const DEFAULT_VOTING_OPTION: VotingDelegationOption = { type: 'everstake' };

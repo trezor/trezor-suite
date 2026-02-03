@@ -167,10 +167,12 @@ const pushTransaction =
                 const base = { withdrawal: undefined, deposit: undefined };
                 let cardanoSpecific: WalletAccountTransaction['cardanoSpecific'];
 
-                // TODO: missing stake_registration?
                 switch (stakeType) {
                     case 'stake':
-                        cardanoSpecific = { ...base, subtype: 'stake_delegation' };
+                        cardanoSpecific = { ...base, subtype: 'stake_registration' };
+                        break;
+                    case 'change-delegate':
+                        cardanoSpecific = { ...base, subtype: 'governance_delegation' };
                         break;
                     case 'unstake':
                         cardanoSpecific = { ...base, subtype: 'stake_deregistration' };

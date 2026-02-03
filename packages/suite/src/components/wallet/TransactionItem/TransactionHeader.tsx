@@ -32,6 +32,8 @@ const getSelfTransactionMessageByType = ({
             return 'TR_REWARDS_WITHDRAWAL';
         case 'stake_delegation':
             return 'TR_STAKE_DELEGATED';
+        case 'governance_delegation':
+            return 'TR_STAKE_VOTING_DELEGATION';
         case 'stake_registration':
             return 'TR_STAKE_REGISTERED';
         case 'stake_deregistration':

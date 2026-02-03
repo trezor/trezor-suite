@@ -192,10 +192,13 @@ export const getAdaAccountTotalStakingBalance = (account: Account) =>
           }).toString()
         : null;
 
-export const subtypeToStakeTypeMap: { [key: string]: StakeType } = {
+type CardanoSpecific = NonNullable<WalletAccountTransaction['cardanoSpecific']>;
+export const subtypeToStakeTypeMap: Record<Required<CardanoSpecific>['subtype'], StakeType> = {
     stake_delegation: 'stake',
+    stake_registration: 'stake',
     stake_deregistration: 'unstake',
     withdrawal: 'claim',
+    governance_delegation: 'change-delegate',
 };
 
 export const isCardanoStakingTx = (transaction: WalletAccountTransaction) =>

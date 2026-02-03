@@ -4,6 +4,7 @@ import { getStakingTotalRewards } from '@suite-common/staking';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
     selectStakingTotalRewards,
@@ -101,6 +102,7 @@ export const StakingCard = ({
         selectStakingTotalRewards(state, account?.symbol, account.descriptor),
     );
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);
+    const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 
     const { totalRewards = '0', isTotalRewardsLoading } = getStakingTotalRewards(
         account,
@@ -159,6 +161,8 @@ export const StakingCard = ({
     const shouldShowProgressLabels =
         (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
 
+    const isCardanoNetworkType = account.networkType === 'cardano';
+
     const dispatch = useDispatch();
 
     const openStakeModal = () => {
@@ -206,7 +210,20 @@ export const StakingCard = ({
         }
     };
 
-    const isCardanoNetworkType = account.networkType === 'cardano';
+    const openChangeDelegateModal = () => {
+        if (!isCardanoNetworkType || !isStakingActive || isStakeConfirming) return;
+
+        dispatch(openModal({ type: 'change-delegate' }));
+
+        analytics.report({
+            type: events.stakingChangeDelegateEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'staking-dashboard',
+                networkSymbol: account.symbol,
+            },
+        });
+    };
 
     return (
         <Card data-testid="@wallet/staking/card">
@@ -398,6 +415,16 @@ export const StakingCard = ({
                             />
                         </Button>
                     </Tooltip>
+                    {isCardanoNetworkType && (
+                        <Button
+                            onClick={openChangeDelegateModal}
+                            isDisabled={!isStakingActive || isStakeConfirming}
+                            intent="neutral"
+                            priority="secondary"
+                        >
+                            <Translation id="TR_STAKE_CHANGE_DELEGATE" />
+                        </Button>
+                    )}
                 </Row>
             </Column>
         </Card>

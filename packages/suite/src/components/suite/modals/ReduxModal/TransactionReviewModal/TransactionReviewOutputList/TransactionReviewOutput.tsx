@@ -61,6 +61,10 @@ const getStakeTranslations = (
             value: isEverStake ? 'TR_CLAIM_FROM_EVERSTAKE' : 'TR_CLAIM_FROM_STAKE_ACCOUNT',
             label: 'TR_STAKE_CLAIM',
         },
+        'change-delegate': {
+            value: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
+            label: 'TR_STAKE_CHANGE_DELEGATE',
+        },
     };
 
     return translations[stakeType];

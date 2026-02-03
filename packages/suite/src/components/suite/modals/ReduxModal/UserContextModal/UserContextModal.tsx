@@ -42,6 +42,7 @@ import { PinMismatchModal } from './PinMismatchModal';
 import { QrScannerModal } from './QrScannerModal';
 import { RequestEnableTorModal } from './RequestEnableTorModal';
 import { SafetyChecksModal } from './SafetyChecksModal';
+import { StakeChangeDelegateModal } from './StakeChangeDelegateModal/StakeChangeDelegateModal';
 import { StakeInANutshellModal } from './StakeInANutshellModal/StakeInANutshellModal';
 import { StakeModal } from './StakeModal/StakeModal';
 import { TorLoadingModal } from './TorLoadingModal';
@@ -145,6 +146,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ClaimModal onCancel={onCancel} />;
         case 'everstake':
             return <EverstakeModal onCancel={onCancel} flow={payload.flow} />;
+        case 'change-delegate':
+            return <StakeChangeDelegateModal onCancel={onCancel} />;
         case 'copy-address':
             return (
                 <CopyAddressModal

@@ -148,6 +148,9 @@ export type UserContextPayload =
           flow: StakingFlow;
       }
     | {
+          type: 'change-delegate';
+      }
+    | {
           type: 'copy-address';
           addressType: AddressType;
           address: string;

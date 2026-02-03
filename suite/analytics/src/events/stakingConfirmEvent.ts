@@ -3,7 +3,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { EventType } from '../constants';
 
 type Attributes = {
-    action: AttributeDef<'stake' | 'unstake' | 'claim'>;
+    action: AttributeDef<'stake' | 'unstake' | 'claim' | 'change-delegate'>;
     networkSymbol?: AttributeDef<string>;
 };
 

@@ -228,6 +228,7 @@ const shouldHideProgressBar = ({
 }) => {
     const isClaimPending = pendingTxStakeType === 'claim';
     const isUnstakePending = pendingTxStakeType === 'unstake';
+    const isChangeDelegatePending = pendingTxStakeType === 'change-delegate';
     const isClaimLast = lastTxStakeType === 'claim';
     const hasNoPendingTx = !pendingTxStakeType;
 
@@ -235,6 +236,9 @@ const shouldHideProgressBar = ({
         case 'cardano': {
             // Cardano does not support progress bar for claim
             if (isClaimPending || isClaimLast) return true;
+
+            // progress bar should be hidden for change-delegate
+            if (isChangeDelegatePending) return true;
 
             // Hide progress not staking with us,
             // but show it when pending tx as it can be update provider
