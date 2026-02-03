@@ -323,7 +323,7 @@ export const selectDeviceStatus = createMemoizedSelector(
     device => device && getStatus(device),
 );
 
-export const selectIsDeviceThpRequired = createMemoizedSelector(
+export const selectIsDeviceThpLocked = createMemoizedSelector(
     [selectDeviceStatus],
     deviceStatus => deviceStatus === 'device-thp-locked',
 );

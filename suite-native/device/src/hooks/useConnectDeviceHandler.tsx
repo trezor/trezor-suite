@@ -8,7 +8,7 @@ import { bluetoothActions } from '@suite-common/bluetooth';
 import {
     acquireDevice,
     selectIsAnyPhysicalDeviceConnectedViaUsb,
-    selectIsDeviceThpRequired,
+    selectIsDeviceThpLocked,
 } from '@suite-common/wallet-core';
 import {
     AuthorizeDeviceStackRoutes,
@@ -29,13 +29,13 @@ export const useConnectDeviceHandler = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
 
-    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
     const isAnyPhysicalDeviceConnectedViaUsb = useSelector(
         selectIsAnyPhysicalDeviceConnectedViaUsb,
     );
 
     const onConnectDevicePress = useCallback(() => {
-        if (isDeviceThpRequired) {
+        if (isDeviceThpLocked) {
             dispatch(acquireDevice({}));
         } else if (isAnyPhysicalDeviceConnectedViaUsb || Platform.OS === 'ios') {
             // Make sure auto-connect is enabled in case some device was manually disconnected.
@@ -48,7 +48,7 @@ export const useConnectDeviceHandler = () => {
                 screen: AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads,
             });
         }
-    }, [dispatch, isDeviceThpRequired, isAnyPhysicalDeviceConnectedViaUsb, navigation]);
+    }, [dispatch, isDeviceThpLocked, isAnyPhysicalDeviceConnectedViaUsb, navigation]);
 
     return { onConnectDevicePress };
 };

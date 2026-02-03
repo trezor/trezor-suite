@@ -5,7 +5,7 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceConnected,
     selectIsDeviceInitialized,
-    selectIsDeviceThpRequired,
+    selectIsDeviceThpLocked,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Box } from '@suite-native/atoms';
@@ -24,7 +24,7 @@ export const EmptyHomeRenderer = () => {
     const isDeviceReadyToUse = useSelector(selectIsDeviceReadyToUse);
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
-    const isDeviceThpRequired = useSelector(selectIsDeviceThpRequired);
+    const isDeviceThpLocked = useSelector(selectIsDeviceThpLocked);
     const isDeviceSetupSupported = useSelector(selectIsDeviceSetupSupported);
 
     // This state is present only for a fraction of second while redirecting to the Connecting screen is already happening.
@@ -35,12 +35,7 @@ export const EmptyHomeRenderer = () => {
 
     let ScreenContent = EmptyPortfolioTrackerState;
 
-    if (
-        isDeviceSetupSupported &&
-        isDeviceConnected &&
-        !isDeviceInitialized &&
-        !isDeviceThpRequired
-    ) {
+    if (isDeviceSetupSupported && isDeviceConnected && !isDeviceInitialized && !isDeviceThpLocked) {
         ScreenContent = UninitializedConnectedDeviceState;
     }
     // Crossroads should be displayed if there is no real device connected and portfolio tracker has no accounts
