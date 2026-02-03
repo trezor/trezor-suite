@@ -1,30 +1,17 @@
+import { UINT256_MAX } from '@suite-common/suite-constants';
+import { BigNumber } from '@trezor/utils';
+
 import {
-    decimalToHex,
+    buildApprovalTransactionData,
     getEvmApprovalTxData,
     getEvmTransactionTextSignature,
     getEvmTransferTxData,
-    hexToDecimal,
     padLeftEven,
     sanitizeHex,
     strip,
 } from '../ethUtils';
 
 describe('eth utils', () => {
-    it('decimalToHex', () => {
-        expect(decimalToHex(0)).toBe('0');
-        expect(decimalToHex(1)).toBe('1');
-        expect(decimalToHex(2)).toBe('2');
-        expect(decimalToHex(100)).toBe('64');
-        expect(decimalToHex(9999999999)).toBe('2540be3ff');
-    });
-
-    it('hexToDecimal', () => {
-        expect(hexToDecimal(64)).toBe('100');
-        expect(hexToDecimal(2)).toBe('2');
-        expect(hexToDecimal(1)).toBe('1');
-        expect(hexToDecimal(0)).toBe('0');
-    });
-
     it('padLeftEven', () => {
         // TODO: add more tests
         expect(padLeftEven('2540be3ff')).toBe('02540be3ff');
@@ -245,6 +232,86 @@ describe('eth utils', () => {
                 '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
                 '00000000000000000000000000000000000000000000000000000000000003E8';
             expect(getEvmTransactionTextSignature(upperNoPrefix)).toBe('transfer');
+        });
+    });
+
+    describe('buildApprovalTransactionData', () => {
+        const VALID_SPENDER = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
+
+        it('builds correct calldata for a valid approval', () => {
+            const result = buildApprovalTransactionData({
+                amount: '1000000000000000000',
+                spender: VALID_SPENDER,
+            });
+
+            expect(result).toBe(
+                '0x095ea7b3' +
+                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                    '0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+            );
+        });
+
+        it('builds correct calldata for zero amount (revoke)', () => {
+            const result = buildApprovalTransactionData({
+                amount: '0',
+                spender: VALID_SPENDER,
+            });
+
+            expect(result).toBe(
+                '0x095ea7b3' +
+                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                    '0000000000000000000000000000000000000000000000000000000000000000',
+            );
+        });
+
+        it('builds correct calldata for max uint256 (infinite approval)', () => {
+            const maxUint256Decimal = new BigNumber(UINT256_MAX).toString(10);
+            const result = buildApprovalTransactionData({
+                amount: maxUint256Decimal,
+                spender: VALID_SPENDER,
+            });
+
+            expect(result).toBe(
+                '0x095ea7b3' +
+                    '000000000000000000000000742d35cc6634c0532925a3b844bc454e4438f44e' +
+                    'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+            );
+        });
+
+        it.each([
+            ['wrong length', '0x742d35cc6634c0532925a3b844bc454e4438f44'],
+            ['non-hex characters', '0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'],
+            ['empty string', ''],
+        ])('throws for invalid spender address (%s)', (_, spender) => {
+            expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow(
+                'Invalid spender address',
+            );
+        });
+
+        it.each([
+            ['negative', '-1'],
+            ['non-numeric', 'abc'],
+            ['decimal', '1.5'],
+            ['exceeds uint256 max', new BigNumber(UINT256_MAX).plus(1).toString(10)],
+        ])('throws for invalid amount (%s)', (_, amount) => {
+            expect(() => buildApprovalTransactionData({ amount, spender: VALID_SPENDER })).toThrow(
+                'Invalid amount',
+            );
+        });
+
+        it('produces calldata that getEvmApprovalTxData can decode', () => {
+            const amount = '1000000000000000000';
+            const calldata = buildApprovalTransactionData({
+                amount,
+                spender: VALID_SPENDER,
+            });
+
+            const decoded = getEvmApprovalTxData(calldata);
+
+            expect(decoded).not.toBeNull();
+            expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
+            expect(decoded?.amount).toBe(amount);
+            expect(decoded?.type).toBe('approve');
         });
     });
 
