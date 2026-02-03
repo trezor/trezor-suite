@@ -50,4 +50,3 @@ export type TradingSellStep =
     | 'fee-selection'
     | 'sign-and-send'
     | 'webview';
-
