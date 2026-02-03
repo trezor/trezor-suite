@@ -3,7 +3,6 @@ import { CryptoId } from 'invity-api';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Text } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
@@ -27,7 +26,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
 
     return (
         <Column alignItems="start">
-            <Row gap={spacings.xs} alignItems="center">
+            <Row gap={8} alignItems="center">
                 {cryptoId && <TradingCoinLogo cryptoId={cryptoId} />}
                 <Text
                     data-testid="@trading/best-offer/amount"
@@ -45,7 +44,7 @@ export const TradingFormOfferCryptoAmount = ({ amount, cryptoId }: TradingCrypto
                 </Text>
             </Row>
             {hasAmount && network && (
-                <Text typographyStyle="hint" variant="tertiary" margin={{ left: spacings.xxl }}>
+                <Text typographyStyle="hint" variant="tertiary" margin={{ left: 32 }}>
                     <BaseCurrencyValue
                         amount={amount.toString()}
                         tokenAddress={contractAddress as TokenAddress}

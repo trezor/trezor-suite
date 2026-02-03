@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useTradingUtils } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { TradingTestWrapper } from 'src/views/wallet/trading';
@@ -33,7 +32,7 @@ export const TradingCryptoAmount = ({
             <Row alignItems="center">
                 {displayLogo && (
                     <LogoWrapper>
-                        <TradingCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
+                        <TradingCoinLogo cryptoId={cryptoId} margin={{ right: 8 }} />
                     </LogoWrapper>
                 )}
                 {coinSymbol ? getDisplaySymbol(coinSymbol, contractAddress) : ''}
@@ -46,7 +45,7 @@ export const TradingCryptoAmount = ({
             <Row alignItems="center">
                 {displayLogo && (
                     <LogoWrapper>
-                        <TradingCoinLogo cryptoId={cryptoId} margin={{ right: spacings.xs }} />
+                        <TradingCoinLogo cryptoId={cryptoId} margin={{ right: 8 }} />
                     </LogoWrapper>
                 )}
                 <FormattedCryptoAmount

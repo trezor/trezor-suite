@@ -1,10 +1,14 @@
 import { CryptoId } from 'invity-api';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { type TradingType, cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
+import {
+    type TradingType,
+    cryptoIdToNetworkSymbolAndContractAddress,
+    useTradingAssets,
+} from '@suite-common/trading';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Text } from '@trezor/components';
-import { borders, spacings } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 import { AccountLabel, Address, BaseCurrencyValue } from 'src/components/suite';
 import { TradingPayGetLabelType } from 'src/types/trading/trading';
@@ -31,17 +35,19 @@ export const TradingInfoItem = ({
     receiveAddress,
 }: TradingInfoItemProps) => {
     const { translationString } = useTranslation();
-
+    const { createAssetOptionFromCryptoId } = useTradingAssets();
     const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
     const showAccountLabel = !!account && type !== 'sell';
     const isExternalExchange = type === 'exchange' && !account && !!receiveAddress;
 
+    const assetOption = createAssetOptionFromCryptoId(currency);
+
     if (!amount || !currency) return null;
 
     return (
-        <Column width="100%">
+        <Column width="100%" gap={8}>
             <Row justifyContent="space-between">
                 <Text variant="tertiary" typographyStyle="hint">
                     <Translation id={label} />
@@ -67,15 +73,28 @@ export const TradingInfoItem = ({
                 )}
             </Row>
             <Box
-                margin={{ top: spacings.xs }}
                 borderWidth={borders.widths.medium}
                 borderRadius={borders.radii.sm}
-                padding={spacings.md}
+                padding={16}
                 backgroundColor="backgroundSurfaceElevation2"
             >
-                <Row gap={spacings.xs} alignItems="center">
-                    <TradingCoinLogo cryptoId={currency} size={24} />
-                    <Column>
+                <Row gap={8} justifyContent="space-between">
+                    <Row gap={8} alignItems="center">
+                        <TradingCoinLogo
+                            cryptoId={currency}
+                            size={40}
+                            showNetworkIcon={!assetOption.isNativeToken}
+                        />
+                        <Column alignItems="start">
+                            <Text>{assetOption?.name}</Text>
+                            {!assetOption.isNativeToken && assetOption.networkName && (
+                                <Text variant="tertiary" typographyStyle="hint">
+                                    {assetOption.networkName}
+                                </Text>
+                            )}
+                        </Column>
+                    </Row>
+                    <Column alignItems="flex-end">
                         <TradingCryptoAmount amount={amount} cryptoId={currency} />
 
                         {currencyInfo?.symbol && (

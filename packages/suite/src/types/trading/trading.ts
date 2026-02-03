@@ -89,12 +89,11 @@ export interface TradingCryptoListProps {
     cryptoName?: string | undefined; // full name
 }
 
-export interface TradingCoinLogoProps {
+export type TradingCoinLogoProps = {
     cryptoId: CryptoId;
-    size?: 20 | 24;
-    margin?: AssetLogoProps['margin'];
     className?: string;
-}
+    size?: AssetLogoProps['size'];
+} & Pick<AssetLogoProps, 'showNetworkIcon' | 'margin'>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;
