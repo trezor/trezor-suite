@@ -1,5 +1,5 @@
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useCountrySelectionAnalyticsReport } from '../useCountrySelectionAnalyticsReport';
@@ -9,7 +9,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -22,7 +22,7 @@ describe('useCountrySelectionAnalyticsReport', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
     });

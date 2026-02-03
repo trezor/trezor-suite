@@ -357,11 +357,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               type: CountryChangeContext;
               parameter: 'country';
           };
-      }
-    | {
-          type: EventType.TradingCountrySelection;
-          payload: {
-              type: CountryChangeContextCheck;
-              action: CountryChangeAction;
-          };
       };
