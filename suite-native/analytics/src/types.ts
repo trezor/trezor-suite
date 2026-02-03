@@ -210,10 +210,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.DeviceSettingsCheckBackupSupport;
       }
     | {
-          type: EventType.FirmwareUpdateCancel;
-          payload: FirmwareUpdatePayload;
-      }
-    | {
           type: EventType.FirmwareUpdateFinished;
           payload: FirmwareUpdatePayload & {
               duration: number;
