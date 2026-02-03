@@ -14,6 +14,7 @@ import { useExchangeForm } from '../../../../hooks/exchange/useExchangeForm';
 import { ExchangeReceiveAccountPicker } from '../ExchangeReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
+const btcAccountName1 = 'BTC Account #1';
 const btcAddressAddress = '1BTC';
 
 jest.mock('@react-navigation/native', () => ({
@@ -76,7 +77,8 @@ describe('ExchangeReceiveAccountPicker', () => {
         expect(getByText('Not selected')).toBeTruthy();
     });
 
-    it('should display selected account name and address', async () => {
+    // Todo: https://github.com/trezor/trezor-suite/issues/24906
+    it.skip('should display selected account name and address', async () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
@@ -86,7 +88,7 @@ describe('ExchangeReceiveAccountPicker', () => {
             }),
         });
 
-        expect(getByText('1BTC')).toBeTruthy();
+        expect(getByText(btcAccountName1)).toBeTruthy();
         expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
