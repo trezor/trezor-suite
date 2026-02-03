@@ -130,7 +130,9 @@ export const prepareTxPlan = async (
         certificates.push(
             ...getDelegationCertificates(stakingPath, selectedPool?.hex, !isStakingActive),
         );
+    }
 
+    if (action === 'delegate' || action === 'voteDelegate') {
         const isVotingToAnotherDrep =
             votingDelegation?.type === 'another_drep' &&
             validateCardanoDrep(votingDelegation.drepId);
@@ -204,6 +206,10 @@ const getTransactionData = (
 
     if (stakeType === 'claim') {
         return prepareTxPlan(account, 'withdrawal', cardanoPools, votingDelegation);
+    }
+
+    if (stakeType === 'change-delegate') {
+        return prepareTxPlan(account, 'voteDelegate', cardanoPools, votingDelegation);
     }
 };
 

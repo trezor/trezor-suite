@@ -109,6 +109,14 @@ export type UnstakeContextValues = UseFormReturn<UnstakeFormState> &
         currentRate: Rate | undefined;
     };
 
+export type ChangeDelegateFormState = StakeFormState;
+
+export type ChangeDelegateContextValues = UseFormReturn<ChangeDelegateFormState> &
+    BaseStakeContextValues & {
+        methods: UseFormReturn<ChangeDelegateFormState>;
+        formState: ReactHookFormState<StakeFormState>;
+    };
+
 export type StakeAccountRewards = {
     height: number;
     epoch: number;

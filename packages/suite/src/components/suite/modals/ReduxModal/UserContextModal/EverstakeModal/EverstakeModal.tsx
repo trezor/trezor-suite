@@ -4,12 +4,13 @@ import { Translation } from '@suite/intl';
 import { StakingFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    DEFAULT_VOTING_OPTION,
     selectAccountIsStakingActive,
     selectVotingDelegationOption,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import { validateCardanoDrep } from '@suite-common/wallet-utils';
 import { Banner, Card, Checkbox, Column, IconName, Modal } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import { stakingFlowToEventTypeMap } from 'src/constants/suite/staking';
@@ -17,7 +18,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useAnalytics } from 'src/support/useAnalytics';
 
-import { VotingDelegations } from './VotingDelegations';
+import { VotingDelegation } from './VotingDelegation';
 
 interface EverstakeModalProps {
     onCancel: () => void;
@@ -62,6 +63,8 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
     };
 
     const onCancelClick = () => {
+        dispatch(stakeActions.setVotingDelegationOption(DEFAULT_VOTING_OPTION));
+
         onCancel();
 
         analytics.report({
@@ -151,13 +154,13 @@ export const EverstakeModal = ({ onCancel, flow }: EverstakeModalProps) => {
                 </>
             }
         >
-            <Column gap={spacings.sm} margin={{ top: spacings.xs, bottom: spacings.lg }}>
+            <Column gap={12} margin={{ top: 8, bottom: 20 }}>
                 {banners.map(({ icon, message }, index) => (
                     <Banner icon={icon} intent="info" key={index} description={message} />
                 ))}
             </Column>
-            <Column gap={spacings.sm}>
-                <VotingDelegations />
+            <Column gap={12}>
+                <VotingDelegation />
                 <Card>
                     <Checkbox
                         data-testid="@staking/everstake-acknowledge-checkbox"

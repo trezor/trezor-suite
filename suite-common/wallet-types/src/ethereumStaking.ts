@@ -1,4 +1,4 @@
-export type StakeType = 'stake' | 'unstake' | 'claim';
+export type StakeType = 'stake' | 'unstake' | 'claim' | 'change-delegate';
 
 export const supportedNetworkSymbols = ['eth', 'thod'] as const;
 
