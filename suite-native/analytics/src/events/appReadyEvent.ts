@@ -39,15 +39,31 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         },
         { version: '24.7.2', notes: 'params `fontScale` and `pixelDensity` added' },
         { version: '24.9.1', notes: 'param `enabledNetworks` added' },
+        {
+            version: '26.2.1',
+            notes: 'params `appLanguage` and `deviceLanguage` finally report real data.',
+        },
     ],
 
     attributes: {
         appLanguage: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
+            changelog: [
+                { version: '23.4.1', notes: 'added' },
+                {
+                    version: '26.2.1',
+                    notes: 'Finally report real data. Before this version there was always a hardcoded `en` value reported.',
+                },
+            ],
             description: 'The language of the app',
         },
         deviceLanguage: {
-            changelog: [{ version: '23.4.1', notes: 'added' }],
+            changelog: [
+                { version: '23.4.1', notes: 'added' },
+                {
+                    version: '26.2.1',
+                    notes: 'Finally report real data. Before this version there was always a hardcoded `undefined` value reported.',
+                },
+            ],
             description: 'The language of the selected device',
         },
         localCurrency: {
