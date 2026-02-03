@@ -39,6 +39,7 @@ export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingSellEvent } from './tradingSellEvent';
 export { tradingStatusEvent } from './tradingStatusEvent';
 export { tradingSuccessEvent } from './tradingSuccessEvent';
+export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';

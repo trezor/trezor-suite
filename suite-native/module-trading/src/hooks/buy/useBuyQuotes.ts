@@ -16,7 +16,7 @@ import {
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
 import { AbortablePromise, BuyFormType } from '@suite-native/trading-types';
@@ -120,7 +120,7 @@ const useBuyQuotesThunk = (
     debounce: ReturnType<typeof useDebounce>,
 ) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const asset = form.watch('asset');
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
@@ -155,7 +155,7 @@ const useBuyQuotesThunk = (
                 quotesPromiseRef.current = requestPromise;
                 const action = await requestPromise;
                 if (isFulfilled(action) && (action.payload as BuyTrade[]).length > 0) {
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.TradingQuoteReceived,
                         payload: {
                             type: 'buy',
@@ -174,7 +174,7 @@ const useBuyQuotesThunk = (
         platformInfo,
         debounce,
         dispatch,
-        legacyAnalytics,
+        analytics,
     ]);
 };
 
