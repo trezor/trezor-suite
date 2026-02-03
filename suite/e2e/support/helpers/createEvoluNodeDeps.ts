@@ -1,10 +1,11 @@
 import {
     SimpleName,
     createConsole,
+    createPreparedStatementsCache,
     createRandom,
     createRandomBytes,
     createSqlite,
-    createTestTime,
+    createTime,
     createWebSocket,
     getOrThrow,
 } from '@evolu/common';
@@ -13,28 +14,22 @@ import {
     type DbWorkerOutput,
     createDbWorkerForPlatform,
 } from '@evolu/common/local-first';
+import BetterSqlite3, { type Statement } from 'better-sqlite3';
 import { WebSocket } from 'ws';
 
 let instanceCounter = 0;
 
-const createNodeWebSocketDep = () => ({
-    createWebSocket: (url: string, options?: any) =>
-        createWebSocket(url, {
-            ...options,
-            WebSocketConstructor: WebSocket as unknown as typeof globalThis.WebSocket,
-        }),
-});
-
 export const createNodeEvoluDeps = async () => {
     const instanceName = SimpleName.orThrow(`Test${instanceCounter++}`);
 
+    // eslint-disable-next-line require-await
     const createSqliteDriver = async () => {
-        const BetterSQLite = (await import('better-sqlite3')).default;
-        type Statement = import('better-sqlite3').Statement;
-        const db = new BetterSQLite(':memory:');
         let disposed = false;
+        //TODO: db init here means it can be initilized multiple times
+        // Consider rework
+        const db = new BetterSqlite3(':memory:');
 
-        const cache = (await import('@evolu/common')).createPreparedStatementsCache<Statement>(
+        const cache = createPreparedStatementsCache<Statement>(
             sql => db.prepare(sql),
             () => {},
         );
@@ -63,16 +58,17 @@ export const createNodeEvoluDeps = async () => {
     const postMessageCalls: Array<DbWorkerInput> = [];
     let onMessageCallback: ((message: DbWorkerOutput) => void) | undefined;
 
-    // inner worker (actual DB worker implementation)
-    const nodeWebSocketDep = createNodeWebSocketDep();
-
     const innerDbWorker = createDbWorkerForPlatform({
         console: createConsole(),
         createSqliteDriver,
-        createWebSocket: nodeWebSocketDep.createWebSocket as any,
+        createWebSocket: (url, options) =>
+            createWebSocket(url, {
+                ...options,
+                WebSocketConstructor: WebSocket as unknown as typeof globalThis.WebSocket,
+            }),
         random: createRandom(),
         randomBytes: createRandomBytes(),
-        time: createTestTime(),
+        time: createTime(),
     });
 
     // expose createDbWorker for the platform (in-memory bridge to innerDbWorker)
@@ -89,8 +85,8 @@ export const createNodeEvoluDeps = async () => {
             },
         }),
         randomBytes: createRandomBytes(),
-        reloadApp: () => {}, // noop
-        time: createTestTime(),
+        reloadApp: () => {},
+        time: createTime(),
     };
 
     // create sqlite instance (optional, useful to inspect DB)
