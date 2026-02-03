@@ -402,7 +402,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               location: 'untrustedReseller' | 'securitySeal';
           };
-      }
-    | {
-          type: EventType.ReferralButtonPress;
       };
