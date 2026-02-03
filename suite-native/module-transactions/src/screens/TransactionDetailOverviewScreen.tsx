@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from 'react';
-import { TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
@@ -8,10 +7,9 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { TransactionsRootState } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/clipboard';
 import { AccountAddressFormatter } from '@suite-native/formatters';
 import { Icon, IconName } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
     Screen,
@@ -30,20 +28,8 @@ const addressCardStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r12,
 }));
 
-const addressStyle = prepareNativeStyle(_ => ({ maxWidth: '90%' }));
-
 const AddressRow = ({ address }: { address: string }) => {
     const { applyStyle } = useNativeStyles();
-
-    const { translate } = useTranslate();
-
-    const copyToClipboard = useCopyToClipboard();
-
-    const handleCopy = () =>
-        copyToClipboard(
-            address,
-            translate('transactions.TransactionDetailScreen.addressesSheet.copied'),
-        );
 
     return (
         <HStack
@@ -52,10 +38,7 @@ const AddressRow = ({ address }: { address: string }) => {
             alignItems="center"
             style={applyStyle(addressCardStyle)}
         >
-            <AccountAddressFormatter value={address} style={applyStyle(addressStyle)} />
-            <TouchableOpacity onPress={handleCopy}>
-                <Icon name="copy" color="iconPrimaryDefault" size="medium" />
-            </TouchableOpacity>
+            <AccountAddressFormatter value={address} />
         </HStack>
     );
 };
