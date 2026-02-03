@@ -1,6 +1,7 @@
 export * from './reducers';
 
-export * from './middlewares/tradingMiddleware';
+export { prepareTradingMiddleware } from './middlewares/tradingMiddleware';
+export { prepareTradingLastErrorSentryMiddleware } from './middlewares/tradingLastErrorSentryMiddleware';
 
 export * from './selectors/buySelectors';
 export * from './selectors/commonSelectors';
