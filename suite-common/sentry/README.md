@@ -1,13 +1,13 @@
 # @suite-common/sentry
 
-This is a package for code that's common for Sentry integration in Suite applications.
+This is a package for code that's common for all Sentry integration in Suite applications.
 
-Also contains static config for individual Suite applications, but there mustn't be any runtime setup of Sentry.
-That must be kept in the individual applications or their respective packages.
+Sentry in Trezor Suite is split into two projects (which have their own config),<br />
+and four separate runtimes (each has its own SDK initialization):
 
-Sentry is then initialized in 4 separate runtimes:
-
-- browser (Suite Web, in `@packages/suite-web`)
-- electron-renderer (Suite Desktop, in `@packages/suite-desktop-ui`)
-- electron-main (Suite Desktop, in `@packages/suite-desktop-core`)
-- react-native (Suite Mobile, in `@suite-native/sentry`)
+- project `trezor-suite`, with common config in `@suite/sentry`
+    - browser runtime (Suite Web, in `@packages/suite-web`)
+    - electron-renderer runtime (Suite Desktop, in `@packages/suite-desktop-ui`)
+    - electron-main runtime (Suite Desktop, in `@packages/suite-desktop-core`)
+- project `suite-native`
+    - react-native runtime (Suite Mobile, in `@suite-native/sentry`)

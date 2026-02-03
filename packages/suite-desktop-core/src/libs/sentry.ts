@@ -6,7 +6,7 @@ import {
 } from '@sentry/electron/main';
 import { session } from 'electron';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { SENTRY_CONFIG } from '@suite/sentry';
 import { TorStatus } from '@trezor/suite-desktop-api';
 
 import type { Store } from './store';

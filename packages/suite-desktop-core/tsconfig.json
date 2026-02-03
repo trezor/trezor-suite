@@ -13,6 +13,7 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        { "path": "../../suite/sentry" },
         { "path": "../coinjoin" },
         { "path": "../connect" },
         { "path": "../env-utils" },

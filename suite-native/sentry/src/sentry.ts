@@ -1,7 +1,9 @@
 import * as Sentry from '@sentry/react-native';
 
-import { ALLOW_REPORT_TAG, ignoreErrorsSuiteMobile, redactSentryEvent } from '@suite-common/sentry';
+import { ALLOW_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
 import { getEnv, isDebugEnv, isDetoxTestBuild } from '@suite-native/config';
+
+import { ignoreErrors } from './ignoreErrors';
 
 export const setSentryContext = Sentry.setContext;
 
@@ -31,7 +33,7 @@ export const initSentry = () => {
         integrations: [Sentry.consoleLoggingIntegration({ levels: ['error'] })],
         enableLogs: true,
         beforeSend: redactSentryEvent,
-        ignoreErrors: ignoreErrorsSuiteMobile,
+        ignoreErrors,
 
         // You can put EXPO_PUBLIC_IS_SENTRY_ON_DEBUG_BUILD_ENABLED=true to `.env.development.local` to debug Sentry locally.
         enabled:

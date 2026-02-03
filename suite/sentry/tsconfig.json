@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/sentry" },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}
