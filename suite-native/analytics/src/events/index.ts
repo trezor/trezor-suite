@@ -32,4 +32,5 @@ export { transactionDetailEvent } from './transactionDetailEvent';
 export { transactionDetailExploreInBlockchainEvent } from './transactionDetailExploreInBlockchainEvent';
 export { transactionDetailInputOutputEvent } from './transactionDetailInputOutputEvent';
 export { transactionDetailParametersEvent } from './transactionDetailParametersEvent';
+export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { watchPortfolioTimeframeChangeEvent } from './watchPortfolioTimeframeChangeEvent';
