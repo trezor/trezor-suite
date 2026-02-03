@@ -72,7 +72,7 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
                         <Row gap={8} alignItems="center">
                             <AssetLogo
                                 size={20}
-                                coingeckoId={sendNetwork.coingeckoId!}
+                                coingeckoId={sendNetwork.coingeckoId ?? ''}
                                 contractAddress={send.contractAddress}
                                 symbol={send.symbol}
                                 placeholder={getDisplaySymbol(sendSymbol || send.symbol)}
@@ -84,7 +84,7 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
                             <Icon name="arrowRight" variant="tertiary" size="mediumLarge" />
                             <AssetLogo
                                 size={20}
-                                coingeckoId={receiveNetwork.coingeckoId!}
+                                coingeckoId={receiveNetwork.coingeckoId ?? ''}
                                 contractAddress={receive.contractAddress}
                                 symbol={receive.symbol}
                                 placeholder={getDisplaySymbol(receiveSymbol || receive.symbol)}

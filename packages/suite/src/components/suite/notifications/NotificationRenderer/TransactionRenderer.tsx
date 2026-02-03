@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { getCoingeckoId, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccounts,
     selectBlockchainState,
@@ -55,12 +55,13 @@ const TransactionRendererContent = ({ notification, account }: TransactionRender
         case 'tx-approved':
         case 'tx-revoked': {
             const { token, symbol } = notification;
+            const coingeckoId = getCoingeckoId(account.symbol);
 
             return (
                 <Row gap={8} alignItems="center">
                     <AssetLogo
                         symbol={symbol}
-                        coingeckoId={account.symbol}
+                        coingeckoId={coingeckoId ?? ''}
                         contractAddress={token.contract}
                         placeholder={token.name ?? symbol}
                         size={20}
@@ -80,11 +81,35 @@ const TransactionRendererContent = ({ notification, account }: TransactionRender
                 </Row>
             );
         }
-        case 'tx-claimed':
-        case 'tx-unstaked':
-        case 'tx-staked':
         case 'tx-sent':
-        case 'tx-received':
+        case 'tx-received': {
+            const { token, symbol } = notification;
+            const coingeckoId = getCoingeckoId(account.symbol);
+
+            return (
+                <Row gap={8} alignItems="center">
+                    {token ? (
+                        <AssetLogo
+                            symbol={symbol}
+                            coingeckoId={coingeckoId ?? ''}
+                            contractAddress={token.contract}
+                            placeholder={token.name ?? symbol}
+                            size={20}
+                            shouldTryToFetch
+                        />
+                    ) : (
+                        <CoinLogo symbol={symbol} size={20} />
+                    )}
+
+                    <HiddenPlaceholder data-testid={amountTestId}>
+                        {notification.formattedAmount}
+                    </HiddenPlaceholder>
+                </Row>
+            );
+        }
+        case 'tx-staked':
+        case 'tx-unstaked':
+        case 'tx-claimed':
         case 'tx-confirmed':
         default: {
             const { symbol } = notification;
