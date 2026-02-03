@@ -63,13 +63,13 @@ export const TransactionName = ({ transaction, isPending, variant }: Transaction
         transaction.stellarSpecific?.operationType === 'changeTrust' &&
         transaction.stellarSpecific?.changeTrust
     ) {
-        const translationId = transaction.stellarSpecific.changeTrust.isRemoval
-            ? 'transactions.name.stellarTrustlineRemoved'
-            : 'transactions.name.stellarTrustlineAdded';
-
         return (
             <Text variant={variant}>
-                <Translation id={translationId} />
+                {transaction.stellarSpecific.changeTrust.isRemoval ? (
+                    <Translation id="transactions.name.stellarTrustlineRemoved" />
+                ) : (
+                    <Translation id="transactions.name.stellarTrustlineAdded" />
+                )}
             </Text>
         );
     }
