@@ -11,7 +11,7 @@ import {
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
 import { EventType, TradingExchangeAction, TradingExchangeStep } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
 export type TradingExchangeAnalyticReportCallback = (
@@ -79,7 +79,7 @@ export const useExchangeAnalyticReportCallback = (
 ): TradingExchangeAnalyticReportCallback => {
     const persistedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const quote = candidateQuote || persistedQuote;
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const {
         exchangeName,
         exchangeType,
@@ -96,7 +96,7 @@ export const useExchangeAnalyticReportCallback = (
 
     return useCallback(
         (step: TradingExchangeStep, action: TradingExchangeAction) => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingExchange,
                 payload: {
                     step,
@@ -116,7 +116,7 @@ export const useExchangeAnalyticReportCallback = (
             });
         },
         [
-            legacyAnalytics,
+            analytics,
             exchangeName,
             exchangeType,
             approvalType,
