@@ -50,7 +50,7 @@ export const CustomRow = ({
                 />
             }
             fiatAmount={
-                useFiatValues ? (
+                useFiatValues && historicRate ? (
                     <>
                         <Sign value={sign} grayscale />
                         <BaseCurrencyValue
