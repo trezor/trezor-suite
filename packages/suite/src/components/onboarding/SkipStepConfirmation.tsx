@@ -18,7 +18,10 @@ type SkipModalContent = {
     nextStep?: AnyStepId;
 };
 
-const getModalContent = (activeStepId: AnyStepId): SkipModalContent => {
+const getModalContent = (
+    activeStepId: AnyStepId,
+    resolveNextAfterSkipped: (stepId: AnyStepId) => AnyStepId | undefined,
+): SkipModalContent => {
     switch (activeStepId) {
         case STEP.ID_FIRMWARE_STEP:
             return {
@@ -32,7 +35,7 @@ const getModalContent = (activeStepId: AnyStepId): SkipModalContent => {
                 heading: <Translation id="TR_SKIP_BACKUP" />,
                 secondaryButtonText: <Translation id="TR_SKIP_BACKUP" />,
                 body: <Translation id="TR_SKIP_BACKUP_DESCRIPTION" />,
-                nextStep: STEP.ID_SET_PIN_STEP,
+                nextStep: resolveNextAfterSkipped(STEP.ID_SET_PIN_STEP),
             };
         case STEP.ID_SET_PIN_STEP:
             return {
@@ -46,8 +49,11 @@ const getModalContent = (activeStepId: AnyStepId): SkipModalContent => {
 };
 
 export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) => {
-    const { activeStepId, goToNextStep } = useOnboarding();
-    const { heading, secondaryButtonText, body, nextStep } = getModalContent(activeStepId);
+    const { activeStepId, goToNextStep, resolveNextAfterSkipped } = useOnboarding();
+    const { heading, secondaryButtonText, body, nextStep } = getModalContent(
+        activeStepId,
+        resolveNextAfterSkipped,
+    );
 
     if (!heading) return;
 

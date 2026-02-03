@@ -20,6 +20,7 @@ import fixtures from '../__fixtures__/onboardingActions';
 const getInitialState = (custom?: any) => {
     const suite = custom ? custom.suite : undefined;
     const onboarding = custom ? custom.onboarding : undefined;
+    const device = custom ? custom.device : undefined;
 
     return {
         onboarding: {
@@ -34,7 +35,7 @@ const getInitialState = (custom?: any) => {
             ...suiteReducer(undefined, {} as Action),
             ...suite,
         },
-        device: {},
+        device: device ?? {},
     };
 };
 

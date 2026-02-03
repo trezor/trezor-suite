@@ -8,9 +8,7 @@ export default [
     {
         description: 'goToNextStep (without param)',
         initialState: {
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.goToNextStep(),
         expect: {
@@ -20,13 +18,28 @@ export default [
     {
         description: 'goToNextStep (with param)',
         initialState: {
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.goToNextStep('firmware'),
         expect: {
             toMatchObject: { activeStepId: STEP.ID_FIRMWARE_STEP },
+        },
+    },
+    {
+        description: 'goToNextStep: from backup step skip set-pin when pin is already set',
+        initialState: {
+            onboarding: {
+                activeStepId: STEP.ID_BACKUP_STEP,
+            },
+            device: {
+                selectedDevice: mockSuiteDevice(undefined, {
+                    pin_protection: true,
+                }),
+            },
+        },
+        action: () => onboardingActions.goToNextStep(),
+        expect: {
+            toMatchObject: { activeStepId: STEP.ID_COINS_STEP },
         },
     },
     {
@@ -47,9 +60,7 @@ export default [
             onboarding: {
                 path: ['new'],
             },
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.addPath('create'),
         expect: {
@@ -62,9 +73,7 @@ export default [
             onboarding: {
                 path: ['create'],
             },
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.addPath('create'),
         expect: {
@@ -89,9 +98,7 @@ export default [
             onboarding: {
                 path: ['create', 'recovery'],
             },
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.removePath(['recovery']),
         expect: {
@@ -105,9 +112,7 @@ export default [
                 path: ['create'],
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
-            suite: {
-                device: mockSuiteDevice(),
-            },
+            device: mockSuiteDevice(),
         },
         action: () => onboardingActions.resetOnboarding(),
         expect: {

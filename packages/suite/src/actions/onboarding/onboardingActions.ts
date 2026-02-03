@@ -9,7 +9,12 @@ import { stepCategories } from 'src/config/onboarding/steps';
 import * as STEP from 'src/constants/onboarding/steps';
 import { AnyPath, AnyStepId } from 'src/types/onboarding';
 import { Dispatch, GetState } from 'src/types/suite';
-import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
+import {
+    findNextStep,
+    findPrevStep,
+    isStepUsed,
+    resolveNextAvailableStep,
+} from 'src/utils/onboarding/steps';
 
 import { selectOnboardingAnalytics } from '../../reducers/onboarding/onboardingReducer';
 import * as modalActions from '../suite/modalActions';
@@ -62,6 +67,7 @@ const removePath = (payload: AnyPath[]): OnboardingAction => ({
 
 const getAllStepsInPath = (getState: GetState) => {
     const allSteps = stepCategories.flatMap(({ steps }) => steps);
+
     const isStepUsedProps = {
         device: selectSelectedDevice(getState()),
         onboardingPath: getState().onboarding.path,
@@ -133,12 +139,13 @@ const goToSuite = () => (dispatch: Dispatch, getState: GetState, extra: ExtraDep
     reportAnalytics();
 };
 
-const goToNextStep = (stepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
-    if (stepId) {
-        return dispatch(goToStep(stepId));
+const goToNextStep = (nextStepId?: AnyStepId) => (dispatch: Dispatch, getState: GetState) => {
+    if (nextStepId) {
+        return dispatch(goToStep(nextStepId));
     }
+    const device = selectSelectedDevice(getState());
     const stepsInPath = getAllStepsInPath(getState);
-    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath);
+    const nextStep = findNextStep(getState().onboarding.activeStepId, stepsInPath, device ?? null);
     // we are at last step, so go to Suite
     if (nextStep === null) {
         dispatch(goToSuite());
@@ -176,6 +183,19 @@ const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetSt
     dispatch(goToNextStep());
 };
 
+const resolveNextAfterSkipped =
+    (skippedToStepId: AnyStepId) => (_dispatch: Dispatch, getState: GetState) => {
+        const device = selectSelectedDevice(getState());
+        const stepsInPath = getAllStepsInPath(getState);
+        const resolvedNextStep = resolveNextAvailableStep(
+            skippedToStepId,
+            stepsInPath,
+            device ?? null,
+        );
+
+        return resolvedNextStep?.id;
+    };
+
 export {
     enableOnboardingReducer,
     goToNextStep,
@@ -188,4 +208,5 @@ export {
     updateAnalytics,
     beginOnboardingTutorial,
     updateBackupType,
+    resolveNextAfterSkipped,
 };
