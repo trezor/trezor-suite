@@ -3,7 +3,7 @@ import { EnhancedStore } from '@reduxjs/toolkit';
 import { tradingBuyActions } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
 import { Form } from '@suite-native/forms';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -26,7 +26,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -51,7 +51,7 @@ describe('BuyPaymentMethodPicker', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
     });

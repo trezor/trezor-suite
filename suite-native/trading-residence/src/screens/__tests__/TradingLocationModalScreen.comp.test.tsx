@@ -6,7 +6,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProvider, screen, userEvent } from '@suite-native/test-utils';
 
 import {
@@ -28,6 +28,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
+        useAnalytics: jest.fn(),
         useLegacyAnalytics: jest.fn(),
     };
 });
@@ -59,6 +60,9 @@ describe('TradingLocationModalScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
