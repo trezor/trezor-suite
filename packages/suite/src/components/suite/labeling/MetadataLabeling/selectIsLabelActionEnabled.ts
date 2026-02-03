@@ -1,6 +1,8 @@
-import { WithSuiteSyncAndDeviceState } from '@suite-common/suite-sync';
+import {
+    WithSuiteSyncAndDeviceState,
+    getIsSuiteSyncLabelingActionEnabled,
+} from '@suite-common/suite-sync';
 import { StaticSessionId } from '@trezor/connect';
-import { exhaustive } from '@trezor/type-utils';
 
 import { selectDesktopSuiteSyncInteraction } from '../../../../actions/suiteSync/suiteSyncSlice';
 import {
@@ -32,18 +34,7 @@ export const selectIsLabelActionEnabled = (
             deviceStaticSessionId,
         );
 
-        switch (suiteSyncInteraction) {
-            case null:
-            case 'suite-sync-off': // This is 2nd interaction in priority
-            case 'keys-needed': // 4th
-                return true;
-
-            case 'unsupported': // This is 1st interaction in priority
-            case 'firmware-upgrade-needed': // 3rd
-                return false;
-            default:
-                return exhaustive(suiteSyncInteraction);
-        }
+        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
     }
 
     return isLegacyLabelingEnabled || isLegacyLabelingInitPossible;

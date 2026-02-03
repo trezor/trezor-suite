@@ -1,7 +1,11 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { portfolioTrackerDevice } from '@suite-common/wallet-core';
 
-import { isSuiteSyncSupportedByDevice } from '../suiteSyncUtils';
+import { SuiteSyncInteraction } from '../suiteSyncTypes';
+import {
+    getIsSuiteSyncLabelingActionEnabled,
+    isSuiteSyncSupportedByDevice,
+} from '../suiteSyncUtils';
 
 describe(isSuiteSyncSupportedByDevice.name, () => {
     it.each([
@@ -18,5 +22,17 @@ describe(isSuiteSyncSupportedByDevice.name, () => {
         ],
     ])('%s should return %s', (device, expected) => {
         expect(isSuiteSyncSupportedByDevice(device)).toBe(expected);
+    });
+});
+
+describe(getIsSuiteSyncLabelingActionEnabled.name, () => {
+    it.each<[SuiteSyncInteraction | null, boolean, string]>([
+        [null, true, 'null enables labeling action'],
+        ['suite-sync-off', true, 'suite-sync-off enables labeling action'],
+        ['keys-needed', true, 'keys-needed enables labeling action'],
+        ['unsupported', false, 'unsupported disables labeling action'],
+        ['firmware-upgrade-needed', false, 'firmware-upgrade-needed disables labeling action'],
+    ])('when interaction is %s should return %s', (suiteSyncInteraction, expected) => {
+        expect(getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction)).toBe(expected);
     });
 });
