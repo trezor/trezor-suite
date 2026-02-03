@@ -50,18 +50,47 @@ const hexToString = (input: string): string => {
     return str;
 };
 
-const getSubtype = (tx: Pick<BlockfrostTransaction, 'txData'>) => {
-    const withdrawal = tx.txData.withdrawal_count > 0;
+const getSubtype = (
+    tx: Pick<BlockfrostTransaction, 'txData'>,
+    totalInput: BigNumberValue,
+    totalOutput: BigNumberValue,
+    allOutputsAreChange: boolean,
+) => {
+    const { withdrawal_count, stake_cert_count, delegation_count, deposit, fees } = tx.txData;
+
+    const withdrawal = withdrawal_count > 0;
     if (withdrawal) {
         return 'withdrawal';
     }
 
-    const registrations = tx.txData.stake_cert_count;
-    const delegations = tx.txData.delegation_count;
-    if (registrations === 0 && delegations === 0) return;
+    // governance_delegation is detected heuristically.
+    // Blockfrost txData does not expose governance (DRep) certificates, so we infer it as:
+    // - no withdrawals
+    // - no stake or pool delegation certificates
+    // - zero deposit
+    // - self transaction where totalInput === totalOutput + fee
+    // - all outputs go to change addresses (no value transfer)
+    // - non-zero fee
+    // This may still misclassify rare fee-only self transactions.
+    if (
+        withdrawal_count === 0 &&
+        stake_cert_count === 0 &&
+        delegation_count === 0 &&
+        new BigNumber(deposit || 0).isZero()
+    ) {
+        const fee = new BigNumber(fees || 0);
+        const isFeeOnly =
+            fee.gt(0) && new BigNumber(totalInput).eq(new BigNumber(totalOutput).plus(fee));
 
-    if (registrations > 0) {
-        if (new BigNumber(tx.txData.deposit).gt(0)) {
+        if (isFeeOnly && allOutputsAreChange) {
+            return 'governance_delegation';
+        }
+    }
+
+    if (stake_cert_count === 0 && delegation_count === 0) return;
+
+    if (stake_cert_count > 0) {
+        if (new BigNumber(deposit).gt(0)) {
             // transaction could both register staking address and delegate stake at the same time. In that case we treat it as "stake registration"
             return 'stake_registration';
         }
@@ -69,7 +98,7 @@ const getSubtype = (tx: Pick<BlockfrostTransaction, 'txData'>) => {
         return 'stake_deregistration';
     }
 
-    if (delegations > 0) {
+    if (delegation_count > 0) {
         return 'stake_delegation';
     }
 };
@@ -225,6 +254,11 @@ export const transformTransaction = (
     const internal = accountAddress ? filterTargets(accountAddress.change, outputs) : [];
     const totalInput = inputs.reduce(sumVinVout, 0);
     const totalOutput = outputs.reduce(sumVinVout, 0);
+    const allOutputsAreChange =
+        fullData &&
+        blockfrostTxData.txUtxos.outputs.every(o =>
+            accountAddress?.change.some(c => c.address === o.address),
+        );
 
     if (outgoing.length === 0 && incoming.length === 0) {
         type = 'unknown';
@@ -295,7 +329,7 @@ export const transformTransaction = (
         tokens,
         internalTransfers: [],
         cardanoSpecific: {
-            subtype: getSubtype(blockfrostTxData),
+            subtype: getSubtype(blockfrostTxData, totalInput, totalOutput, allOutputsAreChange),
             withdrawal,
             deposit,
         },
