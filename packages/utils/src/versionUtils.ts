@@ -53,3 +53,12 @@ export const isNewerOrEqual = (versionX: VersionInput, versionY: VersionInput) =
 export const normalizeVersion = (version: string) =>
     // remove any zeros that are not preceded by Latin letters, decimal digits, underscores
     version.replace(/\b0+(\d)/g, '$1');
+
+/**
+ * Is version within the range of minVersion and maxVersion (inclusive on both ends)
+ */
+export const isWithinRange = (
+    version: VersionInput,
+    minVersion: VersionInput,
+    maxVersion: VersionInput,
+) => isNewerOrEqual(version, minVersion) && isNewerOrEqual(maxVersion, version);

@@ -3,6 +3,7 @@ import {
     isNewer,
     isNewerOrEqual,
     isVersionArray,
+    isWithinRange,
     normalizeVersion,
 } from '../src/versionUtils';
 
@@ -34,19 +35,19 @@ const testMatrix = (
 };
 
 describe('versionUtils', () => {
-    describe('isNewer', () => {
+    describe(isNewer.name, () => {
         testMatrix(isNewer, (a, b) => a > b);
     });
 
-    describe('isNewerOrEqual', () => {
+    describe(isNewerOrEqual.name, () => {
         testMatrix(isNewerOrEqual, (a, b) => a >= b);
     });
 
-    describe('isEqual', () => {
+    describe(isEqual.name, () => {
         testMatrix(isEqual, (a, b) => a === b);
     });
 
-    describe('normalizeVersion', () => {
+    describe(normalizeVersion.name, () => {
         it('removes preceding zeros from versions to normalize it', () => {
             expect(normalizeVersion('2020.05.13-beta')).toEqual('2020.5.13-beta');
             expect(normalizeVersion('2022.12.01-beta')).toEqual('2022.12.1-beta');
@@ -61,7 +62,7 @@ describe('versionUtils', () => {
         });
     });
 
-    describe('isVersionArray', () => {
+    describe(isVersionArray.name, () => {
         it('invalid cases', () => {
             expect(isVersionArray(null)).toEqual(false);
             expect(isVersionArray([null])).toEqual(false);
@@ -77,6 +78,18 @@ describe('versionUtils', () => {
         it('valid cases', () => {
             expect(isVersionArray([0, 1, 2])).toEqual(true);
             expect(isVersionArray([1, 2, 3])).toEqual(true);
+        });
+    });
+
+    describe(isWithinRange.name, () => {
+        it('returns true if version is within range (inclusive)', () => {
+            expect(isWithinRange([1, 0, 0], '1.0.0', '2.0.0')).toBe(true);
+            expect(isWithinRange('1.5.0', [1, 0, 0], '2.0.0')).toBe(true);
+            expect(isWithinRange('2.0.0', '1.0.0', [2, 0, 0])).toBe(true);
+        });
+        it('returns false if version is outside of range', () => {
+            expect(isWithinRange('0.9.9', '1.0.0', [2, 0, 0])).toBe(false);
+            expect(isWithinRange([2, 0, 1], '1.0.0', '2.0.0')).toBe(false);
         });
     });
 });
