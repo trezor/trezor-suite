@@ -50,7 +50,7 @@ export type TradingAssetOption = {
     id: CryptoId;
     name: string;
     coingeckoId: string;
-    symbol: string;
+    symbol: string | NetworkSymbol;
     displaySymbol: string;
     contractAddress: string | null;
     networkName: string;
