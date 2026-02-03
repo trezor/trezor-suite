@@ -11,8 +11,6 @@ import {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
-    TradingSellAction,
-    TradingSellStep,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -240,21 +238,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.TradingQuoteReceived;
           payload: {
               type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingSell;
-          payload: {
-              action: TradingSellAction;
-              step: TradingSellStep;
-
-              cryptoLabel?: string;
-              cryptoNetworkSymbol?: string;
-              cryptoContractAddress?: string;
-
-              receiveMethod?: string;
-              countryOfResidence?: string;
-
-              exchangeName?: string;
           };
       };

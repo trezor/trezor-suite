@@ -9,7 +9,7 @@ import {
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
 import { EventType, TradingSellAction, TradingSellStep } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
 
@@ -21,7 +21,7 @@ export type TradingSellAnalyticReportCallback = (
 export const useSellAnalyticReportCallback = (
     candidateQuote?: SellFiatTrade,
 ): TradingSellAnalyticReportCallback => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const persistedQuote = useSelector(selectTradingSellSelectedQuote);
     const quote = candidateQuote || persistedQuote;
 
@@ -36,7 +36,7 @@ export const useSellAnalyticReportCallback = (
 
     return useCallback(
         (step: TradingSellStep, action: TradingSellAction) => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingSell,
                 payload: {
                     step,
@@ -45,6 +45,6 @@ export const useSellAnalyticReportCallback = (
                 },
             });
         },
-        [legacyAnalytics, quoteAnalyticsData],
+        [analytics, quoteAnalyticsData],
     );
 };
