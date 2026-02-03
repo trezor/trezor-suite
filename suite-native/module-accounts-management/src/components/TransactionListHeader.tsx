@@ -1,8 +1,7 @@
-import { memo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { ThunkDispatch, UnknownAction, isFulfilled } from '@reduxjs/toolkit';
 
 import {
     AccountsRootState,
@@ -19,22 +18,16 @@ import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { composeStellarTrustlineFeesThunk } from '@suite-native/module-stellar-token-management';
+import { Translation } from '@suite-native/intl';
 import {
     ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
     StackNavigationProps,
-    StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
-import {
-    TokensRootState,
-    selectAccountTokenBalance,
-    selectAccountTokenInfo,
-} from '@suite-native/tokens';
+import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactions } from '@suite-native/transactions';
 
 import { selectIsNetworkSendFlowEnabled } from '../selectors';
@@ -43,6 +36,7 @@ import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHist
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { CoinPriceCard } from './CoinPriceCard';
+import { StellarTokenActions } from './StellarTokenActions';
 
 type TransactionListHeaderProps = {
     accountKey: AccountKey;
@@ -98,11 +92,6 @@ export const TransactionListHeader = memo(
     ({ accountKey, tokenContract }: TransactionListHeaderProps) => {
         const analytics = useAnalytics();
         const navigation = useNavigation<NavigationProp>();
-        const { showAlert } = useAlert();
-        const { translate } = useTranslate();
-        const dispatch = useDispatch<ThunkDispatch<any, any, UnknownAction>>();
-
-        const [isComposingFees, setIsComposingFees] = useState(false);
 
         const account = useSelector((state: AccountsRootState) =>
             selectAccountByKey(state, accountKey),
@@ -122,9 +111,6 @@ export const TransactionListHeader = memo(
         );
         const token = useSelector((state: TokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),
-        );
-        const tokenBalance = useSelector((state: TokensRootState) =>
-            selectAccountTokenBalance(state, accountKey, tokenContract),
         );
 
         if (!account) return null;
@@ -168,68 +154,13 @@ export const TransactionListHeader = memo(
             });
         };
 
-        const handleActivateToken = () => {
-            navigation.navigate(RootStackRoutes.StellarManageTokenStack, {
-                screen: StellarManageTokenStackRoutes.TokenSelection,
-                params: {
-                    accountKey,
-                },
-            });
-        };
-
-        const handleDeactivateToken = async () => {
-            // Check if token has balance > 0
-            const hasBalance = !isZero(tokenBalance ?? '0');
-            if (hasBalance) {
-                showAlert({
-                    title: translate('moduleStellarToken.deactivationFee.cantDeactivateTitle'),
-                    description: translate(
-                        'moduleStellarToken.deactivationFee.cantDeactivateDescription',
-                    ),
-                    primaryButtonTitle: translate('generic.buttons.gotIt'),
-                });
-
-                return;
-            }
-
-            setIsComposingFees(true);
-            try {
-                // Compose fee levels BEFORE navigating (like trading module)
-                const result = await dispatch(
-                    composeStellarTrustlineFeesThunk({
-                        accountKey,
-                        tokenContract: tokenContract!,
-                    }),
-                );
-
-                if (isFulfilled(result)) {
-                    navigation.navigate(RootStackRoutes.StellarManageTokenStack, {
-                        screen: StellarManageTokenStackRoutes.DeactivationFee,
-                        params: {
-                            accountKey,
-                            tokenContract: tokenContract!,
-                        },
-                    });
-                } else {
-                    // Show error when fee composition fails (e.g., offline/slow fetch)
-                    showAlert({
-                        title: translate('moduleStellarToken.deactivationFee.deactivationFailed'),
-                        description: translate(
-                            'moduleStellarToken.deactivationFee.deactivationFailedDescription',
-                        ),
-                        primaryButtonTitle: translate('generic.buttons.gotIt'),
-                    });
-                }
-            } finally {
-                setIsComposingFees(false);
-            }
-        };
-
         const isTokenDetail = !!tokenContract;
         const isPriceCardDisplayed = shallDisplayBaseCurrency && !isTokenDetail;
+        const isStellarAccount = account.networkType === 'stellar';
 
         const isSendButtonDisplayed = isNetworkSendFlowEnabled && !isPortfolioTrackerDevice;
         const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
+        const isStellarTokenActionsDisplayed = isStellarAccount && !isPortfolioTrackerDevice;
 
         return (
             <>
@@ -265,36 +196,13 @@ export const TransactionListHeader = memo(
                         </HStack>
                     )}
                     {isPriceCardDisplayed && <CoinPriceCard accountKey={accountKey} />}
-                    {account.networkType === 'stellar' &&
-                        !isTokenDetail &&
-                        !isPortfolioTrackerDevice && (
-                            <Box paddingHorizontal="sp16">
-                                <Button
-                                    colorScheme="tertiaryElevation0"
-                                    viewLeft="plus"
-                                    onPress={handleActivateToken}
-                                    testID="@account-detail/activate-token-button"
-                                >
-                                    <Translation id="moduleStellarToken.accountDetail.activateToken" />
-                                </Button>
-                            </Box>
-                        )}
-                    {account.networkType === 'stellar' &&
-                        isTokenDetail &&
-                        !isPortfolioTrackerDevice && (
-                            <Box paddingHorizontal="sp16">
-                                <Button
-                                    colorScheme="tertiaryElevation0"
-                                    onPress={handleDeactivateToken}
-                                    isLoading={isComposingFees}
-                                    isDisabled={isComposingFees}
-                                    testID="@account-detail/deactivate-token-button"
-                                >
-                                    <Translation id="moduleStellarToken.accountDetail.deactivateToken" />
-                                </Button>
-                            </Box>
-                        )}
-                    {account.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
+                    {isStellarTokenActionsDisplayed && (
+                        <StellarTokenActions
+                            accountKey={accountKey}
+                            tokenContract={tokenContract}
+                        />
+                    )}
+                    {isStellarAccount && <StellarLimitedHistoryBanner />}
                     {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
                 </VStack>
                 {hasAccountTransactions && (
