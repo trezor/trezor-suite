@@ -84,8 +84,9 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
 
                         return;
                     case 'WriteModeRequiredForAllocation':
-                        // expected case
+                        // Do nothing, this is expected control flow error when we want allocate on-demand.
                         return;
+
                     default:
                         return exhaustive(type);
                 }

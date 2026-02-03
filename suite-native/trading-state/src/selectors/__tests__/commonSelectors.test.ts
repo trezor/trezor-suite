@@ -14,6 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
     getBtcAccount,
@@ -1249,6 +1250,7 @@ describe('commonSelectors', () => {
                         suiteSyncData: initialSuiteSyncDataState,
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
+                        appSettings: appSettingsInitialState,
                     },
                     'eth-account-1',
                     'eth' as CryptoId,
@@ -1270,6 +1272,7 @@ describe('commonSelectors', () => {
                             suiteSyncData: initialSuiteSyncDataState,
                             suiteSync: initialSuiteSyncState,
                             device: deviceInitialState,
+                            appSettings: appSettingsInitialState,
                         },
                         'eth-account-2',
                         asset as CryptoId,
@@ -1286,6 +1289,7 @@ describe('commonSelectors', () => {
                         suiteSyncData: initialSuiteSyncDataState,
                         suiteSync: initialSuiteSyncState,
                         device: deviceInitialState,
+                        appSettings: appSettingsInitialState,
                     },
                     undefined,
                     undefined,
