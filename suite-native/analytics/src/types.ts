@@ -364,25 +364,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               type: CountryChangeContextCheck;
               action: CountryChangeAction;
           };
-      }
-    | {
-          type: EventType.DeviceSetupStarted;
-          payload: {
-              osName: string;
-              deviceModel: DeviceModelInternal | null;
-          };
-      }
-    | {
-          type: EventType.DeviceSetupCompleted;
-          payload: Partial<{
-              osName: string;
-              deviceModel: DeviceModelInternal | null;
-              duration: number;
-              seed: 'create' | 'recovery';
-              firmware: 'install' | 'update' | 'skip' | 'up-to-date';
-              seedType: 'shamir-single' | 'shamir-advanced' | '12-words' | '24-words';
-              recoveryStepBack: boolean;
-              wasBackupSkipped: boolean;
-              wasPinSkipped: boolean;
-          }>;
       };

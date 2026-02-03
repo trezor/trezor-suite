@@ -18,7 +18,7 @@ import {
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -66,7 +66,6 @@ export const UninitializedDeviceLandingScreen = ({
     RootStackParamList
 >) => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);
@@ -125,7 +124,7 @@ export const UninitializedDeviceLandingScreen = ({
 
     useEffect(() => {
         resetOnboardingAnalytics();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupStarted,
             payload: {
                 osName: Platform.OS,
