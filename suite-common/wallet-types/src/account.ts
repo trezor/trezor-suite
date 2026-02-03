@@ -136,7 +136,8 @@ export type AccountFailureSpecific =
  * @deprecated For domain structures (entities, storage & API of components/functions)
  *             prefer the separate `AccountDescriptor`, `NetworkSymbol` and `DeviceStaticSessionId`
  */
-export type AccountKey = string; // <AccountDescriptor>-<NetworkSymbol>-<DeviceStaticSessionId>
+export type AccountKey = `${AccountDescriptor}-${NetworkSymbol}-${StaticSessionId}` &
+    Branded<'AccountKey'>;
 
 export type CreateAccountKeyParams = {
     accountDescriptor: AccountDescriptor;
@@ -149,7 +150,7 @@ export const createAccountKey = ({
     networkSymbol,
     deviceStaticSessionId,
 }: CreateAccountKeyParams): AccountKey =>
-    `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
+    `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}` as AccountKey;
 
 /**
  * Descriptor or xpub/zpub/..
