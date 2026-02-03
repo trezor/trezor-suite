@@ -35,6 +35,8 @@ export const useOnboarding = () => {
             updateBackupType: (payload: BackupType) =>
                 dispatch(onboardingActions.updateBackupType(payload)),
             goToSuite: () => dispatch(onboardingActions.goToSuite()),
+            resolveNextAfterSkipped: (requestedStepId: AnyStepId) =>
+                dispatch(onboardingActions.resolveNextAfterSkipped(requestedStepId)),
         }),
         [dispatch],
     );
