@@ -408,7 +408,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.DemoAccountQuestionnaireDashboard;
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireStart;
       };
