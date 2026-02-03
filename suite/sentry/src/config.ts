@@ -1,12 +1,11 @@
 import type { ErrorEvent, Options } from '@sentry/core';
 
+import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG, redactSentryEvent } from '@suite-common/sentry';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { redactUserPathFromString } from '@trezor/utils';
 
-import { COINJOIN_NETWORK_TAG, COINJOIN_REPORT_TAG } from './constants';
-import { ignoreErrorsSuite } from './ignoreErrors';
-import { redactSentryEvent } from './redactSentryEvent';
+import { ignoreErrors } from './ignoreErrors';
 
 /**
  * Full user path could be part of reported error in some cases and we want to actively filter username out.
@@ -84,7 +83,7 @@ export const SENTRY_CONFIG = {
     normalizeDepth: 4,
     maxBreadcrumbs: 40,
     beforeBreadcrumb,
-    ignoreErrors: ignoreErrorsSuite,
+    ignoreErrors,
     initialScope: {
         tags: {
             version: process.env.VERSION || 'undefined',

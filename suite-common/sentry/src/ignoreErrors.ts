@@ -7,7 +7,7 @@ import type { Options } from '@sentry/core';
  * This is a good place to add commonly occurring lifecycle errors that may happen during normal use (not preventable).
  * Do not add here errors that are now definitively fixed (those belong in Sentry ingest inbound filters).
  */
-const ignoreErrorsCommon = [
+export const ignoreErrorsCommon = [
     /.*Sequence of config.*is older than the current one.*/,
 
     // Various kinds of network connectivity problems
@@ -37,24 +37,4 @@ const ignoreErrorsCommon = [
     /.*session not found.*/,
     /.*Action canceled by user.*/,
     /.*device disconnected during action.*/, // the same as with 'other call in progress'
-] satisfies Options['ignoreErrors'];
-
-export const ignoreErrorsSuite = [
-    ...ignoreErrorsCommon,
-    /.*ResizeObserver loop limit exceeded.*/,
-    /.*Timeout waiting for TOR control port.*/,
-    /.*write EPIPE.*/,
-
-    // Common IDB lifecycle errors
-    /.*The database connection is closing.*/,
-    /.*Error: InvalidStateError: Failed to execute 'transaction' on 'IDBDatabase'.*/,
-
-    // Common Electron lifecycle errors
-    /.*Frame property was accessed after it navigated or was destroyed.*/, // Renderer process already closed while main is still responding to its IPC
-] satisfies Options['ignoreErrors'];
-
-export const ignoreErrorsSuiteMobile = [
-    ...ignoreErrorsCommon,
-    /.*Websocket closed.*/,
-    /.*Network request failed.*/,
 ] satisfies Options['ignoreErrors'];

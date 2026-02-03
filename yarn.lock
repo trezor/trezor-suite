@@ -10968,9 +10968,6 @@ __metadata:
   resolution: "@suite-common/sentry@workspace:suite-common/sentry"
   dependencies:
     "@sentry/core": "npm:10.32.1"
-    "@suite-common/suite-utils": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13486,6 +13483,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/sentry@workspace:suite-native/sentry"
   dependencies:
+    "@sentry/core": "npm:10.32.1"
     "@sentry/react-native": "npm:7.8.0"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -14078,6 +14076,18 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/sentry@workspace:*, @suite/sentry@workspace:suite/sentry":
+  version: 0.0.0-use.local
+  resolution: "@suite/sentry@workspace:suite/sentry"
+  dependencies:
+    "@sentry/core": "npm:10.32.1"
+    "@suite-common/sentry": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -15167,6 +15177,7 @@ __metadata:
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-constants": "workspace:^"
     "@suite-common/suite-utils": "workspace:*"
+    "@suite/sentry": "workspace:*"
     "@trezor/coinjoin": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -15214,10 +15225,10 @@ __metadata:
   resolution: "@trezor/suite-desktop-ui@workspace:packages/suite-desktop-ui"
   dependencies:
     "@sentry/electron": "npm:^7.5.0"
-    "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@suite/sentry": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
@@ -15322,8 +15333,8 @@ __metadata:
   resolution: "@trezor/suite-web@workspace:packages/suite-web"
   dependencies:
     "@sentry/browser": "npm:10.32.1"
-    "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite/sentry": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"

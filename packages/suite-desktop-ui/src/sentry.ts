@@ -1,6 +1,6 @@
 import { BrowserOptions, captureConsoleIntegration, init } from '@sentry/electron/renderer';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { SENTRY_CONFIG } from '@suite/sentry';
 
 const ELECTRON_RENDERER_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,

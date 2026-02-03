@@ -1,6 +1,6 @@
 import { BrowserOptions, captureConsoleIntegration, init } from '@sentry/browser';
 
-import { SENTRY_CONFIG } from '@suite-common/sentry';
+import { SENTRY_CONFIG } from '@suite/sentry';
 
 const BROWSER_SENTRY_CONFIG: BrowserOptions = {
     ...SENTRY_CONFIG,

@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/sentry",
+    "name": "@suite/sentry",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -12,9 +12,9 @@
     },
     "dependencies": {
         "@sentry/core": "10.32.1",
-        "@sentry/react-native": "7.8.0",
         "@suite-common/sentry": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
-        "@suite-native/config": "workspace:*"
+        "@suite-common/suite-utils": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

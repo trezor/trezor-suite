@@ -10,9 +10,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@sentry/core": "10.32.1",
-        "@suite-common/suite-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@sentry/core": "10.32.1"
     }
 }

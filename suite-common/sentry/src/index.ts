@@ -1,4 +1,3 @@
 export * from './constants';
-export { ignoreErrorsSuite, ignoreErrorsSuiteMobile } from './ignoreErrors';
-export { SENTRY_CONFIG } from './suiteConfig';
+export { ignoreErrorsCommon } from './ignoreErrors';
 export { redactSentryEvent } from './redactSentryEvent';

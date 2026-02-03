@@ -13,10 +13,10 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.5.0",
-        "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@suite/sentry": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
