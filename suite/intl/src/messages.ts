@@ -764,7 +764,7 @@ export const messages = defineMessages({
     TR_TRADING_TERMS: {
         id: 'TR_TRADING_TERMS',
         defaultMessage:
-            'This service is provided by <comp>{provider}</comp> and governed by their Terms & Conditions. Trezor isn’t involved.',
+            'This service is offered by a third-party provider, not Trezor. Provider’s terms apply.',
     },
     TR_BUY_MODAL_SECURITY_HEADER: {
         defaultMessage: 'Security first with your Trezor',
@@ -1896,7 +1896,7 @@ export const messages = defineMessages({
         id: 'TR_NEEDS_ATTENTION_FIRMWARE_CORRUPTED',
     },
     TR_NEEDS_ATTENTION_UNAVAILABLE: {
-        defaultMessage: "Trezor isn't available.",
+        defaultMessage: "Your Trezor isn't available.",
         id: 'TR_NEEDS_ATTENTION_UNAVAILABLE',
     },
     TR_NEEDS_ATTENTION_UNREADABLE: {
@@ -2922,15 +2922,15 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_SAME_AS_SYSTEM',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED: {
-        defaultMessage: 'Connect device to access device settings',
+        defaultMessage: 'Connect your Trezor to access device settings',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE: {
-        defaultMessage: 'Device detected in incorrect state',
+        defaultMessage: 'Your Trezor is in an incorrect state',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_UNAVAILABLE',
     },
     TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE: {
-        defaultMessage: "You can't change device settings in this state",
+        defaultMessage: "Device settings can't be changed in the current state",
         id: 'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_UNAVAILABLE',
     },
     TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED: {
@@ -2938,7 +2938,7 @@ export const messages = defineMessages({
         id: 'TR_SETTINGS_COINS_BANNER_DESCRIPTION_REMEMBERED_DISCONNECTED',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER: {
-        defaultMessage: 'Other settings unavailable in bootloader mode',
+        defaultMessage: 'Other settings are unavailable in bootloader mode',
         id: 'TR_SETTINGS_DEVICE_BANNER_TITLE_BOOTLOADER',
     },
     TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED: {
@@ -6228,7 +6228,7 @@ export const messages = defineMessages({
     },
     TR_LABELING_SECURE_SYNC: {
         id: 'TR_LABELING_SECURE_SYNC',
-        defaultMessage: 'Suite Sync (recommended)',
+        defaultMessage: 'Suite Sync',
     },
     TR_LABELING_ERROR: {
         id: 'TR_LABELING_ERROR',
@@ -7247,7 +7247,7 @@ export const messages = defineMessages({
     },
     TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_DEVICE_AUTHENTICITY_TEXT',
-        defaultMessage: 'Your device authentication check failed.',
+        defaultMessage: 'Your device authenticity check failed.',
     },
     TR_PLAY_IT_SAFE: {
         id: 'TR_PLAY_IT_SAFE',
@@ -7305,7 +7305,7 @@ export const messages = defineMessages({
     TR_DEVICE_AUTHENTICITY_ITEM_1: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_1',
         defaultMessage:
-            "This check is a must-do step to ensure your device's reliability, integrity, and secure use.",
+            "This check is essential to ensure your device's reliability, integrity, and secure use.",
     },
     TR_DEVICE_AUTHENTICITY_ITEM_2: {
         id: 'TR_DEVICE_AUTHENTICITY_ITEM_2',

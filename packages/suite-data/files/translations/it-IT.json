@@ -1020,7 +1020,7 @@
   "TR_FIRMWARE_TYPE": "Tipo",
   "TR_FIRMWARE_TYPE_BITCOIN_ONLY": "Solo per Bitcoin",
   "TR_FIRMWARE_TYPE_REGULAR": "Universale",
-  "TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "Sul dispositivo è installato un firmware che non è più supportato. È necessario aggiornarlo.",
+  "TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "In mancanza del back-up del wallet, non è possibile recuperare i coin in alcun modo.",
   "TR_FIRMWARE_UPDATE_TIME_WARNING": "Il completamento di questo aggiornamento potrebbe richiedere del tempo.",
   "TR_FIRMWARE_VALIDATION_T1_V2": "Devi eseguire prima l'aggiornamento al bootloader 1.8.0",
   "TR_FIRMWARE_VALIDATION_TOO_OLD": "Il firmware del dispositivo è troppo obsoleto",
