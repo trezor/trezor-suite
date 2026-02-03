@@ -18,10 +18,12 @@ import { TradingBalance } from '../../../../TradingBalance';
 
 export interface AssetPickerInputBalanceProps {
     name: typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
+    showOnlyAmount?: boolean;
 }
 
 export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     name,
+    showOnlyAmount,
 }: AssetPickerInputBalanceProps) {
     const { watch, getValues } = useFormContext<TradingSellFormProps | TradingExchangeFormProps>();
     const value = watch(name);
@@ -66,6 +68,7 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
                 tokenAddress={fiatValues.tokenAddress}
                 displaySymbol={value?.displaySymbol}
                 decimals={assetDecimals}
+                showOnlyAmount={showOnlyAmount}
             />
         </Row>
     );

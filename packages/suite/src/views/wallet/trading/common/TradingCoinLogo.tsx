@@ -12,6 +12,7 @@ export const TradingCoinLogo = ({
     size = 24,
     margin,
     className,
+    showNetworkIcon,
 }: TradingCoinLogoProps) => {
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const { cryptoIdToNativeCoinSymbol } = useTradingUtils();
@@ -26,6 +27,7 @@ export const TradingCoinLogo = ({
                 size={size}
                 placeholder={networkId.toUpperCase()}
                 margin={margin}
+                showNetworkIcon={showNetworkIcon}
             />
         </Wrapper>
     );
