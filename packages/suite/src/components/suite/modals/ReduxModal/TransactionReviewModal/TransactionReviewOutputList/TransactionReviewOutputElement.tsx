@@ -129,7 +129,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                 : formatNetworkAmount(value, symbol);
 
             return (
-                <>
+                <Column alignItems="flex-end">
                     <FormattedCryptoAmount
                         data-testid="@modal/crypto-amount"
                         disableHiddenPlaceholder
@@ -148,7 +148,7 @@ const Value = ({ value, type, symbol, token, isFiatVisible, state }: ValueProps)
                             />
                         </Text>
                     )}
-                </>
+                </Column>
             );
         }
         case 'default':
