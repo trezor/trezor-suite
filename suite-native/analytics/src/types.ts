@@ -246,12 +246,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingCompareOffers;
-          payload: {
-              type: TradingType;
-          };
-      }
-    | {
           type: EventType.TradingNavigate;
           payload: {
               action: 'navigate' | 'cancel';
@@ -315,20 +309,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
               countryOfResidence?: string;
 
               exchangeName?: string;
-          };
-      }
-    | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: TradingType;
-              status:
-                  | 'waiting'
-                  | 'processing'
-                  | 'pending'
-                  | 'converting'
-                  | 'sending'
-                  | 'kyc'
-                  | 'success'
-                  | 'error';
           };
       };

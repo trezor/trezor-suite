@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
@@ -16,7 +16,6 @@ export const ExchangeRateAndProviderPicker = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const quotes = useSelector(selectGroupedExchangeQuotes);
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const form = useExchangeFormContext();
 
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =
@@ -32,7 +31,7 @@ export const ExchangeRateAndProviderPicker = () => {
         }
 
         showSheet();
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingCompareOffers,
             payload: {
                 type: 'exchange',
