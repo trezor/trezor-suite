@@ -8,7 +8,7 @@ import {
     POPUP,
     UiResponseEvent,
 } from '@trezor/connect/src/events';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
 import type {
     ConnectSettings,
     ConnectSettingsPublic,
@@ -195,18 +195,3 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     // not needed, only because of types
     renderWebUSBButton() {}
 }
-
-const impl = new CoreInSuiteDesktop();
-
-// Exported to enable using directly
-export const TrezorConnect = factory({
-    // Bind all methods due to shadowing `this`
-    eventEmitter: impl.eventEmitter,
-    init: impl.init.bind(impl),
-    call: impl.call.bind(impl),
-    setTransports: impl.setTransports.bind(impl),
-    manifest: impl.manifest.bind(impl),
-    uiResponse: impl.uiResponse.bind(impl),
-    cancel: impl.cancel.bind(impl),
-    dispose: impl.dispose.bind(impl),
-});
