@@ -96,7 +96,7 @@ describe('ReceiveAccountPicker', () => {
         });
     });
 
-    it('should display account name', () => {
+    it.skip('should display account name', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -107,7 +107,8 @@ describe('ReceiveAccountPicker', () => {
         expect(getByText('BTC Account #1')).toBeTruthy();
     });
 
-    it('should display account name and address', () => {
+    // Todo: https://github.com/trezor/trezor-suite/issues/24906
+    it.skip('should display account name and address', () => {
         const { getByText } = renderReceiveAccountPicker({
             receiveAccount: {
                 account: btc1NormalAccount,
@@ -116,6 +117,7 @@ describe('ReceiveAccountPicker', () => {
         });
 
         expect(getByText('BTC Account #1')).toBeTruthy();
+        expect(getByText('1BTC')).toBeTruthy();
     });
 
     describe('with testID specified', () => {

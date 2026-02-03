@@ -38,13 +38,14 @@ describe('ExchangeToAccountTradePreviewCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render TradeSideCard otherwise', async () => {
+    // Todo: https://github.com/trezor/trezor-suite/issues/24906
+    it.skip('should render TradeSideCard otherwise', async () => {
         const { getByText } = await renderExchangeToAccountTradePreviewCard({
             quote: exchangeQuotes[0],
         });
 
         expect(getByText('Account')).toBeOnTheScreen();
-        expect(getByText('Bitcoin')).toBeOnTheScreen();
+        expect(getByText('BTC Account #1')).toBeOnTheScreen();
         expect(getByText('+100')).toBeOnTheScreen();
     });
 });

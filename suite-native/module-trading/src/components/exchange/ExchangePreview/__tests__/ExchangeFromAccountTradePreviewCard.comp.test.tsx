@@ -40,7 +40,7 @@ describe('ExchangeFromAccountTradePreviewCard', () => {
         expect(toJSON()).toBeNull();
     });
 
-    // Todo: I was not able to fix it, probably the AccountKey inconsistency in `getBtcAccount`
+    // Todo: https://github.com/trezor/trezor-suite/issues/24906
     it.skip('should render TradeSideCard otherwise', async () => {
         const { getByText } = await renderExchangeFromAccountTradePreviewCard({
             quote: exchangeQuotes[0],

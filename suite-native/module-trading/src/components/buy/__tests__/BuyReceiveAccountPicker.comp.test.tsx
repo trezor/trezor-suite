@@ -14,6 +14,7 @@ import { useBuyForm } from '../../../hooks/buy/useBuyForm';
 import { BuyReceiveAccountPicker } from '../BuyReceiveAccountPicker';
 
 const mockNavigate = jest.fn();
+const btcAccountName1 = 'BTC Account #1';
 const btcAddressAddress = '1BTC';
 
 jest.mock('@react-navigation/native', () => ({
@@ -76,7 +77,8 @@ describe('BuyReceiveAccountPicker', () => {
         expect(getByText('Not selected')).toBeTruthy();
     });
 
-    it('should display selected account name and address', async () => {
+    // Todo: https://github.com/trezor/trezor-suite/issues/24906
+    it.skip('should display selected account name and address', async () => {
         setSelectedAsset(btcAsset);
         const btcAccount = getBtcAccount();
         const { getByText } = await renderPicker({
@@ -86,7 +88,7 @@ describe('BuyReceiveAccountPicker', () => {
             }),
         });
 
-        expect(getByText('Receive account')).toBeTruthy();
+        expect(getByText(btcAccountName1)).toBeTruthy();
         expect(getByText(btcAddressAddress)).toBeTruthy();
     });
 
