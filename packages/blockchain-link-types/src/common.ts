@@ -153,7 +153,12 @@ export interface Transaction {
     ethereumSpecific?: BlockbookTransaction['ethereumSpecific'];
     internalTransfers: InternalTransfer[];
     cardanoSpecific?: {
-        subtype?: 'withdrawal' | 'stake_delegation' | 'stake_registration' | 'stake_deregistration';
+        subtype?:
+            | 'withdrawal'
+            | 'stake_delegation'
+            | 'stake_registration'
+            | 'stake_deregistration'
+            | 'governance_delegation';
         withdrawal?: string;
         deposit?: string;
     };
@@ -314,7 +319,7 @@ export interface SubscriptionAccountInfo {
 
 export type ChannelMessage<T> = T & { id: number };
 
-export type StakeType = 'stake' | 'unstake' | 'claim';
+export type StakeType = 'stake' | 'unstake' | 'claim' | 'change-delegate';
 
 export type TokenDetailByMint = {
     [mint: string]: {
