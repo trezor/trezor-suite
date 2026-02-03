@@ -4,6 +4,7 @@ export { SendFormLabelEditable } from './components/SendFormLabelEditable';
 export { TransactionOutputLabel } from './components/TransactionOutputLabel';
 export { TransactionOutputLabelEditable } from './components/TransactionOutputLabelEditable';
 export { WalletLabel } from './components/WalletLabel';
-export { selectSuiteSyncLabelingEnabled, selectAccountLabel } from './selectors';
+export { selectIsLabellingAllowed, selectAccountLabel } from './selectors';
 export type { CombinedLabelingState } from './selectors';
 export { AccountLabel } from './components/AccountLabel';
+export { useTurnOnSuiteSyncGuard } from './hooks/useTurnOnSuiteSyncGuard';

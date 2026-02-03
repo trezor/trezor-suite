@@ -1,5 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native/labeling';
 
 import { AccountRenameForm } from './AccountRenameForm';
 
@@ -10,12 +13,23 @@ type AccountRenameModalProps = {
 export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
+    const isLabellingAllowed = useSelector(selectIsLabellingAllowed);
+    const { handleAddLabel } = useTurnOnSuiteSyncGuard();
+
+    const handleTriggerAccountRename = () => {
+        if (isLabellingAllowed) {
+            handleAddLabel(openModal);
+        } else {
+            openModal();
+        }
+    };
+
     return (
         <Box>
             <IconButton
                 colorScheme="tertiaryElevation0"
                 iconName="pencilSimple"
-                onPress={openModal}
+                onPress={handleTriggerAccountRename}
                 testID="@account-detail/settings/edit-button"
             />
             <BottomSheetModal

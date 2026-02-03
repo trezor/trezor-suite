@@ -35,8 +35,6 @@ export const TransactionOutputLabelEditable = ({
         selectSuiteSyncOutputLabel(state, txId, outputIndex, deviceStaticSessionId),
     );
 
-
-
     if (!isLabellingAllowed) {
         return null;
     }
@@ -63,7 +61,7 @@ export const TransactionOutputLabelEditable = ({
 
                     return;
                 case 'WriteModeRequiredForAllocation':
-                    // expected case
+                    // Do nothing, this is expected control flow error when we want allocate on-demand.
                     return;
                 default:
                     return exhaustive(type);

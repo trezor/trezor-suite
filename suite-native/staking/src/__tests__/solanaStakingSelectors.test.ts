@@ -143,6 +143,15 @@ const getTestState = ({
         } as TrezorDevice,
         persistentDeviceData: [],
     },
+    appSettings: {
+        isOnboardingFinished: false,
+        isDeviceAuthenticityCheckEnabled: false,
+        isFirmwareRevisionCheckEnabled: false,
+        isFirmwareHashCheckEnabled: false,
+        areTestnetsEnabled: false,
+        shouldShowAutoEjectAlert: false,
+        hasAutoEjectAlertBeenDisplayed: false,
+    },
 });
 
 describe('selectors', () => {
