@@ -1935,10 +1935,6 @@ export const messages = defineMessages({
         defaultMessage: 'Firmware installation may have failed.',
         id: 'TR_FIRMWARE_CORRUPTED_CONNECT_DESCRIPTION',
     },
-    TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION: {
-        defaultMessage: 'Continue to THP pairing',
-        id: 'TR_NEEDS_TREZOR_HOST_PROTOCOL_PAIRING_DESCRIPTION',
-    },
     TR_UDEV_DOWNLOAD_TITLE: {
         defaultMessage: 'Download udev rules',
         id: 'TR_UDEV_DOWNLOAD_TITLE',
