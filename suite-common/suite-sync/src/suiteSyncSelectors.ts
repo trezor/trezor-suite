@@ -2,6 +2,7 @@ import { DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/wa
 import { StaticSessionId } from '@trezor/connect';
 
 import { SuiteSyncState } from './suiteSyncSlice';
+import { SuiteSyncInteraction } from './suiteSyncTypes';
 import { isFwUpgradeNeededForSuiteSync, isSuiteSyncSupportedByDevice } from './suiteSyncUtils';
 
 export type WithSuiteSyncState = {
@@ -18,12 +19,6 @@ export const selectIsSuiteSyncDebugEnabled = (state: WithSuiteSyncAndDeviceState
 
 export const selectSuiteSyncRelayUrl = (state: WithSuiteSyncAndDeviceState) =>
     state.suiteSync.settings.suiteSyncRelayUrl;
-
-export type SuiteSyncInteraction =
-    | 'suite-sync-off'
-    | 'firmware-upgrade-needed'
-    | 'unsupported'
-    | 'keys-needed';
 
 export const selectSuiteSyncInteraction = (
     state: WithSuiteSyncAndDeviceState,

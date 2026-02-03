@@ -2,20 +2,19 @@ import {
     SuiteSyncDataRootState,
     WithSuiteSyncAndDeviceState,
     selectSuiteSyncAccountLabel as selectAccountLabelLocalFirst,
-    selectIsSuiteSyncEnabled,
+    selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { getIsSuiteSyncLabelingActionEnabled } from '@suite-common/suite-sync/src/suiteSyncUtils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
-    selectDeviceInternalModel,
-    selectIsPortfolioTrackerDevice,
     selectAccountLabel as selectReduxAccountLabel,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 import { AccountDescriptor } from '@suite-common/wallet-types';
 import { createAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectIsExperimentalFeatureEnabled } from '@suite-native/settings';
 import { StaticSessionId } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 export type CombinedLabelingState = SuiteSyncDataRootState &
     WithSuiteSyncAndDeviceState &
@@ -26,16 +25,18 @@ export const selectIsLabellingAllowed = (
     state: WithSuiteSyncAndDeviceState & SettingsSliceRootState,
 ) => {
     const isSuiteSyncFeatureAvailable = selectIsExperimentalFeatureEnabled(state, 'suite-sync');
-    const isSuiteSyncEnabled = selectIsSuiteSyncEnabled(state);
-    const isPortfolioTracker = selectIsPortfolioTrackerDevice(state);
-    const deviceModel = selectDeviceInternalModel(state);
+    const device = selectSelectedDevice(state);
 
-    const isSuiteSyncCompatibleDevice =
-        deviceModel !== DeviceModelInternal.T1B1 &&
-        deviceModel !== DeviceModelInternal.T2T1 &&
-        !isPortfolioTracker;
+    if (isSuiteSyncFeatureAvailable) {
+        const suiteSyncInteraction = selectSuiteSyncInteraction(
+            state,
+            device?.state?.staticSessionId ?? null,
+        );
 
-    return isSuiteSyncFeatureAvailable && (isSuiteSyncCompatibleDevice || isSuiteSyncEnabled);
+        return getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction);
+    }
+
+    return false;
 };
 
 export const selectAccountLabel = (
