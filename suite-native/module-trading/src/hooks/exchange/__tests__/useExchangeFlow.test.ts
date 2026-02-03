@@ -1,5 +1,5 @@
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -19,6 +19,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
+        useAnalytics: jest.fn(),
         useLegacyAnalytics: jest.fn(),
     };
 });
@@ -63,6 +64,9 @@ describe('useExchangeFlow', () => {
     const renderUseExchangeFlow = async ({ store }: { store: TestStore }) => {
         const reportMock = jest.fn();
 
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
