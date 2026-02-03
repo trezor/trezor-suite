@@ -12,9 +12,12 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import {
     AppTabsRoutes,
+    HomeStackRoutes,
+    RootStackParamList,
     RootStackRoutes,
     ScreenHeader,
     StackProps,
+    StackToStackCompositeNavigationProps,
     StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
@@ -31,15 +34,24 @@ type RouteProps = StackProps<
     StellarManageTokenStackRoutes.ActivationFee
 >['route'];
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    StellarManageTokenStackParamList,
+    StellarManageTokenStackRoutes.ActivationFee,
+    RootStackParamList
+>;
+
 export const ActivationFeeScreen = () => {
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
 
     const handleSuccess = useCallback(() => {
         // Navigate to home page after activation
-        navigation.getParent()?.navigate(RootStackRoutes.AppTabs, {
+        navigation.popTo(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
+            params: {
+                screen: HomeStackRoutes.Home,
+            },
         });
     }, [navigation]);
 
