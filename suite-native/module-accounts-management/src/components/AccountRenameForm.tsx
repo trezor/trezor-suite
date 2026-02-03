@@ -83,6 +83,9 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         showToast({ variant: 'error', icon: 'warning', message: type });
 
                         return;
+                    case 'WriteModeRequiredForAllocation':
+                        // expected case
+                        return;
                     default:
                         return exhaustive(type);
                 }
