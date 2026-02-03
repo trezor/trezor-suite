@@ -245,22 +245,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.TradingBuy;
-          payload: {
-              action: 'continue' | 'cancel';
-              step: 'buy-form' | 'account-selection';
-
-              cryptoLabel?: string;
-              cryptoNetworkSymbol?: string;
-              cryptoContractAddress?: string;
-
-              paymentMethod?: string;
-              countryOfResidence?: string;
-
-              exchangeName?: string;
-          };
-      }
-    | {
           type: EventType.TradingExchange;
           payload: {
               action: TradingExchangeAction;
