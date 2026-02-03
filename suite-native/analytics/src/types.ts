@@ -331,16 +331,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
                   | 'success'
                   | 'error';
           };
-      }
-    | {
-          type: EventType.TradingSuccess;
-          payload: {
-              type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingConfirmTrade;
-          payload: {
-              type: TradingType;
-          };
       };
