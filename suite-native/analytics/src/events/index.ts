@@ -19,31 +19,17 @@ export {
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
-export {
-    deviceSetupInfoEvent,
-    type DeviceSetupInfoLocation,
-} from './deviceSetupInfoEvent';
+export { deviceSetupInfoEvent, type DeviceSetupInfoLocation } from './deviceSetupInfoEvent';
 export {
     deviceSetupSecurityCheckEvent,
     type DeviceSetupSecurityCheckLocation,
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
-export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
-export { tradingBuyEvent } from './tradingBuyEvent';
-export { tradingCompareOffersEvent } from './tradingCompareOffersEvent';
-export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
-export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
-export { tradingExchangeEvent } from './tradingExchangeEvent';
-export { tradingNavigateEvent } from './tradingNavigateEvent';
-export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
-export { tradingSellEvent } from './tradingSellEvent';
-export { tradingStatusEvent } from './tradingStatusEvent';
-export { tradingSuccessEvent } from './tradingSuccessEvent';
-export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';
-export { firmwareUpdateStartedEvent } from './firmwareUpdateStartedEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';
+export { firmwareUpdateCancelEvent } from './firmwareUpdateCancelEvent';
+export { firmwareUpdateStartedEvent } from './firmwareUpdateStartedEvent';
 export { onboardingCompletedEvent } from './onboardingCompletedEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';
@@ -54,7 +40,17 @@ export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { settingsChangeThemeEvent } from './settingsChangeThemeEvent';
 export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';
 export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
+export { tradingBuyEvent } from './tradingBuyEvent';
+export { tradingCompareOffersEvent } from './tradingCompareOffersEvent';
+export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
+export { tradingExchangeEvent } from './tradingExchangeEvent';
+export { tradingNavigateEvent } from './tradingNavigateEvent';
+export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
+export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';
+export { tradingSellEvent } from './tradingSellEvent';
+export { tradingStatusEvent } from './tradingStatusEvent';
+export { tradingSuccessEvent } from './tradingSuccessEvent';
 export { transactionDetailCompareValuesEvent } from './transactionDetailCompareValuesEvent';
 export { transactionDetailEvent } from './transactionDetailEvent';
 export { transactionDetailExploreInBlockchainEvent } from './transactionDetailExploreInBlockchainEvent';

@@ -2,7 +2,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { FirmwareType } from '@trezor/connect';
 
 import { EventType } from '../constants';
-import { FirmwareUpdateLocation, FirmwareUpdateStartType } from '../definitions';
+import { FirmwareUpdateLocation } from '../definitions';
 
 type Attributes = {
     model: AttributeDef<string>;
@@ -11,13 +11,12 @@ type Attributes = {
     toFwVersion: AttributeDef<string>;
     fromFwType: AttributeDef<FirmwareType | 'none'>;
     toFwType: AttributeDef<FirmwareType>;
-    location: AttributeDef<FirmwareUpdateLocation | null>;
-    startType: AttributeDef<FirmwareUpdateStartType>;
+    location: AttributeDef<FirmwareUpdateLocation>;
 };
 
-export const firmwareUpdateStartedEvent: EventDef<Attributes, EventType.FirmwareUpdateStarted> = {
-    name: EventType.FirmwareUpdateStarted,
-    descriptionTrigger: 'On starting update firmware flow or tapping Retry button.',
+export const firmwareUpdateCancelEvent: EventDef<Attributes, EventType.FirmwareUpdateCancel> = {
+    name: EventType.FirmwareUpdateCancel,
+    descriptionTrigger: 'User cancel FW update confirmation on device or in app.',
     changelog: [{ version: '25.1.2', notes: 'added' }],
 
     attributes: {
@@ -48,10 +47,6 @@ export const firmwareUpdateStartedEvent: EventDef<Attributes, EventType.Firmware
         location: {
             changelog: [{ version: '25.1.2', notes: 'added' }],
             description: 'Location where the update was started',
-        },
-        startType: {
-            changelog: [{ version: '25.1.2', notes: 'added' }],
-            description: 'Started first time or is it retry?',
         },
     },
 };

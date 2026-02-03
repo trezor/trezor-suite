@@ -13,7 +13,7 @@ type Attributes = {
 export const assetDetailEvent: EventDef<Attributes, EventType.AssetDetail> = {
     name: EventType.AssetDetail,
     descriptionTrigger: 'On asset detail opening.',
-    description: 'For ERC20 tokens additionally contains tokenSymbol',
+    description: 'For ERC20 tokens additionally contains `tokenSymbol`',
     changelog: [
         { version: '23.4.1', notes: 'added' },
         { version: '24.3.1', notes: 'optional property tokenAddress added' },

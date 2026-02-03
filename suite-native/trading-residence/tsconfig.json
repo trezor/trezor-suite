@@ -16,9 +16,6 @@
         { "path": "../trading-atoms" },
         { "path": "../trading-consts" },
         { "path": "../trading-state" },
-        {
-            "path": "../../packages/analytics-uploader"
-        },
         { "path": "../../packages/styles" },
         { "path": "../test-utils" }
     ]

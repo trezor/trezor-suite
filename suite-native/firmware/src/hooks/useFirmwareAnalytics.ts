@@ -102,11 +102,11 @@ export const useFirmwareAnalytics = ({
     );
 
     const handleAnalyticsReportCancelled = useCallback(() => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.FirmwareUpdateCancel,
             payload: getAnalyticsPayload(),
         });
-    }, [getAnalyticsPayload, legacyAnalytics]);
+    }, [getAnalyticsPayload, analytics]);
 
     return {
         getElapsedTimeInSeconds,

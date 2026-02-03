@@ -23,6 +23,7 @@ export type FirmwareUpdatePayload = {
 
 export type FirmwareUpdateStuckedState = 'modalPart1' | 'modalPart2' | 'buttonVisible';
 export type FirmwareUpdateStartType = 'normal' | 'retry';
+export type FirmwareUpdateLocation = 'settings' | 'onboarding' | null;
 
 export type TradingNavigateFrom =
     | 'trade'

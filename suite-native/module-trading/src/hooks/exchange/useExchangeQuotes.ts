@@ -12,12 +12,13 @@ import {
     selectTradingExchangeIsLoading,
 } from '@suite-common/trading';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { AnalyticsNativeEvents, EventType } from '@suite-native/analytics';
 import { useFormState } from '@suite-native/forms';
-import { AnalyticsNative , useAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
 import { AbortablePromise, ExchangeFormType } from '@suite-native/trading-types';
+import { Analytics } from '@trezor/analytics-uploader';
 import { Timer, useDebounce } from '@trezor/react-utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
@@ -93,7 +94,7 @@ const useShouldFetchExchangeQuotes = (
 
 const waitForPromiseAndReport = async (
     promise: AbortablePromise | undefined,
-    analytics: AnalyticsNative,
+    analytics: Analytics<AnalyticsNativeEvents>,
 ) => {
     if (!promise) {
         return;

@@ -19,10 +19,10 @@ export const demoAccountQuestionnaireLinksEvent: EventDef<
     name: EventType.DemoAccountQuestionnaireLinks,
     descriptionTrigger:
         'User clicks on one of the articles or clicks on "Back to dashboard" button or clicks back',
-    changelog: [{ version: '25.12.0', notes: 'added' }],
+    changelog: [{ version: '25.12.1', notes: 'added' }],
     attributes: {
         option: {
-            changelog: [{ version: '25.12.0', notes: 'added' }],
+            changelog: [{ version: '25.12.1', notes: 'added' }],
             description: 'The selected link option',
         },
     },
