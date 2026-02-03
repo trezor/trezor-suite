@@ -25,6 +25,7 @@ type TransactionNotificationPayload = {
 };
 type SentTransactionNotification = {
     type: 'tx-sent';
+    token?: TokenInfo;
 } & TransactionNotificationPayload;
 
 type RevokeTransactionNotification = {
@@ -45,6 +46,7 @@ type ExchangeTransactionNotification = {
 
 type ReceivedTransactionNotification = {
     type: 'tx-received' | 'tx-confirmed';
+    token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol'>;
 } & TransactionNotificationPayload;
 
 type StakedTransactionNotification = {

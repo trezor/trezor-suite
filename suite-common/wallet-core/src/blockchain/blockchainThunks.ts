@@ -339,6 +339,7 @@ export const onBlockchainNotificationThunk = createThunk(
                     type: 'tx-received',
                     formattedAmount,
                     device: accountDevice,
+                    token,
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: tx.txid,

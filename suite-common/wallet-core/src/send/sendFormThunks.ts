@@ -414,6 +414,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         type: 'tx-sent',
                         formattedAmount,
                         device,
+                        token,
                         descriptor: selectedAccount.descriptor,
                         symbol: selectedAccount.symbol,
                         txid,
