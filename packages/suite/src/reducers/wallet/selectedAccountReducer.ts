@@ -1,6 +1,11 @@
 import { ConnectPopupState } from '@suite-common/connect-popup';
 import { TradingState } from '@suite-common/trading';
-import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    SendRootState,
+    accountsActions,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import type { SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import type { Action } from 'src/types/suite';
@@ -13,12 +18,13 @@ export type SelectedAccountRootState = {
     };
 } & AccountsRootState;
 
-export type SelectedAccountRootStateWithTrading = SelectedAccountRootState & {
-    wallet: {
-        trading: TradingState;
+export type SelectedAccountRootStateWithTrading = SelectedAccountRootState &
+    SendRootState & {
+        wallet: {
+            trading: TradingState;
+        };
+        connectPopup: ConnectPopupState;
     };
-    connectPopup: ConnectPopupState;
-};
 
 export const initialState: State = {
     status: 'none',
@@ -48,13 +54,17 @@ export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =
 
 /**
  * Mainly used for common modals, also used in the Trading section.
- * @returns account from trading if it's set, otherwise account from the store
+ * @returns account from send state if set, then trading if set, otherwise account from the store
  */
 export const selectAccountIncludingChosenInTrading = (
     state: SelectedAccountRootStateWithTrading,
 ) => {
-    const { modalAccountKey } = state.wallet.trading;
+    const sendAccountKey = state.wallet.send.accountKey;
+    if (sendAccountKey) {
+        return selectAccountByKey(state, sendAccountKey) ?? undefined;
+    }
 
+    const { modalAccountKey } = state.wallet.trading;
     if (modalAccountKey) {
         return selectAccountByKey(state, modalAccountKey) ?? undefined;
     }

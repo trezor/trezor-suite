@@ -1,5 +1,6 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import {
+    AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
     SendFormDraftKey,
@@ -22,6 +23,7 @@ export type SendState = {
     precomposedForm?: FormState; // Used to pass the form state to the review modal. Holds similar data as drafts, but drafts are not used in RBF form.
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
+    accountKey?: AccountKey; // Account key for the transaction being processed.
 };
 
 export const initialState: SendState = {
@@ -29,6 +31,7 @@ export const initialState: SendState = {
     precomposedTx: undefined,
     serializedTx: undefined,
     signedTx: undefined,
+    accountKey: undefined,
 };
 
 export type SendRootState = {
@@ -61,13 +64,14 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         )
         .addCase(
             sendFormActions.storePrecomposedTransaction,
-            (state, { payload: { precomposedTransaction, formState } }) => {
+            (state, { payload: { precomposedTransaction, formState, accountKey } }) => {
                 state.precomposedTx = precomposedTransaction;
                 // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
                 // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
                 // TypeError: Cannot assign to read only property of object '#<Object>'
                 // This might not be necessary in the future when the dependencies are upgraded.
                 state.precomposedForm = cloneObject(formState);
+                state.accountKey = accountKey;
             },
         )
         .addCase(
@@ -82,6 +86,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
+            delete state.accountKey;
         })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
             state.sendRaw = sendRaw;
@@ -92,6 +97,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
+            delete state.accountKey;
         })
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
         .addCase(accountsActions.removeAccount, (state, { payload }) => {

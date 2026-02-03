@@ -30,6 +30,7 @@ const storePrecomposedTransaction = createAction(
     (payload: {
         formState: FormState;
         precomposedTransaction: GeneralPrecomposedTransactionFinal;
+        accountKey?: AccountKey;
     }) => ({
         payload,
     }),
