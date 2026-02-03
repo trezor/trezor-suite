@@ -6,6 +6,7 @@ import { TradingType } from '@suite-common/trading';
 import { ContextMessage } from 'src/components/wallet/WalletLayout/AccountBanners/ContextMessage';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
+import { AllowanceContext, useAllowance } from 'src/hooks/wallet/allowance';
 import { TradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useTradingExchangeForm } from 'src/hooks/wallet/trading/form/useTradingExchangeForm';
 import { selectIsDeviceCompromised } from 'src/selectors/suite/suiteAuthenticityChecksSelectors';
@@ -24,12 +25,15 @@ const TradingExchangeFormContent = () => (
 
 const TradingExchangeFormWrapper = () => {
     const tradingExchangeContextValue = useTradingExchangeForm({});
+    const allowanceContextValue = useAllowance({ account: tradingExchangeContextValue.account });
 
     return (
         <TradingFormContext.Provider value={tradingExchangeContextValue}>
-            <FormProvider {...tradingExchangeContextValue.methods}>
-                <TradingContainer SectionComponent={TradingExchangeFormContent} />
-            </FormProvider>
+            <AllowanceContext.Provider value={allowanceContextValue}>
+                <FormProvider {...tradingExchangeContextValue.methods}>
+                    <TradingContainer SectionComponent={TradingExchangeFormContent} />
+                </FormProvider>
+            </AllowanceContext.Provider>
         </TradingFormContext.Provider>
     );
 };

@@ -45,8 +45,7 @@ export const EthereumFeeCards = ({ feeOptions }: EthereumFeeCardsProps) => {
     useEffect(() => {
         if (transactionInfo && transactionInfo.type !== 'error' && transactionInfo.feeLimit) {
             setCachedGasLimit(transactionInfo.feeLimit);
-        }
-        if (!isDirty) {
+        } else if (!isDirty) {
             setCachedGasLimit(undefined);
         }
     }, [transactionInfo, isDirty]);

@@ -1,4 +1,5 @@
 export * from './account';
+export * from './allowance';
 export * from './backend';
 export * from './cardanoStaking';
 export * from './discovery';

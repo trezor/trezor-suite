@@ -1,5 +1,4 @@
 import { Column } from '@trezor/components';
-import { spacings } from '@trezor/theme';
 
 import { Account } from 'src/types/wallet';
 
@@ -33,7 +32,7 @@ export const Fees = ({
     useFetchFees({ networkSymbol });
 
     return (
-        <Column gap={spacings.md} overflow="unset">
+        <Column gap={16} overflow="unset">
             <CollapsibleFees
                 networkType={networkType}
                 networkSymbol={networkSymbol}
