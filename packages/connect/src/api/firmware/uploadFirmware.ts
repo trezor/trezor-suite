@@ -1,7 +1,9 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/uploadFirmware.js
 
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { TRANSPORT } from '@trezor/transport';
+import { isWithinRange } from '@trezor/utils/src/versionUtils';
 
 import { PROTO } from '../../constants';
 import type { Device } from '../../device/Device';
@@ -34,6 +36,8 @@ const postProgressMessage = (
 };
 
 const FIRMWARE_ERASE_TIMEOUT_MILLISECONDS = 15_000;
+const TIMEOUT_MIN_FW_VERSION = '1.12.1';
+const TIMEOUT_MAX_FW_VERSION = '1.13.0';
 
 type UploadFirmwareProps = {
     typedCall: TypedCall;
@@ -57,7 +61,11 @@ export const uploadFirmware = async ({
         // but it may also indicate that something is wrong with the device, so inform Suite which can then display warning.
         // this may be removed in future if we confirm that the issue was resolved
         const timeoutId = setTimeout(() => {
-            postMessage(createUiMessage(UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+            const version = getFirmwareVersionArray(device.toMessageObject());
+            if (version === null) return;
+            if (isWithinRange(version, TIMEOUT_MIN_FW_VERSION, TIMEOUT_MAX_FW_VERSION)) {
+                postMessage(createUiMessage(UI.FIRMWARE_PROGRESS_UNEXPECTED_DELAY, {}));
+            }
         }, FIRMWARE_ERASE_TIMEOUT_MILLISECONDS);
         await typedCall('FirmwareErase', 'Success', {});
         clearTimeout(timeoutId);
