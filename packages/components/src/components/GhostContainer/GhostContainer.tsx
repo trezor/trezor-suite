@@ -25,8 +25,8 @@ type AllowedGhostContainerFrameProps = Pick<
     (typeof allowedGhostContainerFrameProps)[number]
 >;
 
-type GhostContainerProps = Pick<HTMLProps<HTMLElement>, 'onClick' | 'tabIndex'> &
-    AllowedGhostContainerFrameProps & {
+type GhostContainerProps = AllowedGhostContainerFrameProps &
+    Pick<HTMLProps<HTMLElement>, 'onClick' | 'tabIndex'> & {
         children: React.ReactNode;
         isDisabled?: boolean;
         isActive?: boolean;
@@ -43,18 +43,14 @@ export const GhostContainer = ({
     tabIndex,
     as = 'button',
     borderRadius = 10,
+    cursor,
     ...rest
 }: GhostContainerProps) => {
-    const frameProps = pickAndPrepareFrameProps(
-        { ...rest, borderRadius },
-        allowedGhostContainerFrameProps,
-        false,
-    );
+    const frameProps = pickAndPrepareFrameProps(rest, allowedGhostContainerFrameProps, false);
 
     return (
         <Box
             onClick={isDisabled ? undefined : onClick}
-            cursor={isDisabled ? 'default' : 'pointer'}
             backgroundColor={isActive ? 'stateFillElementGhostSelectedAlt' : 'baseFillElementGhost'}
             backgroundColorOnInteraction={
                 isActive || isDisabled ? undefined : 'stateFillElementGhostHovered'
@@ -63,6 +59,8 @@ export const GhostContainer = ({
             data-testid={dataTestId}
             tabIndex={tabIndex}
             {...frameProps}
+            borderRadius={borderRadius}
+            cursor={cursor ?? (isDisabled ? 'default' : 'pointer')}
         >
             {children}
         </Box>
