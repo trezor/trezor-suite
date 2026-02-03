@@ -56,8 +56,6 @@ describe('Test that all external links are alive', () => {
     Object.values(URLS)
         .filter(url => !excluded.includes(url))
         .forEach(url => {
-            // Todo: temp fix. this shall run in the Nightly not on every PR
-            //       there shall be probably a test group to run some tests only nightly
             it(`HTTP GET request to ${url} should respond with an acceptable http code`, async () => {
                 const { status } = await fetch(url);
                 expect(isAcceptableHttpCode(status)).toBe(true);
