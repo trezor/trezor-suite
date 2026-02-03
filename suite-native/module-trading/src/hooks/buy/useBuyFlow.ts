@@ -20,7 +20,7 @@ import {
     TradingStackParamList,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { BuyFormType } from '@suite-native/trading-types';
 import { useNullTimer } from '@trezor/react-utils';
@@ -41,7 +41,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useBuyFlow = (form: BuyFormType) => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = form.watch([
@@ -139,7 +138,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             return;
         }
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingBuy,
             payload: {
                 step: 'buy-form',
@@ -151,7 +150,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         if (!isFullySelectedReceiveAccount(receiveAccount)) {
             selectReceiveAccount();
 
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingBuy,
                 payload: {
                     step: 'account-selection',
