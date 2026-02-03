@@ -21,12 +21,12 @@ export const TransactionLayout = ({
     icon,
     children,
 }: TransactionLayoutProps) => {
-    const { isBelowLaptop } = useLayoutSize();
+    const { isBelowLaptop, isAboveMobile } = useLayoutSize();
 
     return (
         <Card onClick={onClick} paddingType="none">
             <Row gap={24} padding={{ vertical: 20, horizontal: 24 }}>
-                {icon}
+                {isAboveMobile && icon}
                 <Column flex="1" gap={8}>
                     <Row justifyContent="space-between" gap={24}>
                         <InfoSegments variant="tertiary">
