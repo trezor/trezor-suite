@@ -10,6 +10,7 @@ export { demoAccountQuestionnaireDashboardEvent } from './demoAccountQuestionnai
 export { demoAccountQuestionnaireQuestionEvent } from './demoAccountQuestionnaireQuestionEvent';
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
+export { deviceSetupInfoEvent } from './deviceSetupInfoEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';

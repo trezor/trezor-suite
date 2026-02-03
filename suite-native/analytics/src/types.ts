@@ -396,10 +396,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
                   | 'securitySeal'
                   | 'packaging';
           };
-      }
-    | {
-          type: EventType.DeviceSetupInfo;
-          payload: {
-              location: 'untrustedReseller' | 'securitySeal';
-          };
       };
