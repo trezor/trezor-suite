@@ -343,18 +343,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               type: TradingType;
           };
-      }
-    | {
-          type: EventType.TradingParameterChanged;
-          payload: {
-              type: TradingType;
-              parameter: 'fiat' | 'cryptoFrom' | 'cryptoTo' | 'paymentMethod' | 'provider';
-          };
-      }
-    | {
-          type: EventType.TradingParameterChanged;
-          payload: {
-              type: CountryChangeContext;
-              parameter: 'country';
-          };
       };

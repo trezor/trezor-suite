@@ -38,6 +38,9 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
+        useAnalytics: () => ({
+            report: mockReport,
+        }),
         useLegacyAnalytics: () => ({
             report: mockReport,
         }),

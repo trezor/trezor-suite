@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync, screen, userEvent } from '@suite-native/test-utils';
 
 import { TradingLocationScreen } from '../TradingLocationScreen';
@@ -15,6 +15,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
+        useAnalytics: jest.fn(),
         useLegacyAnalytics: jest.fn(),
     };
 });
@@ -39,6 +40,9 @@ describe('TradingLocationOnboardingScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
+        (useAnalytics as jest.Mock).mockReturnValue({
+            report: reportMock,
+        });
         (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });

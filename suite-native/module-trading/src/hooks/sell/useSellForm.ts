@@ -14,7 +14,7 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
@@ -37,7 +37,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
     const dispatch = useDispatch();
     const prevCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevFiatCurrency = useRef<FiatCurrencyCode | undefined>(getValues('fiatCurrency'));
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     useEffect(() => {
         const { unsubscribe } = watch(
@@ -63,7 +63,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
                     case 'sendAsset':
                         if (sendAsset?.cryptoId !== prevCryptoId.current) {
-                            legacyAnalytics.report({
+                            analytics.report({
                                 type: EventType.TradingParameterChanged,
                                 payload: {
                                     type: 'sell',
@@ -78,7 +78,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
 
                     case 'fiatCurrency':
                         if (fiatCurrency !== prevFiatCurrency.current) {
-                            legacyAnalytics.report({
+                            analytics.report({
                                 type: EventType.TradingParameterChanged,
                                 payload: {
                                     type: 'sell',
@@ -99,7 +99,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
         );
 
         return unsubscribe;
-    }, [setValue, watch, dispatch, legacyAnalytics]);
+    }, [setValue, watch, dispatch, analytics]);
 };
 
 const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
