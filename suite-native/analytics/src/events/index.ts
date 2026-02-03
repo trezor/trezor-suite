@@ -11,6 +11,7 @@ export { demoAccountQuestionnaireQuestionEvent } from './demoAccountQuestionnair
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { deviceSetupInfoEvent } from './deviceSetupInfoEvent';
+export { deviceSetupSecurityCheckEvent } from './deviceSetupSecurityCheckEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';

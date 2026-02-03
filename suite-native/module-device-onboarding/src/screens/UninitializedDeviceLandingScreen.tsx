@@ -18,7 +18,7 @@ import {
     RootStackParamList,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 
 import { resetOnboardingAnalyticsAtom, updateOnboardingAnalyticsAtom } from '../../atoms';
 import { DeviceModelImage } from '../components/DeviceModelImage';
@@ -65,6 +65,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
@@ -100,7 +101,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause: 'firmwareAlreadyInstalled',
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
@@ -114,7 +115,7 @@ export const UninitializedDeviceLandingScreen = ({
             suspicionCause,
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: suspicionCause,
