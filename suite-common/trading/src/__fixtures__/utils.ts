@@ -1,9 +1,11 @@
+import { AccountKey } from '@suite-common/wallet-types';
+
 export const accountBtc = {
     index: 1,
     accountType: 'segwit',
     networkType: 'bitcoin',
     descriptor: 'btc-descriptor',
-    key: 'btc-descriptor-btc',
+    key: 'btc-descriptor-btc' as AccountKey, // Todo: create properly via `createAccountKey()`,
     symbol: 'btc',
     addresses: {
         unused: [
@@ -23,7 +25,7 @@ export const accountEth = {
     networkType: 'ethereum',
     symbol: 'eth',
     descriptor: 'eth-descriptor',
-    key: 'eth-descriptor-eth',
+    key: 'eth-descriptor-eth' as AccountKey, // Todo: create properly via `createAccountKey()`,
     path: "m/44'/60'/0'/0/1",
     deviceState: 'staticSessionId',
     tokens: [

@@ -4,7 +4,7 @@ import { findChainedTransactions, findTransactions } from '@suite-common/wallet-
 
 type FindLabelsToBeMovedOrDeletedThunkParams = {
     prevTxId: string;
-    walletTransactions: { [key: AccountKey]: WalletAccountTransaction[] };
+    walletTransactions: Record<AccountKey, WalletAccountTransaction[]>;
 };
 
 export const findLabelsToBeMovedOrDeleted = ({

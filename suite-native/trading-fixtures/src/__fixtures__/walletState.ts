@@ -2,6 +2,7 @@ import { TradingType } from '@suite-common/trading';
 import { FiatRatesState, SendState } from '@suite-common/wallet-core';
 import {
     Account,
+    AccountKey,
     GeneralPrecomposedLevels,
     RatesByKey,
     type WalletSettings,
@@ -55,8 +56,8 @@ export const getWalletState = ({
             lastWeek: {},
         } as FiatRatesState,
         accounts: [
-            getBtcAccount('btc-account-1', accountOverrides),
-            getBtcAccount('btc-account-2', accountOverrides),
+            getBtcAccount('btc-account-1' as AccountKey, accountOverrides),
+            getBtcAccount('btc-account-2' as AccountKey, accountOverrides),
             getEthAccount(undefined, accountOverrides),
             getBaseAccount(undefined, accountOverrides),
             getSolAccount(undefined, accountOverrides),

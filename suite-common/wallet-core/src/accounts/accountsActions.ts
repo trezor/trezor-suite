@@ -7,13 +7,13 @@ import {
     AccountFailureSpecific,
     SelectedAccountStatus,
     asAccountDescriptor,
+    createAccountKey,
 } from '@suite-common/wallet-types';
 import {
     enhanceAddresses,
     enhanceTokens,
     enhanceUtxo,
     formatNetworkAmount,
-    getAccountKey,
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
 import { AccountInfo, StaticSessionId } from '@trezor/connect';
@@ -74,7 +74,11 @@ const createAccount = createAction(
                 balance,
                 availableBalance,
                 history,
-                key: getAccountKey(asAccountDescriptor(descriptor), symbol, deviceState),
+                key: createAccountKey({
+                    accountDescriptor: asAccountDescriptor(descriptor),
+                    networkSymbol: symbol,
+                    deviceStaticSessionId: deviceState,
+                }),
                 formattedBalance: formatNetworkAmount(
                     // Ripple and Stellar `availableBalance` is reduced by reserve, use regular balance
                     isArrayMember(networkType, ['ripple', 'stellar']) ? balance : availableBalance,

@@ -11,6 +11,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { TradingRootState } from '@suite-native/trading-state';
@@ -25,7 +26,7 @@ export type TradingTradeMapProps = {
 };
 
 export interface TradingUseWatchTradeProps {
-    accountKey: string | undefined;
+    accountKey: AccountKey | undefined;
     orderId: string | undefined;
     isInProgress: boolean;
 }

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { AccountKey } from '@suite-common/wallet-types';
+
 import { SESSION_PHASE_TRANSITION_DELAY } from 'src/constants/suite/coinjoin';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectSessionByAccountKey } from 'src/reducers/wallet/coinjoinReducer';
@@ -17,7 +19,7 @@ const checkExpiration = (lastChangeTimestamp: number) => {
     };
 };
 
-export const useCoinjoinSessionPhase = (accountKey: string) => {
+export const useCoinjoinSessionPhase = (accountKey: AccountKey) => {
     const { sessionPhaseQueue, roundPhase, paused } =
         useSelector(state => selectSessionByAccountKey(state, accountKey)) || {};
     const [phaseIndex, setPhaseIndex] = useState(0);

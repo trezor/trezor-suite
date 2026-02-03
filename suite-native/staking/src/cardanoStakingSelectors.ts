@@ -6,6 +6,7 @@ import {
     selectCardanoPoolsInfo,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     getStakingDataForNetwork,
     isCardanoStakedOutsideEverstake,
@@ -30,7 +31,7 @@ export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = crea
 
 export const selectCardanoStakedBalanceByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || account.networkType !== 'cardano') return null;
@@ -42,7 +43,7 @@ export const selectCardanoStakedBalanceByAccountKey = (
 
 export const selectCardanoRewardsBalanceByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || account.networkType !== 'cardano') return null;
@@ -54,7 +55,7 @@ export const selectCardanoRewardsBalanceByAccountKey = (
 
 export const selectCardanoTotalStakePendingByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || account.networkType !== 'cardano') return null;
@@ -66,7 +67,7 @@ export const selectCardanoTotalStakePendingByAccountKey = (
 
 export const selectIsCardanoStakedWithFiveBinaries = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || account.networkType !== 'cardano') return false;
@@ -76,7 +77,7 @@ export const selectIsCardanoStakedWithFiveBinaries = (
 
 export const selectIsCardanoStakedOutsideEverstake = (
     state: NativeStakingRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account || account.networkType !== 'cardano') return false;

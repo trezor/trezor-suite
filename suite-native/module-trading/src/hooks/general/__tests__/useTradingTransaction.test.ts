@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -62,14 +63,21 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 describe('useTradingTransaction', () => {
-    const getMockAccounts = () => [getBtcAccount('btc1'), getBtcAccount('btc2')];
+    const getMockAccounts = () => [
+        getBtcAccount(
+            'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        ),
+        getBtcAccount(
+            'btc2' as AccountKey, // Todo: create properly via `createAccountKey()`
+        ),
+    ];
 
     const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
 
         // Add the required account keys to the exchange state
-        tradingState.exchange.tradingAccountKey = 'btc1';
-        tradingState.exchange.receiveAccountKey = 'btc2';
+        tradingState.exchange.tradingAccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
+        tradingState.exchange.receiveAccountKey = 'btc2' as AccountKey; // Todo: create properly via `createAccountKey()`
         // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 

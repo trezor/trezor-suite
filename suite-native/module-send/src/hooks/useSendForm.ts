@@ -22,7 +22,7 @@ import {
     sendFormActions,
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits, getExcludedUtxos } from '@suite-common/wallet-utils';
 import { useForm } from '@suite-native/forms';
 import {
@@ -62,7 +62,7 @@ const getDefaultValues = ({
         ],
     }) as const;
 
-export const useSendForm = (accountKey: string, tokenContract?: TokenAddress) => {
+export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const dispatch = useDispatch();
     const debounce = useDebounce();
     const navigation =

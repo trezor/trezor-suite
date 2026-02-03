@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
 import { TradingExchangeState } from '@suite-native/trading-types';
@@ -23,8 +24,8 @@ describe('exchangeSlice', () => {
             const prevState: TradingExchangeState = {
                 ...tradingInitialState.exchange,
                 receiveAddress: 'bc1qxyz',
-                tradingAccountKey: 'account-key1',
-                receiveAccountKey: 'account-key2',
+                tradingAccountKey: 'account-key1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                receiveAccountKey: 'account-key2' as AccountKey, // Todo: create properly via `createAccountKey()`
                 quotesRequest: {
                     send: 'bitcoin' as CryptoId,
                     receive: 'ethereum' as CryptoId,
@@ -103,7 +104,7 @@ describe('exchangeSlice', () => {
                     send: 'bitcoin' as CryptoId,
                     receive: 'ethereum' as CryptoId,
                 },
-                receiveAccountKey: 'account-key1',
+                receiveAccountKey: 'account-key1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 receiveAddress: 'bc1qxyz',
             };
 

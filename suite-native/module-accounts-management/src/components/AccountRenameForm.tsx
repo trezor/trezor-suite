@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AccountsRootState, accountsActions, selectAccountByKey } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     AccountFormValues,
     AccountLabelFieldHint,
@@ -21,7 +22,7 @@ import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 type AccountRenameFormProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     onSubmit: () => void;
 };
 

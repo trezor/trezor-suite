@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, InlineAlertBoxProps, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -16,7 +17,7 @@ import { NativeStakingRootState } from '@suite-native/staking/src/types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 type StakePendingCardProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     handleToggleBottomSheet: (value: boolean) => void;
 };
 const stakingItemStyle = prepareNativeStyle(utils => ({

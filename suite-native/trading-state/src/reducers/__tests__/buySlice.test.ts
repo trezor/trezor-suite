@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { buyQuotes } from '@suite-native/trading-fixtures';
 import { TradingBuyState } from '@suite-native/trading-types';
@@ -11,7 +12,7 @@ describe('buySlice', () => {
         it('should clear buy state', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
-                tradingAccountKey: 'account-key',
+                tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 receiveAddress: 'bc1qxyz',
                 quotesRequest: {
                     wantCrypto: true,
@@ -62,7 +63,7 @@ describe('buySlice', () => {
         it('should clear tradingAccountKey and receiveAddress', () => {
             const prevState: TradingBuyState = {
                 ...tradingInitialState.buy,
-                tradingAccountKey: 'account-key',
+                tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 receiveAddress: 'bc1qxyz',
             };
 

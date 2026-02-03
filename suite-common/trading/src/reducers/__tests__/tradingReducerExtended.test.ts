@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { selectTradingMaxSlippagePercentage } from '../../selectors/settingsSelectors';
 import { buyThunks } from '../../thunks/buy';
@@ -133,7 +134,7 @@ describe('Testing trading reducer', () => {
             });
 
             it('should delegate common actions to common slice', () => {
-                store.dispatch(tradingActions.setModalAccountKey('MY_KEY'));
+                store.dispatch(tradingActions.setModalAccountKey('MY_KEY' as AccountKey)); // Todo: create properly via `createAccountKey()`
 
                 expect(store.getState().wallet.trading.modalAccountKey).toEqual('MY_KEY');
             });
@@ -157,8 +158,9 @@ describe('Testing trading reducer', () => {
             });
 
             it('should delegate buy actions to buy slice', () => {
-                store.dispatch(tradingBuyActions.setTradingAccountKey('TRADING_KEY'));
-
+                store.dispatch(
+                    tradingBuyActions.setTradingAccountKey('TRADING_KEY' as AccountKey), // Todo: create properly via `createAccountKey()`
+                );
                 expect(store.getState().wallet.trading.buy.tradingAccountKey).toEqual(
                     'TRADING_KEY',
                 );
@@ -171,7 +173,9 @@ describe('Testing trading reducer', () => {
             });
 
             it('should delegate exchange actions to exchange slice', () => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('TRADING_KEY'));
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey('TRADING_KEY' as AccountKey), // Todo: create properly via `createAccountKey()`
+                );
 
                 expect(store.getState().wallet.trading.exchange.tradingAccountKey).toEqual(
                     'TRADING_KEY',
@@ -185,7 +189,9 @@ describe('Testing trading reducer', () => {
             });
 
             it('should delegate sell actions to sell slice', () => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('TRADING_KEY'));
+                store.dispatch(
+                    tradingSellActions.setTradingAccountKey('TRADING_KEY' as AccountKey), // Todo: create properly via `createAccountKey()`
+                );
 
                 expect(store.getState().wallet.trading.sell.tradingAccountKey).toEqual(
                     'TRADING_KEY',

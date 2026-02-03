@@ -1,4 +1,5 @@
 import { useAccoutsSelector } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { InlineAlertBox } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -11,7 +12,7 @@ import {
 } from '@suite-native/staking/src/cardanoStakingSelectors';
 
 type CardanoStakingInfoBannerProps = {
-    accountKey: string;
+    accountKey: AccountKey;
 };
 
 export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBannerProps) => {

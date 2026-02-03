@@ -3,7 +3,12 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { NetworkType, networks } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
-import { FeeInfo, GeneralPrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
+import {
+    FeeInfo,
+    GeneralPrecomposedTransactionFinal,
+    SendFormDraftKey,
+    StakeType,
+} from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     getFee,
@@ -69,8 +74,8 @@ export const TransactionReviewSummary = ({
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
-    const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
+    const formFeeRate = drafts[currentAccountKey as SendFormDraftKey]?.feePerUnit; // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
+    const isFeeCustom = drafts[currentAccountKey as SendFormDraftKey]?.selectedFee === 'custom'; // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
     const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
     const isEthereumNetworkType = networkType === 'ethereum';

@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectIsPhishingTransaction } from '@suite-common/wallet-core';
-import { WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getAccountKey } from '@suite-common/wallet-utils';
+import { WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
 import { Column, Divider } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -21,7 +20,11 @@ type IODetailsProps = {
 // Not ready for Cardano tokens because they are utxo based
 export const IODetails = ({ tx }: IODetailsProps) => {
     const network = useSelector(state => state.wallet.selectedAccount.network);
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const accountKey = createAccountKey({
+        accountDescriptor: tx.descriptor,
+        networkSymbol: tx.symbol,
+        deviceStaticSessionId: tx.deviceState,
+    });
     const isPhishingTransaction = useSelector(state =>
         selectIsPhishingTransaction(state, tx.txid, accountKey),
     );

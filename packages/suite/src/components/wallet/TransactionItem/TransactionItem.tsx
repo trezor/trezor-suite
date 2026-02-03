@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { getInstantStakeType } from '@suite-common/staking';
 import { AccountType, Network } from '@suite-common/wallet-config';
 import { selectIsPhishingTransaction, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isTxFeePaid } from '@suite-common/wallet-utils';
 import { Button, Link, Row, Tooltip } from '@trezor/components';
 import { HELP_CENTER_REPLACE_BY_FEE_ETHEREUM } from '@trezor/urls';
@@ -41,7 +42,7 @@ type TransactionItemProps = {
     transaction: WalletAccountTransaction;
     isPending: boolean;
     isActionDisabled?: boolean; // Used in "chained transactions" transaction detail modal
-    accountKey: string;
+    accountKey: AccountKey;
     network: Network;
     accountType: AccountType;
     disableBumpFee?: boolean;

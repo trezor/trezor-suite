@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
+import { typedObjectEntries } from '@trezor/utils';
 
 import { getExplorerUrls } from './getExplorerUrls';
 import { NetworkFeature, Networks } from './types';
@@ -686,8 +687,8 @@ export type StakingNetworkSymbol = NetworkWithFeature<'staking'>['symbol'];
 
 export type StakingNetworkType = NetworksConfigs[StakingNetworkSymbol]['networkType'];
 
-export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = (
-    Object.entries(networks) as Array<[keyof NetworksConfigs, NetworkConfig]>
+export const [STAKING_SYMBOLS, STAKING_TYPES, PROD_STAKING_SYMBOLS] = typedObjectEntries(
+    networks,
 ).reduce<[StakingNetworkSymbol[], StakingNetworkType[], StakingNetworkSymbol[]]>(
     (acc, [symbol, { features, networkType, testnet }]) => {
         if ((features as readonly string[]).includes('staking')) {

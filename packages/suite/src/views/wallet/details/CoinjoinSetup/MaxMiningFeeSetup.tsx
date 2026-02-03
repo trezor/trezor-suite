@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { coinjoinAccountUpdateMaxMiningFee } from 'src/actions/wallet/coinjoinAccountActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -27,7 +28,7 @@ const labels = [min, max / 2, max].map(number => ({
 const getPercentage = (value: number) => ((value - min) / (max - min)) * 100;
 
 interface MaxMiningFeeSetupProps {
-    accountKey: string;
+    accountKey: AccountKey;
     maxMiningFee: number;
 }
 

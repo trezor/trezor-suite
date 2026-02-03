@@ -4,7 +4,7 @@ import { SellFiatTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
@@ -81,7 +81,7 @@ describe('sendSellTransactionThunk', () => {
             date: new Date().toISOString(),
             key: getQuote().orderId,
             data: getQuote(),
-            sendAccountKey: 'xxx',
+            sendAccountKey: 'xxx' as AccountKey, // Todo: create properly via `createAccountKey()`
         };
         const mockNextStep = jest.fn();
         const formValues = {

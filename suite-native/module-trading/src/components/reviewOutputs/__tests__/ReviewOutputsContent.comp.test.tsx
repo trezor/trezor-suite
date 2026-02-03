@@ -1,4 +1,4 @@
-import type { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 
 import { ReviewOutputsContent, ReviewOutputsContentProps } from '../ReviewOutputsContent';
@@ -30,7 +30,9 @@ describe('ReviewOutputsContent', () => {
         renderWithStoreProviderAsync(
             <ReviewOutputsContent
                 orderId="ORDER_ID"
-                accountKey="ACCOUNT_KEY"
+                accountKey={
+                    'ACCOUNT_KEY' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
                 reportToAnalytics={jest.fn()}
                 tradingType="exchange"
                 isTransactionSendConsentRequested={true}

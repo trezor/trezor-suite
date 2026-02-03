@@ -1,6 +1,6 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import type { AccountTable } from '@suite-common/suite-sync-storage';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 import { err, ok } from '@trezor/type-utils';
 
@@ -25,7 +25,11 @@ describe(createUpdateAccountLabel.name, () => {
         const updateAccountLabel = createUpdateAccountLabel(deps);
         const result = await updateAccountLabel({
             deviceStaticSessionId,
-            accountKey: 'accountDescriptor-btc-1@2:3',
+            accountKey: createAccountKey({
+                accountDescriptor: asAccountDescriptor('accountDescriptor'),
+                networkSymbol: 'btc',
+                deviceStaticSessionId: '1@2:3',
+            }),
             label: 'New Account Label',
         });
 
@@ -53,7 +57,11 @@ describe(createUpdateAccountLabel.name, () => {
         const updateAccountLabel = createUpdateAccountLabel(deps);
         const result = await updateAccountLabel({
             deviceStaticSessionId,
-            accountKey: 'accountDescriptor-btc-1@2:3',
+            accountKey: createAccountKey({
+                accountDescriptor: asAccountDescriptor('accountDescriptor'),
+                networkSymbol: 'btc',
+                deviceStaticSessionId: '1@2:3',
+            }),
             label: 'New Account Label',
         });
 

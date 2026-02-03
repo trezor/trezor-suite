@@ -9,7 +9,7 @@ import {
     selectIsPhishingTransaction,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
-import { getAccountKey } from '@suite-common/wallet-utils';
+import { createAccountKey } from '@suite-common/wallet-types';
 import { Banner, Column, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
@@ -37,7 +37,11 @@ export const TxDetailModalBase = ({
     bottomContent,
     children,
 }: TxDetailModalProps) => {
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const accountKey = createAccountKey({
+        accountDescriptor: tx.descriptor,
+        networkSymbol: tx.symbol,
+        deviceStaticSessionId: tx.deviceState,
+    });
     const confirmations = useSelector(state =>
         selectTransactionConfirmations(state, tx.txid, accountKey),
     );

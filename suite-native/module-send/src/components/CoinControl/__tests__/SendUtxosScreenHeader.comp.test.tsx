@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { useUtxoSelection } from '../../../hooks/useUtxoSelection';
@@ -25,7 +26,11 @@ describe('SendUtxosScreenHeader', () => {
         });
 
         const { getByTestId } = renderWithBasicProvider(
-            <SendUtxoScreenHeader accountKey="testAccKey" />,
+            <SendUtxoScreenHeader
+                accountKey={
+                    'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
+            />,
         );
 
         expect(getByTestId('coin-control-delete-button')).toBeTruthy();
@@ -38,7 +43,11 @@ describe('SendUtxosScreenHeader', () => {
         });
 
         const { queryByTestId } = renderWithBasicProvider(
-            <SendUtxoScreenHeader accountKey="testAccKey" />,
+            <SendUtxoScreenHeader
+                accountKey={
+                    'testAccKey' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
+            />,
         );
 
         expect(queryByTestId('coin-control-delete-button')).toBeNull();

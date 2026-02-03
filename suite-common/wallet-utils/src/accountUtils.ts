@@ -26,6 +26,7 @@ import {
     SuccessfulAccount,
     TokenAddress,
     asBaseCurrencyAmount,
+    createAccountKey,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
@@ -365,15 +366,6 @@ export const getAllAccounts = (
                 : a.deviceState === deviceState.staticSessionId) && a.visible,
     );
 };
-
-/**
- * Returns a string used as an index to separate txs for given account inside a transactions reducer
- */
-export const getAccountKey = (
-    descriptor: AccountDescriptor,
-    symbol: NetworkSymbol,
-    deviceStaticSessionId: StaticSessionId,
-): AccountKey => `${descriptor}-${symbol}-${deviceStaticSessionId}`;
 
 /**
  * Clear invalid tokens and formats amounts
@@ -1138,15 +1130,12 @@ export const parseAccountKey = (accountKey: AccountKey) => {
     };
 };
 
-export const createAccountKey = ({
-    accountDescriptor,
-    networkSymbol,
-    deviceStaticSessionId,
-}: {
-    accountDescriptor: AccountDescriptor;
-    networkSymbol: NetworkSymbol;
-    deviceStaticSessionId: StaticSessionId;
-}) => `${accountDescriptor}-${networkSymbol}-${deviceStaticSessionId}`;
+/**
+ * Returns a string used as an index to separate txs for given account inside a transactions reducer
+ *
+ * @deprecated use createAccountKey directly
+ */
+export const getAccountKey = createAccountKey;
 
 export const prepareNewAccountPayload = async ({
     accountType,

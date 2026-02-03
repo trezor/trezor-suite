@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite';
@@ -23,7 +24,7 @@ const CountdownWrapper = styled.p`
 `;
 
 interface CoinjoinStatusMessageProps {
-    accountKey: string;
+    accountKey: AccountKey;
 }
 
 export const CoinjoinStatusMessage = ({ accountKey }: CoinjoinStatusMessageProps) => {

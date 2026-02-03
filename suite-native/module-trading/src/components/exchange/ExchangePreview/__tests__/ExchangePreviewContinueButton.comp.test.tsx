@@ -1,4 +1,4 @@
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState } from '@suite-native/trading-fixtures';
 
@@ -37,8 +37,8 @@ describe('ExchangePreviewContinueButton', () => {
 
     const getPreloadedState = (): PreloadedState => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-1';
-        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-1';
+        preloadedState.wallet!.trading!.exchange!.tradingAccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+        preloadedState.wallet!.trading!.exchange!.receiveAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
         preloadedState.wallet!.send!.precomposedTx = {
             type: 'final',
             totalSpent: '1100',

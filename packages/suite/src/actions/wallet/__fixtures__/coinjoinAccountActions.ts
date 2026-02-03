@@ -1,5 +1,6 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import * as COINJOIN from 'src/actions/wallet/constants/coinjoinConstants';
 import { Account } from 'src/types/wallet';
@@ -9,7 +10,7 @@ const ACCOUNT: Partial<Account> = {
     backendType: 'coinjoin',
     symbol: 'btc',
     deviceState: '1stTestnetAddress@device_id:0',
-    key: '12345',
+    key: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
 };
 
 const CJ_ACCOUNT = {
@@ -217,7 +218,7 @@ export const stopCoinjoinSession = [
                 accounts: [{ key: ACCOUNT.key }],
             },
         },
-        param: '000',
+        param: '000' as AccountKey,
         result: {
             actions: [],
         },
@@ -231,7 +232,7 @@ export const stopCoinjoinSession = [
                 accounts: [{ key: ACCOUNT.key }],
             },
         },
-        param: '12345',
+        param: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
         result: {
             actions: ['@coinjoin/account-unregister'],
         },
@@ -280,7 +281,7 @@ export const restoreCoinjoinSession = [
                 accounts: [{ ...CJ_ACCOUNT, session: { ...SESSION, paused: true } }],
             },
         },
-        param: '12345',
+        param: '12345' as AccountKey, // Todo: create properly via `createAccountKey()`
         result: {
             actions: [
                 COINJOIN.SESSION_STARTING,

@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { AccountBalanceHistory } from '@trezor/blockchain-link';
 
 import {
@@ -231,7 +232,7 @@ describe('mergeGroups', () => {
                     sentTransactionsCount: 2,
                     receivedTransactionsCount: 2,
                     symbol,
-                    accountKey: 'accountKey',
+                    accountKey: 'accountKey' as AccountKey, // Todo: create properly via `createAccountKey()`
                 },
             },
             {
@@ -242,12 +243,16 @@ describe('mergeGroups', () => {
                     sentTransactionsCount: 1,
                     receivedTransactionsCount: 1,
                     symbol,
-                    accountKey: 'accountKey',
+                    accountKey: 'accountKey' as AccountKey, // Todo: create properly via `createAccountKey()`
                 },
             },
         ];
 
-        const result = mergeGroups({ groups, symbol, accountKey: 'accountKey' });
+        const result = mergeGroups({
+            groups,
+            symbol,
+            accountKey: 'accountKey' as AccountKey, // Todo: create properly via `createAccountKey()`
+        });
         expect(result).toEqual(expectedMergedGroups);
     });
 
@@ -257,7 +262,11 @@ describe('mergeGroups', () => {
 
         const expectedMergedGroups: GroupedBalanceMovementEvent[] = [];
 
-        const result = mergeGroups({ groups, symbol, accountKey: 'accountKey' });
+        const result = mergeGroups({
+            groups,
+            symbol,
+            accountKey: 'accountKey' as AccountKey, // Todo: create properly via `createAccountKey()`
+        });
         expect(result).toEqual(expectedMergedGroups);
     });
 });

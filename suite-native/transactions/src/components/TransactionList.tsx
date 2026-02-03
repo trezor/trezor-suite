@@ -37,7 +37,7 @@ import { TransactionsListFooter } from './TransactionsListFooter';
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 

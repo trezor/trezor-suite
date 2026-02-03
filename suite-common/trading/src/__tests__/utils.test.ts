@@ -1,7 +1,7 @@
 import { CryptoId, ExchangeProviderInfo, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
+import type { Account, AccountKey } from '@suite-common/wallet-types';
 
 import * as BUY_FIXTURE from '../__fixtures__/buyUtils';
 import * as EXCHANGE_FIXTURE from '../__fixtures__/exchangeUtils';
@@ -27,6 +27,9 @@ import {
     testnetToProdCryptoId,
     toTokenCryptoId,
 } from '../utils';
+
+const sendAccountKey = 'send-account-key' as AccountKey;
+const receiveAccountKey = 'receive-account-key' as AccountKey;
 
 describe('getUnusedAddressFromAccount', () => {
     it('should return unused value from the passed account', () => {
@@ -374,7 +377,7 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade: incompleteTrade,
                 providers,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -396,7 +399,7 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade,
                 providers: {},
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -422,7 +425,7 @@ describe('getTradingFormState', () => {
                 activeSection,
                 trade,
                 providers,
-                sendAccountKey: '',
+                sendAccountKey,
                 isSlip24Active: false,
             });
 
@@ -450,8 +453,8 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
-                receiveAccountKey: 'receive-account-key',
+                sendAccountKey,
+                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -459,7 +462,7 @@ describe('getTradingFormState', () => {
                 isSlip24Active: true,
                 recipientName: 'Test Exchange',
                 send: {
-                    accountKey: '',
+                    accountKey: sendAccountKey,
                     cryptoId: 'bitcoin',
                     symbol: 'btc',
                     contractAddress: undefined,
@@ -490,8 +493,8 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
-                receiveAccountKey: 'receive-account-key',
+                sendAccountKey,
+                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -499,7 +502,7 @@ describe('getTradingFormState', () => {
                 recipientName: 'Test Exchange',
                 isSlip24Active: true,
                 send: {
-                    accountKey: '',
+                    accountKey: sendAccountKey,
                     symbol: 'eth',
                     contractAddress: '0x123456789',
                     amount: '100',
@@ -531,7 +534,7 @@ describe('getTradingFormState', () => {
                 trade: incompleteTrade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -554,7 +557,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: {},
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -581,7 +584,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -608,7 +611,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -635,8 +638,8 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
-                receiveAccountKey: 'receive-account-key',
+                sendAccountKey,
+                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -644,14 +647,14 @@ describe('getTradingFormState', () => {
                 recipientName: 'Test Exchange',
                 isSlip24Active: true,
                 send: {
-                    accountKey: '',
+                    accountKey: sendAccountKey,
                     cryptoId: 'bitcoin',
                     symbol: 'btc',
                     contractAddress: undefined,
                     amount: '0.025',
                 },
                 receive: {
-                    accountKey: 'receive-account-key',
+                    accountKey: receiveAccountKey,
                     cryptoId: 'ethereum',
                     symbol: 'eth',
                     contractAddress: undefined,
@@ -678,8 +681,8 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
-                receiveAccountKey: 'receive-account-key',
+                sendAccountKey,
+                receiveAccountKey,
             });
 
             expect(result).toEqual({
@@ -687,14 +690,14 @@ describe('getTradingFormState', () => {
                 recipientName: 'Test Exchange',
                 isSlip24Active: true,
                 send: {
-                    accountKey: '',
+                    accountKey: sendAccountKey,
                     cryptoId: 'ethereum--0xsend456',
                     symbol: 'eth',
                     contractAddress: '0xsend456',
                     amount: '50',
                 },
                 receive: {
-                    accountKey: 'receive-account-key',
+                    accountKey: receiveAccountKey,
                     cryptoId: 'ethereum--0xreceive123',
                     symbol: 'eth',
                     contractAddress: '0xreceive123',
@@ -719,7 +722,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: undefined,
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -742,7 +745,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers: { 'test-exchange': mockProvider },
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({
@@ -769,7 +772,7 @@ describe('getTradingFormState', () => {
                 trade,
                 providers,
                 isSlip24Active: true,
-                sendAccountKey: '',
+                sendAccountKey,
             });
 
             expect(result).toEqual({

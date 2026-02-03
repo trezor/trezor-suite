@@ -2,8 +2,12 @@ import { Translation } from '@suite/intl';
 import { Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
-import { Account, ChainedTransactions, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getAccountKey } from '@suite-common/wallet-utils';
+import {
+    Account,
+    ChainedTransactions,
+    WalletAccountTransaction,
+    createAccountKey,
+} from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
 import { AdvancedTxDetails, TabID } from './AdvancedTxDetails/AdvancedTxDetails';
@@ -31,7 +35,11 @@ export const DetailModal = ({
     canReplaceTransaction,
     canCancelTransaction,
 }: DetailModalProps) => {
-    const accountKey = getAccountKey(tx.descriptor, tx.symbol, tx.deviceState);
+    const accountKey = createAccountKey({
+        accountDescriptor: tx.descriptor,
+        networkSymbol: tx.symbol,
+        deviceStaticSessionId: tx.deviceState,
+    });
     const account = useSelector(state => selectAccountByKey(state, accountKey)) as Account;
     const network = getNetwork(account.symbol);
     const explorer = useSelector(state => selectExplorer(state, network.symbol)) as Explorer;

@@ -1,6 +1,6 @@
 import { LayoutChangeEvent, View } from 'react-native';
 
-import { ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
 import { TxKeyPath, useTranslate } from '@suite-native/intl';
 
 import { ReviewOutputCard } from './ReviewOutputCard';
@@ -8,7 +8,7 @@ import { ReviewOutputItemContent } from './ReviewOutputItemContent';
 import { StatefulReviewOutput } from '../../types';
 
 export type ReviewOutputItemProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     reviewOutput: StatefulReviewOutput;
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;

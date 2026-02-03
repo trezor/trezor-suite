@@ -11,7 +11,7 @@ import {
     isExchangeTrade,
     isSellFiatTrade,
 } from '@suite-common/trading';
-import { FormState, FormStateTrading } from '@suite-common/wallet-types';
+import { AccountKey, FormState, FormStateTrading } from '@suite-common/wallet-types';
 import { FeeLevel } from '@trezor/connect';
 
 interface CreateFormStateForSendFormParams {
@@ -23,8 +23,8 @@ interface CreateFormStateForSendFormParams {
     >;
     extraField?: string;
     isSlip24Active?: boolean;
-    sendAccountKey: string | undefined;
-    receiveAccountKey?: string | undefined;
+    sendAccountKey: AccountKey | undefined;
+    receiveAccountKey?: AccountKey | undefined;
 }
 
 /**

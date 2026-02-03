@@ -1,4 +1,4 @@
-import { ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, ReviewOutputType, TokenAddress } from '@suite-common/wallet-types';
 import { Text } from '@suite-native/atoms';
 import { splitAddressToChunks } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 
 export type ReviewOutputItemContentProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     outputType: ReviewOutputType;
     value: string;
     tokenContract?: TokenAddress;

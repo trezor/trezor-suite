@@ -1,4 +1,5 @@
 import { tradingExchangeActions, tradingThunks } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -15,15 +16,19 @@ jest.mock('../../../utils/general/utils', () => ({
     getRandomAccountDescriptor: () => 'random_string',
 }));
 
+const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
+
 describe('useExchangeData', () => {
     const getInitializedStore = (tradingAccountKey: string | undefined) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: getInitializedTradingState('exchange'),
                 accounts: [
-                    getBtcAccount('btc-account-1'),
-                    getBtcAccount('btc-account-2'),
-                    { ...getBtcAccount('btc-account-3'), descriptor: '' },
+                    getBtcAccount(btc1AccountKey),
+                    getBtcAccount(btc2AccountKey),
+                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
                 ],
             },
         };
@@ -118,7 +123,7 @@ describe('useExchangeData', () => {
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-2'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2AccountKey));
             });
 
             // Wait for the effect to run
@@ -133,14 +138,14 @@ describe('useExchangeData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = await getInitializedStore('btc-account-2');
+            const store = await getInitializedStore(btc2AccountKey);
             await renderUseExchangeData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-2'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc2AccountKey));
             });
 
             // Wait for effects to run
@@ -159,7 +164,7 @@ describe('useExchangeData', () => {
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-3'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc3AccountKey));
             });
 
             // Wait for the effect to run

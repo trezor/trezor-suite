@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { selectHasAccountTransactionHistory } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Card, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -27,7 +28,7 @@ export const Container = styled.div`
 `;
 
 interface CoinjoinBalanceSectionProps {
-    accountKey: string;
+    accountKey: AccountKey;
 }
 
 export const CoinjoinBalanceSection = ({ accountKey }: CoinjoinBalanceSectionProps) => {

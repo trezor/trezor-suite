@@ -1,10 +1,11 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils';
 
 import { UseFeesFormProps, useFeesForm } from '../useFeesForm';
 
 describe('useFeesForm', () => {
     const mockProps: UseFeesFormProps = {
-        accountKey: 'eth-1',
+        accountKey: 'eth-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         defaultFeeLevel: 'normal',
         defaultFeePerUnit: '20000000000', // 20 gwei
     };
@@ -107,7 +108,7 @@ describe('useFeesForm', () => {
 
     it('should initialize with custom default values', () => {
         const customProps: UseFeesFormProps = {
-            accountKey: 'eth-1',
+            accountKey: 'eth-1' as AccountKey, // Todo: create properly via `createAccountKey()`
             defaultFeeLevel: 'high',
             defaultFeePerUnit: '15000000000',
         };

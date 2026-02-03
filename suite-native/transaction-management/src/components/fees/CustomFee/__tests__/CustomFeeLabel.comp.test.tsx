@@ -1,4 +1,5 @@
 import { NetworkType as NetworkTypeConfig } from '@suite-common/wallet-config';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -21,7 +22,7 @@ describe('CustomFeeLabel', () => {
         const { result } = renderHookWithStoreProvider(
             () =>
                 useFeesForm({
-                    accountKey: 'test-account-key',
+                    accountKey: 'test-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`,
                     defaultFeePerUnit: defaultFeePerUnit || '1',
                 }),
             {

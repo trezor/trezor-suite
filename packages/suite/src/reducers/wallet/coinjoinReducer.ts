@@ -625,13 +625,16 @@ export const selectMaxMiningFeeModifier = (state: CoinjoinRootState) =>
 export const selectMaxMiningFeeConfig = (state: CoinjoinRootState) =>
     state.wallet.coinjoin.config.maxFeePerVbyte;
 
-export const selectCoinjoinAccountByKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
+export const selectCoinjoinAccountByKey = (
+    state: CoinjoinRootState,
+    accountKey: AccountKey | null,
+) => {
     const coinjoinAccounts = selectCoinjoinAccounts(state);
 
     return coinjoinAccounts.find(account => account.key === accountKey);
 };
 
-export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey) => {
+export const selectCoinjoinClient = (state: CoinjoinRootState, accountKey: AccountKey | null) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
     const clients = selectCoinjoinClients(state);
 
@@ -646,7 +649,7 @@ export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: 
 
 export const selectTargetAnonymityByAccountKey = (
     state: CoinjoinRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
     if (!coinjoinAccount) return;
@@ -694,7 +697,7 @@ export const selectRegisteredUtxosByAccountKey = createMemoizedSelector(
 
 export const selectSessionProgressByAccountKey = (
     state: CoinjoinRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
     const relatedAccount = selectAccountByKey(state, accountKey);
     const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
@@ -913,8 +916,12 @@ export const selectHasAnonymitySetError = (state: CoinjoinRootState) => {
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
     state: CoinjoinRootState & DeviceRootState,
-    accountKey: AccountKey,
+    accountKey: AccountKey | null,
 ) => {
+    if (accountKey === null) {
+        return;
+    }
+
     if (selectSessionByAccountKey(state, accountKey)?.starting) {
         return 'SESSION_STARTING';
     }
@@ -951,11 +958,11 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
 export const selectCurrentCoinjoinWheelStates = (state: CoinjoinRootState & DeviceRootState) => {
     const { notAnonymized } = selectCurrentCoinjoinBalanceBreakdown(state);
     const { key, balance } = selectSelectedAccount(state) || {};
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, key || '');
-    const coinjoinClient = selectCoinjoinClient(state, key || '');
-    const sessionProgress = selectSessionProgressByAccountKey(state, key || '');
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, key || null);
+    const coinjoinClient = selectCoinjoinClient(state, key || null);
+    const sessionProgress = selectSessionProgressByAccountKey(state, key || null);
 
-    const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || '');
+    const coinjoinSessionBlocker = selectCoinjoinSessionBlockerByAccountKey(state, key || null);
 
     const { paused } = coinjoinAccount?.session || {};
 
@@ -1052,7 +1059,7 @@ export const selectCurrentSessionDeadlineInfo = (state: CoinjoinRootState) => {
 export const selectIsPublic = (state: CoinjoinRootState) =>
     selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
 
-export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: string) => {
+export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const currentState = selectSessionByAccountKey(state, accountKey);
 
     return !!currentState?.isAutoStopEnabled;

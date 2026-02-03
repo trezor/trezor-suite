@@ -1,4 +1,4 @@
-import { FormState, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, FormState, TokenAddress } from '@suite-common/wallet-types';
 import { NativeSendRootState } from '@suite-native/transaction-management';
 
 import { selectDestinationTagFromDraft } from '../selectors';
@@ -34,14 +34,20 @@ describe('send selectors', () => {
             >;
 
             const state = createMockState({ drafts: mockDraftsTyped });
-            const result = selectDestinationTagFromDraft(state, 'btc-0');
+            const result = selectDestinationTagFromDraft(
+                state,
+                'btc-0' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('12345');
         });
 
         it('should return undefined when draft does not exist', () => {
             const state = createMockState();
-            const result = selectDestinationTagFromDraft(state, 'btc-0');
+            const result = selectDestinationTagFromDraft(
+                state,
+                'btc-0' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBeUndefined();
         });
@@ -63,7 +69,7 @@ describe('send selectors', () => {
             const state = createMockState({ drafts: mockDraftsTyped });
             const result = selectDestinationTagFromDraft(
                 state,
-                'eth-0',
+                'eth-0' as AccountKey, // Todo: create properly via `createAccountKey()`
                 '0x1234567890123456789012345678901234567890' as TokenAddress,
             );
 

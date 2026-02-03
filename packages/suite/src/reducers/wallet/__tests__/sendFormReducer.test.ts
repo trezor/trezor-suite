@@ -5,7 +5,12 @@ import {
     prepareSendFormReducer,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { Account, FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountKey,
+    FormState,
+    PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 
 import { STORAGE } from 'src/actions/suite/constants';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -24,7 +29,12 @@ describe('sendFormReducer', () => {
         const action: Action = {
             type: STORAGE.LOAD,
             payload: {
-                sendFormDrafts: [{ key: 'draft1', value: formStateMock }],
+                sendFormDrafts: [
+                    {
+                        key: 'draft1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        value: formStateMock,
+                    },
+                ],
             },
         } as Extract<PreloadStoreAction, { type: typeof STORAGE.LOAD }>;
 
@@ -36,7 +46,7 @@ describe('sendFormReducer', () => {
 
     it('SEND.STORE_DRAFT', () => {
         const action: Action = sendFormActions.storeDraft({
-            accountKey: 'key1',
+            accountKey: 'key1' as AccountKey, // Todo: create properly via `createAccountKey()`
             formState: formStateMock,
         });
 
@@ -47,20 +57,24 @@ describe('sendFormReducer', () => {
     });
 
     it('SEND.REMOVE_DRAFT', () => {
-        const action: Action = sendFormActions.removeDraft({ accountKey: 'key1' });
+        const action: Action = sendFormActions.removeDraft({
+            accountKey: 'key1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        });
 
         const state = prepareSendFormReducer(extraDependencies)(
-            { ...initialState, drafts: { key1: formStateMock } },
+            { ...initialState, drafts: { ['key1' as AccountKey]: formStateMock } },
             action,
         );
         expect(state.drafts).toEqual({});
     });
 
     it('accountsActions.removeAccount', () => {
-        const action = accountsActions.removeAccount([{ key: 'deletedAccountKey' } as Account]);
+        const action = accountsActions.removeAccount([
+            { key: 'deletedAccountKey' as AccountKey } as Account, // Todo: create properly via `createAccountKey()`
+        ]);
 
         const state = prepareSendFormReducer(extraDependencies)(
-            { ...initialState, drafts: { deletedAccountKey: formStateMock } },
+            { ...initialState, drafts: { ['deletedAccountKey' as AccountKey]: formStateMock } },
             action,
         );
         expect(state.drafts).toEqual({});

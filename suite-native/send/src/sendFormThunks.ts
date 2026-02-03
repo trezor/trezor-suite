@@ -34,6 +34,7 @@ import {
 } from '@suite-native/transaction-management';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 import { Success } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './constants';
 
@@ -127,12 +128,12 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk(
     (_, { dispatch, getState }) => {
         const sendFormDrafts = selectSendFormDrafts(getState());
         // Draft keys may include tokenContract, but no token networks use amount-unit, so it's fine (for now).
-        const accountKeys = Object.keys(sendFormDrafts);
+        const accountKeys = typedObjectKeys(sendFormDrafts);
 
         accountKeys.forEach(accountKey => {
-            const account = selectAccountByKey(getState(), accountKey);
+            const account = selectAccountByKey(getState(), accountKey as AccountKey); // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             if (account && hasNetworkFeatures(account, 'amount-unit')) {
-                dispatch(sendFormActions.removeDraft({ accountKey }));
+                dispatch(sendFormActions.removeDraft({ accountKey: accountKey as AccountKey })); // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             }
         });
     },

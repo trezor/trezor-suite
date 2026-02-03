@@ -634,7 +634,8 @@ export const getExcludedUtxos = ({
 export const getSendFormDraftKey = (
     accountKey: AccountKey,
     tokenAddress?: TokenAddress,
-): SendFormDraftKey => (tokenAddress ? `${accountKey}-${tokenAddress}` : accountKey);
+): SendFormDraftKey =>
+    tokenAddress ? (`${accountKey}-${tokenAddress}` as SendFormDraftKey) : accountKey;
 
 type AmountValidationResult =
     | { type: 'ok' }

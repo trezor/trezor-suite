@@ -4,7 +4,7 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
  */
 export const getBtcAccount = (
-    key: AccountKey = 'btc-account-1',
+    key: AccountKey = 'btc-account-1' as AccountKey,
     overrides: Partial<Account> = {},
 ) =>
     ({
@@ -40,7 +40,7 @@ export const getBtcAccount = (
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
  */
 export const getEthAccount = (
-    key: AccountKey = 'eth-account-1',
+    key: AccountKey = 'eth-account-1' as AccountKey,
     overrides: Partial<Account> = {},
 ) =>
     ({
@@ -116,7 +116,7 @@ export const getEthAccount = (
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
  */
 export const getBaseAccount = (
-    key: AccountKey = 'base-account-1',
+    key: AccountKey = 'base-account-1' as AccountKey,
     overrides: Partial<Account> = {},
 ) =>
     ({
@@ -161,7 +161,7 @@ export const getBaseAccount = (
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
  */
 export const getCardanoAccount = (
-    key: AccountKey = 'ada-account-1',
+    key: AccountKey = 'ada-account-1' as AccountKey,
     overrides: Partial<Account> = {},
 ) =>
     ({
@@ -183,7 +183,7 @@ export const getCardanoAccount = (
  * @deprecated use `mockWalletAccount`, to keep AccountKey in sync with Descriptor, etc...
  */
 export const getSolAccount = (
-    key: AccountKey = 'sol-account-1',
+    key: AccountKey = 'sol-account-1' as AccountKey,
     overrides: Partial<Account> = {},
 ) =>
     ({

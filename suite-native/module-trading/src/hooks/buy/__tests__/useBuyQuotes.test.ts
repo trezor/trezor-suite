@@ -1,5 +1,5 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingBuyActions } from '@suite-common/trading';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -51,7 +51,7 @@ describe('useBuyQuotes', () => {
         const preloadedState: PreloadedState = {
             wallet: { trading: getInitializedTradingState(), accounts: [getBtcAccount()] },
         };
-        preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1';
+        preloadedState.wallet!.trading!.buy!.tradingAccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
         return initStore(preloadedState).store;
     };
@@ -169,7 +169,15 @@ describe('useBuyQuotes', () => {
     it.each([
         ['fiatValue', '1000'],
         ['country', 'CZ'],
-        ['receiveAccount', { account: { key: 'btc1', descriptor: 'descriptor_btc1' } as Account }],
+        [
+            'receiveAccount',
+            {
+                account: {
+                    key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    descriptor: 'descriptor_btc1',
+                } as Account,
+            },
+        ],
     ] as [keyof BuyFormValues, BuyFormValues[keyof BuyFormValues]][])(
         'should re-fetch quotes on %s value change',
         (field, value) => {

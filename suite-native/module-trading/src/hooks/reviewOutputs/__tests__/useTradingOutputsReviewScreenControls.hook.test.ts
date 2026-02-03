@@ -1,4 +1,5 @@
 import { sendFormActions } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     TestStore,
     act,
@@ -58,7 +59,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             () =>
                 useTradingOutputsReviewScreenControls({
                     orderId: 'orderId',
-                    accountKey: 'btc-account-1',
+                    accountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     signAndSendTransaction: mockSignAndSendTransaction,
                     reportToAnalytics: mockReportToAnalytics,
                 }),

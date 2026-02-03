@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { BuyTradeResponse } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/buyUtils';
 import { invityAPI } from '../../../invityAPI';
@@ -271,7 +271,7 @@ describe('confirmBuyTradeThunk', () => {
                 returnUrl: 'returnUrl',
                 address: 'address',
                 account: {
-                    key: 'yyy',
+                    key: 'yyy' as AccountKey, // Todo: create properly via `createAccountKey()`
                 } as Account,
                 triggerAnalyticsTradeConfirmation: mocktriggerAnalyticsTradeConfirmation,
                 processResponseData: mockProcessResponseData,

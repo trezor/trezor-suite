@@ -36,6 +36,7 @@ import {
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
 
@@ -389,11 +390,18 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 case COINJOIN.ACCOUNT_UPDATE_MAX_MING_FEE:
                 case COINJOIN.ACCOUNT_TOGGLE_SKIP_ROUNDS: {
-                    const account = selectAccountByKey(api.getState(), action.payload.accountKey);
+                    const account = selectAccountByKey(
+                        api.getState(),
+                        action.payload.accountKey as AccountKey,
+                    );
                     const device =
                         account && findAccountDevice(account, selectDevices(api.getState()));
                     if (device && isDeviceRemembered(device)) {
-                        api.dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey));
+                        api.dispatch(
+                            storageActions.saveCoinjoinAccount(
+                                action.payload.accountKey as AccountKey,
+                            ),
+                        );
                     }
                     break;
                 }
@@ -402,10 +410,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                     const state = api.getState();
                     const devices = selectDevices(state);
                     affectedAccounts.forEach(key => {
-                        const account = selectAccountByKey(state, key);
+                        const account = selectAccountByKey(state, key as AccountKey);
                         const device = account && findAccountDevice(account, devices);
                         if (device && isDeviceRemembered(device)) {
-                            api.dispatch(storageActions.saveCoinjoinAccount(key));
+                            api.dispatch(storageActions.saveCoinjoinAccount(key as AccountKey));
                         }
                     });
                     break;

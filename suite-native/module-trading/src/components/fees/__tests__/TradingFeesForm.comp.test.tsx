@@ -31,9 +31,11 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingFeesForm', () => {
-    const mockAccountKey: AccountKey = 'btc1';
+    const mockAccountKey: AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
     const mockAccount = getBtcAccount(mockAccountKey);
-    const mockEthAccount = getEthAccount('eth1');
+    const mockEthAccount = getEthAccount(
+        'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+    );
 
     const defaultState = {
         wallet: {
@@ -94,7 +96,7 @@ describe('TradingFeesForm', () => {
 
     it('should work with token contract for Ethereum accounts', async () => {
         const { getByText } = await renderTradingFeesForm({
-            accountKey: 'eth1',
+            accountKey: 'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress,
         });
 

@@ -1,4 +1,4 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -22,7 +22,9 @@ describe('ReviewOutputSummaryItem', () => {
     const renderReviewOutputSummaryItem = (props: Partial<ReviewOutputSummaryItemProps>) =>
         renderWithBasicProvider(
             <ReviewOutputSummaryItem
-                accountKey="eth-account-1"
+                accountKey={
+                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
                 symbol="btc"
                 onLayout={jest.fn()}
                 {...props}

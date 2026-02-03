@@ -5,7 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered, sendFormActions } from '@suite-common/wallet-core';
-import { GeneralPrecomposedTransactionFinal, TokenAddress } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    GeneralPrecomposedTransactionFinal,
+    TokenAddress,
+} from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
@@ -32,7 +36,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 type HandleOnDeviceTransactionReviewProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract?: TokenAddress;
     transaction: GeneralPrecomposedTransactionFinal | null;
 };

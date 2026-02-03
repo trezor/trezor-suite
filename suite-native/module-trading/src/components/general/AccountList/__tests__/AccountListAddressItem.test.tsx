@@ -1,4 +1,4 @@
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { Account, AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { ReceiveAccount } from '@suite-native/trading-types';
 
@@ -61,7 +61,7 @@ describe(AccountListAddressItem.name, () => {
     it('should call onPress callback when pressed', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1',
+                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -85,7 +85,7 @@ describe(AccountListAddressItem.name, () => {
     it('should not display caret for address addresses', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1',
+                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -109,7 +109,7 @@ describe(AccountListAddressItem.name, () => {
     it('should display address', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1',
+                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -136,7 +136,7 @@ describe(AccountListAddressItem.name, () => {
     it('should display zero balance', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1',
+                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
@@ -159,7 +159,7 @@ describe(AccountListAddressItem.name, () => {
     it('should render nothing when no address is specified', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: 'btc1',
+                key: 'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'btc',
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',

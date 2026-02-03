@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 import { accountBtc } from '../../../__fixtures__/utils';
 import { invityAPI } from '../../../invityAPI';
@@ -190,7 +190,7 @@ describe('watchTradeThunk', () => {
                     status: 'LOGIN_REQUEST',
                     orderId: 'tradeKey',
                 },
-                sendAccountKey: 'sendAccountKey',
+                sendAccountKey: 'sendAccountKey' as AccountKey, // Todo: create properly via `createAccountKey()`,
             } as TradingTransactionSell;
 
             const store = getStore({

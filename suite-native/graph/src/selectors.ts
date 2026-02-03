@@ -14,7 +14,7 @@ import {
     selectAccountByKey,
     selectDeviceMainnetAccounts,
 } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 type GraphCommonRootState = DeviceRootState & AccountsRootState & TokenDefinitionsRootState;
@@ -54,7 +54,7 @@ export const selectDeviceHistoryIgnoredNetworkSymbols = createMemoizedSelector(
 
 export const selectIsHistoryEnabledAccountByAccountKey = (
     state: AccountsRootState,
-    accountKey: string | undefined,
+    accountKey: AccountKey | undefined,
 ): boolean => {
     const account = selectAccountByKey(state, accountKey);
 

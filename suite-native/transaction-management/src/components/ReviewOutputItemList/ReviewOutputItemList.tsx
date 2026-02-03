@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { FormDraftWithSendKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, FormDraftWithSendKeyPrefix, TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -19,7 +19,7 @@ import { SlidingFooterOverlay } from '../SlidingFooterOverlay';
 
 export type ReviewOutputItemListProps = {
     prefix: FormDraftWithSendKeyPrefix;
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract?: TokenAddress;
 };
 

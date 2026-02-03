@@ -24,7 +24,7 @@ describe('CustomFeeCard', () => {
     };
 
     const renderUseFeesForm = (
-        accountKey: AccountKey = 'eth-account-1',
+        accountKey: AccountKey = 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
         preloadedState?: PreloadedState,
         defaultFeePerUnit?: string,
     ) => {

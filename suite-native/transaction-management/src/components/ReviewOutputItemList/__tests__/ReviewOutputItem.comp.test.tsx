@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { Text as MockText } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -22,7 +23,9 @@ describe('ReviewOutputItem', () => {
     const renderReviewOutputItem = (props: Partial<ReviewOutputItemProps>) =>
         renderWithBasicProvider(
             <ReviewOutputItem
-                accountKey="eth-account-1"
+                accountKey={
+                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
                 onLayout={jest.fn()}
                 reviewOutput={{
                     type: 'address',

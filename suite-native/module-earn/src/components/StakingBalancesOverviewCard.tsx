@@ -1,4 +1,5 @@
 import { selectAccountNetworkSymbol, useAccoutsSelector } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     AUTO_STAKED_SYMBOLS,
     selectAPYByAccountKey,
@@ -10,7 +11,7 @@ import { AutoStakedBalancesCard } from './AutoStakedBalancesCard';
 import { ManualStakedBalancesCard } from './ManualStakedBalancesCard';
 
 type StakingBalancesCardProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     handleToggleBottomSheet: (value: boolean) => void;
 };
 

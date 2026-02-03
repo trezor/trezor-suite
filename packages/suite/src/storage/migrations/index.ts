@@ -6,7 +6,12 @@ import {
     isNetworkSymbol,
     networkSymbolCollection,
 } from '@suite-common/wallet-config';
-import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    BackendSettings,
+    WalletSettings,
+    createAccountKey,
+} from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
@@ -94,14 +99,18 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'accounts', account => {
             account.metadata = {
-                key: '',
+                key: '' as AccountKey,
                 // @ts-expect-error
                 fileName: '',
                 aesKey: '',
                 outputLabels: {},
                 addressLabels: {},
             };
-            account.key = `${account.descriptor}-${account.symbol}-${account.deviceState}`;
+            account.key = createAccountKey({
+                accountDescriptor: account.descriptor,
+                networkSymbol: account.symbol,
+                deviceStaticSessionId: account.deviceState,
+            });
 
             return account;
         });
@@ -312,7 +321,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         accounts.forEach(account => {
             // @ts-expect-error
             account.deviceState = account.deviceState.replace('undefined', '0');
-            account.key = account.key.replace('undefined', '0');
+            account.key = account.key.replace('undefined', '0') as AccountKey;
             accountsStoreNew.add(account);
         });
 
@@ -917,7 +926,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                 const newAccount = {
                     ...account,
                     symbol: 'pol' as const,
-                    key: account.key.replace('matic', 'pol'),
+                    key: account.key.replace('matic', 'pol') as AccountKey,
                 };
                 await accountsCursor.delete();
                 await accounts.add(newAccount);
@@ -1001,7 +1010,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
         sendFormDraftsKeysWithMatic.forEach(async key => {
             const draft = await sendFormDrafts.get(key);
             if (draft) {
-                sendFormDrafts.add(draft, key.replace('matic', 'pol'));
+                sendFormDrafts.add(draft, key.replace('matic', 'pol') as AccountKey);
             }
             sendFormDrafts.delete(key);
         });

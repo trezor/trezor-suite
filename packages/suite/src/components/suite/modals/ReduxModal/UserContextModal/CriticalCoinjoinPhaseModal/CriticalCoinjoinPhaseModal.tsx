@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -11,7 +12,7 @@ import { AutoStopButton } from './AutoStopButton';
 import { CoinjoinPhaseProgress } from './CoinjoinPhaseProgress';
 
 type CriticalCoinjoinPhaseModalProps = {
-    relatedAccountKey: string;
+    relatedAccountKey: AccountKey;
 };
 
 export const CriticalCoinjoinPhaseModal = ({

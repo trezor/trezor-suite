@@ -28,7 +28,7 @@ const TestFormWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 describe('FeesContent', () => {
-    const mockAccountKey: AccountKey = 'btc1';
+    const mockAccountKey: AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
     const mockOnSelectedFeeLevel = jest.fn();
     const mockOnCustomFeeSet = jest.fn();
 

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Button, Card } from '@trezor/components';
 import { spacings, typography } from '@trezor/theme';
 
@@ -32,7 +33,7 @@ const Container = styled(Card)<{ $isWide?: boolean }>`
 `;
 
 interface CoinjoinStatusWheelProps {
-    accountKey: string;
+    accountKey: AccountKey;
 }
 
 export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) => {

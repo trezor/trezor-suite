@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import { sellQuotes } from '@suite-native/trading-fixtures';
 import { TradingSellState } from '@suite-native/trading-types';
@@ -11,7 +12,7 @@ describe('sellSlice', () => {
         it('should clear the state', () => {
             const prevState: TradingSellState = {
                 ...tradingInitialState.sell,
-                tradingAccountKey: 'account-key',
+                tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 quotesRequest: {
                     fiatCurrency: 'czk',
                     country: 'CZ',

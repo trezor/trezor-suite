@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { FlashList } from '@shopify/flash-list';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountKey } from '@suite-common/wallet-types';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { Utxo } from '@trezor/blockchain-link-types';
@@ -19,7 +20,7 @@ const spacerStyle = prepareNativeStyle(utils => ({
 
 type UtxoListProps = {
     deviceStaticSessionId: StaticSessionId;
-    accountKey: string;
+    accountKey: AccountKey;
     utxos: Utxo[];
     selectedUtxos: Utxo[];
     onUtxoToggle: (utxo: Utxo) => void;

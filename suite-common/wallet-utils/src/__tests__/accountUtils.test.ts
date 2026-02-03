@@ -1,6 +1,6 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { NetworkFeature } from '@suite-common/wallet-config';
-import { Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import { Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import * as fixtures from '../__fixtures__/accountUtils';
@@ -9,7 +9,6 @@ import {
     enhanceAddresses,
     findAccountDevice,
     getAccountIdentifier,
-    getAccountKey,
     getBip43Type,
     getFirstFreshAddress,
     getNetworkAccountFeatures,
@@ -138,11 +137,11 @@ describe('account utils', () => {
 
     it('getAccountKey', () => {
         expect(
-            getAccountKey(
-                asAccountDescriptor('descriptor'),
-                'btc',
-                '1stTestnetAddress@device_id:0',
-            ),
+            createAccountKey({
+                accountDescriptor: asAccountDescriptor('descriptor'),
+                networkSymbol: 'btc',
+                deviceStaticSessionId: '1stTestnetAddress@device_id:0',
+            }),
         ).toEqual('descriptor-btc-1stTestnetAddress@device_id:0');
     });
 

@@ -38,7 +38,7 @@ import TrezorConnect, { PROTO, Success, SuccessWithDevice, Unsuccessful } from '
 import { getSolanaTokenDefinition } from '@trezor/connect/src/api/solana/solanaDefinitions';
 import { PushedTransaction } from '@trezor/connect/src/types/api/pushTransaction';
 import { exhaustive } from '@trezor/type-utils';
-import { cloneObject } from '@trezor/utils';
+import { cloneObject, typedObjectEntries } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { sendFormActions } from './sendFormActions';
@@ -103,7 +103,7 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
         const sendFormDrafts = selectSendFormDrafts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
-        const draftEntries = Object.entries(sendFormDrafts);
+        const draftEntries = typedObjectEntries(sendFormDrafts);
 
         if (G.isNullable(selectedAccountKey)) {
             return rejectWithValue('Account not found.');
@@ -113,7 +113,8 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
         const isOnDesktopSendPage = suiteRoute?.name === 'wallet-send';
 
         draftEntries.forEach(([accountKey, draft]) => {
-            const relatedAccount = selectAccountByKey(getState(), accountKey);
+            // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
+            const relatedAccount = selectAccountByKey(getState(), accountKey as AccountKey);
 
             const isSelectedAccount = selectedAccountKey === accountKey;
 
@@ -139,7 +140,8 @@ export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
 
             dispatch(
                 sendFormActions.storeDraft({
-                    accountKey,
+                    // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
+                    accountKey: accountKey as AccountKey,
                     formState: updatedDraft,
                 }),
             );

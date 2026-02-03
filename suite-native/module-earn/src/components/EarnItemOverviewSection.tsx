@@ -1,4 +1,5 @@
 import { selectFormattedAccountType, useAccoutsSelector } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -29,7 +30,7 @@ type EarnItemOverviewSectionProps = {
 } & EarnItem;
 
 export const EarnItemOverviewSection = ({
-    accountKey = '',
+    accountKey = '' as AccountKey, // Todo: this is wrong, use null or something
     symbol,
     stakedBalance,
     accountLabel,

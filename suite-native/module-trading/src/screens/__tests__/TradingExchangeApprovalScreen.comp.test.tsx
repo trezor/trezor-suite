@@ -4,6 +4,7 @@ import {
     selectTradingExchangePreselectedQuote,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import {
     TestStore,
@@ -70,7 +71,11 @@ describe('TradingExchangeApprovalScreen', () => {
 
         store = initStore(preloadedState).store;
         store.dispatch(tradingExchangeActions.savePreselectedQuote(testQuote));
-        store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
+        store.dispatch(
+            tradingExchangeActions.setTradingAccountKey(
+                'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            ),
+        );
     });
 
     afterEach(() => {

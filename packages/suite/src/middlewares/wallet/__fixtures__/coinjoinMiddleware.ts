@@ -1,5 +1,5 @@
 import { accountsActions } from '@suite-common/wallet-core';
-import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { AccountKey, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { AnonymitySet } from '@trezor/blockchain-link';
 import { DEVICE, StaticSessionId } from '@trezor/connect';
 
@@ -30,7 +30,7 @@ const ACCOUNT_A = {
     backendType: 'coinjoin',
     deviceState: '1stTestnet@device_A_id:0' as StaticSessionId,
     history: {},
-    key: 'account-A-key',
+    key: 'account-A-key' as AccountKey, // Todo: create properly via `createAccountKey()`
     status: 'ready',
     symbol: 'btc',
     utxo: [{ address: 'address', amount: '10000', vout: 1 }],
@@ -43,11 +43,11 @@ const ACCOUNT_A = {
 const ACCOUNT_B = {
     ...ACCOUNT_A,
     deviceState: '1stTestnet@device_B_id:0' as StaticSessionId,
-    key: 'account-B-key',
+    key: 'account-B-key' as AccountKey, // Todo: create properly via `createAccountKey()`
 };
 
 const COINJOIN_ACCOUNT_A = {
-    key: 'account-A-key',
+    key: 'account-A-key' as AccountKey, // Todo: create properly via `createAccountKey()`
     session: { signedRounds: [] as string[] },
     setup: {
         targetAnonymity: 2,
@@ -55,7 +55,7 @@ const COINJOIN_ACCOUNT_A = {
 } as CoinjoinAccount;
 const COINJOIN_ACCOUNT_B = {
     ...COINJOIN_ACCOUNT_A,
-    key: 'account-B-key',
+    key: 'account-B-key' as AccountKey, // Todo: create properly via `createAccountKey()`
 };
 
 const DEFAULT_STATE = {

@@ -12,7 +12,7 @@ import {
     DeviceReducerState,
     deviceInitialState,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
@@ -1192,11 +1192,25 @@ describe('commonSelectors', () => {
             wallet: {
                 ...getWalletState({ tradeType: 'exchange' }),
                 accounts: [
-                    getEthAccount('eth1'),
-                    getBtcAccount('btc0', { deviceState: 'other-device@test:123' }),
-                    getBtcAccount('btc1', { accountType: 'ledger' }),
-                    getBtcAccount('btc2', { accountType: 'normal' }),
-                    getBtcAccount('btc3', { accountType: 'segwit' }),
+                    getEthAccount(
+                        'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                    getBtcAccount(
+                        'btc0' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        { deviceState: 'other-device@test:123' },
+                    ),
+                    getBtcAccount(
+                        'btc1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        { accountType: 'ledger' },
+                    ),
+                    getBtcAccount(
+                        'btc2' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        { accountType: 'normal' },
+                    ),
+                    getBtcAccount(
+                        'btc3' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        { accountType: 'segwit' },
+                    ),
                 ],
             },
             device: {
@@ -1252,7 +1266,7 @@ describe('commonSelectors', () => {
                         device: deviceInitialState,
                         appSettings: appSettingsInitialState,
                     },
-                    'eth-account-1',
+                    'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
                     'eth' as CryptoId,
                 ),
             ).toBe('Ethereum #1');
@@ -1274,7 +1288,7 @@ describe('commonSelectors', () => {
                             device: deviceInitialState,
                             appSettings: appSettingsInitialState,
                         },
-                        'eth-account-2',
+                        'eth-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
                         asset as CryptoId,
                     ),
                 ).toBe(expectedLabel);

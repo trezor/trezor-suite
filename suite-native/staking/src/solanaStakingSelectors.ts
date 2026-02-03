@@ -7,6 +7,7 @@ import {
     selectDeviceAccounts,
     selectPoolStatsApyData,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     calculateSolanaStakingReward,
     getSolStakingAccountsInfo,
@@ -42,7 +43,7 @@ export const selectSolStakingAccountsInfoByAccountKey = createMemoizedSelector(
 
 export const selectSolanaIsStakePendingByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
 
@@ -55,7 +56,7 @@ export const selectSolanaIsStakePendingByAccountKey = (
 
 export const selectSolanaAPYByAccountKey = (
     state: StakeRootState & AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account) return 0;
@@ -65,7 +66,7 @@ export const selectSolanaAPYByAccountKey = (
 
 export const selectSolanaStakedBalanceByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     if (!stakingInfo) {
@@ -79,7 +80,7 @@ export const selectSolanaStakedBalanceByAccountKey = (
 
 export const selectExpectedRewardsForEpoch = (
     state: StakeRootState & AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     const apy = selectSolanaAPYByAccountKey(state, accountKey)?.toString();
@@ -97,7 +98,7 @@ export const selectExpectedRewardsForEpoch = (
 
 export const selectSolanaTotalStakePendingByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     if (!stakingInfo) {
@@ -109,7 +110,7 @@ export const selectSolanaTotalStakePendingByAccountKey = (
 
 export const selectSolanaClaimableAmountByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     if (!stakingInfo) {
@@ -119,7 +120,10 @@ export const selectSolanaClaimableAmountByAccountKey = (
     return stakingInfo.solClaimableBalance;
 };
 
-export const selectSolanaCanClaimByAccountKey = (state: AccountsRootState, accountKey: string) => {
+export const selectSolanaCanClaimByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
     const stakingInfo = selectSolStakingAccountsInfoByAccountKey(state, accountKey);
     if (!stakingInfo) {
         return false;

@@ -15,6 +15,7 @@ import {
     selectAccountByKey,
     transactionsActions,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { RoundPhase, SessionPhase } from '@trezor/coinjoin';
 import { DEVICE, UI } from '@trezor/connect';
 import { arrayDistinct } from '@trezor/utils';
@@ -96,7 +97,7 @@ export const coinjoinMiddleware =
             accountKeys.forEach(accountKey => {
                 api.dispatch(
                     coinjoinAccountActions.createPendingTransaction(
-                        accountKey,
+                        accountKey as AccountKey,
                         broadcastedTxDetails,
                     ),
                 );
@@ -294,7 +295,7 @@ export const coinjoinMiddleware =
 
             if (action.payload.phase === SessionPhase.CriticalError && !isAlreadyPaused) {
                 action.payload.accountKeys.forEach(key =>
-                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key)),
+                    api.dispatch(coinjoinClientActions.pauseCoinjoinSession(key as AccountKey)),
                 );
                 api.dispatch(addToast({ type: 'coinjoin-interrupted' }));
             }

@@ -8,8 +8,11 @@ import {
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { WalletAccountTransactionWithRequiredRbfParams } from '@suite-common/wallet-types';
-import { findChainedTransactions, getAccountKey, isPending } from '@suite-common/wallet-utils';
+import {
+    WalletAccountTransactionWithRequiredRbfParams,
+    createAccountKey,
+} from '@suite-common/wallet-types';
+import { findChainedTransactions, isPending } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -44,7 +47,11 @@ export const TxDetailModal = ({
     const [section, setSection] = useState<TxDetailModalProps['flow']>(flow);
     const [tab, setTab] = useState<TabID | undefined>(undefined);
 
-    const accountKey = getAccountKey(descriptor, symbol, deviceState);
+    const accountKey = createAccountKey({
+        accountDescriptor: descriptor,
+        networkSymbol: symbol,
+        deviceStaticSessionId: deviceState,
+    });
     const originalTx = useSelector(state =>
         selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
     );

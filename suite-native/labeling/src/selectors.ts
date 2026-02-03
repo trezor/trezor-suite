@@ -11,8 +11,8 @@ import {
     selectAccountByKey,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { AccountDescriptor } from '@suite-common/wallet-types';
-import { createAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
+import { AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import { parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { SettingsSliceRootState, selectIsExperimentalFeatureEnabled } from '@suite-native/settings';
 import { StaticSessionId } from '@trezor/connect';
 

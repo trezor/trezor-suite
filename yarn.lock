@@ -11329,6 +11329,7 @@ __metadata:
   dependencies:
     "@trezor/device-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -11852,6 +11853,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13476,6 +13478,7 @@ __metadata:
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     BasicProviderForTests,
     renderHook,
@@ -12,6 +13,8 @@ import { SwitchCoinControlButton } from '../SwitchCoinControlButton';
 jest.mock('../../../hooks/useUtxoSelection', () => ({
     useUtxoSelection: jest.fn(),
 }));
+
+const accountKey = 'account-key' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('renders button with correct color scheme', () => {
     let colors: NativeStyleUtils['colors'];
@@ -39,7 +42,7 @@ describe('renders button with correct color scheme', () => {
         });
 
         const { getByTestId } = renderWithBasicProvider(
-            <SwitchCoinControlButton accountKey="account-key" amount="1000" />,
+            <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
         );
 
         const button = getByTestId('switch-coin-control-button');
@@ -63,7 +66,7 @@ describe('renders button with correct color scheme', () => {
             totalSelectedAmount: BigNumber(1000),
         });
         const { getByTestId } = renderWithBasicProvider(
-            <SwitchCoinControlButton accountKey="account-key" amount="1000" />,
+            <SwitchCoinControlButton accountKey={accountKey} amount="1000" />,
         );
 
         const button = getByTestId('switch-coin-control-button');
@@ -78,7 +81,7 @@ describe('renders button with correct color scheme', () => {
         });
 
         const { getByTestId } = renderWithBasicProvider(
-            <SwitchCoinControlButton accountKey="account-key" />,
+            <SwitchCoinControlButton accountKey={accountKey} />,
         );
 
         const button = getByTestId('switch-coin-control-button');

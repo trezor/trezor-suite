@@ -1,4 +1,4 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
@@ -13,7 +13,9 @@ describe('ReviewOutputItemValues', () => {
     ) =>
         renderWithStoreProvider(
             <ReviewOutputItemValues
-                accountKey="eth-account-1"
+                accountKey={
+                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
                 value={oneUsdc}
                 translationKey="transactionManagement.review.outputs.summary.totalAmount"
                 {...props}

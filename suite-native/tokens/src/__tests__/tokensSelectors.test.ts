@@ -1,4 +1,4 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccount, ethAccount } from '../__fixtures__/accounts';
 import { TokensRootState, selectAccountTokenInfo } from '../tokensSelectors';
@@ -48,7 +48,7 @@ describe('tokensSelectors', () => {
             expect(
                 selectAccountTokenInfo(
                     getState(),
-                    'UNKNOWN_ACCOUNT_KEY',
+                    'UNKNOWN_ACCOUNT_KEY' as AccountKey, // Todo: create properly via `createAccountKey()`
                     '0x4d224452801ACEd8B2F0aebE155379bb5D594381' as TokenAddress,
                 ),
             ).toBeNull();

@@ -1,4 +1,4 @@
-import { Account, TokenAddress } from '@suite-common/wallet-types';
+import { Account, AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import {
     PreloadedState,
@@ -141,7 +141,7 @@ describe('ExchangeSendAmountInput', () => {
         act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
-                key: 'account-key',
+                key: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 symbol: 'eth',
             } as Account);
         });

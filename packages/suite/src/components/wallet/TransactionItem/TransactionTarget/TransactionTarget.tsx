@@ -7,7 +7,7 @@ import {
     selectHistoricFiatRatesByTimestamp,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
@@ -41,7 +41,7 @@ import { TransactionTargetLayout } from '../TransactionTargetLayout';
 
 type TransactionTargetProps = CombinedTarget & {
     transaction: WalletAccountTransaction;
-    accountKey: string;
+    accountKey: AccountKey;
     isActionDisabled?: boolean;
     isPhishingTransaction?: boolean;
 };

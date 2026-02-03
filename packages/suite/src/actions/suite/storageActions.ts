@@ -13,7 +13,12 @@ import {
     selectDevices,
     selectPersistentDeviceData,
 } from '@suite-common/wallet-core';
-import type { FormState, RatesByTimestamps, SuccessfulAccount } from '@suite-common/wallet-types';
+import type {
+    AccountKey,
+    FormState,
+    RatesByTimestamps,
+    SuccessfulAccount,
+} from '@suite-common/wallet-types';
 import { FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import {
     getFormDraftKey,
@@ -53,13 +58,13 @@ export const saveExplorer = ({
     }
 };
 
-export const saveDraft = (formState: FormState, accountKey: string) => {
+export const saveDraft = (formState: FormState, accountKey: AccountKey) => {
     if (!db.isAccessible()) return;
 
     return db.addItem('sendFormDrafts', formState, accountKey, true);
 };
 
-export const removeDraft = (accountKey: string) => {
+export const removeDraft = (accountKey: AccountKey) => {
     if (!db.isAccessible()) return;
 
     return db.removeItemByPK('sendFormDrafts', accountKey);
@@ -80,13 +85,14 @@ const removeAccountDraft = (account: Account) => {
     return db.removeItemByPK('sendFormDrafts', account.key);
 };
 
-export const saveCoinjoinAccount = (accountKey: string) => (_: Dispatch, getState: GetState) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
-    if (!coinjoinAccount || !db.isAccessible()) return;
-    const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
+export const saveCoinjoinAccount =
+    (accountKey: AccountKey) => (_: Dispatch, getState: GetState) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(getState(), accountKey);
+        if (!coinjoinAccount || !db.isAccessible()) return;
+        const serializedAccount = serializeCoinjoinAccount(coinjoinAccount);
 
-    return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
-};
+        return db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
+    };
 
 const removeCoinjoinRelatedSetting = (state: AppState) => {
     const settings = { ...state.suite.settings };
@@ -277,7 +283,7 @@ export const saveGraph = (graphData: GraphData[]) => {
 };
 
 export const saveAccountHistoricRates =
-    (accountKey: string, historicRates: RatesByTimestamps) =>
+    (accountKey: AccountKey, historicRates: RatesByTimestamps) =>
     (_dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return Promise.resolve();
         const allTxs = getState().wallet.transactions.transactions;

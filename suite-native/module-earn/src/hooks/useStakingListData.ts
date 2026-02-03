@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountTotalStakingBalance,
     isCardanoStakedWithFiveBinaries,
@@ -40,7 +41,11 @@ export const useStakingListData = () => {
 
             // if not return fallback value
             if (accountsStakingActive.length === 0) {
-                return { symbol, accountKey: '', accountLabel: '' };
+                return {
+                    symbol,
+                    accountKey: '' as AccountKey, // Todo: this is bad, use null or something
+                    accountLabel: '',
+                };
             }
 
             return accountsStakingActive;

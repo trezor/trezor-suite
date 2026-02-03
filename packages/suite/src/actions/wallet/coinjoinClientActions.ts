@@ -2,7 +2,7 @@ import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectAccountByKey, selectDevices } from '@suite-common/wallet-core';
-import { Account, AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Account, AccountKey, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
 import {
     CoinjoinClientEvents,
@@ -277,7 +277,7 @@ export const closeCriticalPhaseModal = () => (dispatch: Dispatch) => {
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const pauseCoinjoinSession =
-    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) => (dispatch: Dispatch, getState: GetState) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || !isCoinjoinSupportedSymbol(account.symbol)) {
@@ -295,7 +295,7 @@ export const pauseCoinjoinSession =
 
 // called from coinjoin account UI or exceptions like device disconnection, forget wallet/account etc.
 export const stopCoinjoinSession =
-    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
 
@@ -366,7 +366,7 @@ export const onCoinjoinRoundChanged =
         // collect all account.keys from the round including failed one
         const accountKeys = round.inputs
             .concat(round.failed)
-            .map(input => input.accountKey)
+            .map(input => input.accountKey as AccountKey)
             .filter(arrayDistinct);
 
         const currentTimestamp = Date.now();

@@ -1,4 +1,5 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, PressableOpacity, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
@@ -34,7 +35,7 @@ const separatorStyle = prepareNativeStyle(utils => ({
 }));
 
 type AutoStakedBalancesCardProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     symbol: NetworkSymbol | null;
     rewardsBalance: string | null;
     apy: number | null;

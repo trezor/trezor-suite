@@ -1,6 +1,7 @@
 import type { SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     TestStore,
     act,
@@ -62,6 +63,8 @@ jest.mock('../../general/useTradingTransaction', () => ({
     }),
 }));
 
+const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+
 describe('useSellFlow', () => {
     let store: TestStore;
 
@@ -85,7 +88,7 @@ describe('useSellFlow', () => {
 
             // Set up required state
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
@@ -101,7 +104,7 @@ describe('useSellFlow', () => {
                 payload: expect.objectContaining({
                     trade,
                     account: expect.objectContaining({
-                        key: 'btc-account-1',
+                        key: btc1AccountKey,
                     }),
                     returnUrl: expect.stringContaining('trezorsuite://trading'),
                     processResponseData: expect.any(Function),
@@ -140,7 +143,7 @@ describe('useSellFlow', () => {
 
             // Set up account but not selectedQuote
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
@@ -168,7 +171,7 @@ describe('useSellFlow', () => {
 
             // Set up required state
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
@@ -184,7 +187,7 @@ describe('useSellFlow', () => {
                 payload: expect.objectContaining({
                     bankAccount,
                     account: expect.objectContaining({
-                        key: 'btc-account-1',
+                        key: btc1AccountKey,
                     }),
                     returnUrl: expect.stringContaining('trezorsuite://trading'),
                     triggerAnalyticsTradeConfirmation: expect.any(Function),
@@ -199,7 +202,7 @@ describe('useSellFlow', () => {
 
             // Set up account but not quote
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
@@ -247,7 +250,7 @@ describe('useSellFlow', () => {
             const trade = { ...sellQuotes[0], exchange: 'banxa-sell', quoteId: undefined };
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
@@ -270,7 +273,7 @@ describe('useSellFlow', () => {
             const trade = { ...sellQuotes[0], quoteId: '' };
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
@@ -294,7 +297,7 @@ describe('useSellFlow', () => {
             const trade = { ...sellQuotes[0], quoteId: 'test-quote-id' };
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 
@@ -315,7 +318,7 @@ describe('useSellFlow', () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(undefined));
             });
 
@@ -338,7 +341,7 @@ describe('useSellFlow', () => {
             const trade = sellQuotes[0];
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(tradingSellActions.saveSelectedQuote(trade));
             });
 

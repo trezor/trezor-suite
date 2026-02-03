@@ -1,4 +1,5 @@
 import { tradingExchangeActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     TestStore,
     act,
@@ -38,12 +39,18 @@ describe('useReceiveAccountChangeEffect', () => {
 
         setValue.mockClear();
         act(() => {
-            store.dispatch(tradingExchangeActions.setReceiveAccountKey('btc-account-1'));
+            store.dispatch(
+                tradingExchangeActions.setReceiveAccountKey(
+                    'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
+            );
         });
 
         expect(setValue).toHaveBeenCalledTimes(1);
         expect(setValue).toHaveBeenCalledWith('receiveAccount', {
-            account: getBtcAccount('btc-account-1'),
+            account: getBtcAccount(
+                'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            ),
             address: undefined,
         });
     });

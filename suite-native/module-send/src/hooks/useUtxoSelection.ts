@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { useAtom } from 'jotai';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { isSameUtxo } from '@suite-common/wallet-utils';
 import { Utxo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -16,7 +17,7 @@ type UseUtxoSelectionReturn = {
     setSelectedUtxos: (utxos: Utxo[]) => void;
 };
 
-export const useUtxoSelection = (accountKey: string): UseUtxoSelectionReturn => {
+export const useUtxoSelection = (accountKey: AccountKey): UseUtxoSelectionReturn => {
     const [selectedUtxosMap, setSelectedUtxosMap] = useAtom(selectedUtxosAtom);
 
     const selectedUtxos = useMemo(

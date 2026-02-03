@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
@@ -83,8 +83,8 @@ const createPreloadedState = (quote?: ExchangeTrade): PreloadedState => {
     preloadedState.wallet.trading.exchange = {
         ...preloadedState.wallet.trading.exchange,
         quotes: exchangeQuotes,
-        tradingAccountKey: 'eth-account-1',
-        receiveAccountKey: 'btc-account-1',
+        tradingAccountKey: 'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        receiveAccountKey: 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         receiveAddress: getBtcAccount().addresses?.used[0].address,
         selectedQuote: quote ?? exchangeQuotes[0],
     };

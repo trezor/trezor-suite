@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { AccountType, Network } from '@suite-common/wallet-config';
-import { ChainedTransactions } from '@suite-common/wallet-types';
+import { ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
 import { typography } from '@trezor/theme';
 
 import { TrezorLink } from 'src/components/suite/TrezorLink';
@@ -74,7 +74,11 @@ export const ChainedTxs = ({ txs, network, accountType, explorerUrl }: ChainedTx
                     accountType={accountType}
                     isPending
                     isActionDisabled
-                    accountKey={`${tx.descriptor}-${tx.symbol}-${tx.deviceState}`}
+                    accountKey={createAccountKey({
+                        accountDescriptor: tx.descriptor,
+                        networkSymbol: tx.symbol,
+                        deviceStaticSessionId: tx.deviceState,
+                    })}
                     index={index}
                 />
             </TrezorLink>
