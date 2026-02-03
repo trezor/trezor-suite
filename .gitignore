@@ -148,3 +148,6 @@ packages/suite-data/files/translations/master.json
 
 # currents coverage files
 .nyc_output/
+
+# local config for Claude
+.claude/
