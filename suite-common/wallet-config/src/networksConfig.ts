@@ -39,6 +39,7 @@ export const networks = {
         coingeckoId: 'bitcoin',
         tradeCryptoId: 'bitcoin',
         caipId: 'bip122:000000000019d6689c085ae165831e93',
+        yieldXyzId: null,
     },
     eth: {
         symbol: 'eth',
@@ -80,6 +81,7 @@ export const networks = {
         coingeckoId: 'ethereum',
         tradeCryptoId: 'ethereum',
         caipId: 'eip155:1',
+        yieldXyzId: 'ethereum',
     },
     pol: {
         symbol: 'pol',
@@ -114,6 +116,7 @@ export const networks = {
         coingeckoId: 'polygon-pos',
         tradeCryptoId: 'polygon-ecosystem-token',
         caipId: 'eip155:137',
+        yieldXyzId: 'polygon',
     },
     bsc: {
         symbol: 'bsc',
@@ -148,6 +151,7 @@ export const networks = {
         coingeckoId: 'binance-smart-chain',
         tradeCryptoId: 'binancecoin',
         caipId: 'eip155:56',
+        yieldXyzId: 'binance',
     },
     arb: {
         symbol: 'arb',
@@ -184,6 +188,7 @@ export const networks = {
         coingeckoId: 'arbitrum-one',
         tradeCryptoId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
         caipId: 'eip155:42161',
+        yieldXyzId: 'arbitrum',
     },
     base: {
         symbol: 'base',
@@ -221,6 +226,7 @@ export const networks = {
         tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
         caipId: 'eip155:8453',
         nativeTokenReserve: '0.0002',
+        yieldXyzId: 'base',
     },
     op: {
         symbol: 'op',
@@ -257,6 +263,7 @@ export const networks = {
         tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
         caipId: 'eip155:10',
         nativeTokenReserve: '0.0002',
+        yieldXyzId: 'optimism',
     },
     avax: {
         symbol: 'avax',
@@ -291,6 +298,7 @@ export const networks = {
         coingeckoId: 'avalanche',
         tradeCryptoId: 'avalanche-2',
         caipId: 'eip155:43114',
+        yieldXyzId: 'avalanche-c',
     },
     sol: {
         symbol: 'sol',
@@ -322,6 +330,7 @@ export const networks = {
         tradeCryptoId: 'solana',
         caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         nativeTokenReserve: '0.003',
+        yieldXyzId: 'solana',
     },
     trx: {
         symbol: 'trx',
@@ -345,6 +354,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
+        yieldXyzId: 'tron',
     },
     ada: {
         // icarus derivation
@@ -381,6 +391,7 @@ export const networks = {
         },
         coingeckoId: 'cardano',
         tradeCryptoId: 'cardano',
+        yieldXyzId: 'cardano',
     },
     etc: {
         symbol: 'etc',
@@ -397,6 +408,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
         tradeCryptoId: 'ethereum-classic',
+        yieldXyzId: null,
     },
     xrp: {
         symbol: 'xrp',
@@ -412,6 +424,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'ripple',
         tradeCryptoId: 'ripple',
+        yieldXyzId: null,
     },
     xlm: {
         symbol: 'xlm',
@@ -427,6 +440,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
+        yieldXyzId: 'stellar',
     },
     ltc: {
         symbol: 'ltc',
@@ -452,6 +466,7 @@ export const networks = {
         coingeckoId: 'litecoin',
         tradeCryptoId: 'litecoin',
         caipId: 'bip122:12a765e31ffd4059bada1e25190f6e98',
+        yieldXyzId: null,
     },
     bch: {
         symbol: 'bch',
@@ -467,6 +482,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
         tradeCryptoId: 'bitcoin-cash',
+        yieldXyzId: null,
     },
     doge: {
         symbol: 'doge',
@@ -483,6 +499,7 @@ export const networks = {
         coingeckoId: 'dogecoin',
         tradeCryptoId: 'dogecoin',
         caipId: 'bip122:1a91e3dace36e2be3bf030a65679fe82',
+        yieldXyzId: null,
     },
     zec: {
         symbol: 'zec',
@@ -498,6 +515,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'zcash',
         tradeCryptoId: 'zcash',
+        yieldXyzId: null,
     },
     // testnets
     test: {
@@ -535,6 +553,7 @@ export const networks = {
         coingeckoId: undefined,
         tradeCryptoId: 'test-bitcoin', // fake, coingecko does not have testnets
         caipId: 'bip122:000000000933ea01ad0ee984209779ba',
+        yieldXyzId: null,
     },
     regtest: {
         symbol: 'regtest',
@@ -571,6 +590,7 @@ export const networks = {
         isDebugOnlyNetwork: true,
         coingeckoId: undefined,
         tradeCryptoId: undefined,
+        yieldXyzId: null,
     },
     tsep: {
         symbol: 'tsep',
@@ -587,6 +607,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
+        yieldXyzId: 'ethereum-sepolia',
     },
     thod: {
         symbol: 'thod',
@@ -612,6 +633,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
+        yieldXyzId: 'ethereum-hoodi',
     },
     dsol: {
         symbol: 'dsol',
@@ -635,6 +657,7 @@ export const networks = {
         coingeckoId: undefined,
         tradeCryptoId: undefined,
         caipId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        yieldXyzId: 'solana-devnet',
     },
     txrp: {
         symbol: 'txrp',
@@ -650,6 +673,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: 'test-ripple', // fake, coingecko does not have testnets
+        yieldXyzId: null,
     },
     txlm: {
         symbol: 'txlm',
@@ -665,6 +689,7 @@ export const networks = {
         accountTypes: {},
         coingeckoId: undefined,
         tradeCryptoId: undefined,
+        yieldXyzId: 'stellar-testnet',
     },
 } as const satisfies Networks;
 

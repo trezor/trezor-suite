@@ -1,3 +1,5 @@
+import { NetworkDtoId } from '@suite-common/earn-api';
+
 import { networks } from './networksConfig';
 import {
     type AccountType,
@@ -160,3 +162,6 @@ export const getNetworkDecimals = (symbol: NetworkSymbolExtended) => {
 
     return undefined;
 };
+
+export const getNetworkByYieldXyzId = (yieldXyzId: NetworkDtoId) =>
+    networksCollection.find(n => n.yieldXyzId === yieldXyzId) ?? null;
