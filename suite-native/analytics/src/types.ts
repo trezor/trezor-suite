@@ -385,15 +385,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               wasBackupSkipped: boolean;
               wasPinSkipped: boolean;
           }>;
-      }
-    | {
-          type: EventType.DeviceSetupSecurityCheck;
-          payload: {
-              location:
-                  | 'deviceLooksDifferent'
-                  | 'firmwareAlreadyInstalled'
-                  | 'untrustedReseller'
-                  | 'securitySeal'
-                  | 'packaging';
-          };
       };

@@ -8,7 +8,7 @@ import {
     DeviceSuspicionCause,
     StackProps,
 } from '@suite-native/navigation';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { Analytics } from '@trezor/analytics-uploader';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
@@ -66,7 +66,6 @@ export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const handleFinishStepper = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInfo);
     };
@@ -77,7 +76,7 @@ export const SecurityCheckScreen = ({
         navigation.navigate(DeviceOnboardingStackRoutes.SuspiciousDevice, {
             suspicionCause: id,
         });
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSetupSecurityCheck,
             payload: {
                 location: id,
