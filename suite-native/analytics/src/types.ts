@@ -405,7 +405,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.ReferralButtonPress;
-      }
-    | {
-          type: EventType.DemoAccountQuestionnaireDashboard;
       };
