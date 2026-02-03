@@ -2,7 +2,7 @@ import { PropsWithChildren, Suspense, lazy, useMemo } from 'react';
 
 import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-import { isDevEnv } from '@suite-common/suite-utils';
+import { isDevEnv } from '../config';
 
 const Devtools = lazy(async () => {
     const { ReactQueryDevtools } = await import('@tanstack/react-query-devtools');

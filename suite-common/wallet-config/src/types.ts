@@ -1,3 +1,4 @@
+import { NetworkDtoId } from '@suite-common/earn-api';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { RequiredKey } from '@trezor/type-utils';
 
@@ -139,6 +140,11 @@ type NetworkWithSpecificKey<TKey extends NetworkSymbol> = {
     tradeCryptoId?: string;
     caipId?: string; // CAIP-2 chain id, used by WalletConnect
     nativeTokenReserve?: string;
+    /**
+     * Network ID used by Yield.xyz
+     * @url https://yield.xyz
+     */
+    yieldXyzId: NetworkDtoId | null;
 };
 export type Network = NetworkWithSpecificKey<NetworkSymbol>;
 

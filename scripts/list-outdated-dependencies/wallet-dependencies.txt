@@ -77,3 +77,4 @@ yup
 viem
 @tanstack/react-query-devtools
 @tanstack/react-query
+orval
