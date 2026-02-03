@@ -40,7 +40,7 @@ export const TransactionUtxoAddress = ({
     const isLabelingEnabled = useSelector(selectSuiteSyncLabelingEnabled);
 
     return (
-        <VStack>
+        <VStack alignItems="flex-start">
             <HStack spacing={2}>
                 <AddressLabel
                     address={address}
