@@ -7,8 +7,7 @@ export const demoAccountQuestionnaireStartEvent: EventDef<
     EventType.DemoAccountQuestionnaireStart
 > = {
     name: EventType.DemoAccountQuestionnaireStart,
-    descriptionTrigger:
-        'User clicks "Sure, continue" in Demo Account questionnaire',
+    descriptionTrigger: 'User clicks "Sure, continue" in Demo Account questionnaire',
     changelog: [{ version: '25.12.0', notes: 'added' }],
     attributes: {},
 };

@@ -8,10 +8,7 @@ type Attributes = {
     deviceModel: AttributeDef<DeviceModelInternal | null>;
 };
 
-export const deviceSetupStartedEvent: EventDef<
-    Attributes,
-    EventType.DeviceSetupStarted
-> = {
+export const deviceSetupStartedEvent: EventDef<Attributes, EventType.DeviceSetupStarted> = {
     name: EventType.DeviceSetupStarted,
     descriptionTrigger: 'User enters the device onboarding flow.',
     changelog: [{ version: '25.5.1', notes: 'added' }],
