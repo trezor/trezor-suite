@@ -32,6 +32,7 @@ export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
 export { tradingCompareOffersEvent } from './tradingCompareOffersEvent';
 export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
+export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingStatusEvent } from './tradingStatusEvent';
 export { tradingSuccessEvent } from './tradingSuccessEvent';

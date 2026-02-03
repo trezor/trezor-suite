@@ -13,7 +13,6 @@ import {
     FirmwareUpdateStuckedState,
     TradingExchangeAction,
     TradingExchangeStep,
-    TradingNavigateFrom,
     TradingSellAction,
     TradingSellStep,
 } from './definitions';
@@ -243,17 +242,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.TradingQuoteReceived;
           payload: {
               type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingNavigate;
-          payload: {
-              action: 'navigate' | 'cancel';
-              type: TradingType;
-              from: TradingNavigateFrom;
-
-              networkSymbol?: string;
-              contractAddress?: string;
           };
       }
     | {

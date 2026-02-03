@@ -3,12 +3,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
-import { EventType, TradingNavigateFrom } from '@suite-native/analytics';
+import { EventType } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     TradingWithFeatureFlagsRootState,
     selectActiveTradingType,
@@ -75,19 +75,19 @@ export const HeaderTabs = () => {
     const areTradingExchangeDexesEnabled = useSelector((state: TradingWithFeatureFlagsRootState) =>
         selectIsFeatureFlagEnabled(state, FeatureFlag.AreTradingExchangeDexesEnabled),
     );
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const onTabPress = (tab: TradingType) => {
         if (tab === activeTab) {
             return;
         }
 
         setActiveTab(tab);
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
                 type: tab,
-                from: ('trade/' + (activeTab ?? 'buy')) as TradingNavigateFrom,
+                from: `trade/${activeTab ?? 'buy'}`,
             },
         });
     };

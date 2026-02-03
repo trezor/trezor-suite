@@ -11,7 +11,7 @@ import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
 
 import { rootTabsOptions } from './routes';
@@ -19,7 +19,7 @@ import { rootTabsOptions } from './routes';
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
@@ -27,7 +27,7 @@ export const AppTabNavigator = () => {
 
     const handleTradeTabPress = () => {
         // Buy is the default tab when navigating to the Trading stack
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingNavigate,
             payload: {
                 action: 'navigate',
