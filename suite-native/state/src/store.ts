@@ -18,7 +18,10 @@ import { messageSystemMiddleware } from '@suite-native/message-system';
 import { sendFormMiddleware } from '@suite-native/send';
 import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
 import { thpMiddleware } from '@suite-native/thp';
-import { prepareTradingMiddleware } from '@suite-native/trading-state';
+import {
+    prepareTradingLastErrorSentryMiddleware,
+    prepareTradingMiddleware,
+} from '@suite-native/trading-state';
 import { DeepPartial } from '@trezor/type-utils';
 
 import { createNativeCompositionRoot, extraDependencies } from './extraDependencies';
@@ -41,6 +44,7 @@ const getMiddlewares = (getExtra: () => ExtraDependencies | null) => {
         sendFormMiddleware,
         thpMiddleware(getExtra),
         prepareTradingMiddleware(getExtra),
+        prepareTradingLastErrorSentryMiddleware(getExtra),
         preparePushNotificationMiddleware(getExtra),
         prepareSuiteSyncMiddleware(getExtra),
         logsMiddleware,

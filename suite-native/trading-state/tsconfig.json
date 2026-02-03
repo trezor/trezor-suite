@@ -36,6 +36,7 @@
         { "path": "../accounts" },
         { "path": "../feature-flags" },
         { "path": "../labeling" },
+        { "path": "../sentry" },
         { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../trading-atoms" },

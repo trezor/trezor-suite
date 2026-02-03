@@ -13831,6 +13831,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/labeling": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/tokens": "workspace:*"
     "@suite-native/trading-atoms": "workspace:*"
