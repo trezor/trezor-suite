@@ -9,7 +9,6 @@ import {
     AnalyticsSendFlowStep,
     DeviceAuthenticityCheckResult,
     FirmwareUpdatePayload,
-    FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
 } from './definitions';
 
@@ -209,12 +208,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.DeviceSettingsCheckBackupSupport;
-      }
-    | {
-          type: EventType.FirmwareUpdateStarted;
-          payload: FirmwareUpdatePayload & {
-              startType: FirmwareUpdateStartType;
-          };
       }
     | {
           type: EventType.FirmwareUpdateCancel;
