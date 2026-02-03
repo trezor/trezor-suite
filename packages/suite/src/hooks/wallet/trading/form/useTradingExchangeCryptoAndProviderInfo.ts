@@ -24,7 +24,7 @@ export const useTradingExchangeCryptoAndProviderInfo = () => {
             receiveCryptoNetworkSymbol: receiveCryptoSelect?.networkSymbol,
             receiveCryptoContractAddress: receiveCryptoSelect?.contractAddress ?? undefined,
 
-            providerName: quoteProviderName,
+            exchangeName: quoteProviderName,
             selectedFee,
         };
     }, [

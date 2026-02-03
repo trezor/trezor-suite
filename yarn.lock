@@ -15369,6 +15369,7 @@ __metadata:
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
+    "@tanstack/react-query": "npm:5.90.16"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:^16.3.0"
     "@testing-library/user-event": "npm:^14.6.1"

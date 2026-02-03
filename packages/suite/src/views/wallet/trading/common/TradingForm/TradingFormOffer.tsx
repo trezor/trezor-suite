@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
-import type { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import type { BuyTrade, CryptoId, ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import {
@@ -14,18 +14,13 @@ import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/w
 import { TokenAddress } from '@suite-common/wallet-types';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Paragraph } from '@trezor/components';
-import { breakpoints, spacings } from '@trezor/theme';
+import { breakpoints } from '@trezor/theme';
 
-import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/ApproveModal';
-import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/RevokeModal';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useTradingDeviceDisconnected } from 'src/hooks/wallet/trading/form/common/useTradingDeviceDisconnected';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { selectTorState } from 'src/selectors/suite/suiteSelectors';
-import {
-    TradingExchangeApprovalType,
-    TradingFormContextValues,
-} from 'src/types/trading/tradingForm';
+import { TradingFormContextValues } from 'src/types/trading/tradingForm';
 import {
     getCryptoQuoteAmountProps,
     getSelectQuoteTyped,
@@ -44,6 +39,8 @@ import { TradingFormOfferCryptoAmount } from 'src/views/wallet/trading/common/Tr
 import { TradingFormOfferFiatAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferFiatAmount';
 import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm/TradingFormOfferOTC';
 
+import { TradingApproveModal } from './TradingApproveModal';
+import { TradingRevokeModal } from './TradingRevokeModal';
 import { useIsContentBelowBreakpoint } from '../../../../../support/suite/ContentFlex';
 import { useReceiveAddressModalControls } from '../TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 import { TradingUtilsTorWarning } from '../TradingUtils/TradingUtilsTorWarning';
@@ -92,10 +89,6 @@ export const TradingFormOffer = () => {
     const dispatch = useDispatch();
     const { isTorEnabled } = useSelector(selectTorState);
 
-    const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-    const [isRevokeModalOpen, setIsRevokeModalOpen] = useState(false);
-    const [isManuallyApproved, setIsManuallyApproved] = useState(false);
-
     const context = useTradingFormContext();
     const {
         account,
@@ -136,9 +129,6 @@ export const TradingFormOffer = () => {
     const shouldDisplayFiatAmount = isTradingExchangeContext(context) ? false : amountInCrypto;
 
     const { tradingDeviceDisconnected } = useTradingDeviceDisconnected();
-
-    const [approvalType, setApprovalType] = useState<TradingExchangeApprovalType>('APPROVE');
-    const [isWaitingForDevice, setIsWaitingForDevice] = useState(false);
 
     const requiresTokenApproval =
         isTradingExchangeContext(context) &&
@@ -216,7 +206,7 @@ export const TradingFormOffer = () => {
     };
 
     let amount: string = '0';
-    let tokenAddress: TokenAddress | undefined;
+    let tokenAddress: TokenAddress | null = null;
     let areSatsUsed = false;
 
     if (isTradingSellContext(context) || isTradingExchangeContext(context)) {
@@ -225,59 +215,9 @@ export const TradingFormOffer = () => {
 
         const output = outputs[0];
         amount = output.amount;
-        tokenAddress = (output.token ?? undefined) as TokenAddress | undefined;
+        tokenAddress = output.token as TokenAddress | null;
         areSatsUsed = !!shouldSendInSats;
     }
-
-    const onOpenApproveModal = () => {
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(true);
-        }
-
-        setIsApproveModalOpen(true);
-    };
-
-    const onCloseApproveModal = async (isSubmitting = false) => {
-        setIsApproveModalOpen(false);
-
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(false);
-
-            if (isSubmitting) return;
-
-            if (context.selectedQuote?.receiveAddress) {
-                await context.confirmApproval({
-                    trade: { ...context.selectedQuote, approvalType: undefined },
-                    receiveAddress: context.selectedQuote.receiveAddress,
-                });
-            }
-        }
-    };
-
-    const onOpenRevokeModal = () => {
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(true);
-        }
-
-        setIsRevokeModalOpen(true);
-    };
-
-    const onCloseRevokeModal = async (isSubmitting = false) => {
-        setIsRevokeModalOpen(false);
-
-        if (isTradingExchangeContext(context)) {
-            context.setIsApproval(false);
-
-            if (isSubmitting) return;
-
-            if (context.selectedQuote?.receiveAddress) {
-                await context.confirmApproval({
-                    trade: { ...context.selectedQuote, approvalType: undefined },
-                    receiveAddress: context.selectedQuote?.receiveAddress,
-                });
-            }
-        }
-    };
 
     const amountTooHigh = isAmountTooHigh({
         amount,
@@ -311,12 +251,8 @@ export const TradingFormOffer = () => {
     const noOffersWithTor = isTorEnabled && !quote && !isLoading;
 
     return (
-        <Column gap={spacings.lg}>
-            <Column
-                gap={spacings.xs}
-                data-testid="@trading/best-offer"
-                margin={{ bottom: spacings.md }}
-            >
+        <Column gap={20}>
+            <Column gap={8} data-testid="@trading/best-offer" margin={{ bottom: 16 }}>
                 {selectedAssetCryptoId && <Translation id={amountLabels.offerLabel} />}
                 {shouldDisplayFiatAmount ? (
                     <TradingFormOfferFiatAmount amount={tradingGetRoundedFiatAmount(sendAmount)} />
@@ -341,7 +277,7 @@ export const TradingFormOffer = () => {
                         typographyStyle="hint"
                         variant="tertiary"
                         align="center"
-                        margin={{ vertical: spacings.xs }}
+                        margin={{ vertical: 8 }}
                         data-testid="trading-offer-found-none"
                     >
                         <Translation
@@ -364,7 +300,7 @@ export const TradingFormOffer = () => {
                     onClick={onContinueClick}
                     intent="brand"
                     margin={{
-                        top: spacings.md,
+                        top: 16,
                     }}
                     isDisabled={isButtonDisabled || isLoading}
                     isLoading={areFeesLoading || (preselectedQuote && state.isFormLoading)}
@@ -376,22 +312,17 @@ export const TradingFormOffer = () => {
                 </Button>
             ) : (
                 <>
-                    {requiresTokenApproval && bestScoredQuote && !isLoading ? (
-                        <TradingFormApproval
-                            openApproveModal={onOpenApproveModal}
-                            openRevokeModal={onOpenRevokeModal}
-                            isWaitingForDevice={isWaitingForDevice}
-                            approvalType={approvalType}
-                            setApprovalType={setApprovalType}
-                            isManuallyApproved={isManuallyApproved}
-                            setIsManuallyApproved={setIsManuallyApproved}
-                        />
+                    {isTradingExchangeContext(context) &&
+                    requiresTokenApproval &&
+                    bestScoredQuote &&
+                    !isLoading ? (
+                        <TradingFormApproval />
                     ) : (
                         <Button
                             onClick={onSelectQuote}
                             intent="brand"
                             margin={{
-                                top: spacings.md,
+                                top: 16,
                             }}
                             size="large"
                             isDisabled={isButtonDisabled || isLoading}
@@ -420,18 +351,14 @@ export const TradingFormOffer = () => {
                 </>
             )}
             {(type === 'buy' || type === 'sell') && <TradingFormOfferOTC />}
-            {isApproveModalOpen && (
-                <ApproveModal
-                    onCancel={onCloseApproveModal}
-                    setApprovalType={setApprovalType}
-                    setIsWaitingForDevice={setIsWaitingForDevice}
+            {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
+                <TradingApproveModal
+                    amount={amount}
+                    cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId}
                 />
             )}
-            {isRevokeModalOpen && (
-                <RevokeModal
-                    onCancel={onCloseRevokeModal}
-                    setIsWaitingForDevice={setIsWaitingForDevice}
-                />
+            {isTradingExchangeContext(context) && bestScoredQuoteAmounts?.sendCurrency && (
+                <TradingRevokeModal cryptoId={bestScoredQuoteAmounts.sendCurrency as CryptoId} />
             )}
         </Column>
     );
