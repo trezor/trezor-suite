@@ -10,10 +10,10 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 export const DemoAccountQuestionnaireIntroScreen = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation =
         useNavigation<
             StackNavigationProps<
@@ -23,7 +23,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
         >();
 
     const handleContinue = () => {
-        legacyAnalytics.report({ type: EventType.DemoAccountQuestionnaireStart }, { force: true });
+        analytics.report({ type: EventType.DemoAccountQuestionnaireStart }, { force: true });
         navigation.navigate(DemoAccountQuestionnaireStackRoutes.Reason);
     };
 
