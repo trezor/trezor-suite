@@ -1,0 +1,27 @@
+name: "[Test] URLs health check"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET, same as other nightlies in test-misc.yml
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/test-urls.yml"
+      - "packages/urls/**"
+  workflow_dispatch:
+
+jobs:
+  urls-health:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn workspace @trezor/urls test:e2e
