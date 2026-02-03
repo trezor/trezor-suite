@@ -1,5 +1,5 @@
 import { TradingAssetOption } from '@suite-common/trading';
-import { NetworkSymbol } from '@suite-common/wallet-config/libDev/src';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 import { AssetLogo, CoinLogo, shouldShowNetworkIcon } from '@trezor/product-components';
 
