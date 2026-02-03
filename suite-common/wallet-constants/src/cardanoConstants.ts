@@ -15,8 +15,8 @@ export const MIN_CARDANO_BALANCE_FOR_STAKING = MIN_CARDANO_AMOUNT_FOR_STAKING.pl
 );
 
 export const CARDANO_EVERSTAKE_STAKING_POOL = {
-    hex: '9bf86442804da9329bfe0300592ce2e71eac4d6384a72e925f02f322',
-    bech32: 'pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj',
+    hex: '88d719a2d9b57e7f68a77e70b3e8b8e17c76c74dc12ea52e159bb89f',
+    bech32: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
 };
 
 export const CARDANO_EVERSTAKE_DREP = {
