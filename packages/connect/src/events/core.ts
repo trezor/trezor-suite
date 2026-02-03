@@ -1,7 +1,7 @@
 import { ErrorCode, TrezorError } from '@trezor/connect-common/src/constants/errors';
 
 import type { BlockchainEventMessage } from './blockchain';
-import type { IFrameCallMessage, MethodResponseMessage } from './call';
+import type { CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
 import type { PopupClosedMessage, PopupEventMessage } from './popup';
 import type {
@@ -24,7 +24,7 @@ export type CoreRequestMessage =
     | TransportRequestWebUSBDevice
     | TransportGetInfo
     | UiResponseEvent
-    | IFrameCallMessage;
+    | CoreCallMessage;
 
 export type CoreEventMessage = {
     success?: boolean; // response status in ResponseMessage

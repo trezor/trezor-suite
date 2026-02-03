@@ -9,7 +9,13 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { CallMethodKeys, IFRAME, POPUP, RESPONSE_EVENT, createPopupMessage } from '@trezor/connect';
+import {
+    CORE_CALL,
+    CallMethodKeys,
+    POPUP,
+    RESPONSE_EVENT,
+    createPopupMessage,
+} from '@trezor/connect';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -46,10 +52,10 @@ export const useConnectPopupWeb = () => {
                     npmVersion: event.data.payload.settings.version,
                 };
                 setPendingHandshake(event.data.id);
-            } else if (event.data?.type === IFRAME.CALL) {
+            } else if (event.data?.type === CORE_CALL) {
                 if (!manifest.current) {
                     console.warn(
-                        'Connect Popup Web: manifest is not set yet, cannot process IFRAME.CALL',
+                        'Connect Popup Web: manifest is not set yet, cannot process CORE_CALL',
                     );
 
                     return;

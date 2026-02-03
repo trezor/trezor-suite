@@ -2,7 +2,7 @@ import { TypedError } from '@trezor/connect-common/src/constants/errors';
 
 import * as Methods from '../api';
 import { MODULES, ModuleName } from '../constants/network';
-import type { IFrameCallMessage } from '../events';
+import type { CoreCallMessage } from '../events';
 
 const moduleMethods = {
     cardano: require('../api/cardano/api'),
@@ -15,11 +15,11 @@ const moduleMethods = {
     tron: require('../api/tron/api'),
 } as const satisfies Record<ModuleName, any>;
 
-const getMethodModule = (method: IFrameCallMessage['payload']['method']) =>
+const getMethodModule = (method: CoreCallMessage['payload']['method']) =>
     MODULES.find(module => method.startsWith(module));
 
 // eslint-disable-next-line require-await
-export const getMethod = async (message: IFrameCallMessage) => {
+export const getMethod = async (message: CoreCallMessage) => {
     const { method } = message.payload;
     if (typeof method !== 'string') {
         throw TypedError('Method_InvalidParameter', 'Message method is not set');

@@ -2,9 +2,9 @@ import { ipcMain, nativeImage } from 'electron';
 import { WebSocketServer } from 'ws';
 
 import {
+    CORE_CALL,
     ConnectSettings,
-    IFRAME,
-    IFrameCallMessage,
+    CoreCallMessage,
     POPUP,
     PopupClosedMessage,
     PopupHandshake,
@@ -25,7 +25,7 @@ const LOG_PREFIX = 'connect-ws';
  * allowed message from connect-in-suite-desktop implementation
  */
 type IncomingMessage =
-    | (IFrameCallMessage & { id: string })
+    | (CoreCallMessage & { id: string })
     | (PopupHandshake & { id: string })
     | (PopupClosedMessage & { id: string })
     | { type: 'ping'; id: string };
@@ -53,7 +53,7 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     }
 
     // todo: this is incomplete validation
-    if (message.type === IFRAME.CALL && message.payload?.method) {
+    if (message.type === CORE_CALL && message.payload?.method) {
         return true;
     }
 
@@ -166,7 +166,7 @@ export const exposeConnectWs = ({
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
                 });
-            } else if (message.type === IFRAME.CALL) {
+            } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
                     // ts check, should be set
                     logger.error(LOG_PREFIX, 'processOnPort result not found');

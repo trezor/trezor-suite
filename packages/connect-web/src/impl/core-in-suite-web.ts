@@ -2,10 +2,10 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index so we do include the whole library.
 import {
+    CORE_CALL,
     CallMethodAnyResponse,
     CallMethodPayload,
     DEVICE_EVENT,
-    IFRAME,
     POPUP,
     UiResponseEvent,
     createErrorMessage,
@@ -110,7 +110,7 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
         try {
             // post message to core in popup
             const response = await this._popupManager.channel.postMessage({
-                type: IFRAME.CALL,
+                type: CORE_CALL,
                 payload: params,
             });
             this.logger.debug('call: response: ', response);

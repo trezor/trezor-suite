@@ -15,12 +15,12 @@ import type { Device, DeviceEvents } from '../device/Device';
 import { DeviceList, IDeviceList, assertDeviceListConnected } from '../device/DeviceList';
 import * as workflows from '../device/workflow';
 import {
+    CORE_CALL,
     CORE_EVENT,
+    CoreCallMessage,
     CoreEventMessage,
     CoreRequestMessage,
     DEVICE,
-    IFRAME,
-    IFrameCallMessage,
     POPUP,
     RESPONSE_EVENT,
     TransportInfo,
@@ -146,8 +146,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
  * @returns {Promise<void>}
  * @memberof Core
  */
-const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
-    if (!message.id || !message.payload || message.type !== IFRAME.CALL) {
+const onCall = async (context: CoreContext, message: CoreCallMessage) => {
+    if (!message.id || !message.payload || message.type !== CORE_CALL) {
         throw ERRORS.TypedError(
             'Method_InvalidParameter',
             'onCall: message.id or message.payload is missing',
@@ -215,7 +215,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
 
 const onCallDevice = async (
     context: CoreContext,
-    message: IFrameCallMessage,
+    message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage } = context;
@@ -775,7 +775,7 @@ export class Core extends EventEmitter {
             }
 
             // message from index
-            case IFRAME.CALL:
+            case CORE_CALL:
                 // firmwareUpdate is the only procedure that expects device disconnecting
                 // and reconnecting during the process. Due to this it can't be handled just
                 // like regular methods using onCall function. In onCall, disconnecting device

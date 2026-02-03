@@ -6,11 +6,11 @@ import { DeferredManager, cloneObject, createDeferredManager } from '@trezor/uti
 import { parseConnectSettings } from '../data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
+    CORE_CALL,
     CallMethodPayload,
     CoreEventMessage,
     CoreRequestMessage,
     DEVICE_EVENT,
-    IFRAME,
     POPUP,
     RESPONSE_EVENT,
     TRANSPORT,
@@ -198,7 +198,7 @@ export class CoreInModule implements ConnectFactoryDependencies<ConnectSettingsP
             const { promiseId, promise } = this._messagePromises.create();
             const payload = cloneObject<any>(params);
             this.handleCoreMessage({
-                type: IFRAME.CALL,
+                type: CORE_CALL,
                 id: promiseId,
                 payload,
             });

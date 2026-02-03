@@ -5,7 +5,7 @@ export * from './blockchain';
 export * from './call';
 export * from './core';
 export * from './device';
-export * from './iframe';
+export * from './core-call';
 export * from './popup';
 export * from './transport';
 export * from './ui-promise';

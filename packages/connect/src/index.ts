@@ -5,10 +5,10 @@ import { initCoreState } from './core';
 import { parseConnectSettings } from './data/connectSettings';
 import {
     BLOCKCHAIN_EVENT,
+    CORE_CALL,
     CallMethod,
     CoreEventMessage,
     DEVICE_EVENT,
-    IFRAME,
     POPUP,
     RESPONSE_EVENT,
     TRANSPORT,
@@ -123,7 +123,7 @@ const call: CallMethod = async params => {
     try {
         const { promiseId, promise } = messagePromises.create();
         core.handleMessage({
-            type: IFRAME.CALL,
+            type: CORE_CALL,
             payload: params,
             id: promiseId,
         });
