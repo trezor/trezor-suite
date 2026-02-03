@@ -6,6 +6,7 @@ export { biometricsChangeEvent } from './biometricsChangeEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
 export { createReceiveAddressEvent } from './createReceiveAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
+export { demoAccountQuestionnaireQuestionEvent } from './demoAccountQuestionnaireQuestionEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
