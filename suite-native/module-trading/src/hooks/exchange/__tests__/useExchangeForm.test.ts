@@ -1,6 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { tradingExchangeActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { FeatureFlag, FeatureFlagsRootState } from '@suite-native/feature-flags';
 import {
@@ -36,6 +37,8 @@ jest.mock('@suite-native/services', () => {
         }),
     };
 });
+
+const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useExchangeForm', () => {
     let store: TestStore;
@@ -263,10 +266,10 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
             });
 
-            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount('btc-account-1'));
+            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount(btc1AccountKey));
         });
     });
 
@@ -324,12 +327,12 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setReceiveAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setReceiveAccountKey(btc1AccountKey));
             });
 
             expect(result.current.getValues('receiveAccount')).toEqual(
                 expect.objectContaining({
-                    account: getBtcAccount('btc-account-1'),
+                    account: getBtcAccount(btc1AccountKey),
                 }),
             );
         });
@@ -374,7 +377,7 @@ describe('useExchangeForm', () => {
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(
                     tradingExchangeActions.setAmountLimits({
                         minCrypto: '0.0001',
@@ -403,7 +406,7 @@ describe('useExchangeForm', () => {
 
             act(() => {
                 result.current.setValue('sendAsset', btcAsset);
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
                 store.dispatch(
                     tradingExchangeActions.setAmountLimits({
                         minCrypto: '0.0001',
@@ -427,7 +430,7 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
                 result.current.setValue('sendAsset', btcAsset);
                 result.current.setValue('sendCryptoAmount', '10000');
             });
@@ -446,7 +449,11 @@ describe('useExchangeForm', () => {
             const { result } = renderUseExchangeForm();
 
             act(() => {
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('eth-account-1'));
+                store.dispatch(
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
                 result.current.setValue('sendAsset', usdcAsset);
                 result.current.setValue('sendCryptoAmount', amount);
             });
@@ -461,7 +468,7 @@ describe('useExchangeForm', () => {
         it('should trigger validation once limits are loaded', async () => {
             act(() => {
                 store.dispatch(tradingExchangeActions.setAmountLimits(undefined));
-                store.dispatch(tradingExchangeActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(btc1AccountKey));
             });
 
             const { result } = renderUseExchangeForm();

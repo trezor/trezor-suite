@@ -1,4 +1,4 @@
-import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { AccountKey, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProviderAsync, userEvent } from '@suite-native/test-utils';
 import { getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
@@ -37,7 +37,7 @@ describe('SellPreviewContinueButton', () => {
 
     const getPreloadedState = (): PreloadedState => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
-        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1';
+        preloadedState.wallet!.trading!.sell!.tradingAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
         preloadedState.wallet!.send!.precomposedTx = {
             type: 'final',
             totalSpent: '1100',

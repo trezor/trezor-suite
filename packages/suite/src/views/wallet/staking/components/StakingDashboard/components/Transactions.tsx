@@ -9,7 +9,7 @@ import { TransactionList } from 'src/views/wallet/transactions/TransactionList/T
 
 export const Transactions = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const accountKey = selectedAccount.account?.key ?? '';
+    const accountKey = selectedAccount.account?.key ?? null;
 
     const areAllTransactionsLoaded = useSelector(state =>
         Boolean(selectAreAllTransactionsLoaded(state, accountKey)),

@@ -8,7 +8,7 @@ import {
     selectSelectedDevice,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import {
     getAccountTransactions,
     sortByBIP44AddressIndex,
@@ -348,7 +348,7 @@ const coinjoinAccountAddTransactions =
  In case of adding a coinjoin transaction, log anonymity gain.
  */
 export const updatePendingAccountInfo =
-    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
         const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
@@ -393,7 +393,7 @@ export const updatePendingAccountInfo =
     };
 
 export const createPendingTransaction =
-    (accountKey: string, payload: BroadcastedTransactionDetails) =>
+    (accountKey: AccountKey, payload: BroadcastedTransactionDetails) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
@@ -652,7 +652,7 @@ export const createCoinjoinAccount =
     };
 
 export const rescanCoinjoinAccount =
-    (accountKey: string, fullRescan = false) =>
+    (accountKey: AccountKey, fullRescan = false) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
@@ -762,7 +762,7 @@ export const startCoinjoinSession =
 // use same parameters as in startCoinjoinSession but recalculate maxRounds value
 // if Trezor is already preauthorized it will not ask for confirmation
 export const restoreCoinjoinSession =
-    (accountKey: string) => async (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) => async (dispatch: Dispatch, getState: GetState) => {
         // TODO: check if device is connected, passphrase is authorized...
         const isDeviceLocked = selectIsDeviceLocked(getState());
         const device = selectSelectedDevice(getState());
@@ -936,7 +936,7 @@ export const restoreCoinjoinAccounts = () => (dispatch: Dispatch, getState: GetS
 };
 
 export const toggleAutostopCoinjoin =
-    (accountKey: string) => (dispatch: Dispatch, getState: GetState) => {
+    (accountKey: AccountKey) => (dispatch: Dispatch, getState: GetState) => {
         const currentAccountState = selectSessionByAccountKey(getState(), accountKey);
 
         if (!currentAccountState) {

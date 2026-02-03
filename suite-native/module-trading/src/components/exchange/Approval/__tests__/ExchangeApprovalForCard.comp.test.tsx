@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { PreloadedState, renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import { getWalletState } from '@suite-native/trading-fixtures';
 
@@ -9,7 +10,7 @@ describe('ExchangeApprovalForCard', () => {
 
     it('should render text based on redux state', async () => {
         const preloadedState = { wallet: getWalletState({ tradeType: 'exchange' }) };
-        preloadedState.wallet.trading.exchange.tradingAccountKey = 'eth-account-1';
+        preloadedState.wallet.trading.exchange.tradingAccountKey = 'eth-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
         const { getByText } = await renderExchangeApprovalForCard(preloadedState);
 

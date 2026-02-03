@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -16,7 +17,7 @@ import { NoTransactionsSvg } from './NoTransactionsSvg';
 
 type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
 
-export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) => {
+export const TransactionsEmptyState = ({ accountKey }: { accountKey: AccountKey }) => {
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,

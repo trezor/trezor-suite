@@ -26,7 +26,7 @@ export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
 
 export const selectEthereumStakingPoolByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const account = selectAccountByKey(state, accountKey);
     if (!account) return null;
@@ -41,7 +41,7 @@ export const selectEthereumAccountHasStaking = (
 
 export const selectEthereumIsStakePendingByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
     const isStakePending = Number(stakingPool?.totalPendingStakeBalance ?? 0) > 0;
@@ -51,7 +51,7 @@ export const selectEthereumIsStakePendingByAccountKey = (
 
 export const selectEthereumIsStakeConfirmingByAccountKey = (
     state: NativeStakingRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakeTxs = selectAccountStakeTransactions(state, accountKey);
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
@@ -61,7 +61,7 @@ export const selectEthereumIsStakeConfirmingByAccountKey = (
 
 export const selectEthereumStakedBalanceByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
@@ -70,7 +70,7 @@ export const selectEthereumStakedBalanceByAccountKey = (
 
 export const selectEthereumRewardsBalanceByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
@@ -79,7 +79,7 @@ export const selectEthereumRewardsBalanceByAccountKey = (
 
 export const selectEthereumTotalStakePendingByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
@@ -88,7 +88,7 @@ export const selectEthereumTotalStakePendingByAccountKey = (
 
 export const selectEthereumClaimableAmountByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 
@@ -97,7 +97,7 @@ export const selectEthereumClaimableAmountByAccountKey = (
 
 export const selectEthereumCanClaimByAccountKey = (
     state: AccountsRootState,
-    accountKey: string,
+    accountKey: AccountKey,
 ) => {
     const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
 

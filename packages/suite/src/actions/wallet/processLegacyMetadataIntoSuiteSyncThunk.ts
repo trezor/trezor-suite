@@ -3,7 +3,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { Result, exhaustive } from '@trezor/type-utils';
 
@@ -37,7 +37,7 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
             case 'accountLabel':
                 return await services.suiteSync.labeling.updateAccountLabel({
                     deviceStaticSessionId,
-                    accountKey: payload.entityKey,
+                    accountKey: payload.entityKey as AccountKey,
                     label: value ?? null,
                 });
 

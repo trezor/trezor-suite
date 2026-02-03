@@ -3,7 +3,7 @@ import { Platform } from 'react-native';
 import type { BuyTrade } from 'invity-api';
 
 import { AccountsRootState } from '@suite-common/wallet-core';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 import { buyQuotes, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 
 import { TradingRootState } from '../../reducers';
@@ -64,7 +64,7 @@ describe('buySelectors', () => {
         });
 
         it('should throw when no account with given key exists', () => {
-            state.wallet.trading.buy.tradingAccountKey = 'unknown_account_key';
+            state.wallet.trading.buy.tradingAccountKey = 'unknown_account_key' as AccountKey; // Todo: create properly via `createAccountKey()`
 
             expect(() => selectBuySelectedReceiveAccount(state)).toThrow(
                 'Unknown tradingAccountKey: [unknown_account_key]',

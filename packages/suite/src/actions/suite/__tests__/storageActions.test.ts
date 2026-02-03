@@ -12,7 +12,7 @@ import {
     transactionsActions,
 } from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 
@@ -227,7 +227,7 @@ describe('Storage actions', () => {
         store.dispatch(await preloadStore());
         expect(store.getState().wallet.send.drafts).toEqual({ 'account-key': { address: 'b' } });
 
-        await storageActions.removeDraft('account-key');
+        await storageActions.removeDraft('account-key' as AccountKey); // Todo: create properly via `createAccountKey()`
         store = mockStore(getInitialState());
         updateStore(store);
         store.dispatch(await preloadStore());

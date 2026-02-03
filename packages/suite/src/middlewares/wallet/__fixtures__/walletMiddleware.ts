@@ -8,6 +8,7 @@ import {
 import {
     Account,
     AccountBase,
+    AccountKey,
     Output,
     FormState as SendFormState,
     asAccountDescriptor,
@@ -141,13 +142,13 @@ export const draftsFixtures = [
             settings: { bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN },
             accounts: [
                 {
-                    key: 'one',
+                    key: 'one' as AccountKey, // Todo: create properly via `createAccountKey()`
                     networkType: 'bitcoin',
                     symbol: 'btc',
                     accountType: 'normal',
                 } as Account,
                 {
-                    key: 'two',
+                    key: 'two' as AccountKey, // Todo: create properly via `createAccountKey()`
                     networkType: 'bitcoin',
                     symbol: 'regtest',
                     accountType: 'normal',
@@ -156,7 +157,7 @@ export const draftsFixtures = [
             selectedAccount: {
                 status: 'loaded',
                 account: {
-                    key: 'one',
+                    key: 'one' as AccountKey, // Todo: create properly via `createAccountKey()`
                     networkType: 'bitcoin',
                     symbol: 'btc',
                     accountType: 'normal',

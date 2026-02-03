@@ -4,7 +4,7 @@ import { CryptoId, ExchangeTrade } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 import { MIN_MAX_QUOTES_OK } from '../../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../../__fixtures__/utils';
@@ -92,8 +92,8 @@ describe('sendTransactionThunk', () => {
                 ...getQuote(),
                 sendAddress: '1',
             },
-            sendAccountKey: 'xxx',
-            receiveAccountKey: 'yyy',
+            sendAccountKey: 'xxx' as AccountKey, // Todo: create properly via `createAccountKey()`
+            receiveAccountKey: 'yyy' as AccountKey, // Todo: create properly via `createAccountKey()`
         };
 
         return {

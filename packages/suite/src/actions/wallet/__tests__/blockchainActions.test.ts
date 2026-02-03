@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { FeesState } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { accountsReducer, blockchainReducer, transactionsReducer } from 'src/reducers/wallet';
 import { configureStore, filterThunkActionTypes } from 'src/support/tests/configureStore';
@@ -180,9 +181,8 @@ describe('Blockchain Actions', () => {
                 });
                 if (f.resultTxs) {
                     const txs = store.getState().wallet.transactions.transactions;
-                    Object.keys(txs).forEach(key => {
-                        // @ts-expect-error
-                        const resTxs = f.resultTxs[key];
+                    typedObjectKeys(txs).forEach(key => {
+                        const resTxs = f.resultTxs[key as unknown as keyof typeof f.resultTxs]; // Todo: type fixtures
                         expect(txs[key].length).toEqual(resTxs.length);
                         txs[key].forEach((t, i) => expect(t).toMatchObject(resTxs[i]));
                     });

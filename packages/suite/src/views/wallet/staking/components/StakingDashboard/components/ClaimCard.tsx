@@ -19,7 +19,7 @@ export const ClaimCard = () => {
     const analytics = useAnalytics();
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
-        selectAccountClaimTransactions(state, selectedAccount?.key || ''),
+        selectAccountClaimTransactions(state, selectedAccount?.key || null),
     );
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
         selectedAccount?.symbol,

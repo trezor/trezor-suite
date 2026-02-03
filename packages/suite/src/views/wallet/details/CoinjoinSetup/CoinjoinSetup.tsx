@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     Banner,
     Card,
@@ -42,7 +43,7 @@ const CustomSetup = styled.div<{ $elevation: Elevation }>`
 `;
 
 interface CoinjoinSetupProps {
-    accountKey: string;
+    accountKey: AccountKey;
 }
 
 export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {

@@ -3,7 +3,7 @@ import { combineReducers, createReducer } from '@reduxjs/toolkit';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import '@suite-common/test-utils/src/globalOverrides';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { promiseAllSequence } from '@trezor/utils';
 
@@ -384,7 +384,7 @@ describe('coinjoinClientActions', () => {
     // for coverage: edge cases, missing data etc...
     it('pauseCoinjoinSession without related account', () => {
         const store = initStore();
-        store.dispatch(pauseCoinjoinSession('account-Z'));
+        store.dispatch(pauseCoinjoinSession('account-Z' as AccountKey));
     });
 
     it('stopCoinjoinSession without connected device', async () => {
@@ -396,7 +396,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A'));
+        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
     });
 
     it('stopCoinjoinSession with error from Trezor', async () => {
@@ -416,7 +416,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A'));
+        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(1);
     });
@@ -453,7 +453,7 @@ describe('coinjoinClientActions', () => {
 
         await store.dispatch(initCoinjoinService('btc'));
 
-        store.dispatch(stopCoinjoinSession('account-A'));
+        store.dispatch(stopCoinjoinSession('account-A' as AccountKey));
 
         expect(TrezorConnect.cancelCoinjoinAuthorization).toHaveBeenCalledTimes(0);
     });

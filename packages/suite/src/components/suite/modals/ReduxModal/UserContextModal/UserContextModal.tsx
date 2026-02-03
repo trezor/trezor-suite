@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { UI } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -128,9 +129,15 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
         case 'cancel-coinjoin':
             return <CancelCoinjoinModal onClose={onCancel} />;
         case 'critical-coinjoin-phase':
-            return <CriticalCoinjoinPhaseModal relatedAccountKey={payload.relatedAccountKey} />;
+            return (
+                <CriticalCoinjoinPhaseModal
+                    relatedAccountKey={payload.relatedAccountKey as AccountKey}
+                />
+            );
         case 'coinjoin-success':
-            return <CoinjoinSuccessModal relatedAccountKey={payload.relatedAccountKey} />;
+            return (
+                <CoinjoinSuccessModal relatedAccountKey={payload.relatedAccountKey as AccountKey} />
+            );
         case 'more-rounds-needed':
             return <MoreRoundsNeededModal />;
         case 'uneco-coinjoin-warning':

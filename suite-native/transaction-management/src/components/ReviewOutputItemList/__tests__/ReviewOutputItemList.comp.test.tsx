@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils';
 
 import { getWalletState } from '../../../__fixtures__/walletState';
@@ -26,7 +27,13 @@ jest.mock('../../../selectors', () => {
 describe('ReviewOutputItemList', () => {
     const renderReviewOutputItemList = (props: Partial<ReviewOutputItemListProps> = {}) =>
         renderWithStoreProvider(
-            <ReviewOutputItemList prefix="send" accountKey="eth-account-1" {...props} />,
+            <ReviewOutputItemList
+                prefix="send"
+                accountKey={
+                    'eth-account-1' as AccountKey // Todo: create properly via `createAccountKey()`
+                }
+                {...props}
+            />,
             { preloadedState: { wallet: getWalletState() } },
         );
 
@@ -48,7 +55,9 @@ describe('ReviewOutputItemList', () => {
     });
 
     it('should render Error when account is not found', () => {
-        const { getByText } = renderReviewOutputItemList({ accountKey: 'btc-account-3' });
+        const { getByText } = renderReviewOutputItemList({
+            accountKey: 'btc-account-3' as AccountKey, // Todo: create properly via `createAccountKey()`
+        });
 
         expect(getByText('Error: Account not found.')).toBeOnTheScreen();
     });

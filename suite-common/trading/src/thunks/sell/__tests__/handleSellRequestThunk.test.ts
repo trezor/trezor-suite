@@ -3,6 +3,7 @@ import { CryptoId, SellFiatTrade } from 'invity-api';
 
 import { configureMockStore, extraDependenciesCommonMock } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
+import { AccountKey } from '@suite-common/wallet-types';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
 import { sellThunks } from '../';
@@ -102,7 +103,7 @@ describe('handleSellRequestThunk', () => {
                 displaySymbol: 'BTC',
                 networkName: 'Bitcoin',
                 networkSymbol: 'btc',
-                accountKey: 'descriptor-btc-123',
+                accountKey: 'descriptor-btc-123' as AccountKey, // Todo: create properly via `createAccountKey()`
             } satisfies TradingAssetSellOption,
             amountInCrypto: true,
             feePerUnit: '',

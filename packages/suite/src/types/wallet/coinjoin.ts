@@ -1,6 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 // @trezor/coinjoin package is meant to be imported dynamically
 // importing types is safe, but importing an enum thru index will bundle whole lib
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     CoinjoinClientVersion,
     CoinjoinPrisonInmate,
@@ -83,7 +84,7 @@ export interface CoinjoinLegalDocuments {
 }
 
 export interface CoinjoinAccount {
-    key: string; // reference to wallet Account.key
+    key: AccountKey; // reference to wallet Account.key
     symbol: NetworkSymbol;
     setup?: CoinjoinSetup; // unless enabled, account uses default (recommended) values
     rawLiquidityClue: RegisterAccountParams['rawLiquidityClue'];

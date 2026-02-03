@@ -16,6 +16,7 @@ import {
     useThunkDispatch,
 } from '@suite-common/wallet-core';
 import {
+    AccountKey,
     FeeLevelLabel,
     FormState,
     PrecomposedTransactionFinal,
@@ -55,7 +56,7 @@ type StellarFeeNavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 type UseStellarFeeScreenParams = {
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract: TokenAddress;
     mode: StellarFeeScreenMode;
     thunkAction: (params: {

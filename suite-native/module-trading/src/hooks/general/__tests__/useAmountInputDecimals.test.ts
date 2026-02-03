@@ -38,7 +38,7 @@ describe('useAmountInputDecimals', () => {
 
     it('should limit value to decimals based on network.decimals value for networks', async () => {
         const account = {
-            key: 'account_key',
+            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
             symbol: 'eth',
         } as Account;
         const { result } = await renderUseAmountInputDecimals(account, undefined);
@@ -48,7 +48,7 @@ describe('useAmountInputDecimals', () => {
 
     it('should limit value to decimals based on selectAccountTokenDecimals return value', async () => {
         const account = {
-            key: 'account_key',
+            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
             symbol: 'eth',
         } as Account;
         const contractAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
@@ -60,7 +60,7 @@ describe('useAmountInputDecimals', () => {
     it('should return undefined when selectAccountTokenDecimals returns nullish value', async () => {
         mockSelectAccountTokenDecimals.mockReturnValue(null);
         const account = {
-            key: 'account_key',
+            key: 'account_key' as AccountKey, // Todo: create properly via `createAccountKey()`
             symbol: 'eth',
         } as Account;
         const contractAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;

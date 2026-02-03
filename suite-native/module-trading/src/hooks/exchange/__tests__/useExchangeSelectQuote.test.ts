@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -66,8 +67,12 @@ describe('useExchangeSelectQuote', () => {
     let store: TestStore;
 
     const getInitializedStore = ({ isLoading }: { isLoading?: boolean }) => {
-        const btcAccount = getBtcAccount('btc-account-key');
-        const ethAccount = getEthAccount('eth-account-key');
+        const btcAccount = getBtcAccount(
+            'btc-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+        );
+        const ethAccount = getEthAccount(
+            'eth-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+        );
 
         const preloadedState: PreloadedState = {
             wallet: {
@@ -184,8 +189,12 @@ describe('useExchangeSelectQuote', () => {
         it('should not call selectQuoteThunk when account is not fully selected', async () => {
             act(() => {
                 [
-                    tradingExchangeActions.setReceiveAccountKey('btc-account-key'),
-                    tradingExchangeActions.setTradingAccountKey('eth-account-key'),
+                    tradingExchangeActions.setReceiveAccountKey(
+                        'btc-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                    tradingExchangeActions.setTradingAccountKey(
+                        'eth-account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
                 ].forEach(store.dispatch);
                 exchangeForm.setValue('receiveAsset', btcAsset);
             });

@@ -36,7 +36,7 @@ export const Transactions = () => {
         selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
     );
     const accountTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || ''),
+        selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
 
     if (selectedAccount.status !== 'loaded') {

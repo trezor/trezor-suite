@@ -16,6 +16,7 @@ import { SimpleTokenStructure } from '@suite-common/token-definitions';
 import type { TradingTransaction } from '@suite-common/trading';
 import { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import type {
+    AccountKey,
     BackendSettings,
     FormState,
     RatesByTimestamps,
@@ -59,7 +60,7 @@ export interface SuiteDBSchema extends DBSchema {
         value: { symbol: NetworkSymbol; explorer: Explorer };
     };
     sendFormDrafts: {
-        key: string; // accountKey
+        key: AccountKey;
         value: FormState;
     };
     suiteSettings: {

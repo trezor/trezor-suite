@@ -4,6 +4,7 @@ import { lighten, rgba } from 'polished';
 import styled, { DefaultTheme, css, keyframes } from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Tooltip, useElevation } from '@trezor/components';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
@@ -164,7 +165,7 @@ const Wheel = styled.div<{
 `;
 
 interface CoinjoinProgressWheelProps {
-    accountKey: string;
+    accountKey: AccountKey;
 }
 
 export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps) => {

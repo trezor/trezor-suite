@@ -118,7 +118,7 @@ const tradingCommonSlice = createSlice({
         setModalCryptoCurrency(state, action: PayloadAction<CryptoId | undefined>) {
             state.modalCryptoId = action.payload;
         },
-        setModalAccountKey(state, action: PayloadAction<string | undefined>) {
+        setModalAccountKey(state, action: PayloadAction<AccountKey | undefined>) {
             state.modalAccountKey = action.payload;
         },
         setLoading(
@@ -135,7 +135,7 @@ const tradingCommonSlice = createSlice({
             state,
             action: PayloadAction<{
                 cryptoId: CryptoId | undefined;
-                key: string | undefined;
+                key: AccountKey | undefined;
             }>,
         ) {
             state.prefilledFromAccount.cryptoId = action.payload.cryptoId;

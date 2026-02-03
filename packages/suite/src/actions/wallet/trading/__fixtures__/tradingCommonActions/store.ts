@@ -1,4 +1,4 @@
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { Account } from 'src/types/wallet';
 
@@ -9,7 +9,7 @@ export const ACCOUNT: Account = {
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
-    key: 'descriptor-btc-1stTestnetAddress@device_id:0',
+    key: 'descriptor-btc-1stTestnetAddress@device_id:0' as AccountKey, // Todo: create properly via `createAccountKey()`
     accountType: 'normal',
     empty: true,
     visible: true,

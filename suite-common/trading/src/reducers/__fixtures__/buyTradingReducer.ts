@@ -1,5 +1,7 @@
 import { BuyTrade, BuyTradeQuoteRequest, CryptoId, FiatCurrenciesProps } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
+
 import { TradingAmountLimitProps } from '../../types';
 import { BuyInfo, buyInitialState, tradingBuyActions } from '../buyReducer';
 
@@ -203,7 +205,7 @@ export const buyTradingFixtures = [
         ],
         result: {
             ...buyInitialState,
-            tradingAccountKey: '123456',
+            tradingAccountKey: '123456' as AccountKey, // Todo: create properly via `createAccountKey()`
         },
     },
 ];

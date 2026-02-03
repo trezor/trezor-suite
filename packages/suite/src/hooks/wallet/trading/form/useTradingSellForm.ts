@@ -32,6 +32,7 @@ import {
 } from '@suite-common/trading';
 import { networks } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectBaseCurrency, useFormDraft } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { isChanged } from '@trezor/utils';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -181,7 +182,7 @@ export const useTradingSellForm = ({
     const decimals = useMemo(
         () =>
             getAssetDecimals({
-                accountKey: values.sendCryptoSelect?.accountKey,
+                accountKey: values.sendCryptoSelect?.accountKey as AccountKey,
                 cryptoId: values.sendCryptoSelect?.id as CryptoId,
             }),
         [getAssetDecimals, values.sendCryptoSelect?.accountKey, values.sendCryptoSelect?.id],

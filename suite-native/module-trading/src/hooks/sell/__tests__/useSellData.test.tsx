@@ -1,4 +1,5 @@
 import { tradingSellActions, tradingThunks } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -15,15 +16,19 @@ jest.mock('../../../utils/general/utils', () => ({
     getRandomAccountDescriptor: () => 'random_string',
 }));
 
+const btc1AccountKey = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc2AccountKey = 'btc-account-2' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc3AccountKey = 'btc-account-3' as AccountKey; // Todo: create properly via `createAccountKey()`
+
 describe('useSellData', () => {
-    const getInitializedStore = (tradingAccountKey: string | undefined) => {
+    const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
         const preloadedState: PreloadedState = {
             wallet: {
                 trading: getInitializedTradingState('sell'),
                 accounts: [
-                    getBtcAccount('btc-account-1'),
-                    getBtcAccount('btc-account-2'),
-                    { ...getBtcAccount('btc-account-3'), descriptor: '' },
+                    getBtcAccount(btc1AccountKey),
+                    getBtcAccount(btc2AccountKey),
+                    { ...getBtcAccount(btc3AccountKey), descriptor: '' },
                 ],
             },
         };
@@ -115,7 +120,7 @@ describe('useSellData', () => {
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-2'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc2AccountKey));
             });
 
             // Wait for the effect to run
@@ -130,14 +135,14 @@ describe('useSellData', () => {
         });
 
         it('should not dispatch loadInitialDataThunk when descriptor is not changed', async () => {
-            const store = await getInitializedStore('btc-account-2');
+            const store = await getInitializedStore(btc2AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-2'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc2AccountKey));
             });
 
             // Wait for effects to run
@@ -149,14 +154,14 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is empty string', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = await getInitializedStore(btc1AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call
             initialThunkLoadActionSpy.mockClear();
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-3'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc3AccountKey));
             });
 
             // Wait for the effect to run
@@ -172,7 +177,7 @@ describe('useSellData', () => {
         });
 
         it('should dispatch loadInitialDataThunk with random string when descriptor is undefined', async () => {
-            const store = await getInitializedStore('btc-account-1');
+            const store = await getInitializedStore(btc1AccountKey);
             await renderUseSellData(0, store);
 
             // Clear the initial call

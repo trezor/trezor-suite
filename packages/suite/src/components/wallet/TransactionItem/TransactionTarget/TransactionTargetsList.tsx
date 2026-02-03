@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     InternalTransfer as InternalTransferType,
     TokenTransfer as TokenTransferType,
@@ -26,7 +27,7 @@ type TransactionTargetsListProps = {
     allOutputs: CombinedTarget[];
     limit: number;
     defaultLimit: number;
-    accountKey: string;
+    accountKey: AccountKey;
     isActionDisabled?: boolean;
     isPhishingTransaction?: boolean;
 };

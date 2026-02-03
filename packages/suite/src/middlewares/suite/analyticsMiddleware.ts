@@ -17,6 +17,7 @@ import {
     selectDevices,
     selectDevicesCount,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     accumulateAccountCountBySymbolAndType,
     getAccountTotalStakingBalance,
@@ -270,11 +271,11 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             case COINJOIN.ACCOUNT_UNREGISTER: {
                 const coinjoinAccount = selectCoinjoinAccountByKey(
                     state,
-                    action.payload.accountKey,
+                    action.payload.accountKey as AccountKey,
                 );
                 const anonymityGainToReport = selectAnonymityGainToReportByAccountKey(
                     state,
-                    action.payload.accountKey,
+                    action.payload.accountKey as AccountKey,
                 );
 
                 if (coinjoinAccount && anonymityGainToReport !== null) {

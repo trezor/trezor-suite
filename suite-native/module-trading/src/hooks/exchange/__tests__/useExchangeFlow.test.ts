@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import {
@@ -41,13 +42,16 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
+const btc1AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
+const btc2AccountKey = 'btc2' as AccountKey; // Todo: create properly via `createAccountKey()`
+
 describe('useExchangeFlow', () => {
-    const getMockAccounts = () => [getBtcAccount('btc1'), getBtcAccount('btc2')];
+    const getMockAccounts = () => [getBtcAccount(btc1AccountKey), getBtcAccount(btc2AccountKey)];
 
     const getInitializedStore = () => {
         const tradingState = getInitializedTradingStateWithQuotes();
-        tradingState.exchange.tradingAccountKey = 'btc1';
-        tradingState.exchange.receiveAccountKey = 'btc2';
+        tradingState.exchange.tradingAccountKey = btc1AccountKey;
+        tradingState.exchange.receiveAccountKey = btc2AccountKey;
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
         const preloadedState: PreloadedState = {
@@ -177,8 +181,8 @@ describe('useExchangeFlow', () => {
             const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementationOnce(() => {});
 
             const tradingState = getInitializedTradingStateWithQuotes();
-            tradingState.exchange.tradingAccountKey = 'invalid-account-key';
-            tradingState.exchange.receiveAccountKey = 'btc2';
+            tradingState.exchange.tradingAccountKey = 'invalid-account-key' as AccountKey; // Todo: create properly via `createAccountKey()`
+            tradingState.exchange.receiveAccountKey = btc2AccountKey;
             tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
 
             const preloadedState: PreloadedState = {

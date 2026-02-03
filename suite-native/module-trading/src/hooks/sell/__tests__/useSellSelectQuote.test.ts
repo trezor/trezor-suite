@@ -1,4 +1,5 @@
 import { tradingSellActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     TestStore,
     act,
@@ -54,7 +55,11 @@ describe('useSellSelectQuote', () => {
 
         it('should be false when form contains error', async () => {
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(
+                    tradingSellActions.setTradingAccountKey(
+                        'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
                 sellForm.setValue('quote', sellQuotes[0]);
                 sellForm.setError('cryptoStringAmount', {
                     type: 'manual',
@@ -70,7 +75,11 @@ describe('useSellSelectQuote', () => {
         it('should be true when quote is selected', async () => {
             act(() => {
                 sellForm.setValue('quote', sellQuotes[0]);
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(
+                    tradingSellActions.setTradingAccountKey(
+                        'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                    ),
+                );
             });
 
             const { result } = await renderUseSellSelectQuote();

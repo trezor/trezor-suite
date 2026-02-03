@@ -31,7 +31,8 @@ import {
     TransactionsState,
     WalletSettingsState,
 } from '@suite-common/wallet-core';
-import { buildHistoricRatesFromStorage, getAccountKey } from '@suite-common/wallet-utils';
+import { createAccountKey } from '@suite-common/wallet-types';
+import { buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import TrezorConnect, { StaticSessionId } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -222,7 +223,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
             const { txs } = payload;
             txs.forEach(item => {
-                const k = getAccountKey(item.tx.descriptor, item.tx.symbol, item.tx.deviceState);
+                const k = createAccountKey({
+                    accountDescriptor: item.tx.descriptor,
+                    networkSymbol: item.tx.symbol,
+                    deviceStaticSessionId: item.tx.deviceState,
+                });
                 if (!state.transactions[k]) {
                     state.transactions[k] = [];
                 }

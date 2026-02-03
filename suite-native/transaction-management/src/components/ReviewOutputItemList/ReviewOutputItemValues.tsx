@@ -1,10 +1,10 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CoinAmountFormatter, CoinToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 
 export type ReviewOutputItemValuesProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     value: string;
     translationKey: TxKeyPath;
     tokenContract?: TokenAddress;

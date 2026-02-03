@@ -1,6 +1,7 @@
 import { CryptoId, InfoResponse } from 'invity-api';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { buyThunks } from '../../thunks/buy';
 import { exchangeThunks } from '../../thunks/exchange';
@@ -34,8 +35,8 @@ const tradeBuy: TradingTransactionBuy = {
         maxCrypto: 0.19952,
         paymentMethod: 'creditCard',
     },
-    selectedAccountKey: 'xxx',
-    receiveAccountKey: 'yyy',
+    selectedAccountKey: 'xxx' as AccountKey, // Todo: create properly via `createAccountKey()`
+    receiveAccountKey: 'yyy' as AccountKey, // Todo: create properly via `createAccountKey()`
 };
 
 const tradeExchange: TradingTransactionExchange = {
@@ -51,8 +52,8 @@ const tradeExchange: TradingTransactionExchange = {
         exchange: 'changelly',
         status: 'CONFIRMING',
     },
-    sendAccountKey: 'xxx',
-    receiveAccountKey: 'yyy',
+    sendAccountKey: 'xxx' as AccountKey, // Todo: create properly via `createAccountKey()`
+    receiveAccountKey: 'yyy' as AccountKey, // Todo: create properly via `createAccountKey()`
 };
 
 const symbolsInfo: InfoResponse = {

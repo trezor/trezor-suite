@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { IconButton } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -6,7 +7,7 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { useUtxoSelection } from '../../hooks/useUtxoSelection';
 
 type SendUtxoScreenHeaderProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     onDelete?: () => void;
 };
 

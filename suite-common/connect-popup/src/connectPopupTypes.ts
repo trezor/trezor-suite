@@ -1,4 +1,4 @@
-import { TxSimulationAction } from '@suite-common/wallet-types';
+import { AccountKey, TxSimulationAction } from '@suite-common/wallet-types';
 import { CallMethodKeys } from '@trezor/connect';
 import { MethodPermission } from '@trezor/connect/src/core/AbstractMethod';
 import { ErrorCode } from '@trezor/connect-common/src/constants/errors';
@@ -64,7 +64,7 @@ type SelectedFee =
 
 type TxSimulationConnectPopupCallLoaded = {
     state: 'tx-simulation';
-    selectedAccountKey?: string;
+    selectedAccountKey?: AccountKey;
 } & Omit<TxSimulationAction, 'sourceOrigin'>;
 
 export type ConnectPopupCallLoaded = {
@@ -81,7 +81,7 @@ export type ConnectPopupCallLoaded = {
     | {
           method: CallMethodKeys;
           state: 'ongoing';
-          selectedAccountKey?: string;
+          selectedAccountKey?: AccountKey;
           payload: any;
       }
     | {

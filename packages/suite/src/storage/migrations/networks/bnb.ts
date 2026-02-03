@@ -1,3 +1,4 @@
+import { AccountKey } from '@suite-common/wallet-types';
 import type { OnUpgradeFunc } from '@trezor/suite-storage';
 
 import type { SuiteDBSchema } from '../../definitions';
@@ -78,7 +79,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
             const newAccount = {
                 ...account,
                 symbol: 'bsc' as const,
-                key: account.key.replace('bnb', 'bsc'),
+                key: account.key.replace('bnb', 'bsc') as AccountKey,
             };
             await accountsCursor.delete();
             await accounts.add(newAccount);
@@ -162,7 +163,7 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
     sendFormDraftsKeysWithBnb.forEach(async key => {
         const draft = await sendFormDrafts.get(key);
         if (draft) {
-            sendFormDrafts.add(draft, key.replace('bnb', 'bsc'));
+            sendFormDrafts.add(draft, key.replace('bnb', 'bsc') as AccountKey);
         }
         sendFormDrafts.delete(key);
     });

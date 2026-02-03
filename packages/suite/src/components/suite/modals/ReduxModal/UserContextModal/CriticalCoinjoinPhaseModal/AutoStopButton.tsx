@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { AccountKey } from '@suite-common/wallet-types';
 import { Checkbox, Text } from '@trezor/components';
 
 import { toggleAutostopCoinjoin } from 'src/actions/wallet/coinjoinAccountActions';
@@ -7,7 +8,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectIsSessionAutostopped } from 'src/reducers/wallet/coinjoinReducer';
 
 type AutoStopButtonProps = {
-    relatedAccountKey: string;
+    relatedAccountKey: AccountKey;
 };
 
 export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {

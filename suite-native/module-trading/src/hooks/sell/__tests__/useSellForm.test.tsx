@@ -1,6 +1,7 @@
 import type { SellFiatTrade } from 'invity-api';
 
 import { tradingSellActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { Form, useField } from '@suite-native/forms';
 import {
@@ -44,6 +45,8 @@ jest.mock('@suite-native/services', () => {
     };
 });
 
+const btc1account = 'btc-account-1' as AccountKey; // Todo: create properly via `createAccountKey()`
+
 describe('useSellForm', () => {
     let store: TestStore;
 
@@ -76,10 +79,10 @@ describe('useSellForm', () => {
             const { result } = renderUseSellForm();
 
             act(() => {
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
             });
 
-            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount('btc-account-1'));
+            expect(result.current.getValues('sendAccount')).toEqual(getBtcAccount(btc1account));
         });
     });
 
@@ -266,7 +269,7 @@ describe('useSellForm', () => {
             ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
                     result.current.setValue('amountInCrypto', true);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('cryptoStringAmount', amount);
@@ -294,7 +297,7 @@ describe('useSellForm', () => {
                 store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
                     result.current.setValue('amountInCrypto', true);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('cryptoStringAmount', amount);
@@ -322,7 +325,11 @@ describe('useSellForm', () => {
                 async (amount, expectedInvalid) => {
                     const { result } = renderUseSellForm();
                     act(() => {
-                        store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
+                        store.dispatch(
+                            tradingSellActions.setTradingAccountKey(
+                                'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                            ),
+                        );
                         result.current.setValue('amountInCrypto', true);
                         result.current.setValue('sendAsset', usdcAsset);
                         result.current.setValue('cryptoStringAmount', amount);
@@ -338,7 +345,11 @@ describe('useSellForm', () => {
             it("should be validated once the quote is selected and it changes it's value", async () => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
+                    store.dispatch(
+                        tradingSellActions.setTradingAccountKey(
+                            'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                        ),
+                    );
                     result.current.setValue('amountInCrypto', false);
                     result.current.setValue('sendAsset', usdcAsset);
                     result.current.setValue('fiatStringAmount', '100');
@@ -371,7 +382,7 @@ describe('useSellForm', () => {
             ])('should display fiat error for amount %s', async (amount, expectedValue) => {
                 const { result } = renderUseSellForm();
                 act(() => {
-                    store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                    store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
                     result.current.setValue('amountInCrypto', false);
                     result.current.setValue('sendAsset', btcAsset);
                     result.current.setValue('fiatStringAmount', amount);
@@ -395,7 +406,7 @@ describe('useSellForm', () => {
         it('should trigger validation once limits are loaded', async () => {
             act(() => {
                 store.dispatch(tradingSellActions.setAmountLimits(undefined));
-                store.dispatch(tradingSellActions.setTradingAccountKey('btc-account-1'));
+                store.dispatch(tradingSellActions.setTradingAccountKey(btc1account));
             });
             const { result } = renderUseSellForm();
             act(() => {
@@ -517,7 +528,7 @@ describe('useSellForm', () => {
         const initFormAndQuoteRequest = (form: SellFormType) => {
             act(() => {
                 form.setValue('sendAsset', btcAsset);
-                form.setValue('sendAccount', getBtcAccount('btc-account-1'));
+                form.setValue('sendAccount', getBtcAccount(btc1account));
                 form.setValue('amountInCrypto', false);
                 form.setValue('fiatStringAmount', '10');
             });

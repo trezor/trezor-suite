@@ -3,6 +3,7 @@ import { CryptoId } from 'invity-api';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel } from '@trezor/connect';
 
+import { AccountKey } from './account';
 import { Output, RbfTransactionParams } from './transaction';
 
 export type FormOptions =
@@ -17,7 +18,7 @@ export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'lar
 
 export type FormStateTradingCryptoCurrency = {
     cryptoId: CryptoId | undefined;
-    accountKey: string | undefined;
+    accountKey: AccountKey | undefined;
     symbol: NetworkSymbol;
     contractAddress?: string;
     amount: string;

@@ -6,8 +6,14 @@ import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Network, getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
-import { SendState, accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
-import { FeesState, SelectedAccountStatus, asAccountDescriptor } from '@suite-common/wallet-types';
+import { accountsActions, prepareSendFormReducer } from '@suite-common/wallet-core';
+import {
+    FeesState,
+    FormState,
+    SelectedAccountStatus,
+    SendFormDraftKey,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import {
     mockWalletAccount,
     networkSpecificDefaultEthereum,
@@ -259,7 +265,8 @@ const DEFAULT_FEES: FeesState = {
 
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
-export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
+// Todo: Type properly as the Error: "The inferred type of this node exceeds the maximum length the compiler will serialize. An explicit type annotation is needed."
+export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
         suite: createReducer(
             {
@@ -441,8 +448,8 @@ const DEFAULT_DRAFT = {
     selectedUtxos: [],
 };
 
-const getDraft = (draft?: any): SendState['drafts'] => ({
-    'xpub-btc-1stTestnetAddress@device_id:0': {
+const getDraft = (draft?: any): Record<SendFormDraftKey, FormState> => ({
+    ['xpub-btc-1stTestnetAddress@device_id:0' as SendFormDraftKey]: {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -453,18 +460,19 @@ const getDraft = (draft?: any): SendState['drafts'] => ({
         ],
         ...draft,
     },
-    '0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0': {
-        ...DEFAULT_DRAFT,
-        outputs: [
-            {
-                ...DEFAULT_PAYMENT,
-                address: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-                amount: '1',
-            },
-        ],
-        ...draft,
-    },
-    'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0': {
+    ['0xdB09b793984B862C430b64B9ed53AcF867cC041F-eth-1stTestnetAddress@device_id:0' as SendFormDraftKey]:
+        {
+            ...DEFAULT_DRAFT,
+            outputs: [
+                {
+                    ...DEFAULT_PAYMENT,
+                    address: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
+                    amount: '1',
+                },
+            ],
+            ...draft,
+        },
+    ['rAPERVgXZavGgiGv6xBgtiZurirW2yAmY-xrp-1stTestnetAddress@device_id:0' as SendFormDraftKey]: {
         ...DEFAULT_DRAFT,
         outputs: [
             {
@@ -475,17 +483,18 @@ const getDraft = (draft?: any): SendState['drafts'] => ({
         ],
         ...draft,
     },
-    'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-1stTestnetAddress@device_id:0': {
-        ...DEFAULT_DRAFT,
-        outputs: [
-            {
-                ...DEFAULT_PAYMENT,
-                address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
-                amount: '1',
-            },
-        ],
-        ...draft,
-    },
+    ['ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF-sol-1stTestnetAddress@device_id:0' as SendFormDraftKey]:
+        {
+            ...DEFAULT_DRAFT,
+            outputs: [
+                {
+                    ...DEFAULT_PAYMENT,
+                    address: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    amount: '1',
+                },
+            ],
+            ...draft,
+        },
 });
 
 export const addingOutputs = [
@@ -1417,7 +1426,14 @@ const getComposeResponse = (resp?: any) => ({
     ...resp,
 });
 
-export const signAndPush = [
+type SignAndPush = {
+    description: string;
+    store: any;
+    connect?: any;
+    result: any;
+};
+
+export const signAndPush: SignAndPush[] = [
     {
         description: 'ETH',
         store: {

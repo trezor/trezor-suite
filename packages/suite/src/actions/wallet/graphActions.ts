@@ -1,11 +1,7 @@
 import { createThunk } from '@suite-common/redux-utils';
 import { selectBaseCurrency, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
-import { AccountKey } from '@suite-common/wallet-types';
-import {
-    getAccountKey,
-    isTrezorConnectBackendType,
-    tryGetAccountIdentity,
-} from '@suite-common/wallet-utils';
+import { AccountKey, createAccountKey } from '@suite-common/wallet-types';
+import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { type Dispatch, type GetState } from 'src/types/suite';
@@ -176,7 +172,11 @@ export const updateGraphData = createThunk<
 
         const graphDataPointsByAccount = new Map<AccountKey, AccountHistoryWithBalance[]>(
             graph.data.map(({ account, data }) => [
-                getAccountKey(account.descriptor, account.symbol, account.deviceState),
+                createAccountKey({
+                    accountDescriptor: account.descriptor,
+                    networkSymbol: account.symbol,
+                    deviceStaticSessionId: account.deviceState,
+                }),
                 data,
             ]),
         );

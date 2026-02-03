@@ -7,6 +7,7 @@ import {
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts/';
 import {
     adaAsset,
@@ -124,7 +125,7 @@ describe('tradingSlice', () => {
                 ...tradingInitialState,
                 buy: {
                     ...tradingInitialState.buy,
-                    tradingAccountKey: 'account-key',
+                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                     receiveAddress: 'bc1qxyz',
                     quotesRequest: {
                         wantCrypto: true,
@@ -156,7 +157,7 @@ describe('tradingSlice', () => {
                 sell: {
                     ...tradingInitialState.sell,
                     quotes: sellQuotes,
-                    tradingAccountKey: 'account-key',
+                    tradingAccountKey: 'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                     quotesRequest: {
                         amountInCrypto: true,
                         cryptoCurrency: 'bitcoin' as CryptoId,
@@ -345,7 +346,9 @@ describe('tradingSlice', () => {
 
         it('should clear buy.tradingAccountKey', () => {
             const actions = [
-                tradingBuyActions.setTradingAccountKey('account-key'),
+                tradingBuyActions.setTradingAccountKey(
+                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
                 tradingActions.clearSelectedAccounts(),
             ];
 
@@ -355,8 +358,12 @@ describe('tradingSlice', () => {
 
         it('should clear exchange.receiveAccountKey and exchange.tradingAccountKey', () => {
             const actions = [
-                tradingExchangeActions.setReceiveAccountKey('account-key'),
-                tradingExchangeActions.setTradingAccountKey('account-key'),
+                tradingExchangeActions.setReceiveAccountKey(
+                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
+                tradingExchangeActions.setTradingAccountKey(
+                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
                 tradingActions.clearSelectedAccounts(),
             ];
 
@@ -367,7 +374,9 @@ describe('tradingSlice', () => {
 
         it('should clear sell.tradingAccountKey', () => {
             const actions = [
-                tradingSellActions.setTradingAccountKey('account-key'),
+                tradingSellActions.setTradingAccountKey(
+                    'account-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
                 tradingActions.clearSelectedAccounts(),
             ];
 

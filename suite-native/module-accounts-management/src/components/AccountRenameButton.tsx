@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { BottomSheetModal, Box, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native/labeling';
@@ -7,7 +8,7 @@ import { selectIsLabellingAllowed, useTurnOnSuiteSyncGuard } from '@suite-native
 import { AccountRenameForm } from './AccountRenameForm';
 
 type AccountRenameModalProps = {
-    accountKey: string;
+    accountKey: AccountKey;
 };
 
 export const AccountRenameButton = ({ accountKey }: AccountRenameModalProps) => {

@@ -7,7 +7,7 @@ import {
     selectDevices,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { WalletParams } from '@suite-common/wallet-types';
+import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
@@ -70,7 +70,7 @@ const Separator = styled.span`
 `;
 
 interface CoinjoinStatusBarProps {
-    accountKey: string;
+    accountKey: AccountKey;
     session: CoinjoinSession;
     isSingle: boolean;
 }

@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     exchangeMercuryo,
@@ -28,7 +29,7 @@ describe('ProviderReceiveAddress', () => {
     const renderProviderReceiveAddress = async (
         trade: ExchangeTrade | SellFiatTrade,
         tradeType: 'exchange' | 'sell' = 'exchange',
-        accountKey: string = 'btc-account-1',
+        accountKey: AccountKey = 'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
     ) => {
         const walletState = getWalletState({ tradeType });
 
@@ -124,7 +125,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = await renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'sol-account-1',
+            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
         // For Solana addresses, the address should be displayed without splitting
@@ -135,7 +136,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = await renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'eth-account-1',
+            'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
         // For non-Solana addresses, the address should be displayed with chunking
@@ -146,7 +147,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = await renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'btc-account-1',
+            'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
         // For non-Solana addresses, the address should be displayed with chunking
@@ -162,7 +163,7 @@ describe('ProviderReceiveAddress', () => {
         const { getByText } = await renderProviderReceiveAddress(
             solanaTrade,
             'exchange',
-            'sol-account-1',
+            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
         // For Solana addresses, the address should be displayed without splitting
@@ -173,7 +174,7 @@ describe('ProviderReceiveAddress', () => {
         const { queryByText } = await renderProviderReceiveAddress(
             mockExchangeTrade,
             'exchange',
-            'unknown-account-1',
+            'unknown-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
         );
 
         // Should not render anything when network symbol is undefined

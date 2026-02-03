@@ -14,6 +14,7 @@ import {
     isStakeTypeTx,
     isUnstakeTx,
 } from '@suite-common/wallet-utils';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { TransactionsRootState } from './transactionsReducer';
 import { AccountsRootState } from '../accounts/accountsReducer';
@@ -31,7 +32,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectIsLoadingAccountTransactions = (
     state: TransactionsRootState,
     accountKey: AccountKey | null,
-) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.status === 'loading';
+) =>
+    accountKey !== null &&
+    state.wallet.transactions.fetchStatusDetail?.[accountKey]?.status === 'loading';
 
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
@@ -39,7 +42,9 @@ export const selectTransactions = (state: TransactionsRootState) =>
 export const selectAreAllTransactionsLoaded = (
     state: TransactionsRootState,
     accountKey: AccountKey | null,
-) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.areAllTransactionsLoaded;
+) =>
+    accountKey !== null &&
+    state.wallet.transactions.fetchStatusDetail?.[accountKey]?.areAllTransactionsLoaded;
 
 const EMPTY_STABLE_TRANSACTIONS: WalletAccountTransaction[] = [];
 /**
@@ -50,7 +55,10 @@ const EMPTY_STABLE_TRANSACTIONS: WalletAccountTransaction[] = [];
 export const selectAccountTransactionsWithNulls = (
     state: TransactionsRootState,
     accountKey: AccountKey | null,
-) => state.wallet.transactions.transactions[accountKey ?? ''] ?? EMPTY_STABLE_TRANSACTIONS;
+) =>
+    accountKey !== null && state.wallet.transactions.transactions[accountKey]
+        ? state.wallet.transactions.transactions[accountKey]
+        : EMPTY_STABLE_TRANSACTIONS;
 
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
@@ -75,7 +83,7 @@ export const selectPendingAccountAddresses = createMemoizedSelector(
 export const selectAllPendingTransactions = createMemoizedSelector(
     [selectTransactions],
     transactions =>
-        Object.keys(transactions).reduce(
+        typedObjectKeys(transactions).reduce(
             (response, accountKey) => {
                 response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);
 
@@ -218,7 +226,10 @@ export const selectAccountTotalTransactions = createMemoizedSelector(
     account => account?.history.total ?? 0,
 );
 
-export const selectAreAllAccountTransactionsLoaded = createMemoizedSelector(
+export const selectAreAllAccountTransactionsLoaded: (
+    state: TransactionsRootState & AccountsRootState,
+    accountKey: AccountKey,
+) => boolean = createMemoizedSelector(
     [
         selectAccountTransactions,
         selectAccountTotalTransactions,

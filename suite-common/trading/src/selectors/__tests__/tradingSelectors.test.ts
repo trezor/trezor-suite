@@ -8,6 +8,7 @@ import {
     SellFiatTrade,
 } from 'invity-api';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { StaticSessionId } from '@trezor/connect';
 
 import coins from '../../__fixtures__/coins.json';
@@ -953,8 +954,9 @@ describe('tradingSelectors', () => {
     });
 
     it('selectTradingSellAccountKey should return the correct account key when set', () => {
-        const testAccountKey = 'test-account-key-123';
-        state.wallet.trading.sell.tradingAccountKey = testAccountKey;
+        const testAccountKey: AccountKey = 'test-account-key-123' as AccountKey; // Todo: create properly via `createAccountKey()`
+
+        (state as TradingRootState).wallet.trading.sell.tradingAccountKey = testAccountKey;
 
         expect(selectTradingSellAccountKey(state)).toBe(testAccountKey);
     });

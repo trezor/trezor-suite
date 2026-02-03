@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { AccountKey } from '@suite-common/wallet-types';
 import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
@@ -28,7 +29,7 @@ const mockUseReloadTimer = require('../useReloadTimer').useReloadTimer;
 type ReportSpy = jest.SpyInstance;
 
 const useWatchTradeWithReportSpy = (props: {
-    accountKey?: string;
+    accountKey?: AccountKey;
     orderId?: string;
     isInProgress?: boolean;
 }) => {
@@ -47,6 +48,8 @@ const useWatchTradeWithReportSpy = (props: {
 
     return spyRef.current!;
 };
+
+const btc1AccountKey = 'btc1' as AccountKey; // Todo: create properly via `createAccountKey()`
 
 describe('useWatchTrade', () => {
     beforeEach(() => {
@@ -97,7 +100,7 @@ describe('useWatchTrade', () => {
 
     const renderUseWatchTrade = async (
         store: any,
-        props: { accountKey?: string; orderId?: string; isInProgress?: boolean },
+        props: { accountKey?: AccountKey; orderId?: string; isInProgress?: boolean },
     ) => {
         const hook = await renderHookWithStoreProviderAsync(
             () => useWatchTradeWithReportSpy(props),
@@ -111,7 +114,7 @@ describe('useWatchTrade', () => {
         it('should not dispatch watch trade thunk when no trade is found', async () => {
             const store = await getInitializedStore();
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: 'non-existent-order',
             });
 
@@ -125,7 +128,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'non-existent-account',
+                accountKey: 'non-existent-account' as AccountKey, // Todo: create properly via `createAccountKey()`
                 orderId: buyTrade.data.orderId,
             });
 
@@ -139,7 +142,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey as AccountKey, // Todo: create properly via `createAccountKey()`
                 orderId: buyTrade.data.orderId,
             });
 
@@ -165,7 +168,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
 
@@ -183,7 +186,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
 
@@ -199,7 +202,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isInProgress: true,
             });
@@ -217,7 +220,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
                 isInProgress: false,
             });
@@ -235,7 +238,7 @@ describe('useWatchTrade', () => {
             });
 
             await renderUseWatchTrade(store, {
-                accountKey: 'btc1',
+                accountKey: btc1AccountKey,
                 orderId: buyTrade.data.orderId,
             });
 

@@ -214,7 +214,7 @@ export const selectHasDeviceAnyTokensForNetwork = (
     });
 };
 
-export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey: string) => {
+export const selectAccountHasAnyKnownToken = (state: TokensRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
 
     if (!account || !isNetworkWithTokens(account.symbol)) {

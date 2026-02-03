@@ -1,4 +1,5 @@
 import { SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
+import { AccountKey } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
 import { Result } from '@trezor/type-utils';
 
@@ -6,7 +7,7 @@ import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncO
 
 export type UpdateAccountLabelParams = {
     deviceStaticSessionId: StaticSessionId;
-    accountKey: string;
+    accountKey: AccountKey;
     label: string | null;
 };
 

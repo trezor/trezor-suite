@@ -33,7 +33,9 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     it('should show alert', async () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert('btc-account-1');
+        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+            'btc-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        );
 
         act(() => {
             result.current(mockOnRetry, mockOnCancel);
@@ -57,7 +59,9 @@ describe('useTradingOutputsReviewErrorAlert', () => {
     it('should show special text fort solana', async () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
-        const { result } = await renderUseTradingOutputsReviewErrorAlert('sol-account-1');
+        const { result } = await renderUseTradingOutputsReviewErrorAlert(
+            'sol-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+        );
 
         act(() => {
             result.current(mockOnRetry, mockOnCancel);

@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 import {
     selectEthereumAccountHasStaking,
@@ -99,7 +99,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return staking pool for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumStakingPoolByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toEqual({
                 name: 'Everstake',
@@ -119,7 +122,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return undefined for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumStakingPoolByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBeUndefined();
         });
@@ -127,7 +133,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return null for non-existent account', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakingPoolByAccountKey(testState as any, 'non-existent');
+            const result = selectEthereumStakingPoolByAccountKey(
+                testState as any,
+                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBeNull();
         });
@@ -137,7 +146,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return true for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumAccountHasStaking(testState as any, 'eth1');
+            const result = selectEthereumAccountHasStaking(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(true);
         });
@@ -145,7 +157,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumAccountHasStaking(testState as any, 'eth2');
+            const result = selectEthereumAccountHasStaking(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });
@@ -155,7 +170,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return true for account with pending stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, 'eth3');
+            const result = selectEthereumIsStakePendingByAccountKey(
+                testState as any,
+                'eth3' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(true);
         });
@@ -163,7 +181,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without pending stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumIsStakePendingByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(true);
         });
@@ -171,7 +192,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumIsStakePendingByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumIsStakePendingByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });
@@ -181,7 +205,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return staked balance for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumStakedBalanceByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumStakedBalanceByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('2');
         });
@@ -189,7 +216,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumStakedBalanceByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumStakedBalanceByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -199,7 +229,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return rewards balance for account with staking', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumRewardsBalanceByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumRewardsBalanceByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0.05');
         });
@@ -207,7 +240,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumRewardsBalanceByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumRewardsBalanceByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -217,7 +253,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return pending stake balance for account with pending stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumTotalStakePendingByAccountKey(testState as any, 'eth3');
+            const result = selectEthereumTotalStakePendingByAccountKey(
+                testState as any,
+                'eth3' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('1');
         });
@@ -225,7 +264,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumTotalStakePendingByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumTotalStakePendingByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -235,7 +277,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return claimable amount for account with claimable stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumClaimableAmountByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0.5');
         });
@@ -243,7 +288,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without claimable stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, 'eth3');
+            const result = selectEthereumClaimableAmountByAccountKey(
+                testState as any,
+                'eth3' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -251,7 +299,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return "0" for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumClaimableAmountByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumClaimableAmountByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -261,7 +312,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return true for account with claimable stake', () => {
             const testState = getTestState([ethAccountWithStaking]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, 'eth1');
+            const result = selectEthereumCanClaimByAccountKey(
+                testState as any,
+                'eth1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(true);
         });
@@ -269,7 +323,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without claimable stake', () => {
             const testState = getTestState([ethAccountWithPendingStake]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, 'eth3');
+            const result = selectEthereumCanClaimByAccountKey(
+                testState as any,
+                'eth3' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });
@@ -277,7 +334,10 @@ describe('ethereumStakingSelectors', () => {
         it('should return false for account without staking', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
-            const result = selectEthereumCanClaimByAccountKey(testState as any, 'eth2');
+            const result = selectEthereumCanClaimByAccountKey(
+                testState as any,
+                'eth2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });

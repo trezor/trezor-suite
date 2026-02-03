@@ -1,7 +1,7 @@
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { StakeState, stakeInitialState } from '@suite-common/wallet-core';
-import { Account, Timestamp } from '@suite-common/wallet-types';
+import { Account, AccountKey, Timestamp } from '@suite-common/wallet-types';
 
 import {
     selectExpectedRewardsForEpoch,
@@ -198,7 +198,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1',
+                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`,
                 )?.solStakedBalance,
             ).toEqual('1');
         });
@@ -213,7 +213,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1',
+                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`F
                 ),
             ).toBeNull();
         });
@@ -228,7 +228,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 )?.solPendingStakeBalance,
             ).toEqual('2');
         });
@@ -245,7 +245,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual(true);
         });
@@ -260,7 +260,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual(false);
         });
@@ -278,7 +278,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual(6.21);
         });
@@ -293,7 +293,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual(0);
         });
@@ -310,7 +310,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1',
+                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('1');
         });
@@ -325,7 +325,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key',
+                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0');
         });
@@ -343,7 +343,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1',
+                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0.000340274');
         });
@@ -359,7 +359,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0.000000000');
         });
@@ -374,7 +374,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key',
+                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0');
         });
@@ -391,7 +391,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol3',
+                    'sol3' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('2');
         });
@@ -406,7 +406,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'non-existent-key',
+                    'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0');
         });
@@ -421,7 +421,7 @@ describe('selectors', () => {
                     {
                         ...testState,
                     },
-                    'sol1',
+                    'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
                 ),
             ).toEqual('0');
         });
@@ -433,7 +433,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol1');
+            const result = selectSolanaClaimableAmountByAccountKey(
+                testState as any,
+                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -443,7 +446,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol4');
+            const result = selectSolanaClaimableAmountByAccountKey(
+                testState as any,
+                'sol4' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('3');
         });
@@ -453,7 +459,10 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState as any, 'sol2');
+            const result = selectSolanaClaimableAmountByAccountKey(
+                testState as any,
+                'sol2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -463,7 +472,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaClaimableAmountByAccountKey(testState, 'non-existent');
+            const result = selectSolanaClaimableAmountByAccountKey(
+                testState,
+                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe('0');
         });
@@ -475,7 +487,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol1');
+            const result = selectSolanaCanClaimByAccountKey(
+                testState as any,
+                'sol1' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });
@@ -485,7 +500,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithDeactivatedStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol4');
+            const result = selectSolanaCanClaimByAccountKey(
+                testState as any,
+                'sol4' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(true);
         });
@@ -495,7 +513,10 @@ describe('selectors', () => {
                 accounts: [solAccountNoStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, 'sol2');
+            const result = selectSolanaCanClaimByAccountKey(
+                testState as any,
+                'sol2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });
@@ -505,7 +526,10 @@ describe('selectors', () => {
                 accounts: [solAccountWithStaking],
             });
 
-            const result = selectSolanaCanClaimByAccountKey(testState as any, 'non-existent');
+            const result = selectSolanaCanClaimByAccountKey(
+                testState as any,
+                'non-existent' as AccountKey, // Todo: create properly via `createAccountKey()`
+            );
 
             expect(result).toBe(false);
         });

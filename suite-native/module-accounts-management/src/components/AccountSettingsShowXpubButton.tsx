@@ -8,6 +8,7 @@ import {
     selectSelectedDevice,
     showXpubOnDevice,
 } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
@@ -18,7 +19,7 @@ import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-devic
 import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
 import { convertTaprootXpub } from '@trezor/utils';
 
-export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
+export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: AccountKey }) => {
     const openLink = useOpenLink();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();

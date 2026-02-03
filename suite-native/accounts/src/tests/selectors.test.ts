@@ -1,4 +1,9 @@
-import { Account, TokenInfoBranded, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountKey,
+    TokenInfoBranded,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 
 import { getAccountListSections, selectFreshAccountAddress } from '../selectors';
 import {
@@ -124,7 +129,7 @@ describe('sortAccountsByNetworksAndAccountTypes', () => {
 describe('selectFreshAccountAddress', () => {
     const mockAccount = {
         symbol: 'btc',
-        key: 'btc-1',
+        key: 'btc-1' as AccountKey, // Todo: create properly via `createAccountKey()`,
         addresses: {
             unused: [
                 {
@@ -203,7 +208,10 @@ describe('selectFreshAccountAddress', () => {
     };
 
     it('should return null when account is not provided', () => {
-        const result = selectFreshAccountAddress(mockState, 'non-existent-key');
+        const result = selectFreshAccountAddress(
+            mockState,
+            'non-existent-key' as AccountKey, // Todo: create properly via `createAccountKey()`
+        );
         expect(result).toBeNull();
     });
 

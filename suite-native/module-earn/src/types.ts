@@ -1,8 +1,8 @@
 import { StakingNetworkSymbol } from '@suite-common/wallet-config';
-import { Account } from '@suite-common/wallet-types';
+import { Account, AccountKey } from '@suite-common/wallet-types';
 
 export type EarnItem = {
     symbol: StakingNetworkSymbol;
-    accountKey: Account['key'];
+    accountKey: AccountKey;
     accountLabel?: Account['accountLabel'];
 };

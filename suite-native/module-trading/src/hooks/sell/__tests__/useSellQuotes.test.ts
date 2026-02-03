@@ -1,4 +1,5 @@
 import { INVITY_API_RELOAD_QUOTES_AFTER_SECONDS, tradingSellActions } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import {
     PreloadedState,
     TestStore,
@@ -160,7 +161,12 @@ describe('useSellQuotes', () => {
     it.each([
         ['fiatStringAmount', '1000'],
         ['country', 'CZ'],
-        ['sendAccount', getBtcAccount('btc-account-2')],
+        [
+            'sendAccount',
+            getBtcAccount(
+                'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            ),
+        ],
     ] as [keyof SellFormValues, SellFormValues[keyof SellFormValues]][])(
         'should re-fetch quotes on %s value change',
         async (field, value) => {
@@ -281,7 +287,11 @@ describe('useSellQuotes', () => {
         const { result } = renderUseSellQuotes(store);
 
         act(() => {
-            store.dispatch(tradingSellActions.setTradingAccountKey('eth-account-1'));
+            store.dispatch(
+                tradingSellActions.setTradingAccountKey(
+                    'eth-account-1' as AccountKey, // Todo: create properly via `createAccountKey()`
+                ),
+            );
             result.current.setValue('sendAsset', usdcAsset);
             result.current.setValue('fiatCurrency', 'usd');
             result.current.setValue('amountInCrypto', false);

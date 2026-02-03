@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { WalletParams } from '@suite-common/wallet-types';
+import { AccountKey, WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -11,7 +11,7 @@ import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectRouterParams } from 'src/reducers/suite/routerReducer';
 
 type CoinjoinSuccessModalProps = {
-    relatedAccountKey: string;
+    relatedAccountKey: AccountKey;
 };
 
 export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModalProps) => {

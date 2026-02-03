@@ -1,4 +1,4 @@
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import {
     AuthorizeDeviceStackRoutes,
     RootStackRoutes,
@@ -32,8 +32,10 @@ const triggerFocusEffect = () => {
     focusEffectCallback?.();
 };
 
+const accountKey = 'stellar-1' as AccountKey;
+
 const mockAccount = {
-    key: 'stellar-1',
+    key: accountKey,
     symbol: 'xlm',
     networkType: 'stellar',
     descriptor: 'GAXSFOOGF4ELO5HT5PTN23T5XE6D5QWL3YBHSVQ2HWOFEJNYYMRJENBV',
@@ -126,8 +128,8 @@ jest.mock('../useStellarTokenInfo', () => ({
 }));
 
 jest.mock('../../thunks', () => ({
-    getStellarTokenFormDraftKey: (accountKey: string, tokenContract: string) =>
-        `stellar-token/${accountKey}/${tokenContract}`,
+    getStellarTokenFormDraftKey: (accountKeyParam: AccountKey, tokenContract: string) =>
+        `stellar-token/${accountKeyParam}/${tokenContract}`,
     updateStellarTokenSelectedFeeLevelThunk: jest.fn(),
 }));
 
@@ -184,7 +186,7 @@ describe('useStellarFeeScreen', () => {
         'UNKNOWN-GC2QJHYZSO5UV5DZYAQIQMSSGXERQPJC54PLA7NPLWTC7Y2TQFUT4QA7' as TokenAddress;
 
     const defaultProps: UseStellarFeeScreenParams = {
-        accountKey: 'stellar-1',
+        accountKey,
         tokenContract: KNOWN_USDC_CONTRACT,
         mode: 'activation',
         thunkAction: mockThunkAction,
@@ -353,7 +355,7 @@ describe('useStellarFeeScreen', () => {
             customFeePerUnit: undefined,
         });
         expect(mockFetchAndUpdateAccountThunk).toHaveBeenCalledWith({
-            accountKey: 'stellar-1',
+            accountKey,
         });
         expect(mockOnSuccess).toHaveBeenCalledTimes(1);
     });

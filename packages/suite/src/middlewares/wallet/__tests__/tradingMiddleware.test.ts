@@ -11,7 +11,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
-import { SelectedAccountStatus } from '@suite-common/wallet-types';
+import { AccountKey, SelectedAccountStatus } from '@suite-common/wallet-types';
 
 import { MODAL, ROUTER } from 'src/actions/suite/constants';
 import { ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/store';
@@ -140,7 +140,7 @@ describe('tradingMiddleware', () => {
             getInitialState({
                 trading: {
                     ...initialState,
-                    modalAccountKey: 'mocked-key',
+                    modalAccountKey: 'mocked-key' as AccountKey, // Todo: create properly via `createAccountKey()`
                     modalCryptoId: 'mocked-key' as CryptoId,
                 },
                 router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {} as Action),
@@ -203,7 +203,7 @@ describe('tradingMiddleware', () => {
                     ...initialState,
                     prefilledFromAccount: {
                         cryptoId: 'bitcoin' as CryptoId,
-                        key: 'descriptor',
+                        key: 'descriptor' as AccountKey, // Todo: create properly via `createAccountKey()`
                     },
                 },
                 router: routerReducer(routeDefault, {} as Action),

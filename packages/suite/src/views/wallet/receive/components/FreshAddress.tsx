@@ -84,7 +84,7 @@ export const FreshAddress = ({
     isDeviceConnected,
 }: FreshAddressProps) => {
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
-        selectIsAccountUtxoBased(state, account?.key ?? ''),
+        selectIsAccountUtxoBased(state, account?.key ?? null),
     );
     const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
     const dispatch = useDispatch();

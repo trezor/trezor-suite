@@ -1,7 +1,7 @@
 import { LayoutChangeEvent, View } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -12,7 +12,7 @@ import { ReviewOutputItemValues } from './ReviewOutputItemValues';
 import { ReviewSummaryOutput } from '../../types';
 
 export type ReviewOutputSummaryItemProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     symbol: NetworkSymbol;
     onLayout: (event: LayoutChangeEvent) => void;
     tokenContract?: TokenAddress;
@@ -20,7 +20,7 @@ export type ReviewOutputSummaryItemProps = {
 };
 
 type BitcoinValuesProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     totalSpent: string;
     fee: string;
 };

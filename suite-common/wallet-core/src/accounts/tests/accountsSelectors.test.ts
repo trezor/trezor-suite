@@ -1,7 +1,7 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { networks } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 
 import { DeviceRootState } from '../../device/deviceReducer';
 import { AccountsRootState } from '../accountsReducer';
@@ -27,7 +27,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 misc: undefined,
                 marker: undefined,
                 stellarCursor: undefined,
-                key: 'key',
+                key: 'key' as AccountKey, // Todo: unify key, use `createAccountKey`,
                 accountType: 'normal',
                 empty: false,
                 visible: true,
@@ -84,7 +84,7 @@ const mockState: AccountsRootState & DeviceRootState = {
                 networkType: 'ethereum',
                 descriptor: asAccountDescriptor('0xEthereumAddress'),
                 deviceState: ETH_DEVICE_SSID,
-                key: '0xEthereumAddress-eth-deviceState',
+                key: '0xEthereumAddress-eth-deviceState' as AccountKey, // Todo: unify key, use `createAccountKey`
                 accountType: 'normal',
                 index: 0,
                 path: "m/44'/60'/0'/0",

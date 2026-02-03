@@ -20,7 +20,7 @@ import {
     getNetworkByTradeCryptoId,
     networksCollection,
 } from '@suite-common/wallet-config';
-import type { Account, FormStateTrading } from '@suite-common/wallet-types';
+import type { Account, AccountKey, FormStateTrading } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { TokenInfo } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
@@ -328,8 +328,8 @@ type TradingGetFormStateExchangeProps = {
 type TradingGetFormStateProps = {
     providers: Record<string, ExchangeProviderInfo | SellProviderInfo> | undefined;
     isSlip24Active?: boolean;
-    sendAccountKey: string | undefined;
-    receiveAccountKey?: string | undefined;
+    sendAccountKey: AccountKey | undefined;
+    receiveAccountKey?: AccountKey | undefined;
 } & (TradingGetFormStateSellProps | TradingGetFormStateExchangeProps);
 
 export const getTradingFormState = ({

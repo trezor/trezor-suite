@@ -4,7 +4,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { SuiteSyncDataRootState, selectSuiteSyncAccountLabel } from '@suite-common/suite-sync';
 import { AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey, parseDeviceStaticSessionId } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
@@ -13,7 +13,7 @@ import { RootStackParamList, RootStackRoutes, ScreenHeader } from '@suite-native
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
 type TokenAccountDetailScreenHeaderProps = {
-    accountKey: string;
+    accountKey: AccountKey;
     tokenContract: TokenAddress;
 };
 

@@ -5,6 +5,7 @@ import {
     MinimalExchangeFormProps,
     tradingExchangeActions,
 } from '@suite-common/trading';
+import { AccountKey } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import {
     PreloadedState,
@@ -259,7 +260,12 @@ describe('useExchangeQuotes', () => {
     it.each<[keyof ExchangeFormValues, ExchangeFormValues[keyof ExchangeFormValues]]>([
         ['receiveAsset', usdtAsset],
         ['sendCryptoAmount', '0.2'],
-        ['sendAccount', getBtcAccount('btc-account-2')],
+        [
+            'sendAccount',
+            getBtcAccount(
+                'btc-account-2' as AccountKey, // Todo: create properly via `createAccountKey()`
+            ),
+        ],
     ])('should refetch quotes on %s value change', async (field, value) => {
         const store = getInitializedStore();
         const dispatchSpy = jest.spyOn(store, 'dispatch');
