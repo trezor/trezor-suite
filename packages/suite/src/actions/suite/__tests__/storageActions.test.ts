@@ -391,7 +391,7 @@ describe('Storage actions', () => {
         // store device in db
         await store.dispatch(storageActions.rememberDevice(dev1));
 
-        // Change device label inside a reducer
+        // Change device label inside a reducer. This is a plain action, and storageMiddleware updates the db.
         await store.dispatch(
             deviceActions.updateSelectedDevice({
                 ...(dev1Connected as AcquiredDevice),
@@ -399,7 +399,8 @@ describe('Storage actions', () => {
             }),
         );
 
-        await new Promise(resolve => setTimeout(resolve));
+        // Hack - because the db operation is done in a middleware, it is not awaitable via dispatch
+        await new Promise(resolve => setTimeout(resolve, 100));
         store.dispatch(await preloadStore());
         expect(selectDevices(store.getState())[0].label).toBe('New Label');
     });
