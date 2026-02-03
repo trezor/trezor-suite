@@ -53,15 +53,8 @@ export const ManualTokenInputScreen = () => {
     const isAssetCodeValid = isValidAssetCode(assetCode);
     const isIssuerAddressValid = isValidAddress(issuerAddress);
 
-    const assetCodeError =
-        assetCodeTouched && assetCode && !isAssetCodeValid
-            ? translate('moduleStellarToken.manualInput.assetCodeError')
-            : null;
-
-    const issuerAddressError =
-        issuerAddressTouched && issuerAddress && !isIssuerAddressValid
-            ? translate('moduleStellarToken.manualInput.issuerAddressError')
-            : null;
+    const hasAssetCodeError = assetCodeTouched && !!assetCode && !isAssetCodeValid;
+    const hasIssuerAddressError = issuerAddressTouched && !!issuerAddress && !isIssuerAddressValid;
 
     const isFormValid = assetCode && issuerAddress && isAssetCodeValid && isIssuerAddressValid;
 
@@ -162,12 +155,12 @@ export const ManualTokenInputScreen = () => {
                                 )}
                                 autoCapitalize="characters"
                                 maxLength={12}
-                                hasError={!!assetCodeError}
+                                hasError={hasAssetCodeError}
                                 testID="@stellar-token/asset-code-input"
                             />
-                            {assetCodeError && (
+                            {hasAssetCodeError && (
                                 <Text variant="hint" color="textAlertRed">
-                                    {assetCodeError}
+                                    <Translation id="moduleStellarToken.manualInput.assetCodeError" />
                                 </Text>
                             )}
                         </VStack>
@@ -185,12 +178,12 @@ export const ManualTokenInputScreen = () => {
                                 )}
                                 autoCapitalize="characters"
                                 multiline
-                                hasError={!!issuerAddressError}
+                                hasError={hasIssuerAddressError}
                                 testID="@stellar-token/issuer-address-input"
                             />
-                            {issuerAddressError && (
+                            {hasIssuerAddressError && (
                                 <Text variant="hint" color="textAlertRed">
-                                    {issuerAddressError}
+                                    <Translation id="moduleStellarToken.manualInput.issuerAddressError" />
                                 </Text>
                             )}
                         </VStack>
