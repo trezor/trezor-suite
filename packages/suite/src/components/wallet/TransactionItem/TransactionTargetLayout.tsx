@@ -32,13 +32,12 @@ export const TransactionTargetLayout = ({
 
     const amounts = (
         <>
-            <Text {...commonProps} align="end">
+            <Text {...commonProps} variant="default" align="end">
                 {amount && (
                     <BlurWrapper $isBlurred={isPhishingTransaction ?? false}>{amount}</BlurWrapper>
                 )}
             </Text>
-
-            <Text {...commonProps} variant="default" isTabular align="end">
+            <Text {...commonProps} isTabular align="end">
                 {fiatAmount}
             </Text>
         </>

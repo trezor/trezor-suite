@@ -126,6 +126,7 @@ export const TransactionTarget = ({
         () =>
             shallDisplayBaseCurrency &&
             amount &&
+            historicRate &&
             transaction.type !== 'self' &&
             !isPhishingTransaction &&
             !isNft ? (
