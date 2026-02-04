@@ -16,7 +16,7 @@ import {
     StackToStackCompositeNavigationProps,
     useOverrideBackNavigation,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 type DeviceOnboardingExitButtonScreenHeaderProps = {
@@ -32,7 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const useHandleCheckBackupExitButtonPress = () => {
     const { showAlert } = useAlert();
     const { translate } = useTranslate();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProps>();
     const route = useRoute();
 
@@ -45,7 +45,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
             secondaryButtonTitle: translate('moduleCheckBackup.cancelAlert.secondaryButton'),
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.DeviceSettingsCheckBackupExited,
                     payload: {
                         location: route.name,
@@ -55,7 +55,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
                 navigation.popTo(DeviceSettingsStackRoutes.DeviceBackupAndPassphrase);
             },
         });
-    }, [showAlert, translate, legacyAnalytics, route.name, navigation]);
+    }, [showAlert, translate, analytics, route.name, navigation]);
 
     return handleExitButtonPress;
 };
