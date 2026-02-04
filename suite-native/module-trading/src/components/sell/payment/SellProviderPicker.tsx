@@ -12,7 +12,7 @@ import {
 import { EventType } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton, ProviderLogo } from '@suite-native/trading-atoms';
 import { ResidenceCheckAwareAnimatedBox } from '@suite-native/trading-residence';
 import { TradingRootState, selectSellQuotesByPaymentMethod } from '@suite-native/trading-state';
@@ -60,6 +60,7 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
 
 export const SellProviderPicker = () => {
     const { translate } = useTranslate();
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const form = useSellFormContext();
     const providers = useSelector(selectTradingSellProviders);
@@ -95,7 +96,7 @@ export const SellProviderPicker = () => {
 
         if (selectedValue?.exchange === quote.exchange) return;
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'sell',

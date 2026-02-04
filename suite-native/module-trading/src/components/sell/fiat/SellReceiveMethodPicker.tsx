@@ -7,7 +7,7 @@ import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -65,7 +65,7 @@ const SellReceiveMethodPickerRight = ({
 
 export const SellReceiveMethodPicker = () => {
     const { translate } = useTranslate();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { applyStyle } = useNativeStyles();
     const form = useSellFormContext();
     const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
@@ -90,7 +90,7 @@ export const SellReceiveMethodPicker = () => {
 
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'sell',

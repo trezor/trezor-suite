@@ -14,7 +14,7 @@ import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { EventType } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import {
     exchangeActions,
@@ -113,13 +113,13 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
     const dispatch = useDispatch();
     const prevSendCryptoId = useRef<CryptoId | undefined>(undefined);
     const prevReceiveCryptoId = useRef<CryptoId | undefined>(undefined);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     useEffect(() => {
         const { unsubscribe } = watch(({ sendAsset, receiveAsset }, { name }) => {
             switch (name) {
                 case 'sendAsset':
                     if (sendAsset?.cryptoId !== prevSendCryptoId.current) {
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.TradingParameterChanged,
                             payload: {
                                 type: 'exchange',
@@ -135,7 +135,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
 
                 case 'receiveAsset':
                     if (receiveAsset?.cryptoId !== prevReceiveCryptoId.current) {
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.TradingParameterChanged,
                             payload: {
                                 type: 'exchange',
@@ -156,7 +156,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, watch }: ExchangeFor
         });
 
         return unsubscribe;
-    }, [setValue, watch, dispatch, legacyAnalytics]);
+    }, [setValue, watch, dispatch, analytics]);
 };
 
 const useValidations = (

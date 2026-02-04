@@ -6,7 +6,7 @@ import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { OverviewRow, OverviewValueSkeleton } from '@suite-native/trading-atoms';
 import { selectBuyBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
 
@@ -57,7 +57,7 @@ const BuyPaymentMethodPickerRight = ({
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);
@@ -81,7 +81,7 @@ export const BuyPaymentMethodPicker = () => {
 
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.TradingParameterChanged,
             payload: {
                 type: 'buy',
