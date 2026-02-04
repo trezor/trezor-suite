@@ -1,6 +1,6 @@
 import { EventType } from '@suite-native/analytics';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -17,7 +17,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -47,7 +47,7 @@ describe('Header', () => {
         ...args: Parameters<typeof renderWithStoreProviderAsync>
     ) => {
         const reportMock = jest.fn();
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
 
