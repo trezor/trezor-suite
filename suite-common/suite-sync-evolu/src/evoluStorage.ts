@@ -25,33 +25,47 @@ export const createEvoluStorageFactory =
 
         let ownerDispose = () => {};
 
-        const evolu = deps.createEvoluInstance({
-            suiteSyncOwner,
+        const { evolu, shardOwner } = deps.createEvoluInstance({
+            suiteSyncOwnerAppOwner: suiteSyncOwner,
         });
 
         const updateRelayUrl = async (url: string) => {
             const owner = await evolu.appOwner;
 
-            const syncOwner: SyncOwner = {
+            const appOwner: SyncOwner = {
                 id: owner.id,
                 encryptionKey: owner.encryptionKey,
                 writeKey: owner.writeKey,
+
+                // IMPORTANT: This owner must be AppOwner so all shard owners are synced
+                // over the same AppOwner Transport (to share the Quota Limit)
                 transports: [createOwnerWebSocketTransport({ url, ownerId: owner.id })],
             };
 
             ownerDispose();
-            ownerDispose = evolu.useOwner(syncOwner);
+            // This is here ONLY to update appOwner with transport
+            ownerDispose = evolu.useOwner(appOwner);
         };
 
         updateRelayUrl(relayUrl); // This updates the relay
 
         return {
             data: {
-                accounts: new EvoluAccountTable(evolu as unknown as Evolu<typeof AccountSchema>),
-                wallets: new EvoluWalletTable(evolu as unknown as Evolu<typeof WalletLabelSchema>),
-                outputs: new OutputEvoluTable(evolu as unknown as Evolu<typeof OutputLabelSchema>),
+                accounts: new EvoluAccountTable(
+                    evolu as unknown as Evolu<typeof AccountSchema>,
+                    shardOwner,
+                ),
+                wallets: new EvoluWalletTable(
+                    evolu as unknown as Evolu<typeof WalletLabelSchema>,
+                    shardOwner,
+                ),
+                outputs: new OutputEvoluTable(
+                    evolu as unknown as Evolu<typeof OutputLabelSchema>,
+                    shardOwner,
+                ),
                 addresses: new AddressEvoluTable(
                     evolu as unknown as Evolu<typeof AddressLabelSchema>,
+                    shardOwner,
                 ),
             },
 

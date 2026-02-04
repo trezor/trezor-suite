@@ -2,6 +2,7 @@ import {
     Evolu,
     NonEmptyString1000,
     QueryRows,
+    ShardOwner,
     createIdFromString,
     id,
     nullOr,
@@ -42,7 +43,10 @@ export const AddressLabelSchema = {
 };
 
 export class AddressEvoluTable implements AddressTable {
-    constructor(private evolu: Evolu<typeof AddressLabelSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof AddressLabelSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
     update = ({ address, label, accountDescriptor, networkSymbol }: SuiteSyncAddress) => {
         const idResult = createAddressEvoluId(address, networkSymbol);
@@ -51,13 +55,17 @@ export class AddressEvoluTable implements AddressTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('address', {
-            id: idResult.value,
-            address,
-            label: normalizeLabel(label),
-            accountDescriptor: asAccountDescriptor(accountDescriptor),
-            networkSymbol: networkSymbol as NetworkSymbol,
-        });
+        const result = this.evolu.upsert(
+            'address',
+            {
+                id: idResult.value,
+                address,
+                label: normalizeLabel(label),
+                accountDescriptor: asAccountDescriptor(accountDescriptor),
+                networkSymbol: networkSymbol as NetworkSymbol,
+            },
+            { ownerId: this.shardOwner.id },
+        );
 
         if (!result.ok) {
             return err(createSuiteSyncUpdateError(result.error));
@@ -71,14 +79,18 @@ export class AddressEvoluTable implements AddressTable {
     subscribe = ({ onChange }: EntityListener<SuiteSyncAddress>) => {
         const query = this.getQuery();
 
-        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+        const process = (addresses: QueryRows<UnwrapQuery<typeof query>>) => {
             const acc: SuiteSyncAddress[] = [];
 
-            for (const label of labels) {
+            for (const address of addresses) {
+                if (address.ownerId !== this.shardOwner.id) {
+                    continue;
+                }
+
                 if (
-                    label.address === null ||
-                    label.accountDescriptor === null ||
-                    label.networkSymbol === null
+                    address.address === null ||
+                    address.accountDescriptor === null ||
+                    address.networkSymbol === null
                 ) {
                     continue;
                 }
@@ -90,21 +102,21 @@ export class AddressEvoluTable implements AddressTable {
                  * in wrong state of label as the old one may end-up as last one.
                  */
                 const idToTest = createAddressEvoluId(
-                    label.address,
-                    label.networkSymbol as NetworkSymbol,
+                    address.address,
+                    address.networkSymbol as NetworkSymbol,
                 );
-                if (idToTest.ok && label.id !== idToTest.value) {
+                if (idToTest.ok && address.id !== idToTest.value) {
                     continue;
                 }
 
-                const networkSymbol = asNetworkSymbol(label.networkSymbol);
+                const networkSymbol = asNetworkSymbol(address.networkSymbol);
 
                 acc.push({
-                    id: createSuiteSyncAddressId(label.address, networkSymbol),
-                    address: label.address,
-                    label: label.label,
-                    accountDescriptor: asAccountDescriptor(label.accountDescriptor),
-                    networkSymbol: label.networkSymbol as NetworkSymbol,
+                    id: createSuiteSyncAddressId(address.address, networkSymbol),
+                    address: address.address,
+                    label: address.label,
+                    accountDescriptor: asAccountDescriptor(address.accountDescriptor),
+                    networkSymbol: address.networkSymbol as NetworkSymbol,
                 });
             }
 

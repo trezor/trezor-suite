@@ -1,3 +1,5 @@
+import { DbWorkerInput, deriveShardOwner } from '@evolu/common/local-first';
+
 import {
     SuiteSyncAccount,
     SuiteSyncAddress,
@@ -15,6 +17,7 @@ import { createDeferred } from '@trezor/utils';
 import { createEvoluInstanceFactory } from '../src/createEvoluInstance';
 import { createEvoluStorageFactory } from '../src/evoluStorage';
 import { createNodeEvoluDeps } from './utils/createNodeEvoluDeps';
+import { createEvoluAppOwnerFromTrezorData } from '../src/createEvoluAppOwnerFromTrezorData';
 
 const suiteSyncOwner: SuiteSyncOwner = {
     ownerId: asSuiteSyncOwnerId('yg0UgROParTpm60ltI3hDw'),
@@ -23,21 +26,45 @@ const suiteSyncOwner: SuiteSyncOwner = {
     ),
 };
 
+const appOwner = createEvoluAppOwnerFromTrezorData({
+    data: suiteSyncOwner.ownerSecret,
+});
+
+if (!appOwner.ok) {
+    throw new Error('Invalid App owner');
+}
+
+const shardOwner1 = deriveShardOwner(appOwner.value, ['trezor-suite', '1']);
+
 const createTestStorage = (nameSuffix: string) => {
+    const mockEvoluStuff = createNodeEvoluDeps();
+
     const createEvoluInstance = createEvoluInstanceFactory({
         suiteSyncErrorHandler: () => {},
-        evoluDeps: createNodeEvoluDeps(),
+        evoluDeps: mockEvoluStuff.evoluDeps,
         _evoluDbNameSuffix: nameSuffix,
     });
 
+    // This test shall not connect anywhere, websocket impl. is mocked to empty.
+    // This localhost is to make sure it won't connect in case of misconfiguration.
     const relayUrl = 'http://localhost:4000';
 
-    return createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner, relayUrl });
+    return {
+        storage: createEvoluStorageFactory({ createEvoluInstance })({ suiteSyncOwner, relayUrl }),
+        postMessageCalls: mockEvoluStuff.postMessageCalls,
+    };
+};
+
+const assetMutationsToMatchShard1Owner = (postMessageCalls: DbWorkerInput[]) => {
+    const mutations = postMessageCalls.filter(it => it.type === 'mutate');
+    expect(mutations.length).toBe(1);
+    expect(mutations[0].changes.length).toBe(1);
+    expect(mutations[0].changes[0].ownerId).toBe(shardOwner1.id);
 };
 
 describe(createEvoluStorageFactory.name, () => {
     it('stores wallet data and notifies subscribers', async () => {
-        const storage = createTestStorage('wallets');
+        const { storage, postMessageCalls } = createTestStorage('wallets');
 
         const receivedWallets: SuiteSyncWallet[][] = [];
         const resolved = createDeferred<void>();
@@ -61,13 +88,14 @@ describe(createEvoluStorageFactory.name, () => {
         expect(receivedWallets).toStrictEqual([
             [{ label: 'My Bitcoin Wallet', walletDescriptor: 'xpub123' }],
         ]);
+        assetMutationsToMatchShard1Owner(postMessageCalls);
 
         unsubscribe();
         await storage.dispose();
     });
 
     it('stores account data and notifies subscribers', async () => {
-        const storage = createTestStorage('accounts');
+        const { storage, postMessageCalls } = createTestStorage('accounts');
 
         const receivedAccounts: SuiteSyncAccount[][] = [];
         const resolved = createDeferred<void>();
@@ -99,13 +127,14 @@ describe(createEvoluStorageFactory.name, () => {
                 },
             ],
         ]);
+        assetMutationsToMatchShard1Owner(postMessageCalls);
 
         unsubscribe();
         await storage.dispose();
     });
 
     it('stores address data and notifies subscribers', async () => {
-        const storage = createTestStorage('addresses');
+        const { storage, postMessageCalls } = createTestStorage('addresses');
 
         const receivedAddresses: SuiteSyncAddress[][] = [];
         const resolved = createDeferred<void>();
@@ -139,13 +168,14 @@ describe(createEvoluStorageFactory.name, () => {
                 },
             ],
         ]);
+        assetMutationsToMatchShard1Owner(postMessageCalls);
 
         unsubscribe();
         await storage.dispose();
     });
 
     it('stores output data and notifies subscribers', async () => {
-        const storage = createTestStorage('outputs');
+        const { storage, postMessageCalls } = createTestStorage('outputs');
 
         const receivedOutputs: SuiteSyncOutput[][] = [];
         const resolved = createDeferred<void>();
@@ -181,6 +211,7 @@ describe(createEvoluStorageFactory.name, () => {
                 },
             ],
         ]);
+        assetMutationsToMatchShard1Owner(postMessageCalls);
 
         unsubscribe();
         await storage.dispose();

@@ -1,4 +1,11 @@
-import { Evolu, EvoluDeps, SimpleName, createEvolu } from '@evolu/common';
+import {
+    Evolu,
+    EvoluDeps,
+    ShardOwner,
+    SimpleName,
+    createEvolu,
+    deriveShardOwner,
+} from '@evolu/common';
 import { sha256 } from '@noble/hashes/sha2';
 import { bytesToHex } from '@noble/hashes/utils';
 
@@ -24,9 +31,10 @@ type CreateEvoluInstanceFactoryDeps = {
     _evoluDbNameSuffix?: string;
 };
 
-export type CreateEvoluInstance = (params: {
-    suiteSyncOwner: SuiteSyncOwner;
-}) => Evolu<typeof Schema>;
+export type CreateEvoluInstance = (params: { suiteSyncOwnerAppOwner: SuiteSyncOwner }) => {
+    evolu: Evolu<typeof Schema>;
+    shardOwner: ShardOwner;
+};
 
 export type CreateEvoluInstanceDep = {
     createEvoluInstance: CreateEvoluInstance;
@@ -34,19 +42,21 @@ export type CreateEvoluInstanceDep = {
 
 export const createEvoluInstanceFactory =
     (deps: CreateEvoluInstanceFactoryDeps): CreateEvoluInstance =>
-    ({ suiteSyncOwner }) => {
-        const owner = createEvoluAppOwnerFromTrezorData({ data: suiteSyncOwner.ownerSecret });
+    ({ suiteSyncOwnerAppOwner }) => {
+        const appOwner = createEvoluAppOwnerFromTrezorData({
+            data: suiteSyncOwnerAppOwner.ownerSecret,
+        });
 
-        if (!owner.ok) {
-            console.error(owner.error);
+        if (!appOwner.ok) {
+            console.error(appOwner.error);
 
-            throw owner.error;
+            throw appOwner.error;
         }
 
         // The instance name is used as the SQLite database filename for persistent
         // storage, ensuring that database files are separated and invisible to each
         // other. Hash the ownerId to avoid leaking it into the filename.
-        const hashedOwnerId = bytesToHex(sha256(owner.value.id)).slice(0, 16);
+        const hashedOwnerId = bytesToHex(sha256(appOwner.value.id)).slice(0, 16);
         const databaseName = SimpleName.from(
             `trezor-suite-v${VERSION}-${hashedOwnerId}${deps._evoluDbNameSuffix ?? ''}`,
         );
@@ -62,13 +72,16 @@ export const createEvoluInstanceFactory =
             // Intentionally no transport, transport will be passed
             // later on, so we can change the RelayUrl at any time.
             transports: [],
-            externalAppOwner: owner.value,
+            externalAppOwner: appOwner.value,
 
             // This turns on the Encryption-at-rest (encryption of the SQLLite file),
-            encryptionKey: owner.value.encryptionKey,
+            encryptionKey: appOwner.value.encryptionKey,
         });
+
+        const shardOwner = deriveShardOwner(appOwner.value, ['trezor-suite', '1']);
+        evolu.useOwner(shardOwner);
 
         evolu.subscribeError(createEvoluErrorHandler(evolu, deps.suiteSyncErrorHandler));
 
-        return evolu;
+        return { evolu, shardOwner };
     };

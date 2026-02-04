@@ -2,6 +2,7 @@ import {
     Evolu,
     NonEmptyString1000,
     QueryRows,
+    ShardOwner,
     createIdFromString,
     id,
     nullOr,
@@ -37,7 +38,10 @@ export const WalletLabelSchema = {
 };
 
 export class EvoluWalletTable implements WalletTable {
-    constructor(private evolu: Evolu<typeof WalletLabelSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof WalletLabelSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
     private getQuery = () => this.evolu.createQuery(db => db.selectFrom('wallet').selectAll());
 
@@ -48,11 +52,15 @@ export class EvoluWalletTable implements WalletTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('wallet', {
-            id: idResult.value,
-            walletDescriptor,
-            label: normalizeLabel(label),
-        });
+        const result = this.evolu.upsert(
+            'wallet',
+            {
+                id: idResult.value,
+                walletDescriptor,
+                label: normalizeLabel(label),
+            },
+            { ownerId: this.shardOwner.id },
+        );
 
         if (!result.ok) {
             return err(createSuiteSyncUpdateError(result.error));
@@ -64,17 +72,21 @@ export class EvoluWalletTable implements WalletTable {
     subscribe = ({ onChange }: EntityListener<SuiteSyncWallet>) => {
         const query = this.getQuery();
 
-        const process = (labels: QueryRows<UnwrapQuery<typeof query>>) => {
+        const process = (wallets: QueryRows<UnwrapQuery<typeof query>>) => {
             const acc: SuiteSyncWallet[] = [];
 
-            for (const label of labels) {
-                if (label.walletDescriptor === null) {
+            for (const wallet of wallets) {
+                if (wallet.ownerId !== this.shardOwner.id) {
+                    continue;
+                }
+
+                if (wallet.walletDescriptor === null) {
                     continue;
                 }
 
                 acc.push({
-                    walletDescriptor: asWalletDescriptor(label.walletDescriptor),
-                    label: label.label,
+                    walletDescriptor: asWalletDescriptor(wallet.walletDescriptor),
+                    label: wallet.label,
                 });
             }
 

@@ -3,6 +3,7 @@ import {
     NonEmptyString100,
     NonEmptyString1000,
     QueryRows,
+    ShardOwner,
     createIdFromString,
     id,
     nullOr,
@@ -39,7 +40,10 @@ export const AccountSchema = {
 };
 
 export class EvoluAccountTable implements AccountTable {
-    constructor(private evolu: Evolu<typeof AccountSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof AccountSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
     update = ({ networkSymbol, accountDescriptor, label }: SuiteSyncAccount) => {
         const idResult = AccountEvoluId.from(
@@ -50,12 +54,16 @@ export class EvoluAccountTable implements AccountTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('account', {
-            id: idResult.value,
-            accountDescriptor,
-            networkSymbol,
-            label: normalizeLabel(label),
-        });
+        const result = this.evolu.upsert(
+            'account',
+            {
+                id: idResult.value,
+                accountDescriptor,
+                networkSymbol,
+                label: normalizeLabel(label),
+            },
+            { ownerId: this.shardOwner.id },
+        );
 
         if (!result.ok) {
             return err(createSuiteSyncUpdateError(result.error));
@@ -73,6 +81,10 @@ export class EvoluAccountTable implements AccountTable {
             const acc: SuiteSyncAccount[] = [];
 
             for (const account of accounts) {
+                if (account.ownerId !== this.shardOwner.id) {
+                    continue;
+                }
+
                 if (account.accountDescriptor === null || account.networkSymbol === null) {
                     continue;
                 }

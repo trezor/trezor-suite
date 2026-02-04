@@ -2,6 +2,7 @@ import {
     Evolu,
     NonEmptyString1000,
     QueryRows,
+    ShardOwner,
     createIdFromString,
     id,
     nullOr,
@@ -40,7 +41,10 @@ export const OutputLabelSchema = {
 };
 
 export class OutputEvoluTable implements OutputTable {
-    constructor(private evolu: Evolu<typeof OutputLabelSchema>) {}
+    constructor(
+        private evolu: Evolu<typeof OutputLabelSchema>,
+        private shardOwner: ShardOwner,
+    ) {}
 
     update = ({ txId, outputIndex, label, accountDescriptor, networkSymbol }: SuiteSyncOutput) => {
         const idResult = OutputEvoluId.from(
@@ -51,14 +55,18 @@ export class OutputEvoluTable implements OutputTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const result = this.evolu.upsert('output', {
-            id: idResult.value,
-            txId,
-            outputIndex,
-            label: normalizeLabel(label),
-            accountDescriptor: accountDescriptor as AccountDescriptor,
-            networkSymbol: networkSymbol as NetworkSymbol,
-        });
+        const result = this.evolu.upsert(
+            'output',
+            {
+                id: idResult.value,
+                txId,
+                outputIndex,
+                label: normalizeLabel(label),
+                accountDescriptor: accountDescriptor as AccountDescriptor,
+                networkSymbol: networkSymbol as NetworkSymbol,
+            },
+            { ownerId: this.shardOwner.id },
+        );
 
         if (!result.ok) {
             return err(createSuiteSyncUpdateError(result.error));
@@ -76,6 +84,10 @@ export class OutputEvoluTable implements OutputTable {
             const acc: SuiteSyncOutput[] = [];
 
             for (const label of labels) {
+                if (label.ownerId !== this.shardOwner.id) {
+                    continue;
+                }
+
                 if (
                     label.txId === null ||
                     label.outputIndex === null ||
