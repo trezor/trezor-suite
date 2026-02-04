@@ -13,7 +13,7 @@ import {
     ScreenHeader,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
 
@@ -23,7 +23,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ReceiveAccountsScreen = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailed,
@@ -31,7 +31,7 @@ export const ReceiveAccountsScreen = () => {
     if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
 
     const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.ReceiveFlowEntered,
             payload: {
                 location: 'dashboard',
