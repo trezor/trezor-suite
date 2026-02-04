@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
+    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TradingExchangeFormProps,
@@ -96,8 +97,9 @@ export const TradingExchangeFormInputs = () => {
             await onCryptoCurrencyChangeRef.current(asset);
 
             resetSelectedOfferRef.current();
+            setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
-        [onCryptoCurrencyChangeRef, resetSelectedOfferRef],
+        [onCryptoCurrencyChangeRef, resetSelectedOfferRef, setValueRef],
     );
 
     const handleReceiveAssetSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
@@ -108,6 +110,7 @@ export const TradingExchangeFormInputs = () => {
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
             resetSelectedOfferRef.current();
+            setValueRef.current(TRADING_FORM_PROVIDER_SELECT, undefined, { shouldDirty: true });
         },
         [dispatch, setAmountLimitsRef, setValueRef, resetSelectedOfferRef],
     );
