@@ -9,7 +9,6 @@ import {
     AnalyticsSendFlowStep,
     DeviceAuthenticityCheckResult,
     FirmwareUpdatePayload,
-    FirmwareUpdateStuckedState,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -214,12 +213,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: FirmwareUpdatePayload & {
               duration: number;
               error?: string;
-          };
-      }
-    | {
-          type: EventType.FirmwareUpdateStucked;
-          payload: FirmwareUpdatePayload & {
-              duration: number;
-              stuckedType: FirmwareUpdateStuckedState;
           };
       };
