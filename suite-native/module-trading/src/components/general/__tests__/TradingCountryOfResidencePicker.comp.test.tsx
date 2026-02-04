@@ -3,7 +3,7 @@ import { yup } from '@suite-common/validators';
 import { EventType } from '@suite-native/analytics';
 import { Form, useForm } from '@suite-native/forms';
 import type { UseFormReturn } from '@suite-native/forms';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     act,
@@ -26,7 +26,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -51,7 +51,7 @@ describe('TradingCountryOfResidencePicker', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
 
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
 

@@ -1,6 +1,6 @@
 import { useCountryFilteredData } from '@suite-common/trading';
 import { Form, useForm } from '@suite-native/forms';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     renderHookWithBasicProvider,
     renderHookWithStoreProvider,
@@ -26,7 +26,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -49,7 +49,7 @@ describe('CountryOfResidencePicker', () => {
 
         (useCountryFilteredData as jest.Mock).mockImplementation(mockUseCountryFilteredData);
 
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
     });

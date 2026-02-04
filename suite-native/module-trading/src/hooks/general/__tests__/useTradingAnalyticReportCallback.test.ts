@@ -5,7 +5,7 @@ import {
     TradingSellAction,
     TradingSellStep,
 } from '@suite-native/analytics';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { PreloadedState, renderHookWithStoreProviderAsync } from '@suite-native/test-utils';
 import { exchangeQuotes, getWalletState, sellQuotes } from '@suite-native/trading-fixtures';
 
@@ -19,7 +19,6 @@ jest.mock('@suite-native/services', () => {
     return {
         ...original,
         useAnalytics: jest.fn(),
-        useLegacyAnalytics: jest.fn(),
     };
 });
 
@@ -30,9 +29,6 @@ describe('useTradingAnalyticReportCallback', () => {
         jest.clearAllMocks();
 
         (useAnalytics as jest.Mock).mockReturnValue({
-            report: reportMock,
-        });
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
     });
