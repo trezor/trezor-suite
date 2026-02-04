@@ -337,10 +337,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               type: TradingType;
           };
-      }
-    | {
-          type: EventType.TradingConfirmTrade;
-          payload: {
-              type: TradingType;
-          };
       };

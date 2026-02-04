@@ -28,6 +28,7 @@ export { settingsChangeCurrencyEvent } from './settingsChangeCurrencyEvent';
 export { settingsChangeThemeEvent } from './settingsChangeThemeEvent';
 export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';
 export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
+export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { transactionDetailCompareValuesEvent } from './transactionDetailCompareValuesEvent';
