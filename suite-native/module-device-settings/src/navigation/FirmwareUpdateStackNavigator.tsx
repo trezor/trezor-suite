@@ -3,13 +3,13 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { selectIsDeviceConnected } from '@suite-common/wallet-core';
+import { DeviceConnectionGuardScreen } from '@suite-native/device-authorization';
 import {
     FirmwareUpdateStackParamList,
     FirmwareUpdateStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { DeviceConnectionGuardScreen } from '../../../device-authorization/src/screens/DeviceConnectionGuardScreen';
 import { ConfirmFirmwareUpdateScreen } from '../screens/ConfirmFirmwareUpdateScreen';
 import { FirmwareInstallationScreen } from '../screens/FirmwareInstallationScreen';
 import { ThpConfirmationScreen } from '../screens/ThpConfirmationScreen';

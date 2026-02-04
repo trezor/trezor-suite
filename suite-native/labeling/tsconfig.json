@@ -24,6 +24,7 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
+        { "path": "../navigation" },
         { "path": "../services" },
         { "path": "../settings" },
         { "path": "../toasts" },
