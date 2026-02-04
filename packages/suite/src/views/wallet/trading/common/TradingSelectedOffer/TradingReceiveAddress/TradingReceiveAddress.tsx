@@ -47,7 +47,7 @@ export const TradingReceiveAddress = () => {
                     horizontal: 20,
                 }}
             >
-                <Text typographyStyle="body">
+                <Text typographyStyle="body" align="start">
                     <Translation
                         id={
                             selectedAccountOption?.account || !receiveAddress
@@ -64,6 +64,8 @@ export const TradingReceiveAddress = () => {
                                     typographyStyle="body"
                                     as="div"
                                     data-testid="@trading/selected-receive-account"
+                                    ellipsisLineCount={1}
+                                    maxWidth={200}
                                 >
                                     <AccountLabeling
                                         account={selectedAccountOption.account}
