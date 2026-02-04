@@ -142,10 +142,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               count: number;
           };
-      }
-    | {
-          type: EventType.SendAmountInputSwitched;
-          payload: {
-              changedTo: 'crypto' | 'fiat';
-          };
       };
