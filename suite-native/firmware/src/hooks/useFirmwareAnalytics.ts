@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectDeviceUpdateFirmwareVersion } from '@suite-common/wallet-core';
 import { EventType, FirmwareUpdatePayload, FirmwareUpdateStartType } from '@suite-native/analytics';
-import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { FirmwareType } from '@trezor/connect';
 import {
     DeviceModelInternal,
@@ -23,7 +23,6 @@ export const useFirmwareAnalytics = ({
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
     const analytics = useAnalytics();
-    const legacyAnalytics = useLegacyAnalytics();
     const prepareAnalyticsPayload = useCallback(
         () => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,
@@ -89,7 +88,7 @@ export const useFirmwareAnalytics = ({
 
     const handleAnalyticsReportFinished = useCallback(
         ({ error }: { error?: string } = {}) => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.FirmwareUpdateFinished,
                 payload: {
                     ...getAnalyticsPayload(),
@@ -98,7 +97,7 @@ export const useFirmwareAnalytics = ({
                 },
             });
         },
-        [legacyAnalytics, getAnalyticsPayload, getElapsedTimeInSeconds],
+        [analytics, getAnalyticsPayload, getElapsedTimeInSeconds],
     );
 
     const handleAnalyticsReportCancelled = useCallback(() => {
