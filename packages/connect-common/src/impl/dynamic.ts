@@ -8,16 +8,12 @@ import type { Manifest } from '@trezor/connect/src/types/settings';
 import { getSynchronize } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
+import { CoreInSuiteDesktop } from './core-in-suite-desktop';
+import { CoreInSuiteWeb } from './core-in-suite-web';
 
-type TrezorConnectDynamicParams<
-    ImplType,
-    SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
-> = {
-    implementations: {
-        type: ImplType;
-        impl: ImplInterface;
-    }[];
+type ImplType = 'core-in-suite-desktop' | 'core-in-suite-web';
+
+type TrezorConnectDynamicParams<SettingsType extends Record<string, any>> = {
     getInitTarget: (settings: InitFullSettings<SettingsType>) => ImplType;
     handleBeforeInit?: () => void;
     handleBeforeCall: () => Promise<void>;
@@ -29,51 +25,37 @@ type TrezorConnectDynamicParams<
  *
  */
 export class TrezorConnectDynamic<
-    ImplType,
     SettingsType extends Record<string, any>,
-    ImplInterface extends ConnectFactoryDependencies<SettingsType>,
 > implements ConnectFactoryDependencies<SettingsType> {
     public eventEmitter = new EventEmitter();
 
     private currentTarget: ImplType;
-    private implementations: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['implementations'];
-    private getInitTarget: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['getInitTarget'];
-    private handleBeforeInit: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['handleBeforeInit'];
-    private handleBeforeCall: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['handleBeforeCall'];
-    private handleErrorFallback: TrezorConnectDynamicParams<
-        ImplType,
-        SettingsType,
-        ImplInterface
-    >['handleErrorFallback'];
+    private implementations: { type: ImplType; impl: ConnectFactoryDependencies<SettingsType> }[];
+    private getInitTarget: TrezorConnectDynamicParams<SettingsType>['getInitTarget'];
+    private handleBeforeInit: TrezorConnectDynamicParams<SettingsType>['handleBeforeInit'];
+    private handleBeforeCall: TrezorConnectDynamicParams<SettingsType>['handleBeforeCall'];
+    private handleErrorFallback: TrezorConnectDynamicParams<SettingsType>['handleErrorFallback'];
 
     public lastSettings?: InitFullSettings<SettingsType>;
     private callPending = 0;
     private beforeCallSynchronize = getSynchronize();
 
     public constructor({
-        implementations,
         getInitTarget,
         handleBeforeInit,
         handleBeforeCall,
         handleErrorFallback,
-    }: TrezorConnectDynamicParams<ImplType, SettingsType, ImplInterface>) {
-        this.implementations = implementations;
+    }: TrezorConnectDynamicParams<SettingsType>) {
+        this.implementations = [
+            {
+                type: 'core-in-suite-desktop',
+                impl: new CoreInSuiteDesktop(),
+            },
+            {
+                type: 'core-in-suite-web',
+                impl: new CoreInSuiteWeb(),
+            },
+        ];
         this.currentTarget = this.implementations[0].type;
         this.getInitTarget = getInitTarget;
         this.handleBeforeInit = handleBeforeInit;

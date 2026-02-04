@@ -1,30 +1,9 @@
 import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
+import { factory } from '@trezor/connect/src/factory';
+import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 
-type ConnectWebExtraMethods = {
-    renderWebUSBButton: (className?: string) => void;
-    disableWebUSB: () => void;
-    requestWebUSBDevice: () => void;
-};
-
-const impl = new TrezorConnectDynamic<
-    'core-in-suite-desktop' | 'core-in-suite-web',
-    ConnectSettingsWeb,
-    ConnectFactoryDependencies<ConnectSettingsWeb> & ConnectWebExtraMethods
->({
-    implementations: [
-        {
-            type: 'core-in-suite-desktop',
-            impl: new CoreInSuiteDesktop(),
-        },
-        {
-            type: 'core-in-suite-web',
-            impl: new CoreInSuiteWeb(),
-        },
-    ],
+const impl = new TrezorConnectDynamic<ConnectSettingsWeb>({
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWeb>) => {
         if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
@@ -62,6 +41,12 @@ const impl = new TrezorConnectDynamic<
     },
 });
 
+type ConnectWebExtraMethods = {
+    renderWebUSBButton: (className?: string) => void;
+    disableWebUSB: () => void;
+    requestWebUSBDevice: () => void;
+};
+
 const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
     {
         eventEmitter: impl.eventEmitter,
@@ -74,9 +59,16 @@ const TrezorConnect = factory<ConnectSettingsWeb, ConnectWebExtraMethods>(
         dispose: impl.dispose.bind(impl),
     },
     {
-        renderWebUSBButton: impl.getTarget().renderWebUSBButton.bind(impl),
-        disableWebUSB: impl.getTarget().disableWebUSB.bind(impl),
-        requestWebUSBDevice: impl.getTarget().requestWebUSBDevice.bind(impl),
+        // not needed, only because of types
+        renderWebUSBButton: () => {
+            throw ERRORS.TypedError('Method_InvalidPackage');
+        },
+        // not needed, only because of types
+        disableWebUSB: () => {
+            throw ERRORS.TypedError('Method_InvalidPackage');
+        },
+        // not needed, only because of types
+        requestWebUSBDevice: () => {},
     },
 );
 

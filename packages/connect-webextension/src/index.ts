@@ -6,10 +6,8 @@ import {
     Manifest,
     POPUP,
 } from '@trezor/connect/src/exports';
-import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { factory } from '@trezor/connect/src/factory';
 // Import as src not lib due to webpack issues with inlining content script later
-import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
 import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
 
@@ -17,21 +15,7 @@ import { parseConnectSettings } from './connectSettings';
 
 const _settings = parseConnectSettings();
 
-const impl = new TrezorConnectDynamic<
-    'core-in-suite-desktop' | 'core-in-suite-web',
-    ConnectSettingsWebextension,
-    ConnectFactoryDependencies<ConnectSettingsWebextension>
->({
-    implementations: [
-        {
-            type: 'core-in-suite-desktop',
-            impl: new CoreInSuiteDesktop(),
-        },
-        {
-            type: 'core-in-suite-web',
-            impl: new CoreInSuiteWeb(),
-        },
-    ],
+const impl = new TrezorConnectDynamic<ConnectSettingsWebextension>({
     getInitTarget: (settings: Partial<ConnectSettingsPublic & ConnectSettingsWebextension>) => {
         if (settings.coreMode === 'suite-desktop') {
             return 'core-in-suite-desktop';
