@@ -9,7 +9,6 @@ export interface ConnectFactoryDependencies<SettingsType extends Record<string, 
     init: InitType<SettingsType>;
     call: CallMethod;
     eventEmitter: EventEmitter;
-    manifest: TrezorConnect['manifest'];
     setTransports: TrezorConnect['setTransports'];
     uiResponse: TrezorConnect['uiResponse'];
     cancel: TrezorConnect['cancel'];
@@ -113,7 +112,6 @@ export const factory = <
 >(
     {
         eventEmitter,
-        manifest,
         init,
         call,
         setTransports,
@@ -141,7 +139,6 @@ export const factory = <
     ) as Pick<TrezorConnect, (typeof connectCallableMethods)[number]>;
 
     return {
-        manifest,
         init,
         setTransports,
 

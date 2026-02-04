@@ -18,7 +18,7 @@ import {
     createErrorMessage,
 } from './events';
 import { factory } from './factory';
-import type { ConnectSettings, Manifest } from './types';
+import type { ConnectSettings } from './types';
 import { ConnectEvents } from './types/emitter';
 import { initLog } from './utils/debug';
 
@@ -29,13 +29,6 @@ let _settings = parseConnectSettings();
 
 const coreManager = initCoreState();
 const messagePromises = createDeferredManager({ initialId: 1 });
-
-const manifest = (data: Manifest) => {
-    _settings = parseConnectSettings({
-        ..._settings,
-        manifest: data,
-    });
-};
 
 const dispose = () => {
     eventEmitter.removeAllListeners();
@@ -168,7 +161,6 @@ const cancel = (error?: string) => {
 const TrezorConnect = factory(
     {
         eventEmitter,
-        manifest,
         init,
         call,
         setTransports,

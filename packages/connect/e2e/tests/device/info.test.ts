@@ -63,7 +63,6 @@ describe('__info common param', () => {
             if (
                 [
                     // "utility" methods
-                    'manifest',
                     'init',
                     'setTransports',
                     'getSettings',

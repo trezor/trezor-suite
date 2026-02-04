@@ -5,7 +5,6 @@ import {
     CORE_CALL,
     CallMethod,
     ConnectSettings,
-    Manifest,
     POPUP,
     createErrorMessage,
 } from '@trezor/connect/src/exports';
@@ -15,19 +14,6 @@ import { WindowServiceWorkerChannel } from '@trezor/connect-common/src/messageCh
 
 const eventEmitter = new EventEmitter();
 let _channel: any;
-
-const manifest = (data: Manifest) => {
-    if (_channel) {
-        _channel.postMessage({
-            type: POPUP.INIT,
-            payload: {
-                settings: { manifest: data },
-            },
-        });
-    }
-
-    return Promise.resolve(undefined);
-};
 
 const dispose = () => {
     eventEmitter.removeAllListeners();
@@ -109,7 +95,6 @@ const uiResponse = () => {
 
 const TrezorConnect = factory({
     eventEmitter,
-    manifest,
     init,
     call,
     setTransports,

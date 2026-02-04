@@ -79,7 +79,6 @@ const TrezorConnect = factory({
     init: impl.init.bind(impl),
     call: impl.call.bind(impl),
     setTransports: impl.setTransports.bind(impl),
-    manifest: impl.manifest.bind(impl),
     uiResponse: impl.uiResponse.bind(impl),
     cancel: impl.cancel.bind(impl),
     dispose: impl.dispose.bind(impl),

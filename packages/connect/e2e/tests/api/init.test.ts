@@ -9,7 +9,7 @@ describe('TrezorConnect.init', () => {
         TrezorConnect.dispose();
     });
 
-    it('calling method before .init() and/or .manifest()', async () => {
+    it('calling method before .init()', async () => {
         const { payload } = await TrezorConnect.getCoinInfo({ coin: 'btc' });
         expect(payload).toMatchObject(INIT_ERROR);
     });
@@ -68,18 +68,6 @@ describe('TrezorConnect.init', () => {
             manifest: { appName: 'a', appUrl: 'a', email: 'b' },
         });
 
-        const resp = await TrezorConnect.getCoinInfo({ coin: 'btc' });
-        expect(resp).toMatchObject({
-            payload: { type: 'bitcoin', shortcut: 'BTC' },
-        });
-    });
-
-    it('manifest success', async () => {
-        TrezorConnect.manifest({
-            appName: 'a',
-            appUrl: 'a',
-            email: 'b',
-        });
         const resp = await TrezorConnect.getCoinInfo({ coin: 'btc' });
         expect(resp).toMatchObject({
             payload: { type: 'bitcoin', shortcut: 'BTC' },

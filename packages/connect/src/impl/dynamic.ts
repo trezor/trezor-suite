@@ -7,7 +7,6 @@ import { CallMethodPayload, createErrorMessage } from '../events';
 import { ConnectFactoryDependencies } from '../factory';
 import { InitFullSettings } from '../types/api/init';
 import type { SetTransports } from '../types/api/setTransports';
-import type { Manifest } from '../types/settings';
 
 type TrezorConnectDynamicParams<
     ImplType,
@@ -112,12 +111,6 @@ export class TrezorConnectDynamic<
         } catch {
             this.currentTarget = oldTargetType;
         }
-    }
-
-    public manifest(manifest: Manifest) {
-        this.lastSettings = { ...this.lastSettings, manifest } as typeof this.lastSettings;
-
-        this.getTarget().manifest(manifest);
     }
 
     public async init(settings: InitFullSettings<SettingsType>) {
