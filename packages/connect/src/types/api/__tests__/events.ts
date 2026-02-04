@@ -44,6 +44,17 @@ export const events = (api: TrezorConnect) => {
         if (event.type === 'device-trezor_push_notification') {
             return;
         }
+        if (event.type === 'device-thp_pairing_status_changed') {
+            const { payload } = event;
+            if (payload.status === 'invalid-tag') {
+                payload.tag.toLowerCase();
+            }
+            if (payload.status === 'failed') {
+                payload.message.toLowerCase();
+            }
+
+            return;
+        }
         const { payload } = event;
         payload.path.toLowerCase();
         if (payload.type === 'acquired') {

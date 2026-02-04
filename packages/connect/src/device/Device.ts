@@ -37,6 +37,7 @@ import {
     DeviceButtonRequestPayload,
     DeviceThpCredentialsChangedPayload,
     DeviceThpPairingPayload,
+    DeviceThpPairingStatus,
     DeviceVersionChanged,
     UI,
     UiResponsePassphrase,
@@ -112,6 +113,7 @@ export interface DeviceEvents {
         callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
     };
     [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
+    [DEVICE.THP_PAIRING_STATUS_CHANGED]: DeviceThpPairingStatus;
 }
 
 interface DeviceLifecycleEvents {

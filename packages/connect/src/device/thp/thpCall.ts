@@ -103,6 +103,7 @@ export const abortThpWorkflow = async (device: Device) => {
         await thpState.pairingTagPromise.abort();
         await device.getCurrentSession().cancelCall();
         thpState.resetState();
+        device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, { status: 'canceled' });
     } else if (thpState.cancelablePromise) {
         thpState.sync('send', 'Cancel');
         await device.getCurrentSession().send('Cancel', {});
