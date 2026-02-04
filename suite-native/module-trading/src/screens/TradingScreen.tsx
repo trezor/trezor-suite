@@ -7,7 +7,7 @@ import { EventType } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
 import {
     selectActiveTradingType,
@@ -30,16 +30,16 @@ const TradingScreenContent = () => {
     const navigation = useNavigation<NavigationProps>();
     const isScreenMountedRecently = useMountedRecentlyFlag(activeTradingType);
     useActiveTradingTypeReaction();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     useEffect(() => {
         if (tradeToBeOpened) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.TradingSuccess,
                 payload: { type: tradeToBeOpened.tradeType },
             });
             navigation.navigate(TradingStackRoutes.TradingHistory);
         }
-    }, [tradeToBeOpened, navigation, legacyAnalytics]);
+    }, [tradeToBeOpened, navigation, analytics]);
 
     if (!activeTradingType) {
         return null;
