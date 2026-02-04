@@ -14,8 +14,6 @@ import {
     TradingExchangeAction,
     TradingExchangeStep,
     TradingNavigateFrom,
-    TradingSellAction,
-    TradingSellStep,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -299,21 +297,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
               approvalType?: string;
               slippage?: string;
               rateType?: string;
-          };
-      }
-    | {
-          type: EventType.TradingSell;
-          payload: {
-              action: TradingSellAction;
-              step: TradingSellStep;
-
-              cryptoLabel?: string;
-              cryptoNetworkSymbol?: string;
-              cryptoContractAddress?: string;
-
-              receiveMethod?: string;
-              countryOfResidence?: string;
-
-              exchangeName?: string;
           };
       };
