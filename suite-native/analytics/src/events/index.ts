@@ -30,6 +30,7 @@ export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { emptyDashboardClickEvent } from './emptyDashboardClickEvent';
 export { firmwareUpdateCancelEvent } from './firmwareUpdateCancelEvent';
 export { firmwareUpdateStartedEvent } from './firmwareUpdateStartedEvent';
+export { firmwareUpdateStuckedEvent } from './firmwareUpdateStuckedEvent';
 export { onboardingCompletedEvent } from './onboardingCompletedEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';
