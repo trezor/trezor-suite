@@ -25,7 +25,7 @@ import {
     TokenAddress,
 } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
-import { EventType, getTypedNativeLegacyAnalytics } from '@suite-native/analytics';
+import { EventType, getTypedNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { selectAccountTokenSymbol } from '@suite-native/tokens';
 import {
@@ -217,7 +217,7 @@ export const sendTransactionThunk = createThunk<
                 tokenContract,
             );
 
-            getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).report({
+            getTypedNativeAnalytics(extra.services.analytics).report({
                 type: EventType.SendTransactionDispatched,
                 payload: {
                     symbol: selectedAccount.symbol,
