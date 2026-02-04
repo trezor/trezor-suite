@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { G } from '@mobily/ts-belt';
 
 import { AnalyticsSendFlowStep, EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
 
@@ -32,7 +32,7 @@ export const useReportSendFlowExitToAnalytics = () => {
     const [furthestSendStep, setFurthestSendStep] = useState<AnalyticsRelevantSendRoute | null>(
         null,
     );
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const reportSendFlowExitToAnalytics = useCallback(
         (nextScreenRoute?: string) => {
             // The user is still inside of the send flow.
@@ -64,14 +64,14 @@ export const useReportSendFlowExitToAnalytics = () => {
 
             // We are navigation outside of the send flow without successful transaction dispatch. Report the furthest step to analytics.
             if (furthestSendStep) {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.SendFlowExited,
                     payload: { step: screenNameToAnalyticsLabelMap[furthestSendStep] },
                 });
                 setFurthestSendStep(null);
             }
         },
-        [furthestSendStep, legacyAnalytics],
+        [furthestSendStep, analytics],
     );
 
     return reportSendFlowExitToAnalytics;

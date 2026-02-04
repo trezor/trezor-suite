@@ -5,7 +5,6 @@ import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
-import { AnalyticsSendFlowStep } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
@@ -148,11 +147,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.SendAmountInputSwitched;
           payload: {
               changedTo: 'crypto' | 'fiat';
-          };
-      }
-    | {
-          type: EventType.SendFlowExited;
-          payload: {
-              step: AnalyticsSendFlowStep;
           };
       };

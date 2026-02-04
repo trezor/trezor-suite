@@ -43,6 +43,7 @@ export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';
 export { sendFlowEnteredEvent } from './sendFlowEnteredEvent';
+export { sendFlowExitedEvent } from './sendFlowExitedEvent';
 export { settingsChangeBtcUnitEvent } from './settingsChangeBtcUnitEvent';
 export { settingsChangeCoinBackendEvent } from './settingsChangeCoinBackendEvent';
 export { settingsChangeCoinEnabledEvent } from './settingsChangeCoinEnabledEvent';
