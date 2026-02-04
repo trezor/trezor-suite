@@ -18,7 +18,7 @@ import {
     StackToStackCompositeNavigationProps,
     useInterceptNativeNavigation,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 import { CoinEnablingFormValues, coinEnablingFormValidationSchema } from '../coinEnablingSchema';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
@@ -31,7 +31,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const CoinEnablingInitScreen = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();
 
@@ -52,7 +52,7 @@ export const CoinEnablingInitScreen = () => {
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: true }));
         });
 
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.CoinEnablingInitState,
             payload: { enabledNetworks: values.enabledCoins },
         });

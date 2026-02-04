@@ -1,5 +1,4 @@
 import { TradingType } from '@suite-common/trading';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EventType } from './constants';
 
@@ -45,10 +44,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.PassphraseAddHiddenWallet;
-      }
-    | {
-          type: EventType.CoinEnablingInitState;
-          payload: {
-              enabledNetworks: NetworkSymbol[];
-          };
       };
