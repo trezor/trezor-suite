@@ -16,7 +16,7 @@ import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { SendFormLabelEditable } from '@suite-native/labeling';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { QrCodeBottomSheetIcon } from './QrCodeBottomSheetIcon';
@@ -34,7 +34,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
     const { setValue, watch } = useFormContext<SendOutputsFormValues>();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -51,7 +51,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const handleScanAddressQRCode = (qrCodeData: string) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
         if (symbol && isAddressValid(qrCodeData, symbol)) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SendAddressFilled,
                 payload: { method: 'qr' },
             });
@@ -60,7 +60,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
 
     const handleChangeValue = (newValue: string) => {
         if (symbol && isAddressValid(newValue, symbol)) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.SendAddressFilled,
                 payload: { method: 'manual' },
             });
