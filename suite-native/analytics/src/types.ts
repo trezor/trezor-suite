@@ -185,7 +185,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               result: DeviceAuthenticityCheckResult;
           };
-      }
-    | {
-          type: EventType.DeviceSettingsCheckBackupEntered;
       };
