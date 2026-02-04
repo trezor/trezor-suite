@@ -1,5 +1,3 @@
-import { ERRORS } from '@trezor/connect-common/src/constants';
-
 import { AbstractMethod } from '../core/AbstractMethod';
 import { DataManager } from '../data/DataManager';
 import { UI } from '../events';
@@ -8,37 +6,42 @@ export default class ThpRemoveCredentials extends AbstractMethod<'thpRemoveCrede
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.requiredPermissions = ['management'];
+        this.useDevice = this.payload.device !== undefined;
         this.useDeviceState = false;
     }
 
     run() {
-        const thpState = this.device.getThpState();
-        if (!thpState) {
-            throw ERRORS.TypedError('Device_ThpStateMissing');
-        }
+        const requestedCredentials = this.payload.credentials || [];
+        if (this.device) {
+            const thpState = this.device.getThpState();
+            if (thpState) {
+                requestedCredentials.push(...thpState.pairingCredentials);
 
-        const knownCredentials = DataManager.getSettings('thp')?.knownCredentials;
-        if (knownCredentials) {
-            const toRemoveCredentials = (
-                this.payload.credentials || thpState.pairingCredentials
-            ).map(c => c.credential);
+                // should we change Device to unacquired?
+                // should @trezor/connect remember that this device is requested not to be remembered?
+                // this will work after device disconnection
 
-            const index = knownCredentials.findIndex(({ credential }) =>
-                toRemoveCredentials.includes(credential),
-            );
+                thpState.resetState(); // reset device state
 
-            if (index >= 0) {
-                knownCredentials.splice(index, 1); // remove credential from DataManager
+                // followup: increase credentials counter on Trezor (not implemented in firmware yet)
             }
         }
 
-        // should we change Device to unacquired?
-        // should @trezor/connect remember that this device is requested not to be remembered?
-        // this will work after device disconnection
+        const credentialsMap = new Map(requestedCredentials.map(c => [c.credential, c]));
+        const knownCredentials = DataManager.getSettings('thp')?.knownCredentials;
+        if (knownCredentials && knownCredentials.length > 0) {
+            credentialsMap.forEach(c => {
+                let index;
+                while (
+                    (index = knownCredentials.findIndex(
+                        ({ credential }) => c.credential === credential,
+                    )) >= 0
+                ) {
+                    knownCredentials.splice(index, 1);
+                }
+            });
+        }
 
-        thpState.resetState(); // reset device state
-
-        // followup: increase credentials counter on Trezor (not implemented in firmware yet)
         return Promise.resolve({ message: 'Success' });
     }
 }
