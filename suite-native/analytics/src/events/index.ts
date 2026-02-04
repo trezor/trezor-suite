@@ -25,6 +25,7 @@ export {
     type DeviceSetupSecurityCheckLocation,
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
+export { deviceSettingsCheckBackupExitedEvent } from './deviceSettingsCheckBackupExitedEvent';
 export { deviceSettingsCheckBackupSupportEvent } from './deviceSettingsCheckBackupSupportEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
