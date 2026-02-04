@@ -9,7 +9,7 @@ import { EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, TxKeyPath } from '@suite-native/intl';
 import { PinActionType } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
@@ -49,7 +49,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const navigation = useNavigation();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
             showToast({
@@ -81,7 +81,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const handleError = onError ?? showErrorFallback;
 
     const handlePinAction = useCallback(async () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.DeviceSettingsPinProtectionChange,
             payload: { action: type },
         });
@@ -127,7 +127,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
                 navigation.goBack();
             }
         }
-    }, [legacyAnalytics, type, device?.path, showSuccess, onSuccess, handleError, navigation]);
+    }, [analytics, type, device?.path, showSuccess, onSuccess, handleError, navigation]);
 
     useFocusEffect(
         useCallback(() => {
