@@ -188,11 +188,41 @@ describe('THP pairing', () => {
             }
         };
 
+    it('ThpPairing invalid CodeEntry', async () => {
+        const device = await waitForDevice({ pairingMethods: ['CodeEntry'] });
+
+        const statusChangeEvents: string[] = [];
+        TrezorConnect.on('device-thp_pairing_status_changed', ({ status }) => {
+            statusChangeEvents.push(status);
+        });
+
+        TrezorConnect.on('ui-request_thp_pairing', () => {
+            TrezorConnect.removeAllListeners('ui-request_thp_pairing');
+            TrezorConnect.uiResponse({
+                type: 'ui-receive_thp_pairing_tag',
+                payload: { tag: '111111' },
+            });
+        });
+
+        const result = await TrezorConnect.getFeatures({ device });
+        if (result.success) throw ERR;
+
+        expect(statusChangeEvents).toEqual(['started', 'invalid-tag']);
+        expect(result.payload.code).toMatch('Device_ThpPairingTagInvalid');
+    });
+
     it('ThpPairing cancel workflow', async () => {
         const device = await waitForDevice({
             pairingMethods: ['CodeEntry'],
             knownCredentials: [],
         });
+
+        const statusChangeEvents: string[] = [];
+        TrezorConnect.on('device-thp_pairing_status_changed', ({ status }) => {
+            statusChangeEvents.push(status);
+        });
+        const expectedStatusChangeEvents = (runs: number) =>
+            Array(runs).fill(['started', 'canceled']).flat();
 
         let result;
 
@@ -201,6 +231,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(CANCEL_ERR);
+        expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(1));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -213,6 +244,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(2));
 
         // Emulate user interaction delay in order to let the device recover with ThpTransportBusy
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -225,6 +257,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(FW_CANCEL_ERR);
+        expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(3));
 
         // 3. reject pairing confirmation from host
         TrezorConnect.removeAllListeners('ui-button');
@@ -232,6 +265,7 @@ describe('THP pairing', () => {
         result = await TrezorConnect.getFeatures({ device });
         if (result.success) throw ERR;
         expect(result.payload.error).toMatch(FW_CANCEL_ERR); // canceled gracefully on Trezor
+        expect(statusChangeEvents).toEqual(expectedStatusChangeEvents(4));
 
         // check if pairing is still responsive
         TrezorConnect.removeAllListeners('ui-button');
@@ -246,6 +280,11 @@ describe('THP pairing', () => {
         });
         result = await TrezorConnect.getFeatures({ device });
         expect(result).toMatchObject({ success: true });
+        expect(statusChangeEvents).toEqual([
+            ...expectedStatusChangeEvents(4),
+            'started',
+            'finished',
+        ]);
     });
 
     it('ThpState cancel workflow', async () => {

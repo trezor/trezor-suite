@@ -165,6 +165,14 @@ const run = async () => {
                 writeCliState(state);
             }
         }
+
+        if (event.type === 'device-thp_pairing_status_changed') {
+            if (event.payload.status === 'failed') {
+                console.warn('THP phase error', event.payload.message);
+            } else {
+                console.warn('THP phase changed', event.payload.status);
+            }
+        }
     });
 
     TrezorConnect.on('UI_EVENT', async event => {
