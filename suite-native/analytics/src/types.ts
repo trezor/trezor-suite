@@ -17,16 +17,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           };
       }
     | {
-          type: EventType.UnsupportedDevice;
-          payload: {
-              deviceState:
-                  | 'unsupportedFirmware'
-                  | 'noSeed'
-                  | 'bootloaderMode'
-                  | 'noSeedWithFirmware';
-          };
-      }
-    | {
           type: EventType.DiscoveryDuration;
           payload: {
               discoveryId: string; // Used for grouping multiple events of a single discovery run together.

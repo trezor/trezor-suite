@@ -30,7 +30,7 @@ import {
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 import { selectIsOnboardingFinished, selectShouldShowAutoEjectAlert } from '@suite-native/settings';
 import { SUITE_WEB_URL } from '@trezor/urls';
 
@@ -52,6 +52,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
@@ -148,7 +149,7 @@ export const useDetectDeviceError = () => {
                 appendix: <IncompatibleFirmwareModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.UnsupportedDevice,
                         payload: { deviceState: 'unsupportedFirmware' },
                     });
@@ -165,7 +166,7 @@ export const useDetectDeviceError = () => {
         showAlert,
         handleDisconnect,
         isDeviceSetupSupported,
-        legacyAnalytics,
+        analytics,
     ]);
 
     useEffect(() => {
@@ -192,7 +193,7 @@ export const useDetectDeviceError = () => {
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
 
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.UnsupportedDevice,
                             payload: { deviceState: 'noSeedWithFirmware' },
                         });
@@ -211,7 +212,7 @@ export const useDetectDeviceError = () => {
                     onPressPrimaryButton: () => {
                         openLink(SUITE_WEB_URL);
 
-                        legacyAnalytics.report({
+                        analytics.report({
                             type: EventType.UnsupportedDevice,
                             payload: { deviceState: 'noSeed' },
                         });
@@ -235,7 +236,7 @@ export const useDetectDeviceError = () => {
         handleDisconnect,
         isDeviceSetupSupported,
         shouldFactoryResetBeVisible,
-        legacyAnalytics,
+        analytics,
     ]);
 
     useEffect(() => {
