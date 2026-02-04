@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -7,7 +5,6 @@ import { Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { CoinLogo } from '@trezor/product-components';
-import { spacings, typography } from '@trezor/theme';
 
 import { AccountLabeling, Address, CoinBalance, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -18,15 +15,10 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 import { TradingReceiveAccountOptionRow } from './TradingReceiveAccountOptionRow';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
-const AccountName = styled.div`
-    display: flex;
-    ${typography.body}
-`;
-
-interface TradingReceiveAccountSuiteOptionProps {
+type TradingReceiveAccountSuiteOptionProps = {
     account: Account;
     option: TradingVerifyFormAccountOptionProps;
-}
+};
 
 export const TradingReceiveAccountSuiteOption = ({
     account,
@@ -69,17 +61,17 @@ export const TradingReceiveAccountSuiteOption = ({
             justifyContent="space-between"
             onClick={onOptionClick}
         >
-            <Row gap={spacings.sm}>
+            <Row gap={12}>
                 <CoinLogo size={24} symbol={account.symbol} />
 
                 <Column>
-                    <AccountName>
+                    <Text maxWidth={200} as="div">
                         <AccountLabeling
                             account={account}
                             accountTypeBadgeSize="small"
                             showAccountTypeBadge
                         />
-                    </AccountName>
+                    </Text>
                     {!isUtxoBasedNetwork && (
                         <Address
                             value={address ?? null}
@@ -91,7 +83,7 @@ export const TradingReceiveAccountSuiteOption = ({
                 </Column>
             </Row>
 
-            <Row gap={spacings.sm} alignItems="center">
+            <Row gap={12} alignItems="center">
                 <Column alignItems="flex-end">
                     <CoinBalance value={account.formattedBalance} symbol={account.symbol} />
 

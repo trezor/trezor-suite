@@ -54,11 +54,13 @@ export const TradingInfoItem = ({
                                 <Address isCopyAllowed isTruncated value={receiveAddress} />
                             )}
                             {!isExternalExchange && account && (
-                                <AccountLabel
-                                    account={account}
-                                    showAccountTypeBadge
-                                    accountTypeBadgeSize="small"
-                                />
+                                <Text maxWidth={200} as="div">
+                                    <AccountLabel
+                                        account={account}
+                                        showAccountTypeBadge
+                                        accountTypeBadgeSize="small"
+                                    />
+                                </Text>
                             )}
                         </Row>
                     </Text>
