@@ -3,6 +3,7 @@ export { assetDetailEvent } from './assetDetailEvent';
 export { assetDetailTimeframeChangeEvent } from './assetDetailTimeframeChangeEvent';
 export { assetsSyncEvent } from './assetsSyncEvent';
 export { biometricsChangeEvent } from './biometricsChangeEvent';
+export { coinEnablingInitStateEvent } from './coinEnablingInitStateEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
 export { connectDeviceEvent } from './connectDeviceEvent';
 export { createReceiveAddressEvent } from './createReceiveAddressEvent';
