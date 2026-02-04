@@ -11,7 +11,6 @@ import {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
-    TradingNavigateFrom,
 } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
@@ -245,16 +244,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.TradingCompareOffers;
           payload: {
               type: TradingType;
-          };
-      }
-    | {
-          type: EventType.TradingNavigate;
-          payload: {
-              action: 'navigate' | 'cancel';
-              type: TradingType;
-              from: TradingNavigateFrom;
-
-              networkSymbol?: string;
-              contractAddress?: string;
           };
       };

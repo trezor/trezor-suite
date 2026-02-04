@@ -32,6 +32,7 @@ export { tradingBuyEvent } from './tradingBuyEvent';
 export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingExchangeEvent } from './tradingExchangeEvent';
+export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingSellEvent } from './tradingSellEvent';
 export { tradingStatusEvent } from './tradingStatusEvent';
