@@ -44,7 +44,7 @@ import {
     parseAccountKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts/src/utils';
+import { sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
 import {
     FeatureFlag,
     FeatureFlagsRootState,
