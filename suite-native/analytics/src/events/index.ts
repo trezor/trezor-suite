@@ -30,6 +30,7 @@ export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';
 export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
 export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
+export { tradingExchangeEvent } from './tradingExchangeEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
 export { tradingSellEvent } from './tradingSellEvent';
 export { tradingStatusEvent } from './tradingStatusEvent';

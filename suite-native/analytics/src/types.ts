@@ -11,8 +11,6 @@ import {
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
-    TradingExchangeAction,
-    TradingExchangeStep,
     TradingNavigateFrom,
 } from './definitions';
 
@@ -274,28 +272,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
               countryOfResidence?: string;
 
               exchangeName?: string;
-          };
-      }
-    | {
-          type: EventType.TradingExchange;
-          payload: {
-              action: TradingExchangeAction;
-              step: TradingExchangeStep;
-
-              sendCryptoLabel?: string;
-              sendCryptoNetworkSymbol?: string;
-              sendCryptoContractAddress?: string;
-
-              receiveCryptoLabel?: string;
-              receiveCryptoNetworkSymbol?: string;
-              receiveCryptoContractAddress?: string;
-
-              exchangeName?: string;
-              exchangeType?: string;
-
-              accountType?: string;
-              approvalType?: string;
-              slippage?: string;
-              rateType?: string;
           };
       };
