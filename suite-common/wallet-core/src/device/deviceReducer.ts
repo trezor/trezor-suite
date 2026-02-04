@@ -508,6 +508,7 @@ const forget = (draft: DeviceReducerState, device: TrezorDevice) => {
     const others = deviceUtils.getDeviceInstances(device, draft.devices, true);
     if (device.connected && others.length < 1) {
         // do not forget the last instance, just reset state
+        draft.devices[index].thp = undefined;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;
 
