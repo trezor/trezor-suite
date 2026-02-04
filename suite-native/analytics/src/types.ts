@@ -1,6 +1,6 @@
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { FeeLevelLabel, TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -108,20 +108,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.CoinEnablingInitState;
           payload: {
               enabledNetworks: NetworkSymbol[];
-          };
-      }
-    | {
-          type: EventType.SendTransactionDispatched;
-          payload: {
-              symbol: NetworkSymbol;
-              outputsCount: number;
-              selectedFee: FeeLevelLabel;
-              wasAppLeftDuringReview: boolean;
-              tokenSymbols?: TokenSymbol[];
-              tokenAddresses?: TokenAddress[];
-              hasEthereumData?: boolean;
-              hasEthereumNonce?: boolean;
-              hasDestinationTag?: boolean;
-              hasBitcoinLocktime?: boolean;
           };
       };
