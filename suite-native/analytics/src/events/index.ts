@@ -4,6 +4,7 @@ export { assetDetailTimeframeChangeEvent } from './assetDetailTimeframeChangeEve
 export { assetsSyncEvent } from './assetsSyncEvent';
 export { biometricsChangeEvent } from './biometricsChangeEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';
+export { connectDeviceEvent } from './connectDeviceEvent';
 export { createReceiveAddressEvent } from './createReceiveAddressEvent';
 export { createReceiveAddressShowAddressEvent } from './createReceiveAddressShowAddressEvent';
 export { demoAccountQuestionnaireDashboardEvent } from './demoAccountQuestionnaireDashboardEvent';
