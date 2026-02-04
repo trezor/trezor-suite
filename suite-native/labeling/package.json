@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@gorhom/bottom-sheet": "5.2.6",
+        "@react-navigation/native": "7.1.26",
         "@reduxjs/toolkit": "2.11.0",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -22,6 +23,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/navigation": "workspace:*",
         "@suite-native/services": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/toasts": "workspace:*",

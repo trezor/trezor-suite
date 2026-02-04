@@ -92,6 +92,12 @@ export const messages = {
                 'Suite Sync keeps your data up to date on all your devices. Your data stays local and syncs only with devices you approve.',
             cta: 'Turn on',
         },
+        firmwareUpdateAlert: {
+            title: 'Firmware update required',
+            description: 'Update firmware on the device to use Suite Sync.',
+            primaryButtonTitle: 'Update',
+            secondaryButtonTitle: 'Not now',
+        },
     },
     moduleHome: {
         graphIgnoredNetworks:

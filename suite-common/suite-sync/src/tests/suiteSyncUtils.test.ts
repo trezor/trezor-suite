@@ -31,7 +31,7 @@ describe(getIsSuiteSyncLabelingActionEnabled.name, () => {
         ['suite-sync-off', true, 'suite-sync-off enables labeling action'],
         ['keys-needed', true, 'keys-needed enables labeling action'],
         ['unsupported', false, 'unsupported disables labeling action'],
-        ['firmware-upgrade-needed', false, 'firmware-upgrade-needed disables labeling action'],
+        ['firmware-upgrade-needed', true, 'firmware-upgrade-needed enables labeling action'],
     ])('when interaction is %s should return %s', (suiteSyncInteraction, expected) => {
         expect(getIsSuiteSyncLabelingActionEnabled(suiteSyncInteraction)).toBe(expected);
     });

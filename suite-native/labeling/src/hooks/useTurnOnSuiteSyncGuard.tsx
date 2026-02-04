@@ -1,9 +1,17 @@
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import { WithSuiteSyncAndDeviceState, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import { selectDeviceStaticSessionId } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
+import {
+    DeviceSettingsStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
 import { useNativeServices } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
@@ -12,11 +20,40 @@ export const useTurnOnSuiteSyncGuard = () => {
     const { showAlert } = useAlert();
     const { suiteSync } = useNativeServices();
     const { showToast } = useToast();
+    const navigation =
+        useNavigation<
+            StackToStackCompositeNavigationProps<
+                RootStackParamList,
+                RootStackRoutes,
+                RootStackParamList
+            >
+        >();
     const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
 
     const suiteSyncInteraction = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectSuiteSyncInteraction(state, deviceStaticSessionId),
     );
+
+    const showSuiteSyncFirmwareUpgradeAlert = () => {
+        showAlert({
+            title: <Translation id="suiteSync.firmwareUpdateAlert.title" />,
+            description: <Translation id="suiteSync.firmwareUpdateAlert.description" />,
+            primaryButtonTitle: (
+                <Translation id="suiteSync.firmwareUpdateAlert.primaryButtonTitle" />
+            ),
+            onPressPrimaryButton: () => {
+                navigation.navigate(RootStackRoutes.DeviceSettingsStack, {
+                    screen: DeviceSettingsStackRoutes.DeviceFirmware,
+                    params: { closeActionType: 'close' },
+                });
+            },
+            primaryButtonVariant: 'blueBold',
+            secondaryButtonVariant: 'blueElevation0',
+            secondaryButtonTitle: (
+                <Translation id="suiteSync.firmwareUpdateAlert.secondaryButtonTitle" />
+            ),
+        });
+    };
 
     const turnOnSuiteSync = async (onSuccess: () => void) => {
         if (!deviceStaticSessionId) return;
@@ -29,10 +66,13 @@ export const useTurnOnSuiteSyncGuard = () => {
             const { type } = result.error;
             switch (type) {
                 case 'SuiteSyncUnavailableOnDeviceError':
-                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
                 case 'DeviceCancelled':
                 case 'DeviceError':
                     showToast({ variant: 'error', icon: 'warning', message: type });
+
+                    return;
+                case 'SuiteSyncFirmwareUpgradeNeededDeviceErrorType':
+                    showSuiteSyncFirmwareUpgradeAlert();
 
                     return;
                 case 'WriteModeRequiredForAllocation':
@@ -63,12 +103,7 @@ export const useTurnOnSuiteSyncGuard = () => {
                 showSuiteSyncEnableConfirmationAlert(onSuccess);
                 break;
             case 'firmware-upgrade-needed':
-                // TODO this will be handled in a follow-up
-                showToast({
-                    message: <Translation id="firmware.firmwareInfoScreen.title.update" />,
-                    variant: 'warning',
-                    icon: 'warning',
-                });
+                showSuiteSyncFirmwareUpgradeAlert();
                 break;
             case 'keys-needed':
                 if (deviceStaticSessionId) {
@@ -83,6 +118,8 @@ export const useTurnOnSuiteSyncGuard = () => {
                 }
                 break;
             default:
+                onSuccess();
+
                 return;
         }
     };
