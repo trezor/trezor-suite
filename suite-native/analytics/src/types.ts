@@ -10,14 +10,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.DiscoveryDuration;
-          payload: {
-              discoveryId: string; // Used for grouping multiple events of a single discovery run together.
-              loadDuration: number;
-              networkSymbols: NetworkSymbol[];
-          };
-      }
-    | {
           type: EventType.SettingsAutoEjectToggle;
           payload: { enabled: boolean };
       }

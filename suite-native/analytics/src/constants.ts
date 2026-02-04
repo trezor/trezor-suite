@@ -27,7 +27,6 @@ export enum EventType {
     EjectDeviceClick = 'eject_device/click',
     ConnectDevice = 'device_connect',
     UnsupportedDevice = 'unsupported_device',
-    DiscoveryDuration = 'discovery_duration',
     SettingsAutoEjectToggle = 'settings/auto_eject_toggle',
     AutoEjectModal = 'auto_eject_modal',
     PassphraseMismatch = 'passphrase/mismatch',
