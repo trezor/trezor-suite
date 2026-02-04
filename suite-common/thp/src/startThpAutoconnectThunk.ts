@@ -3,7 +3,6 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
-import { finishThpAutoconnectThunk } from './finishThpAutoconnectThunk';
 import { THP_PREFIX, thpActions } from './thpActions';
 
 type StartThpAutoconnectThunkParam = {
@@ -17,14 +16,14 @@ export const startThpAutoconnectThunk = createThunk<void, StartThpAutoconnectThu
 
         if (response.success) {
             dispatch(thpActions.addCredential({ credential: response.payload }));
-            dispatch(finishThpAutoconnectThunk());
+            dispatch(thpActions.finishAutoconnectFlow());
 
             return;
         } else {
             dispatch(
                 notificationsActions.addToast({ type: 'error', error: response.payload.error }),
             );
-            dispatch(finishThpAutoconnectThunk());
+            dispatch(thpActions.finishAutoconnectFlow());
 
             return rejectWithValue(response.payload.error);
         }

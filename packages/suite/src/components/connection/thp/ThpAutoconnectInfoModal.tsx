@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { finishThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
+import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 import { Card, Modal, Paragraph } from '@trezor/components';
 
 import { useDevice, useDispatch } from '../../../hooks/suite';
@@ -23,7 +23,7 @@ export const ThpAutoconnectInfoModal = ({ device }: ThpAutoconnectInfoModalParam
     };
 
     const onCancel = () => {
-        dispatch(finishThpAutoconnectThunk());
+        dispatch(thpActions.finishAutoconnectFlow());
     };
 
     // Do not use selected device directly. It may be different from the THP device
