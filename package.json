@@ -156,6 +156,9 @@
         "version-bump-prompt": "^6.1.0"
     },
     "dependenciesMeta": {
+        "better-sqlite3": {
+            "built": true
+        },
         "core-js-pure": {
             "built": false
         },

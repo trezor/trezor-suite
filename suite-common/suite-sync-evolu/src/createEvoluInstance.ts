@@ -17,6 +17,11 @@ const VERSION = 7;
 type CreateEvoluInstanceFactoryDeps = {
     suiteSyncErrorHandler: SuiteSyncErrorHandler;
     evoluDeps: EvoluDeps;
+
+    // Todo: Temp. Hack: this is only because of concurrency in tests in future versions of Evolu,
+    //       this shall be done over evoluDeps. With upgrade of Evolu please check
+    //       if this is still needed.
+    _evoluDbNameSuffix?: string;
 };
 
 export type CreateEvoluInstance = (params: {
@@ -42,7 +47,9 @@ export const createEvoluInstanceFactory =
         // storage, ensuring that database files are separated and invisible to each
         // other. Hash the ownerId to avoid leaking it into the filename.
         const hashedOwnerId = bytesToHex(sha256(owner.value.id)).slice(0, 16);
-        const databaseName = SimpleName.from(`trezor-suite-v${VERSION}-${hashedOwnerId}`);
+        const databaseName = SimpleName.from(
+            `trezor-suite-v${VERSION}-${hashedOwnerId}${deps._evoluDbNameSuffix ?? ''}`,
+        );
 
         if (!databaseName.ok) {
             console.error(databaseName.error);
