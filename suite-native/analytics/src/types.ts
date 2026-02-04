@@ -164,13 +164,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               tokenSymbol?: TokenSymbol;
               tokenContract?: TokenAddress;
           };
-      }
-    | {
-          type: EventType.ReceiveFlowEntered;
-          payload: {
-              location: 'dashboard' | 'accountDetail';
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenContract?: TokenAddress;
-          };
       };
