@@ -9,7 +9,7 @@ import {
     DeviceCheckBackupStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { checkBackupThunk } from '../checkBackupThunks';
@@ -25,13 +25,13 @@ const DEFINITIVE_ERRORS: ERRORS.ErrorCode[] = ['Method_Interrupted', 'Failure_Ac
 export const useCheckBackupOnMount = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation<NavigationProps>();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     useEffect(() => {
         const startCheckBackup = async () => {
             const response = await dispatch(checkBackupThunk()).unwrap();
 
             if (response.success === true) {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.DeviceSettingsCheckBackupFinished,
                     payload: {
                         success: true,
@@ -46,7 +46,7 @@ export const useCheckBackupOnMount = () => {
                 response.success === false &&
                 response.payload.code === 'Failure_ProcessError'
             ) {
-                legacyAnalytics.report({
+                analytics.report({
                     type: EventType.DeviceSettingsCheckBackupFinished,
                     payload: {
                         success: false,
