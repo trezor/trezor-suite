@@ -1,6 +1,7 @@
 import { BluetoothState, prepareInitialState } from '@suite-common/bluetooth';
 import { createBluetoothDeviceCommon } from '@suite-common/bluetooth/src/support/mocks';
 import { BluetoothDeviceCommon } from '@suite-common/bluetooth/src/types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { ThpState, initialThpState } from '@suite-common/thp';
 import { createCredential, createDeviceThp } from '@suite-common/thp/src/support/mocks';
 import { asBluetoothDeviceId } from '@trezor/connect';
@@ -14,48 +15,61 @@ type ForgetPersistentDataPreloadedState = {
     thp: ThpState;
 };
 
-const BTDevice1 = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-1') });
-const BTDevice3 = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-3') });
-const orphanedBTDevice = createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-4') });
-
 const credential1A = createCredential({ credential: '1A' });
 const credential1B = createCredential({ credential: '1B' });
 const credential1C = createCredential({ credential: '1C' });
 const credential2 = createCredential({ credential: '2' });
 const orphanedCredential = createCredential({ credential: '4' });
 
+const DEV1 = mockSuiteDevice({
+    id: 'device-id-1',
+    bluetoothProps: { id: asBluetoothDeviceId('bt-id-1') },
+    thp: createDeviceThp({
+        credentials: [credential1A, credential1B, credential1C],
+    }),
+});
+
+const DEV2 = mockSuiteDevice({
+    id: 'device-id-2',
+    thp: createDeviceThp({ credentials: [credential2] }),
+});
+
+const DEV3 = mockSuiteDevice({
+    id: 'device-id-3',
+    bluetoothProps: { id: asBluetoothDeviceId('bt-id-3') },
+    thp: createDeviceThp({ credentials: [] }),
+});
+
 export const forgetPersistentDataPreloadedStateFixture: ForgetPersistentDataPreloadedState = {
     device: {
         ...deviceInitialState,
+        devices: [DEV1, DEV2, DEV3],
         persistentDeviceData: [
             {
                 ...defaultDevicePersistentData,
-                device_id: 'device-id-1',
-                bluetoothProps: { id: BTDevice1.id },
-                thp: {
-                    ...createDeviceThp(),
-                    credentials: [credential1A, credential1B, credential1C],
-                },
+                device_id: DEV1.id!,
+                bluetoothProps: DEV1.bluetoothProps,
+                thp: DEV1.thp,
             },
             {
                 ...defaultDevicePersistentData,
-                device_id: 'device-id-2',
-                thp: {
-                    ...createDeviceThp(),
-                    credentials: [credential2],
-                },
+                device_id: DEV2.id!,
+                thp: DEV2.thp,
             },
             {
                 ...defaultDevicePersistentData,
-                device_id: 'device-id-3',
-                bluetoothProps: { id: BTDevice3.id },
+                device_id: DEV3.id!,
+                bluetoothProps: DEV3.bluetoothProps,
             },
         ],
     },
 
     bluetooth: {
         ...prepareInitialState<BluetoothDeviceCommon>(),
-        knownDevices: [BTDevice1, orphanedBTDevice],
+        knownDevices: [
+            createBluetoothDeviceCommon({ id: DEV1.bluetoothProps!.id }),
+            createBluetoothDeviceCommon({ id: asBluetoothDeviceId('bt-id-4') }),
+        ],
     },
 
     thp: {
