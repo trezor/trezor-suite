@@ -45,7 +45,6 @@ type TopLevelMethods =
     | 'cancel'
     | 'dispose'
     | 'init'
-    | 'manifest'
     | 'off'
     | 'on'
     | 'removeAllListeners'

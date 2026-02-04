@@ -22,7 +22,6 @@ const requestWebUSBDevice = async () => {
 const TrezorConnect = factory(
     {
         eventEmitter: impl.eventEmitter,
-        manifest: impl.manifest.bind(impl),
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
         setTransports: impl.setTransports.bind(impl),

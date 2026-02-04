@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { corsValidator, parseConnectSettings } from '@trezor/connect/src/data/connectSettings';
 import type { CallMethodPayload } from '@trezor/connect/src/events/call';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsMobile, Manifest } from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsMobile } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import {
@@ -24,16 +24,6 @@ export class TrezorConnectDeeplink implements ConnectFactoryDependencies<Connect
             deeplinkOpen: () => {
                 throw ERRORS.TypedError('Init_NotInitialized');
             },
-        };
-    }
-
-    public manifest(manifest: Manifest) {
-        this._settings = {
-            ...this._settings,
-            ...parseConnectSettings({
-                ...this._settings,
-                manifest,
-            }),
         };
     }
 
@@ -213,7 +203,6 @@ const TrezorConnect = factory<
         init: impl.init.bind(impl),
         call: impl.call.bind(impl),
         setTransports: impl.setTransports.bind(impl),
-        manifest: impl.manifest.bind(impl),
         uiResponse: impl.uiResponse.bind(impl),
         cancel: impl.cancel.bind(impl),
         dispose: impl.dispose.bind(impl),

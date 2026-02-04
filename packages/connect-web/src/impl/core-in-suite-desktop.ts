@@ -13,7 +13,6 @@ import type {
     ConnectSettings,
     ConnectSettingsPublic,
     ConnectSettingsWeb,
-    Manifest,
 } from '@trezor/connect/src/types';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { WebsocketClient } from '@trezor/websocket-client';
@@ -33,13 +32,6 @@ export class CoreInSuiteDesktop implements ConnectFactoryDependencies<ConnectSet
     public constructor() {
         this._settings = parseConnectSettings();
         this.ws = new WebsocketClient({ url: 'ws://127.0.0.1:21335/connect-ws' });
-    }
-
-    public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
     }
 
     public dispose() {

@@ -11,7 +11,7 @@ import {
     createErrorMessage,
 } from '@trezor/connect/src/events';
 import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
-import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
+import type { ConnectSettings, ConnectSettingsWeb } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
@@ -33,13 +33,6 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
     public constructor() {
         this._settings = parseConnectSettings();
         this.logger = initLog('@trezor/connect-web');
-    }
-
-    public manifest(data: Manifest) {
-        this._settings = parseConnectSettings({
-            ...this._settings,
-            manifest: data,
-        });
     }
 
     public dispose() {

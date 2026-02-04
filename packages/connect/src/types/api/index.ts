@@ -57,7 +57,6 @@ import { getPublicKey } from './getPublicKey';
 import { getSettings } from './getSettings';
 import { init } from './init';
 import { loadDevice } from './loadDevice';
-import { manifest } from './manifest';
 import { moneroGetAddress } from './moneroGetAddress';
 import { moneroGetWatchKey } from './moneroGetWatchKey';
 import { moneroKeyImageSync } from './moneroKeyImageSync';
@@ -278,9 +277,6 @@ export interface TrezorConnect {
 
     // https://connect.trezor.io/9/methods/other/init/
     init: typeof init;
-
-    // https://connect.trezor.io/9/methods/other/manifest/
-    manifest: typeof manifest;
 
     // https://connect.trezor.io/9/methods/monero/moneroGetAddress/
     moneroGetAddress: typeof moneroGetAddress;
