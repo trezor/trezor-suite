@@ -71,7 +71,10 @@ jobs:
 
       - run: yarn install --immutable
       - run: yarn message-system-sign-config
-      - run: yarn test:unit
+      - name: Unit Tests - Suite, Connect, Common
+        run: yarn test:unit --exclude='@suite-native/*'
+      - name: Unit Tests - Native
+        run: yarn test:unit --exclude='@trezor/*,@suite/*,@suite-common/*'
 
   test-unit-windows:
     runs-on: windows-latest
