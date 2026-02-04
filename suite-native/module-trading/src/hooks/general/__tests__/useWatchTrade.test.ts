@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     initStore,
@@ -32,7 +32,7 @@ const useWatchTradeWithReportSpy = (props: {
     orderId?: string;
     isInProgress?: boolean;
 }) => {
-    const analytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const spyRef = React.useRef<ReportSpy | null>(null);
 
     if (!spyRef.current) {

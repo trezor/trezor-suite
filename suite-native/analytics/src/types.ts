@@ -316,19 +316,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
 
               exchangeName?: string;
           };
-      }
-    | {
-          type: EventType.TradingStatus;
-          payload: {
-              type: TradingType;
-              status:
-                  | 'waiting'
-                  | 'processing'
-                  | 'pending'
-                  | 'converting'
-                  | 'sending'
-                  | 'kyc'
-                  | 'success'
-                  | 'error';
-          };
       };

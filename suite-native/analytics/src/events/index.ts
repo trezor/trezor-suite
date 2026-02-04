@@ -31,6 +31,7 @@ export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
 export { tradingConfirmTradeEvent } from './tradingConfirmTradeEvent';
 export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
+export { tradingStatusEvent } from './tradingStatusEvent';
 export { tradingSuccessEvent } from './tradingSuccessEvent';
 export { transactionDetailCompareValuesEvent } from './transactionDetailCompareValuesEvent';
 export { transactionDetailEvent } from './transactionDetailEvent';
