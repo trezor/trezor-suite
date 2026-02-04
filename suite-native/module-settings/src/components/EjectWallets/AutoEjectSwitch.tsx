@@ -9,12 +9,12 @@ import { useAlert } from '@suite-native/alerts';
 import { EventType } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { showAlert, hideAlert } = useAlert();
 
     const { showToast } = useToast();
@@ -34,7 +34,7 @@ export const AutoEjectSwitch = () => {
                 ),
             });
         }
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SettingsAutoEjectToggle,
             payload: {
                 enabled: !isAutoEjectEnabled,
