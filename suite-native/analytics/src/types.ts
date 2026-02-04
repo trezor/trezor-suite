@@ -173,10 +173,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               tokenSymbol?: TokenSymbol;
               tokenContract?: TokenAddress;
           };
-      }
-    | {
-          type: EventType.DeviceSettingsPinProtectionChange;
-          payload: {
-              action: 'enable' | 'change' | 'disable';
-          };
       };

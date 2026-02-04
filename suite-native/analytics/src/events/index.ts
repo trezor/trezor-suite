@@ -26,6 +26,7 @@ export {
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { deviceSettingsAuthenticityCheckEvent } from './deviceSettingsAuthenticityCheckEvent';
+export { deviceSettingsPinProtectionChangeEvent } from './deviceSettingsPinProtectionChangeEvent';
 export { deviceSettingsCheckBackupEnteredEvent } from './deviceSettingsCheckBackupEnteredEvent';
 export { deviceSettingsCheckBackupExitedEvent } from './deviceSettingsCheckBackupExitedEvent';
 export { deviceSettingsCheckBackupFinishedEvent } from './deviceSettingsCheckBackupFinishedEvent';
