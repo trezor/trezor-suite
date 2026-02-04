@@ -233,10 +233,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               duration: number;
               stuckedType: FirmwareUpdateStuckedState;
           };
-      }
-    | {
-          type: EventType.TradingQuoteReceived;
-          payload: {
-              type: TradingType;
-          };
       };

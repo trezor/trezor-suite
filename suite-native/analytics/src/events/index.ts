@@ -35,6 +35,7 @@ export { tradingCountrySelectionEvent } from './tradingCountrySelectionEvent';
 export { tradingExchangeEvent } from './tradingExchangeEvent';
 export { tradingNavigateEvent } from './tradingNavigateEvent';
 export { tradingParameterChangedEvent } from './tradingParameterChangedEvent';
+export { tradingQuoteReceivedEvent } from './tradingQuoteReceivedEvent';
 export { tradingSellEvent } from './tradingSellEvent';
 export { tradingStatusEvent } from './tradingStatusEvent';
 export { tradingSuccessEvent } from './tradingSuccessEvent';
