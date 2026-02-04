@@ -19,6 +19,7 @@ export {
 } from './demoAccountQuestionnaireQuestionEvent';
 export { demoAccountQuestionnaireStartEvent } from './demoAccountQuestionnaireStartEvent';
 export { deviceManagerClickEvent } from './deviceManagerClickEvent';
+export { ejectDeviceClickEvent } from './ejectDeviceClickEvent';
 export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
 export { deviceSetupInfoEvent, type DeviceSetupInfoLocation } from './deviceSetupInfoEvent';
 export {
