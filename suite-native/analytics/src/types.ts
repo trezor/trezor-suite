@@ -5,7 +5,7 @@ import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
-import { AnalyticsSendFlowStep, DeviceAuthenticityCheckResult } from './definitions';
+import { AnalyticsSendFlowStep } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
@@ -178,11 +178,5 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.DeviceSettingsPinProtectionChange;
           payload: {
               action: 'enable' | 'change' | 'disable';
-          };
-      }
-    | {
-          type: EventType.DeviceSettingsAuthenticityCheck;
-          payload: {
-              result: DeviceAuthenticityCheckResult;
           };
       };
