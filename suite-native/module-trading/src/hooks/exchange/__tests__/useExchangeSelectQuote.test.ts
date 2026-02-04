@@ -2,7 +2,7 @@ import React from 'react';
 
 import { tradingExchangeActions, tradingSettingsActions } from '@suite-common/trading';
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -49,7 +49,7 @@ jest.mock('@react-navigation/native', () => ({
 type ReportSpy = jest.SpyInstance;
 
 const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => {
-    const analytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     const spyRef = React.useRef<ReportSpy | null>(null);
     if (!spyRef.current) {

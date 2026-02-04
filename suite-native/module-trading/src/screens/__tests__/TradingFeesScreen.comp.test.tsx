@@ -1,5 +1,5 @@
 import { EventType } from '@suite-native/analytics';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { renderWithStoreProviderAsync } from '@suite-native/test-utils';
 import {
     accounts,
@@ -15,7 +15,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -56,9 +56,10 @@ describe('TradingFeesScreen', () => {
         const reportMock = jest.fn();
         jest.clearAllMocks();
 
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
+
         const result = await renderWithStoreProviderAsync(<TradingFeesScreen />, {
             preloadedState: state,
         });

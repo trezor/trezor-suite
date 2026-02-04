@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { EventType } from '@suite-native/analytics';
 import { TradingStackParamList, TradingStackRoutes } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     PreloadedState,
     TestStore,
@@ -38,7 +38,7 @@ jest.mock('@suite-native/services', () => {
 
     return {
         ...original,
-        useLegacyAnalytics: jest.fn(),
+        useAnalytics: jest.fn(),
     };
 });
 
@@ -123,7 +123,7 @@ describe('TradingExchangePreviewScreen', () => {
         const testStore = customStore ?? store;
         const reportMock = jest.fn();
         jest.clearAllMocks();
-        (useLegacyAnalytics as jest.Mock).mockReturnValue({
+        (useAnalytics as jest.Mock).mockReturnValue({
             report: reportMock,
         });
 
