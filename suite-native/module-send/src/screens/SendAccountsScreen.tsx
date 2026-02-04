@@ -9,15 +9,15 @@ import {
     StackProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const navigateToSendFormScreen: OnSelectAccount = ({ account, tokenAddress, tokenSymbol }) => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.SendFlowEntered,
             payload: {
                 location: 'dashboard',

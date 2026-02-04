@@ -155,13 +155,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               step: AnalyticsSendFlowStep;
           };
-      }
-    | {
-          type: EventType.SendFlowEntered;
-          payload: {
-              location: 'dashboard' | 'accountDetail';
-              assetSymbol: NetworkSymbol;
-              tokenSymbol?: TokenSymbol;
-              tokenContract?: TokenAddress;
-          };
       };
