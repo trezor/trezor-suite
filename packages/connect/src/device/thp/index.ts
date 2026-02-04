@@ -39,16 +39,36 @@ export const getThpChannel = async (device: Device, withInteraction?: boolean) =
                 await thpHandshake(device, isPinLocked);
             }
         }
-        if (thpState.phase === 'pairing' && withInteraction) {
+        const startPairing = thpState.phase === 'pairing' && withInteraction;
+        if (startPairing) {
+            device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, { status: 'started' });
             // start pairing with UI interaction
             await thpPairing(device);
         }
 
         if (thpState.phase !== 'paired') {
+            device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                status: 'failed',
+                message: 'THP Locked',
+            });
+
             return 'thp-locked';
+        } else if (startPairing) {
+            device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, { status: 'finished' });
         }
     } catch (error) {
         thpState.resetState();
+
+        if (error.code === 'Device_ThpPairingTagInvalid') {
+            // ignore. phase already changed to 'invalid-tag'
+        } else if (error.code === 'Failure_ActionCancelled') {
+            device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, { status: 'canceled' });
+        } else {
+            device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                status: 'failed',
+                message: error.message,
+            });
+        }
 
         throw error;
     }

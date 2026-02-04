@@ -39,6 +39,7 @@ export const DEVICE = {
     PASSPHRASE_ON_DEVICE: 'passphrase_on_device',
     WORD: 'word',
     THP_PAIRING: 'thp_pairing', // ask UI for pairing tag
+    THP_PAIRING_STATUS_CHANGED: 'device-thp_pairing_status_changed',
 } as const;
 
 export interface DeviceButtonRequestPayload extends Omit<PROTO.ButtonRequest, 'code'> {
@@ -62,6 +63,26 @@ export interface DeviceVersionChanged {
 export type DeviceThpCredentialsChangedPayload = {
     credentials: ThpCredentials;
 };
+
+export type DeviceThpPairingStatus =
+    | {
+          status: 'started' | 'canceled' | 'finished';
+      }
+    | {
+          status: 'failed';
+          message: string;
+      }
+    | {
+          status: 'invalid-tag';
+          tag: string;
+      };
+
+export interface DeviceThpPairingStatusChanged {
+    type: typeof DEVICE.THP_PAIRING_STATUS_CHANGED;
+    payload: DeviceThpPairingStatus & {
+        device: Device;
+    };
+}
 
 export type DeviceThpPairingPayload = {
     availableMethods: ThpPairingMethod[];
@@ -94,6 +115,7 @@ export type DeviceEvent =
       }
     | DeviceButtonRequest
     | DeviceThpCredentialsChanged
+    | DeviceThpPairingStatusChanged
     | DeviceVersionChanged
     | DeviceTrezorPushNotification;
 

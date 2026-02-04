@@ -208,6 +208,13 @@ const waitForPairingTag = async (device: Device) => {
         // catch pairing tag mismatch
         // DataError since 2.10.0 https://github.com/trezor/trezor-firmware/commit/b0c3be9b1d95946471ebdab27918a3f652cf11e9
         if (e.code === 'Failure_FirmwareError' || e.code === 'Failure_DataError') {
+            if ('tag' in pairingResponse) {
+                device.emit(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                    status: 'invalid-tag',
+                    tag: pairingResponse.tag,
+                });
+            }
+
             // 'Unexpected Code Entry Tag'
             throw ERRORS.TypedError('Device_ThpPairingTagInvalid', e.message);
         }

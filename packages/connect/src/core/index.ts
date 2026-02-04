@@ -560,6 +560,19 @@ const onThpCredentialsChangedHandler =
         );
     };
 
+const onThpPhaseChangedHandler =
+    (device: Device, context: CoreContext) =>
+    (payload: DeviceEvents['device-thp_pairing_status_changed']) => {
+        const { sendCoreMessage } = context;
+
+        sendCoreMessage(
+            createDeviceMessage(DEVICE.THP_PAIRING_STATUS_CHANGED, {
+                device: device.toMessageObject(),
+                ...payload,
+            }),
+        );
+    };
+
 const registerDeviceEvents =
     (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
         device.removeAllListeners();
@@ -585,6 +598,7 @@ const registerDeviceEvents =
         });
         device.on(DEVICE.THP_PAIRING, onThpPairingHandler(device, context));
         device.on(DEVICE.THP_CREDENTIALS_CHANGED, onThpCredentialsChangedHandler(device, context));
+        device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
     };
 
 /**
