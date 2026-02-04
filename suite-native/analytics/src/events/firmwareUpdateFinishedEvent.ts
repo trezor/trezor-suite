@@ -13,7 +13,7 @@ type Attributes = {
     toFwType: AttributeDef<FirmwareType>;
     location: AttributeDef<'settings' | 'onboarding' | null>;
     duration: AttributeDef<number>;
-    error: AttributeDef<string | undefined>;
+    error?: AttributeDef<string | undefined>;
 };
 
 export const firmwareUpdateFinishedEvent: EventDef<Attributes, EventType.FirmwareUpdateFinished> = {

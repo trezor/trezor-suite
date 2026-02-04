@@ -5,11 +5,7 @@ import { DeviceMode, VersionArray } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
-import {
-    AnalyticsSendFlowStep,
-    DeviceAuthenticityCheckResult,
-    FirmwareUpdatePayload,
-} from './definitions';
+import { AnalyticsSendFlowStep, DeviceAuthenticityCheckResult } from './definitions';
 
 export type CountryChangeContextCheck = 'settings' | 'onboarding';
 export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
@@ -207,11 +203,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.DeviceSettingsCheckBackupSupport;
-      }
-    | {
-          type: EventType.FirmwareUpdateFinished;
-          payload: FirmwareUpdatePayload & {
-              duration: number;
-              error?: string;
-          };
       };
