@@ -14,9 +14,9 @@ import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
 import type { ConnectSettings, ConnectSettingsWeb, Manifest } from '@trezor/connect/src/types';
 import { InitFullSettings } from '@trezor/connect/src/types/api/init';
 import { Log, initLog } from '@trezor/connect/src/utils/debug';
-import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 
 import { parseConnectSettings } from '../connectSettings';
+import * as ERRORS from '../constants/errors';
 import { PopupManager } from '../popup';
 
 /**

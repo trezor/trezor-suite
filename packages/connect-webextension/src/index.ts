@@ -7,11 +7,11 @@ import {
     POPUP,
 } from '@trezor/connect/src/exports';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
 // Import as src not lib due to webpack issues with inlining content script later
+import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
+import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
-import { CoreInSuiteDesktop } from '@trezor/connect-web/src/impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from '@trezor/connect-web/src/impl/core-in-suite-web';
 
 import { parseConnectSettings } from './connectSettings';
 

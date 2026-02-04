@@ -13,12 +13,6 @@
             "path": "../connect-common"
         },
         {
-            "path": "../utils"
-        },
-        {
-            "path": "../websocket-client"
-        },
-        {
             "path": "../eslint"
         },
         {

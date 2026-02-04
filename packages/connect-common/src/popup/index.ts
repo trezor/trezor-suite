@@ -6,15 +6,13 @@ import { CoreEventMessage, DEVICE_EVENT, POPUP } from '@trezor/connect/src/event
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { Log } from '@trezor/connect/src/utils/debug';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
-import { CONTENT_SCRIPT_VERSION, VERSION } from '@trezor/connect-common/src/data/version';
-import {
-    AbstractMessageChannel,
-    Message,
-} from '@trezor/connect-common/src/messageChannel/abstract';
-import { ServiceWorkerWindowChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window';
-import { WindowWindowChannel } from '@trezor/connect-common/src/messageChannel/window-window';
 import type { IntervalId, TimerId } from '@trezor/type-utils';
 import { Deferred, createDeferred, scheduleAction } from '@trezor/utils';
+
+import { CONTENT_SCRIPT_VERSION, VERSION } from '../data/version';
+import { AbstractMessageChannel, Message } from '../messageChannel/abstract';
+import { ServiceWorkerWindowChannel } from '../messageChannel/serviceworker-window';
+import { WindowWindowChannel } from '../messageChannel/window-window';
 
 // Util
 const checkIfTabExists = (tabId: number | undefined) =>

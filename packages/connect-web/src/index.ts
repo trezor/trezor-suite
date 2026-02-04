@@ -1,9 +1,8 @@
 import type { ConnectSettingsPublic, ConnectSettingsWeb } from '@trezor/connect';
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
-import { TrezorConnectDynamic } from '@trezor/connect/src/impl/dynamic';
-
-import { CoreInSuiteDesktop } from './impl/core-in-suite-desktop';
-import { CoreInSuiteWeb } from './impl/core-in-suite-web';
+import { CoreInSuiteDesktop } from '@trezor/connect-common/src/impl/core-in-suite-desktop';
+import { CoreInSuiteWeb } from '@trezor/connect-common/src/impl/core-in-suite-web';
+import { TrezorConnectDynamic } from '@trezor/connect-common/src/impl/dynamic';
 
 type ConnectWebExtraMethods = {
     renderWebUSBButton: (className?: string) => void;

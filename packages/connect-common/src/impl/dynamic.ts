@@ -1,13 +1,13 @@
 import EventEmitter from 'events';
 
-import { ERRORS } from '@trezor/connect-common/src/constants';
+import { CallMethodPayload, createErrorMessage } from '@trezor/connect/src/events';
+import { ConnectFactoryDependencies } from '@trezor/connect/src/factory';
+import { InitFullSettings } from '@trezor/connect/src/types/api/init';
+import type { SetTransports } from '@trezor/connect/src/types/api/setTransports';
+import type { Manifest } from '@trezor/connect/src/types/settings';
 import { getSynchronize } from '@trezor/utils';
 
-import { CallMethodPayload, createErrorMessage } from '../events';
-import { ConnectFactoryDependencies } from '../factory';
-import { InitFullSettings } from '../types/api/init';
-import type { SetTransports } from '../types/api/setTransports';
-import type { Manifest } from '../types/settings';
+import { ERRORS } from '../constants';
 
 type TrezorConnectDynamicParams<
     ImplType,
