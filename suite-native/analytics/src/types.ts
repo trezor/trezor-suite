@@ -9,10 +9,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.AutoEjectModal;
-          payload: { value: 'enable' | 'skip' };
-      }
-    | {
           type: EventType.PassphraseMismatch;
       }
     | {

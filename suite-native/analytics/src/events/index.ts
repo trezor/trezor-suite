@@ -2,6 +2,7 @@ export { appReadyEvent } from './appReadyEvent';
 export { assetDetailEvent } from './assetDetailEvent';
 export { assetDetailTimeframeChangeEvent } from './assetDetailTimeframeChangeEvent';
 export { assetsSyncEvent } from './assetsSyncEvent';
+export { autoEjectModalEvent } from './autoEjectModalEvent';
 export { biometricsChangeEvent } from './biometricsChangeEvent';
 export { coinEnablingInitStateEvent } from './coinEnablingInitStateEvent';
 export { confirmedReceiveAddressEvent } from './confirmedReceiveAddressEvent';

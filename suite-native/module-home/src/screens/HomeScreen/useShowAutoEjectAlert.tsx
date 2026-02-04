@@ -5,11 +5,11 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType, SuiteNativeLegacyAnalyticsEvents } from '@suite-native/analytics';
+import { type AutoEjectModalValue, EventType } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     selectHasAutoEjectAlertBeenDisplayed,
     selectShouldShowAutoEjectAlert,
@@ -19,16 +19,11 @@ import { useToast } from '@suite-native/toasts';
 
 import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 
-type AutoEjectModalEvent = Extract<
-    SuiteNativeLegacyAnalyticsEvents,
-    { type: EventType.AutoEjectModal }
->;
-
 export const useShowAutoEjectAlert = () => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,
@@ -36,13 +31,13 @@ export const useShowAutoEjectAlert = () => {
     const hasAutoEjectAlertBeenDisplayed = useSelector(selectHasAutoEjectAlertBeenDisplayed);
 
     const reportAutoEjectToAnalytics = useCallback(
-        (value: AutoEjectModalEvent['payload']['value']) => {
-            legacyAnalytics.report({
+        (value: AutoEjectModalValue) => {
+            analytics.report({
                 type: EventType.AutoEjectModal,
                 payload: { value },
             });
         },
-        [legacyAnalytics],
+        [analytics],
     );
 
     useFocusEffect(

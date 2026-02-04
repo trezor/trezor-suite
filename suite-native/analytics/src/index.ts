@@ -16,6 +16,7 @@ export type {
     DemoAccountQuestionnaireQuestion,
     DemoAccountQuestionnaireQuestionOption,
 } from './events/demoAccountQuestionnaireQuestionEvent';
+export type { AutoEjectModalValue } from './events/autoEjectModalEvent';
 export type { DemoAccountQuestionnaireLinkKey } from './events/demoAccountQuestionnaireLinksEvent';
 export type {
     CountryChangeContextCheck,
