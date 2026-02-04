@@ -132,23 +132,31 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
 );
 
 const inputStyle = prepareNativeStyle<InputStyleProps>(
-    (utils, { isLabelDisplayed, isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => ({
-        ...utils.typography.body,
-        // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
-        // This resets it to the default TextInput value.
-        letterSpacing: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: INPUT_TEXT_HEIGHT,
-        color: isDisabled ? utils.colors.textSubdued : utils.colors.textDefault,
-        left: isLeftIconDisplayed ? utils.spacings.sp24 : 0,
-        paddingRight: isRightIconDisplayed ? 40 : 0,
-        borderWidth: 0,
-        flex: 1,
-        // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-        paddingTop: isLabelDisplayed ? utils.spacings.sp24 : INPUT_VERTICAL_PADDING,
-        paddingBottom: isLabelDisplayed ? INPUT_WITH_LABEL_BOTTOM_PADDING : INPUT_VERTICAL_PADDING,
-    }),
+    (utils, { isLabelDisplayed, isLeftIconDisplayed, isRightIconDisplayed, isDisabled }) => {
+        const paddingTop = isLabelDisplayed ? utils.spacings.sp24 : INPUT_VERTICAL_PADDING;
+        const paddingBottom = isLabelDisplayed
+            ? INPUT_WITH_LABEL_BOTTOM_PADDING
+            : INPUT_VERTICAL_PADDING;
+        const minHeight = INPUT_TEXT_HEIGHT + paddingTop + paddingBottom;
+
+        return {
+            ...utils.typography.body,
+            // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
+            // This resets it to the default TextInput value.
+            letterSpacing: 0,
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight,
+            color: isDisabled ? utils.colors.textSubdued : utils.colors.textDefault,
+            left: isLeftIconDisplayed ? utils.spacings.sp24 : 0,
+            paddingRight: isRightIconDisplayed ? 40 : 0,
+            borderWidth: 0,
+            flex: 1,
+            // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
+            paddingTop,
+            paddingBottom,
+        };
+    },
 );
 
 const inputHitSlop = {
