@@ -14,4 +14,5 @@ export * from './components/TokenReceiveCard';
 export * from './hooks/useAccountLabelForm';
 export * from './selectors';
 export * from './hooks/useAccountAlerts';
+export * from './utils';
 export { type OnSelectAccount } from './types';
