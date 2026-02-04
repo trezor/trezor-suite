@@ -10,12 +10,6 @@ export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 /** @deprecated use `AnalyticsNativeEvents` */
 export type SuiteNativeLegacyAnalyticsEvents =
     | {
-          type: EventType.EjectDeviceClick;
-          payload: {
-              origin: 'deviceManager' | 'deviceNotReadyModal';
-          };
-      }
-    | {
           type: EventType.DiscoveryDuration;
           payload: {
               discoveryId: string; // Used for grouping multiple events of a single discovery run together.
