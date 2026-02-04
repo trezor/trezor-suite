@@ -1,8 +1,6 @@
 import { TradingType } from '@suite-common/trading';
 import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
-import { DeviceMode, VersionArray } from '@trezor/connect';
-import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { EventType } from './constants';
 
@@ -16,18 +14,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
           type: EventType.EjectDeviceClick;
           payload: {
               origin: 'deviceManager' | 'deviceNotReadyModal';
-          };
-      }
-    | {
-          type: EventType.ConnectDevice;
-          payload: {
-              mode: DeviceMode | null;
-              firmwareVersion: VersionArray | null;
-              pinProtection: boolean | null;
-              deviceModel: DeviceModelInternal | null;
-              isBitcoinOnly: boolean | null;
-              deviceLanguage: string | null;
-              connectionType: 'cable' | 'bluetooth';
           };
       }
     | {
