@@ -72,4 +72,5 @@ export { transactionDetailEvent } from './transactionDetailEvent';
 export { transactionDetailExploreInBlockchainEvent } from './transactionDetailExploreInBlockchainEvent';
 export { transactionDetailInputOutputEvent } from './transactionDetailInputOutputEvent';
 export { transactionDetailParametersEvent } from './transactionDetailParametersEvent';
+export { unsupportedDeviceEvent } from './unsupportedDeviceEvent';
 export { watchPortfolioTimeframeChangeEvent } from './watchPortfolioTimeframeChangeEvent';
