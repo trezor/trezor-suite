@@ -124,10 +124,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
               hasDestinationTag?: boolean;
               hasBitcoinLocktime?: boolean;
           };
-      }
-    | {
-          type: EventType.SendAddressFilled;
-          payload: {
-              method: 'manual' | 'qr';
-          };
       };

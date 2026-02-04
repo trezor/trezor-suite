@@ -42,6 +42,7 @@ export { onboardingCompletedEvent } from './onboardingCompletedEvent';
 export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';
+export { sendAddressFilledEvent } from './sendAddressFilledEvent';
 export { sendAmountInputSwitchedEvent } from './sendAmountInputSwitchedEvent';
 export { sendFeeLevelChangedEvent } from './sendFeeLevelChangedEvent';
 export { sendFlowEnteredEvent } from './sendFlowEnteredEvent';
