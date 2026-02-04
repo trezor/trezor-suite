@@ -200,7 +200,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               location: string;
           };
-      }
-    | {
-          type: EventType.DeviceSettingsCheckBackupSupport;
       };
