@@ -284,7 +284,7 @@ export const FaqCard = () => {
 
     return (
         <Card>
-            <VStack paddingHorizontal="sp8">
+            <VStack>
                 <AccordionList items={items} />
             </VStack>
         </Card>
