@@ -59,9 +59,14 @@ test.describe('Discovery', { tag: ['@T3W1', '@T3T1', '@smoke'] }, () => {
             });
             const expectedAccounts = ['btc', ...coinsToActivate] as NetworkSymbol[];
             for (const symbol of expectedAccounts) {
-                await expect.soft(walletPage.balanceOfAccount({ symbol, atIndex: 0 })).toBeVisible({
-                    timeout: DISCOVERY_LIMIT,
-                });
+                await expect
+                    .soft(
+                        walletPage.balanceOfAccount({ symbol, atIndex: 0 }),
+                        `Failed to discover ${symbol} account`,
+                    )
+                    .toBeVisible({
+                        timeout: DISCOVERY_LIMIT,
+                    });
             }
         });
     });
