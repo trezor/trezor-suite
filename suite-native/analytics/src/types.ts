@@ -130,16 +130,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
           payload: {
               method: 'manual' | 'qr';
           };
-      }
-    | {
-          type: EventType.SendFeeLevelChanged;
-          payload: {
-              value: FeeLevelLabel;
-          };
-      }
-    | {
-          type: EventType.SendRecipientCountChanged;
-          payload: {
-              count: number;
-          };
       };
