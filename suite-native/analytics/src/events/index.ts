@@ -26,6 +26,7 @@ export {
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
 export { deviceSettingsCheckBackupExitedEvent } from './deviceSettingsCheckBackupExitedEvent';
+export { deviceSettingsCheckBackupFinishedEvent } from './deviceSettingsCheckBackupFinishedEvent';
 export { deviceSettingsCheckBackupSupportEvent } from './deviceSettingsCheckBackupSupportEvent';
 export { earnNavigateEvent } from './earnNavigateEvent';
 export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';

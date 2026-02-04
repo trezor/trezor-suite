@@ -188,10 +188,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.DeviceSettingsCheckBackupEntered;
-      }
-    | {
-          type: EventType.DeviceSettingsCheckBackupFinished;
-          payload: {
-              success: boolean;
-          };
       };
