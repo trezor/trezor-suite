@@ -37,7 +37,8 @@
         },
         { "path": "../../packages/styles" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../test-utils" }
     ],
     "include": [".", "**/*.json"]
 }
