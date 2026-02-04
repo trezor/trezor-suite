@@ -1,9 +1,6 @@
-import { isRejected } from '@reduxjs/toolkit';
-
 import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { removeThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import { removeThpCredentialsThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { Switch } from '@trezor/components';
 
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
@@ -34,15 +31,9 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
 
     const handleChange = async () => {
         if (isAutoconnectOn) {
-            const result = await dispatch(
-                removeThpAutoconnectThunk({ credentials: autoconnectCredentials }),
+            await dispatch(
+                removeThpCredentialsThunk({ device, credentials: autoconnectCredentials }),
             ).unwrap();
-
-            if (isRejected(result) && result.error.message) {
-                dispatch(
-                    notificationsActions.addToast({ type: 'error', error: result.error.message }),
-                );
-            }
         } else {
             dispatch(startThpAutoconnectThunk({ device }));
         }

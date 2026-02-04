@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { removeThpAutoconnectThunk } from '@suite-common/thp';
+import { removeThpCredentialsThunk } from '@suite-common/thp';
 import {
     selectDeviceAutoconnectCredentials,
     selectIsDeviceConnected,
@@ -62,19 +62,12 @@ export const useDeviceAutoConnect = () => {
             navigation.navigate(DeviceSettingsStackRoutes.DeviceAutoConnectGuard);
         }
 
-        const result = await dispatch(
-            removeThpAutoconnectThunk({
+        await dispatch(
+            removeThpCredentialsThunk({
                 credentials: autoconnectCredentials,
             }),
         ).unwrap();
-
-        if (isRejected(result)) {
-            showToast({
-                variant: 'error',
-                message: result.error.message,
-            });
-        }
-    }, [isDeviceConnected, navigation, dispatch, autoconnectCredentials, showToast]);
+    }, [isDeviceConnected, navigation, dispatch, autoconnectCredentials]);
 
     return {
         isAutoconnectEnabled: autoconnectCredentials.length > 0,

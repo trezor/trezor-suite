@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { removeThpAutoconnectThunk } from '@suite-common/thp';
+import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
 
@@ -20,17 +20,13 @@ export const ResetThpCredentials = () => {
 
         setIsLoading(true);
 
-        const result = await dispatch(removeThpAutoconnectThunk()).unwrap();
+        await dispatch(removeThpCredentialsThunk({ device })).unwrap();
 
-        if (result?.success) {
-            // This is a bit of a hack, to force use to reconnect the device. Device still has
-            // the session, but Suite discarded all THP credentials.
-            dispatch(deviceActions.deviceDisconnect(device));
+        // This is a bit of a hack, to force use to reconnect the device. Device still has
+        // the session, but Suite discarded all THP credentials.
+        dispatch(deviceActions.deviceDisconnect(device));
 
-            dispatch(notificationsActions.addToast({ type: 'thp-credentials-reset' }));
-        } else if (result && !result?.success) {
-            dispatch(notificationsActions.addToast({ type: 'error', error: result.payload.error }));
-        }
+        dispatch(notificationsActions.addToast({ type: 'thp-credentials-reset' }));
 
         setTimeout(() => setIsLoading(false), 300);
     };

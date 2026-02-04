@@ -7,6 +7,7 @@ import {
     getIsThpDevice,
     getSelectedDevice,
 } from '@suite-common/suite-utils';
+import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { autoInitThpAfterDeviceConnectionThunk } from '@suite-common/thp/src/autoInitThpAfterDeviceConnectionThunk';
 import { connectThpDeviceThunk } from '@suite-common/thp/src/connectThpDeviceThunk';
 import { thpActions } from '@suite-common/thp/src/thpActions';
@@ -397,7 +398,7 @@ export const toggleAutoEjectThunk = createThunk(
 );
 
 type ForgetAllDeviceDataThunkParams = {
-    deviceId: AcquiredDevice['id'];
+    deviceId: TrezorDevice['id'];
 };
 
 /**
@@ -407,20 +408,23 @@ type ForgetAllDeviceDataThunkParams = {
  */
 export const forgetSingleDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
-    ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
-        const matchingDevice = selectPersistentDeviceDataById(getState(), deviceId);
-        dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
-        if (matchingDevice === undefined) return;
+    async ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
+        if (!deviceId) return;
 
-        const bluetoothId = matchingDevice.bluetoothProps?.id;
+        const device = selectDeviceById(getState(), deviceId);
+        const matchingDevice = selectPersistentDeviceDataById(getState(), deviceId);
+
+        dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
+
+        const bluetoothId = matchingDevice?.bluetoothProps?.id;
         if (bluetoothId !== undefined) {
             dispatch(bluetoothActions.removeKnownDeviceAction({ id: bluetoothId }));
             // try to remove OS-level Bluetooth bonds, if supported by the platform
-            dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
+            await dispatch(extra.thunks.forgetBluetoothDevice({ bluetoothId }));
         }
-        const credentials = matchingDevice.thp?.credentials;
+        const credentials = matchingDevice?.thp?.credentials;
         if (credentials !== undefined) {
-            dispatch(thpActions.removeCredentials({ credentials }));
+            await dispatch(removeThpCredentialsThunk({ device, credentials })).unwrap();
         }
     },
 );
@@ -432,7 +436,7 @@ export const forgetSingleDevicePersistentDataThunk = createThunk(
  */
 const handlePostWipeCleanupThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/handlePostWipeCleanup`,
-    (
+    async (
         {
             initialDevice,
             deviceInstances,
@@ -457,7 +461,7 @@ const handlePostWipeCleanupThunk = createThunk(
         if (initialDevice.id !== undefined) {
             // Wiping a device changes bluetoothId and THP static key, so wipe BT known device & THP credentials
             // (and persistent device data as well, because device.id changed).
-            dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
+            await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: initialDevice.id }));
         }
 
         dispatch(extra.actions.openModal({ type: 'wipe-device-success' }));

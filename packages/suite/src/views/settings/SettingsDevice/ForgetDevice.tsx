@@ -30,9 +30,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
     const handleConfirmClick = async () => {
         const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);
 
-        await dispatch(
-            forgetSingleDevicePersistentDataThunk({ deviceId: selectedDevice.id as string }),
-        );
+        await dispatch(forgetSingleDevicePersistentDataThunk({ deviceId: selectedDevice.id }));
 
         instances.forEach(instance => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
