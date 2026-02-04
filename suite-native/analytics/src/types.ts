@@ -1,6 +1,5 @@
 import { TradingType } from '@suite-common/trading';
-import type { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { EventType } from './constants';
 
@@ -22,25 +21,6 @@ export type SuiteNativeLegacyAnalyticsEvents =
               discoveryId: string; // Used for grouping multiple events of a single discovery run together.
               loadDuration: number;
               networkSymbols: NetworkSymbol[];
-          };
-      }
-    | {
-          type: EventType.CoinDiscovery;
-          payload: {
-              discoveryId: string;
-              symbol: NetworkSymbol;
-              numberOfAccounts: number;
-              numberOfNonZeroAccounts: number;
-              tokenSymbols?: TokenSymbol[];
-              tokenAddresses?: TokenAddress[];
-          };
-      }
-    | {
-          type: EventType.CoinDiscoveryNewAccount;
-          payload: {
-              symbol: NetworkSymbol;
-              path: string;
-              type: AccountType;
           };
       }
     | {

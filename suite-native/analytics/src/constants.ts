@@ -28,8 +28,6 @@ export enum EventType {
     ConnectDevice = 'device_connect',
     UnsupportedDevice = 'unsupported_device',
     DiscoveryDuration = 'discovery_duration',
-    CoinDiscovery = 'coin_discovery',
-    CoinDiscoveryNewAccount = 'coin_discovery/new_account',
     SettingsAutoEjectToggle = 'settings/auto_eject_toggle',
     AutoEjectModal = 'auto_eject_modal',
     PassphraseMismatch = 'passphrase/mismatch',
