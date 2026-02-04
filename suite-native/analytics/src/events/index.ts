@@ -25,6 +25,7 @@ export {
     type DeviceSetupSecurityCheckLocation,
 } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
+export { deviceSettingsCheckBackupEnteredEvent } from './deviceSettingsCheckBackupEnteredEvent';
 export { deviceSettingsCheckBackupExitedEvent } from './deviceSettingsCheckBackupExitedEvent';
 export { deviceSettingsCheckBackupFinishedEvent } from './deviceSettingsCheckBackupFinishedEvent';
 export { deviceSettingsCheckBackupSupportEvent } from './deviceSettingsCheckBackupSupportEvent';

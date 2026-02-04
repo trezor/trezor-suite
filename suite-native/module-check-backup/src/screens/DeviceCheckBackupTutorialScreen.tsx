@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { EventType } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import {
     SwipeableWalkthrough,
     SwipeableWalkthroughCloseButton,
@@ -21,14 +21,14 @@ const WALLET_BACKUP_TUTORIAL_STEPS_COUNT = 2;
 export const DeviceCheckBackupTutorialScreen = () => {
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
     const currentStepIndex = useSharedValue(0);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     useFocusEffect(
         useCallback(() => {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.DeviceSettingsCheckBackupEntered,
             });
-        }, [legacyAnalytics]),
+        }, [analytics]),
     );
 
     return (
