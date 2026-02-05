@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { EventType } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 
 import {
     selectHasPassphraseError,
@@ -25,6 +25,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     const passphraseDiscoveryCompleted = useSelector(selectPassphraseDiscoveryCompleted);
     const hasPassphraseError = useSelector(selectHasPassphraseError);
     const hasVerificationCancelledError = useSelector(selectHasVerificationCancelledError);
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const dispatch = useDispatch();
     const store = useStore();
@@ -66,7 +67,7 @@ export const useRedirectOnPassphraseCompletion = () => {
     useEffect(() => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
         if (hasVerificationCancelledError && device) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.PassphraseExit,
                 payload: { screen: route.name },
             });
@@ -79,6 +80,7 @@ export const useRedirectOnPassphraseCompletion = () => {
         navigateToInitialScreen,
         route.name,
         device,
+        analytics,
         legacyAnalytics,
     ]);
 };
