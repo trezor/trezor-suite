@@ -2,6 +2,7 @@ import { TranslationKey } from '@suite/intl';
 import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
 import {
     getIsDeviceIdValid,
+    selectIsDeviceInvariabilityCheckSuccess,
     selectSelectedDevice,
     selectWasFwHashCheckOtherErrorLastTime,
 } from '@suite-common/wallet-core';
@@ -36,6 +37,7 @@ const hashCheckSubtitleMap: Record<
 
 const DeviceCompromisedContent = () => {
     const isValidId = getIsDeviceIdValid(useSelector(selectSelectedDevice));
+    const isDeviceInvariabilityCheckSuccess = useSelector(selectIsDeviceInvariabilityCheckSuccess);
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
@@ -48,6 +50,17 @@ const DeviceCompromisedContent = () => {
                 ctaSection={<FwAuthenticityCheckSupportButton />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVALID_ID_TEXT"
+                checklistItems={hardFailureChecklistItems}
+            />
+        );
+    }
+    // this check is only a precaution, not expected to be seen often
+    if (!isDeviceInvariabilityCheckSuccess) {
+        return (
+            <SecurityCheckFail
+                ctaSection={<FwAuthenticityCheckSupportButton />}
+                heading="TR_DEVICE_COMPROMISED_HEADING"
+                text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}
             />
         );

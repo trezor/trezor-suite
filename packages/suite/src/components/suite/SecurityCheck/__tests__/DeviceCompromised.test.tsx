@@ -5,6 +5,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DeviceReducerState, deviceInitialState } from '@suite-common/wallet-core';
 import { defaultDevicePersistentData } from '@suite-common/wallet-core/src/support/deviceMocks';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { AppState } from 'src/reducers/store';
 import { initialAppState } from 'src/support/tests/__fixtures__/defaultAppState';
@@ -50,6 +51,13 @@ const defaultDevice = mockSuiteDevice();
 if (!deviceUtils.isDeviceAcquired(defaultDevice)) {
     throw 'mockSuiteDevice() must return an AcquiredDevice here.';
 }
+// derived from this device
+const matchingDevicePersistentData = {
+    ...defaultDevicePersistentData,
+    device_id: defaultDevice.features.device_id,
+    unit_color: defaultDevice.features.unit_color,
+    internal_model: defaultDevice.features.internal_model,
+};
 
 const deviceCompromisedFixtures: Array<{
     description: string;
@@ -57,12 +65,12 @@ const deviceCompromisedFixtures: Array<{
     result: TranslationKey;
 }> = [
     {
-        description: 'Errored entropy check',
+        description: 'Entropy check error',
         device: {
             ...deviceInitialState,
             persistentDeviceData: [
                 {
-                    ...defaultDevicePersistentData,
+                    ...matchingDevicePersistentData,
                     lastEntropyCheckResult: { success: false },
                 },
             ],
@@ -71,7 +79,7 @@ const deviceCompromisedFixtures: Array<{
         result: 'TR_DEVICE_COMPROMISED_ENTROPY_CHECK_TEXT',
     },
     {
-        description: 'Errored firmware hash check',
+        description: 'Firmware hash check error',
         device: {
             ...deviceInitialState,
             selectedDevice: {
@@ -131,7 +139,7 @@ const deviceCompromisedFixtures: Array<{
         result: 'TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT',
     },
     {
-        description: 'Errored firmware revision check',
+        description: 'Firmware revision check error',
         device: {
             ...deviceInitialState,
             selectedDevice: {
@@ -146,6 +154,27 @@ const deviceCompromisedFixtures: Array<{
             },
         },
         result: 'TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT',
+    },
+    {
+        description: 'Device Id check error',
+        device: { ...initialAppState.device, selectedDevice: { ...defaultDevice, id: null } },
+        result: 'TR_DEVICE_COMPROMISED_INVALID_ID_TEXT',
+    },
+    {
+        description: 'Device invariability check error',
+        device: {
+            ...initialAppState.device,
+            persistentDeviceData: [matchingDevicePersistentData],
+            selectedDevice: {
+                ...defaultDevice,
+                features: {
+                    ...defaultDevice.features,
+                    internal_model: DeviceModelInternal.T1B1,
+                    unit_color: 333,
+                },
+            },
+        },
+        result: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
     },
 ];
 

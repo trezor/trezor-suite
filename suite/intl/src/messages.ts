@@ -7255,6 +7255,10 @@ export const messages = defineMessages({
         id: 'TR_DEVICE_COMPROMISED_INVALID_ID_TEXT',
         defaultMessage: 'Security check (id validity check) has failed.',
     },
+    TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT: {
+        id: 'TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT',
+        defaultMessage: 'Your device manipulates its model or color.',
+    },
     TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT: {
         id: 'TR_DEVICE_COMPROMISED_FW_HASH_CHECK_TEXT',
         defaultMessage: 'Your device firmware hash check has failed.',
