@@ -31,7 +31,7 @@ export const AuthenticateDeviceSupportButton = () => (
     <ContactSupport supportUrl={TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL} />
 );
 
-const FwAuthenticityCheckSupportButton = () => (
+export const FwAuthenticityCheckSupportButton = () => (
     <ContactSupport supportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL} />
 );
 

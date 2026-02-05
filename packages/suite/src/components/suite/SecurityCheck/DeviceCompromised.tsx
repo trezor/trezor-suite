@@ -1,6 +1,10 @@
 import { TranslationKey } from '@suite/intl';
 import { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
-import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/wallet-core';
+import {
+    getIsDeviceIdValid,
+    selectSelectedDevice,
+    selectWasFwHashCheckOtherErrorLastTime,
+} from '@suite-common/wallet-core';
 import { Card } from '@trezor/components';
 import { FirmwareHashCheckError } from '@trezor/connect';
 
@@ -17,6 +21,7 @@ import {
     DismissFwAuthenticityCheckButton,
     EntropyCheckSupportButton,
     FwAuthencityChecksCtas,
+    FwAuthenticityCheckSupportButton,
 } from './deviceCompromisedCtas';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
@@ -30,11 +35,23 @@ const hashCheckSubtitleMap: Record<
 };
 
 const DeviceCompromisedContent = () => {
+    const isValidId = getIsDeviceIdValid(useSelector(selectSelectedDevice));
     const revisionCheckError = useSelector(selectFirmwareRevisionCheckErrorIfEnabled);
     const hashCheckError = useSelector(selectFirmwareHashCheckErrorIfEnabled);
     const isEntropyCheckFailed = useSelector(selectIsEntropyCheckEnabledAndFailed);
     const wasHashCheckOtherErrorLastTime = useSelector(selectWasFwHashCheckOtherErrorLastTime);
 
+    // this check is only a precaution, not expected to be seen often
+    if (!isValidId) {
+        return (
+            <SecurityCheckFail
+                ctaSection={<FwAuthenticityCheckSupportButton />}
+                heading="TR_DEVICE_COMPROMISED_HEADING"
+                text="TR_DEVICE_COMPROMISED_INVALID_ID_TEXT"
+                checklistItems={hardFailureChecklistItems}
+            />
+        );
+    }
     if (isEntropyCheckFailed) {
         return (
             <SecurityCheckFail
