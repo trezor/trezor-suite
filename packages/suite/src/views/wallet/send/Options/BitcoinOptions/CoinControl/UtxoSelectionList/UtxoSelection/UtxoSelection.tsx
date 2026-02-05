@@ -125,7 +125,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         addressLabels[utxo.address];
 
     const outputLabel =
-        suiteSyncOutputLabels.find(it => it.txId === utxo.txid && it.outputIndex == utxo.vout)
+        suiteSyncOutputLabels.find(it => it.txId === utxo.txid && it.outputIndex === `${utxo.vout}`)
             ?.label ?? outputLabels?.[utxo.txid]?.[utxo.vout];
 
     return (

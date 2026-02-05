@@ -55,7 +55,7 @@ export const processLegacyMetadataIntoSuiteSyncThunk = createThunk<
                 return await services.suiteSync.labeling.updateOutputLabel({
                     deviceStaticSessionId,
                     txId: payload.txid,
-                    outputIndex: Number(payload.outputIndex),
+                    outputIndex: `${payload.outputIndex}`,
                     label: value ?? null,
                     accountDescriptor: asAccountDescriptor(payload.accountDescriptor),
                     networkSymbol: payload.networkSymbol as NetworkSymbol,

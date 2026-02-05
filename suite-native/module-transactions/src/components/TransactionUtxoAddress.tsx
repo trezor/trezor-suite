@@ -60,7 +60,7 @@ export const TransactionUtxoAddress = ({
             {showLabels && (
                 <TransactionOutputLabelEditable
                     txId={txId}
-                    outputIndex={outputIndex}
+                    outputIndex={`${outputIndex}`}
                     deviceStaticSessionId={deviceStaticSessionId}
                     accountDescriptor={accountDescriptor}
                     networkSymbol={networkSymbol}

@@ -1,7 +1,6 @@
 import {
     Evolu,
     NonEmptyString1000,
-    NonNegativeNumber,
     QueryRows,
     createIdFromString,
     id,
@@ -25,12 +24,16 @@ import { normalizeLabel } from './normalizeLabel';
 export const OutputEvoluId = id('OutputLabelId');
 export type OutputEvoluId = typeof OutputEvoluId.Type;
 
+/**
+ * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
+ *            compatible!
+ */
 export const OutputLabelSchema = {
     output: {
         id: OutputEvoluId,
         label: nullOr(NonEmptyString1000),
         txId: NonEmptyString1000,
-        outputIndex: NonNegativeNumber,
+        outputIndex: NonEmptyString1000,
         accountDescriptor: NonEmptyString1000,
         networkSymbol: NonEmptyString1000,
     },

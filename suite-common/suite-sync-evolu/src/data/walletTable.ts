@@ -22,6 +22,10 @@ import { normalizeLabel } from './normalizeLabel';
 export const WalletLabelId = id('WalletLabelId');
 export type WalletLabelId = typeof WalletLabelId.Type;
 
+/**
+ * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
+ *            compatible!
+ */
 export const WalletLabelSchema = {
     wallet: {
         // This table will have only 1 record. As every wallet has its own secret, and therefore

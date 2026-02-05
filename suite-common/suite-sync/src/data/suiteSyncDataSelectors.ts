@@ -91,7 +91,7 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
         (
             state: SuiteSyncDataRootState,
             _txId: string,
-            _outputIndex: number,
+            _outputIndex: string,
             deviceStaticSessionId: StaticSessionId,
         ) => {
             const { walletDescriptor } = parseDeviceStaticSessionId(deviceStaticSessionId);
@@ -99,10 +99,10 @@ export const selectSuiteSyncOutputLabel = createMemoizedSelector(
             return selectAllOutputsForWallet(state, walletDescriptor);
         },
         (_state: SuiteSyncDataRootState, txId: string) => txId,
-        (_state: SuiteSyncDataRootState, _txId: string, outputIndex: number) => outputIndex,
+        (_state: SuiteSyncDataRootState, _txId: string, outputIndex: string) => outputIndex,
     ],
     (outputs, txId, outputIndex) => {
-        const id = createSuiteSyncOutputId(txId, outputIndex);
+        const id = createSuiteSyncOutputId(txId, `${outputIndex}`);
 
         return outputs.find(output => output.id === id)?.label ?? null;
     },

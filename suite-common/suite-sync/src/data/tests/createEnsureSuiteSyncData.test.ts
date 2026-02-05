@@ -239,11 +239,11 @@ describe(createEnsureSubscribeSuiteSyncData.name, () => {
         storageEmitters.outputs.forEach(it =>
             it.onChange([
                 {
-                    id: createSuiteSyncOutputId('transaction-id', 0),
+                    id: createSuiteSyncOutputId('transaction-id', '0'),
                     networkSymbol: 'btc',
                     accountDescriptor: asAccountDescriptor('account-1'),
                     txId: 'transaction-id',
-                    outputIndex: 0,
+                    outputIndex: '0',
                     label: 'Output spend for buying drugs',
                 },
             ]),

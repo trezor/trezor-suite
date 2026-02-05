@@ -1,5 +1,5 @@
 import { createMockDeps, mock } from '@suite-common/dependency-injection';
-import type { OutputTable } from '@suite-common/suite-sync-storage';
+import { OutputTable, SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -30,7 +30,7 @@ describe(createUpdateOutputLabel.name, () => {
         const result = await updateOutputLabel({
             deviceStaticSessionId,
             txId: 'txid',
-            outputIndex: 1,
+            outputIndex: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,
@@ -43,11 +43,11 @@ describe(createUpdateOutputLabel.name, () => {
 
         expect(storage.data.outputs.update).toHaveBeenCalledWith({
             txId: 'txid',
-            outputIndex: 1,
+            outputIndex: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,
-        });
+        } satisfies Partial<SuiteSyncOutput>);
 
         expect(result).toBe(updateResult);
     });
@@ -63,7 +63,7 @@ describe(createUpdateOutputLabel.name, () => {
         const result = await updateOutputLabel({
             deviceStaticSessionId,
             txId: 'txid',
-            outputIndex: 1,
+            outputIndex: '1',
             label: 'New Output Label',
             accountDescriptor,
             networkSymbol,

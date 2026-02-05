@@ -20,7 +20,7 @@ export const createSetLabelsForSuiteSync =
                 deps.updateOutputLabel({
                     deviceStaticSessionId,
                     txId: newTxId,
-                    outputIndex: Number(outputLabel.suiteSyncOutputLabelsToBeUpdated.outputIndex),
+                    outputIndex: outputLabel.suiteSyncOutputLabelsToBeUpdated.outputIndex,
                     label: outputLabel.suiteSyncOutputLabelsToBeUpdated.label,
                     accountDescriptor: outputLabel.data.toBeMoved.descriptor,
                     networkSymbol: outputLabel.data.toBeMoved.symbol,
@@ -37,9 +37,7 @@ export const createDeleteLabelsForSuiteSync =
                     deps.updateOutputLabel({
                         deviceStaticSessionId,
                         txId: toBeDeleted.txid,
-                        outputIndex: Number(
-                            deleteOutput.suiteSyncOutputLabelsToBeDeleted.outputIndex,
-                        ),
+                        outputIndex: deleteOutput.suiteSyncOutputLabelsToBeDeleted.outputIndex,
                         label: null,
                         accountDescriptor: deleteOutput.data.toBeMoved.descriptor,
                         networkSymbol: deleteOutput.data.toBeMoved.symbol,

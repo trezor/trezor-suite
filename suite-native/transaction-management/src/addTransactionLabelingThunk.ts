@@ -60,7 +60,11 @@ export const addTransactionLabelingThunk = createThunk<
                 extra.services.suiteSync.labeling.updateOutputLabel({
                     deviceStaticSessionId: selectedAccount.deviceState,
                     txId,
-                    outputIndex: label.outputIndex,
+
+                    // This is probably not working for non-bitcoin networks
+                    // Todo: see `TransactionTarget:metadataId` and unify
+                    outputIndex: `${label.outputIndex}`,
+
                     label: label.value,
                     accountDescriptor: selectedAccount.descriptor,
                     networkSymbol: selectedAccount.symbol,

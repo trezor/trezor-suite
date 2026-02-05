@@ -6,13 +6,19 @@ import { SuiteSyncTable } from '../SuiteSyncTable';
 
 export type SuiteSyncOutputId = string & Branded<'SuiteSyncOutputId'>;
 
-export const createSuiteSyncOutputId = (txId: string, outputIndex: number) =>
+export const createSuiteSyncOutputId = (txId: string, outputIndex: string) =>
     `${txId}-${outputIndex}` as SuiteSyncOutputId;
 
 export type SuiteSyncOutput = {
     id: SuiteSyncOutputId;
     txId: string;
-    outputIndex: number;
+
+    /**
+     * This is not just index, for tokens, it may be Contract Address, etc...
+     * It is a number index only for bitcoin-like networks
+     */
+    outputIndex: string;
+
     label: string | null;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;

@@ -158,7 +158,7 @@ export const UtxoCard = ({
                                 />
                                 <TransactionOutputLabel
                                     txId={utxo.txid}
-                                    outputIndex={utxo.vout}
+                                    outputIndex={`${utxo.vout}`}
                                     deviceStaticSessionId={deviceStaticSessionId}
                                 />
                             </HStack>
