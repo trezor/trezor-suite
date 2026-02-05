@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
+import { EventType } from '@suite-common/analytics';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { LoadingContent } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
