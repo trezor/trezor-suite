@@ -26,6 +26,7 @@ export const BaseCurrencyAmountFormatter = React.memo(
         variant,
         isDiscreetText = true,
         isLoading = false,
+        isForcedDiscreetMode,
         ...otherProps
     }: FiatAmountFormatterProps) => {
         const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
@@ -33,17 +34,19 @@ export const BaseCurrencyAmountFormatter = React.memo(
         if (!!symbol && isTestnet(symbol)) {
             return <EmptyAmountText variant={variant} />;
         }
-        if (isLoading || value === null) {
+        if (isLoading || (value === null && !isForcedDiscreetMode)) {
             return <EmptyAmountSkeleton variant={variant} />;
         }
 
-        const formattedValue = formatter.format(value);
+        // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
+        const formattedValue = isForcedDiscreetMode ? '$0.00' : formatter.format(value!);
 
         return (
             <AmountText
                 value={formattedValue}
                 variant={variant}
                 isDiscreetText={isDiscreetText}
+                isForcedDiscreetMode={isForcedDiscreetMode}
                 {...otherProps}
             />
         );
