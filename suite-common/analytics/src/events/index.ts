@@ -1,4 +1,3 @@
-export { WalletConnectSessionRequestEvent } from './walletConnectSessionRequestEvent';
 export { connectPopupCallEvent } from './connectPopupCallEvent';
 export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';
@@ -14,3 +13,4 @@ export { walletConnectPairedEvent } from './walletConnectPairedEvent';
 export { walletConnectProposalApprovedEvent } from './walletConnectProposalApprovedEvent';
 export { walletConnectProposalEvent } from './walletConnectProposalEvent';
 export { walletConnectProposalRejectedEvent } from './walletConnectProposalRejectedEvent';
+export { walletConnectSessionRequestEvent } from './walletConnectSessionRequestEvent';
