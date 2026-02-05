@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { EventType } from '@suite-common/analytics';
 import { prettifyLog, useCommonApplicationLogs as useApplicationLogs } from '@suite-common/logger';
 import {
     Button,
@@ -13,16 +14,25 @@ import {
 import { shareAsTextFile } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useAnalytics } from '@suite-native/services';
 
 export const SettingsAppLogScreen = () => {
     const [includeSensitiveInfo, setIncludeSensitiveInfo] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const analytics = useAnalytics();
 
     const applicationLogs = useApplicationLogs(!includeSensitiveInfo);
     const stringifiedApplicationLogs = applicationLogs ? prettifyLog(applicationLogs) : '';
 
     const shareLogsAsFile = async () => {
         setIsLoading(true);
+
+        analytics.report({
+            type: EventType.AppLogExported,
+            payload: {
+                isRedacted: !includeSensitiveInfo,
+            },
+        });
 
         const formattedTimestamp = new Date().toISOString().substring(0, 10); // YYYY-MM-DD
         const filename = `trezor-suite-mobile-log-${formattedTimestamp}.txt`;
