@@ -18,7 +18,7 @@ export class AnalyticsFixture {
 
     /**
      * Finds analytics event by type. Works for both legacy events and events
-     * migrated from legacyAnalytics (e.g. DeviceConnect, TransportType when migrated).
+     * migrated from older analytics tracking (e.g. DeviceConnect, TransportType when migrated).
      */
     findAnalyticsEventByType<T extends SuiteDesktopAnalyticsEventsForE2e>(eventType: T['type']) {
         const event = this.requests.find(req => req.c_type === eventType) as EventPayload<T>;

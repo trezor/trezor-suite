@@ -77,8 +77,6 @@ export const init = () => (dispatch: Dispatch, getState: GetState, extra: ExtraD
         },
     });
 
-    // `sendReport` argument is used only for not sending event `EventType.SettingsAnalytics` twice and it will not be necessary since we delete legacyAnalytics (https://github.com/trezor/trezor-suite/issues/24428)
-    extra.services.legacyAnalytics.init(hasUserAllowedTracking, getOptions({ sendReport: false }));
     extra.services.analytics.init(hasUserAllowedTracking, getOptions({ sendReport: true }));
 
     allowSentryReport(isAnalyticsEnabled);

@@ -1,9 +1,5 @@
 import { ExtraDependenciesStatic } from '@suite-common/redux-utils';
-import {
-    analyticsMock,
-    extraDependenciesCommonMock,
-    legacyAnalyticsMock,
-} from '@suite-common/test-utils';
+import { analyticsMock, extraDependenciesCommonMock } from '@suite-common/test-utils';
 
 import { SuiteServices } from '../extraDependencies';
 
@@ -14,7 +10,6 @@ export const extraDependenciesDesktopMock: ExtraDependenciesSuiteMock = {
     services: {
         ...extraDependenciesCommonMock.services,
         analytics: analyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
-        legacyAnalytics: legacyAnalyticsMock, // To satisfy Suite specific type as ExtraDependenciesStatic tightness it
         suiteRouterHistory: {
             getLocation: () => ({
                 pathname: '/mocked_path',

@@ -3,9 +3,7 @@ import { saveAs } from 'file-saver';
 
 import {
     DesktopAnalyticsDep,
-    DesktopLegacyAnalyticsDep,
     createAnalytics,
-    createLegacyAnalytics,
 } from '@suite/analytics';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
@@ -109,7 +107,6 @@ export type SuiteAppDeps = StoreAPIDep & HistoryDep & SuiteSyncAppReloaderDep;
 
 export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
-    DesktopLegacyAnalyticsDep &
     DisableLegacyMetadataIfNeededDep &
     SuiteRouterHistoryDep;
 
@@ -131,7 +128,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getState: deps.getState,
     });
 
-    const legacyAnalytics = createLegacyAnalytics();
     const analytics = createAnalytics();
 
     const suiteSync = createSuiteSyncDesktopCompositionRoot({
@@ -148,8 +144,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     return {
         suiteSync,
         platformEncryption,
-        legacyAnalytics,
-        analytics: createAnalytics(),
+        analytics,
         disableLegacyMetadataIfNeeded,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
