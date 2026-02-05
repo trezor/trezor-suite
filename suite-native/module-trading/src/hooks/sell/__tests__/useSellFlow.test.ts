@@ -42,14 +42,16 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
-const mockNavigation = {
-    navigate: jest.fn(),
-};
+const mockOpenBrowserAsync = jest.fn();
 
-jest.mock('@react-navigation/native', () => ({
-    ...jest.requireActual('@react-navigation/native'),
-    useNavigation: () => mockNavigation,
-}));
+jest.mock('expo-web-browser', () => {
+    const originalModule = jest.requireActual('expo-web-browser');
+
+    return {
+        ...originalModule,
+        openBrowserAsync: (...args: unknown[]) => mockOpenBrowserAsync(...args),
+    };
+});
 
 jest.mock('../../general/useTradingTransaction', () => ({
     useTradingTransaction: () => ({
@@ -75,7 +77,6 @@ describe('useSellFlow', () => {
         store = initStore({ wallet: getWalletState({ tradeType: 'sell' }) }).store;
 
         capturedHandleTradeArgs = null;
-        mockNavigation.navigate.mockClear();
         jest.clearAllMocks();
 
         jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -371,12 +372,11 @@ describe('useSellFlow', () => {
                 capturedHandleTradeArgs!.processResponseData(mockResponse);
             });
 
-            expect(mockNavigation.navigate).toHaveBeenCalledWith('TradingWebView', {
-                closeCallbackUrl: expect.stringContaining('trezorsuite://trading'),
-                source: { uri: 'https://example.com/form' },
-                orderId: 'order_id_0',
-                tradingType: 'sell',
-            });
+            expect(mockOpenBrowserAsync).toHaveBeenCalledTimes(1);
+            expect(mockOpenBrowserAsync).toHaveBeenCalledWith(
+                'https://example.com/form',
+                expect.any(Object),
+            );
         });
     });
 });

@@ -21,7 +21,6 @@ export enum RootStackRoutes {
     SettingsScreenStack = 'SettingsScreenStack',
     DeviceCompromisedModal = 'DeviceCompromisedModal',
     BackupFailedModal = 'BackupFailedModal',
-    TradingWebView = 'TradingWebView',
     BootloaderMode = 'BootloaderMode',
     TradingLocationModal = 'TradingLocationModal',
     DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',

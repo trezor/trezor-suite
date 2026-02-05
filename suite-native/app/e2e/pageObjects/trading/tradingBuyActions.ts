@@ -29,6 +29,7 @@ class TradingBuyActions extends TradingFormActions {
     }
 
     async closePaymentWebview() {
+        // TODO 24695
         await waitForVisible(by.id('@screen/TradingWebView'));
         await element(by.id('@trading/webview/close')).tap();
         await waitForVisible(by.id('@screen/Trading'));

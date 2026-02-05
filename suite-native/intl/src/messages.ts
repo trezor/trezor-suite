@@ -2731,6 +2731,11 @@ export const messages = {
             emptyDescription: 'Check the spelling or browse the list to select an option.',
             searchInputPlaceholder: 'Search country',
         },
+        webView: {
+            noURL: 'No URL provided',
+            browserLocked: 'Browser is locked.',
+            browserError: 'An error occurred while opening the browser.',
+        },
     },
     notifications: {
         transaction: {

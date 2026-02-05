@@ -184,8 +184,10 @@ export const getTradeStatusStep = (trade: TradingTransaction | undefined) => {
 
 export type TradeStatusStep = ReturnType<typeof getTradeStatusStep>;
 
-export const doesUrlContainCloseCallbackUrl = (url: string, closeCallbackUrl: string) =>
-    url.includes(closeCallbackUrl) || url.includes(TRADING_URL_DEFAULT_BACK);
+export const doesUrlContainCloseCallbackUrl = (
+    url: string,
+    closeCallbackUrl: string = TRADING_URL_DEFAULT_BACK,
+) => url.includes(closeCallbackUrl);
 
 export const getRandomAccountDescriptor = () => getWeakRandomId(20);
 
