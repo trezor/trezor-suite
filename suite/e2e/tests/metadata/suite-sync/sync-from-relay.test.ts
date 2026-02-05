@@ -7,20 +7,20 @@ import { isWebProject } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 
 const defaultWalletIndex = 0;
-const walletSeed = {
+export const walletSeed = {
     id: 'ya1CCDTCVPyRa6egTac7yg',
     walletDescriptor,
     label: 'Evolu synced wallet',
 };
 
-const accountSeed = {
+export const accountSeed = {
     id: 'RSZ0aKqUcO_e0WoQO32x4w',
     accountDescriptor,
     networkSymbol: 'btc',
     label: 'Evolu synced BTC account',
 };
 
-const addressSeed = {
+export const addressSeed = {
     id: 'DmBRN-GwcRyC-cuTPczSXg',
     label: 'Evolu synced BTC address',
     address: 'bc1qkkr2uvry034tsj4p52za2pg42ug4pxg5qfxyfa',
