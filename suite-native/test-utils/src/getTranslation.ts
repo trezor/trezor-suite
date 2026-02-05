@@ -1,9 +1,28 @@
 import { createIntl, createIntlCache } from 'react-intl';
 
 import { TxKeyPath } from '@suite-native/intl';
-import messages from '@suite-native/intl/translations/en-US.json';
+import { messages } from '@suite-native/intl/src/messages';
+import { flatten } from '@suite-native/intl/src/utils';
 
-const intlEn = createIntl({ locale: 'en', messages }, createIntlCache());
+const intlEn = createIntl({ locale: 'en', messages: flatten(messages) }, createIntlCache());
+
+const getTemplate = (translationId: TxKeyPath): string => {
+    const idPath = translationId.split('.');
+    let template: any = messages;
+
+    for (const segment of idPath) {
+        template = template[segment];
+        if (template === undefined) {
+            throw new Error(`Translation ID "${translationId}" not found in messages.ts!`);
+        }
+    }
+
+    if (typeof template !== 'string') {
+        throw new Error(`Translation ID "${translationId}" does not point to a string value!`);
+    }
+
+    return template;
+};
 
 /**
  * Get the translated string for a given translation ID. Use with React Testing Library queries
@@ -36,14 +55,10 @@ export const getTranslation = (
     translationId: TxKeyPath,
     values?: Record<string, string | number>,
 ): string => {
-    const template = messages[translationId as keyof typeof messages];
-
-    if (template === undefined) {
-        throw new Error(`Translation ID "${translationId}" not found in en-US.json!`);
-    }
+    const template = getTemplate(translationId);
 
     // Throw an error if translation expects a value that was not provided.
-    const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?\}/g;
+    const placeholderRegex = /\{(\w+)(?:,\s*\w+[^}]*)?}/g;
     const matches = template.matchAll(placeholderRegex);
     const placeholders = Array.from(new Set(Array.from(matches, m => m[1])));
 
