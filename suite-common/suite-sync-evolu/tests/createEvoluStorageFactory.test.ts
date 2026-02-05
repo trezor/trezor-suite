@@ -159,7 +159,7 @@ describe(createEvoluStorageFactory.name, () => {
 
         const updateResult = storage.data.outputs.update({
             txId: 'abc123txid',
-            outputIndex: 0,
+            outputIndex: '0',
             label: 'Payment to Alice',
             accountDescriptor: asAccountDescriptor('xpub123'),
             networkSymbol: 'btc',
@@ -174,7 +174,7 @@ describe(createEvoluStorageFactory.name, () => {
                 {
                     id: 'abc123txid-0',
                     txId: 'abc123txid',
-                    outputIndex: 0,
+                    outputIndex: '0',
                     label: 'Payment to Alice',
                     accountDescriptor: 'xpub123',
                     networkSymbol: 'btc',
