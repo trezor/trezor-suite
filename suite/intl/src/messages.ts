@@ -3108,6 +3108,15 @@ export const messages = defineMessages({
         defaultMessage: 'Trezor Suite version',
         id: 'TR_SUITE_VERSION',
     },
+    TR_SUITE_SYNC_GET_KEYS: {
+        defaultMessage: 'Allow',
+        id: 'TR_SUITE_SYNC_GET_KEYS',
+    },
+    TR_SUITE_SYNC_KEYS_NEEDED_BANNER: {
+        defaultMessage:
+            'Allow Suite Sync to view and edit your labels, wallet names, and account names.',
+        id: 'TR_SUITE_SYNC_KEYS_NEEDED_BANNER',
+    },
     TR_TAKE_ME_BACK_TO_WALLET: {
         defaultMessage: 'Take me back to Suite',
         id: 'TR_TAKE_ME_BACK_TO_WALLET',
