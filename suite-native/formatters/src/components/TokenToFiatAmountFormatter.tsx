@@ -33,6 +33,7 @@ export const TokenToFiatAmountFormatter = ({
     numberOfLines,
     historicRate,
     useHistoricRate,
+    isForcedDiscreetMode,
     ...rest
 }: TokenToFiatAmountFormatterProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
@@ -45,30 +46,33 @@ export const TokenToFiatAmountFormatter = ({
         useHistoricRate,
     });
 
-    if (fiatValue === null) {
+    if (fiatValue === null && !isForcedDiscreetMode) {
         return <EmptyAmountSkeleton />;
     }
 
-    const formattedFiatValue = BaseCurrencyAmountFormatter.format(fiatValue);
+    const formattedFiatValue = isForcedDiscreetMode
+        ? '$0.00' // in case of isForceDiscreetMode the value is blurred, so the real value does not matter
+        : BaseCurrencyAmountFormatter.format(fiatValue!);
 
-    return signValue ? (
-        <Box flexDirection="row">
-            <SignValueFormatter value={signValue} />
-            <AmountText
-                value={formattedFiatValue}
-                isDiscreetText={isDiscreetText}
-                ellipsizeMode={ellipsizeMode}
-                numberOfLines={numberOfLines}
-                {...rest}
-            />
-        </Box>
-    ) : (
+    const amountText = (
         <AmountText
             value={formattedFiatValue}
             isDiscreetText={isDiscreetText}
             ellipsizeMode={ellipsizeMode}
             numberOfLines={numberOfLines}
+            isForcedDiscreetMode={isForcedDiscreetMode}
             {...rest}
         />
+    );
+
+    if (!signValue) {
+        return amountText;
+    }
+
+    return (
+        <Box flexDirection="row">
+            <SignValueFormatter value={signValue} />
+            {amountText}
+        </Box>
     );
 };
