@@ -29,7 +29,7 @@ const initialSettings: ConnectSettings = {
     transportReconnect: true,
 };
 
-const parseManifest = (manifest?: Manifest) => {
+export const parseManifest = (manifest?: Manifest) => {
     if (!manifest) return;
     if (typeof manifest.email !== 'string') return;
     if (typeof manifest.appUrl !== 'string') return;
@@ -44,6 +44,9 @@ const parseManifest = (manifest?: Manifest) => {
         appIcon: manifest.appIcon,
     };
 };
+
+export const parseVersion = (version?: string) =>
+    typeof version === 'string' ? version : initialSettings.version;
 
 export const parseLocalFirmwares = (localFirmwares: LocalFirmwares) => {
     if (!localFirmwares) return;
