@@ -20,7 +20,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
     | {
           type: EventType.PassphraseEnterOnTrezor;
       }
-    | {
-          type: EventType.PassphraseEnterInApp;
-      }
     ;
