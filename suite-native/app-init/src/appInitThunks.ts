@@ -11,7 +11,7 @@ import {
     selectBaseCurrency,
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
-import { initAnalyticsThunk } from '@suite-native/analytics';
+import { initAnalyticsThunk } from '@suite-native/analytics-redux';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { setIsAppReady } from '@suite-native/state';
 

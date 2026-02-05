@@ -6,17 +6,15 @@ import {
     selectIsAnalyticsEnabled,
 } from '@suite-common/analytics-redux';
 import { createThunk } from '@suite-common/redux-utils';
+import { EventType, getTypedNativeAnalytics } from '@suite-native/analytics';
 import { isDevelopEnv } from '@suite-native/config';
 import { allowSentryReport, setSentryUser } from '@suite-native/sentry';
 import { type InitOptions, getTrackingRandomId } from '@trezor/analytics-uploader';
 import { getCommitHash } from '@trezor/env-utils';
 
-import { EventType } from './constants';
-import { getTypedNativeAnalytics } from './getTypedNativeAnalytics';
-
 const ACTION_PREFIX = '@suite-native/analytics';
 
-export const enableAnalyticsThunk = createThunk(
+const enableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/enableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
         getTypedNativeAnalytics(extra.services.analytics).report({
@@ -28,7 +26,7 @@ export const enableAnalyticsThunk = createThunk(
     },
 );
 
-export const disableAnalyticsThunk = createThunk(
+const disableAnalyticsThunk = createThunk(
     `${ACTION_PREFIX}/disableAnalyticsThunk`,
     (_, { dispatch, extra }) => {
         getTypedNativeAnalytics(extra.services.analytics).report(

@@ -1,0 +1,21 @@
+{
+    "name": "@suite-native/analytics-redux",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/analytics-redux": "workspace:*",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-native/analytics": "workspace:*",
+        "@suite-native/config": "workspace:*",
+        "@suite-native/sentry": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*",
+        "@trezor/env-utils": "workspace:*"
+    }
+}
