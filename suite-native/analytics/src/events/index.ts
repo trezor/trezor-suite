@@ -47,6 +47,7 @@ export { passphraseAddHiddenWalletEvent } from './passphraseAddHiddenWalletEvent
 export { passphraseExitEvent } from './passphraseExitEvent';
 export { passphraseFlowFinishedEvent } from './passphraseFlowFinishedEvent';
 export { passphraseEnterInAppEvent } from './passphraseEnterInAppEvent';
+export { passphraseEnterOnTrezorEvent } from './passphraseEnterOnTrezorEvent';
 export { passphraseTryAgainEvent } from './passphraseTryAgainEvent';
 export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';

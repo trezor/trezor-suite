@@ -9,16 +9,16 @@ import { EventType } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { DeviceModelIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const deviceModel = useSelector(selectDeviceInternalModel);
 
     const handleSubmitOnDevice = () => {
-        legacyAnalytics.report({ type: EventType.PassphraseEnterOnTrezor });
+        analytics.report({ type: EventType.PassphraseEnterOnTrezor });
         if (!device) return;
         dispatch(submitPassphrase({ device, passphrase: '', passphraseOnDevice: true }));
     };
