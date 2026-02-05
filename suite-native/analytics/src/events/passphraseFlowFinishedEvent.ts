@@ -6,10 +6,7 @@ type Attributes = {
     isEmptyWallet: AttributeDef<boolean>;
 };
 
-export const passphraseFlowFinishedEvent: EventDef<
-    Attributes,
-    EventType.PassphraseFlowFinished
-> = {
+export const passphraseFlowFinishedEvent: EventDef<Attributes, EventType.PassphraseFlowFinished> = {
     name: EventType.PassphraseFlowFinished,
     descriptionTrigger: 'Successfully created passphrase wallet.',
     changelog: [{ version: '24.7.2', notes: 'added' }],
