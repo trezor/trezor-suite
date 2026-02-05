@@ -17,7 +17,7 @@ import { EventType } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
@@ -42,7 +42,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
     const formWrapperView = useRef<View>(null);
 
@@ -79,7 +79,7 @@ export const PassphraseForm = ({
     });
 
     const handleFocusInput = () => {
-        legacyAnalytics.report({ type: EventType.PassphraseEnterInApp });
+        analytics.report({ type: EventType.PassphraseEnterInApp });
         setIsInputFocused(true);
         onFocus?.();
     };
