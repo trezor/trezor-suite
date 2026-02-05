@@ -130,6 +130,8 @@ export const getAccountListSections = (
     const sections: AccountSelectBottomSheetSection[] = [];
     const isNetworkSupportingTokens = isNetworkWithTokens(account.symbol);
 
+    // TODO: unify with desktop when token management is ready,
+    // unhide token during activation automatically
     // For Stellar, show all tokens without filtering.
     // Unlike EVM chains where tokens can be airdropped as spam, Stellar tokens (trustlines)
     // require explicit user action to activate. See tokensSelectors.ts for details.
