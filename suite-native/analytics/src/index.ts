@@ -2,6 +2,9 @@ export * from './analyticsThunks';
 export { EventType } from './constants';
 export type {
     AnalyticsSendFlowStep,
+    CountryChangeContextCheck,
+    CountryChangeContext,
+    CountryChangeAction,
     DeviceAuthenticityCheckResult,
     FirmwareUpdatePayload,
     FirmwareUpdateStartType,
@@ -18,11 +21,6 @@ export type {
 } from './events/demoAccountQuestionnaireQuestionEvent';
 export type { AutoEjectModalValue } from './events/autoEjectModalEvent';
 export type { DemoAccountQuestionnaireLinkKey } from './events/demoAccountQuestionnaireLinksEvent';
-export type {
-    CountryChangeContextCheck,
-    CountryChangeContext,
-    CountryChangeAction,
-} from './types';
 export { createAnalytics, type NativeAnalyticsDep } from './createAnalytics';
 export { getTypedNativeAnalytics } from './getTypedNativeAnalytics';
 export type { AnalyticsNativeEvents } from './analyticsEvents';
