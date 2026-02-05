@@ -3,9 +3,12 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { selectBannerMessage } from '@suite-common/message-system';
+import { selectSuiteSyncError, selectSuiteSyncInteraction } from '@suite-common/suite-sync';
 import {
+    selectDeviceStaticSessionId,
     selectIsDeviceBackupRequired,
     selectIsDeviceBackupUnfinished,
+    selectIsDeviceConnected,
     selectSelectedDevice,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -31,6 +34,7 @@ import { LocalNetworkAccessPermission } from './LocalNetworkAccessPermission';
 import { NoBackup } from './NoBackupBanner';
 import { NoConnectionBanner } from './NoConnectionBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
+import { SuiteSyncKeysBanner } from './SuiteSyncKeysBanner';
 
 const Container = styled.div<{ $fill?: boolean }>`
     width: 100%;
@@ -61,6 +65,12 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     const transport = useSelector(state => state.suite.transport);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const { localNetworkAccessPermission } = useLocalNetworkAccessPermission();
+    const deviceStaticSessionId = useSelector(selectDeviceStaticSessionId);
+    const suiteSyncInteraction = useSelector(state =>
+        selectSuiteSyncInteraction(state, deviceStaticSessionId),
+    );
+    const suiteSyncError = useSelector(selectSuiteSyncError);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
 
     // The dismissal doesn't need to outlive the session. Use local state.
     const [safetyChecksDismissed, setSafetyChecksDismissed] = useState(false);
@@ -117,6 +127,14 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (accounts.some(account => isCardanoStakedWithFiveBinaries(account))) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
+    } else if (
+        suiteSyncInteraction === 'keys-needed' &&
+        deviceStaticSessionId &&
+        isDeviceConnected &&
+        suiteSyncError
+    ) {
+        banner = <SuiteSyncKeysBanner deviceStaticSessionId={deviceStaticSessionId} />;
+        priority = 10;
     }
 
     // message system banners should always be visible in the app even if app body is blurred
