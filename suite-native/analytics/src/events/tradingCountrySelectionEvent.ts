@@ -1,7 +1,7 @@
 import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
-import type { CountryChangeAction, CountryChangeContextCheck } from '../types';
+import type { CountryChangeAction, CountryChangeContextCheck } from '../definitions';
 
 type Attributes = {
     type: AttributeDef<CountryChangeContextCheck>;

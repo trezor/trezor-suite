@@ -2,7 +2,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 import { TradingType } from '@suite-common/trading';
 
 import { EventType } from '../constants';
-import { CountryChangeContext } from '../types';
+import { CountryChangeContext } from '../definitions';
 
 type TradingParameter =
     | 'fiat'
