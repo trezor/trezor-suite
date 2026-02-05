@@ -19,7 +19,7 @@ import {
     useInterceptNativeNavigation,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 import { selectIsCreatingNewPassphraseWallet } from '../passphraseSelectors';
@@ -34,7 +34,7 @@ export const PassphraseScreenHeader = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute();
     const device = useSelector(selectSelectedDevice);
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const { showAlert } = useAlert();
@@ -50,7 +50,7 @@ export const PassphraseScreenHeader = () => {
                 screen: HomeStackRoutes.Home,
             },
         });
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.PassphraseExit,
             payload: { screen: route.name },
         });
@@ -58,7 +58,7 @@ export const PassphraseScreenHeader = () => {
         if (device) {
             dispatch(cancelDiscoveryThunk(device));
         }
-    }, [navigation, legacyAnalytics, route.name, device, dispatch]);
+    }, [navigation, analytics, route.name, device, dispatch]);
 
     const handleCancel = useCallback(() => {
         if (isCreatingNewWalletInstance) {

@@ -44,6 +44,7 @@ export { firmwareUpdateFinishedEvent } from './firmwareUpdateFinishedEvent';
 export { firmwareUpdateStuckedEvent } from './firmwareUpdateStuckedEvent';
 export { onboardingCompletedEvent } from './onboardingCompletedEvent';
 export { passphraseAddHiddenWalletEvent } from './passphraseAddHiddenWalletEvent';
+export { passphraseExitEvent } from './passphraseExitEvent';
 export { receiveFlowEnteredEvent } from './receiveFlowEnteredEvent';
 export { referralButtonPressEvent } from './referralButtonPressEvent';
 export { screenChangeEvent } from './screenChangeEvent';

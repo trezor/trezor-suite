@@ -6,19 +6,19 @@ import {
     PassphraseContentScreenWrapper,
     PassphraseEnterOnTrezorScreenContent,
 } from '@suite-native/passphrase';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import TrezorConnect from '@trezor/connect';
 
 import { useHandleNavigateToInitialScreenOnIdle } from '../../hooks/useHandleNavigateToInitialScreenOnIdle';
 
 export const PassphraseEnterOnTrezorScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
 
     useHandleNavigateToInitialScreenOnIdle();
 
     const handleCancel = () => {
-        legacyAnalytics.report({
+        analytics.report({
             type: EventType.PassphraseExit,
             payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
         });

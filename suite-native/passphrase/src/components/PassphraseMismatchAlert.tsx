@@ -20,7 +20,7 @@ import {
     StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics, useLegacyAnalytics } from '@suite-native/services';
 
 import { selectHasPassphraseMismatchError } from '../passphraseSelectors';
 
@@ -32,6 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
     const dispatch = useDispatch();
+    const analytics = useAnalytics();
     const legacyAnalytics = useLegacyAnalytics();
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
@@ -80,7 +81,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                     dispatch(cancelDiscoveryThunk(device));
                     navigateToInitialScreen();
 
-                    legacyAnalytics.report({
+                    analytics.report({
                         type: EventType.PassphraseExit,
                         payload: { screen: AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor },
                     });
@@ -93,6 +94,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
         device,
         dispatch,
         hasPassphraseMismatchError,
+        analytics,
         legacyAnalytics,
         navigateToInitialScreen,
         navigation,

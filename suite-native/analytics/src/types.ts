@@ -29,8 +29,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
       }
     | {
           type: EventType.PassphraseTryAgain;
-      }
-    | {
-          type: EventType.PassphraseExit;
-          payload: { screen: string };
       };
