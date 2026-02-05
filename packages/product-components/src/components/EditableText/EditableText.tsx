@@ -129,7 +129,7 @@ const Container = styled.span<ContainerProps>`
     padding-left: ${({ $gap }) => $gap}px;
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'inherit' : 'pointer')};
 
-    &:before {
+    &::before {
         content: '';
         position: absolute;
         inset: 0;
@@ -156,7 +156,7 @@ const Container = styled.span<ContainerProps>`
                   margin-left: -${$gap}px;
               `
             : css`
-                  &:hover:before {
+                  &:hover::before {
                       background: ${({ theme }) => theme.stateFillElementNeutralSoftestHovered};
                   }
               `}

@@ -23,7 +23,6 @@ import {
     AccountLabeling,
     AddressLabeling,
     Labeling,
-    MetadataLabeling,
     WalletLabeling,
     useGetWalletLabel,
 } from './labeling';
@@ -74,7 +73,6 @@ export {
     AddressLabeling,
     WalletLabeling,
     useGetWalletLabel,
-    MetadataLabeling,
     QuestionTooltip,
     FormattedCryptoAmount,
     FormattedNftAmount,

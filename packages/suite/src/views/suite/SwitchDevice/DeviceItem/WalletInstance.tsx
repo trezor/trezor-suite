@@ -28,7 +28,7 @@ import { spacings } from '@trezor/theme';
 import * as METADATA_LABELING from 'src/actions/suite/metadata/metadataLabelingConstants';
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 import { WalletLabeling } from 'src/components/suite';
-import { Labeling } from 'src/components/suite/labeling/MetadataLabeling/MetadataLabeling';
+import { Labeling } from 'src/components/suite/labeling/Labeling/Labeling';
 import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -184,7 +184,7 @@ export const WalletInstance = ({
                                                 defaultValue: instance.state.staticSessionId,
                                                 value:
                                                     // This is some legacy weird stuff I do not want to refacotr.
-                                                    // `payload.value` needs to be falsey for the `MetadataLabeling` component
+                                                    // `payload.value` needs to be falsey for the `Labeling` component
                                                     // to display `add` button, instead of `edit` button
                                                     isSuiteSyncEnabled &&
                                                     instance?.metadata[
