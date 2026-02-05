@@ -38,7 +38,7 @@ import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceCon
 import {
     selectDeviceById,
     selectDevices,
-    selectPersistentDeviceData,
+    selectPersistentDeviceDataById,
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
@@ -408,11 +408,8 @@ type ForgetAllDeviceDataThunkParams = {
 export const forgetSingleDevicePersistentDataThunk = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetSingleDevicePersistentDataThunk`,
     ({ deviceId }: ForgetAllDeviceDataThunkParams, { dispatch, extra, getState }) => {
-        const persistentDeviceData = selectPersistentDeviceData(getState());
-
+        const matchingDevice = selectPersistentDeviceDataById(getState(), deviceId);
         dispatch(deviceActions.forgetDevicePersistentData({ deviceId }));
-
-        const matchingDevice = persistentDeviceData.find(d => d.device_id === deviceId);
         if (matchingDevice === undefined) return;
 
         const bluetoothId = matchingDevice.bluetoothProps?.id;
