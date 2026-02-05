@@ -6,12 +6,12 @@ import { Spinner, SpinnerLoadingState, Text, VStack } from '@suite-native/atoms'
 import { Translation } from '@suite-native/intl';
 import { Screen, useNavigateToInitialScreen } from '@suite-native/navigation';
 import { PassphraseScreenHeader, selectPassphraseDeviceNotEmpty } from '@suite-native/passphrase';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 export const PassphraseLoadingScreen = () => {
     const isDeviceNotEmpty = useSelector(selectPassphraseDeviceNotEmpty);
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export const PassphraseLoadingScreen = () => {
 
     const handleSuccess = () => {
         if (isDeviceNotEmpty) {
-            legacyAnalytics.report({
+            analytics.report({
                 type: EventType.PassphraseFlowFinished,
                 payload: { isEmptyWallet: false },
             });
