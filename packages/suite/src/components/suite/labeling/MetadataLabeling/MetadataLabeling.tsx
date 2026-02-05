@@ -12,19 +12,20 @@ import { spacingsPx } from '@trezor/theme';
 import { TimerId } from '@trezor/type-utils';
 
 import { addMetadata, init, setEditing } from 'src/actions/suite/metadata/metadataLabelingActions';
+import {
+    selectDesktopSuiteSyncInteraction,
+    updateShowEnableSuiteSyncModal,
+} from 'src/actions/suiteSync/suiteSyncSlice';
 import { processLegacyMetadataIntoSuiteSyncThunk } from 'src/actions/wallet/processLegacyMetadataIntoSuiteSyncThunk';
 import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsLabelingAvailableForEntity } from 'src/reducers/suite/metadataReducer';
+import { useSuiteServices } from 'src/support/SuiteServicesProvider';
 import { MetadataAddPayload } from 'src/types/suite/metadata';
 
 import { SuiteSyncInteractionsTooltip } from './SuiteSyncInteractionsTooltip';
 import { LabelContentProps, LabelingVariant, MetadataProps, PrimitiveProps } from './definitions';
 import { withDropdown } from './withDropdown';
 import { withEditable } from './withEditable';
-import {
-    selectDesktopSuiteSyncInteraction,
-    updateShowEnableSuiteSyncModal,
-} from '../../../../actions/suiteSync/suiteSyncSlice';
 import { AccountTypeBadge } from '../../AccountTypeBadge';
 import { NO_HIGHLIGHT_ATTRIBUTE } from '../../FindBar/consts';
 import { suiteSyncErrorHandler } from '../suiteSyncErrorHandler';
@@ -371,6 +372,7 @@ export const Labeling = ({
 }: LabelingProps) => {
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
+    const { suiteSync } = useSuiteServices();
 
     const legacyMetadataState = useSelector(state => state.metadata);
 
@@ -393,14 +395,31 @@ export const Labeling = ({
     const handleEdit = useCallback(async () => {
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
-            !isSuiteSyncEnabled &&
             // Isn't initiation in progress?
             !legacyMetadataState.initiating &&
             // Is there something that needs to be initiated?
             !isLegacyLabelingEnabled
         ) {
             if (suiteSyncInteraction !== null) {
-                dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
+                // Keys needed is not handled by the same modal, because it in DeviceInteraction context
+                if (suiteSyncInteraction === 'keys-needed') {
+                    const result = await suiteSync.ensureWalletSuiteSyncOn({
+                        deviceStaticSessionId,
+                        isWriteMode: false,
+                    });
+
+                    if (!result.success) {
+                        suiteSyncErrorHandler({
+                            error: result.error,
+                            dispatch,
+                            deviceStaticSessionId,
+                        });
+                    }
+
+                    return;
+                } else {
+                    dispatch(updateShowEnableSuiteSyncModal({ deviceStaticSessionId }));
+                }
 
                 // user can decide if they want to enable metadata or not, so we do not set editing state yet
                 return;
@@ -416,12 +435,12 @@ export const Labeling = ({
             }
         }
     }, [
-        isSuiteSyncEnabled,
         legacyMetadataState.initiating,
         isLegacyLabelingEnabled,
         suiteSyncInteraction,
-        dispatch,
+        suiteSync,
         deviceStaticSessionId,
+        dispatch,
         deviceState,
     ]);
 
