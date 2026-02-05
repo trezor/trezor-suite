@@ -11,7 +11,9 @@ export type FirmwareCheckType =
     | 'Entropy'
     | 'Firmware hash'
     | 'Firmware revision'
-    | 'Firmware version';
+    | 'Firmware version'
+    | 'Device invariability'
+    | 'Device id';
 
 export type ReportSecurityCheckParams = {
     level: 'error' | 'warning';

@@ -4,6 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectFirmwareUpdateSource } from '@suite-common/firmware';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import {
+    type DeviceRootState,
+    deviceInvariabilityCheck,
+    getIsDeviceIdValid,
+    selectPersistentDeviceDataById,
+} from '@suite-common/wallet-core';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isArrayMember } from '@trezor/utils';
@@ -110,6 +116,44 @@ const useReportHashCheck = ({ device }: CommonProps) => {
     }, [dispatch, commonData, warningPayload]);
 };
 
+// Report meta check results (Id check & device invariability checks ) to Sentry
+const useReportDeviceMetaChecks = ({ device }: CommonProps) => {
+    const dispatch = useDispatch();
+    const commonData = useCommonData({ device });
+    const previousData = useSelector((state: DeviceRootState) =>
+        selectPersistentDeviceDataById(state, device?.id),
+    );
+    const idCheckSuccess = getIsDeviceIdValid(device);
+    const invariabilityCheckResult = useMemo(
+        () => deviceInvariabilityCheck({ device, previousData }),
+        [device, previousData],
+    );
+
+    useEffect(() => {
+        if (!idCheckSuccess) {
+            dispatch(
+                reportSecurityCheckThunk({
+                    level: 'error',
+                    checkType: 'Device id',
+                    contextData: commonData,
+                }),
+            );
+        }
+    }, [dispatch, commonData, idCheckSuccess]);
+    useEffect(() => {
+        if (!invariabilityCheckResult.success) {
+            dispatch(
+                reportSecurityCheckThunk({
+                    level: 'error',
+                    checkType: 'Device invariability',
+                    contextData: commonData,
+                    payload: invariabilityCheckResult.error,
+                }),
+            );
+        }
+    }, [dispatch, commonData, invariabilityCheckResult]);
+};
+
 /**
  * Optionally report both FW authenticity checks (revision and hash) to Sentry and/or show toast notifications,
  * based on behavior scenarios definitions. This may happen even when no UI is displayed for the checks.
@@ -117,4 +161,5 @@ const useReportHashCheck = ({ device }: CommonProps) => {
 export const useReportDeviceCompromised = ({ device }: CommonProps) => {
     useReportRevisionCheck({ device });
     useReportHashCheck({ device });
+    useReportDeviceMetaChecks({ device });
 };
