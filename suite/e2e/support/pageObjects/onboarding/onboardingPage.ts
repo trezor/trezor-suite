@@ -123,7 +123,7 @@ export class OnboardingPage {
         await this.pairTHP();
 
         await this.completeOnboardingButton.click();
-        if (this.device.hasSecureElement && this.device.model !== Model.T3W1) {
+        if (this.device.hasSecureElement) {
             await this.passThroughAuthenticityCheck();
         }
         // Enabled debug mode is needed for passing firmware checks but it also enables several hidden features
@@ -227,10 +227,6 @@ export class OnboardingPage {
         await this.disableFirmwareHashCheck(options);
         if (this.device.hasCanaryFirmware) {
             await this.disableFirmwareRevisionCheck();
-        }
-
-        if (this.device.model === Model.T3W1) {
-            await this.disableAuthenticityCheck();
         }
     }
 
