@@ -3,6 +3,7 @@ import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
+import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
     selectBaseCurrency,
     selectBitcoinAmountUnit,
@@ -36,6 +37,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const appLanguage = useSelector(selectLocale);
     const deviceLanguage = useSelector(selectDeviceLanguage);
+    const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
 
     useEffect(() => {
         if (isAppReady && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
@@ -64,6 +66,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
                     rememberedStandardWallets,
                     rememberedHiddenWallets,
                     enabledNetworks,
+                    labeling: isSuiteSyncEnabled ? 'suite-sync' : 'off',
                 },
             });
         }
@@ -82,6 +85,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         enabledNetworks,
         appLanguage,
         deviceLanguage,
+        isSuiteSyncEnabled,
         analytics,
     ]);
 };

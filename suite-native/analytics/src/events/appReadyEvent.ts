@@ -26,6 +26,7 @@ type Attributes = {
     rememberedStandardWallets: AttributeDef<number>;
     rememberedHiddenWallets: AttributeDef<number>;
     enabledNetworks: AttributeDef<NetworkSymbol[]>;
+    labeling: AttributeDef<'suite-sync' | 'off'>;
 };
 
 export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
@@ -43,6 +44,7 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
             version: '26.2.1',
             notes: 'params `appLanguage` and `deviceLanguage` finally report real data.',
         },
+        { version: '26.2.1', notes: 'param `labeling` added' },
     ],
 
     attributes: {
@@ -120,6 +122,10 @@ export const appReadyEvent: EventDef<Attributes, EventType.AppReady> = {
         enabledNetworks: {
             changelog: [{ version: '24.9.1', notes: 'added' }],
             description: 'The symbols of the networks that are enabled',
+        },
+        labeling: {
+            changelog: [{ version: '26.3.1', notes: 'added' }],
+            description: "The labeling method: 'suite-sync' or 'off'",
         },
     },
 };
