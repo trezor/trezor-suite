@@ -1,3 +1,4 @@
+import { TradingType } from '@suite-common/trading';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
@@ -8,6 +9,10 @@ export type AnalyticsSendFlowStep =
     | 'outputs_review'
     | 'utxo_selection'
     | 'destination_tag_review';
+
+export type CountryChangeContextCheck = 'settings' | 'onboarding';
+export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryChangeContextCheck;
+export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 export type DeviceAuthenticityCheckResult = 'successful' | 'compromised' | 'cancelled' | 'failed';
 
