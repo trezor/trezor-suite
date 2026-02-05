@@ -16,7 +16,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     AuthorizeDeviceStackParamList,
@@ -26,7 +26,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useDispatch();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();
@@ -44,14 +44,14 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
     }, [dispatch, navigation]);
 
     useEffect(() => {
-        legacyAnalytics.report({ type: EventType.PassphraseDuplicate });
+        analytics.report({ type: EventType.PassphraseDuplicate });
         showAlert({
             title: translate('modulePassphrase.passphraseMismatch.title'),
             description: translate('modulePassphrase.passphraseMismatch.subtitle'),
             primaryButtonTitle: translate('modulePassphrase.passphraseMismatch.button'),
             onPressPrimaryButton: () => handleDuplicateDevicePassphrase(),
         });
-    }, [handleDuplicateDevicePassphrase, legacyAnalytics, showAlert, translate]);
+    }, [handleDuplicateDevicePassphrase, analytics, showAlert, translate]);
 
     return children ?? null;
 };

@@ -7,11 +7,6 @@ export type CountryChangeContext = Exclude<TradingType, 'exchange'> | CountryCha
 export type CountryChangeAction = 'submitDefault' | 'submitCustom' | 'cancel';
 
 /** @deprecated use `AnalyticsNativeEvents` */
-export type SuiteNativeLegacyAnalyticsEvents =
-    | {
-          type: EventType.PassphraseMismatch;
-      }
-    | {
-          type: EventType.PassphraseDuplicate;
-      }
-    ;
+export type SuiteNativeLegacyAnalyticsEvents = {
+    type: EventType.PassphraseMismatch;
+};
