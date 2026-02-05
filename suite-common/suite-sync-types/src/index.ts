@@ -59,7 +59,11 @@ export type {
     UpdateAddressLabelDep,
     UpdateAddressLabelParams,
 } from './data/updateAddressLabel';
-export type { UpdateOutputLabelDep, UpdateOutputLabel } from './data/updateOutputLabel';
+export type {
+    UpdateOutputLabelDep,
+    UpdateOutputLabel,
+    UpdateOutputLabelParams,
+} from './data/updateOutputLabel';
 export type {
     UpdateWalletLabel,
     UpdateWalletLabelDep,

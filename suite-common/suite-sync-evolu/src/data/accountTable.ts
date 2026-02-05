@@ -25,6 +25,10 @@ import { normalizeLabel } from './normalizeLabel';
 export const AccountEvoluId = id('AccountEvoluId');
 export type AccountEvoluId = typeof AccountEvoluId.Type;
 
+/**
+ * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
+ *            compatible!
+ */
 export const AccountSchema = {
     account: {
         id: AccountEvoluId,

@@ -27,6 +27,10 @@ export type AddressEvoluId = typeof AddressEvoluId.Type;
 export const createAddressEvoluId = (address: string, networkSymbol: NetworkSymbol) =>
     AddressEvoluId.from(createIdFromString(createSuiteSyncAddressId(address, networkSymbol)));
 
+/**
+ * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
+ *            compatible!
+ */
 export const AddressLabelSchema = {
     address: {
         id: AddressEvoluId,

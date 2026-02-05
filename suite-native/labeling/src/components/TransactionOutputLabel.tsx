@@ -8,7 +8,7 @@ import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelProps = {
     txId: string;
-    outputIndex: number;
+    outputIndex: string;
     deviceStaticSessionId: StaticSessionId;
 };
 

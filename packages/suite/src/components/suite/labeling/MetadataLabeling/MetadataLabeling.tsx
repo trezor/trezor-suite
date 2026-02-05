@@ -393,6 +393,10 @@ export const Labeling = ({
     );
 
     const handleEdit = useCallback(async () => {
+        if (isSuiteSyncEnabled && suiteSyncInteraction === null) {
+            return;
+        }
+
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
             // Isn't initiation in progress?
@@ -435,9 +439,10 @@ export const Labeling = ({
             }
         }
     }, [
+        isSuiteSyncEnabled,
+        suiteSyncInteraction,
         legacyMetadataState.initiating,
         isLegacyLabelingEnabled,
-        suiteSyncInteraction,
         suiteSync,
         deviceStaticSessionId,
         dispatch,
@@ -546,6 +551,10 @@ export const MetadataLabeling = ({
     const editActive = legacyMetadataState.editing === payload.defaultValue;
 
     const activateEdit = () => {
+        if (isSuiteSyncEnabled && suiteSyncInteraction === null) {
+            return;
+        }
+
         // When clicking on inline input edit, ensure that everything needed is already ready.
         if (
             !isSuiteSyncEnabled &&

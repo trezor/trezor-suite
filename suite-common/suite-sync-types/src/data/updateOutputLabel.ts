@@ -6,10 +6,10 @@ import { Result } from '@trezor/type-utils';
 
 import { EnsureWalletSuiteSyncOnErrors } from '../storage/ensureWalletSuiteSyncOn';
 
-type UpdateOutputLabelParams = {
+export type UpdateOutputLabelParams = {
     deviceStaticSessionId: StaticSessionId;
     txId: string;
-    outputIndex: number;
+    outputIndex: string;
     label: string | null;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;

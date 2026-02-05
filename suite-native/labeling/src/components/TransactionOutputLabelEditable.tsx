@@ -14,7 +14,7 @@ import { selectIsLabellingAllowed } from '../selectors';
 
 type TransactionOutputLabelEditableProps = {
     txId: string;
-    outputIndex: number;
+    outputIndex: string;
     deviceStaticSessionId: StaticSessionId;
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
