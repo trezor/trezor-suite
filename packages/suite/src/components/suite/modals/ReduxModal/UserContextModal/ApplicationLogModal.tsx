@@ -3,6 +3,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { events } from '@suite-common/analytics';
 import {
     Card,
     Column,
@@ -17,6 +18,7 @@ import {
 } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 
+import { useAnalytics } from 'src/support/useAnalytics';
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 
 const ScrollContainer = styled.div`
@@ -42,6 +44,7 @@ const LogWrapper = styled.pre`
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
+    const analytics = useAnalytics();
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
     const { ShadowTop, ShadowBottom, ShadowContainer, onScroll, scrollElementRef } =
@@ -49,6 +52,14 @@ export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
 
     const download = () => {
         if (applicationLogs === null) return;
+
+        analytics.report({
+            type: events.settingsAppLogExportedEvent.name,
+            payload: {
+                isRedacted: hideSensitiveInfo,
+            },
+        });
+
         const element = document.createElement('a');
         element.setAttribute(
             'href',

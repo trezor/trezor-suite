@@ -5,11 +5,8 @@ type Attributes = {
     isRedacted: AttributeDef<boolean>;
 };
 
-export const appLogExportedEvent: EventDef<
-    Attributes,
-    EventType.AppLogExported
-> = {
-    name: EventType.AppLogExported,
+export const settingsAppLogExportedEvent: EventDef<Attributes, EventType.SettingsAppLogExported> = {
+    name: EventType.SettingsAppLogExported,
     descriptionTrigger: 'App logs exported by user action.',
     changelog: [{ version: '26.2.1', notes: 'added' }],
 

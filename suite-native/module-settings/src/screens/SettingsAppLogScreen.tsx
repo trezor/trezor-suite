@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { prettifyLog, useCommonApplicationLogs as useApplicationLogs } from '@suite-common/logger';
 import {
     Button,
@@ -28,7 +28,7 @@ export const SettingsAppLogScreen = () => {
         setIsLoading(true);
 
         analytics.report({
-            type: EventType.AppLogExported,
+            type: events.settingsAppLogExportedEvent.name,
             payload: {
                 isRedacted: !includeSensitiveInfo,
             },

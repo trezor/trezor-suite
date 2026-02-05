@@ -6,6 +6,7 @@ export enum EventType {
     DeviceConnectionDeviceConfirmation = 'device-connection/device-confirmation',
     DeviceConnectionDeviceFound = 'device-connection/device-found',
     DeviceConnectionDevicePaired = 'device-connection/device-paired',
+    SettingsAppLogExported = 'settings/app-log/exported',
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsGeneralLabeling = 'settings/general/labeling',
