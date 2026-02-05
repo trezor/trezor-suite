@@ -7,7 +7,7 @@ type Attributes = {
     method: AttributeDef<string>;
 };
 
-export const WalletConnectSessionRequestEvent: EventDef<
+export const walletConnectSessionRequestEvent: EventDef<
     Attributes,
     EventType.WalletConnectSessionRequest
 > = {
