@@ -23,8 +23,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
                 priority: TestPriority.Critical,
             }),
         },
-        async ({ page, onboardingPage, devicePrompt, analyticsSection, device, context }) => {
-            await context.setOffline(true);
+        async ({ page, onboardingPage, devicePrompt, analyticsSection, device }) => {
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
 
             await analyticsSection.continueButton.click();
@@ -70,7 +69,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T3T1', '@smoke'] }, () => 
             await onboardingPage.completeOnboardingButton.click();
             await expect(page.getByTestId('@suite/no-connection-banner')).toHaveTranslation('TR_YOU_WERE_DISCONNECTED_DOT');
             // electron seems not to be fully offline during the test, will investigate later
-            // await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
+             
+            await expect(page.getByTestId('@exception/discovery-failed/description')).toBeVisible({ timeout: 30_000 });
+
         },
     );
 });

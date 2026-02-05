@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { BrowserWindow, app, nativeTheme } from 'electron';
+import { BrowserWindow, app, nativeTheme, session } from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
 
@@ -175,6 +175,13 @@ const init = async () => {
     app.commandLine.appendSwitch('gtk-version', '3');
 
     await app.whenReady();
+
+    // Enable offline mode for testing if the switch is present
+    if (hasSwitch('offline-mode')) {
+        logger.info('main', 'Offline mode enabled - simulating network offline');
+        // This will set navigator.onLine to false in the renderer process
+        await session.defaultSession.enableNetworkEmulation({ offline: true });
+    }
 
     // Load bridge module first, it is required in both UI and daemon mode
     const interceptor = createInterceptor();

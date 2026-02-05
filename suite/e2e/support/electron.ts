@@ -19,6 +19,7 @@ export type LaunchSuiteParams = {
     keepUserData?: boolean;
     bridgeDaemon?: boolean;
     exposeConnectWs?: boolean;
+    offlineMode?: boolean;
     locale?: string;
     colorScheme?: 'light' | 'dark' | 'no-preference' | null | undefined;
     artefactFolder: string;
@@ -62,6 +63,10 @@ const buildArgs = (params: LaunchSuiteParams) => {
 
     if (params.exposeConnectWs) {
         args.push('--expose-connect-ws');
+    }
+
+    if (params.offlineMode) {
+        args.push('--offline-mode');
     }
 
     const deleteUserData = !params.keepUserData;

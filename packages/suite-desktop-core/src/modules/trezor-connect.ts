@@ -10,6 +10,7 @@ import { MainThreadEmitter, ModuleInit, ModuleInitBackground } from './module';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { PowerSaveBlocker } from '../libs/power-save-blocker';
+import { hasSwitch } from '../libs/process-switches';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -63,6 +64,13 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
     logger.info(SERVICE_NAME, `Starting service`);
 
     const setProxy = () => {
+        // In offline mode, set an invalid proxy to block all TrezorConnect network requests
+        if (hasSwitch('offline-mode')) {
+            logger.info(SERVICE_NAME, 'Offline mode enabled - blocking TrezorConnect network access');
+
+            return TrezorConnect.setProxy({ proxy: 'socks://0.0.0.0:1' });
+        }
+
         const { running, host, port, externalPort, useExternalTor } = store.getTorSettings();
         const payload = running
             ? { proxy: `socks://${host}:${useExternalTor ? externalPort : port}` }
