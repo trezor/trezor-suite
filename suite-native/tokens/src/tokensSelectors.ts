@@ -149,7 +149,7 @@ export const selectAccountTransactionsWithTokenTransfers = createMemoizedSelecto
         ) as WalletAccountTransaction[],
 );
 
-export const selectAccountsKnownTokens = createMemoizedSelector(
+export const selectAccountKnownTokens = createMemoizedSelector(
     [selectAccountByKey, selectTokenDefinitions],
     (account, tokenDefinitions): TokenInfoBranded[] => {
         if (!account || !isNetworkWithTokens(account.symbol)) {
@@ -171,20 +171,15 @@ export const selectAccountsKnownTokens = createMemoizedSelector(
     },
 );
 
-export const selectNumberOfAccountTokensWithFiatRates = (
-    state: TokenDefinitionsRootState & AccountsRootState,
-    accountKey: AccountKey,
-): number => {
-    const account = selectAccountByKey(state, accountKey);
+export const selectAccountKnownTokensWithBalance = createMemoizedSelector(
+    [selectAccountKnownTokens],
+    tokens => tokens.filter(token => parseFloat(token?.balance ?? '0') > 0),
+);
 
-    if (!account || !isNetworkWithTokens(account.symbol)) {
-        return 0;
-    }
-
-    const tokens = selectAccountsKnownTokens(state, accountKey);
-
-    return tokens.length;
-};
+export const selectNumberOfAccountKnownTokensWithBalance = createMemoizedSelector(
+    [selectAccountKnownTokensWithBalance],
+    tokens => tokens.length,
+);
 
 export const selectHasDeviceAnyTokensForNetwork = (
     state: TokensRootState,
