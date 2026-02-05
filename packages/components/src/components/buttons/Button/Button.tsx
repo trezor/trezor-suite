@@ -62,7 +62,6 @@ export type ButtonProps = CommonButtonProps &
         children: React.ReactNode;
         'data-testid'?: string;
         shortcut?: Keys[];
-        className?: string;
     };
 
 export const Button = ({
@@ -72,8 +71,6 @@ export const Button = ({
     iconRight,
     shortcut,
     size = 'medium',
-    // TODO: remove className
-    className,
     ...props
 }: ButtonProps) => {
     const theme = useTheme();
@@ -93,7 +90,6 @@ export const Button = ({
             $priority={priority}
             $isInverse={isInverse}
             $intent={intent}
-            className={className}
             {...frameProps}
             {...buttonProps}
         >

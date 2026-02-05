@@ -48,7 +48,6 @@ const Item = ({ account, addr, locked, symbol, onClick, metadataPayload, index }
                         deviceStaticSessionId={account.deviceState}
                         displayValue={<Address value={addr.address} isTruncated />}
                         placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
-                        margin={{ vertical: 4 }}
                         minHeight={28}
                         maxWidth={300}
                     >
