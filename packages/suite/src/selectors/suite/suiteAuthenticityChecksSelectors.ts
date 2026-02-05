@@ -6,10 +6,12 @@ import {
 } from '@suite-common/firmware-authenticity';
 import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
+    getIsDeviceIdValid,
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectSelectedDevice,
 } from '@suite-common/wallet-core';
 
 import { AppState } from 'src/types/suite';
@@ -94,6 +96,7 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
 };
 
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
+    const isDeviceIdValid = getIsDeviceIdValid(selectSelectedDevice(state));
     const isFirmwareCheckEnabledAndFailed =
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
     const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
@@ -102,6 +105,7 @@ export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean =
     const isEntropyCheckEnabledAndFailed = selectIsEntropyCheckEnabledAndFailed(state);
 
     return (
+        !isDeviceIdValid ||
         (!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
         isEntropyCheckEnabledAndFailed
     );
