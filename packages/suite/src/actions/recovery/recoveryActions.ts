@@ -1,4 +1,4 @@
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect, { PROTO, RecoveryDevice, UI } from '@trezor/connect';
@@ -85,7 +85,7 @@ const checkSeed =
 
         if (!response.success) {
             dispatch(setError(response.payload.error));
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.SettingsDeviceCheckSeed,
                 payload: {
                     status: 'error',
@@ -93,7 +93,7 @@ const checkSeed =
                 },
             });
         } else {
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.SettingsDeviceCheckSeed,
                 payload: {
                     status: 'finished',

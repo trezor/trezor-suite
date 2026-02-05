@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import type { TranslationKey } from '@suite/intl';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import type { Locale } from '@suite-common/suite-types';
@@ -236,7 +236,7 @@ export const toggleTor =
         const ipcResponse = await desktopApi.toggleTor(shouldEnable);
 
         if (ipcResponse.success) {
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.SettingsTor,
                 payload: {
                     value: shouldEnable,

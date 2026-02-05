@@ -1,7 +1,7 @@
 export { createAnalytics, type DesktopAnalyticsDep } from './createAnalytics';
 export type { OnboardingAnalytics, AppUpdateEvent, FirmwareSource } from './definitions';
 export { EventType, AppUpdateEventStatus } from './constants';
-export { getTypedDesktopAnalytics } from './getTypedDesktopAnalytics';
+export { asTypedDesktopAnalytics } from './asTypedDesktopAnalytics';
 export type { AnalyticsDesktopEvents, SuiteReadyPayload } from './analyticsEvents';
 
 export * from './events';

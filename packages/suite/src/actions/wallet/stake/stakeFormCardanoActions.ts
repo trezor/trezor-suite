@@ -1,4 +1,4 @@
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     calculate,
@@ -369,7 +369,7 @@ export const signTransaction =
         });
 
         if (!signedTx.success) {
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.TransactionCancel,
                 payload: {
                     txType: 'stake',

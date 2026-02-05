@@ -1,4 +1,4 @@
-import { AppUpdateEventStatus, EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { AppUpdateEventStatus, EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { UpdateInfo, UpdateProgress, desktopApi } from '@trezor/suite-desktop-api';
@@ -34,7 +34,7 @@ export const available =
             earlyAccessProgram: allowPrerelease,
             updateInfo: info,
         });
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -62,7 +62,7 @@ export const download =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -92,7 +92,7 @@ export const ready =
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -116,7 +116,7 @@ export const installUpdate =
             isAutoUpdated: desktopUpdate.isAutomaticUpdateEnabled,
         });
 
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.AppUpdate,
             payload,
         });
@@ -143,7 +143,7 @@ export const error = () => (dispatch: Dispatch, getState: GetState, extra: Extra
             earlyAccessProgram: allowPrerelease,
             updateInfo: latest,
         });
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.AppUpdate,
             payload,
         });
