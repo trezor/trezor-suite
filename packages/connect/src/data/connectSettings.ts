@@ -166,6 +166,10 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.npmVersion = input.npmVersion;
     }
 
+    if (typeof input.version === 'string') {
+        settings.version = input.version;
+    }
+
     settings.thp = parseThpSettings(input);
 
     return settings;
