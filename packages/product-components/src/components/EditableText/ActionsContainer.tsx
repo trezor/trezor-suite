@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import styled, { css } from 'styled-components';
 
 import { IconButton, IconButtonProps, Spinner, Tooltip } from '@trezor/components';
-import { borders, zIndices } from '@trezor/theme';
 
 import type { SavingStatus } from './types';
-import { SAVED_STATUS_TIMEOUT } from './utils';
 
 type ActionContainerProps = {
     onEdit: () => void;
@@ -26,47 +24,22 @@ type ActionContainerProps = {
 
 const Container = styled.div<{
     $isActive: boolean;
-    $isDirty: boolean;
-    $savingStatus: SavingStatus;
 }>`
-    --base-transform: translateY(-50%);
-    --base-gap: calc(0.1em + 2px);
-
     display: flex;
     align-items: center;
-    gap: var(--base-gap);
-    position: absolute;
-    top: 50%;
-    left: -6px;
-    padding: var(--base-gap);
-    padding-left: calc(100% + 6px + var(--base-gap) * 2);
-    box-sizing: content-box;
-    min-height: 28px;
-    z-index: ${zIndices.labeling};
-    background: ${({ theme }) => theme.baseFillElementNeutralSofter};
-    border-radius: ${borders.radii.xs};
-    transform: var(--base-transform) scaleX(0.95);
+    gap: calc(0.1em + 2px);
     transform-origin: left;
+    transform: translateX(-5px);
     opacity: 0;
-
-    ${({ $isDirty }) =>
-        !$isDirty &&
-        css`
-            transition: 0.2s ease-in-out;
-        `}
+    pointer-events: none;
 
     ${({ $isActive }) =>
         $isActive &&
         css`
             opacity: 1;
-            transform: var(--base-transform);
-        `}
-
-    ${({ $savingStatus }) =>
-        $savingStatus === 'saved' &&
-        css`
-            opacity: 0;
-            transition: 300ms ${SAVED_STATUS_TIMEOUT - 300}ms opacity ease-in-out;
+            transform: translateX(0);
+            pointer-events: auto;
+            transition: 200ms ease-in-out;
         `}
 `;
 
@@ -84,15 +57,7 @@ export const ActionsContainer = ({
     isSubmitButtonVisible,
     savingStatus,
 }: ActionContainerProps) => {
-    const [isDirty, setIsDirty] = useState(false);
-
-    const isActive = Boolean(isEditable || isHovered || savingStatus !== 'idle');
-
-    useEffect(() => {
-        if (!isActive) {
-            setIsDirty(false);
-        }
-    }, [isActive]);
+    const isActive = Boolean(isEditable || isHovered);
 
     if (isDisabled) {
         return null;
@@ -106,11 +71,11 @@ export const ActionsContainer = ({
     };
 
     const getContent = () => {
-        if (isLoading || ['saving', 'saved'].includes(savingStatus)) {
+        if (isLoading || ['saved', 'saving'].includes(savingStatus)) {
             return (
                 <Spinner
                     size={20}
-                    margin={{ right: 4 }}
+                    margin={{ horizontal: 4 }}
                     hasFinished={savingStatus === 'saved'}
                     isGrey={isLoading}
                     data-testid={savingStatus === 'saved' ? `@metadata/success` : undefined}
@@ -172,10 +137,7 @@ export const ActionsContainer = ({
                             data-testid="@metadata/edit"
                             intent="neutral"
                             icon="pencilSimple"
-                            onClick={() => {
-                                setIsDirty(true);
-                                onEdit();
-                            }}
+                            onClick={onEdit}
                             {...commonProps}
                         />
                     </Tooltip>
@@ -192,10 +154,7 @@ export const ActionsContainer = ({
                             <IconButton
                                 intent="critical"
                                 icon="trash"
-                                onClick={() => {
-                                    setIsDirty(true);
-                                    onDelete();
-                                }}
+                                onClick={onDelete}
                                 {...commonProps}
                             />
                         </Tooltip>
@@ -206,12 +165,7 @@ export const ActionsContainer = ({
     };
 
     return (
-        <Container
-            onClick={e => e.stopPropagation()}
-            $isActive={isActive}
-            $isDirty={isDirty}
-            $savingStatus={savingStatus}
-        >
+        <Container onClick={e => e.stopPropagation()} $isActive={isActive}>
             {getContent()}
         </Container>
     );

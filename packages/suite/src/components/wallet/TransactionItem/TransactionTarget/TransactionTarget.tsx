@@ -228,9 +228,9 @@ export const TransactionTarget = ({
                         networkSymbol: transaction.symbol,
                         accountDescriptor: transaction.descriptor,
                     }}
-                    rightAddon={
+                    leftAddon={
                         outputLabel ? (
-                            <Icon name="tagFilled" size={10} variant="tertiary" />
+                            <Icon name="tagFilled" size={14} variant="tertiary" />
                         ) : undefined
                     }
                 >

@@ -30,7 +30,7 @@ const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
         width="100%"
         maxWidth={400}
         backgroundColor="baseFillElementNeutralSoftest"
-        padding={{ horizontal: 24, top: 12, bottom: 20 }}
+        padding={12}
         borderRadius={8}
     >
         {children}
@@ -91,8 +91,9 @@ export const EditableText: StoryObj<EditableTextProps> = {
         onCancel: action('onCancel'),
         isLoading: false,
         isDisabled: false,
+        isAlwaysActive: false,
         placeholder: 'Placeholder',
-        gap: 6,
+        gap: 8,
         ...getFramePropsStory(allowedEditableTextFrameProps).args,
     },
     argTypes: {
@@ -108,6 +109,11 @@ export const EditableText: StoryObj<EditableTextProps> = {
         },
         defaultValue: {
             control: 'text',
+        },
+        isAlwaysActive: {
+            control: {
+                type: 'boolean',
+            },
         },
         placeholder: {
             control: 'text',

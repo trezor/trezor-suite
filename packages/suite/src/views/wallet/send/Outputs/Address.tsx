@@ -18,7 +18,7 @@ import {
     isProgramDerivedAccount,
     isTaprootAddress,
 } from '@suite-common/wallet-utils';
-import { Icon, IconButton, Input, Link, Row } from '@trezor/components';
+import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { CoinLogo } from '@trezor/product-components';
 import { spacings } from '@trezor/theme';
@@ -31,7 +31,7 @@ import {
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import { openDeferredModal } from 'src/actions/suite/modalActions';
-import { AddressLabeling, MetadataLabeling } from 'src/components/suite';
+import { AddressLabeling, Labeling } from 'src/components/suite';
 import { InputError } from 'src/components/wallet';
 import { InputErrorProps } from 'src/components/wallet/InputError';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
@@ -467,28 +467,38 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 <Row gap={spacings.md}>
                     {isDebug && <DevSelfAddress outputId={outputId} account={account} />}
                     {metadataEnabled && broadcastEnabled && (
-                        <MetadataLabeling
-                            variant="button"
-                            deviceStaticSessionId={device.state.staticSessionId}
-                            defaultVisibleValue=""
-                            payload={{
-                                type: 'outputLabel',
-                                entityKey: account.key,
-                                // txid is not known at this moment. metadata is only saved
-                                // along with other sendForm data and processed in sendFormActions.
-                                txid: 'will-be-replaced',
-                                outputIndex: outputId,
-                                defaultValue: `${outputId}`,
-                                value: label,
-                                networkSymbol: symbol,
-                                accountDescriptor: descriptor,
-                            }}
-                            onSubmit={(value: string | undefined) => {
-                                setValue(`outputs.${outputId}.label`, value || '');
-                                setDraftSaveRequest(true);
-                            }}
-                            visible
-                        />
+                        <Text typographyStyle="hint" as="div">
+                            <Labeling
+                                deviceStaticSessionId={device.state.staticSessionId}
+                                displayValue={
+                                    <Text typographyStyle="callout">
+                                        <Translation id="TR_LABELING_ADD_LABEL" />
+                                    </Text>
+                                }
+                                isAlwaysActive
+                                gap={10}
+                                placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
+                                payload={{
+                                    type: 'outputLabel',
+                                    entityKey: account.key,
+                                    // txid is not known at this moment. metadata is only saved
+                                    // along with other sendForm data and processed in sendFormActions.
+                                    txid: 'will-be-replaced',
+                                    outputIndex: outputId,
+                                    defaultValue: `${outputId}`,
+                                    value: label,
+                                    networkSymbol: symbol,
+                                    accountDescriptor: descriptor,
+                                }}
+                                maxWidth={300}
+                                onSubmit={value => {
+                                    setValue(`outputs.${outputId}.label`, value || '');
+                                    setDraftSaveRequest(true);
+
+                                    return Promise.resolve(true);
+                                }}
+                            />
+                        </Text>
                     )}
                     {outputsCount > 1 && (
                         <IconButton

@@ -27,7 +27,7 @@ export const TransactionLayout = ({
         <Card onClick={onClick} paddingType="none">
             <Row gap={24} padding={{ vertical: 20, horizontal: 24 }}>
                 {isAboveMobile && icon}
-                <Column flex="1" gap={8}>
+                <Column flex="1" gap={6}>
                     <Row justifyContent="space-between" gap={24}>
                         <InfoSegments variant="tertiary">
                             <Text typographyStyle="highlight" variant="default" as="div">
@@ -46,7 +46,7 @@ export const TransactionLayout = ({
                                 ? '1fr max-content'
                                 : '1fr max-content minmax(110px, max-content)'
                         }
-                        rowGap={isBelowLaptop ? 12 : 6}
+                        rowGap={isBelowLaptop ? 12 : 4}
                         columnGap={24}
                         flex="1"
                     >

@@ -136,7 +136,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
             margin={{ horizontal: -12 }}
             as="div"
         >
-            <Row gap={16} width="100%">
+            <Row gap={24} width="100%">
                 <Tooltip content={unspendableTooltip}>
                     <Checkbox
                         isChecked={isChecked}
@@ -144,7 +144,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         onClick={handleCheckbox}
                     />
                 </Tooltip>
-                <Column flex="1" gap={4}>
+                <Column flex="1" gap={0}>
                     <Row gap={12} justifyContent="space-between">
                         <Text typographyStyle="body">
                             <Labeling
@@ -159,7 +159,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                 }}
                                 displayValue={<Address value={utxo.address} isTruncated />}
                                 placeholder={translationString('TR_LABELING_ADDRESS_LABEL')}
-                                maxWidth={300}
+                                maxWidth={350}
                                 minHeight={28}
                                 gap={6}
                                 leftAddon={
@@ -216,6 +216,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     size="small"
                                     intent="neutral"
                                     onClick={showTransactionDetail}
+                                    isUnderlined
                                 >
                                     <Translation id="TR_DETAIL" />
                                 </TextButton>
@@ -233,14 +234,16 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                                     networkSymbol: account.symbol,
                                     accountDescriptor: account.descriptor,
                                 }}
+                                gap={6}
                                 leftAddon={
-                                    outputLabel ? undefined : (
-                                        <Icon name="tag" variant="tertiary" size={12} />
-                                    )
+                                    <Icon
+                                        name={outputLabel ? 'tagFilled' : 'tag'}
+                                        variant="tertiary"
+                                        size={12}
+                                    />
                                 }
-                                gap={4}
                                 placeholder={translationString('TR_LABELING_OUTPUT_LABEL')}
-                                maxWidth={200}
+                                maxWidth={250}
                             >
                                 {outputLabel}
                             </Labeling>

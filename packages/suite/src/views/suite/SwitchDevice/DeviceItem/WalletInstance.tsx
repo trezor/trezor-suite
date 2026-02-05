@@ -175,7 +175,7 @@ export const WalletInstance = ({
                                             placeholder={translationString(
                                                 'TR_LABELING_WALLET_LABEL',
                                             )}
-                                            maxWidth={220}
+                                            maxWidth={290}
                                             deviceStaticSessionId={instance.state.staticSessionId}
                                             defaultValue={defaultWalletLabel}
                                             payload={{

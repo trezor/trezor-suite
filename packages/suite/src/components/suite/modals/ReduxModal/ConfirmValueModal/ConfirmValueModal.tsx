@@ -205,9 +205,11 @@ export const ConfirmValueModal = ({
                                                 'TR_LABELING_ADDRESS_LABEL',
                                             )}
                                             leftAddon={
-                                                addressLabel ? undefined : (
-                                                    <Icon name="tag" size={16} variant="tertiary" />
-                                                )
+                                                <Icon
+                                                    name={addressLabel ? 'tagFilled' : 'tag'}
+                                                    size={16}
+                                                    variant="tertiary"
+                                                />
                                             }
                                             payload={{
                                                 type: 'addressLabel',
@@ -217,7 +219,7 @@ export const ConfirmValueModal = ({
                                                 accountDescriptor: account.descriptor,
                                                 value: addressLabel,
                                             }}
-                                            maxWidth={255}
+                                            maxWidth={290}
                                         >
                                             {addressLabel}
                                         </Labeling>
