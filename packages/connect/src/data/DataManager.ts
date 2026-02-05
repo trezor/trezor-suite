@@ -44,7 +44,7 @@ export class DataManager {
     public static async load(
         settings: ConnectSettings,
         withAssets = true,
-        onlyLocalFirmwareConfig = false,
+        onlyLocalFirmwareConfig = true,
     ) {
         this.settings = settings;
 
