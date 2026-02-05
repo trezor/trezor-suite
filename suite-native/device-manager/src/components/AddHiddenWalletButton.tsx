@@ -18,7 +18,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceAction } from './DeviceAction';
@@ -35,7 +35,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const AddHiddenWalletButton = () => {
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
@@ -50,7 +50,7 @@ export const AddHiddenWalletButton = () => {
         if (!device) return;
         setIsDeviceManagerVisible(false);
 
-        legacyAnalytics.report({ type: EventType.PassphraseAddHiddenWallet });
+        analytics.report({ type: EventType.PassphraseAddHiddenWallet });
         dispatch(
             startDiscoveryThunk({
                 device,

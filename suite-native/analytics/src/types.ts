@@ -33,7 +33,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
     | {
           type: EventType.PassphraseExit;
           payload: { screen: string };
-      }
-    | {
-          type: EventType.PassphraseAddHiddenWallet;
       };
