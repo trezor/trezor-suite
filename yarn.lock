@@ -11510,20 +11510,31 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/analytics-redux@workspace:*, @suite-native/analytics-redux@workspace:suite-native/analytics-redux":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/analytics-redux@workspace:suite-native/analytics-redux"
+  dependencies:
+    "@suite-common/analytics-redux": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-native/analytics": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/sentry": "workspace:*"
+    "@trezor/analytics-uploader": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/analytics@workspace:*, @suite-native/analytics@workspace:suite-native/analytics":
   version: 0.0.0-use.local
   resolution: "@suite-native/analytics@workspace:suite-native/analytics"
   dependencies:
     "@suite-common/analytics": "workspace:*"
-    "@suite-common/analytics-redux": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/sentry": "workspace:*"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -11544,7 +11555,7 @@ __metadata:
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
-    "@suite-native/analytics": "workspace:*"
+    "@suite-native/analytics-redux": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/state": "workspace:*"
   languageName: unknown
