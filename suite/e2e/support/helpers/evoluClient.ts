@@ -1,16 +1,19 @@
-/* eslint-disable no-console */
-import { Evolu, SimpleName, createIdFromString, getOrThrow, id } from '@evolu/common';
-import { createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
+import { Evolu, SimpleName, getOrThrow } from '@evolu/common';
+import { Upsertable, createEvolu, createOwnerWebSocketTransport } from '@evolu/common/local-first';
+import { expect } from '@playwright/test';
 
 import { Schema, createEvoluAppOwnerFromTrezorData } from '@suite-common/suite-sync-evolu';
 import { SuiteSyncOwnerSecretHex } from '@suite-common/suite-types';
 
 import { createNodeEvoluDeps } from './createEvoluNodeDeps';
-import { expect } from '../../support/fixtures';
+import { step } from '../common';
+
+type TableName = keyof typeof Schema;
 
 export class EvoluClient {
     private _evolu?: Evolu<typeof Schema>;
 
+    @step()
     async init({
         ownerSecret,
         //TODO: replace with one source definition
@@ -57,56 +60,52 @@ export class EvoluClient {
         return this._evolu;
     }
 
-    //TMP
-    async getAccountData() {
-        const accountData = await this.evolu.loadQuery(
-            this.evolu.createQuery(db => db.selectFrom('account').selectAll()),
-        );
-        const error = this.evolu.getError();
-        if (error) {
-            console.error('Evolu Error detected during wait:', error);
-        }
-
-        return accountData;
-    }
-
-    //TMP
-    async testWriteAndRead() {
-        this.writeTestData();
-        await this.readTestData();
-    }
-
-    //TMP
-    writeTestData() {
-        // Insert a wallet label
-        const WalletLabelId = id('WalletLabelId');
-        const walletDescriptor = 'xpub6D1weXBcFAo8CqBbpP4TbH5sxQH8ZkqC5pDEvJ95rNNBZC9zTXPD';
-        const walletIdResult = WalletLabelId.from(createIdFromString(walletDescriptor));
-        if (!walletIdResult.ok) {
-            throw walletIdResult.error;
-        }
-        const upsertResult = this.evolu.upsert('wallet', {
-            id: walletIdResult.value,
-            walletDescriptor,
-            label: 'My Test Wallet',
-        });
+    @step()
+    writeTo<T extends TableName>(table: T, object: Upsertable<(typeof Schema)[T]>) {
+        const upsertResult = this.evolu.upsert(table, object as any);
         if (!upsertResult.ok) {
-            console.error('Upsert failed:', upsertResult.error);
-            throw upsertResult.error;
+            throw new Error(
+                `Upsert to Evolu relay failed: ${JSON.stringify(upsertResult.error, null, 2)}`,
+            );
         }
     }
 
-    //TMP
-    async readTestData() {
-        // Get and log the wallet data to verify
-        await expect(async () => {
-            const walletData = await this.evolu.loadQuery(
-                this.evolu.createQuery(db => db.selectFrom('wallet').selectAll()),
-            );
-            console.log('Wallet data:', walletData);
+    @step()
+    async readFrom(table: TableName) {
+        return await this.evolu.loadQuery(
+            this.evolu.createQuery(db => db.selectFrom(table).selectAll()),
+        );
+    }
 
-            expect(walletData).not.toEqual([]);
-            console.error('Wallet data from Evolu:', JSON.stringify(walletData));
-        }).toPass({ timeout: 30_000 });
+    // Suite sync by design will first return data from local storage
+    // and then update it with data from the server.
+    // Because of that we need to retry reads until we get expected data
+    @step()
+    async readWithRetryFrom(table: TableName) {
+        const result = await expect(async () => {
+            const data = await this.readFrom(table);
+            expect(data).not.toEqual([]);
+
+            return data;
+        }).toPass({ timeout: 5_000 });
+
+        return result;
+    }
+
+    @step()
+    async debugReadAllTablesAndThrow() {
+        const allTables = Object.keys(Schema) as TableName[];
+        const allDataPromise = allTables.map(async table => await this.readFrom(table));
+        await expect(async () => {
+            const allData = await Promise.all(allDataPromise);
+            // test if any tables are empty
+            if (allData.some(item => item.length === 0)) {
+                // we want to throw even partial results so we can debug
+                throw new Error(`Evolu Data: ${JSON.stringify(allData, null, 2)}`);
+            }
+
+            // we have collected all data, throw it for debugging purposes
+            throw new Error(`Evolu Data: ${JSON.stringify(allData, null, 2)}`);
+        }).toPass({ timeout: 3_000, intervals: [1000, 2000, 2500] });
     }
 }

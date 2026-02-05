@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { AnalyticsFixture } from './analytics';
+import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
 import { BlockbookMock } from './mocks/blockBookMock';
 import { MetadataMock } from './mocks/metadataMock';
@@ -46,6 +47,7 @@ type Fixtures = {
     connectPermissionsModal: ConnectPermissionsModal;
     stakingSection: StakingSection;
     paginationControl: PaginationControl;
+    evoluClient: EvoluClient;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -118,6 +120,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     paginationControl: async ({ page }, use) => {
         await use(new PaginationControl(page));
+    },
+    evoluClient: async ({}, use) => {
+        await use(new EvoluClient());
     },
 });
 
