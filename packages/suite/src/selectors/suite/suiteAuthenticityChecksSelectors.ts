@@ -9,6 +9,7 @@ import {
     getIsDeviceIdValid,
     selectFirmwareHashCheckError,
     selectFirmwareRevisionCheckError,
+    selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
@@ -97,6 +98,8 @@ export const selectIsEntropyCheckEnabledAndFailed = (state: AppState) => {
 
 export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean => {
     const isDeviceIdValid = getIsDeviceIdValid(selectSelectedDevice(state));
+    const deviceInvariabilitySuccess = selectIsDeviceInvariabilityCheckSuccess(state);
+
     const isFirmwareCheckEnabledAndFailed =
         selectIsFirmwareAuthenticityCheckEnabledAndHardFailed(state);
     const isFirmwareAuthenticityCheckDismissed = selectIsFirmwareAuthenticityCheckDismissed(state);
@@ -106,6 +109,7 @@ export const selectShouldDisplayDeviceCompromised = (state: AppState): boolean =
 
     return (
         !isDeviceIdValid ||
+        !deviceInvariabilitySuccess ||
         (!isFirmwareAuthenticityCheckDismissed && isFirmwareCheckEnabledAndFailed) ||
         isEntropyCheckEnabledAndFailed
     );

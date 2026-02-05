@@ -3,6 +3,7 @@ import '@suite-common/test-utils/src/globalOverrides';
 import { fireEvent } from '@testing-library/react';
 
 import { AnalyticsState } from '@suite-common/analytics-redux';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { TransportInfo } from '@trezor/connect';
 import * as envUtils from '@trezor/env-utils';
 import { DeepPartial } from '@trezor/type-utils';
@@ -415,11 +416,7 @@ describe(`${Preloader.name} component`, () => {
 
     it('Seedless device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                mode: 'seedless',
-                features: {},
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice({ mode: 'seedless' }),
         };
 
         const store = initStore(
@@ -445,10 +442,7 @@ describe(`${Preloader.name} component`, () => {
 
     it('Recovery mode device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                features: { recovery_status: 'Recovery' },
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice({}, { recovery_status: 'Recovery' }),
         };
 
         const store = initStore(
@@ -474,11 +468,7 @@ describe(`${Preloader.name} component`, () => {
 
     it('Not initialized device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                mode: 'initialize',
-                features: {},
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice({ mode: 'initialize' }),
         };
 
         const store = initStore(
@@ -504,11 +494,10 @@ describe(`${Preloader.name} component`, () => {
 
     it('Bootloader device with installed firmware', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                mode: 'bootloader',
-                features: { firmware_present: true },
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice(
+                { mode: 'bootloader' },
+                { firmware_present: true, bootloader_mode: true },
+            ),
         };
 
         const store = initStore(
@@ -535,11 +524,10 @@ describe(`${Preloader.name} component`, () => {
 
     it('Bootloader device without firmware', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                mode: 'bootloader',
-                features: { firmware_present: false },
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice(
+                { mode: 'bootloader' },
+                { firmware_present: false, bootloader_mode: true },
+            ),
         };
 
         const store = initStore(
@@ -585,11 +573,7 @@ describe(`${Preloader.name} component`, () => {
 
     it('Required FW update device', () => {
         const device: DeepPartial<AppState['device']> = {
-            selectedDevice: {
-                firmware: 'required',
-                features: {},
-                authenticityChecks: {},
-            },
+            selectedDevice: mockSuiteDevice({ firmware: 'required' }),
         };
 
         const store = initStore(
