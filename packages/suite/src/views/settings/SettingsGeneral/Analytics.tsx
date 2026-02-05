@@ -9,7 +9,7 @@ import { Switch } from '@trezor/components';
 import { SettingsSectionItem } from 'src/components/settings/SettingsSectionItem';
 import { ActionColumn, TextColumn } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-import { useAnalytics, useLegacyAnalytics } from 'src/support/useAnalytics';
+import { useAnalytics } from 'src/support/useAnalytics';
 
 const PositionedSwitch = styled.div`
     align-self: center;
@@ -17,7 +17,6 @@ const PositionedSwitch = styled.div`
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const legacyAnalytics = useLegacyAnalytics();
     const analytics = useAnalytics();
 
     return (
@@ -33,10 +32,8 @@ export const Analytics = () => {
                         isChecked={isAnalyticsEnabled}
                         onChange={() => {
                             if (isAnalyticsEnabled) {
-                                legacyAnalytics.disable();
                                 analytics.disable();
                             } else {
-                                legacyAnalytics.enable();
                                 analytics.enable();
                             }
                         }}

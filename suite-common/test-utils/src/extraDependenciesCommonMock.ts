@@ -56,14 +56,6 @@ export const analyticsMock: Analytics<any> = {
     init: () => {},
 };
 
-export const legacyAnalyticsMock: Analytics<any> = {
-    report: () => {},
-    isEnabled: () => true,
-    disable: () => {},
-    enable: () => {},
-    init: () => {},
-};
-
 const connectInitSettings: ConnectInitSettings = {
     debug: false,
     manifest: {
@@ -84,7 +76,6 @@ export const extraDependenciesCommonMock: ExtraDependencies = {
     services: {
         suiteSync: suiteSyncMock,
         platformEncryption: platformEncryptionMock,
-        legacyAnalytics: legacyAnalyticsMock,
         analytics: analyticsMock,
         reportSecurityCheck: ({ level, checkType }: ReportSecurityCheckParams) =>
             console.warn(`Mock reporting ${checkType} check ${level} to Sentry.`),

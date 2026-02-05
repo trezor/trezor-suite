@@ -5,10 +5,3 @@ export const useAnalytics = () => {
 
     return suiteServices['analytics'];
 };
-
-/** @deprecated use `useAnalytics` instead */
-export const useLegacyAnalytics = () => {
-    const suiteServices = useSuiteServices();
-
-    return suiteServices['legacyAnalytics'];
-};

@@ -13,7 +13,6 @@ import { getCommitHash } from '@trezor/env-utils';
 
 import { EventType } from './constants';
 import { getTypedNativeAnalytics } from './getTypedNativeAnalytics';
-import { getTypedNativeLegacyAnalytics } from './getTypedNativeLegacyAnalytics';
 
 const ACTION_PREFIX = '@suite-native/analytics';
 
@@ -62,10 +61,6 @@ export const initAnalyticsThunk = createThunk(
             },
         };
 
-        getTypedNativeLegacyAnalytics(extra.services.legacyAnalytics).init(
-            hasUserAllowedTracking,
-            options,
-        );
         extra.services.analytics.init(hasUserAllowedTracking, options);
 
         allowSentryReport(isAnalyticsEnabled);

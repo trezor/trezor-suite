@@ -6,13 +6,13 @@ import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { useLegacyAnalytics, useNativeServices } from '@suite-native/services';
+import { useAnalytics, useNativeServices } from '@suite-native/services';
 import { StorageContext } from '@suite-native/storage';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
 
 export const ToggleSuiteSyncCard = () => {
-    const analytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const persistor = useContext(StorageContext);
     const { showAlert } = useAlert();
     const { showToast } = useToast();

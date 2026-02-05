@@ -39,7 +39,6 @@ export type ConnectInitSettings = {
 export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep & {
         analytics: Analytics<AnalyticsSharedEvents>;
-        legacyAnalytics: Analytics<any>;
         saveAs: (data: Blob, fileName: string) => void;
         connectInitSettings: ConnectInitSettings;
     } & ReportSecurityCheckDep &
