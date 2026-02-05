@@ -8,16 +8,18 @@ import {
     TrezorDevice,
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
-import * as deviceUtils from '@suite-common/suite-utils';
 import {
     getDeviceInstances,
+    getDeviceInstancesGroupedByDeviceId,
     getDeviceInternalModel,
     getFwUpdateVersion,
     getIsDeviceConnectedAndAuthorized,
     getIsDeviceConnectedViaBluetooth,
     getIsDeviceInitialized,
     getIsThpDevice,
+    getSortedDevicesWithoutInstances,
     getStatus,
+    isDeviceAcquired,
 } from '@suite-common/suite-utils';
 import { networkSymbolCollection } from '@suite-common/wallet-config';
 import { isTrezorDeviceWithState } from '@suite-common/wallet-utils';
@@ -68,6 +70,12 @@ export const selectSelectedFirstThpDevice = (state: DeviceRootState) => {
 
 export const selectPersistentDeviceData = (state: DeviceRootState) =>
     state.device.persistentDeviceData;
+
+export const selectPersistentDeviceDataById = createMemoizedSelector(
+    [selectPersistentDeviceData, (_state, deviceId: TrezorDevice['id']) => deviceId],
+    (persistentDeviceData, deviceId) =>
+        persistentDeviceData.find(data => data.device_id === deviceId),
+);
 
 // Use in tests only! See deviceReducer for the property definition.
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
@@ -534,7 +542,7 @@ export const selectIsDeviceUsingPassphrase = createMemoizedSelector(
 // Selects all physical devices wallets grouped per device
 export const selectPhysicalDevicesGrouppedById = createMemoizedSelector(
     [selectPhysicalDeviceWallets],
-    devices => returnStableArrayIfEmpty(deviceUtils.getDeviceInstancesGroupedByDeviceId(devices)),
+    devices => returnStableArrayIfEmpty(getDeviceInstancesGroupedByDeviceId(devices)),
 );
 
 export const selectDeviceStaticSessionId = createMemoizedSelector(
@@ -561,10 +569,7 @@ export const selectNumberOfDeviceInstances = createMemoizedSelector(
 export const selectInstacelessUnselectedDevices = createMemoizedSelector(
     [selectSelectedDevice, selectDevices],
     (device, allDevices) =>
-        pipe(
-            deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id),
-            returnStableArrayIfEmpty,
-        ),
+        pipe(getSortedDevicesWithoutInstances(allDevices, device?.id), returnStableArrayIfEmpty),
 );
 
 export const selectHasBitcoinOnlyFirmware = createMemoizedSelector([selectSelectedDevice], device =>
@@ -643,7 +648,7 @@ export const selectIsSameOrNewDevice = createMemoizedSelector(
  */
 export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
-    if (!deviceUtils.isDeviceAcquired(device) || !device.authenticityChecks) return null;
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
     const checkResult = device.authenticityChecks.firmwareRevision;
 
     // null means not performed, then don't consider it failed
@@ -657,7 +662,7 @@ export const selectFirmwareRevisionCheckError = (state: DeviceRootState) => {
  */
 export const selectFirmwareHashCheckError = (state: DeviceRootState) => {
     const device = selectSelectedDevice(state);
-    if (!deviceUtils.isDeviceAcquired(device) || !device.authenticityChecks) return null;
+    if (!isDeviceAcquired(device) || !device.authenticityChecks) return null;
     const checkResult = device.authenticityChecks.firmwareHash;
 
     // null means not performed, then don't consider it failed
