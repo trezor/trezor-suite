@@ -150,6 +150,11 @@ Common scopes: `suite`, `suite-native`, `connect`, `components`, `analytics`
 - Reference issue numbers in commit body when applicable (e.g., `Closes #1234`)
 - Avoid committing plan documents or TODO files unless they are part of the project documentation
 
+## Pull Request Creation
+
+- When creating PRs, always preserve and include the repository template from `.github/pull_request_template.md`. Do not overwrite or replace it; append any additional notes below the template.
+- For PRs created in `trezor/trezor-suite`, always add the PR to the GitHub Project `Suite` (org project `trezor`, project number `58`) and set fields to defaults: `Status = Needs review`, `Platform = Desktop`, `Priority = Medium`, `Release = current`. Use `gh`/GraphQL after PR creation to apply these fields automatically.
+
 ## Development Notes
 
 - **Build times**: Initial setup takes 15-20 minutes; builds can take 10-15 minutes
