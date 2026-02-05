@@ -14,7 +14,4 @@ export type SuiteNativeLegacyAnalyticsEvents =
     | {
           type: EventType.PassphraseDuplicate;
       }
-    | {
-          type: EventType.PassphraseArticleOpened;
-      }
     ;

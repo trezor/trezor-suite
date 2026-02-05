@@ -21,7 +21,7 @@ import {
     PassphraseScreenHeader,
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
-import { useLegacyAnalytics } from '@suite-native/services';
+import { useAnalytics } from '@suite-native/services';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
@@ -57,7 +57,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseFormScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const legacyAnalytics = useLegacyAnalytics();
+    const analytics = useAnalytics();
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();
@@ -83,7 +83,7 @@ export const PassphraseFormScreen = () => {
     const handleAnimation = () => (cardHeight.value = 0);
 
     const handleOpenLink = () => {
-        legacyAnalytics.report({ type: EventType.PassphraseArticleOpened });
+        analytics.report({ type: EventType.PassphraseArticleOpened });
         openLink(HELP_CENTER_PASSPHRASE_URL);
     };
 
