@@ -18,7 +18,7 @@ import {
     TokensRootState,
     isNetworkWithTokens,
     selectAccountHasAnyKnownToken,
-    selectNumberOfAccountTokensWithFiatRates,
+    selectNumberOfAccountKnownTokensWithBalance,
 } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
@@ -39,7 +39,7 @@ export type AccountListItemProps = {
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
     const numberOfTokens = useSelector((state: TokensRootState) =>
-        selectNumberOfAccountTokensWithFiatRates(state, accountKey),
+        selectNumberOfAccountKnownTokensWithBalance(state, accountKey),
     );
 
     return (
