@@ -1090,10 +1090,6 @@ export const messages = defineMessages({
         defaultMessage: 'Swap amount',
         id: 'TR_TRADING_SWAP_AMOUNT',
     },
-    TR_TRADING_ON_NETWORK_CHAIN: {
-        defaultMessage: 'On {networkName} chain',
-        id: 'TR_TRADING_ON_NETWORK_CHAIN',
-    },
     TR_TRADING_KYC_POLICY: {
         defaultMessage: 'KYC policy',
         id: 'TR_TRADING_KYC_POLICY',
