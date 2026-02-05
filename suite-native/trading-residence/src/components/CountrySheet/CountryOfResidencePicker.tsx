@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { type CountryChangeContext, EventType } from '@suite-native/analytics';
+import { type CountryChangeContext, events } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -20,7 +20,7 @@ const reportCountryChange = (
     analytics: ReturnType<typeof useAnalytics>,
 ) => {
     analytics.report({
-        type: EventType.TradingParameterChanged,
+        type: events.tradingParameterChangedEvent.name,
         payload: {
             type,
             parameter: 'country',

@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { PressableOpacity, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useAnalytics } from '@suite-native/services';
 import { selectStakedBalanceByAccountKey, useSelector } from '@suite-native/staking';
@@ -30,7 +30,7 @@ export const EarnListItem = (earnItem: EarnListItemProps) => {
 
     const handlePress = () => {
         openModal();
-        analytics.report({ type: EventType.EarnStakeTilePressed });
+        analytics.report({ type: events.earnStakeTilePressedEvent.name });
     };
 
     return (

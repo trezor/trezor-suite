@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     selectDeviceEnabledDiscoveryNetworkSymbols,
     selectDiscoveryNetworkSymbols,
@@ -59,7 +59,7 @@ export const CoinEnablingForm = () => {
             dispatch(changeCoinVisibility({ symbol, shouldBeVisible: isEnabled }));
 
             analytics.report({
-                type: EventType.SettingsChangeCoinEnabled,
+                type: events.settingsChangeCoinEnabledEvent.name,
                 payload: {
                     symbol,
                     value: isEnabled,

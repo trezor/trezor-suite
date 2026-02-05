@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import {
@@ -50,7 +50,7 @@ export const useBiometricsSettings = () => {
             setIsBiometricsOptionEnabled(false);
             setIsUserAuthenticated(false);
             analytics.report({
-                type: EventType.BiometricsChange,
+                type: events.biometricsChangeEvent.name,
                 payload: { enabled: false, origin: 'settingsToggle' },
             });
 
@@ -60,7 +60,7 @@ export const useBiometricsSettings = () => {
         setIsUserAuthenticated(true);
         setIsBiometricsOptionEnabled(true);
         analytics.report({
-            type: EventType.BiometricsChange,
+            type: events.biometricsChangeEvent.name,
             payload: { enabled: true, origin: 'settingsToggle' },
         });
 

@@ -10,7 +10,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingProviderByNameAndTradeType,
 } from '@suite-common/trading';
-import { EventType, TradingExchangeAction, TradingExchangeStep } from '@suite-native/analytics';
+import { TradingExchangeAction, TradingExchangeStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
@@ -97,7 +97,7 @@ export const useExchangeAnalyticReportCallback = (
     return useCallback(
         (step: TradingExchangeStep, action: TradingExchangeAction) => {
             analytics.report({
-                type: EventType.TradingExchange,
+                type: events.tradingExchangeEvent.name,
                 payload: {
                     step,
                     action,

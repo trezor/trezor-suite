@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { AcquiredDevice } from '@suite-common/suite-types';
@@ -170,7 +170,7 @@ const SecurityCheckContent = ({
 
     const handleSetupButtonClick = () => {
         analytics.report({
-            type: EventType.DeviceSetupStarted,
+            type: events.deviceSetupStartedEvent.name,
             payload: {
                 deviceModel,
             },

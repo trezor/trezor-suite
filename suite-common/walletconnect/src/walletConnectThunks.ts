@@ -8,7 +8,7 @@ import {
     populateAuthPayload,
 } from '@walletconnect/utils';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -130,7 +130,7 @@ export const sessionProposalThunk = createThunk<
         }),
     );
     extra.services.analytics.report({
-        type: EventType.WalletConnectProposal,
+        type: events.walletConnectProposalEvent.name,
         payload: {
             origin: event.verifyContext.verified.origin,
             validation: event.verifyContext.verified.validation,
@@ -165,7 +165,7 @@ export const sessionRequestThunk = createThunk<
             },
         });
         extra.services.analytics.report({
-            type: EventType.WalletConnectSessionRequest,
+            type: events.walletConnectSessionRequestEvent.name,
             payload: {
                 origin: event.verifyContext.verified.origin,
                 chainId: event.params.chainId,
@@ -315,7 +315,7 @@ export const sessionProposalApproveThunk = createThunk<
                 );
             }
             extra.services.analytics.report({
-                type: EventType.WalletConnectProposalApproved,
+                type: events.walletConnectProposalApprovedEvent.name,
                 payload: {
                     origin: pendingProposal.origin,
                 },
@@ -344,7 +344,7 @@ export const sessionProposalRejectThunk = createThunk<
         const pendingProposal = selectPendingProposal(getState());
         dispatch(walletConnectActions.clearSessionProposal());
         extra.services.analytics.report({
-            type: EventType.WalletConnectProposalRejected,
+            type: events.walletConnectProposalRejectedEvent.name,
             payload: {
                 origin: pendingProposal?.origin,
             },
@@ -402,7 +402,7 @@ export const walletConnectInitThunk = createThunk(
             dispatch(sessionProposalRejectThunk({ eventId: proposal.id }));
         }
         extra.services.analytics.report({
-            type: EventType.WalletConnectInit,
+            type: events.walletConnectInitEvent.name,
         });
     },
 );
@@ -418,7 +418,7 @@ export const walletConnectPairThunk = createThunk<void, { uri: string }>(
         try {
             await walletKit.pair({ uri });
             extra.services.analytics.report({
-                type: EventType.WalletConnectPaired,
+                type: events.walletConnectPairedEvent.name,
             });
         } catch {
             throw new Error('Invalid WalletConnect URI');

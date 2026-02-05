@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 import {
@@ -292,7 +292,7 @@ export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void })
             <CantSeeTrezorModal
                 onClose={() => {
                     analytics.report({
-                        type: EventType.DeviceConnectionHintModal,
+                        type: events.deviceConnectionHintModalEvent.name,
                         payload: {
                             option: 'close',
                         },

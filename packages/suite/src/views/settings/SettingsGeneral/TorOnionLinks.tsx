@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch } from '@trezor/components';
 
@@ -19,7 +19,7 @@ export const TorOnionLinks = () => {
     const handleChange = () => {
         dispatch(setOnionLinks(!torOnionLinks));
         analytics.report({
-            type: EventType.SettingsTorOnionLinks,
+            type: events.settingsTorOnionLinksEvent.name,
             payload: {
                 value: !torOnionLinks,
             },

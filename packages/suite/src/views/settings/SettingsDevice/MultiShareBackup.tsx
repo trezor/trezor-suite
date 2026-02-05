@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -43,7 +43,7 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
 
     const handleClick = () => {
         analytics.report({
-            type: EventType.SettingsMultiShareBackup,
+            type: events.settingsDeviceMultiShareBackupEvent.name,
             payload: { action: 'start' },
         });
 

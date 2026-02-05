@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import {
     type DashboardReceiveModalOptionsEventOption,
     type DashboardSendModalOptionsEventOption,
-    EventType,
+    events,
 } from '@suite/analytics';
 
 import { useAnalytics } from '../../../../../../../support/useAnalytics';
@@ -13,7 +13,7 @@ export const useGlobalSendReceiveAnalytics = () => {
     const reportSend = useCallback(
         (option: DashboardSendModalOptionsEventOption, filledSearch: boolean) => {
             analytics.report({
-                type: EventType.DashboardSendModalOptions,
+                type: events.dashboardSendModalOptionsEvent.name,
                 payload: { option, filledSearch },
             });
         },
@@ -23,7 +23,7 @@ export const useGlobalSendReceiveAnalytics = () => {
     const reportReceive = useCallback(
         (option: DashboardReceiveModalOptionsEventOption, filledSearch: boolean) => {
             analytics.report({
-                type: EventType.DashboardReceiveModalOptions,
+                type: events.dashboardReceiveModalOptionsEvent.name,
                 payload: { option, filledSearch },
             });
         },

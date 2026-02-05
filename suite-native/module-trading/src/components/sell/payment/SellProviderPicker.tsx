@@ -9,7 +9,7 @@ import {
     selectTradingSellIsLoading,
     selectTradingSellProviders,
 } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -83,7 +83,7 @@ export const SellProviderPicker = () => {
 
         showSheet();
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'sell',
             },
@@ -96,7 +96,7 @@ export const SellProviderPicker = () => {
         if (selectedValue?.exchange === quote.exchange) return;
 
         analytics.report({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'sell',
                 parameter: 'provider',

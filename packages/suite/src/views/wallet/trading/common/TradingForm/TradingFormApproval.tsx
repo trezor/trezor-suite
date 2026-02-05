@@ -3,7 +3,7 @@ import { usePrevious } from 'react-use';
 
 import styled, { DefaultTheme, keyframes } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -196,7 +196,7 @@ export const TradingFormApproval = ({
         }
 
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'exchange-form',
                 action: 'approve',
@@ -219,7 +219,7 @@ export const TradingFormApproval = ({
         }
 
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'exchange-form',
                 action: 'revoke',
@@ -242,7 +242,7 @@ export const TradingFormApproval = ({
         }
 
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'exchange-form',
                 action: 'swap',
@@ -268,7 +268,7 @@ export const TradingFormApproval = ({
 
     const onRefreshClick = async () => {
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'exchange-form',
                 action: 'refresh',

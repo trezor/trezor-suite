@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import TrezorConnect from '@trezor/connect';
 
@@ -24,7 +24,7 @@ export const Brightness = ({ isDeviceLocked }: DeviceLabelProps) => {
         const result = await TrezorConnect.setBrightness({});
         if (result.success) {
             analytics.report({
-                type: EventType.SettingsDeviceChangeBrightness,
+                type: events.settingsDeviceChangeBrightnessEvent.name,
                 payload: {},
             });
         }

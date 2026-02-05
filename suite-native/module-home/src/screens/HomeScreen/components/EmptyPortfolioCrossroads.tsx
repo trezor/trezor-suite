@@ -8,7 +8,7 @@ import {
     MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -70,7 +70,7 @@ export const EmptyPortfolioCrossroads = () => {
     const handleConnectDevice = () => {
         onConnectDevicePress();
         analytics.report({
-            type: EventType.EmptyDashboardClick,
+            type: events.emptyDashboardClickEvent.name,
             payload: { action: 'connectDevice' },
         });
     };
@@ -80,7 +80,7 @@ export const EmptyPortfolioCrossroads = () => {
             screen: AccountsImportStackRoutes.SelectNetwork,
         });
         analytics.report({
-            type: EventType.EmptyDashboardClick,
+            type: events.emptyDashboardClickEvent.name,
             payload: { action: 'syncCoins' },
         });
     };
@@ -89,7 +89,7 @@ export const EmptyPortfolioCrossroads = () => {
         navigation.navigate(RootStackRoutes.DemoAccountQuestionnaireStack, {
             screen: DemoAccountQuestionnaireStackRoutes.Intro,
         });
-        analytics.report({ type: EventType.DemoAccountQuestionnaireDashboard });
+        analytics.report({ type: events.demoAccountQuestionnaireDashboardEvent.name });
     };
 
     const secondaryCardConfig: SecondaryCardConfig = isQuestionnaireEnabled

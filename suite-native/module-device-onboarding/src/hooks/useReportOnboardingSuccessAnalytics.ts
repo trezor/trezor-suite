@@ -9,7 +9,7 @@ import {
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
@@ -23,7 +23,7 @@ export const useReportOnboardingSuccessAnalytics = () => {
 
     return useCallback(() => {
         analytics.report({
-            type: EventType.DeviceSetupCompleted,
+            type: events.deviceSetupCompletedEvent.name,
             payload: {
                 deviceModel,
                 osName: Platform.OS,

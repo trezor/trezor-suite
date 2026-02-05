@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
 import { BluetoothDeviceId } from '@trezor/connect';
 
@@ -71,7 +71,7 @@ export const useBluetoothConnection = ({
 
             if (result.success) {
                 analytics.report({
-                    type: EventType.DeviceConnectionDevicePaired,
+                    type: events.deviceConnectionDevicePairedEvent.name,
                 });
                 dispatch(setConnectionModal(false));
             } else {

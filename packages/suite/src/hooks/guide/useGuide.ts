@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 
 import { close, open } from 'src/actions/suite/guideActions';
 import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -26,7 +26,7 @@ export const useGuide = () => {
         isModalOpen,
         openGuide: () => {
             analytics.report({
-                type: EventType.MenuGuide,
+                type: events.menuGuideEvent.name,
             });
 
             return dispatch(open());

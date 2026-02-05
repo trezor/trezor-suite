@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -91,7 +91,7 @@ export const SellReceiveMethodPicker = () => {
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
         analytics.report({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'sell',
                 parameter: 'paymentMethod',

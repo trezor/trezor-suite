@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -82,7 +82,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
 
     const confirmAndSend = async () => {
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'revoke-modal',
                 action: 'continue',
@@ -106,7 +106,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
         if (!receiveAddress) return;
 
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'revoke-modal',
                 action: 'refresh',
@@ -122,7 +122,7 @@ export const RevokeModal = ({ setIsWaitingForDevice, onCancel }: RevokeModalProp
 
     const onClose = (isSubmitting?: boolean) => {
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'revoke-modal',
                 action: 'cancel',

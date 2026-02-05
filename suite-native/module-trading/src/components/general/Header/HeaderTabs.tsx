@@ -3,7 +3,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { TradingType } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { HStack, IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { IconName } from '@suite-native/icons';
@@ -83,7 +83,7 @@ export const HeaderTabs = () => {
 
         setActiveTab(tab);
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradingNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: tab,

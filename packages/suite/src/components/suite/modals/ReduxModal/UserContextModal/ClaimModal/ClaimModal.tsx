@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -108,7 +108,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         handleSubmit(signTx)();
 
         analytics.report({
-            type: EventType.StakingClaim,
+            type: events.stakingClaimEvent.name,
             payload: {
                 action: 'continue',
                 step: 'claim-form-modal',
@@ -121,7 +121,7 @@ const ClaimModalLoaded = ({ onCancel, selectedAccount }: ClaimModalModalProps) =
         onCancel?.();
 
         analytics.report({
-            type: EventType.StakingClaim,
+            type: events.stakingClaimEvent.name,
             payload: {
                 action: 'cancel',
                 step: 'claim-form-modal',

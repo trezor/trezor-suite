@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Network, NetworkAccount } from '@suite-common/wallet-config';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -86,7 +86,7 @@ const AddDefaultAccountButton = ({
             }
 
             analytics.report({
-                type: EventType.AccountsNewAccount,
+                type: events.accountsNewAccountEvent.name,
                 payload: {
                     type: defaultAccount.accountType,
                     path: defaultAccount.path,

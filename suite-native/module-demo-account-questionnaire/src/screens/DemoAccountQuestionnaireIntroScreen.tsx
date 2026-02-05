@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button, InlineAlertBox, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -23,7 +23,7 @@ export const DemoAccountQuestionnaireIntroScreen = () => {
         >();
 
     const handleContinue = () => {
-        analytics.report({ type: EventType.DemoAccountQuestionnaireStart }, { force: true });
+        analytics.report({ type: events.demoAccountQuestionnaireStartEvent.name }, { force: true });
         navigation.navigate(DemoAccountQuestionnaireStackRoutes.Reason);
     };
 

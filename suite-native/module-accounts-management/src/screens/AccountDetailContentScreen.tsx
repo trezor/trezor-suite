@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Account, TokenAddress } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 import { TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -29,7 +29,7 @@ export const AccountDetailContentScreen = ({
     useEffect(() => {
         if (account) {
             analytics.report({
-                type: EventType.AssetDetail,
+                type: events.assetDetailEvent.name,
                 payload: {
                     assetSymbol: account.symbol,
                     tokenSymbol: token?.symbol,

@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     Box,
     DiscreetCanvas,
@@ -39,7 +39,7 @@ const DiscreetModeSwitchRow = () => {
     const handleSetDiscreetMode = (value: boolean) => {
         setIsDiscreetMode(value);
         analytics.report({
-            type: EventType.SettingsDiscreetToggle,
+            type: events.settingsDiscreetToggleEvent.name,
             payload: { discreetMode: value },
         });
     };

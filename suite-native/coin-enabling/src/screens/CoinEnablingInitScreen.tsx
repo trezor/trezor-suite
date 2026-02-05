@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { changeCoinVisibility } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
 import { selectDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
@@ -53,7 +53,7 @@ export const CoinEnablingInitScreen = () => {
         });
 
         analytics.report({
-            type: EventType.CoinEnablingInitState,
+            type: events.coinEnablingInitStateEvent.name,
             payload: { enabledNetworks: values.enabledCoins },
         });
 

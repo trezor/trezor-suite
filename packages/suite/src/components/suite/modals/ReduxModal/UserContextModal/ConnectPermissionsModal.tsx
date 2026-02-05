@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Card, Checkbox, Column, Icon, List, Modal, Row, Text } from '@trezor/components';
@@ -35,7 +35,7 @@ export const ConnectPermissionsModal = () => {
         }
         dispatch(connectPopupActions.approvePermissions());
         analytics.report({
-            type: EventType.ConnectPopupPermissions,
+            type: events.connectPopupPermissionsEvent.name,
             payload: {
                 method,
                 origin: source.origin,
@@ -47,7 +47,7 @@ export const ConnectPermissionsModal = () => {
         dispatch(connectPopupActions.rejectPermissions(ERRORS.TypedError('Method_Cancel')));
 
         analytics.report({
-            type: EventType.ConnectPopupPermissions,
+            type: events.connectPopupPermissionsEvent.name,
             payload: {
                 method,
                 origin: source.origin,

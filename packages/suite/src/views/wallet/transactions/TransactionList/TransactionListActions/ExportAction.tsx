@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -47,7 +47,7 @@ export const ExportAction = ({ account, searchQuery }: ExportActionProps) => {
             }
 
             analytics.report({
-                type: EventType.AccountsTransactionsExport,
+                type: events.accountsTransactionsExportEvent.name,
                 payload: {
                     format: type,
                     symbol: account.symbol,

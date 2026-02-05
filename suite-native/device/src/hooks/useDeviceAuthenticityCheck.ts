@@ -11,7 +11,7 @@ import {
 } from '@suite-common/message-system';
 import { StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
-import { DeviceAuthenticityCheckResult, EventType } from '@suite-native/analytics';
+import { DeviceAuthenticityCheckResult, events } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
@@ -47,7 +47,7 @@ export const useDeviceAuthenticityCheck = () => {
             payload?: StoredAuthenticateDeviceResult,
         ) => {
             analytics.report({
-                type: EventType.DeviceSettingsAuthenticityCheck,
+                type: events.deviceSettingsAuthenticityCheckEvent.name,
                 payload: { result },
             });
             if (isArrayMember(result, ['compromised', 'failed'])) {

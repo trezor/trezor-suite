@@ -11,7 +11,7 @@ import {
     getIsDevicePinProtected,
 } from '@suite-common/suite-utils';
 import type { AnalyticsNativeEvents } from '@suite-native/analytics';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Analytics } from '@trezor/analytics-uploader';
 import { Device, DeviceEvent, VersionArray } from '@trezor/connect';
 import {
@@ -75,7 +75,7 @@ export const reportDeviceConnectionAnalytics = (
     analytics: Analytics<AnalyticsNativeEvents>,
 ) => {
     analytics.report({
-        type: EventType.ConnectDevice,
+        type: events.connectDeviceEvent.name,
         payload: {
             mode: getDeviceMode(device),
             firmwareVersion: getFirmwareVersionArray(device),

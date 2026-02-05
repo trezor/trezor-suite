@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -34,7 +34,7 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
         }
 
         analytics.report({
-            type: EventType.DeviceConnectionConnectButton,
+            type: events.deviceConnectionConnectButtonEvent.name,
             payload: {
                 option: 'dropdown',
             },

@@ -11,7 +11,7 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { TradingRootState } from '@suite-native/trading-state';
 
@@ -60,7 +60,7 @@ export const useWatchTrade = ({ accountKey, orderId, isInProgress }: TradingUseW
 
             if (trade && currentStatus) {
                 analytics.report({
-                    type: EventType.TradingStatus,
+                    type: events.tradingStatusEvent.name,
                     payload: { type: trade.tradeType, status: currentStatus },
                 });
             }

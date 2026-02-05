@@ -9,7 +9,7 @@ import {
     selectDiscoveryByDevicePath,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { useAnalytics } from '@suite-native/services';
 
@@ -43,7 +43,7 @@ export const useRedirectOnPassphraseCompletion = () => {
             );
             if (discovery) {
                 analytics.report({
-                    type: EventType.PassphraseFlowFinished,
+                    type: events.passphraseFlowFinishedEvent.name,
                     payload: { isEmptyWallet: !discovery.hasLoadedAnyNonEmptyAccount },
                 });
             }
@@ -67,7 +67,7 @@ export const useRedirectOnPassphraseCompletion = () => {
         // User has canceled the authorization process on device (authorizeDeviceThunk rejects with auth-failed error)
         if (hasVerificationCancelledError && device) {
             analytics.report({
-                type: EventType.PassphraseExit,
+                type: events.passphraseExitEvent.name,
                 payload: { screen: route.name },
             });
             dispatch(cancelDiscoveryThunk(device));

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -105,14 +105,14 @@ export const SupportFeedbackSelection = () => {
     const handleBugButtonClick = () => {
         dispatch(setView('FEEDBACK_BUG'));
         analytics.report({
-            type: EventType.GuideFeedbackNavigation,
+            type: events.guideFeedbackNavigationEvent.name,
             payload: { type: 'bug' },
         });
     };
     const handleFeedbackButtonClick = () => {
         dispatch(setView('FEEDBACK_SUGGESTION'));
         analytics.report({
-            type: EventType.GuideFeedbackNavigation,
+            type: events.guideFeedbackNavigationEvent.name,
             payload: { type: 'suggestion' },
         });
     };

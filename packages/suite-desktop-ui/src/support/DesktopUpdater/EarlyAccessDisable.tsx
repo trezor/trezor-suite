@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -19,7 +19,7 @@ export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
 
     const allowPrerelease = useCallback(() => {
         analytics.report({
-            type: EventType.SettingsGeneralEarlyAccess,
+            type: events.settingsGeneralEarlyAccessEvent.name,
             payload: {
                 allowPrerelease: false,
             },

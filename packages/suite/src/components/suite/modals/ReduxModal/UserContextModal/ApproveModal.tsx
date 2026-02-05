@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     TradingExchangeType,
@@ -115,7 +115,7 @@ export const ApproveModal = ({
 
         if (['MINIMAL', 'INFINITE'].includes(type)) {
             analytics.report({
-                type: EventType.TradingExchangeApproval,
+                type: events.tradeApprovalEvent.name,
                 payload: {
                     type: 'approve-modal',
                     action: type === 'MINIMAL' ? 'limit-exact' : 'limit-unlimited',
@@ -158,7 +158,7 @@ export const ApproveModal = ({
 
     const confirmAndSend = async () => {
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'approve-modal',
                 action: 'continue',
@@ -182,7 +182,7 @@ export const ApproveModal = ({
         if (!receiveAddress) return;
 
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'approve-modal',
                 action: 'refresh',
@@ -198,7 +198,7 @@ export const ApproveModal = ({
 
     const onClose = (isSubmitting?: boolean) => {
         analytics.report({
-            type: EventType.TradingExchangeApproval,
+            type: events.tradeApprovalEvent.name,
             payload: {
                 type: 'approve-modal',
                 action: 'cancel',

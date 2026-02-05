@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen, TradingStackRoutes } from '@suite-native/navigation';
@@ -34,7 +34,7 @@ const TradingScreenContent = () => {
     useEffect(() => {
         if (tradeToBeOpened) {
             analytics.report({
-                type: EventType.TradingSuccess,
+                type: events.tradingSuccessEvent.name,
                 payload: { type: tradeToBeOpened.tradeType },
             });
             navigation.navigate(TradingStackRoutes.TradingHistory);

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import {
@@ -214,7 +214,7 @@ export const TransactionReviewModalBodyInner = ({
         setAreDetailsVisible(areVisible => {
             if (!areVisible) {
                 analytics.report({
-                    type: EventType.SendDetailOpened,
+                    type: events.sendDetailOpenedEvent.name,
                     payload: {
                         assetSymbol: symbol,
                     },

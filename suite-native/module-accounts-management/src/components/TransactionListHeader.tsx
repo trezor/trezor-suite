@@ -12,7 +12,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailed } from '@suite-native/device';
 import { FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -114,7 +114,7 @@ export const TransactionListHeader = memo(
 
         const handleReceive = () => {
             analytics.report({
-                type: EventType.ReceiveFlowEntered,
+                type: events.receiveFlowEnteredEvent.name,
                 payload: {
                     location: 'accountDetail',
                     assetSymbol: account.symbol,
@@ -134,7 +134,7 @@ export const TransactionListHeader = memo(
 
         const handleSend = () => {
             analytics.report({
-                type: EventType.SendFlowEntered,
+                type: events.sendFlowEnteredEvent.name,
                 payload: {
                     location: 'accountDetail',
                     assetSymbol: account.symbol,

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { SendState, StakeState, selectSelectedDevice } from '@suite-common/wallet-core';
 import { FormState } from '@suite-common/wallet-types';
 import {
@@ -99,7 +99,7 @@ export const TransactionReviewModalBody = ({
             tryAgainSignTx();
 
             analytics.report({
-                type: EventType.TransactionRetry,
+                type: events.transactionTimeoutRetryEvent.name,
                 payload: { url: redactRouterUrl(url) },
             });
         },

@@ -4,7 +4,7 @@ import { usePrevious } from 'react-use';
 import { SellTradeStatus } from 'invity-api';
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
@@ -76,7 +76,7 @@ export const TradingDetailSell = () => {
         }
 
         analytics.report({
-            type: EventType.TradingStatus,
+            type: events.tradeStatusEvent.name,
             payload: {
                 type: 'sell',
                 status: tradeStatusStep,

@@ -6,7 +6,7 @@ import {
     toggleAutoEjectThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -35,7 +35,7 @@ export const AutoEjectSwitch = () => {
             });
         }
         analytics.report({
-            type: EventType.SettingsAutoEjectToggle,
+            type: events.settingsAutoEjectToggleEvent.name,
             payload: {
                 enabled: !isAutoEjectEnabled,
             },

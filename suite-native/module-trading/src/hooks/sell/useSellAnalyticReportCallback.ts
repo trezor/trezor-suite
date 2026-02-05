@@ -8,7 +8,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingSellSelectedQuote,
 } from '@suite-common/trading';
-import { EventType, TradingSellAction, TradingSellStep } from '@suite-native/analytics';
+import { TradingSellAction, TradingSellStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { getAnalyticsTradingSellPayload } from '../../utils/sell/quotesUtils';
@@ -37,7 +37,7 @@ export const useSellAnalyticReportCallback = (
     return useCallback(
         (step: TradingSellStep, action: TradingSellAction) => {
             analytics.report({
-                type: EventType.TradingSell,
+                type: events.tradingSellEvent.name,
                 payload: {
                     step,
                     action,

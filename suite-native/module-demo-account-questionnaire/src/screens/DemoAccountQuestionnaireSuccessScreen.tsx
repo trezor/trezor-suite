@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { DemoAccountQuestionnaireLinkKey, EventType } from '@suite-native/analytics';
+import { DemoAccountQuestionnaireLinkKey, events } from '@suite-native/analytics';
 import { Button, PictogramTitleHeader, TextDivider, VStack } from '@suite-native/atoms';
 import { IconName } from '@suite-native/icons';
 import { Translation, TxKeyPath } from '@suite-native/intl';
@@ -61,7 +61,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
     const handleOpenUrl = (recommendation: Recommendation) => {
         analytics.report(
             {
-                type: EventType.DemoAccountQuestionnaireLinks,
+                type: events.demoAccountQuestionnaireLinksEvent.name,
                 payload: {
                     option: recommendation.key,
                 },
@@ -75,7 +75,7 @@ export const DemoAccountQuestionnaireSuccessScreen = () => {
     const handleBackToDashboard = () => {
         analytics.report(
             {
-                type: EventType.DemoAccountQuestionnaireLinks,
+                type: events.demoAccountQuestionnaireLinksEvent.name,
                 payload: {
                     option: 'dashboard',
                 },

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { G } from '@mobily/ts-belt';
 
-import { AnalyticsSendFlowStep, EventType } from '@suite-native/analytics';
+import { AnalyticsSendFlowStep, events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 
 import { SendStackRoutes, TransactionDetailStackRoutes } from '../routes';
@@ -65,7 +65,7 @@ export const useReportSendFlowExitToAnalytics = () => {
             // We are navigation outside of the send flow without successful transaction dispatch. Report the furthest step to analytics.
             if (furthestSendStep) {
                 analytics.report({
-                    type: EventType.SendFlowExited,
+                    type: events.sendFlowExitedEvent.name,
                     payload: { step: screenNameToAnalyticsLabelMap[furthestSendStep] },
                 });
                 setFurthestSendStep(null);

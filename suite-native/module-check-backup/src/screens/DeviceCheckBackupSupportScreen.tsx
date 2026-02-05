@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -23,7 +23,7 @@ export const DeviceCheckBackupSupportScreen = () => {
     useFocusEffect(
         useCallback(() => {
             analytics.report({
-                type: EventType.DeviceSettingsCheckBackupSupport,
+                type: events.deviceSettingsCheckBackupSupportEvent.name,
             });
         }, [analytics]),
     );

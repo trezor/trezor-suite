@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Divider, Link, Modal } from '@trezor/components';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
@@ -85,7 +85,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                             );
 
                             analytics.report({
-                                type: EventType.DashboardReceiveModalOptions,
+                                type: events.dashboardReceiveModalOptionsEvent.name,
                                 payload: {
                                     option: 'addAccount',
                                     filledSearch,

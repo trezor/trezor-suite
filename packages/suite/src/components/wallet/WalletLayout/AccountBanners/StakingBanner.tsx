@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkAdjustedStakingBalance } from '@suite-common/staking';
@@ -81,7 +81,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         }
 
         analytics.report({
-            type: EventType.StakingNavigate,
+            type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'cancel',
                 from: 'account/banner',
@@ -94,7 +94,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
 
         analytics.report({
-            type: EventType.StakingNavigate,
+            type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 from: 'account/banner',

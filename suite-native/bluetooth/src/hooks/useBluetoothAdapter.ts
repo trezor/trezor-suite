@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { bluetoothActions, parseManufacturerData } from '@suite-common/bluetooth';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -86,7 +86,7 @@ export const useBluetoothAdapter = () => {
                     );
                     if (['paired', 'connected'].includes(event.connectionStatus.type)) {
                         analytics.report({
-                            type: EventType.DeviceConnectionDevicePaired,
+                            type: events.deviceConnectionDevicePairedEvent.name,
                         });
                     } else if (event.connectionStatus.type === 'pairing-canceled') {
                         showToast({

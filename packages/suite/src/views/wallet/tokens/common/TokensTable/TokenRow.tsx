@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     DefinitionType,
@@ -117,7 +117,7 @@ export const TokenRow = ({
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
             analytics.report({
-                type: EventType.AccountsActions,
+                type: events.accountsActionsEvent.name,
                 payload: { symbol: network.symbol, action: routeName },
             });
         }
@@ -189,7 +189,7 @@ export const TokenRow = ({
         });
 
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type,

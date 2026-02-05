@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AssetFiatBalance } from '@suite-common/assets';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
@@ -133,7 +133,7 @@ export const AssetCard = ({
 
     const onStakeButtonClick = () => {
         analytics.report({
-            type: EventType.StakingNavigate,
+            type: events.stakingNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 from: 'dashboard/assets',
@@ -144,7 +144,7 @@ export const AssetCard = ({
 
     const onBuyButtonClick = () => {
         analytics.report({
-            type: EventType.TradingNavigate,
+            type: events.tradeNavigateEvent.name,
             payload: {
                 action: 'navigate',
                 type: 'buy',

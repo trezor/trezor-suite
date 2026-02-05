@@ -12,7 +12,7 @@ import {
     reconnectBlockchainThunk,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { SelectItemType } from '@suite-native/atoms';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -95,7 +95,7 @@ export const useBackendServersForm = () => {
         );
         dispatch(reconnectBlockchainThunk({ symbol }));
         analytics.report({
-            type: EventType.SettingsChangeCoinBackend,
+            type: events.settingsChangeCoinBackendEvent.name,
             payload: { symbol, type: serverType },
         });
     };

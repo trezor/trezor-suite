@@ -5,7 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { cancelDiscoveryThunk, selectSelectedDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -51,7 +51,7 @@ export const PassphraseScreenHeader = () => {
             },
         });
         analytics.report({
-            type: EventType.PassphraseExit,
+            type: events.passphraseExitEvent.name,
             payload: { screen: route.name },
         });
 

@@ -2,7 +2,7 @@ import { ChangeEvent, ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import {
     FeedbackCategory,
@@ -137,7 +137,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
         }
         dispatch(setView('GUIDE_DEFAULT'));
         analytics.report({
-            type: EventType.GuideFeedbackSubmit,
+            type: events.guideFeedbackSubmitEvent.name,
             payload: { type: type === 'BUG' ? 'bug' : 'suggestion' },
         });
     }, [device, type, dispatch, analytics, description, category, rating]);

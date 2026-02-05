@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { Modal, ModalProps } from '@trezor/components';
@@ -45,7 +45,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
 
     const learnMoreClicked = () => {
         analytics.report({
-            type: EventType.SettingsMultiShareBackup,
+            type: events.settingsDeviceMultiShareBackupEvent.name,
             payload: { action: 'learn-more' },
         });
     };
@@ -53,7 +53,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
     const handleCancel = () => {
         if (step !== 'done') {
             analytics.report({
-                type: EventType.SettingsMultiShareBackup,
+                type: events.settingsDeviceMultiShareBackupEvent.name,
                 payload: { action: 'close-modal' },
             });
         }
@@ -128,7 +128,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                         TrezorConnect.backupDevice().then(response => {
                             if (response.success) {
                                 analytics.report({
-                                    type: EventType.SettingsMultiShareBackup,
+                                    type: events.settingsDeviceMultiShareBackupEvent.name,
                                     payload: { action: 'done' },
                                 });
 

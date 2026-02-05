@@ -11,7 +11,7 @@ import {
     selectTradingCoinInfoByCryptoId,
     tradingBuyActions,
 } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -67,7 +67,7 @@ export const useBuyFlow = (form: BuyFormType) => {
 
     const reportTradeConfirmation = () => {
         analytics.report({
-            type: EventType.TradingConfirmTrade,
+            type: events.tradingConfirmTradeEvent.name,
             payload: {
                 type: 'buy',
             },
@@ -138,7 +138,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
 
         analytics.report({
-            type: EventType.TradingBuy,
+            type: events.tradingBuyEvent.name,
             payload: {
                 step: 'buy-form',
                 action: 'continue',
@@ -150,7 +150,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             selectReceiveAccount();
 
             analytics.report({
-                type: EventType.TradingBuy,
+                type: events.tradingBuyEvent.name,
                 payload: {
                     step: 'account-selection',
                     action: 'continue',

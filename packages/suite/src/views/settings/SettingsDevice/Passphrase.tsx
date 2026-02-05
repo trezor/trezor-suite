@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
@@ -23,7 +23,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const handleChange = () => {
         dispatch(applySettings({ use_passphrase: !passphraseProtection }));
         analytics.report({
-            type: EventType.SettingsDeviceChangePassphraseProtection,
+            type: events.settingsDeviceChangePassphraseProtectionEvent.name,
             payload: {
                 use_passphrase: !passphraseProtection,
             },

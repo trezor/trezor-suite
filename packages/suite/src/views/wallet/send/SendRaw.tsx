@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -67,7 +67,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
         if (result) {
             setValue(INPUT_NAME, '');
             analytics.report({
-                type: EventType.SendRawTransaction,
+                type: events.sendRawTransactionEvent.name,
                 payload: {
                     networkSymbol: account.symbol,
                 },

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -74,7 +74,7 @@ export const useChangeDeviceName = () => {
         navigation.navigate(DeviceNameStackRoutes.DeviceNameLoadingScreen);
 
         analytics.report({
-            type: EventType.SettingsDeviceChangeLabel,
+            type: events.settingsDeviceChangeLabelEvent.name,
         });
     });
 

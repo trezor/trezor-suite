@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Account } from '@suite-common/wallet-types';
 
 import { useAnalytics } from 'src/support/useAnalytics';
@@ -16,7 +16,7 @@ export const useGoToWithAnalytics = (account?: Account) => {
     return (...[routeName, options]: Parameters<typeof goto>) => {
         if (accountToUse?.symbol) {
             analytics.report({
-                type: EventType.AccountsActions,
+                type: events.accountsActionsEvent.name,
                 payload: { symbol: accountToUse.symbol, action: routeName },
             });
         }

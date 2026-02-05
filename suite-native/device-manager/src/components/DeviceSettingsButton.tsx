@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -55,7 +55,7 @@ export const DeviceSettingsButton = ({ showAsFullWidth }: DeviceInfoButtonProps)
             screen: DeviceSettingsStackRoutes.DeviceSettings,
         });
         analytics.report({
-            type: EventType.DeviceManagerClick,
+            type: events.deviceManagerClickEvent.name,
             payload: { action: 'deviceSettings' },
         });
     };

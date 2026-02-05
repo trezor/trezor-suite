@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { isAddressValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { Input, Modal } from '@trezor/components';
@@ -102,7 +102,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             onCancel();
 
             analytics.report({
-                type: EventType.AddToken,
+                type: events.addTokenEvent.name,
                 payload: {
                     networkSymbol: account.symbol,
                     addedNth: account.tokens ? account.tokens.length + 1 : 0,

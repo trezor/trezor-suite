@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -38,7 +38,7 @@ export const ForgetDeviceModal = ({ onCancel }: ModalProps) => {
             dispatch(deviceActions.forgetDevice({ device: instance }));
         });
 
-        analytics.report({ type: EventType.SwitchDeviceForget });
+        analytics.report({ type: events.switchDeviceForgetEvent.name });
         onCancel?.();
     };
 

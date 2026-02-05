@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { switchToDuplicatedWallet } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -44,7 +44,7 @@ export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNo
     }, [dispatch, navigation]);
 
     useEffect(() => {
-        analytics.report({ type: EventType.PassphraseDuplicate });
+        analytics.report({ type: events.passphraseDuplicateEvent.name });
         showAlert({
             title: translate('modulePassphrase.passphraseMismatch.title'),
             description: translate('modulePassphrase.passphraseMismatch.subtitle'),

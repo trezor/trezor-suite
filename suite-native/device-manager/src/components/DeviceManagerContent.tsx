@@ -14,7 +14,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     AnimatedVStack,
@@ -76,7 +76,7 @@ export const DeviceManagerContent = () => {
         setIsDeviceManagerVisible(false);
 
         analytics.report({
-            type: EventType.DeviceManagerClick,
+            type: events.deviceManagerClickEvent.name,
             payload: {
                 action:
                     selectedDevice.id === PORTFOLIO_TRACKER_DEVICE_ID

@@ -10,7 +10,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { isAddressValid } from '@suite-common/wallet-utils';
 import { NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext } from '@suite-native/forms';
@@ -52,7 +52,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
         setValue(addressFieldName, qrCodeData, { shouldValidate: true });
         if (symbol && isAddressValid(qrCodeData, symbol)) {
             analytics.report({
-                type: EventType.SendAddressFilled,
+                type: events.sendAddressFilledEvent.name,
                 payload: { method: 'qr' },
             });
         }
@@ -61,7 +61,7 @@ export const AddressInput = ({ index, accountKey }: AddressInputProps) => {
     const handleChangeValue = (newValue: string) => {
         if (symbol && isAddressValid(newValue, symbol)) {
             analytics.report({
-                type: EventType.SendAddressFilled,
+                type: events.sendAddressFilledEvent.name,
                 payload: { method: 'manual' },
             });
             checkSolAssociatedTokenAddress({

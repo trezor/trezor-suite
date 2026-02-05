@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -60,7 +60,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 case 'sell':
                 case 'exchange': {
                     analytics.report({
-                        type: EventType.TradingNavigate,
+                        type: events.tradeNavigateEvent.name,
                         payload: {
                             action: 'navigate',
                             type,
@@ -73,7 +73,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                 }
                 case 'stake': {
                     analytics.report({
-                        type: EventType.StakingNavigate,
+                        type: events.stakingNavigateEvent.name,
                         payload: {
                             action: 'navigate',
                             from: 'account/tradebox',

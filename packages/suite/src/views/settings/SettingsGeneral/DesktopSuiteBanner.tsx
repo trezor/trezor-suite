@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -109,7 +109,7 @@ export const DesktopSuiteBanner = () => {
                                 href={href}
                                 onClick={() =>
                                     analytics.report({
-                                        type: EventType.GetDesktopApp,
+                                        type: events.promoDesktopEvent.name,
                                     })
                                 }
                             >

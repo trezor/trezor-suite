@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -26,7 +26,7 @@ export const AutoStartBeforeQuitModal = () => {
         desktopApi.appAutoStartPopupResponse(action);
         dispatch(modalActions.onCancel());
         analytics.report({
-            type: EventType.AutostartModal,
+            type: events.autostartModalEvent.name,
             payload: {
                 action,
             },

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
@@ -25,15 +25,15 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
         dispatch(changeWipeCode({ remove: false }));
         analytics.report({
             type: isDeviceProtectedByWipeCode
-                ? EventType.SettingsDeviceChangeWipeCode
-                : EventType.SettingsDeviceSetupWipeCode,
+                ? events.settingsDeviceChangeWipeCodeEvent.name
+                : events.settingsDeviceSetupWipeCodeEvent.name,
         });
     };
 
     const disableWipeCode = () => {
         dispatch(changeWipeCode({ remove: true }));
         analytics.report({
-            type: EventType.SettingsDeviceDisableWipeCode,
+            type: events.settingsDeviceDisableWipeCodeEvent.name,
         });
     };
 

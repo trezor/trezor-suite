@@ -8,7 +8,7 @@ import { TradingAmountLimitProps, selectTradingBuyQuotesRequest } from '@suite-c
 import { getNetwork } from '@suite-common/wallet-config';
 import { WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -60,7 +60,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                     case 'fiatCurrency':
                         if (fiatCurrency !== prevFiatCurrency.current) {
                             analytics.report({
-                                type: EventType.TradingParameterChanged,
+                                type: events.tradingParameterChangedEvent.name,
                                 payload: {
                                     type: 'buy',
                                     parameter: 'fiat',
@@ -76,7 +76,7 @@ const useAmountAndCurrencyFieldsChangeEffect = ({ setValue, getValues, watch }: 
                     case 'asset': {
                         if (asset?.cryptoId !== prevCryptoId.current) {
                             analytics.report({
-                                type: EventType.TradingParameterChanged,
+                                type: events.tradingParameterChangedEvent.name,
                                 payload: {
                                     type: 'buy',
                                     parameter: 'cryptoTo',

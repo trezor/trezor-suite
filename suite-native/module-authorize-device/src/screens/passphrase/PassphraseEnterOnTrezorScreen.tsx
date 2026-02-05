@@ -1,4 +1,4 @@
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { AuthorizeDeviceStackRoutes, useNavigateToInitialScreen } from '@suite-native/navigation';
@@ -19,7 +19,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     const handleCancel = () => {
         analytics.report({
-            type: EventType.PassphraseExit,
+            type: events.passphraseExitEvent.name,
             payload: { screen: AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor },
         });
         TrezorConnect.cancel();

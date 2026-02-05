@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { SelectBar } from '@trezor/components';
@@ -27,7 +27,7 @@ export const AddressDisplay = () => {
     const analytics = useAnalytics();
     const onChange = (value: AddressDisplayOptions) => {
         analytics.report({
-            type: EventType.SettingsGeneralAddressDisplayType,
+            type: events.settingsGeneralAddressDisplayTypeEvent.name,
             payload: {
                 addressDisplayType: value,
             },

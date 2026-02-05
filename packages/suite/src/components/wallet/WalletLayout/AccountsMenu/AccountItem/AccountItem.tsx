@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, GhostContainer, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -75,7 +75,7 @@ export const AccountItem = ({
 
         if (type === 'staking') {
             analytics.report({
-                type: EventType.StakingNavigate,
+                type: events.stakingNavigateEvent.name,
                 payload: {
                     action: 'navigate',
                     from: 'sidebar',

@@ -11,7 +11,7 @@ import {
     selectIsTransactionPending,
     selectTransactionByAccountKeyAndTxid,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoIconWithNetwork } from '@suite-native/icons';
 import { useInAppRating } from '@suite-native/in-app-rating';
@@ -59,7 +59,7 @@ export const TransactionDetailScreen = ({
     useEffect(() => {
         if (transaction) {
             analytics.report({
-                type: EventType.TransactionDetail,
+                type: events.transactionDetailEvent.name,
                 payload: {
                     assetSymbol: transaction.symbol,
                     tokenSymbol: tokenTransfer?.symbol,
@@ -74,7 +74,7 @@ export const TransactionDetailScreen = ({
     const handleOpenBlockchain = () => {
         if (!blockchainExplorer) return;
         analytics.report({
-            type: EventType.TransactionDetailExploreInBlockchain,
+            type: events.transactionDetailExploreInBlockchainEvent.name,
         });
         const explorerUrl = getExplorerUrl(blockchainExplorer, 'tx');
         openLink(`${explorerUrl}${transaction.txid}`);

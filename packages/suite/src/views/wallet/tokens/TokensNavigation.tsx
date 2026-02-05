@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, TranslationKey, useTranslation } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
@@ -104,7 +104,7 @@ export const TokensNavigation = ({
     const handleAddToken = () => {
         if (account.symbol) {
             analytics.report({
-                type: EventType.AccountsActions,
+                type: events.accountsActionsEvent.name,
                 payload: { symbol: account.symbol, action: 'add-token' },
             });
         }

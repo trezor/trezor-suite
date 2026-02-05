@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
@@ -55,7 +55,7 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
 
                 analytics.report({
-                    type: EventType.StakingNavigate,
+                    type: events.stakingNavigateEvent.name,
                     payload: {
                         action: 'navigate',
                         from: 'account/navigation',

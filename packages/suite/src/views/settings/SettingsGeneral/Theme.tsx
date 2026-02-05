@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { ThemeColorVariant } from '@trezor/theme';
@@ -68,7 +68,7 @@ export const Theme = () => {
 
         const platformTheme = getOsTheme();
         analytics.report({
-            type: EventType.SettingsGeneralChangeTheme,
+            type: events.settingsGeneralChangeThemeEvent.name,
             payload: {
                 platformTheme,
                 previousTheme: theme.variant,

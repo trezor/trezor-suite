@@ -1,6 +1,6 @@
 import { isRejected } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { removeThpAutoconnectThunk, startThpAutoconnectThunk } from '@suite-common/thp';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -48,7 +48,7 @@ export const ThpAutoconnect = ({ isDeviceLocked }: PinProtectionProps) => {
         }
 
         analytics.report({
-            type: EventType.SettingsDeviceChangeThpAutoconnect,
+            type: events.settingsDeviceChangeThpAutoconnectEvent.name,
             payload: {
                 action: isAutoconnectOn ? 'disable-autoconnect' : 'enable-autoconnect',
             },

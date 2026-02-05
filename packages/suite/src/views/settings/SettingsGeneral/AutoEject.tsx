@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectDevices, selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
@@ -63,7 +63,7 @@ export const AutoEject = () => {
         );
 
         analytics.report({
-            type: EventType.SettingsGeneralAutoEject,
+            type: events.settingsGeneralAutoEjectEvent.name,
             payload: {
                 value: !isAutoEjectEnabled,
             },

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { AnalyticsSharedEvents } from '@suite-common/analytics';
-import { AnalyticsNativeEvents, EventType } from '@suite-native/analytics';
+import { AnalyticsNativeEvents, events } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -43,7 +43,7 @@ const reportAnalyticsOnboardingCompleted = (
         analytics.enable();
     }
     analytics.report({
-        type: EventType.OnboardingCompleted,
+        type: events.onboardingCompletedEvent.name,
         payload: { analyticsPermission: isTrackingAllowed },
     });
 

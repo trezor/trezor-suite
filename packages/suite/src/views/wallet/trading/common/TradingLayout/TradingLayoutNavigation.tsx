@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation, TranslationKey } from '@suite/intl';
 import { Route } from '@suite-common/suite-types';
 import { IconName, SubTabs } from '@trezor/components';
@@ -39,7 +39,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
         switch (route) {
             case 'wallet-trading-buy':
                 return analytics.report({
-                    type: EventType.TradingNavigate,
+                    type: events.tradeNavigateEvent.name,
                     payload: {
                         action: 'navigate',
                         type: 'buy',
@@ -48,7 +48,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                 });
             case 'wallet-trading-sell':
                 return analytics.report({
-                    type: EventType.TradingNavigate,
+                    type: events.tradeNavigateEvent.name,
                     payload: {
                         action: 'navigate',
                         type: 'sell',

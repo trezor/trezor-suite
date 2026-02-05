@@ -8,7 +8,7 @@ import {
     selectAccountNetworkSymbol,
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { SendStackParamList, SendStackRoutes, StackProps } from '@suite-native/navigation';
@@ -38,7 +38,7 @@ export const AmountInputs = ({ index }: AmountInputProps) => {
 
     const onInputSwitch = (activeView: ActiveView) => {
         analytics.report({
-            type: EventType.SendAmountInputSwitched,
+            type: events.sendAmountInputSwitchedEvent.name,
             payload: { changedTo: activeView === 'primary' ? 'crypto' : 'fiat' },
         });
     };

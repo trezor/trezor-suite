@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Switch, Tooltip } from '@trezor/components';
 
@@ -23,7 +23,7 @@ export const PinProtection = ({ isDeviceLocked }: PinProtectionProps) => {
     const handleChange = () => {
         dispatch(changePin({ remove: !!pinProtection }));
         analytics.report({
-            type: EventType.SettingsDeviceChangePinProtection,
+            type: events.settingsDeviceChangePinProtectionEvent.name,
             payload: {
                 remove: pinProtection,
             },

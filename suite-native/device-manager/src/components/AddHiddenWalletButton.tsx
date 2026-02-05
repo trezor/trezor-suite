@@ -7,7 +7,7 @@ import {
     selectSelectedDevice,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -50,7 +50,7 @@ export const AddHiddenWalletButton = () => {
         if (!device) return;
         setIsDeviceManagerVisible(false);
 
-        analytics.report({ type: EventType.PassphraseAddHiddenWallet });
+        analytics.report({ type: events.passphraseAddHiddenWalletEvent.name });
         dispatch(
             startDiscoveryThunk({
                 device,

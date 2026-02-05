@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { BackendType, NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
@@ -234,7 +234,7 @@ export const useBackendsForm = (symbol: NetworkSymbol) => {
         const totalOnion = urls.filter(isOnionUrl).length;
 
         analytics.report({
-            type: EventType.SettingsCoinsBackend,
+            type: events.settingsCoinsBackendEvent.name,
             payload: {
                 symbol,
                 type,

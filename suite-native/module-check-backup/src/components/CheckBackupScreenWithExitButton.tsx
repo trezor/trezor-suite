@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useAlert } from '@suite-native/alerts';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     DeviceCheckBackupStackParamList,
@@ -46,7 +46,7 @@ export const useHandleCheckBackupExitButtonPress = () => {
             secondaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: () => {
                 analytics.report({
-                    type: EventType.DeviceSettingsCheckBackupExited,
+                    type: events.deviceSettingsCheckBackupExitedEvent.name,
                     payload: {
                         location: route.name,
                     },

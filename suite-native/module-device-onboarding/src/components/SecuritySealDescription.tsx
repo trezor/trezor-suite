@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/wallet-core';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -27,7 +27,7 @@ export const SecuritySealDescription = () => {
     const handleLinkPress = () => {
         openModal();
         analytics.report({
-            type: EventType.DeviceSetupInfo,
+            type: events.deviceSetupInfoEvent.name,
             payload: {
                 location: 'securitySeal',
             },

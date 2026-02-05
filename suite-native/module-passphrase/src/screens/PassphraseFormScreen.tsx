@@ -4,7 +4,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 
 import { useNavigation } from '@react-navigation/native';
 
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -83,7 +83,7 @@ export const PassphraseFormScreen = () => {
     const handleAnimation = () => (cardHeight.value = 0);
 
     const handleOpenLink = () => {
-        analytics.report({ type: EventType.PassphraseArticleOpened });
+        analytics.report({ type: events.passphraseArticleOpenedEvent.name });
         openLink(HELP_CENTER_PASSPHRASE_URL);
     };
 

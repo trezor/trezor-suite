@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -29,7 +29,7 @@ export const UnstakeModalLoaded = ({ onCancel, selectedAccount }: UnstakeModalMo
         onCancel?.();
 
         analytics.report({
-            type: EventType.StakingUnstake,
+            type: events.stakingUnstakeEvent.name,
             payload: {
                 action: 'cancel',
                 step: 'unstake-form-modal',

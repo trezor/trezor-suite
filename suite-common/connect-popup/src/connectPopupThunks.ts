@@ -1,6 +1,6 @@
 import { AsyncThunkAction } from '@reduxjs/toolkit';
 
-import { EventType } from '@suite-common/analytics';
+import { events } from '@suite-common/analytics';
 import { CustomThunkAPI, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { deviceActions, selectSelectedDevice } from '@suite-common/wallet-core';
@@ -158,7 +158,7 @@ export const connectPopupCallThunkInner = createThunk<
             }
 
             extra.services.analytics.report({
-                type: EventType.ConnectPopupCall,
+                type: events.connectPopupCallEvent.name,
                 payload: {
                     method,
                     appName: source.manifest.appName,
@@ -195,7 +195,7 @@ export const connectPopupCallThunkInner = createThunk<
             }
 
             extra.services.analytics.report({
-                type: EventType.ConnectPopupError,
+                type: events.connectPopupErrorEvent.name,
                 payload: {
                     method,
                     origin: source.origin,

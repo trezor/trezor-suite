@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
-import { EventType } from '@suite/analytics';
+import { events } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Column, Divider, Icon } from '@trezor/components';
 import { spacingsPx, transitions, typography, zIndices } from '@trezor/theme';
@@ -69,7 +69,7 @@ export const Guide = () => {
     const handleFeedbackButtonClick = () => {
         dispatch(setView('SUPPORT_FEEDBACK_SELECTION'));
         analytics.report({
-            type: EventType.GuideFeedbackNavigation,
+            type: events.guideFeedbackNavigationEvent.name,
             payload: { type: 'overview' },
         });
     };

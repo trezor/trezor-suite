@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { useAnalytics } from '@suite-native/services';
 import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
 
@@ -32,7 +32,7 @@ export const ExchangeRateAndProviderPicker = () => {
 
         showSheet();
         analytics.report({
-            type: EventType.TradingCompareOffers,
+            type: events.tradingCompareOffersEvent.name,
             payload: {
                 type: 'exchange',
             },
@@ -47,7 +47,7 @@ export const ExchangeRateAndProviderPicker = () => {
         }
 
         analytics.report({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'exchange',
                 parameter: 'provider',

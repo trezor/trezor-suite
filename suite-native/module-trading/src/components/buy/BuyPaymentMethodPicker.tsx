@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import type { BuyTrade } from 'invity-api';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { EventType } from '@suite-native/analytics';
+import { events } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useAnalytics } from '@suite-native/services';
@@ -82,7 +82,7 @@ export const BuyPaymentMethodPicker = () => {
         if (selectedValue?.paymentMethod === quote.paymentMethod) return;
 
         analytics.report({
-            type: EventType.TradingParameterChanged,
+            type: events.tradingParameterChangedEvent.name,
             payload: {
                 type: 'buy',
                 parameter: 'paymentMethod',
