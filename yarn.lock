@@ -13069,6 +13069,7 @@ __metadata:
     "@react-navigation/native": "npm:7.1.26"
     "@react-navigation/native-stack": "npm:7.9.0"
     "@reduxjs/toolkit": "npm:2.11.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/mev": "workspace:*"
