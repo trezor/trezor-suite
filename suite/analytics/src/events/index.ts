@@ -71,7 +71,6 @@ export { settingsGeneralChangeLanguageEvent } from './settingsGeneralChangeLangu
 export { settingsGeneralChangeThemeEvent } from './settingsGeneralChangeThemeEvent';
 export { settingsGeneralAutoEjectEvent } from './settingsGeneralAutoEjectEvent';
 export { settingsGeneralEarlyAccessEvent } from './settingsGeneralEarlyAccessEvent';
-export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsGeneralLabelingProviderEvent } from './settingsGeneralLabelingProviderEvent';
 export { settingsGeneralMevProtectionEvent } from './settingsGeneralMevProtectionEvent';
 export { settingsGeneralNetworkReserveEvent } from './settingsGeneralNetworkReserveEvent';

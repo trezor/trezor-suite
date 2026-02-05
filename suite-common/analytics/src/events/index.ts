@@ -8,6 +8,7 @@ export { deviceConnectionDeviceFoundEvent } from './deviceConnectionDeviceFoundE
 export { deviceConnectionDevicePairedEvent } from './deviceConnectionDevicePairedEvent';
 export { settingsDeviceChangeLabelEvent } from './settingsDeviceChangeLabelEvent';
 export { settingsDeviceWipeEvent } from './settingsDeviceWipeEvent';
+export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { walletConnectInitEvent } from './walletConnectInitEvent';
 export { walletConnectPairedEvent } from './walletConnectPairedEvent';
 export { walletConnectProposalApprovedEvent } from './walletConnectProposalApprovedEvent';

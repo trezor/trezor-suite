@@ -8,6 +8,7 @@ export enum EventType {
 
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceWipe = 'settings/device/wipe',
+    SettingsGeneralLabeling = 'settings/general/labeling',
 
     ConnectPopupInit = 'connect-popup/init',
     ConnectPopupPermissions = 'connect-popup/permissions',
