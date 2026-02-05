@@ -1,0 +1,214 @@
+import { WebBrowserResultType } from 'expo-web-browser';
+
+import { type TradingType, selectTradingSellLastErrorMessage } from '@suite-common/trading';
+import {
+    TestStore,
+    act,
+    getTranslation,
+    initStore,
+    renderHookWithStoreProvider,
+} from '@suite-native/test-utils';
+import { getWalletState } from '@suite-native/trading-fixtures';
+import {
+    selectTradeToBeOpened,
+    selectTradingProviderConfirmationStatus,
+    tradingActions,
+} from '@suite-native/trading-state';
+
+import { TRADING_URL_DEFAULT_BACK } from '../../../../utils/general/formUtils';
+import { useBrowserAuth } from '../useBrowserAuth';
+
+const mockOpenBrowserAsync = jest.fn();
+const mockDismissBrowser = jest.fn();
+
+jest.mock('expo-web-browser', () => {
+    const originalModule = jest.requireActual('expo-web-browser');
+
+    return {
+        ...originalModule,
+        openBrowserAsync: (...args: unknown[]) => mockOpenBrowserAsync(...args),
+        dismissBrowser: (...args: unknown[]) => mockDismissBrowser(...args),
+    };
+});
+
+let mockLinkingURL: string | null;
+
+jest.mock('expo-linking', () => ({
+    useLinkingURL: () => mockLinkingURL,
+}));
+
+const mockSetShouldWatchForForeground = jest.fn();
+
+jest.mock('../useOnForegroundCallback', () => ({
+    useOnForegroundCallback: (_: () => void) => ({
+        setShouldWatchForForeground: mockSetShouldWatchForForeground,
+    }),
+}));
+
+describe('useBrowserAuth', () => {
+    let store: TestStore;
+
+    const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
+        renderHookWithStoreProvider(
+            () =>
+                useBrowserAuth(
+                    tradingType === 'buy'
+                        ? {
+                              orderId: 'trade-order-id-1',
+                              tradingType,
+                          }
+                        : { tradingType },
+                ),
+            { store },
+        );
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockLinkingURL = null;
+        ({ store } = initStore({ wallet: getWalletState() }));
+    });
+
+    it('should return openBrowser callback', () => {
+        const { result } = renderUseBrowserAuth();
+
+        expect(result.current.openBrowser).toBeInstanceOf(Function);
+    });
+
+    describe('openBrowser', () => {
+        it('should call openBrowserAsync', () => {
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(undefined);
+            expect(mockOpenBrowserAsync).toHaveBeenCalledWith('URL', expect.any(Object));
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+        });
+
+        it.each([WebBrowserResultType.CANCEL, WebBrowserResultType.DISMISS])(
+            'should call handleWebViewClosed when openBrowserAsync resolves with %s',
+            async type => {
+                mockOpenBrowserAsync.mockResolvedValue({ type });
+                const { result } = renderUseBrowserAuth();
+
+                await act(async () => {
+                    await result.current.openBrowser('URL', 'CALLBACK_URL');
+                });
+
+                expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+                    'window_closed_incomplete',
+                );
+            },
+        );
+
+        it('should call setShouldWatchForForeground when openBrowserAsync resolves with opened', async () => {
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.OPENED });
+            const { result } = renderUseBrowserAuth();
+
+            await act(async () => {
+                await result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+            expect(mockSetShouldWatchForForeground).toHaveBeenCalledTimes(1);
+            expect(mockSetShouldWatchForForeground).toHaveBeenCalledWith(true);
+        });
+
+        it('should set last error message when openBrowserAsync resolves with locked', async () => {
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.LOCKED });
+            const { result } = renderUseBrowserAuth();
+
+            await act(async () => {
+                await result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
+                getTranslation('moduleTrading.webView.browserLocked'),
+            );
+        });
+
+        it('should set last error message when openBrowserAsync throws', async () => {
+            const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+            const error = new Error('Browser error');
+
+            mockOpenBrowserAsync.mockRejectedValue(error);
+            const { result } = renderUseBrowserAuth();
+
+            await act(async () => {
+                await result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+            expect(selectTradingSellLastErrorMessage(store.getState())).toBe(
+                getTranslation('moduleTrading.webView.browserError'),
+            );
+            expect(errorSpy).toHaveBeenCalledWith('Error opening web browser:', error);
+        });
+    });
+
+    describe('checkForGoBackOnUrl', () => {
+        beforeEach(() => {
+            store.dispatch(tradingActions.setProviderConfirmationStatus('window_opened'));
+        });
+
+        it('should do nothing when url is empty', () => {
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            renderUseBrowserAuth();
+
+            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+            expect(mockDismissBrowser).not.toHaveBeenCalled();
+        });
+
+        it('should do nothing when url is not closeCallbackUrl', () => {
+            mockLinkingURL = 'https://some.other.url';
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowser('URL', 'CALLBACK_URL');
+            });
+
+            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+            expect(mockDismissBrowser).not.toHaveBeenCalled();
+        });
+
+        it('should call dismissBrowser and handleWebViewSuccess for sell tradingType when url matches closeCallbackUrl ', () => {
+            mockLinkingURL = TRADING_URL_DEFAULT_BACK;
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            const { result } = renderUseBrowserAuth();
+
+            act(() => {
+                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
+            });
+
+            expect(selectTradeToBeOpened(store.getState())).toBeUndefined();
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+                'window_closed_with_success',
+            );
+            expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
+        });
+
+        it('should call handleWebViewSuccess and set tradeToBeOpened for buy ', () => {
+            mockLinkingURL = TRADING_URL_DEFAULT_BACK;
+            mockOpenBrowserAsync.mockResolvedValue({ type: WebBrowserResultType.CANCEL });
+            const { result } = renderUseBrowserAuth('buy');
+
+            act(() => {
+                result.current.openBrowser('URL', TRADING_URL_DEFAULT_BACK);
+            });
+
+            expect(selectTradeToBeOpened(store.getState())).toEqual(
+                expect.objectContaining({
+                    data: expect.objectContaining({ orderId: 'trade-order-id-1' }),
+                }),
+            );
+            expect(mockDismissBrowser).toHaveBeenCalledTimes(1);
+        });
+    });
+});

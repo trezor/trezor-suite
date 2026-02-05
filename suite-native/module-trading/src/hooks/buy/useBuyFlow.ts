@@ -14,8 +14,6 @@ import {
 import { events } from '@suite-native/analytics';
 import {
     RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
     StackToStackCompositeNavigationProps,
     TradingStackParamList,
     TradingStackRoutes,
@@ -32,6 +30,7 @@ import {
     getReceiveAccountAddressText,
     isFullySelectedReceiveAccount,
 } from '../../utils/general/receiveAccountUtils';
+import { useBrowserAuth } from '../general/providerConfirmation/useBrowserAuth';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
@@ -51,8 +50,6 @@ export const useBuyFlow = (form: BuyFormType) => {
 
     const timer = useNullTimer();
     const navigation = useNavigation<NavigationProps>();
-    const rootNavigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, candidateQuote?.receiveCurrency),
@@ -63,6 +60,11 @@ export const useBuyFlow = (form: BuyFormType) => {
     const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
         quote: candidateQuote,
         coinInfo,
+    });
+
+    const { openBrowser } = useBrowserAuth({
+        tradingType: 'buy',
+        orderId: candidateQuote?.orderId,
     });
 
     const reportTradeConfirmation = () => {
@@ -84,18 +86,13 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
     };
 
-    const handleWebview = (formData: FormResponse['form'], returnUrl: string) => {
+    const handleBrowser = (formData: FormResponse['form'], returnUrl: string) => {
         const source = getSourceForForm(formData);
-        if (!source) {
+        if (!source?.uri) {
             return;
         }
 
-        rootNavigation.navigate(RootStackRoutes.TradingWebView, {
-            closeCallbackUrl: returnUrl,
-            tradingType: 'buy',
-            source,
-            orderId: candidateQuote?.orderId,
-        });
+        return openBrowser(source.uri, returnUrl);
     };
 
     const handleTradeResponse = (response: BuyTradeResponse, returnUrl: string) => {
@@ -104,7 +101,7 @@ export const useBuyFlow = (form: BuyFormType) => {
         }
 
         if (response.tradeForm) {
-            handleWebview(response.tradeForm.form, returnUrl);
+            handleBrowser(response.tradeForm.form, returnUrl);
         }
 
         clearBuyFormQuoteData(form);
@@ -175,7 +172,7 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 timer,
                 returnUrl,
-                loginRequest: formResponse => handleWebview(formResponse, returnUrl),
+                loginRequest: formResponse => handleBrowser(formResponse, returnUrl),
                 nextStep: () => {
                     confirmTrade(candidateQuote, addressText);
                 },

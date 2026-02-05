@@ -1,0 +1,113 @@
+import { TradingType } from '@suite-common/trading/';
+import { TestStore, act, initStore, renderHookWithStoreProvider } from '@suite-native/test-utils';
+import { selectTradingProviderConfirmationStatus } from '@suite-native/trading-state';
+
+import { useBrowserStateChangeCallbacks } from '../useBrowserStateChangeCallbacks';
+
+const mockReportToAnalytics = jest.fn();
+
+jest.mock('../../useTradingAnalyticReportCallback', () => ({
+    useTradingAnalyticReportCallback: () => mockReportToAnalytics,
+}));
+
+describe('useBrowserStateChangeCallbacks', () => {
+    let store: TestStore;
+
+    const renderUseWebViewStateChangeCallbacks = (tradingType: TradingType | undefined) =>
+        renderHookWithStoreProvider(() => useBrowserStateChangeCallbacks(tradingType), {
+            store,
+        });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        ({ store } = initStore());
+    });
+
+    describe('handleBrowserOpened', () => {
+        it('should set correct confirmation status', () => {
+            const { result } = renderUseWebViewStateChangeCallbacks('sell');
+
+            act(() => {
+                result.current.handleBrowserOpened();
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('window_opened');
+        });
+
+        it('should report browser open to analytics', () => {
+            const { result } = renderUseWebViewStateChangeCallbacks('sell');
+
+            act(() => {
+                result.current.handleBrowserOpened();
+            });
+
+            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+        });
+    });
+
+    describe('handleBrowserClosed', () => {
+        it('should set correct confirmation status', () => {
+            const { result } = renderUseWebViewStateChangeCallbacks('sell');
+
+            act(() => {
+                result.current.handleBrowserOpened();
+                result.current.handleBrowserClosed();
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+                'window_closed_incomplete',
+            );
+        });
+    });
+
+    describe('handleBrowserSuccess', () => {
+        it('should set correct confirmation status', () => {
+            const { result } = renderUseWebViewStateChangeCallbacks('sell');
+
+            act(() => {
+                result.current.handleBrowserOpened();
+                result.current.handleBrowserSuccess();
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
+                'window_closed_with_success',
+            );
+        });
+    });
+
+    it.each<TradingType>(['buy', 'exchange'])(
+        'should not dispatch confirmation status change for tradingType [%s]',
+        tradingType => {
+            const { result } = renderUseWebViewStateChangeCallbacks(tradingType);
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+            act(() => {
+                result.current.handleBrowserOpened();
+                result.current.handleBrowserClosed();
+                result.current.handleBrowserSuccess();
+            });
+
+            expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
+            expect(dispatchSpy).not.toHaveBeenCalled();
+            // note that analytics event should be still reported
+            expect(mockReportToAnalytics).toHaveBeenCalledWith('webview', 'visit');
+        },
+    );
+
+    it('should do nothing when trading type is undefined', () => {
+        const { result } = renderUseWebViewStateChangeCallbacks(undefined);
+
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+        act(() => {
+            result.current.handleBrowserOpened();
+            result.current.handleBrowserClosed();
+            result.current.handleBrowserSuccess();
+        });
+
+        expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
+        expect(dispatchSpy).not.toHaveBeenCalled();
+        expect(mockReportToAnalytics).not.toHaveBeenCalled();
+    });
+});

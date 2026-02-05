@@ -171,6 +171,12 @@ const getPlugins = (): ExpoPlugins => {
                 useSQLCipher: true,
             },
         ],
+        [
+            'expo-web-browser',
+            {
+                experimentalLauncherActivity: true,
+            },
+        ],
     ];
 
     return [

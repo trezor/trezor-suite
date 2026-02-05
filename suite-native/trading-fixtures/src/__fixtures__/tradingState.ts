@@ -130,7 +130,7 @@ export const getInitializedTradingState = (tradeType: TradingType = 'buy') =>
             coins: coins as Coins,
             platforms: platforms as Platforms,
         },
-        trades: [{ tradeType }],
+        trades: [{ tradeType, data: { orderId: 'trade-order-id-1' } }],
         activeTradingType: tradeType,
         residence: {
             country: undefined,

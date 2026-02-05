@@ -387,12 +387,6 @@ export type RootStackParamList = {
     [RootStackRoutes.SettingsScreenStack]: NavigatorScreenParams<SettingsStackParamList>;
     [RootStackRoutes.BackupFailedModal]: undefined;
     [RootStackRoutes.DeviceCompromisedModal]: undefined;
-    [RootStackRoutes.TradingWebView]: {
-        closeCallbackUrl: string;
-        tradingType: TradingType;
-        source?: { uri?: string; html?: string };
-        orderId?: string;
-    };
     [RootStackRoutes.BootloaderMode]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;

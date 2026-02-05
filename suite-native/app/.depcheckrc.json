@@ -25,6 +25,7 @@
         "expo-updates",
         "expo-video",
         "expo-sharing",
+        "expo-web-browser",
         "expo-file-system",
         "lottie-react-native",
         "react-intl",
