@@ -21,7 +21,7 @@ export const ThpPairingInfoHelpButton = () => {
                 onPress={openModal}
             />
             <BottomSheetModal ref={bottomSheetRef} isCloseDisplayed={false}>
-                <VStack spacing="sp24" paddingBottom="sp24">
+                <VStack spacing="sp24">
                     <VStack spacing="sp8">
                         <Text variant="titleSmall" color="textDefault">
                             <Translation id="thp.pairingInfo.help.title" />
