@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createThunk } from '@suite-common/redux-utils';
@@ -231,7 +231,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.SendInitialised,
             payload: {
                 assetSymbol: selectedAccount.symbol,
@@ -247,7 +247,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             }),
         );
 
-        getTypedDesktopAnalytics(extra.services.analytics).report({
+        asTypedDesktopAnalytics(extra.services.analytics).report({
             type: EventType.SendConfirmedOnDevice,
             payload: {
                 assetSymbol: selectedAccount.symbol,

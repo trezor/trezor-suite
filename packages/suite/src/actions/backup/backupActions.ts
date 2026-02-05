@@ -1,4 +1,4 @@
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedDevice } from '@suite-common/wallet-core';
@@ -75,7 +75,7 @@ export const backupDevice =
                 type: BACKUP.SET_ERROR,
                 payload: result.payload.error,
             });
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.CreateBackup,
                 payload: {
                     status: 'error',
@@ -90,7 +90,7 @@ export const backupDevice =
                 type: BACKUP.SET_IN_PROGRESS,
                 payload: false,
             });
-            getTypedDesktopAnalytics(extra.services.analytics).report({
+            asTypedDesktopAnalytics(extra.services.analytics).report({
                 type: EventType.CreateBackup,
                 payload: {
                     status: 'finished',

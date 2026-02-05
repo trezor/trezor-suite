@@ -1,4 +1,4 @@
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import {
     selectDeviceByStaticSessionId,
@@ -637,7 +637,7 @@ export const init =
         if (!selectSelectedProviderForLabels(getState())) {
             const providerResult = await dispatch(metadataProviderActions.initProvider());
             if (!providerResult) {
-                getTypedDesktopAnalytics(extra.services.analytics).report({
+                asTypedDesktopAnalytics(extra.services.analytics).report({
                     type: EventType.SettingsGeneralLabelingProvider,
                     payload: {
                         provider: 'missing-provider',

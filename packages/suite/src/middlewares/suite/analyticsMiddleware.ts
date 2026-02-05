@@ -1,6 +1,6 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { EventType, getTypedDesktopAnalytics } from '@suite/analytics';
+import { EventType, asTypedDesktopAnalytics } from '@suite/analytics';
 import { EventType as EventTypeShared } from '@suite-common/analytics';
 import { firmwareUpdate } from '@suite-common/firmware';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
@@ -69,7 +69,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             const { device, toBtcOnly, toFwVersion, error = '' } = action.payload ?? {};
 
             if (device?.features) {
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.DeviceUpdateFirmware,
                     payload: {
                         model: device.features.internal_model,
@@ -94,7 +94,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case deviceActions.addAuthorizedDevice.type:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.SelectWalletType,
                     payload: {
                         type: action.payload.device.walletNumber ? 'hidden' : 'standard',
@@ -104,7 +104,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case SUITE.READY:
                 getSuiteReadyPayload(state).then(payload => {
-                    getTypedDesktopAnalytics(analytics).report({
+                    asTypedDesktopAnalytics(analytics).report({
                         type: EventType.SuiteReady,
                         payload,
                     });
@@ -112,7 +112,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case TRANSPORT.START:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.TransportType,
                     payload: {
                         type: action.payload.type,
@@ -128,7 +128,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (!features || !mode) return result;
 
                 if (!isDeviceInBootloaderMode(device)) {
-                    getTypedDesktopAnalytics(analytics).report({
+                    asTypedDesktopAnalytics(analytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
@@ -152,7 +152,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                         },
                     });
                 } else {
-                    getTypedDesktopAnalytics(analytics).report({
+                    asTypedDesktopAnalytics(analytics).report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode: 'bootloader',
@@ -166,7 +166,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case DEVICE.DISCONNECT:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.DeviceDisconnect,
                 });
                 break;
@@ -222,22 +222,22 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     )
                     .reduce(accumulateAccountCountBySymbolAndType, {});
 
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsStatus,
                     payload: accountsWithTransactions,
                 });
 
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsNonZeroBalance,
                     payload: accountsWithNonZeroBalance,
                 });
 
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsTokensStatus,
                     payload: accountsWithTokens,
                 });
 
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.AccountsActiveStaking,
                     payload: accountsWithStaking,
                 });
@@ -250,7 +250,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                     state.suite.lifecycle.status !== 'initial' &&
                     state.suite.lifecycle.status !== 'loading'
                 ) {
-                    getTypedDesktopAnalytics(analytics).report({
+                    asTypedDesktopAnalytics(analytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -263,7 +263,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
 
             case ROUTER.ANCHOR_CHANGE:
                 if (action.payload) {
-                    getTypedDesktopAnalytics(analytics).report({
+                    asTypedDesktopAnalytics(analytics).report({
                         type: EventType.RouterLocationChange,
                         payload: {
                             prevRouterUrl: redactRouterUrl(prevRouterUrl),
@@ -287,7 +287,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 );
 
                 if (coinjoinAccount && anonymityGainToReport !== null) {
-                    getTypedDesktopAnalytics(analytics).report(
+                    asTypedDesktopAnalytics(analytics).report(
                         {
                             type: EventType.CoinjoinAnonymityGain,
                             payload: {
@@ -303,7 +303,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
             }
 
             case deviceActions.setRememberDevice.type:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: action.payload.remember
                         ? EventType.SwitchDeviceRemember
                         : EventType.SwitchDeviceForget,
@@ -314,14 +314,14 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 if (!state.suite.flags.discreetModeCompleted) {
                     dispatch(setFlag('discreetModeCompleted', true));
                 }
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.MenuToggleDiscreet,
                     payload: { value: action.toggled },
                 });
                 break;
 
             case WALLET_SETTINGS.CHANGE_COIN_VISIBILITY:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.SettingsCoins,
                     payload: {
                         symbol: action.payload.symbol,
@@ -331,7 +331,7 @@ const analyticsMiddleware = createMiddlewareWithExtraDeps(
                 break;
 
             case WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS:
-                getTypedDesktopAnalytics(analytics).report({
+                asTypedDesktopAnalytics(analytics).report({
                     type: EventType.SettingsGeneralChangeBitcoinUnit,
                     payload: {
                         unit: UNIT_ABBREVIATIONS[action.payload],
