@@ -59,12 +59,11 @@ export class CoreInSuiteWeb implements ConnectFactoryDependencies<ConnectSetting
             throw ERRORS.TypedError('Init_ManifestMissing');
         }
         if (!this._popupManager) {
-            this._popupManager = new PopupManager(
-                { ...this._settings, popupSrc: this.getSuiteUrl() },
-                {
-                    logger: this.logger,
-                },
-            );
+            this._popupManager = new PopupManager({
+                ...this._settings,
+                popupSrc: this.getSuiteUrl(),
+                logger: this.logger,
+            });
             this._popupManager.on(DEVICE_EVENT, event => {
                 this.eventEmitter.emit(DEVICE_EVENT, event);
             });
