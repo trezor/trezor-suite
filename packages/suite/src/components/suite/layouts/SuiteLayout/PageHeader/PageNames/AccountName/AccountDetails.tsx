@@ -90,7 +90,7 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                         size={isBalanceShown ? 'small' : 'medium'}
                     />
                 }
-                gap={isBalanceShown ? 8 : 12}
+                gap={8}
                 placeholder={translationString('TR_LABELING_ACCOUNT_LABEL')}
             >
                 {label || defaultLabel}
@@ -130,8 +130,8 @@ export const AccountDetails = ({ selectedAccount, isBalanceShown }: AccountDetai
                 <Column
                     overflow="hidden"
                     // To accomodate the labeling component
-                    padding={{ right: 80, left: 8, vertical: 6 }}
-                    gap={4}
+                    padding={8}
+                    gap={0}
                 >
                     <H2 typographyStyle={getTypographyStyle()}>{accountNameElement}</H2>
                     {isBalanceShown && (

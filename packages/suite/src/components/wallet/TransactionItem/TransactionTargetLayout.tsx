@@ -45,12 +45,7 @@ export const TransactionTargetLayout = ({
 
     return (
         <>
-            <Text
-                {...commonProps}
-                ellipsisLineCount={1}
-                padding={{ right: 80, left: 8, vertical: 8 }}
-                margin={{ left: -8, vertical: -8 }}
-            >
+            <Text {...commonProps} ellipsisLineCount={1} padding={8} margin={-8}>
                 {useHiddenPlaceholder === false ? (
                     addressLabel
                 ) : (

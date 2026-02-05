@@ -2,8 +2,17 @@ import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'reac
 
 import styled, { css, useTheme } from 'styled-components';
 
-import { FrameProps, FramePropsKeys, Row, Text, Tooltip } from '@trezor/components';
-import { SpacingValuesNew, zIndices } from '@trezor/theme';
+import {
+    FrameProps,
+    FramePropsKeys,
+    Row,
+    Text,
+    Tooltip,
+    TransientProps,
+    pickAndPrepareFrameProps,
+    withFrameProps,
+} from '@trezor/components';
+import { SpacingValuesNew, borders, zIndices } from '@trezor/theme';
 
 import { ActionsContainer } from './ActionsContainer';
 import { SavingStatus } from './types';
@@ -16,7 +25,6 @@ import {
 } from './utils';
 
 export const allowedEditableTextFrameProps = [
-    'margin',
     'maxWidth',
     'minHeight',
     'flex',
@@ -30,6 +38,7 @@ export type EditableTextProps = AllowedFrameProps & {
     onCancel?: () => void;
     isLoading?: boolean;
     isDisabled?: boolean;
+    isAlwaysActive?: boolean;
     placeholder?: string;
     leftAddon?: ReactNode;
     rightAddon?: ReactNode;
@@ -98,6 +107,63 @@ const EditableContainer = styled.span<{
         `}
 `;
 
+type ContainerProps = {
+    $gap: SpacingValuesNew;
+    $isActive: boolean;
+    $isAlwaysActive: boolean;
+    $isDisabled: boolean;
+} & TransientProps<AllowedFrameProps>;
+
+const Container = styled.span<ContainerProps>`
+    --padding: calc(0.1em + 2px);
+
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    max-width: 100%;
+    gap: ${({ $gap }) => $gap}px;
+    overflow-x: hidden;
+    height: 28px;
+    box-sizing: content-box;
+    padding: var(--padding);
+    padding-left: ${({ $gap }) => $gap}px;
+    cursor: ${({ $isDisabled }) => ($isDisabled ? 'inherit' : 'pointer')};
+
+    &:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: ${({ theme }) => theme.baseFillElementNeutralSofter};
+        border-radius: ${borders.radii.xs};
+        pointer-events: none;
+        opacity: 0;
+        transform-origin: left;
+        transform: scaleX(0.9);
+
+        ${({ $isActive }) =>
+            $isActive &&
+            css`
+                opacity: 1;
+                transform: scaleX(1);
+                transition: 0.2s ease-in-out;
+            `}
+    }
+
+    ${({ $isAlwaysActive, $gap }) =>
+        !$isAlwaysActive
+            ? css`
+                  margin: calc(var(--padding) * -1);
+                  margin-left: -${$gap}px;
+              `
+            : css`
+                  &:hover:before {
+                      background: ${({ theme }) => theme.stateFillElementNeutralSoftestHovered};
+                  }
+              `}
+
+    ${withFrameProps};
+`;
+
 export const EditableText = ({
     children,
     defaultValue,
@@ -107,15 +173,13 @@ export const EditableText = ({
     onCancel,
     isLoading = false,
     isDisabled = false,
+    isAlwaysActive = false,
     placeholder,
     leftAddon,
     rightAddon,
-    gap = 6,
-    maxWidth = '100%',
-    minHeight,
-    margin,
-    flex,
+    gap = 8,
     'data-testid': dataTestId,
+    ...rest
 }: EditableTextProps) => {
     const theme = useTheme();
     const [isEditable, setIsEditable] = useState(false);
@@ -127,6 +191,8 @@ export const EditableText = ({
     const savedValueRef = useRef<string>('');
     const valueRef = useRef<HTMLElement>(null);
     const isTextTruncated = useTextTruncation({ elementRef: valueRef, isEditable });
+
+    const frameProps = pickAndPrepareFrameProps(rest, allowedEditableTextFrameProps);
     const isTooltipActive =
         isTextTruncated &&
         !isEditable &&
@@ -139,7 +205,7 @@ export const EditableText = ({
     const hasCustomValue = Boolean(
         currentValueTextContent && currentValueTextContent !== defaultValueTextContent,
     );
-    const isActive = isHovered || isEditable || savingStatus !== 'idle';
+    const isActive = isHovered || isEditable || isAlwaysActive;
     const isDirty = currentValueTextContent !== savedValueRef.current;
     const zIndex = isDisabled ? undefined : zIndices.labeling;
 
@@ -182,17 +248,20 @@ export const EditableText = ({
 
     const handleCancel = useCallback(() => {
         setIsEditable(false);
-        setIsHovered(false);
         removeInputSelection();
         setCurrentValueTextContent(savedValueRef.current);
 
         if (valueRef.current) {
             valueRef.current.textContent = savedValueRef.current;
             valueRef.current.scrollLeft = 0;
+
+            if (isDirty) {
+                setIsHovered(false);
+            }
         }
 
         onCancel?.();
-    }, [onCancel]);
+    }, [onCancel, isDirty]);
 
     const handleEdit = useCallback(async () => {
         await onEdit?.();
@@ -204,6 +273,7 @@ export const EditableText = ({
     const handleDelete = useCallback(async () => {
         setSavingStatus('saving');
         setIsEditable(false);
+        setIsHovered(false);
         removeInputSelection();
 
         const result = await onSubmit?.('');
@@ -211,7 +281,6 @@ export const EditableText = ({
         if (result) {
             setCurrentValueTextContent(defaultValueTextContent);
             setSavingStatus('saved');
-            setIsHovered(false);
 
             if (valueRef.current) {
                 valueRef.current.scrollLeft = 0;
@@ -249,7 +318,6 @@ export const EditableText = ({
                 savedValueRef.current = newValue;
 
                 setCurrentValueTextContent(newValue);
-                setIsHovered(false);
                 setSavingStatus('saved');
 
                 setTimeout(() => {
@@ -318,36 +386,18 @@ export const EditableText = ({
     useShortcuts({ isEditable, isDirty, handleSave, handleCancel });
 
     return (
-        <Row
+        <Container
             ref={containerRef}
             data-testid={dataTestId}
-            as="span"
-            display="inline-flex"
-            gap={gap}
-            position={{ type: 'relative' }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             onClick={isDisabled ? undefined : handleContainerClick}
-            cursor="pointer"
-            maxWidth={maxWidth}
-            minHeight={minHeight}
-            margin={margin}
-            flex={flex}
+            $gap={gap}
+            $isActive={isActive && !isDisabled}
+            $isAlwaysActive={isAlwaysActive && !isDisabled}
+            $isDisabled={isDisabled}
+            {...frameProps}
         >
-            <ActionsContainer
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                onError={handleError}
-                onSubmit={handleSave}
-                onCancel={handleCancel}
-                isLoading={isLoading}
-                isEditable={isEditable}
-                savingStatus={savingStatus}
-                isDisabled={isDisabled}
-                isHovered={isHovered}
-                isSubmitButtonVisible={isDirty}
-                isDeleteButtonVisible={hasCustomValue}
-            />
             {leftAddon && (
                 <Row position={{ type: 'relative' }} zIndex={zIndex}>
                     {leftAddon}
@@ -387,6 +437,9 @@ export const EditableText = ({
                         $isDisabled={isDisabled}
                         $isActive={isActive}
                         $hasDisplayValue={hasDisplayValue}
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        autoCorrect="off"
                     >
                         {children}
                     </EditableContainer>
@@ -407,6 +460,20 @@ export const EditableText = ({
                     {rightAddon}
                 </Row>
             )}
-        </Row>
+            <ActionsContainer
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onError={handleError}
+                onSubmit={handleSave}
+                onCancel={handleCancel}
+                isLoading={isLoading}
+                isEditable={isEditable}
+                savingStatus={savingStatus}
+                isDisabled={isDisabled}
+                isHovered={isHovered || isAlwaysActive}
+                isSubmitButtonVisible={isDirty}
+                isDeleteButtonVisible={hasCustomValue}
+            />
+        </Container>
     );
 };

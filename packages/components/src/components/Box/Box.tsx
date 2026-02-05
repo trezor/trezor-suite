@@ -35,6 +35,7 @@ export const allowedBoxFrameProps = [
     'opacity',
     'userSelect',
     'pointerEvents',
+    'display',
 ] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedBoxFrameProps)[number]>;
 
@@ -117,6 +118,7 @@ export type BoxProps = Pick<
         'data-testid'?: string;
         'aria-hidden'?: boolean;
         as?: React.ElementType;
+        ref?: React.RefObject<HTMLElement | null>;
     };
 
 export const Box = ({
@@ -133,6 +135,7 @@ export const Box = ({
     onMouseEnter,
     onMouseLeave,
     tabIndex,
+    ref,
     ...rest
 }: BoxProps) => {
     const { elevation } = useElevation();
@@ -153,6 +156,7 @@ export const Box = ({
             onMouseLeave={onMouseLeave}
             $shadow={shadow}
             tabIndex={tabIndex}
+            ref={ref as React.Ref<HTMLDivElement>}
             {...frameProps}
         >
             {children}

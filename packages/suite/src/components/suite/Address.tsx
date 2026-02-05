@@ -122,7 +122,7 @@ export const Address = ({
                 typographyStyle={typographyStyle}
                 variant={variant}
                 isTabular
-                overflowWrap="break-word"
+                overflowWrap="anywhere"
             >
                 <AddressWrapper
                     onCopy={onManualCopy}
