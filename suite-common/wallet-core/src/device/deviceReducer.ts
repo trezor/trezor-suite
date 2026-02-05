@@ -574,19 +574,25 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     // do not persist data for bootloader devices
     if (device.features.device_id === null) return;
 
-    const newPersistentData: Omit<PersistentDeviceData, 'delegatedIdentityKey'> = {
+    const updatedPersistentData = {
         device_id: device.features.device_id,
-        internal_model: device.features.internal_model,
         fw_vendor: device.features.fw_vendor,
         revision: device.features.revision,
-        unit_color: device.features.unit_color,
         label: device.features.label,
         initialized: device.features.initialized,
         thp: device.thp,
         bluetoothProps: device.bluetoothProps,
         lastConnectedVia: device.bluetoothProps ? 'bluetooth' : 'usb',
         firmwareVersion: getFirmwareVersionArray(device),
-    };
+    } as const;
+    const initialPersistentData = {
+        ...updatedPersistentData,
+        // constant values, never expected to change in the lifetime of a device id
+        internal_model: device.features.internal_model,
+        unit_color: device.features.unit_color,
+        // initial value, will be filled later
+        delegatedIdentityKey: null,
+    } as const;
 
     const index = draft.persistentDeviceData.findIndex(
         persistentDeviceData => persistentDeviceData.device_id === device.id,
@@ -594,13 +600,10 @@ const updatePersistentDeviceData = (draft: DeviceReducerState, device: Device | 
     if (index >= 0) {
         draft.persistentDeviceData[index] = {
             ...draft.persistentDeviceData[index],
-            ...newPersistentData,
+            ...updatedPersistentData,
         };
     } else {
-        draft.persistentDeviceData.push({
-            ...newPersistentData,
-            delegatedIdentityKey: null,
-        });
+        draft.persistentDeviceData.push(initialPersistentData);
     }
 };
 

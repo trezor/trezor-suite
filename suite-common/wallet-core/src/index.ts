@@ -66,3 +66,6 @@ export * from './transactions/transactionsActions';
 export * from './transactions/transactionsReducer';
 export * from './transactions/transactionsSelectors';
 export * from './transactions/transactionsThunks';
+export { getIsIgnoredEntropyCheckError } from './device/services/getIsIgnoredEntropyCheckError';
+export { getIsDeviceIdValid } from './device/services/getIsDeviceIdValid';
+export { deviceInvariabilityCheck } from './device/services/deviceInvariabilityCheck';

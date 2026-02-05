@@ -43,13 +43,13 @@ import {
     selectPhysicalDeviceWallets,
     selectSelectedDevice,
 } from './deviceSelectors';
-import { getIsIgnoredEntropyCheckError } from './deviceUtils';
 import { sortDevices } from './sortDevices';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 import { startDiscoveryThunk } from '../discovery/discoveryThunks';
 import { selectDeviceThunk, selectNewlyConnectedDeviceThunk } from '../discovery/selectDeviceThunk';
 import { setAutoEjectEnabled } from '../settings/walletSettingsActions';
 import { selectIsDeviceAutoEjectEnabled } from '../settings/walletSettingsReducer';
+import { getIsIgnoredEntropyCheckError } from './services/getIsIgnoredEntropyCheckError';
 
 /**
  * Triggered by `@trezor/connect DEVICE_EVENT`

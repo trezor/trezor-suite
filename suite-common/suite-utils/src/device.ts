@@ -165,8 +165,12 @@ export const shouldDisplayInitialWarningIcon = (deviceStatus: DeviceStatus | nul
 
 export const isDeviceRemembered = (device?: TrezorDevice): boolean => !!device?.remember;
 
+// Is a Suite extended device acquired (corresponds to Connect "known")
 export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevice =>
     !!device?.features;
+
+// Is a Connect device known (corresponds to Suite "acquired")
+export const isDeviceKnown = (device?: Device): device is KnownDevice => !!device?.features;
 
 export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevice) =>
     !!(

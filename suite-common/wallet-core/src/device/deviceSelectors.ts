@@ -38,6 +38,7 @@ import {
     PORTFOLIO_TRACKER_DEVICE_ID,
 } from './deviceConstants';
 import { DeviceRootState } from './deviceReducer';
+import { deviceInvariabilityCheck } from './services/deviceInvariabilityCheck';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<DeviceRootState>();
 
@@ -398,6 +399,11 @@ export const selectWasFwHashCheckOtherErrorLastTime = createMemoizedSelector(
 
         return lastHashCheck && !lastHashCheck.success && lastHashCheck.error === 'other-error';
     },
+);
+
+export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
+    [selectSelectedDevice, selectSelectedPersistentDeviceData],
+    (device, previousData) => deviceInvariabilityCheck({ device, previousData }).success,
 );
 
 export const selectIsPortfolioTrackerDevice = createMemoizedSelector(
